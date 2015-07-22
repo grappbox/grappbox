@@ -1,0 +1,4 @@
+services:
+#    white_board.example:
+#        class: WhiteBoardBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

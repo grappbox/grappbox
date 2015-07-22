@@ -1,0 +1,166 @@
+{% extends "WhiteBoardBundle:Whiteboard:layout.html.twig" %}
+
+{% block title %}Mon super Whiteboard{% endblock %}
+
+{% block container %}
+	<div ng-app="whiteboardApp" ng-controller="whiteboardCtrl">
+		<div class="col-md-12">
+			<h1>Mon Super WhiteBoard</h1>
+		</div>
+		<div class="col-md-12">
+			<div id="menu" class="col-md-2">
+				<p class="col-md-12">Actually in use : {[{tool}]}</p>
+				<button class="col-md-12 btn btn-default" ng-click="selectTool('line')">Line</button>
+				<button class="col-md-12 btn btn-default" ng-click="selectTool('rect')">Rectangle</button>
+				<button class="col-md-12 btn btn-default" ng-click="selectTool('circle')">Circle</button>
+				<button class="col-md-12 btn btn-default" ng-click="selectAction('save')">Save</button>
+				<button class="col-md-12 btn btn-default" ng-click="selectAction('load')">Load</button>
+				<button class="col-md-12 btn btn-default" ng-click="selectAction('send')">Send to server</button>
+			</div>
+			
+			<div id="board" class="col-md-10">
+				<div>
+					<canvas drawing></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+	<script >
+		var app = angular.module("whiteboardApp", [])
+					.config(function($interpolateProvider){
+						$interpolateProvider.startSymbol('{[{').endSymbol('}]}');
+					});
+
+		app.directive("drawing", function(){
+		  return {
+		    restrict: "A",
+		    link: function($scope, element){
+		    	var drawing = false;
+		  		var centerX;
+		  		var centerY;
+				var currentX;
+				var currentY;
+
+				var ctx = element[0].getContext('2d');
+
+				var realHeight = ctx.canvas.clientHeight;
+				var realWidth = ctx.canvas.clientWidth;
+				ctx.canvas.width = realWidth;
+				ctx.canvas.height = realHeight;
+		      
+				element.bind('mousedown', function(event){
+					centerX = event.offsetX;
+					centerY = event.offsetY;
+
+					ctx.beginPath();
+
+					drawing = true;
+				});
+
+				element.bind('mousemove', function(event){
+					if(drawing){
+						currentX = event.offsetX;
+						currentY = event.offsetY;
+						//draw(centerX, centerY, currentX, currentY);
+					}
+				});
+
+				element.bind('mouseup', function(event){
+					if ($scope.tool != 'none')
+						draw(centerX, centerY, currentX, currentY);
+					else
+						alert("You need to select a tool !");
+					drawing = false;
+				});
+
+				function reset(){
+					element[0].width = element[0].width; 
+				}
+		      
+				function draw(startX, startY, currentX, currentY){
+					//reset();
+					if ($scope.tool == 'line'){
+						ctx.moveTo(centerX,centerY);
+						ctx.lineTo(currentX,currentY);
+					}
+					else if ($scope.tool == 'rect'){
+						var sizeX = currentX - startX;
+						var sizeY = currentY - startY;
+						ctx.rect(startX, startY, sizeX, sizeY);
+					}
+					else if ($scope.tool == 'circle'){
+						var x = (currentX - startX) / 2 + startX ;
+						var y = (currentY - startY) / 2 + startY ;
+						var r = Math.abs(x - startX);
+						console.log(x+' '+y+' '+r);
+						ctx.arc(x,y,r,0,2*Math.PI);
+					}
+
+					ctx.lineWidth = 1;
+					// color
+					ctx.strokeStyle = '#000';
+					// draw it
+					ctx.stroke();
+				}
+		    }
+		  };
+		});
+
+		app.controller("whiteboardCtrl", function ($scope){
+			$scope.tool = "none";
+			$scope.selectTool = function(selected){
+				$scope.tool = selected;
+			};
+			$scope.selectAction = function(selected){
+				alert('action : '+selected);
+			};
+		});
+
+	</script>
+{% endblock %}
+
+
+{% block stylesheets %}
+    {# On charge le CSS de bootstrap depuis le site directement #}
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <style type="text/css">
+    html, body, .container {
+    	width: 100%;
+    	 background-color: #D0F0F0;
+    }
+    #menu {
+    	border:solid black;
+		border-radius: 5px;
+		background-color: #008080;
+
+		/*min-height: 500px;*/
+    }
+    #menu > button, #menu > p {
+    	margin-top: 10px;
+    	margin-bottom: 10px;
+    	font-size: 20px;
+    }
+    #menu > p {
+    	color: white;
+    }
+    #board > div {
+    	border:solid black;
+		border-radius: 5px;
+		background-color: #F0F0F0;
+		width: 100%;
+		height: auto;
+    }
+	#board > div > canvas {
+		cursor:crosshair;
+		width: 100%;
+		height: auto;
+	}
+	</style>
+  {% endblock %}
