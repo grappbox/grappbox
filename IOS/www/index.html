@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>GrappBox - Accueil</title>
+
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link href="css/ratchet.css" rel="stylesheet">
+    <link href="css/ratchet-theme-ios.css" rel="stylesheet" />
+
+    <script src="scripts/lib/ratchet.js"></script>
+    <script src="scripts/lib/fabric.js"></script>
+    <script src="scripts/whiteboard.js"></script>
+</head>
+<body>
+    <header class="bar bar-nav">
+        <h1 class="title">GrappBox</h1>
+    </header>
+
+    <div class="content">
+        <p class="content-padded">Bienvenue sur GrappBox !</p>
+        <div class="card">
+            <ul class="table-view">
+                <li class="table-view-cell">
+                    <a class="push-right" data-ignore="push" href="whiteboard.html">
+                        <strong>Tableau blanc</strong>
+                    </a>
+                </li>
+                <li class="table-view-cell">
+                    <a class="push-right" href="testdesign.html">
+                        <strong>Petit test</strong>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <nav class="bar bar-tab">
+            <a class="tab-item active" href="#">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">Dashboard</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-person"></span>
+                <span class="tab-label">Profil</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-star-filled"></span>
+                <span class="tab-label">Favoris</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-search"></span>
+                <span class="tab-label">Rechercher</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-gear"></span>
+                <span class="tab-label">Paramètres</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Référence Cordova ajoutée à votre application une fois générée. -->
+    <script src="cordova.js"></script>
+    <script src="scripts/platformOverrides.js"></script>
+
+    <script src="scripts/index.js"></script>
+</body>
+</html>

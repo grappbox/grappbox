@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>GrappBox - Whiteboard</title>
+
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link href="css/ratchet.css" rel="stylesheet" />
+    <link href="css/ratchet-theme-ios.css" rel="stylesheet" />
+    <link href="css/index.css" rel="stylesheet" />
+
+    <script src="scripts/lib/ratchet.js"></script>
+    <script src="scripts/lib/fabric.js"></script>
+</head>
+<body>
+    <header class="bar bar-nav">
+        <h1 class="title">Tableau blanc</h1>
+    </header>
+    <div class="content">
+        <canvas id="canvas" width="300" height="300"></canvas>
+        <div class="card">
+            <button class="btn" onclick="whiteboard.StartDrawing();">Dessiner</button>
+            <button class="btn" onclick="whiteboard.DrawCircle()">Cercle</button>
+            <button class="btn" onclick="whiteboard.DrawRect()">Rectangle</button>
+            <button class="btn" onclick="whiteboard.DrawLine()">Ligne</button>
+            <button class="btn" onclick="whiteboard.ToSVG()">To SVG</button>
+            <button class="btn" onclick="whiteboard.LoadSVG()">Load SVG</button>
+        </div>
+        <nav class="bar bar-tab">
+            <a class="tab-item active" href="#">
+                <span class="icon icon-home"></span>
+                <span class="tab-label">Dashboard</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-person"></span>
+                <span class="tab-label">Profil</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-star-filled"></span>
+                <span class="tab-label">Favoris</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-search"></span>
+                <span class="tab-label">Rechercher</span>
+            </a>
+            <a class="tab-item" href="#">
+                <span class="icon icon-gear"></span>
+                <span class="tab-label">Paramètres</span>
+            </a>
+        </nav>
+        <script src="scripts/whiteboard.js"></script>
+    </div>
+</body>
+
+</html>
