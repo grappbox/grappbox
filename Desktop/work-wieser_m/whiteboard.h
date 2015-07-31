@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QLine>
 #include <QList>
+#include <QXmlReader>
 
 class Whiteboard : public QWidget
 {
@@ -32,16 +33,21 @@ class Whiteboard : public QWidget
     };
 
 public slots:
-    void    setSquareTool();
-    void    setCircleTool();
-    void    setLineTool();
+    void                    setSquareTool();
+    void                    setCircleTool();
+    void                    setLineTool();
+    void                    loadSVG(const QString &file);
+    void                    saveSVG(const QString &file);
 
 public:
-    explicit    Whiteboard(QWidget *parent = 0);
-    void        mousePressEvent(QMouseEvent *evt);
-    void        mouseReleaseEvent(QMouseEvent *evt);
-    void        paintEvent(QPaintEvent *event);
-    void        setTool(Tools tool);
+    explicit                Whiteboard(QWidget *parent = 0);
+    void                    mousePressEvent(QMouseEvent *evt);
+    void                    mouseReleaseEvent(QMouseEvent *evt);
+    void                    paintEvent(QPaintEvent *event);
+    void                    setTool(Tools tool);
+
+private:
+    void                    paintOnBoard(QPainter *painter, const bool isRender = true);
 
 private:
     QXmlStreamReader        *m_svgStream;
@@ -49,6 +55,7 @@ private:
     QSvgRenderer            *m_svgRenderer;
     QPainter                *m_Brush;
     QList<s_WhiteboardItem> *m_whiteboard;
+    QList<QSvgRenderer *>   *m_loadedSvg;
     Tools                   m_currentTool;
     QLine                   m_currentShapePoints;
 

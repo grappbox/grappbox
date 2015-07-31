@@ -8,20 +8,21 @@ Whiteboard::Whiteboard(QWidget *parent) :
     m_svgStream = new QXmlStreamReader();
     m_svgRenderer = new QSvgRenderer(m_svgStream);
     m_whiteboard = new QList<s_WhiteboardItem>();
+    m_loadedSvg = new QList<QSvgRenderer *>();
     m_svgRenderer->setViewBox(this->rect());
     m_currentTool = E_LINE;
 
     QObject::connect(m_svgRenderer, SIGNAL(repaintNeeded()), this, SLOT(repaint()));
 }
 
-void Whiteboard::paintEvent(QPaintEvent *event)
+void Whiteboard::paintOnBoard(QPainter *painter, const bool isRender)
 {
-    QPainter        painter(this);
     QPainterPath    painterpath;
     int             i;
 
-    static_cast<void>(event);
-    painter.setBrush(QBrush(Qt::green));
+    painter->setBrush(QBrush(Qt::green));
+    for (i = 0; i < m_loadedSvg->length(); ++i)
+        m_loadedSvg->at(i)->render(painter);
     for (i = 0; i < m_whiteboard->length(); ++i)
     {
         switch(m_whiteboard->at(i).m_tool)
@@ -43,9 +44,18 @@ void Whiteboard::paintEvent(QPaintEvent *event)
             continue;
             break;
         }
-        painter.drawPath(painterpath);
+        painter->drawPath(painterpath);
     }
-    m_svgRenderer->render(&painter);
+    if (isRender)
+        m_svgRenderer->render(painter);
+}
+
+void Whiteboard::paintEvent(QPaintEvent *event)
+{
+    QPainter        painter(this);
+
+    static_cast<void>(event);
+    this->paintOnBoard(&painter);
 }
 
 void Whiteboard::mousePressEvent(QMouseEvent *evt)
@@ -74,4 +84,20 @@ void    Whiteboard::setCircleTool()
 void    Whiteboard::setLineTool()
 {
     m_currentTool = E_LINE;
+}
+
+void    Whiteboard::loadSVG(const QString &file)
+{
+    m_loadedSvg->append(new QSvgRenderer(file));
+}
+
+void    Whiteboard::saveSVG(const QString &fileName)
+{
+    QSvgGenerator generator;
+    QPainter      painter(&generator);
+
+    generator.setFileName(fileName);
+    painter.begin(&generator);
+    this->paintOnBoard(&painter);
+    painter.end();
 }
