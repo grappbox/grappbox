@@ -14,7 +14,19 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     MainWindow.cpp \
-    SliderMenu.cpp
+    SliderMenu.cpp \
+    BodyDashboard.cpp \
+    DashboardMember.cpp \
+    DashboardMeeting.cpp \
+    DashboardGlobalProgress.cpp \
+    SDataManager.cpp
 
 HEADERS  += MainWindow.h \
-    SliderMenu.h
+    SliderMenu.h \
+    IBodyContener.h \
+    BodyDashboard.h \
+    DashboardMember.h \
+    DashboardMeeting.h \
+    DashboardGlobalProgress.h \
+    SDataManager.h \
+    IDataConnector.h

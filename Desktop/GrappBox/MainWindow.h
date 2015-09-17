@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 
+class IBodyContener;
+
+#include <QList>
+
 // Widget include
 
 #include <QWidget>
@@ -41,7 +45,8 @@ private:
     QVBoxLayout         *_MainLayout;
 
     // Canvas
-    QPushButton         *_CurrentCanvas; // Temporary, will be replaced by the real Canvas system
+    QList<IBodyContener*>       _Canvas;
+    int                         _CurrentCanvas;
 
     // Profil
     QWidget             *_ProfilWidget;
@@ -55,5 +60,7 @@ private:
     QPushButton         *_AlertButton;
     QPushButton         *_ParameterButton;
 };
+
+#include "ibodycontener.h"
 
 #endif // MAINWINDOW_H

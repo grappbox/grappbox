@@ -1,5 +1,7 @@
 #include <QDebug>
 
+#include "BodyDashboard.h"
+
 #include "MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -28,15 +30,10 @@ MainWindow::MainWindow(QWidget *parent)
     _HeaderLayout->setSpacing(0);
     _ContainLayout->setSpacing(0);
 
-    // Temporary things, will be replaced soon
-    {
-        // Temporary, will be replaced by the real Canvas system.
-        _CurrentCanvas = new QPushButton("Canva : Dashboard");
-        _CurrentCanvas->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    _Canvas.push_back(new BodyDashboard());
 
-        // Temporary, Not implemented now.
-        _ProfilWidget = new QPushButton("I'm the profil");
-    }
+    _ProfilWidget = new QPushButton("I'm the profil");
+
     _MenuWidget = new SliderMenu();
     _MenuWidget->AddMenuItem("Dashboard");
     _MenuWidget->AddMenuItem("Whiteboard");
@@ -59,12 +56,18 @@ MainWindow::MainWindow(QWidget *parent)
     _MainLayout->addLayout(_HeaderLayout);
     _MainLayout->addLayout(_ContainLayout);
     _ContainLayout->addLayout(_SliderLayout, 1);
-    _ContainLayout->addWidget(_CurrentCanvas, 4);
+    for (QList<IBodyContener*>::iterator it = _Canvas.begin(); it != _Canvas.end(); ++it)
+    {
+        _ContainLayout->addWidget(dynamic_cast<QWidget*>(*it), 4);
+        (*it)->Hide();
+    }
     _ContainLayout->setMargin(0);
 
     mainWidget->setLayout(_MainLayout);
     this->setCentralWidget(mainWidget);
     _MenuWidget->ForceChangeMenu(0);
+    _CurrentCanvas = 0;
+    _Canvas[_CurrentCanvas]->Show(-1, this);
 
     QObject::connect(_MenuWidget, SIGNAL(MenuChanged(int)), this, SLOT(OnMenuChange(int)));
 }
@@ -76,5 +79,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::OnMenuChange(int id)
 {
-    _CurrentCanvas->setText("Canva : " + _MenuWidget->GetMenuItem(id));
+    _Canvas[_CurrentCanvas]->Hide();
+    _Canvas[id]->Show(-1, this);
 }

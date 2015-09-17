@@ -14,6 +14,7 @@ SliderMenu::SliderMenu(QWidget *parent) : QWidget(parent)
 int SliderMenu::AddMenuItem(QString name)
 {
     QPushButton *newItem = new QPushButton(name);
+    newItem->setMaximumHeight(40);
     newItem->setStyleSheet("QPushButton {"
                            "background-color: #d9d9d9;"
                            "border-style: none;"

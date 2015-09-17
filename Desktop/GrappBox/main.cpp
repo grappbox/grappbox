@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 #include <QApplication>
-
+#include "DashboardMeeting.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
