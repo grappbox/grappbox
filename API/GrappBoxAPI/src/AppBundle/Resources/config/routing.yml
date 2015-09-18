@@ -4,12 +4,14 @@ send_file:
     defaults: { _controller: AppBundle:Cloud:sendFileAction }
 
 open_secured_stream:
-    path:     /api/v1/cloud/opensecure
-    defaults: { _controller: AppBundle:Cloud:openSecuredStreamAction }
+    path:     /api/v1/cloud/openstream
+    defaults: { _controller: AppBundle:Cloud:openStreamAction }
 
-open_unsecured_stream:
-    path:     /api/v1/cloud/openunsecure
+close_stream:
+    path:     /api/v1/cloud/closestream
     defaults: { _controller: AppBundle:Cloud:openUnsecuredStreamAction }
+
+
 
 list_files_and_directories:
     path:     /api/v1/cloud/ls

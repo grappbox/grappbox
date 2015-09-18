@@ -16,4 +16,8 @@ AppBundle\Entity\CloudTransfer:
             column: creation_date
         password:
             type: text
+            nullable: TRUE
+        creator_id:
+            type: integer
+            column: creator_id
     lifecycleCallbacks: {  }

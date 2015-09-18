@@ -17,6 +17,11 @@ class CloudTransfer
     /**
      * @var string
      */
+     private $creator_id;
+
+    /**
+     * @var string
+     */
     private $filename;
 
     /**
@@ -33,7 +38,7 @@ class CloudTransfer
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -54,9 +59,31 @@ class CloudTransfer
     }
 
     /**
+     * Get transfer creator id
+     *
+     * @return integer
+     */
+     public function getCreatorId()
+     {
+       return $this->creator_id;
+     }
+
+     /**
+      * Set transfer creator id
+      *
+      * @param integer $creator_id
+      * @return CloudTransfer
+      */
+      public function setCreatorId($creatorId)
+      {
+        $this->creator_id = $creatorId;
+        return $this;
+      }
+
+    /**
      * Get filename
      *
-     * @return string 
+     * @return string
      */
     public function getFilename()
     {
@@ -79,7 +106,7 @@ class CloudTransfer
     /**
      * Get creationDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreationDate()
     {
@@ -102,7 +129,7 @@ class CloudTransfer
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
