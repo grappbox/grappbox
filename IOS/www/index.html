@@ -1,65 +1,39 @@
 ﻿<!DOCTYPE html>
-<html>
+<html ng-app="GrappBox">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>GrappBox - Accueil</title>
+    <meta charset="utf-8" />
+    <title>IonicTestDesign</title>
 
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- Références IonicTestDesign -->
+    <link href="css/index.css" rel="stylesheet" />
+    <link href="css/ionic.css" rel="stylesheet" />
 
-    <link href="css/ratchet.css" rel="stylesheet">
-    <link href="css/ratchet-theme-ios.css" rel="stylesheet" />
-
-    <script src="scripts/lib/ratchet.js"></script>
-    <script src="scripts/lib/fabric.js"></script>
-    <script src="scripts/whiteboard.js"></script>
+    <script src="scripts/lib/ionic.bundle.js"></script>
+    <script src="scripts/controllers.js"></script>
 </head>
-<body>
-    <header class="bar bar-nav">
-        <h1 class="title">GrappBox</h1>
-    </header>
+<body ng-controller="MainCtrl">
 
-    <div class="content">
-        <p class="content-padded">Bienvenue sur GrappBox !</p>
-        <div class="card">
-            <ul class="table-view">
-                <li class="table-view-cell">
-                    <a class="push-right" data-ignore="push" href="whiteboard.html">
-                        <strong>Tableau blanc</strong>
-                    </a>
-                </li>
-                <li class="table-view-cell">
-                    <a class="push-right" href="testdesign.html">
-                        <strong>Petit test</strong>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <nav class="bar bar-tab">
-            <a class="tab-item active" href="#">
-                <span class="icon icon-home"></span>
-                <span class="tab-label">Dashboard</span>
-            </a>
-            <a class="tab-item" href="#">
-                <span class="icon icon-person"></span>
-                <span class="tab-label">Profil</span>
-            </a>
-            <a class="tab-item" href="#">
-                <span class="icon icon-star-filled"></span>
-                <span class="tab-label">Favoris</span>
-            </a>
-            <a class="tab-item" href="#">
-                <span class="icon icon-search"></span>
-                <span class="tab-label">Rechercher</span>
-            </a>
-            <a class="tab-item" href="#">
-                <span class="icon icon-gear"></span>
-                <span class="tab-label">Paramètres</span>
-            </a>
-        </nav>
-    </div>
+    <ion-nav-view></ion-nav-view>
 
+    <ion-side-menus>
+        <ion-side-menu-content>
+            <ion-header-bar class="bar-positive">
+                <div class="buttons">
+                    <button class="button icon button-clear ion-navicon-round" ng-click="toggleLeft()"></button>
+                </div>
+                <h1 class="title">Sidemenu</h1>
+            </ion-header-bar>
+        </ion-side-menu-content>
+        <ion-side-menu side="left">
+            <ion-list>
+                <ion-item href="#">Dashboard</ion-item>
+                <ion-item href="#">Timeline</ion-item>
+                <ion-item href="#">Whiteboard</ion-item>
+                <ion-item href="#">Settings</ion-item>
+            </ion-list>
+        </ion-side-menu>
+    </ion-side-menus>
     <!-- Référence Cordova ajoutée à votre application une fois générée. -->
     <script src="cordova.js"></script>
     <script src="scripts/platformOverrides.js"></script>
