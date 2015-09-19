@@ -1,0 +1,47 @@
+whiteboard_new:
+    path:		/Whiteboard/new
+    defaults:	{ _controller: APIBundle:Whiteboard:newWhiteboard }
+
+whiteboard_open:
+    path:		/Whiteboard/open/{id}
+    defaults:	{ _controller: APIBundle:Whiteboard:openWhiteboard }
+
+whiteboard_pushDraw:
+    path:		/Whiteboard/pushDraw/{id}
+    defaults:	{ _controller: APIBundle:Whiteboard:pushDraw }
+
+whiteboard_pullDraw:
+    path:		/Whiteboard/pullDraw/{id}
+    defaults:	{ _controller: APIBundle:Whiteboard:pullDraw }
+
+whiteboard_exit:
+    path:		/Whiteboard/exit/{id}
+    defaults:	{ _controller: APIBundle:Whiteboard:exitWhiteboard }
+
+whiteboard_delete:
+    path:		/Whiteboard/delete/{id}
+    defaults:	{ _controller: APIBundle:Whiteboard:delWhiteboard }
+
+dashboard_getTeamOccupation:
+    path:		/Dashboard/getTeamOccupation/{id}
+    defaults:	{ _controller: APIBundle:Dashboard:getTeamOccupation }
+
+dashboard_getNextMeetings:
+    path:		/Dashboard/getNextMeetings/{id}
+    defaults:	{ _controller: APIBundle:Dashboard:getNextMeetings }
+
+dashboard_getGlobalProgress:
+    path:		/Dashboard/getGlobalProgress/{id}
+    defaults:	{ _controller: APIBundle:Dashboard:getGlobalProgress }
+
+dashboard_getPersonalProgress:
+    path:		/Dashboard/getPersonalProgress/{id}
+    defaults:	{ _controller: APIBundle:Dashboard:getPersonnalProgress }
+
+dashboard_getAlerts:
+    path:		/Dashboard/getAlerts/{id}
+    defaults:	{ _controller: APIBundle:Dashboard:getAlerts }
+
+dashboard_getAssignedProjects:
+    path:		/Dashboard/getAssignedProjects/{id}
+    defaults:	{ _controller: APIBundle:Dashboard:getAssignedProjects }
