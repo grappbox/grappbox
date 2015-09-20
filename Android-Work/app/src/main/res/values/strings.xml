@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Grappbox</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="team_occupation_title">Your team occupation</string>
+    <string name="next_meeting_title">Your next meeting</string>
+    <string-array name="MenuComponent">
+        <item>Dashboard</item>
+        <item>Whiteboard</item>
+        <item>Timeline</item>
+        <item>Settings</item>
+    </string-array>
+</resources>
