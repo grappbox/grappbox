@@ -1,43 +1,28 @@
-﻿<!DOCTYPE html>
-<html ng-app="GrappBox">
+﻿<!--
+    Summary: The rooting page in which all views will be updated.
+    Link to scripts are done here
+-->
+
+<!DOCTYPE html>
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta charset="utf-8" />
-    <title>IonicTestDesign</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>GrappBox</title>
 
-    <!-- Références IonicTestDesign -->
-    <link href="css/index.css" rel="stylesheet" />
     <link href="css/ionic.css" rel="stylesheet" />
+    <link href="css/index.css" rel="stylesheet" />
 
     <script src="scripts/lib/ionic.bundle.js"></script>
     <script src="scripts/controllers.js"></script>
+    <script src="scripts/app.js"></script>
 </head>
-<body ng-controller="MainCtrl">
+<body ng-app="GrappBox">
 
-    <ion-nav-view></ion-nav-view>
+    <ion-nav-view></ion-nav-view> <!-- All GrappBox's views will be updated here -->
 
-    <ion-side-menus>
-        <ion-side-menu-content>
-            <ion-header-bar class="bar-positive">
-                <div class="buttons">
-                    <button class="button icon button-clear ion-navicon-round" ng-click="toggleLeft()"></button>
-                </div>
-                <h1 class="title">Sidemenu</h1>
-            </ion-header-bar>
-        </ion-side-menu-content>
-        <ion-side-menu side="left">
-            <ion-list>
-                <ion-item href="#">Dashboard</ion-item>
-                <ion-item href="#">Timeline</ion-item>
-                <ion-item href="#">Whiteboard</ion-item>
-                <ion-item href="#">Settings</ion-item>
-            </ion-list>
-        </ion-side-menu>
-    </ion-side-menus>
-    <!-- Référence Cordova ajoutée à votre application une fois générée. -->
     <script src="cordova.js"></script>
     <script src="scripts/platformOverrides.js"></script>
-
     <script src="scripts/index.js"></script>
 </body>
 </html>
