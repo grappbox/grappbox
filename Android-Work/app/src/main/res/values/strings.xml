@@ -13,4 +13,5 @@
         <item>Timeline</item>
         <item>Settings</item>
     </string-array>
+    <string name="title_activity_navigation_drawer">NavigationDrawer</string>
 </resources>

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class DashboardActivity extends AppCompatActivity {
     private ListView _DrawerList;
     private ActionBarDrawerToggle _DrawerToggle;
     private DrawerLayout _DrawerLayout;
+    private ImageView _DrawerImage;
     private ArrayAdapter<String> _Adapter;
 
     private PagerAdapter _PagerAdapter;
@@ -33,26 +35,8 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        List<Fragment> fragments = new Vector<Fragment>();
-
-        _DrawerList = (ListView)findViewById(R.id.navList);
-        _DrawerLayout = (DrawerLayout)findViewById(R.id.dashboardDrawerLayout);
-        _ActivityTitle = getTitle().toString();
-
-        addDrawerItem();
-        setupDrawer();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        fragments.add(Fragment.instantiate(this, TeamOccupationFragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, NextMeetingFragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, GlobalProgressFragment.class.getName()));
-
-        this._PagerAdapter = new GrappboxPagerAdapter(super.getSupportFragmentManager(), fragments);
-        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
-        pager.setAdapter(_PagerAdapter);
-        getSupportActionBar().setTitle("Dashboard");
+        initializeNavigationDrawer();
+        initializeActivity();
     }
 
     @Override
@@ -71,7 +55,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_dashboard, menu);
         return true;
     }
@@ -93,6 +76,34 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initializeActivity()
+    {
+        List<Fragment> fragments = new Vector<Fragment>();
+        fragments.add(Fragment.instantiate(this, TeamOccupationFragment.class.getName()));
+        fragments.add(Fragment.instantiate(this, NextMeetingFragment.class.getName()));
+        fragments.add(Fragment.instantiate(this, GlobalProgressFragment.class.getName()));
+
+        this._PagerAdapter = new GrappboxPagerAdapter(super.getSupportFragmentManager(), fragments);
+        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
+        pager.setAdapter(_PagerAdapter);
+    }
+
+    private void initializeNavigationDrawer()
+    {
+        _DrawerLayout = (DrawerLayout)findViewById(R.id.dashboardDrawerLayout);
+        _DrawerList = (ListView)findViewById(R.id.navList);
+        _ActivityTitle = getTitle().toString();
+        _DrawerImage = (ImageView)findViewById(R.id.profile_photo);
+
+        addDrawerItem();
+        setupDrawer();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("Dashboard");
+        _DrawerImage.setImageResource(R.drawable.allyriane_launois);
     }
 
     private void addDrawerItem()
