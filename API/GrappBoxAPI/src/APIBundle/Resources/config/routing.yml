@@ -5,43 +5,408 @@ whiteboard_new:
 whiteboard_open:
     path:		/Whiteboard/open/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:openWhiteboard }
+    requirements:
+        id: \d+
 
 whiteboard_pushDraw:
     path:		/Whiteboard/pushDraw/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:pushDraw }
+    requirements:
+        id: \d+
 
 whiteboard_pullDraw:
     path:		/Whiteboard/pullDraw/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:pullDraw }
+    requirements:
+        id: \d+
 
 whiteboard_exit:
     path:		/Whiteboard/exit/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:exitWhiteboard }
+    requirements:
+        id: \d+
 
 whiteboard_delete:
     path:		/Whiteboard/delete/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:delWhiteboard }
+    requirements:
+        id: \d+
+
+
+
 
 dashboard_getTeamOccupation:
     path:		/Dashboard/getTeamOccupation/{id}
     defaults:	{ _controller: APIBundle:Dashboard:getTeamOccupation }
+    requirements:
+        id: \d+
 
 dashboard_getNextMeetings:
     path:		/Dashboard/getNextMeetings/{id}
     defaults:	{ _controller: APIBundle:Dashboard:getNextMeetings }
+    requirements:
+        id: \d+
 
 dashboard_getGlobalProgress:
     path:		/Dashboard/getGlobalProgress/{id}
     defaults:	{ _controller: APIBundle:Dashboard:getGlobalProgress }
+    requirements:
+        id: \d+
 
 dashboard_getPersonalProgress:
     path:		/Dashboard/getPersonalProgress/{id}
     defaults:	{ _controller: APIBundle:Dashboard:getPersonnalProgress }
+    requirements:
+        id: \d+
 
 dashboard_getAlerts:
     path:		/Dashboard/getAlerts/{id}
     defaults:	{ _controller: APIBundle:Dashboard:getAlerts }
+    requirements:
+        id: \d+
 
 dashboard_getAssignedProjects:
     path:		/Dashboard/getAssignedProjects/{id}
     defaults:	{ _controller: APIBundle:Dashboard:getAssignedProjects }
+    requirements:
+        id: \d+
+
+
+
+
+cloud_getFile:
+    path:       /Cloud/getFile
+    defaults:   { _controller: APIBundle:Cloud:getFile }
+
+cloud_pushFile:
+    path:       /Cloud/pushFile
+    defaults:   { _controller: APIBundle:Cloud:pushFile }
+
+cloud_setFilePass:
+    path:       /Cloud/setFilePass
+    defaults:   { _controller: APIBundle:Cloud:setFilePass }
+
+cloud_setDirPass:
+    path:       /Cloud/setDirPass
+    defaults:   { _controller: APIBundle:Cloud:setDirPass }
+
+cloud_getFileList:
+    path:       /Cloud/getFileList
+    defaults:   { _controller: APIBundle:Cloud:getFileList }
+
+cloud_delFile:
+    path:       /Cloud/delFile
+    defaults:   { _controller: APIBundle:Cloud:delFile }
+
+cloud_getDirList:
+    path:       /Cloud/getDirList
+    defaults:   { _controller: APIBundle:Cloud:getDirList }
+
+cloud_delDir:
+    path:       /Cloud/delDir
+    defaults:   { _controller: APIBundle:Cloud:delDir }
+
+cloud_getFileMetadata:
+    path:       /Cloud/getFileMetadata
+    defaults:   { _controller: APIBundle:Cloud:getFileMetadata }
+
+cloud_getDirMetadata:
+    path:       /Cloud/getDirMetadata
+    defaults:   { _controller: APIBundle:Cloud:getDirMetadata }
+
+
+
+
+timeline_getTimelineType:
+    path:       /Timeline/getTimelineType/{id}
+    defaults:   { _controller: APIBundle:Timeline:getTimelineType }
+    requirements:
+        id: \d+
+
+timeline_postMessage:
+    path:       /Timeline/postMessage/{id}
+    defaults:   { _controller: APIBundle:Timeline:postMessage }
+    requirements:
+        id: \d+
+
+timeline_getMessages:
+    path:       /Timeline/getMessages/{id}
+    defaults:   { _controller: APIBundle:Timeline:getMessages }
+    requirements:
+        id: \d+
+
+timeline_delMessage:
+    path:       /Timeline/delMessage/{id}
+    defaults:   { _controller: APIBundle:Timeline:delMessage }
+    requirements:
+        id: \d+
+
+
+
+
+bugtracker_postTicket:
+    path:       /Bugtracker/postTicket
+    defaults:   { _controller: APIBundle:Bugtracker:postTicket }
+
+bugtracker_modifyTicket:
+    path:       /Bugtracker/modifyTicket/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:modifyTicket }
+    requirements:
+        id: \d+
+
+bugtracker_getTicketList:
+    path:       /Bugtracker/getTicketList/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:getTicketList }
+    requirements:
+        id: \d+
+
+bugtracker_commentTicket:
+    path:       /Bugtracker/commentTicket/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:commentTicket }
+    requirements:
+        id: \d+
+
+bugtracker_closeTicket:
+    path:       /Bugtracker/closeTicket/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:closeTicket }
+    requirements:
+        id: \d+
+
+bugtracker_getTicketDetails:
+    path:       /Bugtracker/getTicketDetails/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:getTicketDetails }
+    requirements:
+        id: \d+
+
+
+
+
+planning_getDayPlanning:
+    path:       /Planning/getDayPlanning
+    defaults:   { _controller: APIBundle:Planning:getDayPlanning }
+
+planning_getWeekPlanning:
+    path:       /Planning/getWeekPlanning
+    defaults:   { _controller: APIBundle:Planning:getWeekPlanning }
+
+planning_getMonthPlanning:
+    path:       /Planning/getMonthPlanning
+    defaults:   { _controller: APIBundle:Planning:getMonthPlanning }
+
+planning_modifyEvent:
+    path:       /Planning/modifyEvent
+    defaults:   { _controller: APIBundle:Planning:modifyEvent }
+
+planning_getEventDetails:
+    path:       /Planning/getEventDetails/{id}
+    defaults:   { _controller: APIBundle:Planning:getEventDetails }
+    requirements:
+        id: \d+
+
+
+
+
+projectSettings_addTeamMember:
+    path:       /ProjectSettings/addTeamMember/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:addTeamMember }
+    requirements:
+        id: \d+
+
+projectSettings_generateClientAccess:
+    path:       /ProjectSettings/generateClientAccess/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:generateClientAccess }
+    requirements:
+        id: \d+
+
+projectSettings_delTeamMember:
+    path:       /ProjectSettings/delTeamMember/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:delTeamMember }
+    requirements:
+        id: \d+
+
+projectSettings_assignRole:
+    path:       /ProjectSettings/assignRole/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:assignRole }
+    requirements:
+        id: \d+
+
+projectSettings_editRole:
+    path:       /ProjectSettings/editRole/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:editRole }
+    requirements:
+        id: \d+
+
+projectSettings_getRoles:
+    path:       /ProjectSettings/getRoles/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:getRoles }
+    requirements:
+        id: \d+
+
+projectSettings_checkPermissions:
+    path:       /ProjectSettings/checkPermissions/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:checkPermissions }
+    requirements:
+        id: \d+
+
+projectSettings_createProject:
+    path:       /ProjectSettings/createProject
+    defaults:   { _controller: APIBundle:ProjectSettings:createProject }
+
+projectSettings_archiveProject:
+    path:       /ProjectSettings/archiveProject/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:archiveProject }
+    requirements:
+        id: \d+
+
+projectSettings_setProjectFinished:
+    path:       /ProjectSettings/setProjectFinished/{id}
+    defaults:   { _controller: APIBundle:ProjectSettings:setProjectFinished }
+    requirements:
+        id: \d+
+
+
+
+
+visualisingProject_addAction:
+    path:       /VisualisingProject/addAction/{id}
+    defaults:   { _controller: APIBundle:VisualisingProject:addAction }
+    requirements:
+        id: \d+
+
+visualisingProject_addActor:
+    path:       /VisualisingProject/addActor/{id}
+    defaults:   { _controller: APIBundle:VisualisingProject:addActor }
+    requirements:
+        id: \d+
+
+visualisingProject_addLink:
+    path:       /VisualisingProject/addLink/{id}
+    defaults:   { _controller: APIBundle:VisualisingProject:addLink }
+    requirements:
+        id: \d+
+
+visualisingProject_newDiagram:
+    path:       /VisualisingProject/newDiagram/{id}
+    defaults:   { _controller: APIBundle:VisualisingProject:newDiagram }
+    requirements:
+        id: \d+
+
+visualisingProject_openDiagram:
+    path:       /VisualisingProject/openDiagram/{id}
+    defaults:   { _controller: APIBundle:VisualisingProject:openDiagram }
+    requirements:
+        id: \d+
+
+visualisingProject_invitePerson:
+    path:       /VisualisingProject/invitePerson/{id}
+    defaults:   { _controller: APIBundle:VisualisingProject:invitePerson }
+    requirements:
+        id: \d+
+
+
+
+
+meeting_editMeeting:
+    path:       /Meeting/editMeeting/{id}
+    defaults:   { _controller: APIBundle:Meeting:editMeeting }
+    requirements:
+        id: \d+
+
+meeting_delMeeting:
+    path:       /Meeting/delMeeting/{id}
+    defaults:   { _controller: APIBundle:Meeting:delMeeting }
+    requirements:
+        id: \d+
+
+meeting_invitePersonToMeeting:
+    path:       /Meeting/invitePersonToMeeting/{id}
+    defaults:   { _controller: APIBundle:Meeting:invitePersonToMeeting }
+    requirements:
+        id: \d+
+
+meeting_addAlert:
+    path:       /Meeting/addAlert/{id}
+    defaults:   { _controller: APIBundle:Meeting:addAlert }
+    requirements:
+        id: \d+
+
+
+
+
+accountAdministration_login:
+    path:       /AccountAdministration/login
+    defaults:   { _controller: APIBundle:AccountAdministration:login }
+
+accountAdministration_disconnect:
+    path:       /AccountAdministration/disconnect
+    defaults:   { _controller: APIBundle:AccountAdministration:disconnect }
+
+accountAdministration_signIn:
+    path:       /AccountAdministration/signIn
+    defaults:   { _controller: APIBundle:AccountAdministration:signIn }
+
+
+
+
+personnalSettings_editPhoto:
+    path:       /PersonnalSettings/editPhoto/{id}
+    defaults:   { _controller: APIBundle:PersonnalSettings:editPhoto }
+    requirements:
+        id: \d+
+
+personnalSettings_editPersonalInfos:
+    path:       /PersonnalSettings/editPersonalInfos/{id}
+    defaults:   { _controller: APIBundle:PersonnalSettings:editPersonalInfos }
+    requirements:
+        id: \d+
+
+personnalSettings_changePassword:
+    path:       /PersonnalSettings/changePassword/{id}
+    defaults:   { _controller: APIBundle:PersonnalSettings:changePassword }
+    requirements:
+        id: \d+
+
+personnalSettings_editPreferences:
+    path:       /PersonnalSettings/editPreferences/{id}
+    defaults:   { _controller: APIBundle:PersonnalSettings:editPreferences }
+    requirements:
+        id: \d+
+
+personnalSettings_getRole:
+    path:       /PersonnalSettings/getRole/{id}
+    defaults:   { _controller: APIBundle:PersonnalSettings:getRole }
+    requirements:
+        id: \d+
+
+
+
+
+gantt_addTask:
+    path:       /Gantt/addTask/{id}
+    defaults:   { _controller: APIBundle:Gantt:addTask }
+    requirements:
+        id: \d+
+
+gantt_assignTask:
+    path:       /Gantt/assignTask/{id}
+    defaults:   { _controller: APIBundle:Gantt:assignTask }
+    requirements:
+        id: \d+
+
+gantt_editTask:
+    path:       /Gantt/editTask/{id}
+    defaults:   { _controller: APIBundle:Gantt:editTask }
+    requirements:
+        id: \d+
+
+gantt_delTask:
+    path:       /Gantt/delTask/{id}
+    defaults:   { _controller: APIBundle:Gantt:delTask }
+    requirements:
+        id: \d+
+
+gantt_setTaskProperties:
+    path:       /Gantt/setTaskProperties/{id}
+    defaults:   { _controller: APIBundle:Gantt:setTaskProperties }
+    requirements:
+        id: \d+

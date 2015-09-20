@@ -15,7 +15,7 @@ class WhiteboardController extends Controller
 	 * @ApiDoc(
 	 * resource=true,
 	 * description="add a new whiteboard",
-	 * views = { "default", "whiteboard" },
+	 * views = { "whiteboard" },
   	 * requirements={
      *      {
      *          "name"="request",
@@ -36,7 +36,7 @@ class WhiteboardController extends Controller
 	 * @ApiDoc(
 	 * resource=true,
 	 * description="open an already existing whiteboard",
-	 * views = { "default", "whiteboard" },
+	 * views = { "whiteboard" },
   	 * requirements={
      *      {
      *          "name"="request",
@@ -62,7 +62,7 @@ class WhiteboardController extends Controller
 	 * @ApiDoc(
 	 * resource=true,
 	 * description="push a draw on a whiteboard",
-	 * views = { "default", "whiteboard" },
+	 * views = { "whiteboard" },
   	 * requirements={
      *      {
      *          "name"="request",
@@ -88,7 +88,7 @@ class WhiteboardController extends Controller
 	 * @ApiDoc(
 	 * resource=true,
 	 * description="pull a draw on a whiteboard",
-	 * views = { "default", "whiteboard" },
+	 * views = { "whiteboard" },
   	 * requirements={
      *      {
      *          "name"="request",
@@ -114,7 +114,7 @@ class WhiteboardController extends Controller
 	 * @ApiDoc(
 	 * resource=true,
 	 * description="exit a whiteboard",
-	 * views = { "default", "whiteboard" },
+	 * views = { "whiteboard" },
   	 * requirements={
      *      {
      *          "name"="request",
@@ -140,7 +140,7 @@ class WhiteboardController extends Controller
 	 * @ApiDoc(
 	 * resource=true,
 	 * description="delete a whiteboard",
-	 * views = { "default", "whiteboard" },
+	 * views = { "whiteboard" },
   	 * requirements={
      *      {
      *          "name"="request",
