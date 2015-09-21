@@ -26,10 +26,40 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
             url: "/dashboard",
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
-                    templateUrl: "templates/dashboard.html",
+                    templateUrl: "templates/Dashboard/dashboard.html",
                     controller: 'DashboardCtrl'
                 }
             } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
+        })
+
+        .state('app.teamOccupation', {
+            url: "/teamOccupation",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/Dashboard/teamOccupation.html",
+                    controller: 'TeamOccupationCtrl'
+                }
+            }
+        })
+
+        .state('app.nextMeetings', {
+            url: "/nextMeetings",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/Dashboard/nextMeetings.html",
+                    controller: 'NextMeetingsCtrl'
+                }
+            }
+        })
+
+        .state('app.globalProgress', {
+            url: "/globalProgress",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/Dashboard/globalProgress.html",
+                    controller: 'GlobalProgressCtrl'
+                }
+            }
         })
 
         .state('app.timelines', {
@@ -58,16 +88,6 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
                 'menuContent': {
                     templateUrl: "templates/settings.html",
                     controller: 'SettingsCtrl'
-                }
-            }
-        })
-
-        .state('app.test', {
-            url: "/test",
-            views: {
-                'menuContent': {
-                    templateUrl: "templates/test.html",
-                    controller: 'TestCtrl'
                 }
             }
         })
