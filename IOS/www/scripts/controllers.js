@@ -20,11 +20,5 @@ angular.module('GrappBox.controllers', [])
 .controller('SettingsCtrl', function ($scope) {
 })
 
-.controller('TeamOccupationCtrl', function ($scope) {
-})
-
-.controller('NextMeetingsCtrl', function ($scope) {
-})
-
-.controller('GlobalProgressCtrl', function ($scope) {
+.controller('TestCtrl', function ($scope) {
 })
