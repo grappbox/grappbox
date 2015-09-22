@@ -1,0 +1,12 @@
+<RCC>
+    <qresource lang="FR" prefix="/Temporary/Profils">
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/allyriane_launois.jpg</file>
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/frederic_tan.png</file>
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/leo_nadeau.jpg</file>
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/marc_wieser.jpeg</file>
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/pierre_feytout.jpg</file>
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/pierre_hofman.jpg</file>
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/roland_hemmer.jpg</file>
+        <file>C:/Users/nadeau_l/Downloads/__PACK__All_Original_Pictures/valentin_mougenot.jpg</file>
+    </qresource>
+</RCC>
