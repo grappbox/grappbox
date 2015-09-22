@@ -1,0 +1,19 @@
+﻿<!--
+    Summary: Here is the main page alias the Dashboard
+-->
+
+<ion-view title="Dashboard">
+    <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon icon ion-gear-a"></button>
+    </ion-nav-buttons>
+    <ion-content class="has-header" ng-controller="DashboardCtrl">
+        <ion-list>
+            <ion-item nav-clear menu-close href="#/app/teamOccupation">Team Occupation</ion-item>
+            <ion-item nav-clear menu-close href="#/app/nextMeetings">Next Meetings</ion-item>
+            <ion-item nav-clear menu-close href="#/app/globalProgress">Global Progress</ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>
