@@ -1,3 +1,7 @@
-main:
-    resource: "@MainBundle/Resources/config/routing.yml"
+home:
+    resource: "@HomeBundle/Resources/config/routing.yml"
     prefix:   /
+
+#shared:
+#    resource: "@SharedBundle/Resources/config/routing.yml"
+#    prefix:   /

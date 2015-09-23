@@ -40,7 +40,7 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [ ]
+    bundles:        [ SharedBundle, HomeBundle ]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
