@@ -9,18 +9,20 @@
     <meta charset="UTF-8" />
     <title>GrappBox | {% block title %}{% endblock %}</title>
 
+    <!-- Google Fonts -->
+    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' />
+    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Lato:400,700,900' />
+    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto:400,700,500' />
+
     {% stylesheets
     '@SharedBundle/Resources/public/css/vendor/bootstrap.min.css'
+    '@SharedBundle/Resources/public/css/vendor/font-awesome.min.css'
     '@SharedBundle/Resources/public/css/vendor/grayscale.min.css'
     output='resources/css/styles.min.css' %}
     <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
     {% endstylesheets %}
 
     {% block child_stylesheets %}{% endblock %}
-
-    <!-- Google Fonts -->
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" >
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat:400,700">
 
     {% block child_fonts %}{% endblock %}
 
