@@ -1,4 +1,4 @@
-AppBundle\Entity\CloudSecuredFileMetadata:
+APIBundle\Entity\CloudSecuredFileMetadata:
     type: entity
     table: null
     id:

@@ -72,15 +72,21 @@ dashboard_getAssignedProjects:
         id: \d+
 
 
+cloud_sendFile:
+  path:     /Cloud/sendFile
+  defaults:   { _controller: APIBundle:Cloud:sendFile }
 
+cloud_streamActions:
+  path:     /Cloud/stream
+  defaults:   { _controller: APIBundle:Cloud:stream }
+
+cloud_getList:
+    path:       /Cloud/getList
+    defaults:   { _controller: APIBundle:Cloud:getList }
 
 cloud_getFile:
     path:       /Cloud/getFile
     defaults:   { _controller: APIBundle:Cloud:getFile }
-
-cloud_pushFile:
-    path:       /Cloud/pushFile
-    defaults:   { _controller: APIBundle:Cloud:pushFile }
 
 cloud_setFilePass:
     path:       /Cloud/setFilePass
@@ -90,29 +96,13 @@ cloud_setDirPass:
     path:       /Cloud/setDirPass
     defaults:   { _controller: APIBundle:Cloud:setDirPass }
 
-cloud_getFileList:
-    path:       /Cloud/getFileList
-    defaults:   { _controller: APIBundle:Cloud:getFileList }
+cloud_delete:
+    path:       /Cloud/del
+    defaults:   { _controller: APIBundle:Cloud:del }
 
-cloud_delFile:
-    path:       /Cloud/delFile
-    defaults:   { _controller: APIBundle:Cloud:delFile }
-
-cloud_getDirList:
-    path:       /Cloud/getDirList
-    defaults:   { _controller: APIBundle:Cloud:getDirList }
-
-cloud_delDir:
-    path:       /Cloud/delDir
-    defaults:   { _controller: APIBundle:Cloud:delDir }
-
-cloud_getFileMetadata:
+cloud_getMetadata:
     path:       /Cloud/getFileMetadata
-    defaults:   { _controller: APIBundle:Cloud:getFileMetadata }
-
-cloud_getDirMetadata:
-    path:       /Cloud/getDirMetadata
-    defaults:   { _controller: APIBundle:Cloud:getDirMetadata }
+    defaults:   { _controller: APIBundle:Cloud:getMetadata }
 
 
 

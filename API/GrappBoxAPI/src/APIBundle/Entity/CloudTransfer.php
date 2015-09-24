@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,15 +19,25 @@ class CloudTransfer
      */
      private $creator_id;
 
-    /**
-     * @var string
-     */
-    private $filename;
+     /**
+      * @var string
+      */
+     private $filename;
+
+     /**
+      * @var string
+      */
+     private $path;
 
     /**
      * @var \DateTime
      */
     private $creationDate;
+
+    /**
+     * @var \DateTime
+     */
+    private $deletionDate;
 
     /**
      * @var string
@@ -56,6 +66,29 @@ class CloudTransfer
         $this->filename = $filename;
 
         return $this;
+    }
+
+    /**
+     * Set path
+     *
+     * @param string $path
+     * @return CloudTransfer
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    /**
+     * Get path
+     *
+     * @return $path
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**
@@ -99,6 +132,29 @@ class CloudTransfer
     public function setCreationDate($creationDate)
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationDate
+     *
+     * @return \DateTime
+     */
+    public function getDeletionDate()
+    {
+        return $this->deletionDate;
+    }
+
+    /**
+     * Set creationDate
+     *
+     * @param \DateTime $creationDate
+     * @return CloudTransfer
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
 
         return $this;
     }

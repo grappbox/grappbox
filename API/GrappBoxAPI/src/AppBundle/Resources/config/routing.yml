@@ -1,18 +1,18 @@
 
 send_file:
-    path:     /api/v1/cloud/sendFile
+    path:     /cloud/sendFile
     defaults: { _controller: AppBundle:Cloud:sendFileAction }
 
 open_secured_stream:
-    path:     /api/v1/cloud/openstream
+    path:     /cloud/openstream
     defaults: { _controller: AppBundle:Cloud:openStreamAction }
 
 close_stream:
-    path:     /api/v1/cloud/closestream
+    path:     /cloud/closestream
     defaults: { _controller: AppBundle:Cloud:openUnsecuredStreamAction }
 
 
 
 list_files_and_directories:
-    path:     /api/v1/cloud/ls
+    path:     /cloud/ls
     defaults: { _controller: AppBundle:Cloud:listFilesAndDirectories }
