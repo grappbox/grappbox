@@ -13,9 +13,27 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class CloudController extends Controller
 {
-
+	private static $settingsDAV = null;
 	//Return -1 if the use don't have authorization for Cloud
 	//Else return the user_id
+
+	public function __construct()
+	{
+			if (is_null(self::$settingsDAV))
+				self::$settingsDAV = array(
+				'baseUri' => 'http://cloud.grappbox.com/remote.php/webdav/',
+				'userName' => 'grappbox',
+				'password' => 'GolfBravo$$'
+				);
+	}
+
+	private function getUserId($token)
+	{
+			$dbManager = $this->getDoctrine()->getManager();
+
+			return (1);
+	}
+
 	private function checkTokenAuthorization($token, $idProject)
 	{
 			$dbManager = $this->getDoctrine()->getManager();
@@ -29,13 +47,13 @@ class CloudController extends Controller
 	/* Requested json
 	{
 		session_infos: {
-			token : "userToken",
-		}
+			token : "userToken"
+		},
 		stream_infos: {
 			//ON POST REQUEST ONLY//
 			project_id : 42,
-			filename : "Awesomeness"
-			path : "/LabEIP/TestUpload"
+			filename : "Awesomeness",
+			path : "/LabEIP/TestUpload",
 			password : "HashPasswordIfSecuredFileElseNullType"
 			//ON DELETE REQUEST ONLY//
 			stream_id : 21
@@ -58,7 +76,7 @@ class CloudController extends Controller
 			return header("HTTP/1.0 403 Forbidden", True, 403);
 		return ($method == "POST"
 							? $this->openStream($receivedData, $user_id)
-							: $this->closeStream($receivedData, $user_id));
+							: $this->closeStream($receivedData, $token));
 	}
 
 	private function openStream($receivedData, $user_id)
@@ -76,15 +94,53 @@ class CloudController extends Controller
 		return new JsonResponse(array("stream_id" => $stream->getId()));
 	}
 
-	private function closeStream($receivedData, $user_id){}
+	private function closeStream($receivedData, $token){
+		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
+		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
+		$user_id = $this->getUserId($token);
+		if ($user_id < 0 || $user_id != $stream->getCreatorId())
+			return header("HTTP/1.0 403 Forbidden", True, 403);
+
+		//Here the user have the authorization to close this stream
+	}
 
 	//This have to be a PUT request
+	//PUT : Register files chunk in order to upload large files
+	/*
+	  requested json :
+	  {
+			session_infos: {
+				token : "ImAToken"
+			},
+			stream_infos: {
+				stream_id : 21
+				file_chunk : "ImAFileChunkAlreadyHashedWithThePassswordIfPassword"
+			}
+ 	  }
+	*/
 	public function sendFileAction(Request $request)
 	{
 		//Check if request method is catched by the API
 		$method = $request->getMethod();
 		if ($method != "PUT")
 			return header("HTTP/1.0 404 Not Found", True, 404);
+		//Check Authorization to access cloud and to upload that file
+		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
+		$token = $request->get("session_infos")["token"];
+		$receivedData = $request->get("stream_infos");
+		$user_id = $this->getUserId($token);
+		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
+		if ($user_id < 0 || $user_id != $stream->getCreatorId())
+			return header("HTTP/1.0 403 Forbidden", True, 403);
+
+		//Here the user have the right authorization, so upload the file's chunk
+
+		$client = new Sabre\DAV\Client(self::$settingsDAV);
+		$adapter = new League\Flysystem\WebDAV\WebDAVAdapter($client);
+		$flysystem = new League\Flysystem\Filesystem($adapter);
+		if ($filesystem->has('/Grappbox Transfer/'.(string)$receivedData["stream_id"]))
+		$flysystem->put('/Grappbox Transfer/'.(string)$receivedData["stream_id"].'.transfer', (string)$receivedData["file_chunk"]);
+		return header("HTTP/1.0 203 Success", True, 203);
 	}
 
 	/**
