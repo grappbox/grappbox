@@ -7,6 +7,10 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="team_occupation_title">Your team occupation</string>
     <string name="next_meeting_title">Your next meeting</string>
+    <string name="global_progress_title">Global progress</string>
+    <string name="waiting_progress_dashboard">waiting</string>
+    <string name="problem_progress_dashboard">problems</string>
+    <string name="zero_number_string_value">0</string>
     <string-array name="MenuComponent">
         <item>Dashboard</item>
         <item>Whiteboard</item>

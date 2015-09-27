@@ -7,7 +7,8 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#F6F6F6">
 
     </android.support.v4.view.ViewPager>
 
@@ -34,17 +35,19 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="40dip"
+                    android:layout_height="20dip"
                     android:text="Your progress"
                     android:textColor="#fff"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center"
+                    android:gravity="center"/>
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="40dip"
+                    android:layout_height="60dip"
                     android:text="75%"
                     android:textColor="#fff"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center"
+                    android:gravity="center"/>
 
             </LinearLayout>
 
