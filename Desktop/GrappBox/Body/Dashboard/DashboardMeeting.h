@@ -1,18 +1,22 @@
 #ifndef DASHBOARDMEETING_H
 #define DASHBOARDMEETING_H
 
+#include "DashboardInformation.h"
+
 #include <QWidget>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QStyleOption>
+#include <QPainter>
 
 class DashboardMeeting : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DashboardMeeting(QWidget *parent = 0);
-
+    explicit DashboardMeeting(DashboardInformation::NextMeetingInfo *info, QWidget *parent = 0);
+    void paintEvent(QPaintEvent *);
 signals:
 
 public slots:

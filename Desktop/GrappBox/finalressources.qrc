@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/Mask">
+        <file>Ressources/Mask/CircleMaskMemberPicture.png</file>
+        <file>Ressources/Mask/MaskProfil.bmp</file>
+    </qresource>
+    <qresource prefix="/Font">
+        <file>Ressources/Font/OpenSans-Bold.ttf</file>
+        <file>Ressources/Font/OpenSans-BoldItalic.ttf</file>
+        <file>Ressources/Font/OpenSans-ExtraBold.ttf</file>
+        <file>Ressources/Font/OpenSans-ExtraBoldItalic.ttf</file>
+        <file>Ressources/Font/OpenSans-Italic.ttf</file>
+        <file>Ressources/Font/OpenSans-Light.ttf</file>
+        <file>Ressources/Font/OpenSans-LightItalic.ttf</file>
+        <file>Ressources/Font/OpenSans-Regular.ttf</file>
+        <file>Ressources/Font/OpenSans-Semibold.ttf</file>
+        <file>Ressources/Font/OpenSans-SemiboldItalic.ttf</file>
+    </qresource>
+</RCC>

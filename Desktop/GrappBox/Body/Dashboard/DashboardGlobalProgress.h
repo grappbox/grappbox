@@ -6,13 +6,17 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QImage>
+#include <QStyleOption>
+#include <QPainter>
+
+#include "DashboardInformation.h"
 
 class DashboardGlobalProgress : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DashboardGlobalProgress(QWidget *parent = 0);
-
+    explicit DashboardGlobalProgress(DashboardInformation::GlobalProgressInfo *info, QWidget *parent = 0);
+    void paintEvent(QPaintEvent *);
 signals:
 
 public slots:
@@ -33,6 +37,9 @@ private:
     QLabel                  *_ProjectMail;
 
     // Progress info
+    QLabel                  *_TaskIcon;
+    QLabel                  *_MsgIcon;
+    QLabel                  *_ProblemIcon;
     QLabel                  *_NumberOfTask;
     QLabel                  *_NumberOfMsg;
     QLabel                  *_NumberOfProblem;

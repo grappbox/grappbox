@@ -2,9 +2,9 @@
 #define BODYDASHBOARD_H
 
 #include "IBodyContener.h"
-#include "DashboardMember.h"
-#include "DashboardGlobalProgress.h"
-#include "DashboardMeeting.h"
+#include "Dashboard\DashboardMember.h"
+#include "Dashboard\DashboardGlobalProgress.h"
+#include "Dashboard\DashboardMeeting.h"
 
 #include <QWidget>
 #include <QLabel>

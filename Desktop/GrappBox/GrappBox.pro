@@ -15,18 +15,26 @@ TEMPLATE = app
 SOURCES += main.cpp \
     MainWindow.cpp \
     SliderMenu.cpp \
-    BodyDashboard.cpp \
-    DashboardMember.cpp \
-    DashboardMeeting.cpp \
-    DashboardGlobalProgress.cpp \
-    SDataManager.cpp
+    Body\BodyDashboard.cpp \
+    Body\Dashboard\DashboardMember.cpp \
+    Body\Dashboard\DashboardMeeting.cpp \
+    Body\Dashboard\DashboardGlobalProgress.cpp \
+    SDataManager.cpp \
+    Body\Dashboard\DashboardInformation.cpp \
+    SFontLoader.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
     IBodyContener.h \
-    BodyDashboard.h \
-    DashboardMember.h \
-    DashboardMeeting.h \
-    DashboardGlobalProgress.h \
+    Body\BodyDashboard.h \
+    Body\Dashboard\DashboardMember.h \
+    Body\Dashboard\DashboardMeeting.h \
+    Body\Dashboard\DashboardGlobalProgress.h \
     SDataManager.h \
-    IDataConnector.h
+    IDataConnector.h \
+    Body\Dashboard\DashboardInformation.h \
+    SFontLoader.h
+
+RESOURCES += \
+    temporaryressources.qrc \
+    finalressources.qrc

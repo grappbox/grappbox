@@ -7,13 +7,18 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QGridLayout>
+#include <QStyleOption>
+#include <QPainter>
+
+#include "DashboardInformation.h"
 
 class DashboardMember : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DashboardMember(QWidget *parent = 0, int userId = 0);
-
+    explicit DashboardMember(DashboardInformation::MemberAvaiableInfo *info, QWidget *parent = 0, int userId = 0);
+    void paintEvent(QPaintEvent *);
 signals:
 
 public slots:
@@ -28,7 +33,7 @@ private:
 
     // Base card
     QVBoxLayout     *_MainLayout;
-    QHBoxLayout     *_StateLayout;
+    QGridLayout     *_StateLayout;
 
     QImage          *_MemberPicture;
     QLabel          *_MemberPictureDrawer;

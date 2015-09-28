@@ -1,6 +1,6 @@
 #include <QDebug>
 
-#include "BodyDashboard.h"
+#include "Body/BodyDashboard.h"
 
 #include "MainWindow.h"
 
@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     setStyleSheet("QMainWindow {background-color: #ffffff;}");
     this->layout()->setSpacing(0);
     this->setWindowTitle("Grappbox");
-    this->setMinimumSize(800, 600);
+    this->setMinimumSize(1440, 900);
     this->setContentsMargins(0, 0, 0, 0);
 
     // Widget creation
