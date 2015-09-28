@@ -2,50 +2,54 @@
  * Theme images path fix.
  */
 
-.intro { background: url(../images/desktop-mac-situation_top-large.min.jpg) bottom center no-repeat #000; }
-.download-section { background: url(../images/downloads-bg.jpg) center center no-repeat #000; }
-
-.intro, .download-section { background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+.intro-header { background: url(../images/macbook-and-camera_desk-situation.jpg) center center no-repeat; background-size:cover; }
+.banner{ background: url(../images/banner-bg.jpg) center center no-repeat; background-size:cover; }
 
 /*!
  * Theme overload and custom modifications
  */
 
-body { background: #fff; }
-section { color: #000; }
-footer { padding: 40px 0; background-color: #333; }
+@font-face { font-family: 'Code Light'; src: url(../fonts/code-light.otf); }
+@font-face { font-family: 'Code Bold'; src: url(../fonts/code-bold.otf); }
 
-h2 { font-family: 'Open Sans' sans-serif; color: #777; font-size: 70px; font-weight: lighter; }
-p { font-family: 'Roboto' sans-serif; }
-a { color: #000; }
+html, body, h1, h2, h3, h4, div, section, p, span { font-family: 'Roboto' sans-serif; font-weight: normal; color: #333; }
+
+footer { background-color: #34302D; }
 
 .red { color: #C0392B; }
 
-.intro .intro-body .brand-heading { font-family: 'Open Sans' sans-serif; color: #000; font-size: 125px; border: 2px solid #666; }
-.intro .intro-body .intro-text { font-family: 'Roboto' sans-serif; font-weight: lighter; font-size: 28px; color: #000; }
-.intro .intro-body .page-scroll { color: #000; border-color: #000; }
+.navbar-fixed-top { border-width: 0; background-color: #FFF; box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25); }
 
-.navbar-fixed-top .container > .navbar-header { display: none; }
-.navbar-fixed-top.top-nav-collapse .container > .navbar-header { display: block; }
+.navbar-default .navbar-brand, .navbar-default .navbar-brand span { font-family: 'Code Light' sans-serif; font-size: 28px; font-weight: bold; }
+.navbar-default .navbar-brand { color: #333; }
 
-@media (min-width: 768px) {
-	.navbar-custom.top-nav-collapse { background: #333; }
-	.navbar > .container .navbar-brand { font-family: 'Roboto' sans-serif; font-weight: normal; font-size: 28px; }
-}
+.navbar-default .navbar-brand:focus { border: 1px solid #333; background-color: inherit; }
+.navbar-default .navbar-brand:hover { color: #E7E7E7; }
+.navbar-default .navbar-brand.hvr-rectangle-out { background-color: inherit; }
+.navbar-default .navbar-brand.hvr-rectangle-out:before { background-color: #333; color: #C0392B; transition-duration: 0.2s; }
 
-.btn-default { border: 1px solid #000; }
-.btn-default, .btn-default:focus { color: #000; background: none; }
+.intro-message { padding: 15% 0; }
+.intro-message h1 { padding: 15px 0 0 0; }
+.intro-message h1, .intro-message h1 span { font-family: 'Code Light' sans-serif; font-size: 160px; font-weight: bold; text-shadow: none; letter-spacing: 10px; }
+.intro-message h1, .intro-message h3 { color: #FFF; background-color: rgba(51,51,51,0.9); }
+.intro-message h3 { padding: 15px 0; font-weight: lighter; }
 
-.btn-default:focus { border: 1px solid #C0392B; }
+.intro-divider { border: 1px solid #E7E7E7; }
 
-.btn-twitter:active, .btn-twitter:hover { border: 1px solid #000; background-color: #3CF; color: #FFF; }
-.btn-github:active, .btn-github:hover { border: 1px solid #000; background-color: #800080; color: #FFF; }
-.btn-facebook:active, .btn-facebook:hover { border: 1px solid #000; background-color: #3B5998; color: #FFF; }
+.btn-lg { border: none; border-radius: 0; }
+.btn-social { background-color: rgba(51,51,51,0.9);; border: 1px solid #FFF; }
+.btn-social span { text-transform: none; font-size: 18px; letter-spacing: inherit; }
 
-section#contact { padding: 220px 0; width: 100%; background-color: #F4F4F4; }
-section#contact .row { padding: 30px 0; margin: 0; background-color: #FFF; }
-section#contact .row .col-lg-offset-2 { width: 100%; padding: 0; margin: 0; }
+.btn-social span, .btn-social i { color: #FFF; font-weight: lighter; }
+.btn-social:active, .btn-social:hover, .btn-social:focus { background-color: inherit; border-color: #FFF; }
+.btn-social i { padding-right: 10px; }
 
-section#contact .email { padding: 20px 0; background-color: #6DB33F; }
-section#contact .email a { padding: 10px; border: 1px solid #FFF; font-family: 'Roboto' sans-serif; color: #FFF; }
-section#contact .email a:hover { background-color: #FFF; color: #6DB33F; }
+.btn-social.hvr-rectangle-out:before { transition-duration: 0.2s; }
+.btn-social.btn-twitter.hvr-rectangle-out:before { background-color: #3CF; }
+.btn-social.btn-facebook.hvr-rectangle-out:before { background-color: #3B5998; }
+.btn-social.btn-mail.hvr-rectangle-out:before { background-color: #E87E04; }
+
+.banner { background: #6DB33F; padding: 40px 0; }
+.banner h2 { color: #FFF; text-shadow: none; }
+
+.content-section-a { background-color: #F7F7F7; }
