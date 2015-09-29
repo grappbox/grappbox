@@ -3,41 +3,41 @@
 -->
 
 <ion-view title="Dashboard">
-    <ion-content class="has-header" ng-controller="DashboardCtrl">
+    <ion-content ng-controller="DashboardCtrl">
         <ion-slide-box show-pager="false">
             <ion-slide>
-                <h1>Team Occupation</h1>
+                <h1 class="text-center">Team Occupation</h1>
                 <div class="list" ng-controller="TeamOccupationCtrl">
                     <a class="item item-avatar" href="#/{{ item.id }}" ng-repeat="item in items">
                         <img ng-src="{{ item.image }}" />
                         <h2>{{ item.name }}</h2>
-                        <p>{{ item.occupation }}</p>
+                        <h3>{{ item.occupation }}</h3>
                     </a>
                 </div>
             </ion-slide>
             <ion-slide>
-                <h1>Next Meetings</h1>
+                <h1 class="text-center">Next Meetings</h1>
                 <div class="list" ng-controller="NextMeetingsCtrl">
                     <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
                         <img ng-src="{{ item.image }}" />
                         <h2>{{ item.type }}</h2>
-                        <p>{{ item.date }}</p>
-                        <p>{{ item.hour }}</p>
+                        <h4 class="icon-left ion-ios-calendar-outline"> {{ item.date }}</h4>
+                        <h4 class="icon-left ion-ios-clock-outline"> {{ item.hour }}</h4>
                     </a>
                 </div>
             </ion-slide>
             <ion-slide>
-                <h1>Global Progress</h1>
+                <h1 class="text-center">Global Progress</h1>
                 <div class="list" ng-controller="GlobalProgressCtrl">
                     <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
                         <img src="{{ item.image }}" />
                         <h2>{{ item.product }}</h2>
-                        <p>{{ item.author }}</p>
-                        <p>Tel: {{ item.tel }}</p>
-                        <p>eMail: {{ item.email }}</p>
-                        <p>{{ item.tasksDone }} / {{ item.tasksToDo }} tasks done</p>
-                        <p>{{ item.messages }} messages</p>
-                        <p>{{ item.problems }} problems</p>
+                        <h3 class="icon-left ion-ios-people-outline"> {{ item.author }}</h3>
+                        <h4 class="icon-left ion-ios-telephone-outline"> Tel: {{ item.tel }}</h4>
+                        <h4 class="icon-left ion-ios-paperplane-outline"> eMail: {{ item.email }}</h4>
+                        <h4 class="icon-left ion-ios-list-outline"> {{ item.tasksDone }} / {{ item.tasksToDo }} tasks done</h4>
+                        <h4 class="icon-left ion-ios-email-outline"> {{ item.messages }} messages</h4>
+                        <h4 class="icon-left ion-bug"> {{ item.problems }} problems</h4>
                     </a>
                 </div>
             </ion-slide>

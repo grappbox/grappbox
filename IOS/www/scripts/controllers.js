@@ -134,8 +134,8 @@ angular.module('GrappBox.controllers', [])
             email: "caribou@nivento.ca",
             tasksDone: 21,
             tasksToDo: 42,
-            Messages: 5,
-            Problems: 3,
+            messages: 5,
+            problems: 3,
             image: 'images/GlobalProgress/Goot.png'
         },
         {
@@ -146,8 +146,8 @@ angular.module('GrappBox.controllers', [])
             email: "caribou@nivento.ca",
             tasksDone: 21,
             tasksToDo: 42,
-            Messages: 5,
-            Problems: 3,
+            messages: 5,
+            problems: 3,
             image: 'images/GlobalProgress/Game_Sphere.png'
         },
         {
@@ -158,8 +158,8 @@ angular.module('GrappBox.controllers', [])
             email: "caribou@nivento.ca",
             tasksDone: 21,
             tasksToDo: 42,
-            Messages: 5,
-            Problems: 3,
+            messages: 5,
+            problems: 3,
             image: 'images/GlobalProgress/Game_Sphere.png'
         }
     ];

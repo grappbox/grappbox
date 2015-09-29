@@ -10,16 +10,25 @@
             </ion-nav-buttons>
             <ion-nav-back-button class="button icon-left ion-chevron-left button-clear button-dark">Back</ion-nav-back-button>
             <ion-nav-buttons side="right">
-                <button class="button button-icon icon ion-gear-a"></button>
+                <button class="button button-icon icon ion-ios-settings"></button>
             </ion-nav-buttons>
         </ion-nav-bar>
         <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
     </ion-side-menu-content>
     <ion-side-menu side="left">
-        <header class="bar bar-header bar-stable">
-            <h1 class="title">Menu</h1>
-        </header>
-        <ion-content class="has-header">
+        <ion-content>
+            <ion-list>
+                <ion-item class="item item-thumbnail-left">
+                    <img src="../images/GrappBox/pierre_hofman.jpg" />
+                    <h2 style="font-size: 1.5em;" class="text-center col">Pierre</h2>
+                    <h2 style="font-size: 1.5em;" class="text-center col">Hofman</h2>
+                </ion-item>
+            </ion-list>
+            <div class="button-bar">
+                <a class="button icon button-icon ion-ios-settings"></a>
+                <a class="button icon button-icon ion-card"></a>
+                <a class="button icon button-icon ion-power"></a>
+            </div>
             <ion-list>
                 <ion-item nav-clear menu-close href="#/app/dashboard">Dashboard</ion-item>
                 <ion-item nav-clear menu-close href="#/app/timelines">Timelines</ion-item>
@@ -28,5 +37,5 @@
             </ion-list>
         </ion-content>
     </ion-side-menu>
-    
+
 </ion-side-menus>
