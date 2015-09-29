@@ -1,0 +1,46 @@
+﻿<!--
+    Summary: Here is the main page alias the Dashboard
+-->
+
+<ion-view title="Dashboard">
+    <ion-content class="has-header" ng-controller="DashboardCtrl">
+        <ion-slide-box show-pager="true">
+            <ion-slide>
+                <h1>Team Occupation</h1>
+                <div class="list" ng-controller="TeamOccupationCtrl">
+                    <a class="item item-avatar" href="#/{{ item.id }}" ng-repeat="item in items">
+                        <img ng-src="{{ item.image }}" />
+                        <h2>{{ item.name }}</h2>
+                        <p>{{ item.occupation }}</p>
+                    </a>
+                </div>
+            </ion-slide>
+            <ion-slide>
+                <h1>Next Meetings</h1>
+                <div class="list" ng-controller="NextMeetingsCtrl">
+                    <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
+                        <img ng-src="{{ item.image }}" />
+                        <h2>{{ item.type }}</h2>
+                        <p>{{ item.date }}</p>
+                        <p>{{ item.hour }}</p>
+                    </a>
+                </div>
+            </ion-slide>
+            <ion-slide>
+                <h1>Global Progress</h1>
+                <div class="list" ng-controller="GlobalProgressCtrl">
+                    <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
+                        <img src="{{ item.image }}" />
+                        <h2>{{ item.product }}</h2>
+                        <p>{{ item.author }}</p>
+                        <p>Tel: {{ item.tel }}</p>
+                        <p>eMail: {{ item.email }}</p>
+                        <p>{{ item.tasksDone }} / {{ item.tasksToDo }} tasks done</p>
+                        <p>{{ item.messages }} messages</p>
+                        <p>{{ item.problems }} problems</p>
+                    </a>
+                </div>
+            </ion-slide>
+        </ion-slide-box>
+    </ion-content>
+</ion-view>

@@ -3,9 +3,15 @@
 -->
 
 <ion-side-menus enable-menu-with-back-views="true">
-    <ion-side-menu-content>
+    <ion-side-menu-content edge-drag-threshold="true">
         <ion-nav-bar class="bar-stable">
+            <ion-nav-buttons side="left">
+                <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+            </ion-nav-buttons>
             <ion-nav-back-button class="button icon-left ion-chevron-left button-clear button-dark">Back</ion-nav-back-button>
+            <ion-nav-buttons side="right">
+                <button class="button button-icon icon ion-gear-a"></button>
+            </ion-nav-buttons>
         </ion-nav-bar>
         <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
     </ion-side-menu-content>
