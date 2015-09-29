@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="GrappBox.View.DashBoardView"
+    xmlns:viewModel="using:GrappBox.ViewModel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="viewModel.DashBoardViewModel">
+    <Grid>
+        <Pivot Title="DashBoard">
+        <PivotItem Header="General Menu">
+            <Grid>
+                <ListBox x:Name="listView" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White">
+                    <ListBoxItem Content="Next Meetings"></ListBoxItem>
+                    <ListBoxItem Content="Project Progression"></ListBoxItem>
+                    <ListBoxItem Content="Teams Occupation"></ListBoxItem>
+                    <ListBoxItem Content="Bug Tracker"></ListBoxItem>
+                </ListBox>
+            </Grid>
+        </PivotItem>
+        <PivotItem Header="Next Meetings">
+            <Grid>
+                <TextBlock>No Meetings</TextBlock>
+            </Grid>
+        </PivotItem>
+        <PivotItem Header="Teams Occupation">
+            <Grid>
+                <TextBlock>No Team</TextBlock>
+            </Grid>
+        </PivotItem>
+        <PivotItem Header="Projects Progression">
+            <Grid>
+                <TextBlock>No Projects</TextBlock>
+            </Grid>
+        </PivotItem>
+        <PivotItem Header="Bug Tracker">
+            <Grid/>
+        </PivotItem>
+    </Pivot>
+</Grid>
+</Page>
