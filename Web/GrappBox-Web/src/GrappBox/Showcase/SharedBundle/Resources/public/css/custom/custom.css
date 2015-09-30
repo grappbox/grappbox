@@ -81,10 +81,12 @@ footer { background-color: #34302D; }
 .account-action-buttons .btn-register { border-color: #E87E04; }
 
 .account-action-buttons .btn-login:active,
-.account-action-buttons .btn-login:hover { background-color: #C0392B; border: 2px solid #C0392B; color: #FFF; }
+.account-action-buttons .btn-login:hover,
+.account-action-buttons .btn-login:focus { background-color: #C0392B; border: 2px solid #C0392B; color: #FFF; }
 
 .account-action-buttons .btn-register:active,
-.account-action-buttons .btn-register:hover { background-color: #E87E04; border: 2px solid #E87E04; color: #FFF; }
+.account-action-buttons .btn-register:hover,
+.account-action-buttons .btn-register:focus { background-color: #E87E04; border: 2px solid #E87E04; color: #FFF; }
 
 .content-footer .copyright,
 .content-footer .copyright a { font-size: 16px; color: #FFF; }
