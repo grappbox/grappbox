@@ -66,23 +66,26 @@
             android:layout_height="30dip"
             android:background="#3c3b3b">
 
-            <TextView
+            <Button
+                android:id="@+id/navigation_drawer_settings_button"
+                android:background="@android:color/transparent"
                 android:layout_width="80dip"
                 android:layout_height="match_parent"
-                android:textColor="#fff"
-                android:text="Settings"/>
+                android:text="@string/navigation_drawer_settings_name"/>
 
-            <TextView
+            <Button
+                android:id="@+id/navigation_drawer_profile_button"
+                android:background="@android:color/transparent"
                 android:layout_width="80dip"
                 android:layout_height="match_parent"
-                android:textColor="#fff"
-                android:text="Profile"/>
+                android:text="@string/navigation_drawer_profile_name"/>
 
-            <TextView
+            <Button
+                android:id="@+id/navigation_drawer_logout_button"
+                android:background="@android:color/transparent"
                 android:layout_width="80dip"
                 android:layout_height="match_parent"
-                android:textColor="#fff"
-                android:text="Logout"/>
+                android:text="@string/navigation_drawer_logout_name"/>
 
         </LinearLayout>
 
