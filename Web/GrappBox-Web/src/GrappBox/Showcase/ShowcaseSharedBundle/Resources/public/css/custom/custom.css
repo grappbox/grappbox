@@ -49,18 +49,24 @@ footer { background-color: #34302D; }
 .btn-social-round { border-radius: 50%; padding: 10px; color: #FFF; font-size: 25px; }
 .btn-social-round.btn-twitter { background-color: #3CF; border: 2px solid #3CF; }
 .btn-social-round.btn-facebook { background-color: #3B5998; border: 2px solid #3B5998; }
+.btn-social-round.btn-google-plus { background-color: #DD4B39; border: 2px solid #DD4B39; }
 .btn-social-round.btn-mail { background-color: #6DB33F; border: 2px solid #6DB33F; }
 
 .btn-social-round.btn-twitter:active, .btn-social-round.btn-twitter:hover { color: #3CF; border: 2px solid #3CF; }
 .btn-social-round.btn-facebook:active, .btn-social-round.btn-facebook:hover { color: #3B5998; border: 2px solid #3B5998; }
+.btn-social-round.btn-google-plus:active, .btn-social-round.btn-google-plus:hover { color: #DD4B39; border: 2px solid #DD4B39; }
 .btn-social-round.btn-mail:active, .btn-social-round.btn-mail:hover { color: #6DB33F; border: 2px solid #6DB33F; }
 .btn-social-round.btn-twitter.hvr-radial-out:before { color: #3CF; background-color: #F7F7F7; }
 .btn-social-round.btn-facebook.hvr-radial-out:before { color: #3B5998;  background-color: #F7F7F7; }
+.btn-social-round.btn-google-plus.hvr-radial-out:before { color: #DD4B39;  background-color: #F7F7F7; }
 .btn-social-round.btn-mail.hvr-radial-out:before { color: #6DB33F;  background-color: #F7F7F7; }
 
 .btn-social-round.btn-twitter:focus { color: #3CF; }
 .btn-social-round.btn-facebook:focus { color: #3B5998; }
+.btn-social-round.btn-google-plus:focus { color: #DD4B39; }
 .btn-social-round.btn-mail:focus { color: #6DB33F; }
+
+.list-inline > li { padding-right: 0; }
 
 .contact-banner { padding: 0; }
 .contact-banner h2 { text-shadow: none; }
