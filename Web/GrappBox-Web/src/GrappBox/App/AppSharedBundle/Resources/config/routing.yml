@@ -1,0 +1,3 @@
+app_shared_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: AppSharedBundle:Default:index }

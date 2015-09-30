@@ -1,0 +1,170 @@
+{% extends 'ShowcaseSharedBundle::base.html.twig' %}
+
+{% block body %}
+
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#home" class="nav-active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="" class="login"><i class="fa fa-sign-in fa-fw"></i>Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="intro-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-message">
+                        <h1>Grapp<span class="red">Box</span></h1>
+                        <h3>The new way to manage projects</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline intro-social-buttons">
+                        <li>
+                            <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
+                        </li>
+                        <li>
+                            <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
+                        </li>
+                        <li>
+                            <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="content-section content-section-b">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5 col-sm-6">
+                        <div class="clearfix"></div>
+                        <h2 class="section-heading">Manage YOUR projects the way YOU want.<br></h2>
+                        <p class="lead">Quisque sed pulvinar libero. Duis convallis tempus vestibulum. Fusce eu vehicula justo. Integer consectetur lacus quis libero tempor, eu fermentum libero tincidunt. Aliquam luctus lobortis nisi, non semper mi egestas sit amet.</p>
+                    </div>
+                    <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                        <img class="img-responsive" src="resources/images/business-team_wide.min.png" alt="Teamwork !">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section content-section-a">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5 col-lg-offset-1 col-sm-push-6 col-sm-6 padding-top">
+                        <div class="clearfix"></div>
+                        <h2 class="section-heading">Think, share, design and create !<br></h2>
+                        <p class="lead">Bibendum eu tellus eu, scelerisque feugiat tellus. Quisque ut vulputate neque. Donec sit amet est felis. Aliquam commodo vel mauris eu tempor. Integer ut libero eu nulla tincidunt convallis at sed leo. In ut rhoncus mi. In in nibh fermentum, varius ante ac, vulputate neque.</p>
+                    </div>
+                    <div class="col-lg-5 col-sm-pull-6 col-sm-6">
+                        <img class="img-responsive img-reduced img-round-radius " src="resources/images/business-work.min.png" alt="Lead by your imagination.">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section content-section-b">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-5 col-sm-6 padding-top">
+                        <div class="clearfix"></div>
+                        <h2 class="section-heading">On all your devices.<br></h2>
+                        <p class="lead">Aenean nec blandit eros. Aliquam vestibulum maximus sapien sit amet efficitur. Nullam justo risus, pretium quis justo ut, tristique pellentesque sem. Nam varius vitae turpis non aliquet. Nullam a rhoncus tellus. Pellentesque fringilla velit mi, nec suscipit massa commodo vitae. Nunc elementum nulla nisi, nec auctor augue vulputate vel.</p>
+                    </div>
+                    <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                        <img class="img-responsive img-reduced" src="resources/images/travel-around-world_square.min.png" id='around-world' lt="On all your devices.">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="content-section content-section-a">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="clearfix"></div>
+                        <h2 class="section-heading text-center login-heading">Ready to join us ?</h2>
+                        <p class="lead text-center">Aenean nec blandit eros. Aliquam vestibulum maximus sapien sit amet efficitur ?</p>
+                        <ul class="list-inline account-action-buttons">
+                            <li>
+                                <a class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-register" href=""><i class="fa fa-globe fa-fw"></i>Register</a>
+                            </li>
+                            <li>
+                                <a class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-login" href=""><i class="fa fa-sign-in fa-fw"></i>Login</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section wide-background contact-background"></div>
+        <div class="content-section content-section-a">
+            <div class="contact-banner banner">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <h2>Stay in touch !</h2>
+                        </div>
+                        <div class="col-lg-9">
+                            <ul class="list-inline banner-social-buttons">
+                                <li>
+                                    <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
+                                    <span class="network-name">@GrappBox</span>
+                                </li>
+                                <li>
+                                    <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
+                                    <span class="network-name">GrappBox</span>
+                                </li>
+                                <li>
+                                    <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
+                                    <span class="network-name">grappbox@gmail.com</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="content-footer footer">
+                        <p class="copyright">Copyright &copy; GrappBox 2015. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+
+{% endblock %}

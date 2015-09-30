@@ -1,7 +1,11 @@
 home:
-    resource: "@HomeBundle/Resources/config/routing.yml"
+    resource: "@ShowcaseHomeBundle/Resources/config/routing.yml"
     prefix:   /
 
-#shared:
-#    resource: "@SharedBundle/Resources/config/routing.yml"
+#app_shared:
+#    resource: "@AppSharedBundle/Resources/config/routing.yml"
+#    prefix:   /
+
+#showcase_shared:
+#    resource: "@ShowcaseSharedBundle/Resources/config/routing.yml"
 #    prefix:   /
