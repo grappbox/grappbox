@@ -1,165 +1,85 @@
 {% extends 'SharedBundle::base.html.twig' %}
 
+{% block title %}Welcome{% endblock %}
+
 {% block child_stylesheets %}
-{% stylesheets
+    {% stylesheets
     '@HomeBundle/Resources/public/css/custom/custom.css'
     output='resources/css/custom.min.css' %}
     <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
     {% endstylesheets %}
-    {% endblock %}
+{% endblock %}
 
-    {% block body %}
+{% block body %}
 
-    <body>
-        <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
-            <div class="container topnav">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand topnav hvr-rectangle-out" href="#home">Grapp<span class="red">Box</span></a>
-                </div>
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="#home">Home</a>
-                        </li>
-                        <li>
-                            <a href="#services">Services</a>
-                        </li>
-                        <li>
-                            <a href="#contact">Contact</a>
-                        </li>
-                    </ul>
-                </div>
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">Grapp<span class="red">Box</span></a>
             </div>
-        </nav>
 
-        <section id="home" class="intro-header">
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a class="page-scroll" href="#page-top">Home</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                    <li>
+                        <a class="btn red page-scroll" href="#login">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="intro">
+        <div class="intro-body">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="intro-message">
-                            <h1>Grapp<span class="red">Box</span></h1>
-                            <h3>The new way to manage projects</h3>
-                            <hr class="intro-divider">
-                            <ul class="list-inline intro-social-buttons">
-                                <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social hvr-rectangle-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i><span class="network-name">Twitter</span></a>
-                                </li>
-                                <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social hvr-rectangle-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i><span class="network-name">Facebook</span></a>
-                                </li>
-                                <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social hvr-rectangle-out btn-mail" href="mailto:grappbox@gmail.com" ><i class="fa fa-envelope-o fa-fw"></i><span class="network-name">Contact</span></a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="col-md-8 col-md-offset-2">
+                        <h1 class="brand-heading">Grapp<span class="red">Box</h1>
+                        <p class="intro-text">A fresh, responsive, new way to manage your projects.<br>Coming... when it's ready.</p>
+                        <a href="#contact" class="btn btn-circle page-scroll">
+                            <i class="fa fa-angle-double-down animated"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </header>
 
-        <section id="services" class="content-section content-section-a">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-5 col-sm-6">
-                        <hr class="section-heading-spacer">
-                        <div class="clearfix"></div>
-                        <h2 class="section-heading">Lorem ipsum dolor sit amet<br>consectetur adipiscing elit.</h2>
-                        <p class="lead">Quisque sed pulvinar libero. Duis convallis tempus vestibulum. Fusce eu vehicula justo. Integer consectetur lacus quis libero tempor, eu fermentum libero tincidunt. Aliquam luctus lobortis nisi, non semper mi egestas sit amet.</p>
-                    </div>
-                    <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                        <img class="img-responsive" src="resources/images/ipad.png" alt="">
-                    </div>
-                </div>
+    <section id="contact" class="container content-section text-center">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <h2>Contact our team</h2>
+                <p>Feel free to email us to provide some feedback on our solution, give us suggestions for features, or to just say hello!</p>
+                <p class="email"><a target="_blank" href="mailto:feedback@startbootstrap.com">grappbox@gmail.com</a>
+                </p>
+                <ul class="list-inline banner-social-buttons">
+                    <li>
+                        <a target="_blank" href="https://twitter.com/GrappBox" class="btn btn-default btn-lg btn-twitter"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://github.com/RolandHemmer" class="btn btn-default btn-lg btn-github"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://facebook.com/GrappBox" class="btn btn-default btn-lg btn-facebook"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
+                    </li>
+                </ul>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="content-section content-section-b">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-                        <hr class="section-heading-spacer">
-                        <div class="clearfix"></div>
-                        <h2 class="section-heading">Maecenas laoreet aliquet interdum<br>Nullam libero ligula.</h2>
-                        <p class="lead">Bibendum eu tellus eu, scelerisque feugiat tellus. Quisque ut vulputate neque. Donec sit amet est felis. Aliquam commodo vel mauris eu tempor. Integer ut libero eu nulla tincidunt convallis at sed leo. In ut rhoncus mi. In in nibh fermentum, varius ante ac, vulputate neque.</p>
-                    </div>
-                    <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                        <img class="img-responsive" src="resources/images/dog.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </section>
+    <footer>
+        <div class="container text-center">
+            <p>Copyright &copy; GrappBox 2015</p>
+        </div>
+    </footer>
 
-        <section class="content-section content-section-a">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-5 col-sm-6">
-                        <hr class="section-heading-spacer">
-                        <div class="clearfix"></div>
-                        <h2 class="section-heading">Integer ac tempus tellus<br>Suspendisse pharetra ex eu felis semper.</h2>
-                        <p class="lead">Aenean nec blandit eros. Aliquam vestibulum maximus sapien sit amet efficitur. Nullam justo risus, pretium quis justo ut, tristique pellentesque sem. Nam varius vitae turpis non aliquet. Nullam a rhoncus tellus. Pellentesque fringilla velit mi, nec suscipit massa commodo vitae. Nunc elementum nulla nisi, nec auctor augue vulputate vel.</p>
-                    </div>
-                    <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                        <img class="img-responsive" src="resources/images/phones.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact" class="content-section content-section-b">
-            <div class="banner">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <h2>Stay in touch !</h2>
-                        </div>
-                        <div class="col-lg-6">
-                            <ul class="list-inline banner-social-buttons">
-                                <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social hvr-rectangle-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i><span class="network-name">Twitter</span></a>
-                                </li>
-                                <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social hvr-rectangle-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i><span class="network-name">Facebook</span></a>
-                                </li>
-                                <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social hvr-rectangle-out btn-mail" href="mailto:grappbox@gmail.com" ><i class="fa fa-envelope-o fa-fw"></i><span class="network-name">Contact</span></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <ul class="list-inline">
-                            <li>
-                                <a href="#home">Home</a>
-                            </li>
-                            <li class="footer-menu-divider">&sdot;</li>
-                            <li>
-                                <a href="#services">Services</a>
-                            </li>
-                            <li class="footer-menu-divider">&sdot;</li>
-                            <li>
-                                <a href="#contact">Contact</a>
-                            </li>
-                        </ul>
-                        <p class="copyright text-muted small">Copyright &copy; GrappBox 2015. All Rights Reserved</p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
-    </body>
-
-
-    {% endblock %}
+{% endblock %}
