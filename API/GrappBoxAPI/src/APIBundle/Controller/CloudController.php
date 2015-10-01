@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use APIBundle\Entity\CloudTransfer;
+use APIBundle\Entity\CloudSecuredFileMetadata;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
@@ -69,23 +70,25 @@ class CloudController extends Controller
 		//Check if user have authorization to modify cloud for this project
 		$dbManager = $this->getDoctrine()->getManager();
 		$token = $request->get("session_infos")["token"];
+		$userId = $this->getUserId($token);
 		$receivedData = $request->get("stream_infos");
 		$idProject = $receivedData["project_id"];
-		if ($method == "POST"
-				&& ($user_id = $this->checkTokenAuthorization($token, $idProject)) < 0)
+		if ($method == "POST" && $this->checkTokenAuthorization($token, $idProject) < 0)
 			return header("HTTP/1.0 403 Forbidden", True, 403);
 		return ($method == "POST"
-							? $this->openStream($receivedData, $user_id)
+							? $this->openStream($receivedData, $userId, $idProject)
 							: $this->closeStream($receivedData, $token));
 	}
 
-	private function openStream($receivedData, $user_id)
+	private function openStream($receivedData, $userId, $idProject))
 	{
+		if ($receivedData["path"][0] != "/")
+			return header("HTTP1.0 400 Bad Request", True, 400);
 		$em = $this->getDoctrine()->getManager();
 		$stream = new CloudTransfer();
-		$stream->setCreatorId($user_id)
+		$stream->setCreatorId($userId)
 					 ->setFilename($receivedData["filename"])
-					 ->setPath($receivedData["path"])
+					 ->setPath('/GrappBox Projects/'.(string)$idProject.$receivedData["path"])
 					 ->setPassword($receivedData["password"])
 					 ->setCreationDate(new DateTime("now"))
 					 ->setDeletionDate(null);
@@ -96,12 +99,35 @@ class CloudController extends Controller
 
 	private function closeStream($receivedData, $token){
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
+		$em = $this->getDoctrine()->getManager();
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		$user_id = $this->getUserId($token);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
 			return header("HTTP/1.0 403 Forbidden", True, 403);
 
 		//Here the user have the authorization to close this stream
+		if (!is_null($stream->getPassword()))
+		{
+			//Here add the CloudSecuredFileMetadata infos
+			$meta = new CloudSecuredFileMetadata();
+			$meta->setFilename($stream->getFilename())
+					 ->setPassword($stream->getPassword())
+					 ->setCreationDate(new DateTime("now"))
+					 ->setCloudPath($stream->getPath());
+			$em->persist($meta);
+		}
+
+		//Open cloud connection
+		$client = new Sabre\DAV\Client(self::$settingsDAV);
+		$adapter = new League\Flysystem\WebDAV\WebDAVAdapter($client);
+		$flysystem = new League\Flysystem\Filesystem($adapter);
+		//Copy & rename the file in the right folder
+		$filesystem->copy('/Grappbox Transfer/'.(string)$stream->getId().'.transfer', (string)$stream->getPath().(string)$stream->getFilename());
+		//Delete the transfer file
+		$filesystem->delete('/Grappbox Transfer/'.(string)$stream->getId().'.transfer');
+		$em->remove($stream);
+		$em->flush();
+		return header("HTTP/1.0 200 OK", True, 203);
 	}
 
 	//This have to be a PUT request
@@ -138,9 +164,8 @@ class CloudController extends Controller
 		$client = new Sabre\DAV\Client(self::$settingsDAV);
 		$adapter = new League\Flysystem\WebDAV\WebDAVAdapter($client);
 		$flysystem = new League\Flysystem\Filesystem($adapter);
-		if ($filesystem->has('/Grappbox Transfer/'.(string)$receivedData["stream_id"]))
 		$flysystem->put('/Grappbox Transfer/'.(string)$receivedData["stream_id"].'.transfer', (string)$receivedData["file_chunk"]);
-		return header("HTTP/1.0 203 Success", True, 203);
+		return header("HTTP/1.0 200 OK", True, 203);
 	}
 
 	/**
