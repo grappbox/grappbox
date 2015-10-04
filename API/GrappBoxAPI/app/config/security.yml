@@ -4,8 +4,16 @@ security:
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
-        in_memory:
-            memory: ~
+        # in_memory:
+        #     memory: ~
+        user_db_provider:
+          entity:
+            class: APIBundle:User
+            property: email
+
+    encoders:
+      APIBundle\Entity\User:
+        algorithm: bcrypt
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -14,11 +22,29 @@ security:
             security: false
 
         main:
+            provider: user_db_provider
+
+            logout:
+                path:   /V1/API/AccountAdministration/logout
+                target: /V1/API/AccountAdministration/login
+
             anonymous: ~
             # activate different ways to authenticate
 
-            # http_basic: ~
+            http_basic: ~
             # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
 
-            # form_login: ~
+            form_login:
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+
+                # submit the login form here
+                check_path: /V1/API/AccountAdministration/login_check
+                # the user is redirected here when they need to log in
+                login_path: /V1/API/AccountAdministration/login
+
+                # field names for the username and password fields
+                username_parameter: login
+                password_parameter: password
+
+                # csrf token required
+                csrf_provider:  security.csrf.token_manager

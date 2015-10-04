@@ -80,7 +80,7 @@ class CloudController extends Controller
 							: $this->closeStream($receivedData, $token));
 	}
 
-	private function openStream($receivedData, $userId, $idProject))
+	private function openStream($receivedData, $userId, $idProject)
 	{
 		if ($receivedData["path"][0] != "/")
 			return header("HTTP1.0 400 Bad Request", True, 400);
