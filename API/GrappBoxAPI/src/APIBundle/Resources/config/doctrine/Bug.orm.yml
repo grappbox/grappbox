@@ -1,0 +1,34 @@
+APIBundle\Entity\Bug:
+    type: entity
+    table: bugs
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        creatorId:
+            type: integer
+            column: creator_id
+        userId:
+            type: integer
+            column: user_id
+        projectId:
+            type: integer
+            column: project_id
+        title:
+            type: string
+            length: 255
+        description:
+            type: text
+        stateId:
+            type: integer
+            column: state_id
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+    lifecycleCallbacks: {  }

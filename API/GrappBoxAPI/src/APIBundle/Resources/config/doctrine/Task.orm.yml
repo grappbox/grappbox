@@ -1,0 +1,37 @@
+APIBundle\Entity\Task:
+    type: entity
+    table: tasks
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        projectId:
+            type: integer
+            column: project_id
+        creatorId:
+            type: integer
+            column: creator_id
+        title:
+            type: string
+            length: 255
+        description:
+            type: text
+        dueDate:
+            type: datetime
+            column: due_date
+        startedAt:
+            type: datetime
+            column: started_at
+        finishedAt:
+            type: datetime
+            column: finished_at
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+    lifecycleCallbacks: {  }

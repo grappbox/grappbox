@@ -1,0 +1,22 @@
+APIBundle\Entity\Notification:
+    type: entity
+    table: notifications
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        typeId:
+            type: integer
+            column: type_id
+        linkId:
+            type: integer
+            column: link_id
+        userId:
+            type: integer
+            column: user_id
+        text:
+            type: text
+    lifecycleCallbacks: {  }

@@ -1,0 +1,17 @@
+APIBundle\Entity\TaskTag:
+    type: entity
+    table: task_tags
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        taskId:
+            type: integer
+            column: task_id
+        tagId:
+            type: integer
+            column: tag_id
+    lifecycleCallbacks: {  }

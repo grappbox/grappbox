@@ -1,0 +1,17 @@
+APIBundle\Entity\TaskUser:
+    type: entity
+    table: task_users
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        taskId:
+            type: integer
+            column: task_id
+    lifecycleCallbacks: {  }

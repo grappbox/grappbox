@@ -1,0 +1,37 @@
+APIBundle\Entity\Event:
+    type: entity
+    table: events
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        creatorId:
+            type: integer
+            column: creator_id
+        projectId:
+            type: integer
+            column: project_id
+        typeId:
+            type: integer
+            column: type_id
+        title:
+            type: string
+            length: 255
+        description:
+            type: text
+        beginDate:
+            type: datetime
+            column: begin_date
+        endDate:
+            type: datetime
+            column: end_date
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+    lifecycleCallbacks: {  }

@@ -1,0 +1,23 @@
+APIBundle\Entity\CustomerAccess:
+    type: entity
+    table: customers_access
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        hash:
+            type: string
+            length: 255
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+    lifecycleCallbacks: {  }

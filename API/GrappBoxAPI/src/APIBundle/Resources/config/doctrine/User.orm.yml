@@ -1,0 +1,45 @@
+APIBundle\Entity\User:
+    type: entity
+    table: users
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        firstname:
+            type: string
+            length: 255
+        lastname:
+            type: string
+            length: 255
+        birthday:
+            type: datetime
+        avatar:
+            type: string
+            length: 255
+        password:
+            type: string
+            length: 255
+        email:
+            type: string
+            length: 255
+        phone:
+            type: string
+            length: 255
+        country:
+            type: string
+            length: 255
+        linkedin:
+            type: string
+            length: 255
+        viadeo:
+            type: string
+            length: 255
+        twitter:
+            type: string
+            length: 255
+        isActive:
+          type: boolean
+    lifecycleCallbacks: {  }

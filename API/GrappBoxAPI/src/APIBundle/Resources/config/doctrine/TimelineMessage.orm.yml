@@ -1,0 +1,19 @@
+APIBundle\Entity\TimelineMessage:
+    type: entity
+    table: timeline_messages
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        timelineId:
+            type: integer
+            column: timeline_id
+        message:
+            type: text
+    lifecycleCallbacks: {  }

@@ -1,0 +1,32 @@
+APIBundle\Entity\Whiteboard:
+    type: entity
+    table: whiteboards
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        projectId:
+            type: integer
+            column: project_id
+        userId:
+            type: integer
+            column: user_id
+        name:
+            type: string
+            length: 255
+        updatorId:
+            type: integer
+            column: updator_id
+        updatedAt:
+            type: datetime
+            column: updated_at
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+    lifecycleCallbacks: {  }

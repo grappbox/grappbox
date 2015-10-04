@@ -1,0 +1,17 @@
+APIBundle\Entity\EventUser:
+    type: entity
+    table: events_user
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        userId:
+            type: integer
+            column: user_id
+        eventId:
+            type: integer
+            column: event_id
+    lifecycleCallbacks: {  }

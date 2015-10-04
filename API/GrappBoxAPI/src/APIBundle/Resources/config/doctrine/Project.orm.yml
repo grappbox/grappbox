@@ -1,0 +1,41 @@
+APIBundle\Entity\Project:
+    type: entity
+    table: projects
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        creatorId:
+            type: integer
+            column: creator_id
+        name:
+            type: string
+            length: 255
+        description:
+            type: text
+        logo:
+            type: string
+            length: 255
+        teamId:
+            type: integer
+            column: team_id
+        contactEmail:
+            type: string
+            length: 255
+            column: contact_email
+        facebook:
+            type: string
+            length: 255
+        twitter:
+            type: string
+            length: 255
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+    lifecycleCallbacks: {  }
