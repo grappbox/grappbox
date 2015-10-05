@@ -2,10 +2,12 @@
 
 namespace APIBundle\Controller;
 
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Util\SecureRandom;
+
 use APIBundle\Entity\User;
 use DateTime;
 
@@ -26,7 +28,7 @@ class AccountAdministrationController extends Controller
 	                //
 	            ));
 	    }
-			
+
 	/**
 	 *
 	 * @ApiDoc(
@@ -85,7 +87,14 @@ class AccountAdministrationController extends Controller
       $user->setFirstname($request->request->get('firstname'));
       $user->setLastname($request->request->get('lastname'));
       $user->setBirthday(new Datetime($request->request->get('birthday')));
-      $user->setAvatar($request->files->get('avatar')->getClientOriginalName() );
+
+			$generator = $this->get('security.secure_random');
+      $random = $generator->nextBytes(10);
+      $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
+      $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
+      $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
+
+      $user->setAvatar($fileDir.'/'.$fileName);
 
       $encoder = $this->container->get('security.password_encoder');
       $encoded = $encoder->encodePassword($user, $request->request->get('password'));
@@ -102,7 +111,7 @@ class AccountAdministrationController extends Controller
       $em->persist($user);
       $em->flush();
 
-      $providerKey = 'main'; // your firewall name
+      $providerKey = 'main';
       $token = new UsernamePasswordToken($user, null, $providerKey, $user->getRoles());
       $this->container->get('security.context')->setToken($token);
 
