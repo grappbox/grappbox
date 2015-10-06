@@ -42,6 +42,10 @@ security:
                 # the user is redirected here when they need to log in
                 login_path: /V1/API/AccountAdministration/login
 
+                # redirection target after login
+                target_path_parameter: _target_path   #hidden input in the form
+                failure_path: /V1/API/AccountAdministration/login
+
                 # field names for the username and password fields
                 username_parameter: login
                 password_parameter: password

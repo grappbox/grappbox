@@ -321,30 +321,30 @@ meeting_addAlert:
         id: \d+
 
 
-
+# test login/signin
 accountAdministration_loginForm:
-  path:       /AccountAdministration/loginForm
-  defaults:   { _controller: APIBundle:AccountAdministration:loginForm }
+    path:       /AccountAdministration/loginForm
+    defaults:   { _controller: APIBundle:AccountAdministration:loginForm }
 accountAdministration_signInForm:
     path:       /AccountAdministration/signInForm
     defaults:   { _controller: APIBundle:AccountAdministration:signInForm }
+# end test login/signin
 
 accountAdministration_login:
     path:       /AccountAdministration/login
     defaults:   { _controller: APIBundle:AccountAdministration:login }
-    methods:    [POST]
+    # methods:    [POST]
 
-login_check:
+# login_check:
+#     path:       /AccountAdministration/login_check
+# logout:
+#     path:       /AccountAdministration/logout
+
+accountAdministration_login_check:
     path:       /AccountAdministration/login_check
 
-logout:
+accountAdministration_logout:
     path:       /AccountAdministration/logout
-
-# accountAdministration_login_check:
-#     path:       /AccountAdministration/login_check
-#
-# accountAdministration_logout:
-#     path:       /AccountAdministration/logout
 
 accountAdministration_disconnect:
     path:       /AccountAdministration/disconnect

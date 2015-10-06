@@ -60,7 +60,7 @@ class AccountAdministrationController extends Controller
 		else
 		{
 		 $token = $this->container->get('security.context')->getToken();
-		 $message = "Success: you are now login, token: ".$token;
+		 $message = "Token: ".$token;
 		}
 
 		return new Response($message);

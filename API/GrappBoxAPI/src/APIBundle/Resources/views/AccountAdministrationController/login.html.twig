@@ -3,12 +3,12 @@
 {% block title %}AppBundle:UserController:createUser{% endblock %}
 
 {% block body %}
-{% if error is defined and error.getMessage() is defined %}
+{# {% if error is defined and error.getMessage() is defined %}
     <div>{{dump(error)}}</div>
 {% endif %}
 {% if toto is defined %}
     <div>{{dump(toto)}}</div>
-{% endif %}
+{% endif %} #}
 
 
 <h1>Welcome to the UserController:createUser page</h1>
@@ -20,6 +20,8 @@
 
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" />
+
+    <input type="hidden" name="_target_path" value="/V1/API/AccountAdministration/login" />
 
     <button type="submit">login</button>
 </form>
