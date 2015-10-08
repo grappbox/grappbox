@@ -25,7 +25,14 @@ section, h1, li, img
     transition: width 1s ease-in-out, left 1.5s ease-in-out;
 }
 
-.red { color: #C0392B; }
+html, body { height: 100%; margin: 0; }
+
+footer { padding: 40px 0; background: #212121; }
+footer .content-footer .copyright,
+footer .content-footer .copyright a { color: #BDBDBD; }
+
+.red { color: #D32F2F; }
+
 .padding-top { padding-top: 3%; }
 
 .img-round-radius { border-radius: 50%; }

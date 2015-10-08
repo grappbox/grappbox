@@ -3,59 +3,58 @@
 {% block title %}Login | GrappBox{% endblock %}
 
 {% block child_stylesheets %}
-{% stylesheets
+	{% stylesheets
 	'@ShowcaseLoginBundle/Resources/public/css/custom/login.css'
 	output='resources/css/login.min.css' %}
 	<link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
 	{% endstylesheets %}
-	{% endblock %}
+{% endblock %}
 
-	{% block body %}
+{% block body %}
 
-	<body>
-
-		<section id="login">
-			<div class="content-section content-section-b">
-				<div class="container">
-					<div class="row">
-						<div class="col-md-6 col-md-offset-3">
-							<div class="app-login center-block">
-								<div class="app-logo center-block">
-									<h1>Grapp<span class="red">Box</span></h1>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-md-4 col-md-offset-4 app-login-container">
-							<div class="app-login center-block">
-								<a href="/" class="back-home"><i class="fa fa-home"></i></a>
-								<form class="form-signin">
-									<label for="inputEmail" class="sr-only">Email</label>
-									<input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus="">
-									<label for="inputPassword" class="sr-only">Password</label>
-									<input type="password" id="inputPassword" class="form-control" placeholder="Password">
-									<button class="btn btn-lg btn-primary btn-block btn-login hvr-sweep-to-right" type="submit"><i class="fa fa-check"></i>Sign in</button>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<footer>
+<body>
+	<section id="login">
+		<div class="content-section content-section-b">
 			<div class="container">
 				<div class="row">
-					<div class="col-lg-12">
-						<div class="content-footer footer">
-							<p class="copyright">Copyright &copy; GrappBox 2015. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a>.</p>
+					<div class="col-md-6 col-md-offset-3">
+						<div class="app-login center-block">
+							<div class="app-logo center-block">
+								<h1>Grapp<span class="red">Box</span></h1>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-4 col-md-offset-4 app-login-container">
+						<div class="app-login center-block">
+							<a href="/" class="back-home"><i class="fa fa-home"></i></a>
+							<form class="form-signin">
+								<label for="inputEmail" class="sr-only">Email</label>
+								<input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus="">
+								<label for="inputPassword" class="sr-only">Password</label>
+								<input type="password" id="inputPassword" class="form-control" placeholder="Password">
+								<button class="btn btn-lg btn-primary btn-block btn-login hvr-sweep-to-right" type="submit"><i class="fa fa-check"></i>Sign in</button>
+							</form>
 						</div>
 					</div>
 				</div>
 			</div>
-		</footer>
-	</body>
+		</div>
+	</section>
 
-	{% endblock %}
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="content-footer footer">
+						<p class="copyright">Copyright &copy; GrappBox 2015. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a>.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+</body>
+
+{% endblock %}
