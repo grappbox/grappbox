@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new GrappBox\Showcase\ShowcaseSharedBundle\ShowcaseSharedBundle(),
             new GrappBox\App\AppSharedBundle\AppSharedBundle(),
             new GrappBox\Showcase\ShowcaseLoginBundle\ShowcaseLoginBundle(),
+            new GrappBox\App\AppDashboardBundle\AppDashboardBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

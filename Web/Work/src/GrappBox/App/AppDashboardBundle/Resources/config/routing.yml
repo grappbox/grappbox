@@ -1,0 +1,3 @@
+app_dashboard_homepage:
+    path:     /
+    defaults: { _controller: AppDashboardBundle:Default:index }
