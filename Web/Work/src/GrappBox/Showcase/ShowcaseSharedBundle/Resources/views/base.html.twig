@@ -7,7 +7,7 @@
     <meta name="author" content="The GrappBox team" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="UTF-8" />
-    <title>GrappBox</title>
+    <title>{% block title %}{% endblock %}</title>
 
     <!-- Google Fonts -->
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700' />
@@ -19,7 +19,7 @@
     '@ShowcaseSharedBundle/Resources/public/css/vendor/hover.min.css'
     '@ShowcaseSharedBundle/Resources/public/css/vendor/landing-page.min.css'
     '@ShowcaseSharedBundle/Resources/public/css/custom/custom.css'
-    output='resources/css/styles.min.css' %}
+    output='resources/css/base.min.css' %}
     <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
     {% endstylesheets %}
 
@@ -42,9 +42,7 @@
         {% javascripts
         '@ShowcaseSharedBundle/Resources/public/js/vendor/jquery.min.js'
         '@ShowcaseSharedBundle/Resources/public/js/vendor/bootstrap.min.js'
-        '@ShowcaseSharedBundle/Resources/public/js/vendor/smoothscroll.min.js'
-        '@ShowcaseSharedBundle/Resources/public/js/custom/navigation.min.js'
-        output='resources/js/scripts.min.js' %}
+        output='resources/js/base.min.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %}
 

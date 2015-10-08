@@ -16,6 +16,15 @@ p { text-align: justify; }
 section { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25); }
 footer { background-color: #34302D; }
 
+section, h1, li, img
+{
+    -moz-transition: width 1s ease-in-out, left 1.5s ease-in-out;
+    -webkit-transition: width 1s ease-in-out, left 1.5s ease-in-out;
+    -moz-transition: width 1s ease-in-out, left 1.5s ease-in-out;
+    -o-transition: width 1s ease-in-out, left 1.5s ease-in-out;
+    transition: width 1s ease-in-out, left 1.5s ease-in-out;
+}
+
 .red { color: #C0392B; }
 .padding-top { padding-top: 3%; }
 
@@ -30,9 +39,11 @@ footer { background-color: #34302D; }
 .navbar-default .navbar-nav > li > a:focus { font-family: 'Roboto Condensed', sans-serif; font-weight: normal; font-size: 20px; color: #34302D; }
 .navbar-default .navbar-nav > li > a:hover { background-color: #F7F7F7; color: #34302D; }
 .navbar-default .navbar-nav > li > a:active,
-.navbar-default .navbar-nav > li > a.nav-active { background-color: #616161; color: #FFF; }
-.navbar-default .navbar-nav > li > a.login { background-color: #C0392B; color: #FFF; }
-.navbar-default .navbar-nav > li > a.login i { padding-right: 10px; }
+.navbar-default .navbar-nav > li > a.nav-active { background-color: #757575; color: #FFF; }
+
+.navbar-default .navbar-nav > li > a.app-login { background-color: #C0392B; color: #FFF; }
+.navbar-default .navbar-nav > li > a.app-login i { padding-right: 10px; }
+.navbar-default .navbar-nav > li > a.app-login:before { background-color: #FF5722; -webkit-transition-duration: 0.2s; transition-duration: 0.2s; }
 
 .intro-header { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25); }
 
@@ -48,7 +59,7 @@ footer { background-color: #34302D; }
 	.intro-message h1, .intro-message h1 span { font-size: 130px; font-size: 18vw; letter-spacing: -5px; } }
 
 @media (min-width: 768px)  and (max-width: 1199px) { .intro-message h1, .intro-message h1 span { font-size: 150px; font-size: 15vw; } }
-@media (min-width: 1200px) { .intro-message h1, .intro-message h1 span { font-size: 190px; font-size: 13vw; } }
+@media (min-width: 1200px) { .intro-message h1, .intro-message h1 span { font-size: 190px; font-size: 10vw; } }
 
 .intro-message h3, .section-heading,
 .contact-banner h2 { font-family: 'Roboto Condensed', sans-serif; font-weight: lighter; font-size: 40px; }
