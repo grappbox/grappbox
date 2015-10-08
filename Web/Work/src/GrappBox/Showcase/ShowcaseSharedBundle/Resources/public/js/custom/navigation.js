@@ -8,7 +8,7 @@ $(document).ready(function()
         var $target = $(target);
 
         $('html, body').stop().animate({
-            'scrollTop': $target.offset().top - 50;
+            'scrollTop': $target.offset().top - 50
         }, 700, 'swing');
     });
 
@@ -32,9 +32,9 @@ $(document).ready(function()
         for (var i=0; i < aArray.length; i++)
         {
             var theID = aArray[i];
-            var divPos = $(theID).offset().top - 50;
+            var divPos = $(theID).offset().top - 55;
             var divHeight = $(theID).height();
-            if (windowPos >= divPos && windowPos < (divPos + divHeight))
+            if (windowPos >= divPos && windowPos <= (divPos + divHeight))
                 {
                     $("a[href='" + theID + "']").addClass("nav-active");
                 }
