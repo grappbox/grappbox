@@ -162,26 +162,27 @@
     </section>
 
     <div class="modal fade" id="app-modal" tabindex="-1" role="dialog" aria-labelledby="app-modal-label">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h2 class="modal-title" id="app-modal-label">Sign in to Grapp<span class="red">Box</span></h2>
-          </div>
-          <div class="modal-body">
-                <form class="form-signin">
-                    <label for="inputEmail" class="sr-only">Email</label>
-                    <input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus="">
-                    <label for="inputPassword" class="sr-only">Password</label>
-                    <input type="password" id="inputPassword" class="form-control" placeholder="Password">
-                </form>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h2 class="modal-title" id="app-modal-label">Sign in to Grapp<span class="red">Box</span></h2>
+                </div>
+                <div class="modal-body">
+                    <form class="form-signin">
+                        <label for="inputEmail" class="sr-only">Email</label>
+                        <input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus="">
+                        <label for="inputPassword" class="sr-only">Password</label>
+                        <input type="password" id="inputPassword" class="form-control" placeholder="Password">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-lg btn-primary btn-block btn-lg-account btn-cancel hvr-sweep-to-right" data-dismiss="modal"><i class="fa fa-close"></i>Close</button>
+                    <!-- <button type="submit" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-sweep-to-right"><i class="fa fa-check"></i>Sign in</button> -->
+                    <a href="/app/dashboard"><button type="submit" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-sweep-to-right"><i class="fa fa-check"></i>Sign in</button></a>
+                </div>
             </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-lg btn-primary btn-block btn-lg-account btn-cancel hvr-sweep-to-right" data-dismiss="modal"><i class="fa fa-close"></i>Close</button>
-            <button type="submit" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-sweep-to-right"><i class="fa fa-check"></i>Sign in</button>
-          </div>
         </div>
-      </div>
     </div>
 
     <footer>
@@ -197,13 +198,4 @@
     </footer>
 </body>
 
-{% endblock %}
-
-{% block child_javascripts %}
-    {% javascripts
-    '@ShowcaseSharedBundle/Resources/public/js/vendor/smoothscroll.min.js'
-    '@ShowcaseSharedBundle/Resources/public/js/custom/navigation.min.js'
-    output='resources/js/home.min.js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
 {% endblock %}

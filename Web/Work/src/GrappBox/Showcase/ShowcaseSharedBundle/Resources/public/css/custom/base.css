@@ -156,9 +156,7 @@ div#app-modal .modal-content { border-radius: 0; }
 div#app-modal .modal-body input { border-radius: 0; margin: 10px 0; font-size: 16px; color: #212121; padding: 20px 15px; }
 
 div#app-modal .modal-footer .btn-lg-account i { padding-right: 10px; }
+div#app-modal .modal-footer .btn-cancel { margin-top: 20px; }
 
-div#app-modal .modal-footer .btn-login { background-color: #4CAF50; margin-top: 20px; }
-div#app-modal .modal-footer .btn-login:before { background-color: #009688; }
-
-div#app-modal .modal-footer .btn-cancel { background-color: #E53935; margin-top: 20px; }
-div#app-modal .modal-footer .btn-cancel:before { background-color: #C62828; }
+div#app-modal .modal-footer .btn-login { background-color: #009688; margin-top: 20px; }
+div#app-modal .modal-footer .btn-login:before { background-color: #4CAF50; }
