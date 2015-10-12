@@ -17,30 +17,39 @@
 
     <link rel='stylesheet' type='text/css' href={{ asset('resources/css/base.min.css') }} />
     {% stylesheets
+    '@AppSharedBundle/Resources/public/css/vendor/sb-admin-two.css'
     '@AppSharedBundle/Resources/public/css/custom/app-base.css'
     output='resources/css/app-base.min.css' %}
     <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
     {% endstylesheets %}
 
     {% block child_stylesheets %}{% endblock %}
-    
+
     {% block child_javascript_head %}{% endblock %}
 
     <!-- Responsive for IE8 -->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-    </head>
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
 
-    <body>
-        {% block body %}{% endblock %}
+<body>
+    <span ng-cloak ng-show="show"></span>
+    {% block body %}{% endblock %}
 
-        <script type="text/javascript" src={{ asset('resources/js/base.min.js') }} ></script>
+    <script type="text/javascript" src={{ asset('resources/js/base.min.js') }} ></script>
 
-        {% block child_javascripts_bottom %}{% endblock %}
-    </body>
+    {% javascripts
+    '@AppSharedBundle/Resources/public/js/vendor/sb-admin-two.min.js'
+    '@AppSharedBundle/Resources/public/js/vendor/angular.min.js'
+    output='resources/js/app-base.min.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% block child_javascripts_bottom %}{% endblock %}
+</body>
 
 </html>

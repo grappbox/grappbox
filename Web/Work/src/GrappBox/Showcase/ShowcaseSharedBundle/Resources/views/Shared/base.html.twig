@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <meta http-equiv="content-language" content="en-us" />
-    <meta name="description" content="GrappBox" />
-    <meta name="author" content="The GrappBox team" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="UTF-8" />
-    <title>{% block title %}{% endblock %}</title>
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+        <meta http-equiv="content-language" content="en-us" />
+        <meta name="description" content="GrappBox" />
+        <meta name="author" content="The GrappBox team" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charset="UTF-8" />
+        <title>{% block title %}{% endblock %}</title>
 
-    <!-- Google Fonts -->
-    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700' />
-    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' />
+        <!-- Google Fonts -->
+        <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700' />
+        <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' />
 
-    {% block child_fonts %}{% endblock %}
+        {% block child_fonts %}{% endblock %}
 
-    {% stylesheets
-    '@ShowcaseSharedBundle/Resources/public/css/vendor/bootstrap.min.css'
-    '@ShowcaseSharedBundle/Resources/public/css/vendor/font-awesome.min.css'
-    '@ShowcaseSharedBundle/Resources/public/css/vendor/hover.min.css'
-    '@ShowcaseSharedBundle/Resources/public/css/vendor/landing-page.min.css'
-    '@ShowcaseSharedBundle/Resources/public/css/custom/base.css'
-    output='resources/css/base.min.css' %}
-    <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
-    {% endstylesheets %}
+        {% stylesheets
+        '@ShowcaseSharedBundle/Resources/public/css/vendor/bootstrap.min.css'
+        '@ShowcaseSharedBundle/Resources/public/css/vendor/font-awesome.min.css'
+        '@ShowcaseSharedBundle/Resources/public/css/vendor/hover.min.css'
+        '@ShowcaseSharedBundle/Resources/public/css/vendor/landing-page.min.css'
+        '@ShowcaseSharedBundle/Resources/public/css/custom/base.css'
+        output='resources/css/base.min.css' %}
+        <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+        {% endstylesheets %}
 
-    {% block child_stylesheets %}{% endblock %}
-    
-    {% block child_javascript_head %}{% endblock %}
+        {% block child_stylesheets %}{% endblock %}
 
-    <!-- Responsive for IE8 -->
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        {% block child_javascript_head %}{% endblock %}
+
+        <!-- Responsive for IE8 -->
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
     </head>
 
     <body>
