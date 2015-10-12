@@ -1,4 +1,4 @@
-{% extends 'ShowcaseSharedBundle::base.html.twig' %}
+{% extends 'ShowcaseSharedBundle:Shared:base.html.twig' %}
 
 {% block title %}GrappBox{% endblock %}
 
@@ -20,7 +20,7 @@
                     <li><a href="#home" class="nav-active">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="/login" class="app-login hvr-sweep-to-right"><i class="fa fa-sign-in fa-fw"></i>Login</a></li>
+                    <li><a href="" class="app-login hvr-sweep-to-right" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Login</a></li>
                 </ul>
             </div>
         </div>
@@ -119,7 +119,7 @@
                                 <a class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-register" href=""><i class="fa fa-globe fa-fw"></i>Register</a>
                             </li>
                             <li>
-                                <a class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-login" href="/login"><i class="fa fa-sign-in fa-fw"></i>Login</a>
+                                <a class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-login" href="" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Login</a>
                             </li>
                         </ul>
                     </div>
@@ -161,12 +161,35 @@
         </div>
     </section>
 
+    <div class="modal fade" id="app-modal" tabindex="-1" role="dialog" aria-labelledby="app-modal-label">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h2 class="modal-title" id="app-modal-label">Sign in to Grapp<span class="red">Box</span></h2>
+          </div>
+          <div class="modal-body">
+                <form class="form-signin">
+                    <label for="inputEmail" class="sr-only">Email</label>
+                    <input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus="">
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Password">
+                </form>
+            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-lg btn-primary btn-block btn-lg-account btn-cancel hvr-sweep-to-right" data-dismiss="modal"><i class="fa fa-close"></i>Close</button>
+            <button type="submit" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-sweep-to-right"><i class="fa fa-check"></i>Sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="content-footer footer">
-                        <p class="copyright">Copyright &copy; GrappBox 2015. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a>.</p>
+                        <p class="copyright">Copyright &copy; GrappBox 2015. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a> and <a target="_blank" href="http://www.justcreative.com">JustCreative</a>.</p>
                     </div>
                 </div>
             </div>

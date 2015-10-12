@@ -16,10 +16,9 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new GrappBox\Showcase\ShowcaseHomeBundle\ShowcaseHomeBundle(),
             new GrappBox\Showcase\ShowcaseSharedBundle\ShowcaseSharedBundle(),
+            new GrappBox\Showcase\ShowcaseHomeBundle\ShowcaseHomeBundle(),
             new GrappBox\App\AppSharedBundle\AppSharedBundle(),
-            new GrappBox\Showcase\ShowcaseLoginBundle\ShowcaseLoginBundle(),
             new GrappBox\App\AppDashboardBundle\AppDashboardBundle(),
         );
 

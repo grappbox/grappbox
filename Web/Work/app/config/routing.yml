@@ -2,10 +2,6 @@ app_dashboard:
     resource: "@AppDashboardBundle/Resources/config/routing.yml"
     prefix:   /app
 
-showcase_login:
-    resource: "@ShowcaseLoginBundle/Resources/config/routing.yml"
-    prefix:   /login
-
 showcase_home:
     resource: "@ShowcaseHomeBundle/Resources/config/routing.yml"
     prefix:   /

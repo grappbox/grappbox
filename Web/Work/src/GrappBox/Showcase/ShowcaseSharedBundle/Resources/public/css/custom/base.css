@@ -2,19 +2,22 @@
  * Theme images path fix.
  */
 
-.intro-header { background: url(../images/macbook-and-camera_desk-situation.min.jpg) center center no-repeat; background-size:cover; }
+.intro-header { background: url(../images/business-desk_wide-soft.min.png) center center no-repeat; background-size:cover; }
 .contact-banner { background: none; }
 
+
 /*!
- * Theme overload and custom modifications
+ * Home page
  */
 
-html, body, h1, h2, h3, h4, p, span, a { font-family: 'Roboto', sans-serif; font-weight: normal; color: #34302D; letter-spacing: normal; }
+html, body, h1, h2, h3, h4, p, span, a { font-family: 'Roboto', sans-serif; font-weight: normal; color: #212121; letter-spacing: normal; }
 body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 p { text-align: justify; }
 
-section { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25); }
-footer { background-color: #34302D; }
+a:active, a:focus, a:hover { text-decoration: none; color: #009688; }
+
+section { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
+footer { background-color: #212121; }
 
 section, h1, li, img
 {
@@ -29,7 +32,11 @@ html, body { height: 100%; margin: 0; }
 
 footer { padding: 40px 0; background: #212121; }
 footer .content-footer .copyright,
-footer .content-footer .copyright a { color: #BDBDBD; }
+footer .content-footer .copyright a { font-size: 16px; color: #BDBDBD; }
+
+footer .content-footer .copyright a:active,
+footer .content-footer .copyright a:focus,
+footer .content-footer .copyright a:hover { text-decoration: none; color: #009688; }
 
 .red { color: #D32F2F; }
 
@@ -40,11 +47,11 @@ footer .content-footer .copyright a { color: #BDBDBD; }
 
 .navbar-toggle { border-radius: 0; }
 
-.navbar-fixed-top { border-width: 0; background-color: #FFF; box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25); }
+.navbar-fixed-top { border-width: 0; background-color: #FFF; box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
 
 .navbar-default .navbar-nav > li > a,
-.navbar-default .navbar-nav > li > a:focus { font-family: 'Roboto Condensed', sans-serif; font-weight: normal; font-size: 20px; color: #34302D; }
-.navbar-default .navbar-nav > li > a:hover { background-color: #F7F7F7; color: #34302D; }
+.navbar-default .navbar-nav > li > a:focus { font-weight: 400; font-size: 18px; color: #212121; line-height: 1.4; }
+.navbar-default .navbar-nav > li > a:hover { background-color: #F7F7F7; color: #212121; }
 .navbar-default .navbar-nav > li > a:active,
 .navbar-default .navbar-nav > li > a.nav-active { background-color: #757575; color: #FFF; }
 
@@ -52,14 +59,14 @@ footer .content-footer .copyright a { color: #BDBDBD; }
 .navbar-default .navbar-nav > li > a.app-login i { padding-right: 10px; }
 .navbar-default .navbar-nav > li > a.app-login:before { background-color: #FF5722; -webkit-transition-duration: 0.2s; transition-duration: 0.2s; }
 
-.intro-header { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25); }
+.intro-header { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
 
 .intro-message { padding: 11% 0; }
 .intro-message h1 { margin: 10px 0; padding: 15px 0 0 0; }
 .intro-message h1,
 .intro-message h1 span { font-family: 'Roboto Condensed', sans-serif; font-weight: lighter; text-shadow: none; letter-spacing: -10px; text-transform: uppercase; }
 .intro-message h1,
-.intro-message h3 { color: #FFF; background-color: rgba(52,48,45,0.9); }
+.intro-message h3 { color: #FFF; background-color: rgba(33,33,33,0.8); box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
 .intro-message h3 { margin: 10px 0; padding: 15px 0; text-shadow: none; }
 
 @media (max-width: 767px) {
@@ -73,7 +80,7 @@ footer .content-footer .copyright a { color: #BDBDBD; }
 
 .btn-lg { border: none; border-radius: 0; }
 
-.btn-social-round { border-radius: 50%; padding: 10px; color: #FFF; font-size: 25px; }
+.btn-social-round { border-radius: 50%; padding: 10px; color: #FFF; font-size: 25px; box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
 .btn-social-round.btn-twitter { background-color: #3CF; border: 2px solid #3CF; }
 .btn-social-round.btn-facebook { background-color: #3B5998; border: 2px solid #3B5998; }
 .btn-social-round.btn-google-plus { background-color: #DD4B39; border: 2px solid #DD4B39; }
@@ -99,15 +106,15 @@ footer .content-footer .copyright a { color: #BDBDBD; }
 .contact-banner h2 { text-shadow: none; }
 .contact-banner .banner-social-buttons .network-name { text-transform: none; font-weight: normal; letter-spacing: normal; font-size: 18px; padding: 0 30px 0 5px; }
 
-.contact-background { background: url(../images/business-desk_wide-soft.min.png) center center no-repeat; background-size:cover; min-height: 320px; }
+.contact-background { background: url(../images/color-tesselation_blue-to-red.min.png) center center no-repeat; background-size:cover; min-height: 320px; }
 
-.content-section { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25); }
+.content-section { box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
 .content-section-a { background-color: #F7F7F7; }
 
-.login-heading { background-color: #6DB33F; padding: 10px 0; color: #FFF; }
+.login-heading { background-color: #6DB33F; padding: 10px 0; color: #FFF; box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
 
 .account-action-buttons { display: block; text-align: center; padding: 20px 0 15px 0; }
-.account-action-buttons .btn-account-action { background: none; border: 2px solid; font-family: 'Roboto Condensed', sans-serif; font-weight: normal; font-size: 20px; padding: 15px 70px; }
+.account-action-buttons .btn-account-action { background: none; border: 2px solid; font-family: 'Roboto Condensed', sans-serif; font-weight: normal; font-size: 20px; padding: 15px 70px; box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
 .account-action-buttons .btn-account-action i { padding-right: 10px; }
 
 .account-action-buttons .btn-login { border-color: #C0392B; }
@@ -135,9 +142,23 @@ footer .content-footer .copyright a { color: #BDBDBD; }
 	.contact-banner h2 { margin-bottom: 10px; }
 }
 
-.content-footer .copyright,
-.content-footer .copyright a { font-size: 16px; color: #FFF; }
-.content-footer .copyright a:hover { text-decoration: none; color: #6DB33F; }
-
 @media (min-width: 768px) and (max-width: 1199px) { .content-footer .copyright { text-align: center; } }
 @media (min-width: 1200px) { .contact-banner h2 { margin-bottom: 20px; } }
+
+
+/*!
+ * Login modal (home page)
+ */
+
+div#app-modal .modal-dialog { margin-top: 15%; }
+div#app-modal .modal-content { border-radius: 0; }
+
+div#app-modal .modal-body input { border-radius: 0; margin: 10px 0; font-size: 16px; color: #212121; padding: 20px 15px; }
+
+div#app-modal .modal-footer .btn-lg-account i { padding-right: 10px; }
+
+div#app-modal .modal-footer .btn-login { background-color: #4CAF50; margin-top: 20px; }
+div#app-modal .modal-footer .btn-login:before { background-color: #009688; }
+
+div#app-modal .modal-footer .btn-cancel { background-color: #E53935; margin-top: 20px; }
+div#app-modal .modal-footer .btn-cancel:before { background-color: #C62828; }
