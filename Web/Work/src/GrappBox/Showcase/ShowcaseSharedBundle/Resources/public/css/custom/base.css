@@ -35,13 +35,16 @@ section, h1, li, img
 
 html, body { height: 100%; margin: 0; }
 
-footer { padding: 40px 0; background: #212121; }
+footer { padding: 20px 0; background: #212121; }
+footer .container { margin: 0 0 0 250px; }
 footer .content-footer .copyright,
-footer .content-footer .copyright a { font-size: 16px; color: #BDBDBD; }
+footer .content-footer .copyright a { font-size: 1em; color: #BDBDBD; }
 
 footer .content-footer .copyright a:active,
 footer .content-footer .copyright a:focus,
 footer .content-footer .copyright a:hover { text-decoration: none; color: #009688; }
+
+footer .content-footer .copyright { margin: 5px 0 0 15px; }
 
 .red { color: #D32F2F; }
 

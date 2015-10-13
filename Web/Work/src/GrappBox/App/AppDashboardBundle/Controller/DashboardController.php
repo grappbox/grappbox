@@ -6,8 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DashboardController extends Controller
 {
-    public function indexAction()
+    public function dashboardAction()
     {
-        return $this->render('AppDashboardBundle:Dashboard:index.html.twig');
+        return $this->render('AppDashboardBundle:Dashboard:dashboard.html.twig');
     }
 }
