@@ -1,3 +1,8 @@
+/*!
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+ */
+
 $(document).ready(function()
 {
     $('a[href^="#"]').on('click',function (e)
@@ -7,9 +12,12 @@ $(document).ready(function()
         var target = this.hash;
         var $target = $(target);
 
-        $('html, body').stop().animate({
-            'scrollTop': $target.offset().top - 50
-        }, 700, 'swing');
+        if (target.length > 1)
+        {
+            $('html, body').stop().animate({
+                'scrollTop': $target.offset().top - 50
+            }, 700, 'swing');
+        }
     });
 
     var aChildren = $("nav li").children();
@@ -18,8 +26,8 @@ $(document).ready(function()
     {    
         var aChild = aChildren[i];
         var ahref = $(aChild).attr('href');
-        
-        if (ahref.indexOf('#') !== -1)
+
+        if (ahref && ahref.indexOf('#') !== -1 && ahref.length > 1)
             { aArray.push(ahref); }
     }
 
@@ -35,13 +43,13 @@ $(document).ready(function()
             var divPos = $(theID).offset().top - 55;
             var divHeight = $(theID).height();
             if (windowPos >= divPos && windowPos <= (divPos + divHeight))
-                {
-                    $("a[href='" + theID + "']").addClass("nav-active");
-                }
+            {
+                $("a[href='" + theID + "']").addClass("nav-active");
+            }
             else
-                {
-                    $("a[href='" + theID + "']").removeClass("nav-active");
-                }
+            {
+                $("a[href='" + theID + "']").removeClass("nav-active");
+            }
         }
 
         if(windowPos + windowHeight == docHeight)

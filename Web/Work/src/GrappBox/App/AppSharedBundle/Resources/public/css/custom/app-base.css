@@ -1,1 +1,10 @@
+/*!
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+ */
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none !important; }
+
+.navbar.navbar-default { margin-bottom: 0; } 
+
+div#page-wrapper { margin-bottom: -139px; }

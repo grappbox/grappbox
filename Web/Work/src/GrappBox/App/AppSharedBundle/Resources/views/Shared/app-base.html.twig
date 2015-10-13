@@ -1,6 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{# This file is subject to the terms and conditions defined in
+ # file 'LICENSE.txt', which is part of the GRAPPBOX source code package. #}
+
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta http-equiv="content-language" content="en-us" />
     <meta name="description" content="GrappBox" />
@@ -25,15 +28,23 @@
 
     {% block child_stylesheets %}{% endblock %}
 
+    {% javascripts
+    '@AppSharedBundle/Resources/public/js/vendor/angular.min.js'
+    '@AppSharedBundle/Resources/public/js/vendor/angular-route.min.js'
+    '@AppSharedBundle/Resources/public/js/vendor/angular-resource.min.js'
+    output='resources/js/app-base-angular.min.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
     {% block child_javascript_head %}{% endblock %}
 
     <!-- Responsive for IE8 -->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 
 <body>
@@ -44,7 +55,7 @@
 
     {% javascripts
     '@AppSharedBundle/Resources/public/js/vendor/sb-admin-two.min.js'
-    '@AppSharedBundle/Resources/public/js/vendor/angular.min.js'
+    '@AppSharedBundle/Resources/public/js/vendor/metis-menu.min.js'
     output='resources/js/app-base.min.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
