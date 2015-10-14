@@ -9,7 +9,7 @@
         "remaining": 7,
         "unread": 8,
         "problems": 9,
-        "picture": ""
+        "picture": "../resources/images/app/default-logo.min.png"
     },
     {
         "id": 2,
@@ -21,7 +21,7 @@
         "remaining": 7,
         "unread": 8,
         "problems": 9,
-        "picture": ""
+        "picture": "../resources/images/app/default-logo.min.png"
     },
     {
         "id": 3,
@@ -33,7 +33,7 @@
         "remaining": 7,
         "unread": 8,
         "problems": 9,
-        "picture": ""
+        "picture": "../resources/images/app/default-logo.min.png"
     },
     {
         "id": 4,
@@ -45,7 +45,7 @@
         "remaining": 7,
         "unread": 8,
         "problems": 9,
-        "picture": ""
+        "picture": "../resources/images/app/default-logo.min.png"
     },
     {
         "id": 5,
@@ -57,6 +57,6 @@
         "remaining": 7,
         "unread": 8,
         "problems": 9,
-        "picture": ""
+        "picture": "../resources/images/app/default-logo.min.png"
     }
 ]

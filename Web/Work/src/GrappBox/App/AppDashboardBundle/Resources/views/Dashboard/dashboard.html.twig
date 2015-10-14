@@ -60,18 +60,27 @@
     <div class="container app-container">
         <div class="row">
             <div class="col-lg-12">
-                <!-- grappbox.data : global progress -->
+                <!-- grappbox.data : next meetings -->
                 <div class="section-heading app-section-heading"><h2>Global progress</h2></div>
                 <div class="section-content app-section-content">
                     <div id="global-progress-data" ng-controller="globalProgressController">
                         <div class="app-data" ng-repeat="progress in globalProgressList">
-                            <ul class="app-data-list">
-                                <li>{[{ progress.project }]}</li>
-                                <li>{[{ progress.client }]}</li>
-                                <li>{[{ progress.phone }]}</li>
-                                <li>{[{ progress.email }]}</li>
-                                <li>{[{ progress.done }]} / {[{ progress.remaining }]}</li>
-                                <li>{[{ progress.problems }]}</li>
+                            <ul class="app-data-list each-progress-data hvr-float">
+                                <li class="project-picture"><img data-ng-src="{[{ progress.picture }]}" height="120²" width="120²"></li>
+                                <li class="project-details">
+                                    <div class="project-name">{[{ progress.project }]}</div>
+                                    <div class="project-client">{[{ progress.client }]}</div>
+                                </li>
+                                <li class="client-details">
+                                    <div class="client-phone">{[{ progress.phone }]}</div>
+                                    <div class="client-mail">{[{ progress.email }]}</div>
+                                </li>
+                                <li class="clearfix"></li>
+                                <li class="progress-details">
+                                    <div class="progress-done"><i class="fa fa-list-ol"></i>{[{ progress.done }]} / {[{ progress.remaining }]}</div>
+                                    <div class="progress-problems"><i class="fa fa-exclamation-circle"></i>{[{ progress.problems }]}</div>
+                                    <div class="unread-messages"><i class="fa fa-envelope-o"></i>{[{ progress.unread }]}</div>
+                                </li>
                             </ul>
                         </div>
                     </div>
