@@ -83,7 +83,7 @@
 {% block child_javascripts_bottom %}
     {% javascripts
     	'@AppDashboardBundle/Resources/public/js/custom/app-dashboard.js'
-    	output='resources/js/app-dashboard.min.js' %}
+    	filter='?yui_js' output='resources/js/app-dashboard.min.js' %}
     	<script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

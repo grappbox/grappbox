@@ -20,9 +20,9 @@
 
     <link rel='stylesheet' type='text/css' href={{ asset('resources/css/base.min.css') }} />
     {% stylesheets
-    '@AppSharedBundle/Resources/public/css/vendor/sb-admin-two.css'
+    '@AppSharedBundle/Resources/public/css/vendor/sbadmin-two.css'
     '@AppSharedBundle/Resources/public/css/custom/app-base.css'
-    output='resources/css/app-base.min.css' %}
+    filter='?yui_css' output='resources/css/app-base.min.css' %}
     <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
     {% endstylesheets %}
 
@@ -100,17 +100,18 @@
     <script type="text/javascript" src={{ asset('resources/js/base.min.js') }} ></script>
 
     {% javascripts
-    '@AppSharedBundle/Resources/public/js/vendor/sb-admin-two.min.js'
-    '@AppSharedBundle/Resources/public/js/vendor/metis-menu.min.js'
-    output='resources/js/app-base.min.js' %}
+    '@AppSharedBundle/Resources/public/js/vendor/sbadmin-two.js'
+    '@AppSharedBundle/Resources/public/js/vendor/metis-menu.js'
+    '@AppSharedBundle/Resources/public/js/vendor/dragend.js'
+    filter='?yui_js' output='resources/js/app-base.jquery.min.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
     {% javascripts
-    '@AppSharedBundle/Resources/public/js/vendor/angular.min.js'
-    '@AppSharedBundle/Resources/public/js/vendor/angular-route.min.js'
-    '@AppSharedBundle/Resources/public/js/vendor/angular-resource.min.js'
-    output='resources/js/app-base-angular.min.js' %}
+    '@AppSharedBundle/Resources/public/js/vendor/angular.js'
+    '@AppSharedBundle/Resources/public/js/vendor/angular-route.js'
+    '@AppSharedBundle/Resources/public/js/vendor/angular-resource.js'
+    filter='?yui_js' output='resources/js/app-base.angular.min.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
