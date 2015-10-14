@@ -18,10 +18,10 @@
                 <div class="section-content app-section-content">
                     <div id="team-occupation-data" ng-controller="teamOccupationController">
                         <div class="app-data" ng-repeat="member in teamOccupationList">
-                            <ul class="app-data-list team-member-data">
+                            <ul class="app-data-list team-member-data hvr-float">
                                 <li class="team-member-picture"><img data-ng-src="{[{ member.picture }]}" height="120" width="120"></li>
                                 <li class="team-member-name">{[{ member.name }]}</li>
-                                <li class="team-member-status">{[{ member.status }]}</li>
+                                <li class="team-member-status {[{ member.status == 'available' ? 'member-available' : 'member-busy' }]}">{[{ member.status }]}</li>
                             </ul>
                         </div>
                     </div>
