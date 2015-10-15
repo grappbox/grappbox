@@ -5,6 +5,14 @@
 <ion-view>
     <ion-nav-title class="item-text-wrap">Whiteboard</ion-nav-title>
     <ion-content class="has-header" ng-controller="WhiteboardCtrl">
-        <h1 class="text-center">Whiteboard</h1>
+        <canvas id="canvas" width="300" height="300"></canvas>
+        <div>
+            <button class="button" onclick="whiteboard.StartDrawing();">Dessiner</button>
+            <button class="button" onclick="whiteboard.DrawCircle()">Cercle</button>
+            <button class="button" onclick="whiteboard.DrawRect()">Rectangle</button>
+            <button class="button" onclick="whiteboard.DrawLine()">Ligne</button>
+            <button class="button" onclick="whiteboard.ToSVG()">To SVG</button>
+            <button class="button" onclick="whiteboard.LoadSVG()">Load SVG</button>
+        </div>
     </ion-content>
 </ion-view>

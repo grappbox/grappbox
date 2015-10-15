@@ -5,14 +5,6 @@
 
 angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
 
-.run(function ($ionicPlatform) {
-    $ionicPlatform.ready(function () {
-        if (window.StatusBar) {
-            StatusBar.styleDefault();
-        }
-    });
-})
-
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('app', {
