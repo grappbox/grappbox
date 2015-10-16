@@ -34,42 +34,79 @@ whiteboard_delete:
 
 
 
-
-dashboard_getTeamOccupation:
-    path:		/Dashboard/getTeamOccupation/{id}
-    defaults:	{ _controller: APIBundle:Dashboard:getTeamOccupation }
+dashboard_getProjectCreator:
+    path:       /Dashboard/getProjectCreator/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getProjectCreator }
     requirements:
         id: \d+
 
-dashboard_getNextMeetings:
-    path:		/Dashboard/getNextMeetings/{id}
-    defaults:	{ _controller: APIBundle:Dashboard:getNextMeetings }
+dashboard_getBasicInformations:
+    path:       /Dashboard/getBasicInformations/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getBasicInformations }
     requirements:
         id: \d+
 
-dashboard_getGlobalProgress:
-    path:		/Dashboard/getGlobalProgress/{id}
-    defaults:	{ _controller: APIBundle:Dashboard:getGlobalProgress }
+dashboard_getProjectTasks:
+    path:       /Dashboard/getProjectTasks/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getProjectTasks }
     requirements:
         id: \d+
 
-dashboard_getPersonalProgress:
-    path:		/Dashboard/getPersonalProgress/{id}
-    defaults:	{ _controller: APIBundle:Dashboard:getPersonnalProgress }
+dashboard_getUserBasicInformations:
+    path:       /Dashboard/getUserBasicInformations/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getUserBasicInformations }
     requirements:
         id: \d+
 
-dashboard_getAlerts:
-    path:		/Dashboard/getAlerts/{id}
-    defaults:	{ _controller: APIBundle:Dashboard:getAlerts }
+dashboard_getProjectPersons:
+    path:       /Dashboard/getProjectPersons/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getProjectPersons }
     requirements:
         id: \d+
 
-dashboard_getAssignedProjects:
-    path:		/Dashboard/getAssignedProjects/{id}
-    defaults:	{ _controller: APIBundle:Dashboard:getAssignedProjects }
+dashboard_getPersonMeetings:
+    path:       /Dashboard/getPersonMeetings/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getPersonMeetings }
     requirements:
         id: \d+
+
+dashboard_getMeetingBasicInformations:
+    path:       /Dashboard/getMeetingBasicInformations/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getMeetingBasicInformations }
+    requirements:
+        id: \d+
+
+dashboard_getProjectList:
+    path:       /Dashboard/getProjectList/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getProjectList }
+    requirements:
+        id: \d+
+
+dashboard_getTasksStatus:
+    path:       /Dashboard/getTasksStatus/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getTasksStatus }
+    requirements:
+        id: \d+
+
+dashboard_getNumberTimelineMessages:
+    path:       /Dashboard/getNumberTimelineMessages/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getNumberTimelineMessages }
+    requirements:
+        id: \d+
+
+dashboard_getNumberBugs:
+    path:       /Dashboard/getNumberBugs/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getNumberBugs }
+    requirements:
+        id: \d+
+
+dashboard_getPersonOccupation:
+    path:       /Dashboard/getPersonOccupation/{idPerson}.{idProject}
+    defaults:   { _controller: APIBundle:Dashboard:getPersonOccupation }
+    requirements:
+        idPerson: \d+
+        idProject: \d+
+
 
 
 cloud_sendFile:
@@ -106,7 +143,6 @@ cloud_getMetadata:
 
 
 
-
 timeline_getTimelineType:
     path:       /Timeline/getTimelineType/{id}
     defaults:   { _controller: APIBundle:Timeline:getTimelineType }
@@ -130,7 +166,6 @@ timeline_delMessage:
     defaults:   { _controller: APIBundle:Timeline:delMessage }
     requirements:
         id: \d+
-
 
 
 
@@ -170,7 +205,6 @@ bugtracker_getTicketDetails:
 
 
 
-
 planning_getDayPlanning:
     path:       /Planning/getDayPlanning
     defaults:   { _controller: APIBundle:Planning:getDayPlanning }
@@ -192,7 +226,6 @@ planning_getEventDetails:
     defaults:   { _controller: APIBundle:Planning:getEventDetails }
     requirements:
         id: \d+
-
 
 
 
@@ -256,7 +289,6 @@ projectSettings_setProjectFinished:
 
 
 
-
 visualisingProject_addAction:
     path:       /VisualisingProject/addAction/{id}
     defaults:   { _controller: APIBundle:VisualisingProject:addAction }
@@ -292,7 +324,6 @@ visualisingProject_invitePerson:
     defaults:   { _controller: APIBundle:VisualisingProject:invitePerson }
     requirements:
         id: \d+
-
 
 
 
@@ -356,7 +387,6 @@ accountAdministration_signIn:
 
 
 
-
 personnalSettings_editPhoto:
     path:       /PersonnalSettings/editPhoto/{id}
     defaults:   { _controller: APIBundle:PersonnalSettings:editPhoto }
@@ -386,7 +416,6 @@ personnalSettings_getRole:
     defaults:   { _controller: APIBundle:PersonnalSettings:getRole }
     requirements:
         id: \d+
-
 
 
 
