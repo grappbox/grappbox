@@ -10,6 +10,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use APIBundle\Entity\CloudTransfer;
 use APIBundle\Entity\CloudSecuredFileMetadata;
 
+use Sabre\DAV\Client;
+use League\Flysystem\WebDAV\WebDAVAdapter;
+use League\Flysystem\Filesystem;
+use League\Flysystem\Plugin\ListFiles;
+
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class CloudController extends Controller
@@ -61,8 +66,7 @@ class CloudController extends Controller
 		}
 	}
 	*/
-	public function streamAction(Request $request)
-	{
+	public function streamAction(Request $request){
 		//Check if request method is catched by the API
 		$method = $request->getMethod();
 		if ($method != "POST" && $method != "DELETE")
@@ -80,8 +84,7 @@ class CloudController extends Controller
 							: $this->closeStream($receivedData, $token));
 	}
 
-	private function openStream($receivedData, $userId, $idProject)
-	{
+	private function openStream($receivedData, $userId, $idProject){
 		if ($receivedData["path"][0] != "/")
 			return header("HTTP1.0 400 Bad Request", True, 400);
 		$em = $this->getDoctrine()->getManager();
@@ -125,7 +128,8 @@ class CloudController extends Controller
 		$filesystem->copy('/Grappbox Transfer/'.(string)$stream->getId().'.transfer', (string)$stream->getPath().(string)$stream->getFilename());
 		//Delete the transfer file
 		$filesystem->delete('/Grappbox Transfer/'.(string)$stream->getId().'.transfer');
-		$em->remove($stream);
+		$stream->setDeletionDate(new DateTime("now"));
+		$em->persist($stream);
 		$em->flush();
 		return header("HTTP/1.0 200 OK", True, 203);
 	}
@@ -144,8 +148,7 @@ class CloudController extends Controller
 			}
  	  }
 	*/
-	public function sendFileAction(Request $request)
-	{
+	public function sendFileAction(Request $request){
 		//Check if request method is catched by the API
 		$method = $request->getMethod();
 		if ($method != "PUT")
@@ -184,9 +187,21 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function getListAction(Request $request)
+	public function getListAction($token, $idProject, $path, Request $request)
 	{
-		return new Response('get File List Success');
+		$method = $request->getMethod();
+		if ($method != "GET")
+			return header("HTTP/1.0 404 Not Found", True, 404);
+		if ($this->checkTokenAuthorization($token, $idProject) < 0)
+			return header("HTTP/1.0 403 Forbidden", True, 403);
+		$client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
+		$rpath = "/GrappBox Projects/".(string)($idProject).str_replace(",", "/", $path);
+
+		$content = $adapter->listContents($rpath);
+		return new JsonResponse(array("path" => $rpath,
+																	"data" => $content));
 	}
 
 	/**
@@ -205,51 +220,12 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function getFileAction(Request $request)
-	{
-		return new Response('get File Success');
-	}
-
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="push a file",
-	 * views = { "cloud" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      }
-     * }
-     * )
-	 *
-	 */
-	public function pushFileAction(Request $request)
-	{
-		return new Response('push File Success');
-	}
-
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="set the password of a file",
-	 * views = { "cloud" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      }
-     * }
-     * )
-	 *
-	 */
-	public function setFilePassAction(Request $request)
-	{
-		return new Response('Set File Pass Success');
+	public function getFileAction(Request $request){
+		return new Response('', 200, array(
+	    'X-Sendfile'          => "http://api.grappbox.com/robots.txt",
+	    'Content-type'        => 'application/octet-stream',
+	    'Content-Disposition' => sprintf('attachment; filename="%s"', "robots.txt"))
+		);
 	}
 
 	/**

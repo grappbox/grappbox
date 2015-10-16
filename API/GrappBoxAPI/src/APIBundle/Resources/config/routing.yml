@@ -81,7 +81,7 @@ cloud_streamActions:
   defaults:   { _controller: APIBundle:Cloud:stream }
 
 cloud_getList:
-    path:       /Cloud/getList
+    path:       /Cloud/getList/{token}/{idProject}/{path}
     defaults:   { _controller: APIBundle:Cloud:getList }
 
 cloud_getFile:
