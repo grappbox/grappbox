@@ -4,15 +4,25 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">Whiteboard</ion-nav-title>
-    <ion-content class="has-header" ng-controller="WhiteboardCtrl">
-        <canvas id="canvas" width="300" height="300"></canvas>
-        <div>
-            <button class="button" onclick="whiteboard.StartDrawing();">Dessiner</button>
-            <button class="button" onclick="whiteboard.DrawCircle()">Cercle</button>
-            <button class="button" onclick="whiteboard.DrawRect()">Rectangle</button>
-            <button class="button" onclick="whiteboard.DrawLine()">Ligne</button>
-            <button class="button" onclick="whiteboard.ToSVG()">To SVG</button>
-            <button class="button" onclick="whiteboard.LoadSVG()">Load SVG</button>
-        </div>
-    </ion-content>
+        <ion-content class="has-header" ng-controller="WhiteboardCtrl" overflow-scroll="true">
+            <!--<canvas id="canvas" width="300" height="300"></canvas>
+            <div>
+                <button class="button" onclick="whiteboard.StartDrawing();">Dessiner</button>
+                <button class="button" onclick="whiteboard.DrawCircle()">Cercle</button>
+                <button class="button" onclick="whiteboard.DrawRect()">Rectangle</button>
+                <button class="button" onclick="whiteboard.DrawLine()">Ligne</button>
+                <button class="button" onclick="whiteboard.ToSVG()">To SVG</button>
+                <button class="button" onclick="whiteboard.LoadSVG()">Load SVG</button>
+            </div>-->
+            <canvas id="canvasWhiteboard"></canvas>
+        </ion-content>
+        <ion-footer-bar class="bar-stable">
+            <div class="title">
+                <button class="button button-icon ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button><!--ng-if="showColorPaletteIcon"-->
+                <button class="button button-icon ion-paintbrush" style="color: {{brushcolor}}" ng-click="drawingMode()"></button>
+                <button class="button button-icon" style="color: {{brushcolor}}" ng-click="addText()">Aa</button>
+                <button class="button button-icon ion-ios-circle-outline" style="color: {{brushcolor}}" ng-click="addForm()"></button>
+                <button class="button button-icon ion-ios-undo" ng-click="undoLastObject()"></button>
+            </div>
+        </ion-footer-bar>
 </ion-view>
