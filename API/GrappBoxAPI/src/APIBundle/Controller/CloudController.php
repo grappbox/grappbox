@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use APIBundle\Entity\CloudTransfer;
 use APIBundle\Entity\CloudSecuredFileMetadata;
@@ -70,7 +71,7 @@ class CloudController extends Controller
 		//Check if request method is catched by the API
 		$method = $request->getMethod();
 		if ($method != "POST" && $method != "DELETE")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+			throw $this->createNotFoundException('The method does not exist');
 		//Check if user have authorization to modify cloud for this project
 		$dbManager = $this->getDoctrine()->getManager();
 		$token = $request->get("session_infos")["token"];
@@ -78,7 +79,7 @@ class CloudController extends Controller
 		$receivedData = $request->get("stream_infos");
 		$idProject = $receivedData["project_id"];
 		if ($method == "POST" && $this->checkTokenAuthorization($token, $idProject) < 0)
-			return header("HTTP/1.0 403 Forbidden", True, 403);
+			throw $this->createAccessDeniedException();
 		return ($method == "POST"
 							? $this->openStream($receivedData, $userId, $idProject)
 							: $this->closeStream($receivedData, $token));
@@ -106,7 +107,7 @@ class CloudController extends Controller
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		$user_id = $this->getUserId($token);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
-			return header("HTTP/1.0 403 Forbidden", True, 403);
+			throw $this->createAccessDeniedException();
 
 		//Here the user have the authorization to close this stream
 		if (!is_null($stream->getPassword()))
@@ -152,7 +153,7 @@ class CloudController extends Controller
 		//Check if request method is catched by the API
 		$method = $request->getMethod();
 		if ($method != "PUT")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+			throw $this->createNotFoundException('The method does not exist');
 		//Check Authorization to access cloud and to upload that file
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
 		$token = $request->get("session_infos")["token"];
@@ -160,7 +161,7 @@ class CloudController extends Controller
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
-			return header("HTTP/1.0 403 Forbidden", True, 403);
+			throw $this->createAccessDeniedException();
 
 		//Here the user have the right authorization, so upload the file's chunk
 
@@ -191,9 +192,9 @@ class CloudController extends Controller
 	{
 		$method = $request->getMethod();
 		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+			throw $this->createNotFoundException('The method does not exist');
 		if ($this->checkTokenAuthorization($token, $idProject) < 0)
-			return header("HTTP/1.0 403 Forbidden", True, 403);
+			throw $this->createAccessDeniedException();
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
@@ -221,11 +222,21 @@ class CloudController extends Controller
 	 *
 	 */
 	public function getFileAction(Request $request){
-		return new Response('', 200, array(
-	    'X-Sendfile'          => "http://api.grappbox.com/robots.txt",
-	    'Content-type'        => 'application/octet-stream',
-	    'Content-Disposition' => sprintf('attachment; filename="%s"', "robots.txt"))
-		);
+		//Check if request method is catched by the API
+		$method = $request->getMethod();
+		if ($method != "POST")
+			throw $this->createNotFoundException('The method does not exist');
+		//Check if user have authorization to modify cloud for this project
+		$dbManager = $this->getDoctrine()->getManager();
+		$token = $request->get("session_infos")["token"];
+		$userId = $this->getUserId($token);
+		$receivedData = $request->get("stream_infos");
+		$idProject = $receivedData["project_id"];
+		//if ($this->checkTokenAuthorization($token, $idProject) < 0)
+		//	throw $this->createAccessDeniedException();
+
+		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
+		return new BinaryFileResponse("http://cloud.grappbox.com/index.php/s/pwAcLbcTs2Ccing");
 	}
 
 	/**
