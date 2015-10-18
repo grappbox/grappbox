@@ -16,4 +16,11 @@ APIBundle\Entity\TimelineMessage:
             column: timeline_id
         message:
             type: text
+    manyToOne:
+        timelines:
+          targetEntity: Timeline
+          inversedBy: timelineMessages
+          joinColumn:
+            name: timeline_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

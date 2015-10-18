@@ -17,4 +17,15 @@ APIBundle\Entity\Timeline:
         name:
             type: string
             length: 255
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: timelines
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    oneToMany:
+        timelineMessages:
+          targetEntity: TimelineMessage
+          mappedBy: timelines
     lifecycleCallbacks: {  }

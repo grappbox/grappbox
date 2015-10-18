@@ -1,5 +1,6 @@
 APIBundle\Entity\Event:
     type: entity
+    repositoryClass: APIBundle\Entity\EventRepository
     table: events
     id:
         id:
@@ -34,4 +35,21 @@ APIBundle\Entity\Event:
         deletedAt:
             type: datetime
             column: deleted_at
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: events
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+        eventtypes:
+          targetEntity: EventType
+          inversedBy: events
+          joinColumn:
+            name: type_id
+            referencedColumnName: id
+    oneToMany:
+        eventusers:
+          targetEntity: EventUser
+          mappedBy: events
     lifecycleCallbacks: {  }

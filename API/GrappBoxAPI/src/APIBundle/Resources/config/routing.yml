@@ -33,6 +33,23 @@ whiteboard_delete:
         id: \d+
 
 
+dashboard_getTeamOccupation:
+    path:       /Dashboard/getTeamOccupation/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getTeamOccupation }
+    requirements:
+        id: \d+
+
+dashboard_getProjectsGlobalProgress:
+    path:       /Dashboard/getProjectsGlobalProgress/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getProjectsGlobalProgress }
+    requirements:
+        id: \d+
+
+dashboard_getNextMeetings:
+    path:       /Dashboard/getNextMeetings/{id}
+    defaults:   { _controller: APIBundle:Dashboard:getNextMeetings }
+    requirements:
+        id: \d+
 
 dashboard_getProjectCreator:
     path:       /Dashboard/getProjectCreator/{id}

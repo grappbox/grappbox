@@ -59,6 +59,16 @@ class Task
      */
     private $deletedAt;
 
+    /**
+     * @var \APIBundle\Entity\User
+     */
+    private $users;
+
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $projects;    
+
 
     /**
      * Get id
@@ -275,5 +285,51 @@ class Task
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * Set users
+     *
+     * @param \APIBundle\Entity\User $users
+     * @return Task
+     */
+    public function setUsers(\APIBundle\Entity\User $users = null)
+    {
+        $this->users = $users;
+
+        return $this;
+    }
+
+    /**
+     * Get users
+     *
+     * @return \APIBundle\Entity\User 
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return Task
+     */
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
     }
 }

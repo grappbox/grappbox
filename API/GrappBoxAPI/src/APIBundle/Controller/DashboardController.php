@@ -19,6 +19,87 @@ class DashboardController extends Controller
 	 *
 	 * @ApiDoc(
 	 * resource=true,
+	 * description="get team occupation for all project the person is the creator",
+	 * views = { "dashboard" },
+  	 * requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "description"="The id corresponding to the person you want",
+     *          "requirement"="\d+"
+     *      },
+     *		{
+     *          "name"="return",
+     *          "dataType"="array",
+     *          "description"="array containing: project_name, first_name, last_name, occupation, number_of_tasks, number_of_ongoing_tasks, occupation_percent"
+     *		}
+     *  }
+	 * )
+	 *
+	 */
+	public function getTeamOccupationAction(Request $request, $id)
+	{
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findTeamOccupation($id));
+	}
+
+	/**
+	 *
+	 * @ApiDoc(
+	 * resource=true,
+	 * description="get a person next meetings",
+	 * views = { "dashboard" },
+  	 * requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "description"="The id corresponding to the person you want",
+     *          "requirement"="\d+"
+     *      },
+     *		{
+     *          "name"="return",
+     *          "dataType"="array",
+     *          "description"="array containing: project_name, project_logo, event_type, event_title, event_description, event_begin_date, event_end_date"
+     *		}
+     *  }
+	 * )
+	 *
+	 */
+	public function getNextMeetingsAction(Request $request, $id)
+	{
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Event')->findNextMeetings($id));
+	}
+
+	/**
+	 *
+	 * @ApiDoc(
+	 * resource=true,
+	 * description="get the global progress for all project of the person",
+	 * views = { "dashboard" },
+  	 * requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "description"="The id corresponding to the person you want",
+     *          "requirement"="\d+"
+     *      },
+     *		{
+     *          "name"="return",
+     *          "dataType"="array",
+     *          "description"="array containing: project_name, project_description, project_logo, contact_mail, facebook, twitter, number_finished_tasks, number_tasks, number_bugs, number_messages"
+     *		}
+     *  }
+	 * )
+	 *
+	 */
+	public function getProjectsGlobalProgressAction(Request $request, $id)
+	{
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findProjectGlobalProgress($id));
+	}
+
+	/**
+	 *
+	 * @ApiDoc(
+	 * resource=true,
 	 * description="get project creator",
 	 * views = { "dashboard" },
   	 * requirements={
@@ -99,7 +180,7 @@ class DashboardController extends Controller
 	 * )
 	 *
 	 */
-	public function getBasicInformationsAction(Request $request, $id)
+	public function getProjectBasicInformationsAction(Request $request, $id)
 	{
 		$method = $request->getMethod();
 		if ($method != "GET")

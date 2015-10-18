@@ -29,6 +29,24 @@ class Timeline
      */
     private $name;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $timelineMessages;
+
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $projects;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->timelineMessages = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
 
     /**
      * Get id
@@ -107,5 +125,61 @@ class Timeline
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Add timelineMessages
+     *
+     * @param \APIBundle\Entity\TimelineMessage $timelineMessages
+     * @return Timeline
+     */
+    public function addTimelineMessage(\APIBundle\Entity\TimelineMessage $timelineMessages)
+    {
+        $this->timelineMessages[] = $timelineMessages;
+
+        return $this;
+    }
+
+    /**
+     * Remove timelineMessages
+     *
+     * @param \APIBundle\Entity\TimelineMessage $timelineMessages
+     */
+    public function removeTimelineMessage(\APIBundle\Entity\TimelineMessage $timelineMessages)
+    {
+        $this->timelineMessages->removeElement($timelineMessages);
+    }
+
+    /**
+     * Get timelineMessages
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTimelineMessages()
+    {
+        return $this->timelineMessages;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return Timeline
+     */
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
     }
 }

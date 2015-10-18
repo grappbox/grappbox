@@ -34,4 +34,17 @@ APIBundle\Entity\Task:
         deletedAt:
             type: datetime
             column: deleted_at
+    manyToOne:
+        users:
+          targetEntity: User
+          inversedBy: tasks
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+        projects:
+          targetEntity: Project
+          inversedBy: tasks
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

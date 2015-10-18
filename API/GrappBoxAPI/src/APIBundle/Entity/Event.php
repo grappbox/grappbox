@@ -59,6 +59,28 @@ class Event
      */
     private $deletedAt;
 
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $projects;
+
+    /**
+     * @var \APIBundle\Entity\EventType
+     */
+    private $eventtypes;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $eventusers;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->eventusers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -275,5 +297,84 @@ class Event
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return Event
+     */
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Set eventtypes
+     *
+     * @param \APIBundle\Entity\EventType $eventtypes
+     * @return Event
+     */
+    public function setEventtypes(\APIBundle\Entity\EventType $eventtypes = null)
+    {
+        $this->eventtypes = $eventtypes;
+
+        return $this;
+    }
+
+    /**
+     * Get eventtypes
+     *
+     * @return \APIBundle\Entity\EventType 
+     */
+    public function getEventtypes()
+    {
+        return $this->eventtypes;
+    }
+
+    /**
+     * Add eventusers
+     *
+     * @param \APIBundle\Entity\EventUser $eventusers
+     * @return Event
+     */
+    public function addEventuser(\APIBundle\Entity\EventUser $eventusers)
+    {
+        $this->eventusers[] = $eventusers;
+
+        return $this;
+    }
+
+    /**
+     * Remove eventusers
+     *
+     * @param \APIBundle\Entity\EventUser $eventusers
+     */
+    public function removeEventuser(\APIBundle\Entity\EventUser $eventusers)
+    {
+        $this->eventusers->removeElement($eventusers);
+    }
+
+    /**
+     * Get eventusers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEventusers()
+    {
+        return $this->eventusers;
     }
 }
