@@ -1,4 +1,0 @@
-services:
-#    app_dashboard.example:
-#        class: GrappBox\App\AppDashboardBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]

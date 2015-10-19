@@ -1,3 +1,0 @@
-showcase_home:
-    path:     /
-    defaults: { _controller: ShowcaseHomeBundle:Home:index }

@@ -16,10 +16,8 @@ class AppKernel extends Kernel
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new GrappBox\Showcase\ShowcaseSharedBundle\ShowcaseSharedBundle(),
-            new GrappBox\Showcase\ShowcaseHomeBundle\ShowcaseHomeBundle(),
-            new GrappBox\App\AppSharedBundle\AppSharedBundle(),
-            new GrappBox\App\AppDashboardBundle\AppDashboardBundle(),
+            new GrappBox\Bundle\ShowcaseBundle\ShowcaseBundle(),
+            new GrappBox\Bundle\AppBundle\AppBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
