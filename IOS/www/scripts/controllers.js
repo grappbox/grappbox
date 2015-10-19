@@ -284,12 +284,14 @@ angular.module('GrappBox.controllers', [])
         { colorHex: "#8e44ad" }
     ]
 
+    //Change brush color
     $scope.changeBrushColor = function (colorChosen) {
         canvas.freeDrawingBrush.color = colorChosen;
         $scope.brushcolor = colorChosen; //Set brush color to the new color chosen
         $scope.popoverColors.hide();
     }
 
+    //Draw Rectangle shape
     $scope.drawRect = function () {
         var mouse_pos = { x: 0, y: 0 };
 
@@ -298,10 +300,10 @@ angular.module('GrappBox.controllers', [])
         canvas.observe('mouse:down', function (e) {
             mouse_pos = canvas.getPointer(e.e);
             canvas.add(new fabric.Rect({
-                top: mouse_pos.y,
-                left: mouse_pos.x,
-                width: 30,
-                height: 40,
+                top: mouse_pos.y - 15,
+                left: mouse_pos.x - 20,
+                width: 40,
+                height: 30,
                 fill: $scope.brushcolor,
                 selectable: true,
                 evented: false
@@ -310,6 +312,7 @@ angular.module('GrappBox.controllers', [])
         $scope.popoverShapes.hide();
     }
 
+    //Draw Ellipse shape
     $scope.drawEllipse = function () {
         var mouse_pos = { x: 0, y: 0 };
 
@@ -318,8 +321,8 @@ angular.module('GrappBox.controllers', [])
         canvas.observe('mouse:down', function (e) {
             mouse_pos = canvas.getPointer(e.e);
             canvas.add(new fabric.Ellipse({
-                top: mouse_pos.y,
-                left: mouse_pos.x,
+                top: mouse_pos.y - 30,
+                left: mouse_pos.x - 40,
                 strokeWidth: 10,
                 fill: $scope.brushcolor,
                 rx: 40, ry: 30,
@@ -330,6 +333,7 @@ angular.module('GrappBox.controllers', [])
         $scope.popoverShapes.hide();
     }
 
+    //Draw Triangle shape
     $scope.drawTriangle = function () {
         var mouse_pos = { x: 0, y: 0 };
 
@@ -338,8 +342,8 @@ angular.module('GrappBox.controllers', [])
         canvas.observe('mouse:down', function (e) {
             mouse_pos = canvas.getPointer(e.e);
             canvas.add(new fabric.Triangle({
-                top: mouse_pos.y,
-                left: mouse_pos.x,
+                top: mouse_pos.y - 15,
+                left: mouse_pos.x - 15,
                 width: 30,
                 height: 30,
                 fill: $scope.brushcolor,
@@ -350,6 +354,7 @@ angular.module('GrappBox.controllers', [])
         $scope.popoverShapes.hide();
     }
 
+    //Draw Diamond shape
     $scope.drawDiamond = function () {
         var mouse_pos = { x: 0, y: 0 };
 
@@ -365,8 +370,8 @@ angular.module('GrappBox.controllers', [])
                     {x: 0, y: 50}
                 ],
                 {
-                    top: mouse_pos.y,
-                    left: mouse_pos.x,
+                    top: mouse_pos.y - 50,
+                    left: mouse_pos.x - 25,
                     fill: $scope.brushcolor,
                     selected: true,
                     evented: false,
@@ -380,6 +385,7 @@ angular.module('GrappBox.controllers', [])
         $scope.popoverShapes.hide();
     }
 
+    //Draw Line
     $scope.drawLine = function () {
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
@@ -405,7 +411,7 @@ angular.module('GrappBox.controllers', [])
                 canvas.add(new fabric.Line([StartX, StartY, Mouse.x, Mouse.y],
                     {
                         stroke: $scope.brushcolor,
-                        strokeWidth: 2,
+                        strokeWidth: 6,
                         selectable: false,
                         evented: false
                     }));
