@@ -60,3 +60,4 @@ Temporary Items
 
 /web/resources/css/*
 /web/resources/js/*
+!/web/resources/js/app-base.angular.min.js
