@@ -3,60 +3,60 @@
 		"id": 1,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 2,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 3,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 4,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 5,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 6,
 		"name": "John Doe",
 		"status": "busy",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 7,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 8,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 9,
 		"name": "John Doe",
 		"status": "busy",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	},
 	{
 		"id": 10,
 		"name": "John Doe",
 		"status": "available",
-		"picture": "../resources/images/app/default-avatar.min.png"
+		"picture": "../resources/images/default-avatar.min.png"
 	}
 ]

@@ -3,70 +3,60 @@
         "id": 1,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 2,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 3,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 4,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 5,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 6,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 7,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 8,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 9,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     },
     {
         "id": 10,
         "type": "Client meeting",
         "date": "YYYY-MM-DD",
-        "time": "HH:MM",
-        "picture": "default-meeting.min.png"
+        "time": "HH:MM"
     }
 ]

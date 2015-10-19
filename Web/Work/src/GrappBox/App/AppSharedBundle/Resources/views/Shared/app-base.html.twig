@@ -97,20 +97,11 @@
 
     {% include 'AppSharedBundle:Shared:app-footer.html.twig' %}
 
-    <script type="text/javascript" src={{ asset('resources/js/base.min.js') }} ></script>
-
     {% javascripts
+    'resources/js/base.min.js'
     '@AppSharedBundle/Resources/public/js/vendor/sbadmin-two.js'
     '@AppSharedBundle/Resources/public/js/vendor/metis-menu.js'
     filter='?yui_js' output='resources/js/app-base.jquery.min.js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-
-    {% javascripts
-    '@AppSharedBundle/Resources/public/js/vendor/angular.js'
-    '@AppSharedBundle/Resources/public/js/vendor/angular-route.js'
-    '@AppSharedBundle/Resources/public/js/vendor/angular-resource.js'
-    filter='?yui_js' output='resources/js/app-base.angular.min.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
