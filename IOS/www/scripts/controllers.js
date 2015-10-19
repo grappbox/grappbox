@@ -192,35 +192,67 @@ angular.module('GrappBox.controllers', [])
 
     //Switch On/Off drawing mode
     $scope.drawingMode = function () {
-        if (canvas.isDrawingMode == true) {
-            $scope.showColorPaletteIcon = false; //Hide color palette icon
+        if (canvas.isDrawingMode == true)
             canvas.isDrawingMode = false; //Exit drawing mode
-        }
-        else {
-            $scope.showColorPaletteIcon = true; //Show color palette icon
+        else
+        {
+            canvas.off('mouse:down');
             canvas.isDrawingMode = true; //Enter drawing mode
         }
     }
 
     //Colors options in the popover
-    var colorTemplate = '<ion-popover-view><ion-content><div>' +
+    var colorsPopup = '<ion-popover-view><ion-content><div>' +
                      '<button class="button button-icon ion-record"' + // "ion-record" is the round ionic font for colors
-                     'ng-repeat="colorDisplayed in colorTab"' + // "ng-repeat" goes in whiteboard.html and picks in colorsTab list the good color to display
-                     'style="color: {{colorDisplayed.colorHex}};' + // "style" creates a "color" CSS element and assigns it the "colorDisplayed" found in previous ng-repeat "color"
-                     'font-size: 36.5px"' +
+                     'ng-repeat="colorDisplayed in colorTab"' + // "ng-repeat" goes in whiteboard.html and picks in colorsTab list below the good color to display
+                     'style="color: {{colorDisplayed.colorHex}}; font-size: 36.5px"' + // "style" creates a "color" CSS element and assigns it the "colorDisplayed" found in previous ng-repeat "color"
                      'ng-click="changeBrushColor(colorDisplayed.colorHex)"></button>' + // "changeBrushColor" allows to send the good color to be picked after the previously assigned color
                      '</div></ion-content></ion-popover-view>';
 
-    $scope.popover = $ionicPopover.fromTemplate(colorTemplate, {
+    //Shapes options in the popover
+                     //Rectangle
+    var shapesPopup = '<ion-popover-view style="height:50px;"><ion-content><div>' +
+                     '<button class="button button-icon ion-stop"' +
+                     'style="color: {{brushcolor}}; font-size: 36.5px"' +
+                     'ng-click="drawRect()"></button>' +
+                     
+                     //Ellipse
+                     '<button class="button button-icon ion-record"' +
+                     'style="color: {{brushcolor}}; font-size: 36.5px"' +
+                     'ng-click="drawEllipse()"></button>' +
+
+                     //Diamond
+                     '<button class="button button-icon ion-ios-play"' +
+                     'style="color: {{brushcolor}}; font-size: 36.5px"' +
+                     'ng-click="drawDiamond()"></button>' +
+
+                     //Triangle
+                     '<button class="button button-icon ion-arrow-up-b"' +
+                     'style="color: {{brushcolor}}; font-size: 36.5px"' +
+                     'ng-click="drawTriangle()"></button>' +
+
+                     //Line
+                     '<button class="button button-icon ion-minus-round"' +
+                     'style="color: {{brushcolor}}; font-size: 36.5px"' +
+                     'ng-click="drawLine()"></button>' +
+                     '</div></ion-content></ion-popover-view>';
+
+    $scope.popoverColors = $ionicPopover.fromTemplate(colorsPopup, {
         scope: $scope
     });
 
-    //Hide and Show popover
+    $scope.popoverShapes = $ionicPopover.fromTemplate(shapesPopup, {
+        scope: $scope
+    });
+
+    //Show colors popover
     $scope.openColorsPopover = function ($event) {
-        $scope.popover.show($event);
+        $scope.popoverColors.show($event);
     };
-    $scope.closeColorsPopover = function () {
-        $scope.popover.hide();
+
+    //Show shapes popover
+    $scope.openShapesPopover = function ($event) {
+        $scope.popoverShapes.show($event);
     };
 
     //List of colors
@@ -249,13 +281,141 @@ angular.module('GrappBox.controllers', [])
         { colorHex: "#34495e" },
         { colorHex: "#2c3e50" },
         { colorHex: "#9b59b6" },
-        { colorHex: "#8e44ad" },
+        { colorHex: "#8e44ad" }
     ]
 
     $scope.changeBrushColor = function (colorChosen) {
         canvas.freeDrawingBrush.color = colorChosen;
         $scope.brushcolor = colorChosen; //Set brush color to the new color chosen
-        $scope.popover.hide();
+        $scope.popoverColors.hide();
+    }
+
+    $scope.drawRect = function () {
+        var mouse_pos = { x: 0, y: 0 };
+
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+        canvas.observe('mouse:down', function (e) {
+            mouse_pos = canvas.getPointer(e.e);
+            canvas.add(new fabric.Rect({
+                top: mouse_pos.y,
+                left: mouse_pos.x,
+                width: 30,
+                height: 40,
+                fill: $scope.brushcolor,
+                selectable: true,
+                evented: false
+            }));
+        });
+        $scope.popoverShapes.hide();
+    }
+
+    $scope.drawEllipse = function () {
+        var mouse_pos = { x: 0, y: 0 };
+
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+        canvas.observe('mouse:down', function (e) {
+            mouse_pos = canvas.getPointer(e.e);
+            canvas.add(new fabric.Ellipse({
+                top: mouse_pos.y,
+                left: mouse_pos.x,
+                strokeWidth: 10,
+                fill: $scope.brushcolor,
+                rx: 40, ry: 30,
+                selectable: true,
+                evented: false
+            }));
+        });
+        $scope.popoverShapes.hide();
+    }
+
+    $scope.drawTriangle = function () {
+        var mouse_pos = { x: 0, y: 0 };
+
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+        canvas.observe('mouse:down', function (e) {
+            mouse_pos = canvas.getPointer(e.e);
+            canvas.add(new fabric.Triangle({
+                top: mouse_pos.y,
+                left: mouse_pos.x,
+                width: 30,
+                height: 30,
+                fill: $scope.brushcolor,
+                selectable: true,
+                evented: false
+            }));
+        });
+        $scope.popoverShapes.hide();
+    }
+
+    $scope.drawDiamond = function () {
+        var mouse_pos = { x: 0, y: 0 };
+
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+        canvas.observe('mouse:down', function (e) {
+            mouse_pos = canvas.getPointer(e.e);
+            canvas.add(new fabric.Polygon(
+                [
+                    {x: 25, y: 0},
+                    {x: 50, y: 50},
+                    {x: 25, y: 100},
+                    {x: 0, y: 50}
+                ],
+                {
+                    top: mouse_pos.y,
+                    left: mouse_pos.x,
+                    fill: $scope.brushcolor,
+                    selected: true,
+                    evented: false,
+                    hasBorders: false,
+                    hasControls: false,
+                    hasRotatingPoint: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+            }));
+        });
+        $scope.popoverShapes.hide();
+    }
+
+    $scope.drawLine = function () {
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+        canvas.observe('mouse:down', function (e) { LineMouseDown(e); });
+        canvas.observe('mouse:up', function (e) { LineMouseUp(e); });
+
+        var Started = false;
+        var StartX = 0;
+        var StartY = 0;
+
+        function LineMouseDown(e) {
+            var Mouse = canvas.getPointer(e.e);
+
+            Started = true;
+            StartX = Mouse.x;
+            StartY = Mouse.y;
+        }
+
+        function LineMouseUp(e) {
+            if (Started) {
+                var Mouse = canvas.getPointer(e.e);
+
+                canvas.add(new fabric.Line([StartX, StartY, Mouse.x, Mouse.y],
+                    {
+                        stroke: $scope.brushcolor,
+                        strokeWidth: 2,
+                        selectable: false,
+                        evented: false
+                    }));
+                canvas.renderAll();
+                canvas.calcOffset();
+
+                Started = false;
+            }
+        }
+        $scope.popoverShapes.hide();
     }
 
     //Undo last object, drawing or text
@@ -269,7 +429,6 @@ angular.module('GrappBox.controllers', [])
     $scope.addText = function () {
         //Prevent user from being in drawing mode while adding text
         canvas.isDrawingMode = false;
-        $scope.showColorPaletteIcon = false; //Hide color palette icon
 
         $scope.data = {}
 
@@ -306,10 +465,6 @@ angular.module('GrappBox.controllers', [])
             canvas.add(t); //Add text to canvas
         });
     }
-
-    $scope.$on('$destroy', function () {
-        $scope.popover.remove();
-    });
 })
 
 

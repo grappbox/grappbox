@@ -19,6 +19,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
 
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
+
         .state('app', {
             url: "/app", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
             abstract: true, //'abstract' means this state will be an abstract, so will never render, but every page will inherit of it
