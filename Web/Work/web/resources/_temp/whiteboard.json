@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "project": "Project Name",
+        "name" : "",
+        "data": ""
+    },
+    {
+        "id": 2,
+        "project": "Project Name",
+        "name" : "whiteboard-2",
+        "data": ""
+    },
+    {
+        "id": 3,
+        "project": "Project Name",
+        "name" : "whiteboard-3",
+        "data": ""
+    },
+    {
+        "id": 4,
+        "project": "Project Name",
+        "name" : "whiteboard-4",
+        "data": ""
+    },
+    {
+        "id": 5,
+        "project": "Project Name",
+        "name" : "whiteboard-5",
+        "data": ""
+    }
+]

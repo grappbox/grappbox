@@ -1,9 +1,11 @@
 {# This file is subject to the terms and conditions defined in
  # file 'LICENSE.txt', which is part of the GRAPPBOX source code package. #}
 
- <!DOCTYPE html>
- <html lang="en">
-     <head>
+{% spaceless %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
         <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
         <meta http-equiv="content-language" content="en-us" />
         <meta name="description" content="GrappBox" />
@@ -34,10 +36,10 @@
         <!-- Responsive for IE8 -->
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
     </head>
 
     <body>
@@ -53,6 +55,7 @@
         {% endjavascripts %}
 
         {% block child_javascripts_bottom %}{% endblock %}
-
     </body>
 </html>
+
+{% endspaceless %}

@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappBox\App\ShowcaseBundle\Tests\Controller;
+namespace GrappBox\Bundle\ShowcaseBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

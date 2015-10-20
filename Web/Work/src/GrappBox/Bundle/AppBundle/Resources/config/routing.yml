@@ -1,3 +1,8 @@
 app_home:
     path:     /
     defaults: { _controller: AppBundle:App:index }
+
+app_angular_routing:
+    path: /{url}
+    defaults: { _controller: AppBundle:AppRouting:enableAngularRouteManagement }
+    methods: [GET]
