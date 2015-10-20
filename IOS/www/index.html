@@ -7,7 +7,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>GrappBox</title>
 
     <link href="css/ionic.css" rel="stylesheet" />
@@ -16,10 +16,10 @@
     <script src="scripts/lib/ionic.bundle.js"></script>
     <script src="scripts/lib/fabric.js"></script>
 
-    <script src="scripts/controllers.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/controllers.js"></script>
 </head>
-<body ng-app="GrappBox">
+<body ng-app="GrappBox" class="fullscreen"> <!-- class="fullscreen" is used to prevent header height for iOS6 (iPhone 5) -->
 
     <ion-nav-view></ion-nav-view> <!-- All GrappBox's views will be updated here -->
 
