@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use APIBundle\Entity\CloudTransfer;
 use APIBundle\Entity\CloudSecuredFileMetadata;
@@ -14,7 +13,6 @@ use APIBundle\Entity\CloudSecuredFileMetadata;
 use Sabre\DAV\Client;
 use League\Flysystem\WebDAV\WebDAVAdapter;
 use League\Flysystem\Filesystem;
-use League\Flysystem\Plugin\ListFiles;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
@@ -74,9 +72,9 @@ class CloudController extends Controller
 			throw $this->createNotFoundException('The method does not exist');
 		//Check if user have authorization to modify cloud for this project
 		$dbManager = $this->getDoctrine()->getManager();
-		$token = $request->get("session_infos")["token"];
+		$token = $request->request->get("session_infos")["token"];
 		$userId = $this->getUserId($token);
-		$receivedData = $request->get("stream_infos");
+		$receivedData = $request->request->get("stream_infos");
 		$idProject = $receivedData["project_id"];
 		if ($method == "POST" && $this->checkTokenAuthorization($token, $idProject) < 0)
 			throw $this->createAccessDeniedException();
@@ -122,9 +120,9 @@ class CloudController extends Controller
 		}
 
 		//Open cloud connection
-		$client = new Sabre\DAV\Client(self::$settingsDAV);
-		$adapter = new League\Flysystem\WebDAV\WebDAVAdapter($client);
-		$flysystem = new League\Flysystem\Filesystem($adapter);
+		$client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
 		//Copy & rename the file in the right folder
 		$filesystem->copy('/Grappbox Transfer/'.(string)$stream->getId().'.transfer', (string)$stream->getPath().(string)$stream->getFilename());
 		//Delete the transfer file
@@ -157,7 +155,7 @@ class CloudController extends Controller
 		//Check Authorization to access cloud and to upload that file
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
 		$token = $request->get("session_infos")["token"];
-		$receivedData = $request->get("stream_infos");
+		$receivedData = $request->request->get("stream_infos");
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
@@ -165,9 +163,9 @@ class CloudController extends Controller
 
 		//Here the user have the right authorization, so upload the file's chunk
 
-		$client = new Sabre\DAV\Client(self::$settingsDAV);
-		$adapter = new League\Flysystem\WebDAV\WebDAVAdapter($client);
-		$flysystem = new League\Flysystem\Filesystem($adapter);
+		$client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
 		$flysystem->put('/Grappbox Transfer/'.(string)$receivedData["stream_id"].'.transfer', (string)$receivedData["file_chunk"]);
 		return header("HTTP/1.0 200 OK", True, 203);
 	}
@@ -228,15 +226,28 @@ class CloudController extends Controller
 			throw $this->createNotFoundException('The method does not exist');
 		//Check if user have authorization to modify cloud for this project
 		$dbManager = $this->getDoctrine()->getManager();
-		$token = $request->get("session_infos")["token"];
-		$userId = $this->getUserId($token);
-		$receivedData = $request->get("stream_infos");
-		$idProject = $receivedData["project_id"];
+		$json = json_decode($request->getContent(), True);
+		$receivedData = $json["data"];
+		$token = $json["session_infos"]["token"];
 		//if ($this->checkTokenAuthorization($token, $idProject) < 0)
 		//	throw $this->createAccessDeniedException();
+		$idProject = $receivedData["project_id"];
+		$path = "/GrappBox Projects/".(string)($idProject).$receivedData["path"];
+		$filename = $receivedData["filename"];
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
-		return new BinaryFileResponse("http://cloud.grappbox.com/index.php/s/pwAcLbcTs2Ccing");
+		return $this->redirect("http://cloud.grappbox.com/index.php/s/XTLevbyI5kIBvzV/download");
+		// $client = new Client(self::$settingsDAV);
+		// $adapter = new WebDAVAdapter($client);
+		// $flysystem = new Filesystem($adapter);
+		//
+		// $response = new Response();
+		// $response->headers->set('Content-type', 'application/octet-stream');
+  	// $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));
+		// $fileContent = $flysystem->read($path);
+		// die($fileContent);
+		// $response->setContent($fileContent);
+		// return $response;
 	}
 
 	/**
