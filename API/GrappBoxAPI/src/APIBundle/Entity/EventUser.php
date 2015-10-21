@@ -24,6 +24,10 @@ class EventUser
      */
     private $eventId;
 
+    /**
+     * @var \APIBundle\Entity\Event
+     */
+    private $events;
 
     /**
      * Get id
@@ -79,5 +83,28 @@ class EventUser
     public function getEventId()
     {
         return $this->eventId;
+    }
+
+    /**
+     * Set events
+     *
+     * @param \APIBundle\Entity\Event $events
+     * @return EventUser
+     */
+    public function setEvents(\APIBundle\Entity\Event $events = null)
+    {
+        $this->events = $events;
+
+        return $this;
+    }
+
+    /**
+     * Get events
+     *
+     * @return \APIBundle\Entity\Event 
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }

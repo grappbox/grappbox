@@ -1,5 +1,6 @@
 APIBundle\Entity\Project:
     type: entity
+    repositoryClass: APIBundle\Entity\ProjectRepository
     table: projects
     id:
         id:
@@ -38,4 +39,29 @@ APIBundle\Entity\Project:
         deletedAt:
             type: datetime
             column: deleted_at
+    manyToMany:
+        users:
+          targetEntity: User
+          inversedBy: projects
+          joinTable:
+            name: team_project
+            joinColumns:
+              project_id:
+                referencedColumnName: id
+            inverseJoinColumns:
+              user_id:
+                referencedColumnName: id
+    oneToMany:
+        tasks:
+          targetEntity: Task
+          mappedBy: projects
+        bugs:
+          targetEntity: Bug
+          mappedBy: projects
+        timelines:
+          targetEntity: Timeline
+          mappedBy: projects
+        events:
+          targetEntity: Event
+          mappedBy: projects
     lifecycleCallbacks: {  }

@@ -64,6 +64,38 @@ class Project
      */
     private $deletedAt;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $users;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tasks;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $bugs;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $timelines;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $events;
+    
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -303,5 +335,170 @@ class Project
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * Add users
+     *
+     * @param \APIBundle\Entity\User $users
+     * @return Project
+     */
+    public function addUser(\APIBundle\Entity\User $users)
+    {
+        $this->users[] = $users;
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \APIBundle\Entity\User $users
+     */
+    public function removeUser(\APIBundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Add tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     * @return Project
+     */
+    public function addTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks[] = $tasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     */
+    public function removeTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks->removeElement($tasks);
+    }
+
+    /**
+     * Get tasks
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * Add bugs
+     *
+     * @param \APIBundle\Entity\Bug $bugs
+     * @return Project
+     */
+    public function addBug(\APIBundle\Entity\Bug $bugs)
+    {
+        $this->bugs[] = $bugs;
+
+        return $this;
+    }
+
+    /**
+     * Remove bugs
+     *
+     * @param \APIBundle\Entity\Bug $bugs
+     */
+    public function removeBug(\APIBundle\Entity\Bug $bugs)
+    {
+        $this->bugs->removeElement($bugs);
+    }
+
+    /**
+     * Get bugs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBugs()
+    {
+        return $this->bugs;
+    }
+
+    /**
+     * Add timelines
+     *
+     * @param \APIBundle\Entity\Timeline $timelines
+     * @return Project
+     */
+    public function addTimeline(\APIBundle\Entity\Timeline $timelines)
+    {
+        $this->timelines[] = $timelines;
+
+        return $this;
+    }
+
+    /**
+     * Remove timelines
+     *
+     * @param \APIBundle\Entity\Timeline $timelines
+     */
+    public function removeTimeline(\APIBundle\Entity\Timeline $timelines)
+    {
+        $this->timelines->removeElement($timelines);
+    }
+
+    /**
+     * Get timelines
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTimelines()
+    {
+        return $this->timelines;
+    }
+
+    /**
+     * Add events
+     *
+     * @param \APIBundle\Entity\Event $events
+     * @return Project
+     */
+    public function addEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events[] = $events;
+
+        return $this;
+    }
+
+    /**
+     * Remove events
+     *
+     * @param \APIBundle\Entity\Event $events
+     */
+    public function removeEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events->removeElement($events);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }

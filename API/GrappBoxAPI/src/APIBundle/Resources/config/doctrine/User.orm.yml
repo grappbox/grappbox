@@ -42,4 +42,12 @@ APIBundle\Entity\User:
             length: 255
         isActive:
           type: boolean
+    manyToMany:
+        projects:
+          targetEntity: Project
+          mappedBy: users
+    oneToMany:
+        tasks:
+          targetEntity: Task
+          mappedBy: users
     lifecycleCallbacks: {  }

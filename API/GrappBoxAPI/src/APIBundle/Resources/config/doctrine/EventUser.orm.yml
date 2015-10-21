@@ -14,4 +14,11 @@ APIBundle\Entity\EventUser:
         eventId:
             type: integer
             column: event_id
+    manyToOne:
+        events:
+          targetEntity: Event
+          inversedBy: eventusers
+          joinColumn:
+            name: event_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

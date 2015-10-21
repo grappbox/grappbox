@@ -3,6 +3,7 @@
 namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -75,9 +76,21 @@ class User implements UserInterface, \Serializable
      */
     private $isActive;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $projects;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tasks;
+
+
     public function __construct()
     {
         $this->isActive = true;
+        $this->projects = new ArrayCollection();
     }
 
     public function getUsername()
@@ -380,5 +393,94 @@ class User implements UserInterface, \Serializable
     public function getTwitter()
     {
         return $this->twitter;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Add projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return User
+     */
+    public function addProject(\APIBundle\Entity\Project $projects)
+    {
+        $this->projects[] = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Remove projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     */
+    public function removeProject(\APIBundle\Entity\Project $projects)
+    {
+        $this->projects->removeElement($projects);
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Add tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     * @return User
+     */
+    public function addTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks[] = $tasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     */
+    public function removeTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks->removeElement($tasks);
+    }
+
+    /**
+     * Get tasks
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
     }
 }

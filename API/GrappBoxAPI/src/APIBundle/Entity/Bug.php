@@ -54,6 +54,11 @@ class Bug
      */
     private $deletedAt;
 
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $projects;
+
 
     /**
      * Get id
@@ -247,5 +252,28 @@ class Bug
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return Bug
+     */
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
     }
 }

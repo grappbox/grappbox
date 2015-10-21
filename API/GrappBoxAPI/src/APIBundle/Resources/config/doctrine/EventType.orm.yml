@@ -11,4 +11,8 @@ APIBundle\Entity\EventType:
         name:
             type: string
             length: 255
+    oneToMany:
+        events:
+          targetEntity: Event
+          mappedBy: events
     lifecycleCallbacks: {  }

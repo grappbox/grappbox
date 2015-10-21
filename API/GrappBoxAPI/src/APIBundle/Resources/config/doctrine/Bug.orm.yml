@@ -31,4 +31,11 @@ APIBundle\Entity\Bug:
         deletedAt:
             type: datetime
             column: deleted_at
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: bugs
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

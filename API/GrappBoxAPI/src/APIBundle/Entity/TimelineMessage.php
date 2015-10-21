@@ -29,6 +29,11 @@ class TimelineMessage
      */
     private $message;
 
+    /**
+     * @var \APIBundle\Entity\Timeline
+     */
+    private $timelines;
+
 
     /**
      * Get id
@@ -107,5 +112,28 @@ class TimelineMessage
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * Set timelines
+     *
+     * @param \APIBundle\Entity\Timeline $timelines
+     * @return TimelineMessage
+     */
+    public function setTimelines(\APIBundle\Entity\Timeline $timelines = null)
+    {
+        $this->timelines = $timelines;
+
+        return $this;
+    }
+
+    /**
+     * Get timelines
+     *
+     * @return \APIBundle\Entity\Timeline 
+     */
+    public function getTimelines()
+    {
+        return $this->timelines;
     }
 }
