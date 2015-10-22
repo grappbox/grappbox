@@ -14,14 +14,37 @@ BodyDashboard::BodyDashboard(QWidget *parent) : QWidget(parent)
     _NextMeeting = new QHBoxLayout();
     _GlobalProgress = new QHBoxLayout();
 
+    // Recuperation API
+
+
+    // Creation des datas
+
+
     _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Leo Nadeau", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/leo_nadeau.jpg"))));
     _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Allyriane Launois", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/allyriane_launois.jpg"))));
     _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Frédéric Tan", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/frederic_tan.jpg"))));
-    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Marc Wieser", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/marc_wieser.jpeg"))));
     _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Feytout", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_feytout.jpg"))));
     _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Hofman", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_hofman.jpg"))));
     _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Roland Hemmer", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/roland_hemmer.jpg"))));
-    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Valentin Mougenot", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/valentin_mougenot.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Leo Nadeau", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/leo_nadeau.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Allyriane Launois", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/allyriane_launois.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Frédéric Tan", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/frederic_tan.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Feytout", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_feytout.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Hofman", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_hofman.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Roland Hemmer", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/roland_hemmer.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Leo Nadeau", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/leo_nadeau.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Allyriane Launois", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/allyriane_launois.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Frédéric Tan", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/frederic_tan.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Feytout", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_feytout.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Hofman", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_hofman.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Roland Hemmer", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/roland_hemmer.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Leo Nadeau", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/leo_nadeau.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Allyriane Launois", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/allyriane_launois.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Frédéric Tan", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/frederic_tan.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Feytout", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_feytout.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Pierre Hofman", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/pierre_hofman.jpg"))));
+    _MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Roland Hemmer", false, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/roland_hemmer.jpg"))));
+    //_MemberAvaible->addWidget(new DashboardMember(new MemberAvaiableInfo("Valentin Mougenot", true, new QPixmap(":/Temporary/Profils/Ressources/Temporary/Profils/valentin_mougenot.jpg"))));
 
     _NextMeeting->addWidget(new DashboardMeeting(new NextMeetingInfo(NextMeetingInfo::Client, "Folow up", "25/09/2015", "20h30", new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png")) ));
     _NextMeeting->addWidget(new DashboardMeeting(new NextMeetingInfo(NextMeetingInfo::Company, "UML Conception", "30/10/2015", "16h30", new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png")) ));
@@ -29,6 +52,10 @@ BodyDashboard::BodyDashboard(QWidget *parent) : QWidget(parent)
     _NextMeeting->addWidget(new DashboardMeeting(new NextMeetingInfo(NextMeetingInfo::Personnal, "Happy new year", "31/12/2015", "23h59", new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png")) ));
     _NextMeeting->addWidget(new DashboardMeeting(new NextMeetingInfo(NextMeetingInfo::Personnal, "Vacation End", "5/01/2016", "9h00", new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png")) ));
 
+    _GlobalProgress->addWidget(new DashboardGlobalProgress(new GlobalProgressInfo("Grappbox Project", "Grappbox Co", "0102030405", "mail@grappbox.com", 42, 3, 8, 2, new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png"))));
+    _GlobalProgress->addWidget(new DashboardGlobalProgress(new GlobalProgressInfo("Grappbox Project", "Grappbox Co", "0102030405", "mail@grappbox.com", 42, 3, 8, 2, new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png"))));
+    _GlobalProgress->addWidget(new DashboardGlobalProgress(new GlobalProgressInfo("Grappbox Project", "Grappbox Co", "0102030405", "mail@grappbox.com", 42, 3, 8, 2, new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png"))));
+    _GlobalProgress->addWidget(new DashboardGlobalProgress(new GlobalProgressInfo("Grappbox Project", "Grappbox Co", "0102030405", "mail@grappbox.com", 42, 3, 8, 2, new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png"))));
     _GlobalProgress->addWidget(new DashboardGlobalProgress(new GlobalProgressInfo("Grappbox Project", "Grappbox Co", "0102030405", "mail@grappbox.com", 42, 3, 8, 2, new QPixmap(":/Temporary/Project/Ressources/Temporary/Projects/GameSphere.png"))));
 
     QFont font;

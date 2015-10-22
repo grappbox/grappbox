@@ -11,6 +11,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = GrappBox
 TEMPLATE = app
 
+QMAKE_CXXFLAGS += -Wunused-parameter \
+    -Wunused-variable
+
+INCLUDEPATH += Body \
+    Body/Dashboard
 
 SOURCES += main.cpp \
     MainWindow.cpp \
@@ -21,7 +26,14 @@ SOURCES += main.cpp \
     Body\Dashboard\DashboardGlobalProgress.cpp \
     SDataManager.cpp \
     Body\Dashboard\DashboardInformation.cpp \
-    SFontLoader.cpp
+    SFontLoader.cpp \
+    ProfilMainInformation.cpp \
+    BodyWhiteboard.cpp \
+    whiteboardcanvas.cpp \
+    WhiteboardButtonChoice.cpp \
+    WhiteboardGraphicsView.cpp \
+    customgraphicsdiamonditem.cpp \
+    CustomGraphicsHandWriteItem.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -33,7 +45,14 @@ HEADERS  += MainWindow.h \
     SDataManager.h \
     IDataConnector.h \
     Body\Dashboard\DashboardInformation.h \
-    SFontLoader.h
+    SFontLoader.h \
+    ProfilMainInformation.h \
+    BodyWhiteboard.h \
+    whiteboardcanvas.h \
+    WhiteboardButtonChoice.h \
+    WhiteboardGraphicsView.h \
+    customgraphicsdiamonditem.h \
+    CustomGraphicsHandWriteItem.h
 
 RESOURCES += \
     temporaryressources.qrc \

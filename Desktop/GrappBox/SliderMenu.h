@@ -1,17 +1,18 @@
 #ifndef SLIDERMENU_H
 #define SLIDERMENU_H
 
-#include <QList>
+#include <QMap>
 #include <QVBoxLayout>
 #include <QtWidgets/QPushButton>
 #include <QWidget>
+#include <QScrollArea>
 
 class SliderMenu : public QWidget
 {
     Q_OBJECT
 public:
     explicit SliderMenu(QWidget *parent = 0);
-    int AddMenuItem(QString name);
+    void AddMenuItem(QString name, int id);
     QString GetMenuItem(int id);
 
 signals:
@@ -25,7 +26,7 @@ private:
     QVBoxLayout         *_MainLayout;
 
 private:
-    QList<QPushButton*>     _ListButton;
+    QMap<int, QPushButton*>     _ListButton;
     int                 _CurrentIndex;
 };
 

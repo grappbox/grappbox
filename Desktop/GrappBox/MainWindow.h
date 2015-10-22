@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "ProfilMainInformation.h"
 
 class IBodyContener;
 
@@ -13,6 +14,7 @@ class IBodyContener;
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QGridLayout>
+#include <QStackedLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include "SliderMenu.h"
@@ -45,11 +47,11 @@ private:
     QVBoxLayout         *_MainLayout;
 
     // Canvas
-    QList<IBodyContener*>       _Canvas;
-    int                         _CurrentCanvas;
+    QStackedLayout      *_StackedLayout;
+    int                 _CurrentCanvas;
 
     // Profil
-    QWidget             *_ProfilWidget;
+    ProfilMainInformation       *_ProfilWidget;
 
     // Menu
     SliderMenu          *_MenuWidget;

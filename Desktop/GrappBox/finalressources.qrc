@@ -15,4 +15,15 @@
         <file>Ressources/Font/OpenSans-Semibold.ttf</file>
         <file>Ressources/Font/OpenSans-SemiboldItalic.ttf</file>
     </qresource>
+    <qresource prefix="/icon">
+        <file>Ressources/Icon/Logout-Icon.png</file>
+        <file>Ressources/Icon/SettingsIcon.png</file>
+        <file>Ressources/Icon/V-CardIcon.png</file>
+        <file>Ressources/Icon/Message.png</file>
+        <file>Ressources/Icon/Notification.png</file>
+        <file>Ressources/Icon/Settings.png</file>
+    </qresource>
+    <qresource prefix="/Image">
+        <file>Ressources/Title.png</file>
+    </qresource>
 </RCC>

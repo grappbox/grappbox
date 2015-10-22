@@ -5,65 +5,61 @@
 SliderMenu::SliderMenu(QWidget *parent) : QWidget(parent)
 {
     _MainLayout = new QVBoxLayout();
-    this->setLayout(_MainLayout);
+    _MainLayout->setAlignment(Qt::AlignTop);
+    setLayout(_MainLayout);
     _MainLayout->setMargin(0);
     _MainLayout->setSpacing(0);
     _CurrentIndex = 0;
 }
 
-int SliderMenu::AddMenuItem(QString name)
+void SliderMenu::AddMenuItem(QString name, int id)
 {
     QPushButton *newItem = new QPushButton(name);
     newItem->setMaximumHeight(40);
     newItem->setStyleSheet("QPushButton {"
-                           "background-color: #d9d9d9;"
+                           "background-color: #f0f3f7;"
                            "border-style: none;"
-                           "border-bottom-style: solid;"
-                           "border-width: 2px;"
-                           "border-color: #595959;"
                            "}");
     newItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    _ListButton.push_back(newItem);
+    qDebug() << "Create button with id " << id << " with name " << name;
+    _ListButton[id] = newItem;
     _MainLayout->addWidget(newItem);
     QObject::connect(newItem, SIGNAL(clicked(bool)), this, SLOT(ButtonChangeMenu()));
-    return _ListButton.size() - 1;
 }
 
 QString SliderMenu::GetMenuItem(int id)
 {
-    if (id < 0 || id > _ListButton.size())
+    if (!_ListButton.contains(id))
         throw new QException();
     return _ListButton[id]->text();
 }
 
 void SliderMenu::ForceChangeMenu(int menu)
 {
-    if (menu < 0 || menu > _ListButton.size())
+    if (!_ListButton.contains(menu))
         throw new QException();
     _CurrentIndex = menu;
-    for (QList<QPushButton*>::iterator it = _ListButton.begin(); it != _ListButton.end(); ++it)
+    for (QMap<int, QPushButton*>::iterator it = _ListButton.begin(); it != _ListButton.end(); ++it)
     {
-        (*it)->setStyleSheet("QPushButton {"
-                               "background-color: #d9d9d9;"
+        (it.value())->setStyleSheet("QPushButton {"
+                               "background-color: #f0f3f7;"
                                "border-style: none;"
-                               "border-bottom-style: solid;"
-                               "border-width: 2px;"
-                               "border-color: #595959;"
                                "}");
     }
     _ListButton[menu]->setStyleSheet("QPushButton {"
-                                     "background-color: #c9c9c9;"
+                                     "background-color: #f4f6f9;"
                                      "border-style: none;"
-                                     "border-bottom-style: solid;"
-                                     "border-width: 2px;"
-                                     "border-color: #c0392b;"
+                                     "border-right-style: solid;"
+                                       "border-width: 4px;"
+                                       "border-color: #af2d2e;"
                                      "}");
 }
 
 void SliderMenu::ButtonChangeMenu()
 {
     QObject *obj = QObject::sender();
-    int index = _ListButton.indexOf(dynamic_cast<QPushButton*>(obj));
+    int index = _ListButton.key(dynamic_cast<QPushButton*>(obj));
+    qDebug() << "Index button change menu : " << index;
     ForceChangeMenu(index);
     emit MenuChanged(index);
 }
