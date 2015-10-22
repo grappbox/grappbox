@@ -142,10 +142,6 @@ cloud_getFile:
     path:       /Cloud/getFile/{cloudPath}/{token}/{idProject}
     defaults:   { _controller: APIBundle:Cloud:getFile }
 
-cloud_setFilePass:
-    path:       /Cloud/setFilePass
-    defaults:   { _controller: APIBundle:Cloud:setFilePass }
-
 cloud_setDirPass:
     path:       /Cloud/setDirPass
     defaults:   { _controller: APIBundle:Cloud:setDirPass }
@@ -154,9 +150,8 @@ cloud_delete:
     path:       /Cloud/del
     defaults:   { _controller: APIBundle:Cloud:del }
 
-cloud_getMetadata:
-    path:       /Cloud/getFileMetadata
-    defaults:   { _controller: APIBundle:Cloud:getMetadata }
+cloud_createDir:
+    path:       /Cloud/createDir
 
 
 
