@@ -363,71 +363,37 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function delFileAction(Request $request)
+	public function delAction(Request $request)
 	{
 		return new Response('del File Success');
 	}
-
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="delete a directory",
-	 * views = { "cloud" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      }
-     * }
-     * )
-	 *
-	 */
-	public function delDirAction(Request $request)
+	//THIS HAVE TO BE A POST Request
+	/*
+		{
+			session_infos: {
+				token : "42bas684"
+			},
+			creation_infos: {
+				path: "/InsideThisDir",
+				dirName: "ThisIsADirName",
+				project_id: 42
+			}
+		}
+	*/
+	public function createDirAction(Request $request)
 	{
-		return new Response('del Dir Success');
+		$json = json_decode($request->getContent());
+		//HERE DO THE authentication
+		//Now we can create the directory at the proper place
+		$idProject = $json["creation_infos"]["project_id"];
+		$path = $json["creation_infos"]["path"];
+		$dirName = $json["creation_infos"]["dirName"];
+		$client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
+		$rpath = "/GrappBox Projects/".(string)($idProject).(string)($path)."/".$dirName;
+		//HERE Create the dir in the cloud
+		return new Response('create Dir Success')
 	}
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get the metadatas of a file",
-	 * views = { "cloud" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      }
-     * }
-     * )
-	 *
-	 */
-	public function getFileMetadataAction(Request $request)
-	{
-		return new Response('get File Metadata Success');
-	}
-
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get the metadata of a directory",
-	 * views = { "cloud" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      }
-     * }
-     * )
-	 *
-	 */
-	public function getDirMetadataAction(Request $request)
-	{
-		return new Response('get Dir Metadata Success');
-	}
 }
