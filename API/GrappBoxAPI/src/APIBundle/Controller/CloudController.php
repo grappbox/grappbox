@@ -16,6 +16,86 @@ use League\Flysystem\Filesystem;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
+class CurlRequest {
+     protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
+     protected $_url;
+     protected $_timeout;
+     protected $_cookieFileLocation = './cookie.txt';
+     protected $_post;
+     protected $_postFields;
+     protected $_referer ="http://cloud.grappbox.com/";
+
+     protected $_session;
+     protected $_webpage;
+     protected $_status;
+     public    $authentication = 1;
+     public    $auth_name      = 'grappbox';
+     public    $auth_pass      = 'GolfBravo$$';
+
+     public function __construct($timeOut = 30)
+     {
+			 	 $this->_post = false;
+         $this->_timeout = $timeOut;
+         $this->_cookieFileLocation = dirname(__FILE__).'/cookie.txt';
+
+     }
+
+     public function setReferer($referer){
+       $this->_referer = $referer;
+     }
+
+     public function setPost($postFields)
+     {
+        $this->_post = true;
+        $this->_postFields = $postFields;
+     }
+
+     public function setUserAgent($userAgent)
+     {
+         $this->_useragent = $userAgent;
+     }
+
+     public function createCurl($url = 'nul')
+     {
+        if($url != 'nul'){
+          $this->_url = $url;
+        }
+
+         $curlRequest = curl_init();
+
+         curl_setopt($curlRequest,CURLOPT_URL,$this->_url);
+         curl_setopt($curlRequest,CURLOPT_TIMEOUT,$this->_timeout);
+         curl_setopt($curlRequest,CURLOPT_RETURNTRANSFER,true);
+
+         if($this->authentication == 1){
+           curl_setopt($curlRequest, CURLOPT_USERPWD, $this->auth_name.':'.$this->auth_pass);
+         }
+         if($this->_post)
+         {
+             curl_setopt($curlRequest,CURLOPT_POST,true);
+             curl_setopt($curlRequest,CURLOPT_POSTFIELDS,$this->_postFields);
+
+         }
+				 else {
+				 	curl_setopt($curlRequest,CURLOPT_HTTPGET,true);
+				}
+
+         $this->_webpage = curl_exec($curlRequest);
+         $this->_status = curl_getinfo($curlRequest,CURLINFO_HTTP_CODE);
+         curl_close($curlRequest);
+				 return $this->_webpage;
+     }
+
+   public function getHttpStatus()
+   {
+       return $this->_status;
+   }
+
+   public function __tostring(){
+      return $this->_webpage;
+   }
+}
+
 class CloudController extends Controller
 {
 	private static $settingsDAV = null;
@@ -118,7 +198,6 @@ class CloudController extends Controller
 					 ->setCloudPath($stream->getPath());
 			$em->persist($meta);
 		}
-
 		//Open cloud connection
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
@@ -128,6 +207,14 @@ class CloudController extends Controller
 		//Delete the transfer file
 		$filesystem->delete('/Grappbox Transfer/'.(string)$stream->getId().'.transfer');
 		$stream->setDeletionDate(new DateTime("now"));
+		$shareRequest = new CurlRequest();
+		$shareRequest->setPost(array(
+			"path" => $stream->getPath()."/".$stream->getFilename(),
+			"shareType" => 3,
+			"publicUpload" => False,
+			"permissions" => 1
+		));
+		$shareRequest->createCurl("http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/shares");
 		$em->persist($stream);
 		$em->flush();
 		return header("HTTP/1.0 200 OK", True, 203);
@@ -219,35 +306,24 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function getFileAction(Request $request){
+	public function getFileAction($cloudPath, $token, $idProject, Request $request){
 		//Check if request method is catched by the API
 		$method = $request->getMethod();
-		if ($method != "POST")
+		if ($method != "GET")
 			throw $this->createNotFoundException('The method does not exist');
+
 		//Check if user have authorization to modify cloud for this project
-		$dbManager = $this->getDoctrine()->getManager();
-		$json = json_decode($request->getContent(), True);
-		$receivedData = $json["data"];
-		$token = $json["session_infos"]["token"];
 		//if ($this->checkTokenAuthorization($token, $idProject) < 0)
 		//	throw $this->createAccessDeniedException();
-		$idProject = $receivedData["project_id"];
-		$path = "/GrappBox Projects/".(string)($idProject).$receivedData["path"];
-		$filename = $receivedData["filename"];
-
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
-		return $this->redirect("http://cloud.grappbox.com/index.php/s/XTLevbyI5kIBvzV/download");
-		// $client = new Client(self::$settingsDAV);
-		// $adapter = new WebDAVAdapter($client);
-		// $flysystem = new Filesystem($adapter);
-		//
-		// $response = new Response();
-		// $response->headers->set('Content-type', 'application/octet-stream');
-  	// $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', $filename));
-		// $fileContent = $flysystem->read($path);
-		// die($fileContent);
-		// $response->setContent($fileContent);
-		// return $response;
+		$cloudPath = str_replace(',','/', $cloudPath);
+		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox Projects/".(string)($idProject).$cloudPath);
+		$searchRequest = new CurlRequest();
+		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
+		if ($searchResult->meta->statuscode != 100 ||
+			$searchResult->data->element->share_type != "3")
+			throw $this->createNotFoundException('file not found');
+		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
 	}
 
 	/**

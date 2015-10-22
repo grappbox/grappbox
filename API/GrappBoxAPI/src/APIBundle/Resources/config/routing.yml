@@ -139,7 +139,7 @@ cloud_getList:
     defaults:   { _controller: APIBundle:Cloud:getList }
 
 cloud_getFile:
-    path:       /Cloud/getFile
+    path:       /Cloud/getFile/{cloudPath}/{token}/{idProject}
     defaults:   { _controller: APIBundle:Cloud:getFile }
 
 cloud_setFilePass:
