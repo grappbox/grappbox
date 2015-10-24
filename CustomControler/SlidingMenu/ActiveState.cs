@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App1.CustomControler
+namespace GrappBox.CustomControler.SlidingMenu
 {
-    class Class1
+    public enum ActiveState
     {
+        Left, Right
     }
 }

@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="GrappBox.View.WhiteBoardView"
+    xmlns:viewModel="using:GrappBox.ViewModel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customControler="using:GrappBox.CustomControler"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="App1.ViewModel.WhiteBoardViewModel">
+    <Page.Resources>
+        <viewModel:TappedPositionConverter x:Key="TappedPositionConverter"/>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="btn_rectangle" Content="Rectangle" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Command="{Binding RectangleCommand}" Width="60"/>
+        <Button x:Name="btn_circle" Content="Circle" Grid.Row="0" Grid.Column="1" Command="{Binding CircleCommand}" Width="55" HorizontalAlignment="Center"/>
+        <Button x:Name="btn_line" Content="Line" Grid.Row="0" Grid.Column="2" Command="{Binding LineCommand}" Width="16" HorizontalAlignment="Center"/>
+        <ScrollViewer  Grid.Row="1" Grid.ColumnSpan="3" ZoomMode="Enabled" MinZoomFactor="0.25" MaxZoomFactor="3.0" IsZoomInertiaEnabled="False">
+        <customControler:CustomCanvas x:Name="drawingCanvas" Background="White" ShapeList="{Binding ShapeList}">
+            <i:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="Tapped">
+                    <core:InvokeCommandAction Command="{Binding CanvasTappedCommand}" InputConverter="{StaticResource TappedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
+                </core:EventTriggerBehavior>
+                    <core:EventTriggerBehavior EventName="Hold">
+                        <core:InvokeCommandAction Command="{Binding CanvasTappedCommand}" InputConverter="{StaticResource TappedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
+                    </core:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
+        </customControler:CustomCanvas>
+        </ScrollViewer>
+    </Grid>
+</Page>

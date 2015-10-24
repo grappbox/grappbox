@@ -4,13 +4,25 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GrappBox.View"
+    xmlns:customControl="using:GrappBox.CustomControler"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="viewModel.DashBoardViewModel">
     <Grid>
-        <Pivot Title="DashBoard">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="15*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button x:Name="MenuButton" Content="Menu" Grid.Row="0" BorderThickness="0" HorizontalAlignment="Center">
+            <Button.Flyout>
+                <Flyout Placement="Top">
+                    <customControl:FlyoutMenu/>
+                </Flyout>
+            </Button.Flyout>
+        </Button>
+        <Pivot Title="DashBoard" Grid.Row="1">
         <PivotItem Header="General Menu">
             <Grid>
                 <ListBox x:Name="listView" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White">

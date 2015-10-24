@@ -26,8 +26,53 @@ namespace GrappBox.ViewModel
             var args = (TappedRoutedEventArgs)value;
             var element = (FrameworkElement)parameter;
 
-            var point = args.GetPosition(element);
-            return new Point(point.X, point.Y);
+            return args.GetPosition(element);
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class HoldPositionConverter : IValueConverter
+    {
+        public object Convert(
+        object value,
+        Type targetType,
+        object parameter,
+        string language)
+        {
+            var args = (HoldingRoutedEventArgs)value;
+            var element = (FrameworkElement)parameter;
+
+            return args.GetPosition(element);
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ManipPositionConverter : IValueConverter
+    {
+        public object Convert(
+        object value,
+        Type targetType,
+        object parameter,
+        string language)
+        {
+            var args = (ManipulationStartedRoutedEventArgs)value;
+            var element = (FrameworkElement)parameter;
+
+            return args.Position;
         }
 
         public object ConvertBack(
@@ -86,7 +131,7 @@ namespace GrappBox.ViewModel
             _action.Invoke(param);
         }
     }
-    class ViewModelBase : INotifyPropertyChanged
+    abstract class  ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(string property)
@@ -97,7 +142,6 @@ namespace GrappBox.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
                 Debug.WriteLine("Notify " + property);
             }
-
         }
     }
 }

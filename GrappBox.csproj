@@ -87,26 +87,36 @@
     <SDKReference Include="BehaviorsXamlSDKManaged, Version=12.0">
       <Name>Behaviors SDK %28XAML%29</Name>
     </SDKReference>
-    <SDKReference Include="Microsoft.VCLibs, Version=12.0">
-      <Name>Microsoft Visual C++ 2013 Runtime Package for Windows Phone</Name>
-    </SDKReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\Class1.cs" />
+    <Compile Include="CustomControler\CustomCanvas.cs" />
+    <Compile Include="CustomControler\FlyoutMenu.xaml.cs">
+      <DependentUpon>FlyoutMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControler\SlidingMenu\ActiveState.cs" />
     <Compile Include="CustomControler\CustomPivot.cs" />
+    <Compile Include="CustomControler\SlidingMenu\MenuState.cs" />
+    <Compile Include="CustomControler\SlidingMenu\SlideInMenuContentControl.cs" />
+    <Compile Include="ApiCommunication\User.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\ApiCommunication.cs" />
+    <Compile Include="ApiCommunication\ApiCommunication.cs" />
     <Compile Include="Model\DashBoardModel.cs" />
+    <Compile Include="Model\ShapeControler.cs" />
+    <Compile Include="Model\WhiteBoardModel.cs" />
+    <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WhiteBoardView.xaml.cs">
+      <DependentUpon>WhiteBoardView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +137,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomControler\FlyoutMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\SlidingMenu\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -135,8 +154,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\WhiteBoardView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
-  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

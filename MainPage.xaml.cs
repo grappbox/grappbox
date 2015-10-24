@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -44,7 +45,9 @@ namespace GrappBox
         }
 
         private void DashBoardButton_Click(object sender, RoutedEventArgs e)
-        {
+        {/*
+            var api = GrappBox.ApiCommunication.ApiCommunication.GetInstance();
+            Debug.WriteLine(api.Request("my-objects"));*/
             this.Frame.Navigate(typeof(GrappBox.View.DashBoardView));
         }
 
