@@ -1,0 +1,9 @@
+{
+  "session_infos": {
+    "token" : "42bas684"
+  },
+  "deletion_infos": {
+    "path": "/InsideThisDir/DeleteMe",
+    "project_id": 42
+  }
+} 

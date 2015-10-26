@@ -146,10 +146,7 @@ class CloudController extends Controller
 	}
 	*/
 	public function streamAction(Request $request){
-		//Check if request method is catched by the API
 		$method = $request->getMethod();
-		if ($method != "POST" && $method != "DELETE")
-			throw $this->createNotFoundException('The method does not exist');
 		//Check if user have authorization to modify cloud for this project
 		$dbManager = $this->getDoctrine()->getManager();
 		$token = $request->request->get("session_infos")["token"];
@@ -235,10 +232,6 @@ class CloudController extends Controller
  	  }
 	*/
 	public function sendFileAction(Request $request){
-		//Check if request method is catched by the API
-		$method = $request->getMethod();
-		if ($method != "PUT")
-			throw $this->createNotFoundException('The method does not exist');
 		//Check Authorization to access cloud and to upload that file
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
 		$token = $request->get("session_infos")["token"];
@@ -275,11 +268,7 @@ class CloudController extends Controller
 	 */
 	public function getListAction($token, $idProject, $path, Request $request)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			throw $this->createNotFoundException('The method does not exist');
-		if ($this->checkTokenAuthorization($token, $idProject) < 0)
-			throw $this->createAccessDeniedException();
+		//HERE DO THE authentication
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
@@ -308,13 +297,7 @@ class CloudController extends Controller
 	 */
 	public function getFileAction($cloudPath, $token, $idProject, Request $request){
 		//Check if request method is catched by the API
-		$method = $request->getMethod();
-		if ($method != "GET")
-			throw $this->createNotFoundException('The method does not exist');
-
-		//Check if user have authorization to modify cloud for this project
-		//if ($this->checkTokenAuthorization($token, $idProject) < 0)
-		//	throw $this->createAccessDeniedException();
+		//HERE DO THE authentication
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
 		$cloudPath = str_replace(',','/', $cloudPath);
 		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox Projects/".(string)($idProject).$cloudPath);
@@ -351,20 +334,32 @@ class CloudController extends Controller
 	 *
 	 * @ApiDoc(
 	 * resource=true,
-	 * description="delete a file",
+	 * description="Delete something in the cloud, directory or file.",
 	 * views = { "cloud" },
   	 * requirements={
      *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
+     *          "name"="Data",
+     *          "dataType"="JSON",
+     *          "description"="<a href='http://api.grappbox.locale/json/cloud/delete.json'>The following json</a>"
      *      }
      * }
      * )
 	 *
 	 */
+ 	/*
+
+ 	*/
 	public function delAction(Request $request)
 	{
+    $json = json_decode($request->getContent());
+    //HERE DO THE authentication
+    //Now we can delete the file or the directory
+    $idProject = $json["deletion_infos"]["project_id"];
+		$path = "/GrappBox Projects/".(string)($idProject).$json["deletion_infos"]["path"];
+    $client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
+    $flysystem->delete($path);
 		return new Response('del File Success');
 	}
 	//THIS HAVE TO BE A POST Request
@@ -393,7 +388,8 @@ class CloudController extends Controller
 		$flysystem = new Filesystem($adapter);
 		$rpath = "/GrappBox Projects/".(string)($idProject).(string)($path)."/".$dirName;
 		//HERE Create the dir in the cloud
-		return new Response('create Dir Success')
+    $flysystem->createDir($rpath);
+		return new JsonResponse(Array("infos" => "OK"));
 	}
 
 }

@@ -126,21 +126,26 @@ dashboard_getPersonOccupation:
 
 
 
-cloud_sendFile:
-  path:     /Cloud/sendFile
-  defaults:   { _controller: APIBundle:Cloud:sendFile }
-
 cloud_streamActions:
   path:     /Cloud/stream
-  defaults:   { _controller: APIBundle:Cloud:stream }
+  defaults:   { _controller: APIBundle:Cloud:stream, _format: json}
+  methods: [POST, DELETE]
+
+
+cloud_sendFile:
+  path:     /Cloud/sendFile
+  defaults:   { _controller: APIBundle:Cloud:sendFile , _format: json}
+  methods: [PUT]
 
 cloud_getList:
     path:       /Cloud/getList/{token}/{idProject}/{path}
     defaults:   { _controller: APIBundle:Cloud:getList }
+    methods: [GET]
 
 cloud_getFile:
     path:       /Cloud/getFile/{cloudPath}/{token}/{idProject}
     defaults:   { _controller: APIBundle:Cloud:getFile }
+    methods: [GET]
 
 cloud_setDirPass:
     path:       /Cloud/setDirPass
@@ -148,10 +153,13 @@ cloud_setDirPass:
 
 cloud_delete:
     path:       /Cloud/del
-    defaults:   { _controller: APIBundle:Cloud:del }
+    defaults:   { _controller: APIBundle:Cloud:del , _format: json}
+    methods: [DELETE]
 
 cloud_createDir:
     path:       /Cloud/createDir
+    defaults:   { _controller: APIBundle:Cloud:createDir, _format: json }
+    methods: [POST]
 
 
 
