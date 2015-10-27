@@ -8,12 +8,12 @@ APIBundle\Entity\Whiteboard:
             generator:
                 strategy: AUTO
     fields:
-        projectId:
-            type: integer
-            column: project_id
+        # projectId:
+        #     type: integer
+        #     column: project_id
         userId:
-            type: integer
-            column: user_id
+           type: integer
+           column: user_id
         name:
             type: string
             length: 255
@@ -29,4 +29,11 @@ APIBundle\Entity\Whiteboard:
         deletedAt:
             type: datetime
             column: deleted_at
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: whiteboards
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

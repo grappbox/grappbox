@@ -1,6 +1,7 @@
 whiteboard_new:
     path:		/Whiteboard/new
     defaults:	{ _controller: APIBundle:Whiteboard:newWhiteboard }
+    methods: [POST]
 
 whiteboard_open:
     path:		/Whiteboard/open/{id}
@@ -31,7 +32,7 @@ whiteboard_delete:
     defaults:	{ _controller: APIBundle:Whiteboard:delWhiteboard }
     requirements:
         id: \d+
-
+    methods: [DELETE]
 
 dashboard_getTeamOccupation:
     path:       /Dashboard/getTeamOccupation/{id}
@@ -384,27 +385,17 @@ accountAdministration_signInForm:
 accountAdministration_login:
     path:       /AccountAdministration/login
     defaults:   { _controller: APIBundle:AccountAdministration:login }
-    # methods:    [POST]
-
-# login_check:
-#     path:       /AccountAdministration/login_check
-# logout:
-#     path:       /AccountAdministration/logout
-
-accountAdministration_login_check:
-    path:       /AccountAdministration/login_check
+    methods:    [POST]
 
 accountAdministration_logout:
     path:       /AccountAdministration/logout
-
-accountAdministration_disconnect:
-    path:       /AccountAdministration/disconnect
-    defaults:   { _controller: APIBundle:AccountAdministration:disconnect }
+    defaults:   { _controller:APIBundle:AccountAdministration:logout}
+    methods:    [POST]
 
 accountAdministration_signIn:
     path:       /AccountAdministration/signIn
     defaults:   { _controller: APIBundle:AccountAdministration:signIn }
-
+    methods:    [POST]
 
 
 personnalSettings_editPhoto:

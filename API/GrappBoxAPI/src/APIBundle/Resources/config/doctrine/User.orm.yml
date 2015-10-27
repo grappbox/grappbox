@@ -16,9 +16,11 @@ APIBundle\Entity\User:
             length: 255
         birthday:
             type: datetime
+            nullable: TRUE
         avatar:
             type: string
             length: 255
+            nullable: TRUE
         password:
             type: string
             length: 255
@@ -28,20 +30,29 @@ APIBundle\Entity\User:
         phone:
             type: string
             length: 255
+            nullable: TRUE
         country:
             type: string
             length: 255
+            nullable: TRUE
         linkedin:
             type: string
             length: 255
+            nullable: TRUE
         viadeo:
             type: string
             length: 255
+            hnullable: TRUE
         twitter:
             type: string
             length: 255
+            nullable: TRUE
         isActive:
           type: boolean
+        token:
+          type: string
+          length: 255
+          nullable: TRUE
     manyToMany:
         projects:
           targetEntity: Project
@@ -50,4 +61,7 @@ APIBundle\Entity\User:
         tasks:
           targetEntity: Task
           mappedBy: users
+        # whiteboards:
+        #   targetEntity: Whiteboard
+        #   mappedBy: updators
     lifecycleCallbacks: {  }

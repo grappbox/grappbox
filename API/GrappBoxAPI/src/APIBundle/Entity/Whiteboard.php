@@ -49,11 +49,16 @@ class Whiteboard
      */
     private $deletedAt;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $projects;
+
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -76,7 +81,7 @@ class Whiteboard
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -99,7 +104,7 @@ class Whiteboard
     /**
      * Get userId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUserId()
     {
@@ -122,7 +127,7 @@ class Whiteboard
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -145,7 +150,7 @@ class Whiteboard
     /**
      * Get updatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUpdatorId()
     {
@@ -168,7 +173,7 @@ class Whiteboard
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -191,7 +196,7 @@ class Whiteboard
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -214,7 +219,7 @@ class Whiteboard
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {

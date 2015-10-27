@@ -88,7 +88,12 @@ class Project
      * @var \Doctrine\Common\Collections\Collection
      */
     private $events;
-    
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $whiteboards;
+
     /**
      * Constructor
      */
@@ -100,7 +105,7 @@ class Project
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -123,7 +128,7 @@ class Project
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -146,7 +151,7 @@ class Project
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -169,7 +174,7 @@ class Project
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -192,7 +197,7 @@ class Project
     /**
      * Get logo
      *
-     * @return string 
+     * @return string
      */
     public function getLogo()
     {
@@ -215,7 +220,7 @@ class Project
     /**
      * Get teamId
      *
-     * @return integer 
+     * @return integer
      */
     public function getTeamId()
     {
@@ -238,7 +243,7 @@ class Project
     /**
      * Get contactEmail
      *
-     * @return string 
+     * @return string
      */
     public function getContactEmail()
     {
@@ -261,7 +266,7 @@ class Project
     /**
      * Get facebook
      *
-     * @return string 
+     * @return string
      */
     public function getFacebook()
     {
@@ -284,7 +289,7 @@ class Project
     /**
      * Get twitter
      *
-     * @return string 
+     * @return string
      */
     public function getTwitter()
     {
@@ -307,7 +312,7 @@ class Project
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -330,7 +335,7 @@ class Project
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -363,7 +368,7 @@ class Project
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -396,7 +401,7 @@ class Project
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasks()
     {
@@ -429,7 +434,7 @@ class Project
     /**
      * Get bugs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBugs()
     {
@@ -462,7 +467,7 @@ class Project
     /**
      * Get timelines
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTimelines()
     {
@@ -495,10 +500,43 @@ class Project
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {
         return $this->events;
+    }
+
+    /**
+     * Add whiteboards
+     *
+     * @param \APIBundle\Entity\Whiteboard $whiteboards
+     * @return Project
+     */
+    public function addWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
+    {
+        $this->whiteboards[] = $whiteboards;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboards
+     *
+     * @param \APIBundle\Entity\Whiteboard $whiteboards
+     */
+    public function removeWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
+    {
+        $this->whiteboards->removeElement($whiteboards);
+    }
+
+    /**
+     * Get whiteboards
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWhiteboards()
+    {
+        return $this->whiteboards;
     }
 }

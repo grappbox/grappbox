@@ -77,6 +77,11 @@ class User implements UserInterface, \Serializable
     private $isActive;
 
     /**
+     * @var string
+     */
+    private $token;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $projects;
@@ -85,6 +90,7 @@ class User implements UserInterface, \Serializable
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tasks;
+
 
 
     public function __construct()
@@ -411,7 +417,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -444,7 +450,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get projects
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProjects()
     {
@@ -477,10 +483,33 @@ class User implements UserInterface, \Serializable
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasks()
     {
         return $this->tasks;
     }
+
+    /**
+     * Get Token
+     *
+     * @return string
+     */
+     public function getToken()
+     {
+       return $token;
+     }
+
+     /**
+      * Set token
+      *
+      * @param string $token
+      * @return User
+      */
+      public function setToken($token)
+      {
+          $this->token = $token;
+
+          return $this;
+      }
 }
