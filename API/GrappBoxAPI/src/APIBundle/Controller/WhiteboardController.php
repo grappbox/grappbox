@@ -34,6 +34,15 @@ class WhiteboardController extends Controller
 	 */
 	public function newWhiteboardAction(Request $request)
 	{
+		$response = new JsonResponse();
+		$em = $this->getDoctrine()->getManager();
+		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+		if (!$user)
+		{
+			$response->setData(array('status' => 'error', 'data' => 'bad token'));
+			return $response;
+		}
+
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->findBy('User', array('token' => $request->request->get('_token')));
 		if (!$user)
@@ -41,15 +50,16 @@ class WhiteboardController extends Controller
 
 		$whiteboard = new Whiteboard();
 		$whiteboard->setProjectId($request->request->get('projectId'));
-		$whiteboard->setUserId($request->request->get('userId'));
-		$whiteboard->setUpdatorId($request->request->get('updatorId'));
+		$whiteboard->setUserId($request->request->get('userId'));					// or get $user->getId()
+		$whiteboard->setUpdatorId($request->request->get('updatorId'));		// or get $user->getId()
 		$whiteboard->setName($request->request->get('whiteboardName'));
 
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($whiteboard);
 		$em->flush();
 
-		return new Response('Create new whiteboard of ID : '.$Whiteboard->getId());
+		$response->setData(array('status' => 'error', 'data' => $whiteboard));
+		return $response;
 	}
 
 	/**

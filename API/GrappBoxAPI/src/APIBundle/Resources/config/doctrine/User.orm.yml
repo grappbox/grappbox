@@ -42,7 +42,7 @@ APIBundle\Entity\User:
         viadeo:
             type: string
             length: 255
-            hnullable: TRUE
+            nullable: TRUE
         twitter:
             type: string
             length: 255
