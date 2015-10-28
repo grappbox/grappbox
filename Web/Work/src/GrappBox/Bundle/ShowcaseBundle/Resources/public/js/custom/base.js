@@ -1,7 +1,7 @@
 /*!
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
- */
+* This file is subject to the terms and conditions defined in
+* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+*/
 
 $(document).ready(function()
 {
@@ -60,6 +60,17 @@ $(document).ready(function()
                 $("a[href='" + navActiveCurrent + "']").removeClass("nav-active");
                 $("nav li:last-child a").addClass("nav-active");
             }
+        }
+    });
+
+    $(window).bind('scroll', function()
+    {
+        var navHeight = $( window ).height() - 70;
+        if ($(window).scrollTop() > navHeight) {
+            $('nav').addClass('fixed');
+        }
+        else {
+            $('nav').removeClass('fixed');
         }
     });
 });

@@ -8,8 +8,6 @@
 {% block body %}
 
 <body>
-    {% include 'ShowcaseBundle:Shared:navigation.html.twig' %}
-
     <section id="home" class="intro-header">
         <div class="container">
             <div class="row">
@@ -26,22 +24,43 @@
                 <div class="col-lg-12">
                     <ul class="list-inline intro-social-buttons">
                         <li>
-                            <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
+                            <a target="_blank" title="GrappBox on Twitter" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
                         </li>
                         <li>
-                            <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
+                            <a target="_blank" title="GrappBox on Facebook" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
                         </li>
                         <li>
-                            <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-google-plus" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
+                            <a target="_blank" title="GrappBox on Google+" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-google-plus" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
                         </li>
                         <li>
-                            <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
+                            <a target="_blank" title="Contact GrappBox by email" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
+
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <ul class="nav navbar-nav">
+                    <li><a href="#home" title="Home" class="hvr-underline-from-center nav-active"><i class="fa fa-home"></i>Home</a></li>
+                    <li><a href="#about" title="About GrappBox" class="hvr-underline-from-center"><i class="fa fa-list"></i>About</a></li>
+                    <li><a href="#register" title="Create your GrappBox account" class="hvr-underline-from-center"><i class="fa fa-check"></i>Register</a></li>
+                    <li><a href="#" title="Sign in to your GrappBox account" class="app-login hvr-sweep-to-right" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
     <section id="about">
         <div class="content-section content-section-b">
@@ -53,7 +72,7 @@
                         <p class="lead">Quisque sed pulvinar libero. Duis convallis tempus vestibulum. Fusce eu vehicula justo. Integer consectetur lacus quis libero tempor, eu fermentum libero tincidunt. Aliquam luctus lobortis nisi, non semper mi egestas sit amet.</p>
                     </div>
                     <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                        <img class="img-responsive" src="resources/images/business-team_wide.min.png" alt="Teamwork !">
+                        <img class="img-responsive" alt="Teamwork !" src="resources/images/business-team_wide.min.png">
                     </div>
                 </div>
             </div>
@@ -68,7 +87,7 @@
                         <p class="lead">Bibendum eu tellus eu, scelerisque feugiat tellus. Quisque ut vulputate neque. Donec sit amet est felis. Aliquam commodo vel mauris eu tempor. Integer ut libero eu nulla tincidunt convallis at sed leo. In ut rhoncus mi. In in nibh fermentum, varius ante ac, vulputate neque.</p>
                     </div>
                     <div class="col-lg-5 col-sm-pull-6 col-sm-6">
-                        <img class="img-responsive img-reduced img-round-radius " src="resources/images/business-work.min.png" alt="Lead by your imagination.">
+                        <img class="img-responsive img-reduced img-round-radius" alt="Lead by your imagination." src="resources/images/business-work.min.png">
                     </div>
                 </div>
             </div>
@@ -83,14 +102,14 @@
                         <p class="lead">Aenean nec blandit eros. Aliquam vestibulum maximus sapien sit amet efficitur. Nullam justo risus, pretium quis justo ut, tristique pellentesque sem. Nam varius vitae turpis non aliquet. Nullam a rhoncus tellus. Pellentesque fringilla velit mi, nec suscipit massa commodo vitae. Nunc elementum nulla nisi, nec auctor augue vulputate vel.</p>
                     </div>
                     <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                        <img class="img-responsive img-reduced" src="resources/images/travel-around-world_square.min.png" id='around-world' lt="On all your devices.">
+                        <img class="img-responsive img-reduced" lt="On all your devices." src="resources/images/travel-around-world_square.min.png" id='around-world'>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact">
+    <section id="register">
         <div class="content-section content-section-a">
             <div class="container">
                 <div class="row">
@@ -100,10 +119,10 @@
                         <p class="lead text-center">Aenean nec blandit eros. Aliquam vestibulum maximus sapien sit amet efficitur ?</p>
                         <ul class="list-inline account-action-buttons">
                             <li>
-                                <a class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-register" href=""><i class="fa fa-globe fa-fw"></i>Register</a>
+                                <a title="Create your GrappBox account" class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-register"><i class="fa fa-check fa-fw"></i>Register</a>
                             </li>
                             <li>
-                                <a class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-login" href="" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Login</a>
+                                <a title="Log in to your GrappBox account" class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-login" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Sign in</a>
                             </li>
                         </ul>
                     </div>
@@ -122,19 +141,19 @@
                         <div class="col-lg-9">
                             <ul class="list-inline banner-social-buttons">
                                 <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
+                                    <a target="_blank" title="GrappBox on Twitter" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
                                     <span class="network-name">@GrappBox</span>
                                 </li>
                                 <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
+                                    <a target="_blank" title="GrappBox on Facebook" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
                                     <span class="network-name">GrappBox</span>
                                 </li>
                                 <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-google-plus" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
+                                    <a target="_blank" title="GrappBox on Google+" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-google-plus" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
                                     <span class="network-name">+GrappBox</span>
                                 </li>
                                 <li>
-                                    <a target="_blank" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
+                                    <a target="_blank" title="Contact GrappBox by email" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
                                     <span class="network-name">grappbox@gmail.com</span>
                                 </li>
                             </ul>
@@ -150,20 +169,19 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h2 class="modal-title" id="app-modal-label">Sign in to Grapp<span class="red">Box</span></h2>
+                    <h2 class="modal-title" id="app-modal-label">Sign in to GRAPP<span class="red">BOX</span></h2>
                 </div>
                 <div class="modal-body">
                     <form class="form-signin">
                         <label for="inputEmail" class="sr-only">Email</label>
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus="">
+                        <input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus>
                         <label for="inputPassword" class="sr-only">Password</label>
                         <input type="password" id="inputPassword" class="form-control" placeholder="Password">
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-lg btn-primary btn-block btn-lg-account btn-cancel hvr-sweep-to-right" data-dismiss="modal"><i class="fa fa-close"></i>Close</button>
-                    <!-- <button type="submit" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-sweep-to-right"><i class="fa fa-check"></i>Sign in</button> -->
-                    <a href="/app"><button type="submit" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-sweep-to-right"><i class="fa fa-check"></i>Sign in</button></a>
+                    <button type="button" title="Cancel" class="btn btn-lg btn-primary btn-block btn-lg-account btn-cancel hvr-fade" data-dismiss="modal"><i class="fa fa-close"></i>Cancel</button>
+                    <a href="/app"><button type="submit" title="Log in to your GrappBox account" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-fade"><i class="fa fa-check"></i>Sign in</button></a>
                 </div>
             </div>
         </div>
