@@ -4,6 +4,7 @@
 # start page (path "/") because otherwise Apache will apply the rewriting rules
 # to each configured DirectoryIndex file (e.g. index.php, index.html, index.pl).
 DirectoryIndex app.php
+Options FollowSymlinks
 
 # Disabling MultiViews prevents unwanted negotiation, e.g. "/app" should not resolve
 # to the front controller "/app.php" but be rewritten to "/app.php/app".
@@ -122,3 +123,10 @@ DirectoryIndex app.php
     ExpiresByType image/x-icon "access plus 1 year"
     ExpiresDefault "access plus 1 month"
 </IfModule>
+
+# Enable password protection for public access.
+# Should be temporary.
+# AuthType Basic
+# AuthName "Please enter your password."
+# AuthUserFile /web/app/web/.htpasswd
+# Require valid-user
