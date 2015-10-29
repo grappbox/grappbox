@@ -19,11 +19,11 @@
 		<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' />
 
 		{% stylesheets
-        '@ShowcaseBundle/Resources/public/css/vendor/bootstrap.css'
-        '@ShowcaseBundle/Resources/public/css/vendor/font-awesome.css'
-        '@ShowcaseBundle/Resources/public/css/vendor/hover.css'
-        '@ShowcaseBundle/Resources/public/css/vendor/landing-page.css'
-        '@ShowcaseBundle/Resources/public/css/custom/base.css'
+		'@ShowcaseBundle/Resources/public/css/vendor/bootstrap.css'
+		'@ShowcaseBundle/Resources/public/css/vendor/font-awesome.css'
+		'@ShowcaseBundle/Resources/public/css/vendor/hover.css'
+		'@ShowcaseBundle/Resources/public/css/vendor/landing-page.css'
+		'@ShowcaseBundle/Resources/public/css/custom/base.css'
 		'@AppBundle/Resources/public/css/vendor/sbadmin-two.css'
 		'@AppBundle/Resources/public/css/custom/app.angular.css'
 		filter='?yui_css' output='resources/css/app.min.css' %}
@@ -54,51 +54,36 @@
 	<body ng-controller="grappboxController">
 		<span ng-cloak ng-show="show"></span>
 		<div id="app-wrapper">
+
 			<!-- Navigation content -->
 			<nav class="navbar navbar-default navbar-static-top" role="navigation">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="/">GrappBox</a>
+				<div class="navbar-brand">
+					<a href="#">Grapp<span class="red">Box</a>
 				</div>
-				<!-- Navigation menu (top) -->
-				<ul class="nav navbar-top-links navbar-right">
-					<!-- Notifications menu -->
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-bell fa-fw"></i><i class="fa fa-caret-down"></i></a>
-						<ul class="dropdown-menu dropdown-alerts"></ul>
-					</li>
-					<!-- User menu -->
-					<li class="dropdown">
-						<a class="dropdown-toggle" data-toggle="dropdown" href=""><i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i></a>
-						<ul class="dropdown-menu dropdown-user">
-							<li><a href=""><i class="fa fa-user fa-fw"></i> Profile</a></li>
-							<li><a href=""><i class="fa fa-gear fa-fw"></i> Settings</a></li>
-							<li class="divider"></li>
-							<li><a href="/"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
-						</ul>
-					</li>
-				</ul>
 				<!-- Navigation menu (left) -->
-				<div class="navbar-default sidebar" role="navigation">
-					<div class="sidebar-nav navbar-collapse">
-						<ul class="nav" id="side-menu">
-							<li><a ng-class="{ active: isActive('./')}" href="./"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
-							<li><a ng-class="{ active: isActive('whiteboard')}" href="whiteboard"><i class="fa fa-edit fa-fw"></i> Whiteboard</a></li>
+				<div class="navbar-default sidebar-wrapper" role="navigation">
+					<div class="navbar-collapse sidebar-menu" ng-controller="sidebarController">
+						<ul class="sidebar">
+							<li><a href="notifications" title="See all your notifications" class="sidebar-link sidebar-notifications" ng-class="{[{ isActive('user-profile') ? 'active' : '' }]}"><i class="fa fa-exclamation fa-fw"></i> Notifications</a></li>
+							<li class="divider"></li>
+							<li><a href="./" title="Go to your dashboard" class="sidebar-link sidebar-dashboard" ng-class="{[{ isActive('dashboard') ? 'active' : '' }]}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+							<li><a href="whiteboard" title="Go to the collaborative whiteboard" class="sidebar-link sidebar-whiteboard" ng-class="{[{ isActive('whiteboard') ? 'active' : '' }]}"><i class="fa fa-edit fa-fw"></i> Whiteboard</a></li>
+							<li class="divider"></li>
+							<li><a href="profile" title="Manage your profile" class="sidebar-link sidebar-profile" ng-class="{[{ isActive('user-profile') ? 'active' : '' }]}"><i class="fa fa-user fa-fw"></i> Profile</a></li>
+							<li><a href="settings" title="Manage your account settings" class="sidebar-link sidebar-settings" ng-class="{[{ isActive('user-settings') ? 'active' : '' }]}"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
+							<li class="divider"></li>
+							<li><a href="/" title="Sign out of GrappBox" class="sidebar-link sidebar-logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
 						</ul>
 					</div>
 				</div>
 			</nav>
+
 			<!-- Page content -->
 			<div id="page-wrapper">
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="app-page">
-							<!-- Modual view -->
+							<!-- Dynamic view -->
 							<div ng-view></div>
 						</div>
 					</div>

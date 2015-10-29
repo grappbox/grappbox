@@ -12,9 +12,8 @@
 
 /* ==================== General layout ==================== */
 
-* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html, body { height: 100%; margin: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-html, body { height: 100%; margin: 0; }
 html, body, h1, h2, h3, h4, p, span, a { font-family: 'Roboto', Helvetica, Arial, sans-serif; font-weight: normal; color: #212121; letter-spacing: normal; }
 section { box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35); }
 footer { background-color: #212121; }
@@ -40,9 +39,24 @@ a:active, a:focus, a:hover { text-decoration: none; color: #009688; }
 .content-section-a { background-color: #F5F5F5; }
 
 
+/* ==================== General laytout (sections) ==================== */
+
+section:nth-of-type(1) { margin-bottom: -5px; }
+
+@media (max-width: 767px) {
+	section:nth-of-type(1) { min-height: 90vh; }
+	section:nth-of-type(2) { margin-top: 80px; }
+}
+
+@media (min-width: 768px) {
+	section:nth-of-type(1) { min-height: 94vh; }
+	section:nth-of-type(2) { margin-top: 60px; }
+}
+
+
 /* ==================== General layout (error and secondary pages) ==================== */
 
-#error-header { min-height: 50vh; }
+#error-header { min-height: 50vh!important; }
 #error-header .intro-message { padding: 5% 0; }
 #error-content .content-section { min-height: 70vh; }
 
@@ -58,7 +72,7 @@ nav { position: absolute; bottom: 0; width: 100%; }
 
 .navbar-default .navbar-nav { float: none!important; margin: 0!important; text-align: center; }
 .navbar-default .navbar-nav > li { float: none; }
-.navbar-default .navbar-nav > li > a { padding: 15px 30px 15px 25px; overflow: visible; }
+.navbar-default .navbar-nav > li > a { font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; padding: 15px 30px 15px 25px; overflow: visible; }
 .navbar-default .navbar-nav > li > a i { padding: 0 10px 0 0; }
 
 .navbar-default .navbar-nav > li > a.hvr-underline-from-center:before { bottom: -5px; height: 5px; background: #795548; -webkit-transition-duration: 0.2s; transition-duration: 0.2s; }
@@ -121,21 +135,6 @@ footer .content-footer .copyright a:hover { text-decoration: none; color: #00968
 footer .content-footer .copyright { margin: 5px 0 0 15px; }
 
 @media (min-width: 768px) and (max-width: 1199px) { .content-footer .copyright { text-align: center; } }
-
-
-/* ==================== Sections: general laytout ==================== */
-
-section:nth-of-type(1) { margin-bottom: -5px; }
-
-@media (max-width: 767px) {
-	section:nth-of-type(1) { min-height: 90vh; }
-	section:nth-of-type(2) { margin-top: 80px; }
-}
-
-@media (min-width: 768px) {
-	section:nth-of-type(1) { min-height: 94vh; }
-	section:nth-of-type(2) { margin-top: 60px; }
-}
 
 
 /* ==================== Section: logo and motto ==================== */

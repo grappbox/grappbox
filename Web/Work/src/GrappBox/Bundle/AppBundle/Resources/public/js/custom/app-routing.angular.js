@@ -10,12 +10,24 @@
  		templateUrl : '../resources/pages/dashboard.html',
  		controller  : 'grappboxController'
  	})
+ 	.when('/notifications', {
+ 		templateUrl : '../resources/pages/notifications.html',
+ 		controller  : 'grappboxController'
+ 	})
  	.when('/dashboard', {
  		templateUrl : '../resources/pages/dashboard.html',
  		controller  : 'grappboxController'
  	})
  	.when('/whiteboard', {
  		templateUrl : '../resources/pages/whiteboard-home.html',
+ 		controller  : 'grappboxController'
+ 	})
+ 	.when('/profile', {
+ 		templateUrl : '../resources/pages/profile.html',
+ 		controller  : 'grappboxController'
+ 	})
+ 	.when('/settings', {
+ 		templateUrl : '../resources/pages/settings.html',
  		controller  : 'grappboxController'
  	})
  	.otherwise(

@@ -43,18 +43,20 @@
     </head>
 
     <body>
-        {% block body %}{% endblock %}
+        <div id="showcase-wrapper">
+            {% block body %}{% endblock %}
 
-        {% javascripts
-        '@ShowcaseBundle/Resources/public/js/vendor/jquery.js'
-        '@ShowcaseBundle/Resources/public/js/vendor/bootstrap.js'
-        '@ShowcaseBundle/Resources/public/js/vendor/smoothscroll.js'
-        '@ShowcaseBundle/Resources/public/js/custom/base.js'
-        filter='?yui_js' output='resources/js/base.min.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
+            {% javascripts
+            '@ShowcaseBundle/Resources/public/js/vendor/jquery.js'
+            '@ShowcaseBundle/Resources/public/js/vendor/bootstrap.js'
+            '@ShowcaseBundle/Resources/public/js/vendor/smoothscroll.js'
+            '@ShowcaseBundle/Resources/public/js/custom/base.js'
+            filter='?yui_js' output='resources/js/base.min.js' %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+            {% endjavascripts %}
 
-        {% block child_javascripts_bottom %}{% endblock %}
+            {% block child_javascripts_bottom %}{% endblock %}
+        </div>
     </body>
 </html>
 

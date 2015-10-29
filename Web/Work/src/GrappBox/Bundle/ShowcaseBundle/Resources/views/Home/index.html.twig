@@ -56,7 +56,10 @@
                     <li><a href="#home" title="Home" class="hvr-underline-from-center nav-active"><i class="fa fa-home"></i>Home</a></li>
                     <li><a href="#about" title="About GrappBox" class="hvr-underline-from-center"><i class="fa fa-list"></i>About</a></li>
                     <li><a href="#register" title="Create your GrappBox account" class="hvr-underline-from-center"><i class="fa fa-check"></i>Register</a></li>
+                    <li><a href="#register" title="Sign in to your GrappBox account" class="app-login hvr-sweep-to-right"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
+{#
                     <li><a href="#" title="Sign in to your GrappBox account" class="app-login hvr-sweep-to-right" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
+#}
                 </ul>
             </div>
         </div>
@@ -83,7 +86,7 @@
                 <div class="row">
                     <div class="col-lg-5 col-lg-offset-1 col-sm-push-6 col-sm-6 padding-top">
                         <div class="clearfix"></div>
-                        <h2 class="section-heading">Think, share, design and create !<br></h2>
+                        <h2 class="section-heading">Think, design and create!<br></h2>
                         <p class="lead">Bibendum eu tellus eu, scelerisque feugiat tellus. Quisque ut vulputate neque. Donec sit amet est felis. Aliquam commodo vel mauris eu tempor. Integer ut libero eu nulla tincidunt convallis at sed leo. In ut rhoncus mi. In in nibh fermentum, varius ante ac, vulputate neque.</p>
                     </div>
                     <div class="col-lg-5 col-sm-pull-6 col-sm-6">
@@ -115,15 +118,19 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="clearfix"></div>
-                        <h2 class="section-heading text-center login-heading">Ready to join us ?</h2>
-                        <p class="lead text-center">Aenean nec blandit eros. Aliquam vestibulum maximus sapien sit amet efficitur ?</p>
+                        <h2 class="section-heading text-center login-heading">Already ready to join us?</h2>
+                        <p class="lead text-center">That's awesome, thanks a lot!<br>But please wait a bit more, we're not ready yet... (but we will, soon)</p>
                         <ul class="list-inline account-action-buttons">
                             <li>
-                                <a title="Create your GrappBox account" class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-register"><i class="fa fa-check fa-fw"></i>Register</a>
+                                <a title="Create your GrappBox account" class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-register disabled"><i class="fa fa-check fa-fw"></i>Register</a>
                             </li>
+
+{#
                             <li>
                                 <a title="Log in to your GrappBox account" class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-login" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Sign in</a>
                             </li>
+#}
+
                         </ul>
                     </div>
                 </div>
@@ -131,12 +138,12 @@
         </div>
 
         <div class="content-section wide-background contact-background"></div>
-        <div class="content-section content-section-a">
+        <div class="content-section content-section-a" id="contact">
             <div class="contact-banner banner">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-3">
-                            <h2>Stay in touch !</h2>
+                            <h2>Stay in touch!</h2>
                         </div>
                         <div class="col-lg-9">
                             <ul class="list-inline banner-social-buttons">
@@ -164,6 +171,7 @@
         </div>
     </section>
 
+{#
     <div class="modal fade" id="app-modal" tabindex="-1" role="dialog" aria-labelledby="app-modal-label">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -186,6 +194,7 @@
             </div>
         </div>
     </div>
+#}
 
     {% include 'ShowcaseBundle:Shared:footer.html.twig' %}
 
