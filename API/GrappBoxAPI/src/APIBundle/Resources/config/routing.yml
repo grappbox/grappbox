@@ -1,3 +1,7 @@
+whiteboard_list:
+    path:		/Whiteboard/list
+    defaults:	{ _controller: APIBundle:Whiteboard:listWhiteboard }
+
 whiteboard_new:
     path:		/Whiteboard/new
     defaults:	{ _controller: APIBundle:Whiteboard:newWhiteboard }

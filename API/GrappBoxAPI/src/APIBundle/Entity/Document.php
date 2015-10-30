@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 /**
  * Document
  */
-class Document
+class Document implements \Serializable
 {
     /**
      * @var integer
@@ -114,18 +114,25 @@ class Document
         return $this->hash;
     }
 
-    /**
-     * Serialize the object
-     *
-     * @return json encoded array
-     */
-    public function serializeMe()
+    /** @see \Serializable::serialize() */
+    public function serialize()
     {
-      $encoders = array(new XmlEncoder(), new JsonEncoder());
-      $normalizers = array(new ObjectNormalizer());
+        return serialize(array(
+            $this->id,
+            $this->creatorId,
+            $this->path,
+            $this->hash
+        ));
+    }
 
-      $serializer = new Serializer($normalizers, $encoders);
-
-      return $serializer->serialize($this, 'json');
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->creatorId,
+            $this->path,
+            $this->hash,
+        ) = unserialize($serialized);
     }
 }

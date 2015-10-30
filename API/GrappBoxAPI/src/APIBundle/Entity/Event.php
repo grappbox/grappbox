@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 /**
  * Event
  */
-class Event
+class Event implements \Serializable
 {
     /**
      * @var integer
@@ -383,18 +383,39 @@ class Event
         return $this->eventusers;
     }
 
-    /**
-     * Serialize the object
-     *
-     * @return json encoded array
-     */
-    public function serializeMe()
+    /** @see \Serializable::serialize() */
+    public function serialize()
     {
-      $encoders = array(new XmlEncoder(), new JsonEncoder());
-      $normalizers = array(new ObjectNormalizer());
+        return serialize(array(
+            $this->id,
+            $this->creatorId,
+            $this->projectId,
+            $this->typeID,
+            $this->eventtypes->name,
+            $this->title,
+            $this->description,
+            $this->beginDate,
+            $this->endDate,
+            $this->createdAt,
+            $this->deletedAt
+        ));
+    }
 
-      $serializer = new Serializer($normalizers, $encoders);
-
-      return $serializer->serialize($this, 'json');
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->creatorId,
+            $this->projectId,
+            $this->typeID,
+            $this->eventtypes->name,
+            $this->title,
+            $this->description,
+            $this->beginDate,
+            $this->endDate,
+            $this->createdAt,
+            $this->deletedAt,
+        ) = unserialize($serialized);
     }
 }

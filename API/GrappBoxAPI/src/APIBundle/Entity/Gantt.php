@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 /**
  * Gantt
  */
-class Gantt
+class Gantt implements \Serializable
 {
     /**
      * @var integer
@@ -170,18 +170,29 @@ class Gantt
         return $this->createdAt;
     }
 
-    /**
-     * Serialize the object
-     *
-     * @return json encoded array
-     */
-    public function serializeMe()
+    /** @see \Serializable::serialize() */
+    public function serialize()
     {
-      $encoders = array(new XmlEncoder(), new JsonEncoder());
-      $normalizers = array(new ObjectNormalizer());
+        return serialize(array(
+            $this->id,
+            $this->projectId,
+            $this->creatorId,
+            $this->updatorId,
+            $this->createdAt,
+            $this->updatedAt
+        ));
+    }
 
-      $serializer = new Serializer($normalizers, $encoders);
-
-      return $serializer->serialize($this, 'json');
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->projectId,
+            $this->creatorId,
+            $this->updatorId,
+            $this->createdAt,
+            $this->updatedAt,
+        ) = unserialize($serialized);
     }
 }

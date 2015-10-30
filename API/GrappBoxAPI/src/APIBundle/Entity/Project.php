@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 /**
  * Project
  */
-class Project
+class Project implements \Serializable
 {
     /**
      * @var integer
@@ -545,18 +545,37 @@ class Project
         return $this->whiteboards;
     }
 
-    /**
-     * Serialize the object
-     *
-     * @return json encoded array
-     */
-    public function serializeMe()
+    /** @see \Serializable::serialize() */
+    public function serialize()
     {
-      $encoders = array(new XmlEncoder(), new JsonEncoder());
-      $normalizers = array(new ObjectNormalizer());
+        return serialize(array(
+            $this->id,
+            $this->creatorId,
+            $this->name,
+            $this->description,
+            $this->logo,
+            $this->contactEmail,
+            $this->facebook,
+            $this->twitter,
+            $this->createdAt,
+            $this->deletedAt
+        ));
+    }
 
-      $serializer = new Serializer($normalizers, $encoders);
-
-      return $serializer->serialize($this, 'json');
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->creatorId,
+            $this->name,
+            $this->description,
+            $this->logo,
+            $this->contactEmail,
+            $this->facebook,
+            $this->twitter,
+            $this->createdAt,
+            $this->deletedAt,
+        ) = unserialize($serialized);
     }
 }

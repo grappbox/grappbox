@@ -69,7 +69,7 @@ class AccountAdministrationController extends Controller
 					$user->setToken($token);
 					$em->persist($user);
 		      $em->flush();
-					$response->setData(array('status' => 'success', 'data' => $token));
+					$response->setData(array('status' => 'success', 'data' => array('user' => $user->serialize())));
 					return $response;
 			}
 			else
@@ -111,7 +111,7 @@ class AccountAdministrationController extends Controller
 		$user->setToken(null);
 		$em->persist($user);
 		$em->flush();
-		$response->setData(array('status' => 'success', 'data' => ''));
+		$response->setData(array('status' => 'success', 'data' => 'success'));
 		return $response;
  	}
 
@@ -191,7 +191,7 @@ class AccountAdministrationController extends Controller
 
 
 			$response = new JsonResponse();
-			$response->setData(array('status' => 'success', 'data' => $token));
+			$response->setData(array('status' => 'success', 'data' => array('user' => $user->serialize())));
 			return $response;
       // $providerKey = 'default'; // your firewall name
       // $token = new UsernamePasswordToken($user, null, $providerKey, $user->getRoles());

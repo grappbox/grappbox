@@ -10,6 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use APIBundle\Entity\Whiteboard;
 use DateTime;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class WhiteboardController extends Controller
@@ -26,14 +31,55 @@ class WhiteboardController extends Controller
 		return $result['whiteboard'];
 	}
 
-	private function serializeObjects($objects)
+	private function serializeInArray($objects)
 	{
 		$content = array();
 		foreach ($objects as $key => $value) {
-			$content[] += $value->serializeMe();
+			$content[] = $value->serialize();
 		}
-		return array();
+		return $content;
 	}
+
+	/**
+	 *
+	 * @ApiDoc(
+	 * resource=true,
+	 * description="list all whiteboard of a project",
+	 * views = { "whiteboard" },
+  	 * requirements={
+     *      {
+     *          "name"="request",
+     *          "dataType"="Request",
+     *          "description"="The request object"
+     *      }
+     * },
+		 * parameters={
+		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
+	   *      {"name"="projectId", "dataType"="int(11)", "required"=true, "description"="related project id"}
+		 *  }
+     * )
+	 *
+	 */
+	 public function listWhiteboardAction(Request $request)
+	 {
+			 $response = new JsonResponse();
+			 $em = $this->getDoctrine()->getManager();
+			 $user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+			 if (!$user)
+			 {
+			 	$response->setData(array('status' => 'error', 'data' => 'bad token'));
+			 	return $response;
+			 }
+			 if (!$this->checkUserAutorisation($em, $user, $request->request->get('projectId')))
+			 {
+			 	$response->setData(array('status' => 'error', 'data' => 'no rights'));
+			 	return $response;
+			 }
+			 $project = $em->getRepository('APIBundle:Project')->find($request->request->get('projectId'));
+			 $whiteboards = $project->getWhiteboards();
+			 $response->setData(array('status' => 'success', 'data' => $this->serializeInArray($whiteboards)));
+			 return $response;
+	 }
 
 	/**
 	 *
@@ -80,11 +126,10 @@ class WhiteboardController extends Controller
 		$whiteboard->setCreatedAt(new DateTime('now'));
 		$whiteboard->setUpdatedAt(new DateTime('now'));
 
-		$em = $this->getDoctrine()->getManager();
 		$em->persist($whiteboard);
 		$em->flush();
 
-		$response->setData(array('status' => 'success', 'data' => array('whiteboard' => $whiteboard->serializeMe(), 'content' => array())));
+		$response->setData(array('status' => 'success', 'data' => array('whiteboard' => $whiteboard->serialize(), 'content' => array())));
 		return $response;
 	}
 
@@ -133,8 +178,7 @@ class WhiteboardController extends Controller
 			$response->setData(array('status' => 'error', 'data' => 'no rights'));
 			return $response;
 		}
-		$content = $this->serializeObjects($whiteboard->getWhiteboardObjects());
-		$response->setData(array('status' => 'success', 'data' => array('whiteboard' => $whiteboard->serializeMe(), 'content' => ''/*serialised array of whiteboard content(object)*/)));
+		$response->setData(array('status' => 'success', 'data' => array('whiteboard' => $whiteboard->serialize(), 'content' => $this->serializeInArray($whiteboard->getObjects()))));
 		return $response;
 	}
 
@@ -155,7 +199,12 @@ class WhiteboardController extends Controller
      *          "dataType"="integer",
      *          "description"="The id corresponding to the whiteboard you want"
      *      }
-     *  }
+     *  },
+		 * parameters={
+		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
+		 * 			{"name"="modification", "dataType"="varchar(255)", "required"=true, "description"="'add' or 'delete'"},
+		 *			{"name"="object", "dataType"="varchar(255)", "required"=true, "description"="object to add (json array) if addition or object_id if deletion"}
+		 *  }
 	 * )
 	 *
 	 */
@@ -175,8 +224,22 @@ class WhiteboardController extends Controller
 			$response->setData(array('status' => 'error', 'data' => 'no rights'));
 			return $response;
 		}
+		if ($request->request->get('modification') == "add")
+		{
+			$object = new WhiteboardObject();
+			$object->setWhiteboardId($id);
+			$object->setObject($request->request->get('object'));
+			$object->setCreatedAt(new DateTime('now'));
+		}
+		else {
+			$object = $em->getRepository('APIBundle:WhiteboardObject')->find($request->request->get('object'));
+			$object->setDelete(new DateTime('now'));
+		}
 
-		$response->setData(array('status' => 'succes', 'data' => ''));
+		$em->persist($object);
+		$em->flush();
+
+		$response->setData(array('status' => 'succes', 'data' => 'success'));
 		return $response;
 	}
 
@@ -197,7 +260,11 @@ class WhiteboardController extends Controller
      *          "dataType"="integer",
      *          "description"="The id corresponding to the whiteboard you want"
      *      }
-     *  }
+     *  },
+		 * parameters={
+		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
+		 *			{"name"="lastUpdate", "dataType"="varchar(255)", "required"=true, "description"="date of the last update format 'Y-m-d H:i:s'"}
+		 *  }
 	 * )
 	 *
 	 */
@@ -217,7 +284,21 @@ class WhiteboardController extends Controller
 			return $response;
 		}
 
-		$response->setData(array('status' => 'succes', 'data' => ''));
+		$date = new \DateTime($request->request->get('lastUpdate'))
+		$toAddQuery = $em->createQuery(
+									    'SELECT objects.object
+									    FROM APIBundle:WhiteboardObject objects
+									    WHERE objects.whiteboardId = '.$id.' AND objects.createdAt > :date AND objects.deletedAt IS NULL')
+											->setParameter('date', $date);
+		$to_add = $toAddQuery->getResult();
+		$toDelQuery = $em->createQuery(
+									    'SELECT objects.object
+									    FROM APIBundle:WhiteboardObject objects
+									    WHERE objects.whiteboardId = '.$id.' AND objects.deletedAt > :date AND objects.deletedAt IS NOT NULL')
+											->setParameter('date', $date);
+		$to_del = $toDelQuery->getResult();
+
+		$response->setData(array('status' => 'succes', 'data' => array('add' => $to_add, 'delete' => $to_del)));
 		return $response;
 	}
 

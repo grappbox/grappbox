@@ -37,4 +37,8 @@ APIBundle\Entity\Whiteboard:
           joinColumn:
             name: project_id
             referencedColumnName: id
+    oneToMany:
+        objects:
+          targetEntity: WhiteboardObject
+          mappedBy: whiteboard
     lifecycleCallbacks: {  }

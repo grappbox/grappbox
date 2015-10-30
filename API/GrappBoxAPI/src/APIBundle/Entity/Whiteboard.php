@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 /**
  * Whiteboard
  */
-class Whiteboard
+class Whiteboard implements \Serializable
 {
     /**
      * @var integer
@@ -59,6 +59,10 @@ class Whiteboard
      */
     private $projects;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+     private $objects;
 
     /**
      * Get id
@@ -232,17 +236,87 @@ class Whiteboard
     }
 
     /**
-     * Serialize the object
+     * Set projects
      *
-     * @return json encoded array
+     * @param \APIBundle\Entity\Project $projects
+     * @return Task
      */
-    public function serializeMe()
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
     {
-      $encoders = array(new XmlEncoder(), new JsonEncoder());
-      $normalizers = array(new ObjectNormalizer());
+        $this->projects = $projects;
 
-      $serializer = new Serializer($normalizers, $encoders);
-
-      return $serializer->serialize($this, 'json');
+        return $this;
     }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Add objects
+     *
+     * @param \APIBundle\Entity\WhiteboardObject $bugs
+     * @return Whiteboard
+     */
+    public function addObjects(\APIBundle\Entity\WhiteboardObject $obj)
+    {
+        $this->objects[] = $obj;
+
+        return $this;
+    }
+
+    /**
+     * Remove objects
+     *
+     * @param \APIBundle\Entity\WhiteboardObject $obj
+     */
+    public function removeObject(\APIBundle\Entity\WhiteboardObject $obj)
+    {
+        $this->objects->removeElement($obj);
+    }
+
+    /**
+     * Get objects
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getObjects()
+    {
+        return $this->objects;
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->projectId,
+            $this->userId,
+            $this->name,
+            $this->updatorId,
+            $this->createdAt,
+            $this->deletedAt
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->projectId,
+            $this->userId,
+            $this->name,
+            $this->updatorId,
+            $this->createdAt,
+            $this->deletedAt,
+        ) = unserialize($serialized);
+    }
+
 }
