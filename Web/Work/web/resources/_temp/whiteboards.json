@@ -2,31 +2,41 @@
     {
         "id": 1,
         "project": "Project Name",
-        "name" : "",
+        "name" : "whiteboard-1",
+        "date": "YYYY-MM-DD",
+        "time": "HH:MM",
         "data": ""
     },
     {
         "id": 2,
         "project": "Project Name",
         "name" : "whiteboard-2",
+        "date": "YYYY-MM-DD",
+        "time": "HH:MM",
         "data": ""
     },
     {
         "id": 3,
         "project": "Project Name",
         "name" : "whiteboard-3",
+        "date": "YYYY-MM-DD",
+        "time": "HH:MM",
         "data": ""
     },
     {
         "id": 4,
         "project": "Project Name",
         "name" : "whiteboard-4",
+        "date": "YYYY-MM-DD",
+        "time": "HH:MM",
         "data": ""
     },
     {
         "id": 5,
         "project": "Project Name",
         "name" : "whiteboard-5",
+        "date": "YYYY-MM-DD",
+        "time": "HH:MM",
         "data": ""
     }
 ]

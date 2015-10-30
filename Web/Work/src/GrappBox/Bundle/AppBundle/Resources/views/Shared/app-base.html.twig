@@ -36,9 +36,6 @@
 		'@AppBundle/Resources/public/js/vendor/angular-route.js'
 		'@AppBundle/Resources/public/js/vendor/angular-resource.js'
 		'@AppBundle/Resources/public/js/custom/app.angular.js'
-		'@AppBundle/Resources/public/js/custom/app-routing.angular.js'
-		'@AppBundle/Resources/public/js/custom/dashboard-controller.angular.js'
-		'@AppBundle/Resources/public/js/custom/whiteboard-controller.angular.js'
 		filter='?yui_js' output='resources/js/app.angular.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}
@@ -65,15 +62,28 @@
 				<div class="navbar-default sidebar-wrapper" role="navigation">
 					<div class="navbar-collapse sidebar-menu" ng-controller="sidebarController">
 						<ul class="sidebar">
-							<li><a href="notifications" title="See all your notifications" class="sidebar-link sidebar-notifications" ng-class="{[{ isActive('user-profile') ? 'active' : '' }]}"><i class="fa fa-exclamation fa-fw"></i> Notifications</a></li>
+							<li>
+								<a href="notifications" title="See all your notifications" class="sidebar-link sidebar-notifications hvr-fade ng-class:{ 'active' : isActive('/notifications') };">
+								<i class="fa fa-exclamation fa-fw"></i> Notifications</a>
+							</li>
 							<li class="divider"></li>
-							<li><a href="./" title="Go to your dashboard" class="sidebar-link sidebar-dashboard" ng-class="{[{ isActive('dashboard') ? 'active' : '' }]}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
-							<li><a href="whiteboard" title="Go to the collaborative whiteboard" class="sidebar-link sidebar-whiteboard" ng-class="{[{ isActive('whiteboard') ? 'active' : '' }]}"><i class="fa fa-edit fa-fw"></i> Whiteboard</a></li>
+							<li>
+								<a href="./" title="Go to your dashboard" class="sidebar-link sidebar-dashboard ng-class:{ 'active' : isActive('/') };">
+								<i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+							<li>
+								<a href="whiteboard" title="Go to the collaborative whiteboard" class="sidebar-link sidebar-whiteboard ng-class:{ 'active' : isActive('/whiteboard') };">
+								<i class="fa fa-edit fa-fw"></i> Whiteboard</a></li>
 							<li class="divider"></li>
-							<li><a href="profile" title="Manage your profile" class="sidebar-link sidebar-profile" ng-class="{[{ isActive('user-profile') ? 'active' : '' }]}"><i class="fa fa-user fa-fw"></i> Profile</a></li>
-							<li><a href="settings" title="Manage your account settings" class="sidebar-link sidebar-settings" ng-class="{[{ isActive('user-settings') ? 'active' : '' }]}"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
+							<li>
+								<a href="profile" title="Manage your profile" class="sidebar-link sidebar-profile ng-class:{ 'active' : isActive('/profile') };">
+								<i class="fa fa-user fa-fw"></i> Profile</a></li>
+							<li>
+								<a href="settings" title="Manage your account settings" class="sidebar-link sidebar-settings ng-class:{ 'active' : isActive('/settings') };">
+								<i class="fa fa-gear fa-fw"></i> Settings</a></li>
 							<li class="divider"></li>
-							<li><a href="/" title="Sign out of GrappBox" class="sidebar-link sidebar-logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+							<li>
+								<a href="/" title="Sign out of GrappBox" class="sidebar-link sidebar-logout">
+								<i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
 						</ul>
 					</div>
 				</div>

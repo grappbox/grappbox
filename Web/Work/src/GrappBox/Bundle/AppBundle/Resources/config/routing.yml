@@ -5,4 +5,9 @@ app_home:
 app_angular_routing:
     path: /{url}
     defaults: { _controller: AppBundle:AppRouting:enableAngularRouteManagement }
-    methods: [GET]
+
+app_angular_routing_with_parameters:
+    path: /{url}/{parameters}
+    defaults: { _controller: AppBundle:AppRouting:enableAngularRouteManagement }
+    requirements:
+      parameters: ".+"
