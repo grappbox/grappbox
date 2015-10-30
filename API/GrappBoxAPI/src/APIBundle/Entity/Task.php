@@ -4,6 +4,11 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 /**
  * Task
  */
@@ -67,13 +72,13 @@ class Task
     /**
      * @var \APIBundle\Entity\Project
      */
-    private $projects;    
+    private $projects;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -96,7 +101,7 @@ class Task
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -119,7 +124,7 @@ class Task
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -142,7 +147,7 @@ class Task
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -165,7 +170,7 @@ class Task
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -188,7 +193,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDueDate()
     {
@@ -211,7 +216,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStartedAt()
     {
@@ -234,7 +239,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFinishedAt()
     {
@@ -257,7 +262,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -280,7 +285,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -303,7 +308,7 @@ class Task
     /**
      * Get users
      *
-     * @return \APIBundle\Entity\User 
+     * @return \APIBundle\Entity\User
      */
     public function getUsers()
     {
@@ -326,10 +331,25 @@ class Task
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \APIBundle\Entity\Project
      */
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * Serialize the object
+     *
+     * @return json encoded array
+     */
+    public function serializeMe()
+    {
+      $encoders = array(new XmlEncoder(), new JsonEncoder());
+      $normalizers = array(new ObjectNormalizer());
+
+      $serializer = new Serializer($normalizers, $encoders);
+
+      return $serializer->serialize($this, 'json');
     }
 }

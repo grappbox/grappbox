@@ -23,6 +23,7 @@ APIBundle\Entity\Event:
             length: 255
         description:
             type: text
+            nullable: TRUE
         beginDate:
             type: datetime
             column: begin_date
@@ -35,6 +36,7 @@ APIBundle\Entity\Event:
         deletedAt:
             type: datetime
             column: deleted_at
+            nullable: TRUE
     manyToOne:
         projects:
           targetEntity: Project

@@ -4,6 +4,11 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 /**
  * Event
  */
@@ -85,7 +90,7 @@ class Event
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -108,7 +113,7 @@ class Event
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -131,7 +136,7 @@ class Event
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -154,7 +159,7 @@ class Event
     /**
      * Get typeId
      *
-     * @return integer 
+     * @return integer
      */
     public function getTypeId()
     {
@@ -177,7 +182,7 @@ class Event
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -200,7 +205,7 @@ class Event
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -223,7 +228,7 @@ class Event
     /**
      * Get beginDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getBeginDate()
     {
@@ -246,7 +251,7 @@ class Event
     /**
      * Get endDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEndDate()
     {
@@ -269,7 +274,7 @@ class Event
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -292,7 +297,7 @@ class Event
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -315,7 +320,7 @@ class Event
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \APIBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -338,7 +343,7 @@ class Event
     /**
      * Get eventtypes
      *
-     * @return \APIBundle\Entity\EventType 
+     * @return \APIBundle\Entity\EventType
      */
     public function getEventtypes()
     {
@@ -371,10 +376,25 @@ class Event
     /**
      * Get eventusers
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEventusers()
     {
         return $this->eventusers;
+    }
+
+    /**
+     * Serialize the object
+     *
+     * @return json encoded array
+     */
+    public function serializeMe()
+    {
+      $encoders = array(new XmlEncoder(), new JsonEncoder());
+      $normalizers = array(new ObjectNormalizer());
+
+      $serializer = new Serializer($normalizers, $encoders);
+
+      return $serializer->serialize($this, 'json');
     }
 }

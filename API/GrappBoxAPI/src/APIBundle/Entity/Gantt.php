@@ -4,6 +4,11 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+
 /**
  * Gantt
  */
@@ -43,7 +48,7 @@ class Gantt
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -66,7 +71,7 @@ class Gantt
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -89,7 +94,7 @@ class Gantt
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -112,7 +117,7 @@ class Gantt
     /**
      * Get updatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUpdatorId()
     {
@@ -135,7 +140,7 @@ class Gantt
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -158,10 +163,25 @@ class Gantt
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Serialize the object
+     *
+     * @return json encoded array
+     */
+    public function serializeMe()
+    {
+      $encoders = array(new XmlEncoder(), new JsonEncoder());
+      $normalizers = array(new ObjectNormalizer());
+
+      $serializer = new Serializer($normalizers, $encoders);
+
+      return $serializer->serialize($this, 'json');
     }
 }

@@ -20,4 +20,5 @@ APIBundle\Entity\CustomerAccess:
         deletedAt:
             type: datetime
             column: deleted_at
+            nullable: TRUE
     lifecycleCallbacks: {  }

@@ -17,28 +17,36 @@ APIBundle\Entity\Project:
             length: 255
         description:
             type: text
+            nullable: TRUE
         logo:
             type: string
             length: 255
+            nullable: TRUE
         teamId:
             type: integer
             column: team_id
+            nullable: TRUE
         contactEmail:
             type: string
             length: 255
             column: contact_email
+            nullable: TRUE
         facebook:
             type: string
             length: 255
+            nullable: TRUE
         twitter:
             type: string
             length: 255
+            nullable: TRUE
+            nullable: TRUE
         createdAt:
             type: datetime
             column: created_at
         deletedAt:
             type: datetime
             column: deleted_at
+            nullable: TRUE
     manyToMany:
         users:
           targetEntity: User

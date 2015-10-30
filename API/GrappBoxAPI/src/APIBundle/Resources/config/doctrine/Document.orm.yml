@@ -17,4 +17,5 @@ APIBundle\Entity\Document:
         hash:
             type: string
             length: 255
+            nullable: TRUE
     lifecycleCallbacks: {  }

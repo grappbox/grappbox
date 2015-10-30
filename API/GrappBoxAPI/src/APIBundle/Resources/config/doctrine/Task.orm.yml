@@ -19,21 +19,25 @@ APIBundle\Entity\Task:
             length: 255
         description:
             type: text
+            nullable: TRUE
         dueDate:
             type: datetime
             column: due_date
+            nullable: TRUE
         startedAt:
             type: datetime
             column: started_at
         finishedAt:
             type: datetime
             column: finished_at
+            nullable: TRUE
         createdAt:
             type: datetime
             column: created_at
         deletedAt:
             type: datetime
             column: deleted_at
+            nullable: TRUE
     manyToOne:
         users:
           targetEntity: User

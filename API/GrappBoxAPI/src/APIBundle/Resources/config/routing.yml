@@ -21,11 +21,11 @@ whiteboard_pullDraw:
     requirements:
         id: \d+
 
-whiteboard_exit:
-    path:		/Whiteboard/exit/{id}
-    defaults:	{ _controller: APIBundle:Whiteboard:exitWhiteboard }
-    requirements:
-        id: \d+
+# whiteboard_exit:
+#     path:		/Whiteboard/exit/{id}
+#     defaults:	{ _controller: APIBundle:Whiteboard:exitWhiteboard }
+#     requirements:
+#         id: \d+
 
 whiteboard_delete:
     path:		/Whiteboard/delete/{id}
