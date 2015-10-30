@@ -1,10 +1,11 @@
-/*!
+/*
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+ * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
  */
 
  /* grappbox : global routing */
- app.config(function($routeProvider, $locationProvider) {
+ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
  	$routeProvider
  	.when('/', {
  		templateUrl : '../resources/pages/dashboard.html',
@@ -36,4 +37,4 @@
  	})
 
  	$locationProvider.html5Mode(true);
- });
+ }]);

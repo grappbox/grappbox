@@ -1,5 +1,6 @@
 {# This file is subject to the terms and conditions defined in
- # file 'LICENSE.txt', which is part of the GRAPPBOX source code package. #}
+ # file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+ # COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. #}
 
 {% spaceless %}
 
@@ -31,14 +32,14 @@
 		{% endstylesheets %}
 
 		{% javascripts
-		'@AppBundle/Resources/public/js/vendor/angular.min.js'
-		'@AppBundle/Resources/public/js/vendor/angular-route.min.js'
-		'@AppBundle/Resources/public/js/vendor/angular-resource.min.js'
+		'@AppBundle/Resources/public/js/vendor/angular.js'
+		'@AppBundle/Resources/public/js/vendor/angular-route.js'
+		'@AppBundle/Resources/public/js/vendor/angular-resource.js'
 		'@AppBundle/Resources/public/js/custom/app.angular.js'
 		'@AppBundle/Resources/public/js/custom/app-routing.angular.js'
 		'@AppBundle/Resources/public/js/custom/dashboard-controller.angular.js'
 		'@AppBundle/Resources/public/js/custom/whiteboard-controller.angular.js'
-		output='resources/js/app.angular.min.js' %}
+		filter='?yui_js' output='resources/js/app.angular.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}
 
@@ -96,7 +97,6 @@
 		'@ShowcaseBundle/Resources/public/js/vendor/bootstrap.js'
 		'@ShowcaseBundle/Resources/public/js/vendor/smoothscroll.js'
 		'@AppBundle/Resources/public/js/vendor/sbadmin-two.js'
-		'@AppBundle/Resources/public/js/vendor/metis-menu.js'
 		filter='?yui_js' output='resources/js/app.jquery.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}

@@ -1,14 +1,8 @@
-/*!
+/*
  * Start Bootstrap - SB Admin 2 Bootstrap Admin Theme (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
-
-$(function() {
-
-    $('#side-menu').metisMenu();
-
-});
 
 //Loads the correct sidebar on window load,
 //collapses the sidebar on window resize.
