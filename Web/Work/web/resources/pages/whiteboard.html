@@ -2,32 +2,6 @@
      which is part of the GRAPPBOX source code package.
      COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="whiteboard-view">
-    <h1 class="page-header app-header">Whiteboard selection</h1>
-
-    <section class="app-section" id="whiteboard-list">
-        <div class="container app-container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <!-- grappbox.data : whiteboard list -->
-                    <div class="section-heading app-section-heading"><h2></h2></div>
-                    <div class="section-content app-section-content">
-                        <div id="all-whiteboards-data" ng-controller="allWhiteboardsController">
-                            <div class="app-data" ng-repeat="whiteboard in allWhiteboardsList">
-                                <ul class="app-data-list each-available-whiteboard hvr-float">
-                                    <li class="whiteboard-name">{[{ whiteboard.name }]}</li>
-                                    <li class="whiteboard-id">#{[{ whiteboard.id }]}</li>
-                                    <li class="whiteboard-project-name">{[{ whiteboard.project }]}</li>
-                                    <li class="whiteboard-information">
-                                        <div class="whiteboard-information-data whiteboard-date"><i class="fa fa-calendar"></i>{[{ whiteboard.date }]}</div>
-                                        <div class="whiteboard-information-data whiteboard-time"><i class="fa fa-clock-o"></i>{[{ whiteboard.time }]}</div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="view view-content" id="whiteboard-view" ng-controller="whiteboardListController">
+ 	<h1 class="page-header app-header">Whiteboard #{[{ whiteboardID }]}</h1>
 </div>

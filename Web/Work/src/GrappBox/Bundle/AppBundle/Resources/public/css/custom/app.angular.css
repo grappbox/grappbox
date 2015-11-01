@@ -12,6 +12,8 @@
 /* ==================== General layout ==================== */
 
 #app-wrapper section:nth-of-type(1) { margin: 0; }
+#app-wrapper .alert { border-radius: 0; }
+
 #page-wrapper { height: auto; }
 
 @media (max-width: 767px) {
@@ -77,14 +79,14 @@
 /* ==================== Section: dashboard ==================== */
 
 #dashboard-view .app-section-content { margin: 0 -30px; background: #EEE; }
-
 #dashboard-view .app-section-content > div { overflow-x: auto; box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35); }
-#dashboard-view .app-section-content .app-data { display: table-cell; }
-#dashboard-view .app-section-content .app-data .app-data-list i { margin: 0 10px 0 -10px; }
-#dashboard-view .app-section-content .app-data .app-data-list { list-style: none; padding: 0; cursor: pointer; transition-duration: 0.1s; margin: 20px 10px 20px 10px; color: #FAFAFA; text-align: center; box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35); }
 
-#dashboard-view .app-section-content .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
-#dashboard-view .app-section-content .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
+#dashboard-view .app-data { display: table-cell; }
+#dashboard-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
+#dashboard-view .app-data .app-data-list { list-style: none; padding: 0; transition-duration: 0.1s; margin: 20px 10px 20px 10px; color: #FAFAFA; text-align: center; box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35); }
+
+#dashboard-view .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
+#dashboard-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
 
 #dashboard-view .each-member-data .team-member-picture { padding: 15px 15px 10px 15px; background: #607D8B; }
 #dashboard-view .each-member-data .team-member-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35); }
@@ -108,3 +110,48 @@
 #dashboard-view .each-progress-data .progress-details { padding: 15px 0; background: #03A9F4; }
 #dashboard-view .each-progress-data .progress-details div { display: inline-block; padding: 0 40px 0 0; }
 #dashboard-view .each-progress-data .progress-details div:last-child { display: inline-block; padding: 0; }
+
+
+/* ==================== Section: whiteboard (list) ==================== */
+
+#whiteboard-list-view .app-section-content { margin: 0 -30px; background: #EEE; }
+#whiteboard-list-view .app-section-content > div { overflow-x: auto; box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35); }
+
+#whiteboard-list-view .app-data { display: table-cell; }
+
+#whiteboard-list-view .app-data .app-data-list li { display: block; }
+#whiteboard-list-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
+#whiteboard-list-view .app-data .app-data-list
+{
+	display: block;
+	list-style: none;
+	margin: 20px 10px 20px 10px;
+	padding: 0;
+	transition-duration: 0.1s;
+	color: #212121;
+	background: #FAFAFA;
+	text-align: left;
+	box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35);
+}
+
+#whiteboard-list-view .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
+#whiteboard-list-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
+
+#whiteboard-list-view .each-available-whiteboard { min-width: 17vw; background: #BDBDBD; }
+
+#whiteboard-list-view .each-available-whiteboard .whiteboard-id { padding: 15px 15px 5px 15px; }
+#whiteboard-list-view .each-available-whiteboard .whiteboard-project-name { padding: 5px 15px 5px 15px; }
+#whiteboard-list-view .each-available-whiteboard .whiteboard-information { padding: 5px 25px 15px 25px; }
+
+#whiteboard-list-view .each-available-whiteboard .whiteboard-name,
+#whiteboard-list-view .each-available-whiteboard .whiteboard-link { padding: 0; }
+
+#whiteboard-list-view .each-available-whiteboard .whiteboard-name a,
+#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { display: block; padding: 15px; color: #FAFAFA; text-align: center; }
+
+#whiteboard-list-view .each-available-whiteboard .whiteboard-name a { border-bottom: 1px solid #FAFAFA; background-color: #607D8B; }
+#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { border-top: 1px solid #FAFAFA; background-color: #8BC34A; }
+
+#whiteboard-list-view .app-actions { display: block; }
+#whiteboard-list-view .app-actions .whiteboard-action-link { width: 30%; margin: 0 auto; }
+#whiteboard-list-view .app-actions .whiteboard-action-link a { display: block; padding: 30px; text-align: center; font-size: 16px; color: #FAFAFA; background: #0097A7; }

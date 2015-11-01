@@ -2,7 +2,7 @@
      which is part of the GRAPPBOX source code package.
      COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="dashboard-view">
+<div class="view view-content" id="dashboard-view" ng-controller="dashboardController">
     <h1 class="page-header app-header">Dashboard</h1>
 
     <section class="app-section" id="team-occupation">
@@ -12,7 +12,7 @@
                     <!-- grappbox.data : team occupation -->
                     <div class="section-heading app-section-heading"><h2>Team occupation</h2></div>
                     <div class="section-content app-section-content">
-                        <div id="team-occupation-data" ng-controller="teamOccupationDashboardController">
+                        <div id="team-occupation-data">
                             <div class="app-data" ng-repeat="member in teamOccupationList">
                                 <ul class="app-data-list each-member-data hvr-float">
                                     <li class="team-member-picture"><img data-ng-src="{[{ member.picture }]}" height="120" width="120"></li>
@@ -36,7 +36,7 @@
                     <!-- grappbox.data : next meetings -->
                     <div class="section-heading app-section-heading"><h2>Next meetings</h2></div>
                     <div class="section-content app-section-content">
-                        <div id="next-meetings-data" ng-controller="nextMeetingsDashboardController">
+                        <div id="next-meetings-data">
                             <div class="app-data" ng-repeat="meeting in nextMeetingsList">
                                 <ul class="app-data-list each-meeting-data hvr-float">
                                     <li class="meeting-type">{[{ meeting.type }]}</li>
@@ -60,7 +60,7 @@
                     <!-- grappbox.data : global progress -->
                     <div class="section-heading app-section-heading"><h2>Global progress</h2></div>
                     <div class="section-content app-section-content">
-                        <div id="global-progress-data" ng-controller="globalProgressDashboardController">
+                        <div id="global-progress-data">
                             <div class="app-data" ng-repeat="progress in globalProgressList">
                                 <ul class="app-data-list each-progress-data hvr-float">
                                     <li class="project-picture"><img data-ng-src="{[{ progress.picture }]}" height="120²" width="120²"></li>
