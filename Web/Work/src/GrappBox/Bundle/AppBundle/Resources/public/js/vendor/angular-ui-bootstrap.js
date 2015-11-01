@@ -24,7 +24,7 @@ angular.module('ui.bootstrap.collapse', [])
               addClass: 'in',
               easing: 'ease',
               to: { height: element[0].scrollHeight + 'px' }
-            }).start().finally(expandDone);
+            }).start()["finally"](expandDone);
           } else {
             $animate.addClass(element, 'in', {
               to: { height: element[0].scrollHeight + 'px' }
@@ -59,7 +59,7 @@ angular.module('ui.bootstrap.collapse', [])
             $animateCss(element, {
               removeClass: 'in',
               to: {height: '0'}
-            }).start().finally(collapseDone);
+            }).start()["finally"](collapseDone);
           } else {
             $animate.removeClass(element, 'in', {
               to: {height: '0'}
@@ -4170,7 +4170,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.stackedMap'])
               modalOpenedDeferred.reject(reason);
               modalResultDeferred.reject(reason);
             })
-            .finally(function() {
+            ["finally"](function() {
               if (promiseChain === samePromise) {
                 promiseChain = null;
               }
