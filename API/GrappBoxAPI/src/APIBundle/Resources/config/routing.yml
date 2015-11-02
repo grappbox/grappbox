@@ -1,3 +1,52 @@
+user_basicInformations:
+    path:       /User/basicInformations/{id}
+    defaults:   { _controller: APIBundle:User:basicInformations }
+    requirements:
+        id: \d+
+    methods: [GET, PUT]
+
+user_getIdByName:
+    path:       /User/getIdByName/{firstname}.{lastname}
+    defaults:   { _controller: APIBundle:User:getIdByName }
+    methods: [GET]
+
+user_getNextMeetings:
+    path:       /User/getNextMeetings/{id}
+    defaults:   { _controller: APIBundle:User:getNextMeetings }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+user_getProjects:
+    path:       /User/getProjects/{id}
+    defaults:   { _controller: APIBundle:User:getProjects }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+user_getAllTasks:
+    path:       /User/getAllTasks/{id}
+    defaults:   { _controller: APIBundle:User:getAllTasks }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+user_getCurrentAndNextTasks:
+    path:       /User/getCurrentAndNextTasks/{id}
+    defaults:   { _controller: APIBundle:User:getCurrentAndNextTasks }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+user_password:
+    path:       /User/password/{id}
+    defaults:   { _controller: APIBundle:User:password }
+    requirements:
+        id: \d+
+    methods: [GET, PUT]
+
+
+
 whiteboard_list:
     path:		/Whiteboard/list
     defaults:	{ _controller: APIBundle:Whiteboard:listWhiteboard }

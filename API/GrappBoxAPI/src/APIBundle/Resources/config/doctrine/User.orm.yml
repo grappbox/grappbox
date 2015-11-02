@@ -1,5 +1,6 @@
 APIBundle\Entity\User:
     type: entity
+    repositoryClass: APIBundle\Entity\UserRepository
     table: users
     id:
         id:
@@ -18,8 +19,7 @@ APIBundle\Entity\User:
             type: datetime
             nullable: TRUE
         avatar:
-            type: string
-            length: 255
+            type: text
             nullable: TRUE
         password:
             type: string

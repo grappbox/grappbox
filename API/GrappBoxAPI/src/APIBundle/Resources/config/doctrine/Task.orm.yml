@@ -1,5 +1,6 @@
 APIBundle\Entity\Task:
     type: entity
+    repositoryClass: APIBundle\Entity\TaskRepository
     table: tasks
     id:
         id:

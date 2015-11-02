@@ -72,6 +72,7 @@ class ProjectRepository extends EntityRepository
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
 		foreach ($projects as $project) {
+			$projectId = $project->getId();
 			$projectName = $project->getName();
 			$projectDescription = $project->getDescription();
 			$projectLogo = $project->getLogo();
@@ -108,11 +109,62 @@ class ProjectRepository extends EntityRepository
 				}
 			}
 
-			$arr["Project ".$i] = array("project_name" => $projectName, "project_description" => $projectDescription, "project_logo" => $projectLogo, "contact_mail" => $contactMail,
+			$arr["Project ".$i] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_logo" => $projectLogo, "contact_mail" => $contactMail,
 				"facebook" => $facebook, "twitter" => $twitter, "number_finished_tasks" => $nbFinishedTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
 			$i++;
 		}
 
+		return $arr;
+	}
+
+	public function findUserProjects($id)
+	{
+		$qb = $this->createQueryBuilder('p');
+		
+		$projects = $qb->getQuery()->getResult();
+
+		$arr = array();
+		$i = 1;
+
+		foreach ($projects as $project) {
+			$creatorId = $project->getCreatorId();
+
+			if ($creatorId == $id)
+			{
+				$projectId = $project->getId();
+				$projectName = $project->getName();
+				$projectDescription = $project->getDescription();
+				$projectLogo = $project->getLogo();
+				$contactMail = $project->getContactEmail();
+				$facebook = $project->getFacebook();
+				$twitter = $project->getTwitter();
+				$arr["Project ".$i] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_logo" => $projectLogo, "contact_mail" => $contactMail,
+					"facebook" => $facebook, "twitter" => $twitter);
+				$i++;
+			}
+			else
+			{
+				$projectUsers = $project->getUsers();
+				
+				foreach ($projectUsers as $projectUser) {
+					$userId = $projectUser->getId();
+
+					if ($userId == $id)
+					{
+						$projectId = $project->getId();
+						$projectName = $project->getName();
+						$projectDescription = $project->getDescription();
+						$projectLogo = $project->getLogo();
+						$contactMail = $project->getContactEmail();
+						$facebook = $project->getFacebook();
+						$twitter = $project->getTwitter();
+						$arr["Project ".$i] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_logo" => $projectLogo, "contact_mail" => $contactMail,
+							"facebook" => $facebook, "twitter" => $twitter);
+						$i++;
+					}
+				}
+			}
+		}
 		return $arr;
 	}
 }

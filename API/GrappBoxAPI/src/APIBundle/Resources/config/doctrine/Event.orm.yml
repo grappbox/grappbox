@@ -15,6 +15,7 @@ APIBundle\Entity\Event:
         projectId:
             type: integer
             column: project_id
+            nullable: TRUE
         typeId:
             type: integer
             column: type_id
