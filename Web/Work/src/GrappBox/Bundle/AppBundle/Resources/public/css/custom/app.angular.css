@@ -155,3 +155,9 @@
 #whiteboard-list-view .app-actions { display: block; }
 #whiteboard-list-view .app-actions .whiteboard-action-link { width: 30%; margin: 0 auto; }
 #whiteboard-list-view .app-actions .whiteboard-action-link a { display: block; padding: 30px; text-align: center; font-size: 16px; color: #FAFAFA; background: #0097A7; }
+
+
+/* ==================== Section: whiteboard (draw) ==================== */
+
+#whiteboard-view .app-section-content .app-data { overflow: scroll; max-height: 75vh; border: 1px solid #E0E0E0; }
+#whiteboard-view .app-section-content .app-data canvas { background: #FAFAFA; }
