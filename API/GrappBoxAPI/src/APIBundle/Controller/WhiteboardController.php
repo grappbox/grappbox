@@ -284,7 +284,7 @@ class WhiteboardController extends Controller
 			return $response;
 		}
 
-		$date = new \DateTime($request->request->get('lastUpdate'))
+		$date = new \DateTime($request->request->get('lastUpdate'));
 		$toAddQuery = $em->createQuery(
 									    'SELECT objects.object
 									    FROM APIBundle:WhiteboardObject objects
