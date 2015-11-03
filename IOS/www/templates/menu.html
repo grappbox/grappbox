@@ -2,13 +2,14 @@
     Summary: Abstract page menu for all other pages
 -->
 
-<ion-side-menus enable-menu-with-back-views="true">
+<ion-side-menus enable-menu-with-back-views="false">
+
     <ion-side-menu-content edge-drag-threshold="true">
         <ion-nav-bar class="bar-stable nav-title-slide-ios7">
+            <ion-nav-back-button></ion-nav-back-button>
             <ion-nav-buttons side="left">
                 <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
             </ion-nav-buttons>
-            <ion-nav-back-button class="button icon-left ion-chevron-left button-clear button-dark">Back</ion-nav-back-button>
             <ion-nav-buttons side="right">
                 <ion-nav-button class="button button-icon button-clear ion-android-notifications-none"></ion-nav-button>
                 <ion-nav-button class="button button-icon ion-ios-settings"></ion-nav-button>
@@ -17,6 +18,7 @@
         <!-- On this line, "menuContent" allows to proceed inheritance, see in app.js -->
         <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
     </ion-side-menu-content>
+
     <ion-side-menu side="left">
         <ion-content>
             <ion-list>
@@ -32,10 +34,10 @@
                 <a class="button icon button-icon ion-power"></a>
             </div>
             <ion-list>
-                <ion-item nav-clear menu-close href="#/app/dashboard">Dashboard</ion-item>
-                <ion-item nav-clear menu-close href="#/app/timelines">Timelines</ion-item>
-                <ion-item nav-clear menu-close href="#/app/whiteboard">Whiteboard</ion-item>
-                <ion-item nav-clear menu-close href="#/app/settings">Settings</ion-item>
+                <ion-item nav-clear menu-close ui-sref="app.dashboard">Dashboard</ion-item><!--href="#/app/dashboard"-->
+                <ion-item nav-clear menu-close ui-sref="app.timelines">Timelines</ion-item><!--href="#/app/timelines"-->
+                <ion-item nav-clear menu-close ui-sref="app.whiteboards">Whiteboard</ion-item><!--href="#/app/whiteboard"-->
+                <ion-item nav-clear menu-close ui-sref="app.settings">Settings</ion-item><!--href="#/app/settings"-->
             </ion-list>
         </ion-content>
     </ion-side-menu>

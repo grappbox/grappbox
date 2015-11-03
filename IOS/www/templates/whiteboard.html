@@ -4,16 +4,18 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">Whiteboard</ion-nav-title>
-        <ion-content class="has-header" ng-controller="WhiteboardCtrl" overflow-scroll="true">
-            <canvas id="canvasWhiteboard"></canvas>
-        </ion-content>
-        <ion-footer-bar class="bar-stable">
-            <div class="title">
-                <button class="button button-icon ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button>
-                <button class="button button-icon ion-paintbrush" style="color: {{brushcolor}}" ng-click="drawingMode()"></button>
-                <button class="button button-icon" style="color: {{brushcolor}}" ng-click="addText()">Aa</button>
-                <button class="button button-icon ion-android-radio-button-off" style="color: {{brushcolor}}" ng-click="openShapesPopover($event)"></button>
-                <button class="button button-icon ion-ios-undo" ng-click="undoLastObject()"></button>
-            </div>
-        </ion-footer-bar>
+    <ion-content class="has-header" ng-controller="WhiteboardCtrl" overflow-scroll="true">
+        <canvas id="canvasWhiteboard"></canvas>
+    </ion-content>
+    <ion-footer-bar class="bar-stable">
+        <div class="title">
+            <button class="button button-icon ion-plus-round" ng-click="zoomIn()"></button>
+            <button class="button button-icon button-clear ion-minus-round" ng-click="zoomOut()"></button>
+            <button class="button button-icon button-clear ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button>
+            <button class="button button-icon button-clear ion-paintbrush" style="color: {{brushcolor}}" ng-click="openDrawPopover($event)"></button>
+            <button class="button button-icon button-clear" style="color: {{brushcolor}}; font-size: 25px" ng-click="openTextPopover($event)">Aa</button>
+            <button class="button button-icon button-clear ion-android-radio-button-off" style="color: {{brushcolor}}" ng-click="openShapesPopover($event)"></button>
+            <button class="button button-icon button-clear ion-ios-undo" ng-click="undoLastObject()"></button>
+        </div>
+    </ion-footer-bar>
 </ion-view>

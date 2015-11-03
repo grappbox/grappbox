@@ -7,19 +7,20 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
 
 .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
-        // Hide the accessory bar above the keyboard for form inputs
-        if (window.cordova && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        }
         if (window.StatusBar) {
             StatusBar.styleDefault();
         }
     });
 })
 
-.config(function ($stateProvider, $urlRouterProvider) {
-    $stateProvider
+.config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
 
+    $ionicConfigProvider.views.transition('platform');          // transition between views
+    $ionicConfigProvider.backButton.icon('ion-ios-arrow-back'); // iOS back icon
+    $ionicConfigProvider.backButton.text('');                   // default is 'Back'
+    $ionicConfigProvider.backButton.previousTitleText(false);   // hides the 'Back' text
+
+    $stateProvider
         .state('app', {
             url: "/app", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
             abstract: true, //'abstract' means this state will be an abstract, so will never render, but every page will inherit of it
@@ -47,8 +48,18 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
             }
         })
 
+        .state('app.whiteboards', {
+            url: "/whiteboards",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/whiteboards.html",
+                    controller: 'WhiteboardsCtrl'
+                }
+            }
+        })
+
         .state('app.whiteboard', {
-            url: "/whiteboard",
+            url: "/whiteboards/:whiteboardId",
             views: {
                 'menuContent': {
                     templateUrl: "templates/whiteboard.html",
