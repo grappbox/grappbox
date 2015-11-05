@@ -38,6 +38,8 @@ a:active, a:focus, a:hover { text-decoration: none; color: #009688; }
 .content-section { box-shadow: 0 2px 2px rgba(33, 33, 33, 0.35); }
 .content-section-a { background-color: #F5F5F5; }
 
+.lead { text-align: justify; }
+.text-center { text-align: center!important; }
 
 /* ==================== General laytout (sections) ==================== */
 
