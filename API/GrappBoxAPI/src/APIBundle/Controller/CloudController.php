@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use \DateTime;
 
 use APIBundle\Entity\CloudTransfer;
 use APIBundle\Entity\CloudSecuredFileMetadata;
@@ -29,7 +30,7 @@ class CurlRequest {
      protected $_webpage;
      protected $_status;
      public    $authentication = 1;
-     public    $auth_name      = 'grappbox';
+     public    $auth_name      = 'GrappBot';
      public    $auth_pass      = 'GolfBravo$$';
 
      public function __construct($timeOut = 30)
@@ -74,6 +75,7 @@ class CurlRequest {
          {
              curl_setopt($curlRequest,CURLOPT_POST,true);
              curl_setopt($curlRequest,CURLOPT_POSTFIELDS,$this->_postFields);
+             curl_setopt($curlRequest, CURLOPT_HTTPHEADER, array("Content-Type" => "multipart/form-data"));
 
          }
 				 else {
@@ -125,7 +127,7 @@ class CloudController extends Controller
       $role = $db->getRepository("APIBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
       if (is_null($role))
         return (-1);
-      $roleTable = $db->getRepository("APIBundle:Role")->findOne($role->getId());
+      $roleTable = $db->getRepository("APIBundle:Role")->findOneById($role->getId());
 			return (is_null($roleTable) ? -1 : $roleTable->getCloud());
 	}
 
@@ -136,10 +138,11 @@ class CloudController extends Controller
 	{
 		session_infos: {
 			token : "userToken"
+      safe_password: "mustache"
 		},
 		stream_infos: {
+      project_id : 42,
 			//ON POST REQUEST ONLY//
-			project_id : 42,
 			filename : "Awesomeness",
 			path : "/LabEIP/TestUpload",
 			password : "HashPasswordIfSecuredFileElseNullType"
@@ -151,11 +154,26 @@ class CloudController extends Controller
 	public function streamAction(Request $request){
 		$method = $request->getMethod();
 		$dbManager = $this->getDoctrine()->getManager();
-		$token = $request->request->get("session_infos")["token"];
+    $json = json_decode($request->getContent(), true);
+		$token = $json["session_infos"]["token"];
 		$userId = $this->getUserId($token);
-		$receivedData = $request->request->get("stream_infos");
-		$idProject = $receivedData["project_id"];
-		if ($method == "POST" && $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
+    $receivedData = $json["stream_infos"];
+    $isSafe = ($method == "DELETE" ? false : preg_match("/Safe/", $receivedData["path"]));
+    if ($isSafe){
+      $project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+      $passwordEncrypted = (isset($json["session_infos"]["safe_password"]) ? $json["session_infos"]["safe_password"] : NULL); // TODO : SHA-1 512 Hashing when algo created!
+    }
+    else{
+      $project = null;
+      $passwordEncrypted = null;
+    }
+    if ($method == "POST")
+    {
+      $receivedData["filename"] = str_replace(" ", "|", $receivedData["filename"]);
+      $receivedData["path"] = str_replace(" ", "|", $receivedData["path"]);
+		  $idProject = $receivedData["project_id"];
+    }
+		if (($method == "POST" && $this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
 			throw $this->createAccessDeniedException();
 		return ($method == "POST"
 							? $this->openStream($receivedData, $userId, $idProject)
@@ -169,7 +187,7 @@ class CloudController extends Controller
 		$stream = new CloudTransfer();
 		$stream->setCreatorId($userId)
 					 ->setFilename($receivedData["filename"])
-					 ->setPath('/GrappBox Projects/'.(string)$idProject.$receivedData["path"])
+					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
 					 ->setPassword($receivedData["password"])
 					 ->setCreationDate(new DateTime("now"))
 					 ->setDeletionDate(null);
@@ -197,26 +215,19 @@ class CloudController extends Controller
 					 ->setCloudPath($stream->getPath());
 			$em->persist($meta);
 		}
-		//Open cloud connection
-		$client = new Client(self::$settingsDAV);
-		$adapter = new WebDAVAdapter($client);
-		$flysystem = new Filesystem($adapter);
-		//Copy & rename the file in the right folder
-		$filesystem->copy('/Grappbox Transfer/'.(string)$stream->getId().'.transfer', (string)$stream->getPath().(string)$stream->getFilename());
-		//Delete the transfer file
-		$filesystem->delete('/Grappbox Transfer/'.(string)$stream->getId().'.transfer');
+
 		$stream->setDeletionDate(new DateTime("now"));
 		$shareRequest = new CurlRequest();
 		$shareRequest->setPost(array(
-			"path" => $stream->getPath()."/".$stream->getFilename(),
-			"shareType" => 3,
-			"publicUpload" => False,
-			"permissions" => 1
+			"path" => (string)($stream->getPath()."/".$stream->getFilename()),
+			"shareType" => (int)3,
+			"publicUpload" => (bool)false,
+			"permissions" => (int)1
 		));
-		$shareRequest->createCurl("http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/shares");
+		var_dump($shareRequest->createCurl("http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares"));
 		$em->persist($stream);
 		$em->flush();
-		return header("HTTP/1.0 200 OK", True, 203);
+		return new JsonResponse(Array("infos" => "OK"));
 	}
 
 	//This have to be a PUT request
@@ -229,17 +240,21 @@ class CloudController extends Controller
 			},
 			stream_infos: {
 				stream_id : 21
-				file_chunk : "ImAFileChunkAlreadyHashedWithThePassswordIfPassword"
+        project_id : 42
+				file_chunk : "ImAFileChunkAlreadyHashedWithThePassswordIfPassword",
+        chunk_numbers: 2
+        current_chunk : 1,
 			}
  	  }
 	*/
 	public function sendFileAction(Request $request){
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
-		$token = $request->get("session_infos")["token"];
-		$receivedData = $request->request->get("stream_infos");
+    $json = json_decode($request->getContent(), true);
+		$token = $json["session_infos"]["token"];
+		$receivedData = $json["stream_infos"];
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
-    if ($user_id < 0 || $user_id != $stream->getCreatorId() || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
+    if ($user_id < 0 || $user_id != $stream->getCreatorId())
 			throw $this->createAccessDeniedException();
 
 		//Here the user have the right authorization, so upload the file's chunk
@@ -247,8 +262,8 @@ class CloudController extends Controller
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
-		$flysystem->put('/Grappbox Transfer/'.(string)$receivedData["stream_id"].'.transfer', (string)$receivedData["file_chunk"]);
-		return header("HTTP/1.0 200 OK", True, 203);
+		$flysystem->put('/GrappBox|Projects/'.(string)$receivedData["project_id"]."/".$stream->getFilename().'-chunking-'.(string)$receivedData["stream_id"].'-'.$receivedData["chunk_numbers"].'-'.$receivedData["current_chunk"], (string)base64_decode($receivedData["file_chunk"]));
+		return new JsonResponse(Array("infos" => "OK"));
 	}
 
 	/**
@@ -270,26 +285,31 @@ class CloudController extends Controller
 	public function getListAction($token, $idProject, $path, $password, Request $request)
 	{
     $userId = $this->getUserId($token);
-    $isSafe = preg_match("/Safe/");
+    $isSafe = preg_match("/Safe/", $path);
     if ($isSafe){
       $project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
       $passwordEncrypted = $password; // TODO : SHA-1 512 Hashing when algo created!
+
     }
     else{
       $project = null;
       $passwordEncrypted = null;
     }
     if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
-      $this->createAccessDeniedException();
+      throw $this->createAccessDeniedException();
 
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
-		$rpath = "/GrappBox Projects/".(string)($idProject).str_replace(",", "/", $path);
+    $prepath = str_replace(" ", "|", str_replace(",", "/", $path));
+		$rpath = "/GrappBox|Projects/".(string)($idProject).$prepath;
 
-		$content = $adapter->listContents($rpath);
-		return new JsonResponse(array("path" => $rpath,
-																	"data" => $content));
+		$content = str_replace("|", " ", $adapter->listContents($rpath));
+    foreach ($content as $i => $row)
+    {
+      $content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
+    }
+		return new JsonResponse(array("data" => $content));
 	}
 
 	/**
@@ -308,16 +328,33 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function getFileAction($cloudPath, $token, $idProject, $password, Request $request){
+	public function getFileAction($cloudPath, $token, $idProject, $password = null, $passwordSafe = null, Request $request){
     $userId = $this->getUserId($token);
     $passwordEncrypted = $password; //TODO : sha-1 512 hashing Here in password
-    $cloudPath = str_replace(',','/', $cloudPath);
-    $filePassword = $this->getDoctrine()->getRepository("APIBundle:CloudSecuredFileMetadata")->findOneByCloudPath($cloudPath);
-    if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
-      $this->createAccessDeniedException();
+    $cloudPathArray = explode(',', $cloudPath);
+    $filename = $cloudPathArray[count($cloudPathArray) - 1];
+    unset($cloudPathArray[count($cloudPathArray) - 1]);
+    $cloudBasePath = implode('/', $cloudPathArray);
+    if ($cloudBasePath == "")
+      $cloudBasePath = "/";
+    $filePassword = $this->getDoctrine()->getRepository("APIBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+
+    $isSafe = preg_match("/Safe/", $cloudPath);
+    if ($isSafe)
+    {
+      $project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+      $passwordEncrypted = $password; // TODO : SHA-1 Hashing
+    }
+    else {
+      $project == NULL;
+      $passwordEncrypted = NULL;
+    }
+    if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+      throw $this->createAccessDeniedException();
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
-		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox Projects/".(string)($idProject).$cloudPath);
+    $cloudPath = str_replace(',', '/', $cloudPath);
+		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox|Projects/".(string)($idProject).$cloudPath);
 		$searchRequest = new CurlRequest();
 		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
 		if ($searchResult->meta->statuscode != 100 ||
@@ -347,7 +384,7 @@ class CloudController extends Controller
       session_infos: {
         token: "48q98d"
       },
-      safe_action: {
+      safe_infos: {
         project_id: 42,
         password: "6q8d4zq68d"
       }
@@ -355,48 +392,32 @@ class CloudController extends Controller
    */
 	public function setSafePassAction(Request $request)
 	{
-    $dbManager = $this->getDoctrine()->getManager()
-    $json = json_decode($request->getContent());
+    $dbManager = $this->getDoctrine()->getManager();
+    $json = json_decode($request->getContent(), true);
     $token = $json["session_infos"]["token"];
     $userId = $this->getUserId($token);
-    $idProject = (int)$json["safe_action"]["project_id"];
+    $idProject = (int)$json["safe_infos"]["project_id"];
     $project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
     if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
-      $this->createAccessDeniedException();
+      throw $this->createAccessDeniedException();
 
-    $project->setSafePassword($json["safe_action"]["password"]);
+    $project->setSafePassword($json["safe_infos"]["password"]);
     $dbManager->persist($project);
     $dbManager->flush();
 		return new JsonResponse(Array("infos" => "OK"));
 	}
 
-
-    /*
-     {
-       session_infos: {
-         token: "48q98d"
-       },
-       cloud_action: {
-         project_id: 42,
-       }
-     }
-    */
-  public function createCloud(Request $request)
+  public function createCloudAction($projectId, Request $request)
   {
-    $json = json_decode($request->getContent());
-    $token = $json["session_infos"]["token"];
-    $userId = $this->getUserId($token);
-    $idProject = (int)$json["cloud_action"]["project_id"];
-    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
-      $this->createAccessDeniedException();
-
     $client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
-		$rpath = "/GrappBox Projects/".(string)($idProject).(string)($path)."/Safe";
+		$rpathSafe = "GrappBox|Projects/".(string)($projectId)."/Safe";
+    $rpath = "GrappBox|Projects/".(string)($projectId);
 		//HERE Create the dir in the cloud
-    $flysystem->createDir($rpath);
-		return new JsonResponse(Array("infos" => "OK"));
+    var_dump($flysystem->createDir($rpath));
+    var_dump($flysystem->createDir($rpathSafe));
+		return new JsonResponse(Array("infos" => $rpathSafe, "infos2" => $rpath));
   }
 
 	/**
@@ -420,15 +441,15 @@ class CloudController extends Controller
  	*/
 	public function delAction(Request $request)
 	{
-    $json = json_decode($request->getContent());
+    $json = json_decode($request->getContent(), true);
     $token = $json["session_infos"]["token"];
     $userId = $this->getUserId($token);
-    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
-      $this->createAccessDeniedException();
+    $idProject = $json["deletion_infos"]["project_id"];
+    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || preg_match("/Safe/", $json["deletion_infos"]["path"]))
+      throw $this->createAccessDeniedException();
 
     //Now we can delete the file or the directory
-    $idProject = $json["deletion_infos"]["project_id"];
-		$path = "/GrappBox Projects/".(string)($idProject).$json["deletion_infos"]["path"];
+		$path = "/GrappBox|Projects/".(string)($idProject).str_replace(' ', '|', $json["deletion_infos"]["path"]);
     $client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
@@ -450,20 +471,21 @@ class CloudController extends Controller
 	*/
 	public function createDirAction(Request $request)
 	{
-		$json = json_decode($request->getContent());
+		$json = json_decode($request->getContent(), true);
     $token = $json["session_infos"]["token"];
     $userId = $this->getUserId($token);
+		$idProject = $json["creation_infos"]["project_id"];
     if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
-      $this->createAccessDeniedException();
+      return  $this->createAccessDeniedException();
 
 		//Now we can create the directory at the proper place
-		$idProject = $json["creation_infos"]["project_id"];
 		$path = $json["creation_infos"]["path"];
-		$dirName = $json["creation_infos"]["dirName"];
+		$dirName = $json["creation_infos"]["dir_name"];
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
-		$rpath = "/GrappBox Projects/".(string)($idProject).(string)($path)."/".$dirName;
+    $dirName = str_replace(' ', '|', $dirName);
+		$rpath = "/GrappBox|Projects/".(string)($idProject).(string)($path)."/".$dirName;
 		//HERE Create the dir in the cloud
     $flysystem->createDir($rpath);
 		return new JsonResponse(Array("infos" => "OK"));
