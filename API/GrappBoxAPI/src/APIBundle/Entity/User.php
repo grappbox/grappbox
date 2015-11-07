@@ -518,18 +518,29 @@ class User implements UserInterface, \Serializable
           return $this;
       }
 
-      /**
-       * Serialize the object
-       *
-       * @return json encoded array
-       */
-      public function serializeMe()
+      /** @see \Serializable::serialize() */
+      public function serialize()
       {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
+          return serialize(array(
+              $this->id,
+              $this->firstname,
+              $this->lastname,
+              $this->email,
+              $this->token
+              //avatar
+          ));
+      }
 
-        $serializer = new Serializer($normalizers, $encoders);
-
-        return $serializer->serialize($this, 'json');
+      /** @see \Serializable::unserialize() */
+      public function unserialize($serialized)
+      {
+          list (
+          $this->id,
+          $this->firstname,
+          $this->lastname,
+          $this->email,
+          $this->token
+          //avatar
+          ) = unserialize($serialized);
       }
 }
