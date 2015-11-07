@@ -33,4 +33,8 @@ APIBundle\Entity\Role:
         projectSettings:
             type: smallint
             column: project_settings
+        cloud:
+            type: smallint
+            column: cloud
+            nullable: FALSE
     lifecycleCallbacks: {  }

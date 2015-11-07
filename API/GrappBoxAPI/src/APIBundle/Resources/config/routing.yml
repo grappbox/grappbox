@@ -192,8 +192,8 @@ cloud_sendFile:
   methods: [PUT]
 
 cloud_getList:
-    path:       /Cloud/getList/{token}/{idProject}/{path}
-    defaults:   { _controller: APIBundle:Cloud:getList }
+    path:       /Cloud/getList/{token}/{idProject}/{path}/{password}
+    defaults:   { _controller: APIBundle:Cloud:getList,  password: null}
     methods: [GET]
 
 cloud_getFile:
@@ -201,9 +201,10 @@ cloud_getFile:
     defaults:   { _controller: APIBundle:Cloud:getFile }
     methods: [GET]
 
-cloud_setDirPass:
-    path:       /Cloud/setDirPass
+cloud_setSafePass:
+    path:       /Cloud/setSafePass
     defaults:   { _controller: APIBundle:Cloud:setDirPass }
+    methods: [POST]
 
 cloud_delete:
     path:       /Cloud/del

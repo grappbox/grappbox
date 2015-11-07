@@ -114,16 +114,19 @@ class CloudController extends Controller
 
 	private function getUserId($token)
 	{
-			$dbManager = $this->getDoctrine()->getManager();
-
-			return (1);
+			$userRepository = $this->getDoctrine()->getRepository("APIBundle:User");
+      $user = $userRepository->findOneByToken($token);
+			return (is_null($user) ? -1 : $user->getId());
 	}
 
-	private function checkTokenAuthorization($token, $idProject)
+	private function checkUserCloudAuthorization($userId, $idProject)
 	{
-			$dbManager = $this->getDoctrine()->getManager();
-
-			return (1);
+			$db = $this->getDoctrine();
+      $role = $db->getRepository("APIBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
+      if (is_null($role))
+        return (-1);
+      $roleTable = $db->getRepository("APIBundle:Role")->findOne($role->getId());
+			return (is_null($roleTable) ? -1 : $roleTable->getCloud());
 	}
 
 	//This have to be a POST or DELETE request
@@ -147,13 +150,12 @@ class CloudController extends Controller
 	*/
 	public function streamAction(Request $request){
 		$method = $request->getMethod();
-		//Check if user have authorization to modify cloud for this project
 		$dbManager = $this->getDoctrine()->getManager();
 		$token = $request->request->get("session_infos")["token"];
 		$userId = $this->getUserId($token);
 		$receivedData = $request->request->get("stream_infos");
 		$idProject = $receivedData["project_id"];
-		if ($method == "POST" && $this->checkTokenAuthorization($token, $idProject) < 0)
+		if ($method == "POST" && $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
 			throw $this->createAccessDeniedException();
 		return ($method == "POST"
 							? $this->openStream($receivedData, $userId, $idProject)
@@ -232,13 +234,12 @@ class CloudController extends Controller
  	  }
 	*/
 	public function sendFileAction(Request $request){
-		//Check Authorization to access cloud and to upload that file
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
 		$token = $request->get("session_infos")["token"];
 		$receivedData = $request->request->get("stream_infos");
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
-		if ($user_id < 0 || $user_id != $stream->getCreatorId())
+    if ($user_id < 0 || $user_id != $stream->getCreatorId() || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
 			throw $this->createAccessDeniedException();
 
 		//Here the user have the right authorization, so upload the file's chunk
@@ -266,9 +267,21 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function getListAction($token, $idProject, $path, Request $request)
+	public function getListAction($token, $idProject, $path, $password, Request $request)
 	{
-		//HERE DO THE authentication
+    $userId = $this->getUserId($token);
+    $isSafe = preg_match("/Safe/");
+    if ($isSafe){
+      $project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+      $passwordEncrypted = $password; // TODO : SHA-1 512 Hashing when algo created!
+    }
+    else{
+      $project = null;
+      $passwordEncrypted = null;
+    }
+    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+      $this->createAccessDeniedException();
+
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
@@ -295,11 +308,15 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function getFileAction($cloudPath, $token, $idProject, Request $request){
-		//Check if request method is catched by the API
-		//HERE DO THE authentication
+	public function getFileAction($cloudPath, $token, $idProject, $password, Request $request){
+    $userId = $this->getUserId($token);
+    $passwordEncrypted = $password; //TODO : sha-1 512 hashing Here in password
+    $cloudPath = str_replace(',','/', $cloudPath);
+    $filePassword = $this->getDoctrine()->getRepository("APIBundle:CloudSecuredFileMetadata")->findOneByCloudPath($cloudPath);
+    if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
+      $this->createAccessDeniedException();
+
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
-		$cloudPath = str_replace(',','/', $cloudPath);
 		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox Projects/".(string)($idProject).$cloudPath);
 		$searchRequest = new CurlRequest();
 		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
@@ -325,10 +342,62 @@ class CloudController extends Controller
      * )
 	 *
 	 */
-	public function setDirPassAction(Request $request)
+   /*
+    {
+      session_infos: {
+        token: "48q98d"
+      },
+      safe_action: {
+        project_id: 42,
+        password: "6q8d4zq68d"
+      }
+    }
+   */
+	public function setSafePassAction(Request $request)
 	{
-		return new Response('set Dir Pass Success');
+    $dbManager = $this->getDoctrine()->getManager()
+    $json = json_decode($request->getContent());
+    $token = $json["session_infos"]["token"];
+    $userId = $this->getUserId($token);
+    $idProject = (int)$json["safe_action"]["project_id"];
+    $project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
+      $this->createAccessDeniedException();
+
+    $project->setSafePassword($json["safe_action"]["password"]);
+    $dbManager->persist($project);
+    $dbManager->flush();
+		return new JsonResponse(Array("infos" => "OK"));
 	}
+
+
+    /*
+     {
+       session_infos: {
+         token: "48q98d"
+       },
+       cloud_action: {
+         project_id: 42,
+       }
+     }
+    */
+  public function createCloud(Request $request)
+  {
+    $json = json_decode($request->getContent());
+    $token = $json["session_infos"]["token"];
+    $userId = $this->getUserId($token);
+    $idProject = (int)$json["cloud_action"]["project_id"];
+    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
+      $this->createAccessDeniedException();
+
+    $client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
+		$rpath = "/GrappBox Projects/".(string)($idProject).(string)($path)."/Safe";
+		//HERE Create the dir in the cloud
+    $flysystem->createDir($rpath);
+		return new JsonResponse(Array("infos" => "OK"));
+  }
 
 	/**
 	 *
@@ -352,7 +421,11 @@ class CloudController extends Controller
 	public function delAction(Request $request)
 	{
     $json = json_decode($request->getContent());
-    //HERE DO THE authentication
+    $token = $json["session_infos"]["token"];
+    $userId = $this->getUserId($token);
+    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
+      $this->createAccessDeniedException();
+
     //Now we can delete the file or the directory
     $idProject = $json["deletion_infos"]["project_id"];
 		$path = "/GrappBox Projects/".(string)($idProject).$json["deletion_infos"]["path"];
@@ -360,7 +433,7 @@ class CloudController extends Controller
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
     $flysystem->delete($path);
-		return new Response('del File Success');
+		return new JsonResponse(Array("infos" => "OK"));
 	}
 	//THIS HAVE TO BE A POST Request
 	/*
@@ -378,7 +451,11 @@ class CloudController extends Controller
 	public function createDirAction(Request $request)
 	{
 		$json = json_decode($request->getContent());
-		//HERE DO THE authentication
+    $token = $json["session_infos"]["token"];
+    $userId = $this->getUserId($token);
+    if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0)
+      $this->createAccessDeniedException();
+
 		//Now we can create the directory at the proper place
 		$idProject = $json["creation_infos"]["project_id"];
 		$path = $json["creation_infos"]["path"];

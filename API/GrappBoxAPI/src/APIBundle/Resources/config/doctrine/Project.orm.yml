@@ -47,6 +47,10 @@ APIBundle\Entity\Project:
             type: datetime
             column: deleted_at
             nullable: TRUE
+        safePassword:
+            type: string
+            column: safe_password
+            nullable: FALSE
     manyToMany:
         users:
           targetEntity: User
