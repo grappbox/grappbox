@@ -15,8 +15,19 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
+/**
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ */
 class WhiteboardController extends Controller
 {
 
@@ -40,27 +51,52 @@ class WhiteboardController extends Controller
 		return $content;
 	}
 
+
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="list all whiteboard of a project",
-	 * views = { "whiteboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      }
-     * },
-		 * parameters={
-		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
-	   *      {"name"="projectId", "dataType"="int(11)", "required"=true, "description"="related project id"}
-		 *  }
-     * )
-	 *
-	 */
-	 public function listWhiteboardAction(Request $request)
+	* @api {get} /Whiteboard/list Request the list of whitebaord for a project
+	* @apiName listWhiteboard
+	* @apiGroup whiteboard
+	* @apiVersion 1.0.0
+	*
+	* @apiParam {String} _token client authentification token
+	* @apiParam {int} projectId id of the selected project
+	*
+	* @apiSuccess {String} status status of the request (error or success)
+	* @apiSuccess {Object[]} data list of whiteboards informations
+	* @apiSuccess {int} data.id whiteboard id
+	* @apiSuccess {string} data.name whiteboard name
+	* @apiSuccess {int} data.creator_id id of the whiteboard's creator
+	* @apiSuccess {int} data.updator_id id of the whiteboard's last updator
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"data": [
+	*					"0": {
+	*						"id": "12",
+	*						"name": "Brainstorming #5",
+	*						"creator_id": "65",
+	*						"updator_id": "54"},
+	*					"1": {
+	*						"id": "12",
+	*						"name": "Brainstorming #5",
+	*						"creator_id": "65",
+	*						"updator_id": "36"}
+	*				]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentification Token
+	* 	HTTP/1.1 400 Bad Request
+	*   {
+	*     "data": "bad token"
+	*   }
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"data": "no rights"
+  * 	}
+	*
+	*/
+	public function listWhiteboardAction(Request $request)
 	 {
 			 $response = new JsonResponse();
 			 $em = $this->getDoctrine()->getManager();
@@ -81,27 +117,47 @@ class WhiteboardController extends Controller
 			 return $response;
 	 }
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="add a new whiteboard",
-	 * views = { "whiteboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      }
-     * },
-		 * parameters={
-		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
-	   *      {"name"="projectId", "dataType"="int(11)", "required"=true, "description"="related project id"},
-		 *      {"name"="whiteboardName", "dataType"="varchar(255)", "required"=true, "description"="whiteboard name"},
-		 *  }
-     * )
-	 *
-	 */
+	 /**
+ 	* @api {post} /Whiteboard/new Request the creation of a new Whiteboard
+ 	* @apiName createWhiteboard
+ 	* @apiGroup whiteboard
+ 	* @apiVersion 1.0.0
+ 	*
+ 	* @apiParam {String} _token client authentification token
+ 	* @apiParam {int} projectId id of the selected project
+	* @apiParam {string} whiteboardName name of the new whiteboard
+ 	*
+ 	* @apiSuccess {String} status status of the request (error or success)
+ 	* @apiSuccess {Object[]} data the new whiteboard informations and a content array (empty)
+ 	* @apiSuccess {int} data.id whiteboard id
+ 	* @apiSuccess {string} data.name whiteboard name
+ 	* @apiSuccess {int} data.creator_id id of the whiteboard's creator
+ 	* @apiSuccess {int} data.updator_id id of the whiteboard's last updator (creator)
+ 	*
+ 	* @apiSuccessExample {json} Success-Response:
+ 	* 	{
+ 	*		"data": [
+ 	*			"whiteboard": {
+ 	*				"id": "12",
+ 	*				"name": "Brainstorming #5",
+ 	*				"creator_id": "65",
+ 	*				"updator_id": "54"},
+ 	*			"content": [ ]
+ 	*		]
+ 	* 	}
+ 	*
+ 	* @apiErrorExample Bad Authentification Token
+ 	*     HTTP/1.1 400 Bad Request
+ 	*     {
+ 	*       "data": "bad token"
+ 	*     }
+	* @apiErrorExample Insufficient User Rights
+ 	*			HTTP/1.1 400 Bad Request
+  * 		{
+  *    		"data": "no rights"
+  * 		}
+ 	*
+ 	*/
 	public function newWhiteboardAction(Request $request)
 	{
 		$response = new JsonResponse();
@@ -133,30 +189,64 @@ class WhiteboardController extends Controller
 		return $response;
 	}
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="open an already existing whiteboard",
-	 * views = { "whiteboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the whiteboard you want"
-     *      }
-     *  },
-		 * parameters={
-		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"}
-		 *  }
-	 * )
-	 *
-	 */
+	 /**
+		* @api {post} /Whiteboard/open/:id Request open a whiteboard
+		* @apiName openWhiteboard
+		* @apiGroup whiteboard
+		* @apiVersion 1.0.0
+		*
+		* @apiParam {String} _token client authentification token
+		*
+		* @apiSuccess {String} status status of the request (error or success)
+		* @apiSuccess {Object[]} data the new whiteboard informations and a content array (empty)
+		* @apiSuccess {Object} data.whiteboard whiteboard information and content
+		* @apiSuccess {int} data.whiteboard.id whiteboard id
+		* @apiSuccess {string} data.whiteboard.name whiteboard name
+		* @apiSuccess {int} data.whiteboard.creator_id id of the whiteboard's creator
+		* @apiSuccess {int} data.whiteboard.updator_id id of the whiteboard's last updator
+		* @apiSuccess {Object[]} data.content content whiteboard content objects
+		* @apiSuccess {object} data.content.object object object
+		*
+		* @apiSuccessExample {json} Success-Response:
+		* 	{
+		*		"data": [
+		*			"whiteboard": {
+		*				"id": "12",
+		*				"name": "Brainstorming #5",
+		*				"creator_id": "65",
+		*				"updator_id": "54"},
+		*			"content": ["0": {
+		*										"id": 12,
+		*										"type": rectangle,
+		*										"color": "125,25,65",
+		*										"line": "1.5",
+		*										"position": "15;63.3",
+		*										"..."	},
+		*									"1": {
+		*										"id": 12,
+		*										"type": circle,
+		*										"color": "125,25,65",
+		*										"line": "1.5",
+		*										"position": "186.20;42.95",
+		*										"..."
+		*									},
+		*									...
+		*			]
+		*		]
+		* 	}
+		*
+		* @apiErrorExample Bad Authentification Token
+		*     HTTP/1.1 400 Bad Request
+		*     {
+		*       "data": "bad token"
+		*     }
+		* @apiErrorExample Insufficient User Rights
+		*			HTTP/1.1 400 Bad Request
+	 	* 		{
+	 	*    		"data": "no rights"
+	 	* 		}
+		*
+		*/
 	public function openWhiteboardAction(Request $request, $id)
 	{
 		$response = new JsonResponse();
@@ -182,32 +272,37 @@ class WhiteboardController extends Controller
 		return $response;
 	}
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="push a draw on a whiteboard",
-	 * views = { "whiteboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the whiteboard you want"
-     *      }
-     *  },
-		 * parameters={
-		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
-		 * 			{"name"="modification", "dataType"="varchar(255)", "required"=true, "description"="'add' or 'delete'"},
-		 *			{"name"="object", "dataType"="varchar(255)", "required"=true, "description"="object to add (json array) if addition or object_id if deletion"}
-		 *  }
-	 * )
-	 *
-	 */
+	 /**
+		* @api {post} /Whiteboard/pushDraw/:id Request to push a whiteboard modification
+		* @apiName pushDrawOnWhiteboard
+		* @apiGroup whiteboard
+		* @apiVersion 1.0.0
+		*
+		* @apiParam {String} _token client authentification token
+		* @apiParam {String}  modification type of modification ("add" or "del")
+		* @apiParam {int}  object_id IN CASE OF DEL: object's id
+		* @apiParam {object} object IN CASE OF ADD: object content (json array)
+		*
+		* @apiSuccess {String} status status of the request (error or success)
+		* @apiSuccess {string} data success message
+		*
+		* @apiSuccessExample {json} Success-Response:
+		* 	{
+		*		"data": "success"
+		* 	}
+		*
+		* @apiErrorExample Bad Authentification Token
+		*     HTTP/1.1 400 Bad Request
+		*     {
+		*       "data": "bad token"
+		*     }
+		* @apiErrorExample Insufficient User Rights
+		*			HTTP/1.1 400 Bad Request
+	 	* 		{
+	 	*    		"data": "no rights"
+	 	* 		}
+		*
+		*/
 	public function pushDrawAction(Request $request, $id)
 	{
 		$response = new JsonResponse();
@@ -232,14 +327,14 @@ class WhiteboardController extends Controller
 			$object->setCreatedAt(new DateTime('now'));
 		}
 		else {
-			$object = $em->getRepository('APIBundle:WhiteboardObject')->find($request->request->get('object'));
+			$object = $em->getRepository('APIBundle:WhiteboardObject')->find($request->request->get('object_id'));
 			$object->setDelete(new DateTime('now'));
 		}
 
 		$em->persist($object);
 		$em->flush();
 
-		$response->setData(array('status' => 'succes', 'data' => 'success'));
+		$response->setData(array('status' => 'success', 'data' => "success"));
 		return $response;
 	}
 

@@ -30,26 +30,47 @@ class AccountAdministrationController extends Controller
             ));
     }
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="login to an account",
-	 * views= { "accountAdministration" },
-	 * requirements={
-   *      {
-   *          "name"="request",
-   *          "dataType"="Request",
-   *          "description"="The request object"
-   *      }
-   * },
-	 * parameters={
-	 * 		{"name"="login", "dataType"="email", "required"=true, "description"="user login (email)"},
-	 * 		{"name"="password", "dataType"="password", "required"=true, "description"="user login (email)"}
-   * }
-   * )
-	 *
-	 */
+	 /**
+ 	* @api {post} /AccountAdministration/login Request login
+ 	* @apiName login
+ 	* @apiGroup AccountAdministration
+ 	* @apiVersion 1.0.0
+ 	*
+ 	* @apiParam {email} login login
+ 	* @apiParam {string} password password
+ 	*
+ 	* @apiSuccess {Object[]} data the user
+ 	* @apiSuccess {int} data.id whiteboard id
+ 	* @apiSuccess {string} data.firstname user's firstname
+ 	* @apiSuccess {string} data.lastname user's lastname
+ 	* @apiSuccess {string} data.email user's email
+	* @apiSuccess {string} data.token user's authentication token
+ 	*
+ 	* @apiSuccessExample {json} Success-Response:
+ 	* 	{
+ 	*		"data": [
+ 	*			"user": {
+	*				"id": 12,
+	*				"firstname": "John",
+	*				"lastname": "Doe",
+	*				"email": "john.doe@gmail.com",
+	*				"token": "fkE35dcDneOjF...."
+	*			}
+ 	*		]
+ 	* 	}
+ 	*
+ 	* @apiErrorExample Bad Email
+ 	*     HTTP/1.1 400 Bad Request
+ 	*     {
+ 	*       "data": "bad user"
+ 	*     }
+	* @apiErrorExample Bad Password
+ 	*			HTTP/1.1 400 Bad Request
+  * 		{
+  *    		"data": "bad password"
+  * 		}
+ 	*
+ 	*/
 	 public function loginAction(Request $request)
 	 {
 		 	$response = new JsonResponse();
@@ -80,24 +101,27 @@ class AccountAdministrationController extends Controller
 	 }
 
 	 /**
- 	 *
- 	 * @ApiDoc(
- 	 * resource=true,
- 	 * description="disconnect from an account",
- 	 * views= { "accountAdministration" },
- 	 * requirements={
- 	 *      {
- 	 *          "name"="request",
- 	 *          "dataType"="Request",
- 	 *          "description"="The request object"
- 	 *      }
- 	 * },
-	 * parameters={
-	 * 		{"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="user authentication token"}
-   * }
- 	 * )
- 	 *
- 	 */
+ 	* @api {any} /AccountAdministration/logout Request logout
+ 	* @apiName logout
+ 	* @apiGroup AccountAdministration
+ 	* @apiVersion 1.0.0
+ 	*
+ 	* @apiParam {string} _token user's authentication token
+ 	*
+ 	* @apiSuccess {string} data
+ 	*
+ 	* @apiSuccessExample {json} Success-Response:
+ 	* 	{
+ 	*		"data": "logout"
+ 	* 	}
+ 	*
+ 	* @apiErrorExample Bad Token
+ 	*     HTTP/1.1 400 Bad Request
+ 	*     {
+ 	*       "data": "bad token"
+ 	*     }
+ 	*
+ 	*/
  	public function logoutAction(Request $request)
  	{
 		$response = new JsonResponse();
@@ -111,40 +135,50 @@ class AccountAdministrationController extends Controller
 		$user->setToken(null);
 		$em->persist($user);
 		$em->flush();
-		$response->setData(array('status' => 'success', 'data' => 'success'));
+		$response->setData(array('status' => 'success', 'data' => 'logout'));
 		return $response;
  	}
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="create a new account",
-	 * views= { "accountAdministration" },
-	 * methods= {"POST"},
-	 * requirements={
-   *      {
-   *          "name"="request",
-   *          "dataType"="Request",
-   *          "description"="The request object"
-   *      }
-   * },
-	 * parameters={
-   *      {"name"="firstname", "dataType"="varchar(255)", "required"=true, "description"="user firstname"},
-	 *      {"name"="lastname", "dataType"="varchar(255)", "required"=true, "description"="user lastname"},
-	 *      {"name"="birthday", "dataType"="dateTime", "required"=false, "description"="user birthday"},
-	 *      {"name"="avatar", "dataType"="file", "required"=false, "description"="user avatar"},
-	 *      {"name"="password", "dataType"="varchar(255)", "required"=true, "description"="user password"},
-	 *      {"name"="email", "dataType"="varchar(255)", "required"=true, "description"="user email"},
-	 *      {"name"="phone", "dataType"="varchar(255)", "required"=false, "description"="user phone number"},
-	 *      {"name"="country", "dataType"="varchar(255)", "required"=false, "description"="user country"},
-	 *      {"name"="linkedin", "dataType"="varchar(255)", "required"=false, "description"="user linkedin url"},
-   *      {"name"="viadeo", "dataType"="varchar(255)", "required"=false, "description"="user viadeo url"},
-	 *      {"name"="twitter", "dataType"="varchar(255)", "required"=false, "description"="user twitter url"}
-	 *  }
-   * )
-	 *
-	 */
+	 /**
+		* @api {post} /AccountAdministration/signin Request user creation and login
+		* @apiName signin
+		* @apiGroup AccountAdministration
+		* @apiVersion 1.0.0
+		*
+		* @apiParam {string} firstname user's firstname
+		* @apiParam {string} lastname user's lastname
+		* @apiParam {DateTime} birthday user's birthday
+		* @apiParam {file} avatar user's avatar
+		* @apiParam {string} password user's password
+		* @apiParam {email} email user's email
+		* @apiParam {string} phone user's phone
+		* @apiParam {string} country user's country
+		* @apiParam {url} linkedin user's linkedin
+		* @apiParam {url} viadeo user's viadeo
+		* @apiParam {url} twitter user's twitter
+		*
+		* @apiSuccess {Object[]} data the user
+		* @apiSuccess {int} data.id whiteboard id
+		* @apiSuccess {string} data.firstname user's firstname
+		* @apiSuccess {string} data.lastname user's lastname
+		* @apiSuccess {string} data.email user's email
+		* @apiSuccess {string} data.token user's authentication token
+		*
+		* @apiSuccessExample {json} Success-Response:
+		* 	{
+		*		"data": [
+		*			"user": {
+		*				"id": 12,
+		*				"firstname": "John",
+		*				"lastname": "Doe",
+		*				"email": "john.doe@gmail.com",
+		*				"token": "fkE35dcDneOjF...."
+		*			}
+		*		]
+		* 	}
+		*
+		*
+		*/
 	public function signInAction(Request $request)
 	{
 			$user = new User();

@@ -47,7 +47,7 @@ class UserController extends Controller
 	* @api {get} /User/basicInformations/:id Request the basic informations of a user
 	* @apiName getBasicInformations
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiSuccess {String} first_name First name of the person
 	* @apiSuccess {String} last_name Last name of the person
@@ -103,7 +103,7 @@ class UserController extends Controller
 	* @api {put} /User/basicInformations/:id Update the basic informations of a user
 	* @apiName putBasicInformations
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiParam {String} first_name First name of the person
 	* @apiParam {String} last_name Last name of the person
@@ -210,7 +210,7 @@ class UserController extends Controller
 	* @api {get} /User/password/:id Request the password of a user
 	* @apiName getPassword
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiSuccess {String} password Person's password
 	*
@@ -236,7 +236,7 @@ class UserController extends Controller
 	* @api {put} /User/password/:id Update the password of a user
 	* @apiName putPassword
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiParam {String} password The new password
 	*
@@ -272,7 +272,7 @@ class UserController extends Controller
 	* @api {get} /User/getIdByName/:firstName.:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiSuccess {Array} [User n] array of n persons
 	* @apiSuccess {Number} [User n].id id of the person
@@ -310,7 +310,7 @@ class UserController extends Controller
 	* @api {get} /User/getNextMeetings/:id Request the next meetings of a user
 	* @apiName getNextMeetings
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiSuccess {Array} [Meeting n] array of n meeting
 	* @apiSuccess {String} [Meeting n].project_name Name of the project
@@ -366,7 +366,7 @@ class UserController extends Controller
 	* @api {get} /User/getProjects/:id Request the user's projects with the user's id
 	* @apiName getProjects
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiSuccess {Array} [Project n] array of n project
 	* @apiSuccess {Number} [Project n].project_id id of the project
@@ -412,7 +412,7 @@ class UserController extends Controller
 	* @api {get} /User/getAllTasks/:id Request the user's tasks with the user's id
 	* @apiName getAllTasks
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiSuccess {Array} [Task n] array of n project
 	* @apiSuccess {Number} [Task n].task_id id of the task
@@ -462,7 +462,7 @@ class UserController extends Controller
 	* @api {get} /User/getCurrentAndNextTasks/:id Request the user's current and next tasks with the user's id
 	* @apiName getCurrentAndNextTasks
 	* @apiGroup Users
-	* @apiVersion 1.0
+	* @apiVersion 1.0.0
 	*
 	* @apiSuccess {Array} [Task n] array of n project
 	* @apiSuccess {Number} [Task n].task_id id of the task
