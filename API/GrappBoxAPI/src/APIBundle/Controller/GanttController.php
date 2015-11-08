@@ -33,6 +33,10 @@ class GanttController extends Controller
 	 */
 	public function addTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('add Task '.$id.' Success');
 	}
 
@@ -59,6 +63,10 @@ class GanttController extends Controller
 	 */
 	public function assignTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('assignTask '.$id.' Success');
 	}
 
@@ -85,6 +93,10 @@ class GanttController extends Controller
 	 */
 	public function editTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('edit Task '.$id.' Success');
 	}
 
@@ -111,6 +123,10 @@ class GanttController extends Controller
 	 */
 	public function delTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('del Task '.$id.' Success');
 	}
 
@@ -137,6 +153,10 @@ class GanttController extends Controller
 	 */
 	public function setTaskPropertiesAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+			
 		return new Response('set Task Properties '.$id.' Success');
 	}
 }

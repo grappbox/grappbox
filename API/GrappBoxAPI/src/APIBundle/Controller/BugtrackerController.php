@@ -5,10 +5,22 @@ namespace APIBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use APIBundle\Controller\RolesAndTokenVerificationController;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-class BugtrackerController extends Controller
+/**
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ */
+class BugtrackerController extends RolesAndTokenVerificationController
 {
 	/**
 	 *
@@ -28,6 +40,10 @@ class BugtrackerController extends Controller
 	 */
 	public function postTicketAction(Request $request)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('post Ticket Success');
 	}
 
@@ -54,6 +70,10 @@ class BugtrackerController extends Controller
 	 */
 	public function modifyTicketAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('modify Ticket '.$id.' Success');
 	}
 
@@ -80,6 +100,10 @@ class BugtrackerController extends Controller
 	 */
 	public function getTicketListAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('get '.$id.' Ticket List Success');
 	}
 
@@ -106,6 +130,10 @@ class BugtrackerController extends Controller
 	 */
 	public function commentTicketAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('comment '.$id.' Ticket Success');
 	}
 
@@ -132,6 +160,10 @@ class BugtrackerController extends Controller
 	 */
 	public function closeTicketAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('close '.$id.' Ticket Success');
 	}
 
@@ -158,6 +190,10 @@ class BugtrackerController extends Controller
 	 */
 	public function getTicketDetailsAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+			
 		return new Response('get '.$id.' Ticket Deatils Success');
 	}
 }

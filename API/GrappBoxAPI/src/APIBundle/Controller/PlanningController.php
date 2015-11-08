@@ -28,6 +28,10 @@ class PlanningController extends Controller
 	 */
 	public function getDayPlanningAction(Request $request)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('get Day Planning Success');
 	}
 
@@ -49,6 +53,10 @@ class PlanningController extends Controller
 	 */
 	public function getWeekPlanningAction(Request $request)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('get Week Planning Success');
 	}
 
@@ -70,6 +78,10 @@ class PlanningController extends Controller
 	 */
 	public function getMonthPlanningAction(Request $request)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('get Month Plannning Success');
 	}
 
@@ -91,6 +103,10 @@ class PlanningController extends Controller
 	 */
 	public function modifyEventAction(Request $request)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('modify Event Success');
 	}
 
@@ -117,6 +133,10 @@ class PlanningController extends Controller
 	 */
 	public function getEventDetailsAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+			
 		return new Response('get '.$id.' Event Details Success');
 	}
 }

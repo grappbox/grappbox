@@ -33,6 +33,10 @@ class TimelineController extends Controller
 	 */
 	public function getTimelineTypeAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('get Timeline Type Success');
 	}
 
@@ -59,6 +63,10 @@ class TimelineController extends Controller
 	 */
 	public function postMessageAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('post Message Success');
 	}
 
@@ -85,6 +93,10 @@ class TimelineController extends Controller
 	 */
 	public function getMessagesAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('get Messages Success');
 	}
 
@@ -111,6 +123,10 @@ class TimelineController extends Controller
 	 */
 	public function delMessageAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+			
 		return new Response('del Message Success');
 	}
 }
