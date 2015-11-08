@@ -13,8 +13,19 @@ use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\User;
 use DateTime;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
+/**
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ */
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 
@@ -90,7 +101,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		      $em->flush();
 
 					$response = new JsonResponse();
-					$response->setData('user' => $user->serialize());
+					$response->setData(array('user' => $user->serialize()));
 					return $response;
 			}
 			else
@@ -136,7 +147,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em->flush();
 
 		$response = new JsonResponse();
-		$response->setData('Logout Successfully'));
+		$response->setData('Logout Successfully');
 		return $response;
  	}
 
@@ -230,7 +241,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
       $em->flush();
 
 			$response = new JsonResponse();
-			$response->setData('user' => $user->serialize()));
+			$response->setData(array('user' => $user->serialize()));
 			return $response;
 	}
 

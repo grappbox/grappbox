@@ -441,7 +441,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$to_del = $toDelQuery->getResult();
 
 		$response = new JsonResponse();
-		$response->setData('add' => $to_add, 'delete' => $to_del);
+		$response->setData(array('add' => $to_add, 'delete' => $to_del));
 		return $response;
 	}
 
