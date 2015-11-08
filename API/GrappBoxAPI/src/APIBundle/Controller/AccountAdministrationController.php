@@ -9,12 +9,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
+use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\User;
 use DateTime;
 
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-class AccountAdministrationController extends Controller
+class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 
 	public function loginFormAction()
@@ -36,19 +37,18 @@ class AccountAdministrationController extends Controller
  	* @apiGroup AccountAdministration
  	* @apiVersion 1.0.0
  	*
- 	* @apiParam {email} login login
+ 	* @apiParam {email} login login (user's email)
  	* @apiParam {string} password password
  	*
- 	* @apiSuccess {Object[]} data the user
- 	* @apiSuccess {int} data.id whiteboard id
- 	* @apiSuccess {string} data.firstname user's firstname
- 	* @apiSuccess {string} data.lastname user's lastname
- 	* @apiSuccess {string} data.email user's email
-	* @apiSuccess {string} data.token user's authentication token
+ 	* @apiSuccess {Object} user user's information
+ 	* @apiSuccess {int} user.id whiteboard id
+ 	* @apiSuccess {string} user.firstname user's firstname
+ 	* @apiSuccess {string} user.lastname user's lastname
+ 	* @apiSuccess {string} user.email user's email
+	* @apiSuccess {string} user.token user's authentication token
  	*
  	* @apiSuccessExample {json} Success-Response:
  	* 	{
- 	*		"data": [
  	*			"user": {
 	*				"id": 12,
 	*				"firstname": "John",
@@ -56,29 +56,27 @@ class AccountAdministrationController extends Controller
 	*				"email": "john.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF...."
 	*			}
- 	*		]
  	* 	}
  	*
  	* @apiErrorExample Bad Email
- 	*     HTTP/1.1 400 Bad Request
- 	*     {
- 	*       "data": "bad user"
- 	*     }
+ 	* 	HTTP/1.1 400 Bad Request
+ 	* 	{
+ 	* 		"Bad Login"
+ 	* 	}
 	* @apiErrorExample Bad Password
- 	*			HTTP/1.1 400 Bad Request
-  * 		{
-  *    		"data": "bad password"
-  * 		}
+ 	*		HTTP/1.1 400 Bad Request
+  * 	{
+  *   	"Bad Password"
+  * 	}
  	*
  	*/
-	 public function loginAction(Request $request)
-	 {
-		 	$response = new JsonResponse();
+	public function loginAction(Request $request)
+	{
 		  $em = $this->getDoctrine()->getManager();
 		  $user = $em->getRepository('APIBundle:User')->findOneBy(array('email' => $request->request->get('login')));
 			if (!$user)
 			{
-				$response->setData(array('status' => 'error', 'data' => 'bad user'));
+				$response = new JsonResponse('Bad Login', JsonResponse::HTTP_BAD_REQUEST);
 				return $response;
 			}
 
@@ -90,15 +88,17 @@ class AccountAdministrationController extends Controller
 					$user->setToken($token);
 					$em->persist($user);
 		      $em->flush();
-					$response->setData(array('status' => 'success', 'data' => array('user' => $user->serialize())));
+
+					$response = new JsonResponse();
+					$response->setData('user' => $user->serialize());
 					return $response;
 			}
 			else
 			{
-				$response->setData(array('status' => 'error', 'data' => 'bad password'));
+				$response = new JsonResponse('Bad Password', JsonResponse::HTTP_BAD_REQUEST);
 				return $response;
 			}
-	 }
+	}
 
 	 /**
  	* @api {any} /AccountAdministration/logout Request logout
@@ -108,34 +108,35 @@ class AccountAdministrationController extends Controller
  	*
  	* @apiParam {string} _token user's authentication token
  	*
- 	* @apiSuccess {string} data
+ 	* @apiSuccess {string} data	success message
  	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
- 	*		"data": "logout"
- 	* 	}
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 OK
+	* 	{
+	* 		"Logout Successfully"
+	* 	}
  	*
- 	* @apiErrorExample Bad Token
- 	*     HTTP/1.1 400 Bad Request
- 	*     {
- 	*       "data": "bad token"
- 	*     }
+	* @apiErrorExample Bad Authentication Token
+ 	* 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
  	*
  	*/
  	public function logoutAction(Request $request)
  	{
-		$response = new JsonResponse();
-		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
-		{
-			$response->setData(array('status' => 'error', 'data' => 'bad token'));
-			return $response;
-		}
+			return ($this->setBadTokenError());
+
 		$user->setToken(null);
+
+		$em = $this->getDoctrine()->getManager();
 		$em->persist($user);
 		$em->flush();
-		$response->setData(array('status' => 'success', 'data' => 'logout'));
+
+		$response = new JsonResponse();
+		$response->setData('Logout Successfully'));
 		return $response;
  	}
 
@@ -145,42 +146,47 @@ class AccountAdministrationController extends Controller
 		* @apiGroup AccountAdministration
 		* @apiVersion 1.0.0
 		*
-		* @apiParam {string} firstname user's firstname
-		* @apiParam {string} lastname user's lastname
+		* @apiParam {string} firstname user's firstname (required)
+		* @apiParam {string} lastname user's lastname (required)
 		* @apiParam {DateTime} birthday user's birthday
 		* @apiParam {file} avatar user's avatar
-		* @apiParam {string} password user's password
-		* @apiParam {email} email user's email
+		* @apiParam {string} password user's password (required)
+		* @apiParam {email} email user's email (required)
 		* @apiParam {string} phone user's phone
 		* @apiParam {string} country user's country
 		* @apiParam {url} linkedin user's linkedin
 		* @apiParam {url} viadeo user's viadeo
 		* @apiParam {url} twitter user's twitter
 		*
-		* @apiSuccess {Object[]} data the user
-		* @apiSuccess {int} data.id whiteboard id
-		* @apiSuccess {string} data.firstname user's firstname
-		* @apiSuccess {string} data.lastname user's lastname
-		* @apiSuccess {string} data.email user's email
-		* @apiSuccess {string} data.token user's authentication token
+		* @apiSuccess {Object} user user's informations
+		* @apiSuccess {int} user.id whiteboard id
+		* @apiSuccess {string} user.firstname user's firstname
+		* @apiSuccess {string} user.lastname user's lastname
+		* @apiSuccess {string} user.email user's email
+		* @apiSuccess {string} user.token user's authentication token
 		*
 		* @apiSuccessExample {json} Success-Response:
 		* 	{
-		*		"data": [
-		*			"user": {
-		*				"id": 12,
-		*				"firstname": "John",
-		*				"lastname": "Doe",
-		*				"email": "john.doe@gmail.com",
-		*				"token": "fkE35dcDneOjF...."
-		*			}
-		*		]
+		*		"user": {
+		*			"id": 12,
+		*			"firstname": "John",
+		*			"lastname": "Doe",
+		*			"email": "john.doe@gmail.com",
+		*			"token": "fkE35dcDneOjF...."
+		*		}
 		* 	}
 		*
+		* @apiErrorExample Missing Parameter
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Missing Parameter"
+	  * 	}
 		*
 		*/
 	public function signInAction(Request $request)
 	{
+			if (!$request->request->get('firstname') || !$request->request->get('lastname') || !$request->request->get('password') || !$request->request->get('email'))
+				return $this->setBadRequest("Missing Parameter");
 			$user = new User();
       $user->setFirstname($request->request->get('firstname'));
       $user->setLastname($request->request->get('lastname'));
@@ -223,18 +229,9 @@ class AccountAdministrationController extends Controller
       $em->persist($user);
       $em->flush();
 
-
 			$response = new JsonResponse();
-			$response->setData(array('status' => 'success', 'data' => array('user' => $user->serialize())));
+			$response->setData('user' => $user->serialize()));
 			return $response;
-      // $providerKey = 'default'; // your firewall name
-      // $token = new UsernamePasswordToken($user, null, $providerKey, $user->getRoles());
-      // $this->container->get('security.context')->setToken($token);
-
-      // return $this->render('AppBundle:UserController:homeUser.html.twig',
-      //     array(
-      //         'avatar' => $user->getAvatar()
-      //     ));
 	}
 
 }

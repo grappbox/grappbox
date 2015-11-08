@@ -123,25 +123,25 @@ class User implements UserInterface, \Serializable
     {
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize()
-    {
-        return serialize(array(
-            $this->id,
-            $this->email,
-            $this->password,
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->email,
-            $this->password,
-        ) = unserialize($serialized);
-    }
+    // /** @see \Serializable::serialize() */
+    // public function serialize()
+    // {
+    //     return serialize(array(
+    //         $this->id,
+    //         $this->email,
+    //         $this->password,
+    //     ));
+    // }
+    //
+    // /** @see \Serializable::unserialize() */
+    // public function unserialize($serialized)
+    // {
+    //     list (
+    //         $this->id,
+    //         $this->email,
+    //         $this->password,
+    //     ) = unserialize($serialized);
+    // }
 
     /**
      * Get id
