@@ -192,18 +192,19 @@ cloud_sendFile:
   methods: [PUT]
 
 cloud_getList:
-    path:       /Cloud/getList/{token}/{idProject}/{path}
-    defaults:   { _controller: APIBundle:Cloud:getList }
+    path:       /Cloud/getList/{token}/{idProject}/{path}/{password}
+    defaults:   { _controller: APIBundle:Cloud:getList,  password: null, _format: json}
     methods: [GET]
 
 cloud_getFile:
-    path:       /Cloud/getFile/{cloudPath}/{token}/{idProject}
-    defaults:   { _controller: APIBundle:Cloud:getFile }
+    path:       /Cloud/getFile/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
+    defaults:   { _controller: APIBundle:Cloud:getFile, password: null, passwordSafe: null }
     methods: [GET]
 
-cloud_setDirPass:
-    path:       /Cloud/setDirPass
-    defaults:   { _controller: APIBundle:Cloud:setDirPass }
+cloud_setSafePass:
+    path:       /Cloud/setSafePass
+    defaults:   { _controller: APIBundle:Cloud:setSafePass }
+    methods: [POST]
 
 cloud_delete:
     path:       /Cloud/del
@@ -214,6 +215,11 @@ cloud_createDir:
     path:       /Cloud/createDir
     defaults:   { _controller: APIBundle:Cloud:createDir, _format: json }
     methods: [POST]
+
+cloud_createCloud: #TODO : Delete this route, it's a test route
+    path:       /Cloud/createCloud/{projectId}
+    defaults:   { _controller: APIBundle:Cloud:createCloud }
+    methods: [GET]
 
 
 

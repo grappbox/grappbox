@@ -20,6 +20,7 @@ APIBundle\Entity\CloudTransfer:
         deletionDate:
             type: datetime
             column: deletion_date
+            nullable: TRUE
         password:
             type: text
             nullable: TRUE

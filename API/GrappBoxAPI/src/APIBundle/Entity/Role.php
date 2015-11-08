@@ -64,11 +64,15 @@ class Role
      */
     private $projectSettings;
 
+    /**
+     * @var integer
+     */
+    private $cloud;
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -91,7 +95,7 @@ class Role
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -114,7 +118,7 @@ class Role
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -137,7 +141,7 @@ class Role
     /**
      * Get teamTimeline
      *
-     * @return integer 
+     * @return integer
      */
     public function getTeamTimeline()
     {
@@ -160,7 +164,7 @@ class Role
     /**
      * Get customerTimeline
      *
-     * @return integer 
+     * @return integer
      */
     public function getCustomerTimeline()
     {
@@ -183,7 +187,7 @@ class Role
     /**
      * Get gantt
      *
-     * @return integer 
+     * @return integer
      */
     public function getGantt()
     {
@@ -206,7 +210,7 @@ class Role
     /**
      * Get whiteboard
      *
-     * @return integer 
+     * @return integer
      */
     public function getWhiteboard()
     {
@@ -229,7 +233,7 @@ class Role
     /**
      * Get bugtracker
      *
-     * @return integer 
+     * @return integer
      */
     public function getBugtracker()
     {
@@ -252,7 +256,7 @@ class Role
     /**
      * Get event
      *
-     * @return integer 
+     * @return integer
      */
     public function getEvent()
     {
@@ -275,7 +279,7 @@ class Role
     /**
      * Get task
      *
-     * @return integer 
+     * @return integer
      */
     public function getTask()
     {
@@ -298,10 +302,32 @@ class Role
     /**
      * Get projectSettings
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectSettings()
     {
         return $this->projectSettings;
+    }
+
+    /**
+     * Get cloud
+     *
+     * @return integer
+     */
+    public function getCloud()
+    {
+      return $this->cloud;
+    }
+
+    /**
+     * Set cloud
+     *
+     * @var integer
+     * @return Role
+     */
+    public function setCloud($cloud)
+    {
+      $this->cloud = $cloud;
+      return $this;
     }
 }

@@ -100,6 +100,13 @@ class Project implements \Serializable
     private $whiteboards;
 
     /**
+     * @var string
+     */
+    private $safePassword;
+
+
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -543,6 +550,24 @@ class Project implements \Serializable
     public function getWhiteboards()
     {
         return $this->whiteboards;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSafePassword()
+    {
+      return $this->safePassword;
+    }
+
+    /**
+     * @var string
+     * @return Project
+     */
+    public function setSafePassword($safePassword)
+    {
+      $this->safePassword = $safePassword;
+      return $this;
     }
 
     /** @see \Serializable::serialize() */
