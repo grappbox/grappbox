@@ -2,13 +2,14 @@
     Summary: This page lists all whiteboards and allow to add / remove any
 -->
 
-<ion-view title="Whiteboards" ng-controller="WhiteboardsCtrl">
-    <ion-content class="has-header">
+<ion-view>
+    <ion-nav-title>Whiteboards</ion-nav-title>
+    <ion-content>
         <ion-list show-delete="minusButton.showDelete">
             <ion-item ng-repeat="item in whiteboardsTab" item="item"
                       class="item-remove-animate item-icon-right"
                       ui-sref="app.whiteboard({whiteboardId: item.id})">
-                {{item.name}} {{item.id}}
+                {{item.name}}
                 <ion-delete-button class="ion-minus-circled"
                                    ng-click="onWhiteboardDelete(item)">
                 </ion-delete-button>

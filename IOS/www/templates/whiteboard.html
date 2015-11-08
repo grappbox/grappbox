@@ -3,14 +3,18 @@
 -->
 
 <ion-view>
-    <ion-nav-title class="item-text-wrap">Whiteboard</ion-nav-title>
-    <ion-content class="has-header" ng-controller="WhiteboardCtrl" overflow-scroll="true">
+    <ion-nav-title>Whiteboard</ion-nav-title>
+    <ion-scroll zooming="true" direction="xy" style="width: 100%; height: 100%">
         <canvas id="canvasWhiteboard"></canvas>
-    </ion-content>
+    </ion-scroll>
+    <!--<ion-content>
+        <canvas id="canvasWhiteboard"></canvas>
+    </ion-content>-->
     <ion-footer-bar class="bar-stable">
         <div class="title">
-            <button class="button button-icon ion-plus-round" ng-click="zoomIn()"></button>
-            <button class="button button-icon button-clear ion-minus-round" ng-click="zoomOut()"></button>
+            <!--<button class="button button-icon ion-plus-round" ng-click="zoomIn()"></button>
+            <button class="button button-icon button-clear ion-minus-round" ng-click="zoomOut()"></button>-->
+            <button class="button button-icon ion-arrow-move" ng-click="moveOn()"></button>
             <button class="button button-icon button-clear ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button>
             <button class="button button-icon button-clear ion-paintbrush" style="color: {{brushcolor}}" ng-click="openDrawPopover($event)"></button>
             <button class="button button-icon button-clear" style="color: {{brushcolor}}; font-size: 25px" ng-click="openTextPopover($event)">Aa</button>

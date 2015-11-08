@@ -24,8 +24,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
         .state('app', {
             url: "/app", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
             abstract: true, //'abstract' means this state will be an abstract, so will never render, but every page will inherit of it
-            templateUrl: "templates/menu.html", //'templateUrl' is where app will search for the "physical" page
-            controller: 'AppCtrl' //Link to the controller in controllers.js
+            templateUrl: "templates/menu.html" //'templateUrl' is where app will search for the "physical" page
         })
 
         .state('app.dashboard', {
@@ -33,7 +32,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
                     templateUrl: "templates/dashboard.html",
-                    controller: 'DashboardCtrl'
+                    controller: 'DashboardCtrl' //link to controller
                 }
             } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
         })
@@ -68,16 +67,16 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
             }
         })
 
-        .state('app.settings', {
-            url: "/settings",
+        .state('app.userSettings', {
+            url: "/userSettings",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/settings.html",
-                    controller: 'SettingsCtrl'
+                    templateUrl: "templates/userSettings.html",
+                    controller: 'UserSettingsCtrl'
                 }
             }
         })
 
-    // if no state are found, here is the fallback url
+    // if no state are found, here is the fallback url - It's also the default page when starting application
     $urlRouterProvider.otherwise('/app/dashboard');
 });

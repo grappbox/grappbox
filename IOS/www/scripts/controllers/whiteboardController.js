@@ -1,174 +1,8 @@
 ﻿/*
-    Summary: All controllers are stocked here
-    In case we need to add / modify a functionality, controllers are created even if empty
+    Summary: WHITEBOARD LIST & WHITEBOARD Controllers
 */
 
-angular.module('GrappBox.controllers', [])
-
-.controller('AppCtrl', function ($scope) {
-})
-
-// DASHBOARD
-.controller('DashboardCtrl', function ($scope) {
-})
-
-.controller('TeamOccupationCtrl', function ($scope) {
-    $scope.items = [
-        {
-            id: 1,
-            name: "Allyriane Launois",
-            occupation: "Free",
-            image: 'images/GrappBox/allyriane_launois.jpg'
-        },
-        {
-            id: 2,
-            name: "Frédéric Tan",
-            occupation: "Busy",
-            image: 'images/GrappBox/frederic_tan.jpg'
-        },
-        {
-            id: 3,
-            name: "Léo Nadeau",
-            occupation: "Busy",
-            image: 'images/GrappBox/leo_nadeau.jpg'
-        },
-        {
-            id: 4,
-            name: "Marc Wieser",
-            occupation: "Free",
-            image: 'images/GrappBox/marc_wieser.jpeg'
-        },
-        {
-            id: 5,
-            name: "Pierre Feytout",
-            occupation: "Busy",
-            image: 'images/GrappBox/pierre_feytout.jpg'
-        },
-        {
-            id: 6,
-            name: "Pierre Hofman",
-            occupation: "Busy",
-            image: 'images/GrappBox/pierre_hofman.jpg'
-        },
-        {
-            id: 7,
-            name: "Roland Hemmer",
-            occupation: "Busy",
-            image: 'images/GrappBox/roland_hemmer.jpg'
-        },
-        {
-            id: 8,
-            name: "Valentin Mougenot",
-            occupation: "Free",
-            image: 'images/GrappBox/valentin_mougenot.jpg'
-        }
-    ];
-})
-
-.controller('NextMeetingsCtrl', function ($scope) {
-    $scope.items = [
-        {
-            id: 1,
-            type: "Client Meeting",
-            date: "2015/10/06",
-            hour: "01:00 pm",
-            image: 'images/NextMeetings/Client_Meeting.png'
-        },
-        {
-            id: 2,
-            type: "Team Meeting",
-            date: "2015/10/06",
-            hour: "04:30 pm",
-            image: 'images/NextMeetings/Team_Meeting.png'
-        },
-        {
-            id: 3,
-            type: "Presentation",
-            date: "2015/10/07",
-            hour: "01:00 pm",
-            image: 'images/NextMeetings/Presentation.png'
-        },
-        {
-            id: 4,
-            type: "Exceptional",
-            date: "2015/10/08",
-            hour: "08:00 pm",
-            image: 'images/NextMeetings/Exceptional.png'
-        },
-        {
-            id: 5,
-            type: "Relax",
-            date: "2015/10/09",
-            hour: "06:00 pm",
-            image: 'images/NextMeetings/Relax.png'
-        },
-        {
-            id: 6,
-            type: "Client Meeting",
-            date: "2015/10/10",
-            hour: "01:00 pm",
-            image: 'images/NextMeetings/Client_Meeting.png'
-        }
-    ];
-})
-
-.controller('GlobalProgressCtrl', function ($scope) {
-    $scope.items = [
-        {
-            id: 1,
-            product: "Game Sphere",
-            author: "Nivento",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Game_Sphere.png'
-        },
-        {
-            id: 2,
-            product: "Goot",
-            author: "Goot",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Goot.png'
-        },
-        {
-            id: 3,
-            product: "Game Sphere",
-            author: "Nivento",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Game_Sphere.png'
-        },
-        {
-            id: 4,
-            product: "Game Sphere",
-            author: "Nivento",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Game_Sphere.png'
-        }
-    ];
-})
-
-// TIMELINES
-.controller('TimelinesCtrl', function ($scope) {
-})
-
+angular.module('GrappBox.controllers')
 // WHITEBOARD LIST
 .controller('WhiteboardsCtrl', function ($scope, $ionicModal) {
 
@@ -226,9 +60,9 @@ angular.module('GrappBox.controllers', [])
 })
 
 // WHITEBOARD
-.controller('WhiteboardCtrl', function ($scope, $ionicPopover, $ionicPopup) {
-    var width = 4096;
-    var height = 2160;
+.controller('WhiteboardCtrl', function ($scope, $ionicPopover, $ionicPopup, $ionicScrollDelegate) {
+    var width = 2000; //4096;
+    var height = 2000; //2160;
 
     var canvas = new fabric.Canvas('canvasWhiteboard');
 
@@ -337,18 +171,22 @@ angular.module('GrappBox.controllers', [])
         }
     }*/
 
+    //Get "colorsPopup" html template
     $scope.popoverColors = $ionicPopover.fromTemplate(colorsPopup, {
         scope: $scope
     });
 
+    //Get "shapesPopup" html template
     $scope.popoverShapes = $ionicPopover.fromTemplate(shapesPopup, {
         scope: $scope
     });
 
+    //Get "drawPopup" html template
     $scope.popoverDraw = $ionicPopover.fromTemplate(drawPopup, {
         scope: $scope
     });
 
+    //Get "textPopup" html template
     $scope.popoverText = $ionicPopover.fromTemplate(textPopup, {
         scope: $scope
     });
@@ -425,6 +263,7 @@ angular.module('GrappBox.controllers', [])
         canvas.freeDrawingBrush.width = brushSize;
         canvas.off('mouse:down');
         canvas.isDrawingMode = true;
+        $ionicScrollDelegate.freezeAllScrolls(true);
         $scope.popoverDraw.hide();
     }
 
@@ -432,6 +271,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawRect = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -453,6 +293,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawRectEmpty = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -475,6 +316,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawEllipse = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -495,6 +337,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawEllipseEmpty = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -516,6 +359,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawTriangle = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -537,6 +381,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawTriangleEmpty = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -559,6 +404,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawDiamond = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -590,6 +436,7 @@ angular.module('GrappBox.controllers', [])
     $scope.drawDiamondEmpty = function () {
         var mouse_pos = { x: 0, y: 0 };
 
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) {
@@ -620,14 +467,15 @@ angular.module('GrappBox.controllers', [])
 
     //Draw Line
     $scope.drawLine = function () {
+        var Started = false;
+        var StartX = 0;
+        var StartY = 0;
+
+        $ionicScrollDelegate.freezeAllScrolls(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         canvas.observe('mouse:down', function (e) { LineMouseDown(e); });
         canvas.observe('mouse:up', function (e) { LineMouseUp(e); });
-
-        var Started = false;
-        var StartX = 0;
-        var StartY = 0;
 
         function LineMouseDown(e) {
             var Mouse = canvas.getPointer(e.e);
@@ -668,6 +516,7 @@ angular.module('GrappBox.controllers', [])
     $scope.addText = function (textStyle) {
         //Prevent user from being in drawing mode while adding text
         canvas.isDrawingMode = false;
+        $ionicScrollDelegate.freezeAllScrolls(true);
 
         $scope.data = {}
 
@@ -713,7 +562,13 @@ angular.module('GrappBox.controllers', [])
         });
     }
 
-    $scope.zoomIn = function () {
+    $scope.moveOn = function (moveOn) {
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+        $ionicScrollDelegate.freezeAllScrolls(false);
+    }
+
+    /*$scope.zoomIn = function () {
         var scale_factor = 1.2;
         var objects = canvas.getObjects();
 
@@ -761,10 +616,5 @@ angular.module('GrappBox.controllers', [])
             objects[i].setCoords();
         }
         canvas.renderAll();
-    }
-})
-
-
-// SETTINGS
-.controller('SettingsCtrl', function ($scope) {
+    }*/
 })

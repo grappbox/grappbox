@@ -10,14 +10,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>GrappBox</title>
 
+    <!-- CSS -->
     <link href="css/ionic.css" rel="stylesheet" />
     <link href="css/index.css" rel="stylesheet" />
 
+    <!-- Libraries -->
     <script src="scripts/lib/ionic.bundle.js"></script>
     <script src="scripts/lib/fabric.js"></script>
+    <script src="scripts/lib/fastclick.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            new FastClick(document.body);
+        }, false);
+    </script>
 
+    <!-- Application configuration -->
     <script src="scripts/app.js"></script>
-    <script src="scripts/controllers.js"></script>
+
+    <!-- Controllers -->
+    <script src="scripts/controllers/mainController.js"></script>
+    <script src="scripts/controllers/dashboardController.js"></script>
+    <script src="scripts/controllers/timelinesController.js"></script>
+    <script src="scripts/controllers/whiteboardController.js"></script>
+    <script src="scripts/controllers/userSettingsController.js"></script>
 </head>
 <body ng-app="GrappBox" class="fullscreen"> <!-- class="fullscreen" is used to prevent header height for iOS6 (iPhone 5) -->
 
