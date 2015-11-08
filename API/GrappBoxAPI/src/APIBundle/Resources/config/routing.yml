@@ -219,6 +219,7 @@ cloud_createDir:
 cloud_createCloud: #TODO : Delete this route, it's a test route
     path:       /Cloud/createCloud/{projectId}
     defaults:   { _controller: APIBundle:Cloud:createCloud }
+    methods: [GET]
 
 
 
