@@ -43,6 +43,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+			return ($this->setNoRightsError());
 
 		return new Response('post Ticket Success');
 	}
@@ -73,6 +77,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+			return ($this->setNoRightsError());
 
 		return new Response('modify Ticket '.$id.' Success');
 	}
@@ -103,7 +111,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+			return ($this->setNoRightsError());
 		return new Response('get '.$id.' Ticket List Success');
 	}
 
@@ -133,7 +144,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+			return ($this->setNoRightsError());
 		return new Response('comment '.$id.' Ticket Success');
 	}
 
@@ -163,6 +177,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+			return ($this->setNoRightsError());
 
 		return new Response('close '.$id.' Ticket Success');
 	}
@@ -193,7 +211,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-			
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+			return ($this->setNoRightsError());
+
 		return new Response('get '.$id.' Ticket Deatils Success');
 	}
 }

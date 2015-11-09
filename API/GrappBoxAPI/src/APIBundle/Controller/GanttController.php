@@ -36,6 +36,10 @@ class GanttController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
 
 		return new Response('add Task '.$id.' Success');
 	}
@@ -66,6 +70,10 @@ class GanttController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
 
 		return new Response('assignTask '.$id.' Success');
 	}
@@ -96,6 +104,10 @@ class GanttController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
 
 		return new Response('edit Task '.$id.' Success');
 	}
@@ -126,6 +138,10 @@ class GanttController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
 
 		return new Response('del Task '.$id.' Success');
 	}
@@ -156,7 +172,11 @@ class GanttController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-			
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
+
 		return new Response('set Task Properties '.$id.' Success');
 	}
 }

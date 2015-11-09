@@ -106,6 +106,10 @@ class PlanningController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "event"))
+			return ($this->setNoRightsError());
 
 		return new Response('modify Event Success');
 	}
@@ -136,7 +140,7 @@ class PlanningController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-			
+
 		return new Response('get '.$id.' Event Details Success');
 	}
 }

@@ -66,6 +66,8 @@ class VisualisingProjectController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "projectSettings"))
+			return ($this->setNoRightsError());
 
 		return new Response('add actor '.$id.' Success');
 	}
@@ -96,6 +98,8 @@ class VisualisingProjectController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "projectSettings"))
+			return ($this->setNoRightsError());
 
 		return new Response('add Link '.$id.' Success');
 	}
@@ -126,6 +130,8 @@ class VisualisingProjectController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		// if (!$this->checkRoles($user, $id, "projectSettings"))
+		// 	return ($this->setNoRightsError());
 
 		return new Response('new Diagram '.$id.' Success');
 	}
@@ -156,6 +162,8 @@ class VisualisingProjectController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
+		// if (!$this->checkRoles($user, $id, "projectSettings"))
+		// 	return ($this->setNoRightsError());
 
 		return new Response('open Diagram '.$id.' Success');
 	}
@@ -186,7 +194,9 @@ class VisualisingProjectController extends Controller
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-			
+		// if (!$this->checkRoles($user, $id, "projectSettings"))
+		// 	return ($this->setNoRightsError());
+
 		return new Response('invite Person '.$id.' Success');
 	}
 }
