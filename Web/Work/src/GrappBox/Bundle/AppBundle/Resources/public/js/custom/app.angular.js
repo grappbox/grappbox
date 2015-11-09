@@ -10,7 +10,7 @@
 * TWIG template conflict fix
 *
 */
-var app = angular.module('grappbox', ['ngRoute', 'ui.bootstrap']).config(['$interpolateProvider', function($interpolateProvider) {
+var app = angular.module('grappbox', ['ngRoute', 'ui.bootstrap', 'panhandler']).config(['$interpolateProvider', function($interpolateProvider) {
 	$interpolateProvider.startSymbol('{[{').endSymbol('}]}');
 }]);
 

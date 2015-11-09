@@ -10,9 +10,12 @@
             <div class="row">
                 <div class="col-lg-12">
                     <!-- grappbox.data : team occupation -->
-                    <div class="section-heading app-section-heading"><h2>Team occupation</h2></div>
+                    <div class="section-heading app-section-heading">
+                        <h2>Team occupation</h2>
+                        <p class="lead">Hold to navigate between your teams' members and see their availability.<br>When a team member is 'Available', you can choose tasks to assign to him. A 'Busy' member cannot accept new tasks until its current task is complete.</p>
+                    </div>
                     <div class="section-content app-section-content">
-                        <div id="team-occupation-data">
+                        <div id="team-occupation-data" panhandler>
                             <div class="app-data" ng-repeat="member in teamOccupationList">
                                 <ul class="app-data-list each-member-data hvr-float">
                                     <li class="team-member-picture"><img data-ng-src="{[{ member.picture }]}" height="120" width="120"></li>
@@ -34,9 +37,12 @@
             <div class="row">
                 <div class="col-lg-12">
                     <!-- grappbox.data : next meetings -->
-                    <div class="section-heading app-section-heading"><h2>Next meetings</h2></div>
+                    <div class="section-heading app-section-heading">
+                        <h2>Next meetings</h2>
+                        <p class="lead">Hold to see all future appointments.<br>This list only shows the closest meetings. When one of your appointments is over or cancelled, it'll be automatically deleted from this list.</p>
+                    </div>
                     <div class="section-content app-section-content">
-                        <div id="next-meetings-data">
+                        <div id="next-meetings-data" panhandler>
                             <div class="app-data" ng-repeat="meeting in nextMeetingsList">
                                 <ul class="app-data-list each-meeting-data hvr-float">
                                     <li class="meeting-type">{[{ meeting.type }]}</li>
@@ -58,9 +64,12 @@
             <div class="row">
                 <div class="col-lg-12">
                     <!-- grappbox.data : global progress -->
-                    <div class="section-heading app-section-heading"><h2>Global progress</h2></div>
+                    <div class="section-heading app-section-heading">
+                        <h2>Global progress</h2>
+                        <p class="lead">Hold to navigate between your projects and see information about them.<br>You can also check your remaining tasks for each project, all your notifications (if any), and your messages.</p>
+                    </div>
                     <div class="section-content app-section-content">
-                        <div id="global-progress-data">
+                        <div id="global-progress-data" panhandler>
                             <div class="app-data" ng-repeat="progress in globalProgressList">
                                 <ul class="app-data-list each-progress-data hvr-float">
                                     <li class="project-picture"><img data-ng-src="{[{ progress.picture }]}" height="120²" width="120²"></li>

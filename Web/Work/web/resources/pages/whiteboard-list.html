@@ -14,7 +14,7 @@
                     <!-- grappbox.data : whiteboard list -->
                     <div class="section-heading app-section-heading"><h2>Choose the whiteboard you want to edit, or create a new one</h2></div>
                     <div class="section-content app-section-content">
-                        <div id="all-whiteboards-data">
+                        <div id="all-whiteboards-data" panhandler>
                             <div class="app-data" ng-repeat="whiteboard in whiteboardListContent">
                                 <ul class="app-data-list each-available-whiteboard hvr-float">
                                     <li class="whiteboard-name"><a ng-href="whiteboard/{[{ whiteboard.id }]}" title="Edit whiteboard #{[{ whiteboard.id }]}">{[{ whiteboard.name }]}</a></li>
