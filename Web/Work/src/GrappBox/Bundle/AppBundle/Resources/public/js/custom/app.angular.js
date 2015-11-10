@@ -23,6 +23,9 @@ app.controller('grappboxController', function() {} );
 */
 app.controller('sidebarController', ['$scope', '$location', function($scope, $location) {
 	$scope.isActive = function(route) {
-		return route === $location.path();
+		if (route === "/whiteboard")
+			return (($location.path().indexOf("whiteboard")) > -1);
+		else
+			return route === $location.path();
 	};
 }]);
