@@ -17,6 +17,7 @@
 		<title>GrappBox</title>
 		<!-- Google Fonts -->
 		<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700' />
+		<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Oswald:400,700' />
 
 		{% stylesheets
 		'@ShowcaseBundle/Resources/public/css/vendor/bootstrap.css'
@@ -68,53 +69,52 @@
 					<div class="navbar-collapse sidebar-menu" ng-controller="sidebarController">
 						<ul class="sidebar">
 							<li>
-								<a href="notifications" title="See all your notifications" class="sidebar-link sidebar-notifications ng-class:{ 'active' : isActive('/notifications') };">
+								<a href="notifications" title="See all your notifications" class="sidebar-link sidebar-notifications hvr-sweep-to-right ng-class:{ 'active' : isActive('/notifications') };">
 								<i class="fa fa-exclamation fa-fw"></i> Notifications</a>
 							</li>
 							<li>
-								<a href="./" title="Go to your dashboard" class="sidebar-link sidebar-dashboard ng-class:{ 'active' : isActive('/') };">
+								<a href="./" title="Go to your dashboard" class="sidebar-link sidebar-dashboard hvr-sweep-to-right ng-class:{ 'active' : isActive('/') };">
 								<i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
 							<li>
-								<a href="whiteboard" title="Go to the collaborative whiteboard" class="sidebar-link sidebar-whiteboard ng-class:{ 'active' : isActive('/whiteboard') };">
+								<a href="whiteboard" title="Go to the collaborative whiteboard" class="sidebar-link sidebar-whiteboard hvr-sweep-to-right ng-class:{ 'active' : isActive('/whiteboard') };">
 								<i class="fa fa-edit fa-fw"></i> Whiteboard</a></li>
 							<li>
-								<a href="profile" title="Manage your profile" class="sidebar-link sidebar-profile ng-class:{ 'active' : isActive('/profile') };">
+								<a href="profile" title="Manage your profile" class="sidebar-link sidebar-profile hvr-sweep-to-right ng-class:{ 'active' : isActive('/profile') };">
 								<i class="fa fa-user fa-fw"></i> Profile</a></li>
 							<li>
-								<a href="settings" title="Manage your account settings" class="sidebar-link sidebar-settings ng-class:{ 'active' : isActive('/settings') };">
+								<a href="settings" title="Manage your account settings" class="sidebar-link sidebar-settings hvr-sweep-to-right ng-class:{ 'active' : isActive('/settings') };">
 								<i class="fa fa-gear fa-fw"></i> Settings</a></li>
-							<li class="divider"></li>
 							<li>
-								<a href="/" title="Sign out of GrappBox" class="sidebar-link sidebar-logout">
+								<a href="/" title="Sign out of GrappBox" class="sidebar-link sidebar-logout hvr-sweep-to-right">
 								<i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
 						</ul>
 					</div>
 				</div>
 			</nav>
 
-			<!-- Page content -->
-			<div id="page-wrapper">
+		<!-- Page content -->
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="app-page">
+						<!-- Dynamic view -->
+						<div ng-view></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer>
+			<div class="container app-footer">
 				<div class="row">
 					<div class="col-lg-12">
-						<div class="app-page">
-							<!-- Dynamic view -->
-							<div ng-view></div>
+						<div class="content-footer footer">
+							<p class="copyright">Copyright &copy; GrappBox 2015. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a> and <a target="_blank" href="http://www.justcreative.com">JustCreative</a>.</p>
 						</div>
 					</div>
 				</div>
 			</div>
-
-			<footer>
-				<div class="container app-footer">
-					<div class="row">
-						<div class="col-lg-12">
-							<div class="content-footer footer">
-								<p class="copyright">Copyright &copy; GrappBox 2015. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a> and <a target="_blank" href="http://www.justcreative.com">JustCreative</a>.</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</footer>
+		</footer>
 		</div>
 
 		{% javascripts
@@ -125,6 +125,7 @@
 		filter='?yui_js' output='resources/js/app.jquery.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}
+
 	</body>
 </html>
 
