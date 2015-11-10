@@ -15,7 +15,20 @@ use Sabre\DAV\Client;
 use League\Flysystem\WebDAV\WebDAVAdapter;
 use League\Flysystem\Filesystem;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+
+/**
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ */
 
 class CurlRequest {
      protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
