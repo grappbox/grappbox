@@ -400,8 +400,8 @@ class CloudController extends Controller
       $filename = split('/', $content[$i]["path"]);
       $filename = $filename[count($filename) - 1];
       $content[$i]["filename"] = $filename;
-      $content[$i]["path"] = str_replace($filename, "", $content[$i]["path"]);
-      $content[$i]["isSecured"] = !($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $content[$i]["path"])) == null);
+      unset($content[$i]["path"]);
+      $content[$i]["isSecured"] = !($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null);
     }
 		return new JsonResponse(array("data" => $content));
 	}
