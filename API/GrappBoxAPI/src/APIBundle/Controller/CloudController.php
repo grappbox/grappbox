@@ -376,11 +376,16 @@ class CloudController extends Controller
 		$flysystem = new Filesystem($adapter);
     $prepath = str_replace(" ", "|", str_replace(",", "/", $path));
 		$rpath = "/GrappBox|Projects/".(string)($idProject).$prepath;
+    $securedFileRepository = $this->getDoctrine()->getRepository("APIBundle:CloudSecuredFileMetadata");
 
 		$content = str_replace("|", " ", $adapter->listContents($rpath));
     foreach ($content as $i => $row)
     {
       $content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
+      $filename = split('/', $content[$i]["path"]);
+      $filename = $filename[count($filename) - 1];
+      $content[$i]["path"] = str_replace($filename, "", $content[$i]["path"]);
+      $content[$i]["isSecured"] = !($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $content[$i]["path"])) == null);
     }
 		return new JsonResponse(array("data" => $content));
 	}
