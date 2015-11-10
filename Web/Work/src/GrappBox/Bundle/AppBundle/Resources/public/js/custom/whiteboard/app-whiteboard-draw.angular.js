@@ -43,8 +43,6 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     var canvasPointsLength = canvasPoints.length;
     var canvasData = "";
 
-    console.log(Number($scope.whiteboardLineWidth));
-
     switch ($scope.whiteboardTools) {
       case "pencil":
         canvasData = {
@@ -58,7 +56,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         canvasData = {
         toolName: "line",
         toolLineColor: canvasColorValues[lineColorIndex],
-        toolLineWidth: whiteboardLineWidth,
+        toolLineWidth: Number($scope.whiteboardLineWidth),
         toolStartX: mouseStartPosition.x,
         toolStartY: mouseStartPosition.y,
         toolEndX: mouseEndPosition.x,
@@ -70,7 +68,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         toolName: "rectangle",
         toolLineColor: canvasColorValues[lineColorIndex],
         toolFillColor: canvasColorValues[fillColorIndex],
-        toolLineWidth: $scope.whiteboardLineWidth,
+        toolLineWidth: Number($scope.whiteboardLineWidth),
         toolStartX: mouseStartPosition.x,
         toolStartY: mouseStartPosition.y,
         toolWidth: mouseEndPosition.x - mouseStartPosition.x,
@@ -83,7 +81,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         toolName: "circle",
         toolLineColor: canvasColorValues[lineColorIndex],
         toolFillColor: canvasColorValues[fillColorIndex],
-        toolLineWidth: $scope.whiteboardLineWidth,
+        toolLineWidth: Number($scope.whiteboardLineWidth),
         toolStartX: mouseStartPosition.x,
         toolStartY: mouseStartPosition.y,
         toolRadius: (Math.abs(mouseEndPosition.x - mouseStartPosition.x) + (Math.abs(mouseEndPosition.y - mouseStartPosition.y)) / 2),
