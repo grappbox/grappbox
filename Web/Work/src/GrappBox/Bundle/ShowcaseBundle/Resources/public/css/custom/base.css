@@ -13,7 +13,7 @@
 /* ==================== General layout ==================== */
 
 html, body { height: 100%; margin: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transition: width 1s ease-in-out, left 1.5s ease-in-out; }
-html, body, section, footer, h1, p, span, a { font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-weight: 400; letter-spacing: normal; color: #212121; }
+html, body, section, footer, h1, p, span, a { font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-weight: 400; line-height: initial; letter-spacing: normal; color: #212121; }
 h2, h3, h4 { font-family: 'Oswald', Helvetica, Arial, sans-serif; font-weight: 400; line-height: initial; letter-spacing: -1px; color: #616161; }
 
 footer { background-color: #212121; }
@@ -38,7 +38,7 @@ a:active, a:focus, a:hover { text-decoration: none; color: #ff5722; }
 
 /* ==================== General laytout (sections) ==================== */
 
-.section-heading { font-size: 40px; margin: 0 0 20px 0; }
+.section-heading { font-size: 40px; margin: 20px 0; }
 
 section:nth-of-type(1) { margin-bottom: -5px; }
 
@@ -126,7 +126,7 @@ nav { position: absolute; bottom: 0; width: 100%; }
 
 footer { padding: 40px 0 35px 0; background: #212121; }
 
-footer .content-footer .copyright { margin: 5px 0 0 15px; }
+footer .content-footer .copyright { margin: 5px 0 0 0; }
 
 footer .content-footer .copyright,
 footer .content-footer .copyright a { font-size: 18px; line-height: inherit; color: #bdbdbd; }
@@ -145,7 +145,7 @@ footer .content-footer .copyright a:hover { text-decoration: none; color: #ff572
 /* ==================== Section: logo and motto ==================== */
 
 .intro-header { box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-.intro-message { padding: 14% 0 4% 0; }
+.intro-message { padding: 13% 0 3% 0; }
 .intro-social-buttons { padding: 0 0 15% 0; }
 .intro-message h1 { margin: 10px 0; padding: 15px 0 0 0; }
 

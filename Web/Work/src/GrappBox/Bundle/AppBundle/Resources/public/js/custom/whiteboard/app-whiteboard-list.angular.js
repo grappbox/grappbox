@@ -11,6 +11,10 @@
 app.controller('whiteboardListController', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
   $scope.alertList = [];
 
+  $scope.closeAlert = function(index) {
+    $scope.alertList.splice(index, 1);
+  };
+
   if ($routeParams.id)
     $scope.alertList.push( { type: 'danger', message: 'Whiteboard #' + $routeParams.id + ' doesn\'t exist, or you might not have the rights to see it. Please try again.' } );
 

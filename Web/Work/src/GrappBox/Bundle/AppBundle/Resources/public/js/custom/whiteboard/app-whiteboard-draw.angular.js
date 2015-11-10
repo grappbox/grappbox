@@ -17,46 +17,45 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   });
 
 
+  /*
+  * CANVAS FUNCTIONS
+  */
 
-/*
-* CANVAS FUNCTIONS
-*/
+  /* Canvas-related variables */
+  var canvas;
+  var canvasContext;
+  var canvasPoints;
+  var canvasColorsValue;
+  var canvasColorsArray = [];
+  var canvasLineWidth;
 
-/* Canvas-related variables */
-var canvas;
-var canvasContext;
-var canvasPoints;
-var canvasColorsValue;
-var canvasColorsArray = [];
-var canvasLineWidth;
+  var mouseStartPosition;
+  var mouseEndPosition;
+  var isMousePressed;
 
-var mouseStartPosition;
-var mouseEndPosition;
-var isMousePressed;
+  var lineColorNumber;
+  var fillColorNumber;
 
-var lineColorNumber;
-var fillColorNumber;
+  var createRenderObject;
+  var renderPath;
 
-var createRenderObject;
-var renderPath;
+  /* Create/compile canvasData to render */
+  var createRenderObject = function() {
+    var canvasPointsLength = canvasPoints.length;
+    var canvasData = "";
 
-/* Create/compile canvasData to render */
-var createRenderObject = function() {
-  var canvasPointsLength = canvasPoints.length;
-  var canvasData = "";
-
-  switch ($scope.whiteboardTool)
-  {
-    case "pencil":
-      canvasData = {
+    switch ($scope.whiteboardTool)
+    {
+      case "pencil":
+        canvasData = {
         toolName: "pencil",
         toolLineWidth: canvasLineWidth,
         toolPoints: canvasPoints,
         toolColor: canvasColorsValue[lineColorNumber] };
       break;
 
-    case "line":
-      canvasData = {
+      case "line":
+        canvasData = {
         toolName: "line",
         toolLineColor: canvasColorsValue[lineColorNumber],
         toolLineWidth: canvasLineWidth,
@@ -66,8 +65,8 @@ var createRenderObject = function() {
         toolEndY: mouseEndPosition.y };
       break;
 
-    case "rectangle":
-      canvasData = {
+      case "rectangle":
+        canvasData = {
         toolName: "rectangle",
         toolLineColor: canvasColorsValue[lineColorNumber],
         toolFillColor: canvasColorsValue[fillColorNumber],
@@ -79,8 +78,8 @@ var createRenderObject = function() {
         toolFillShape: $scope.fillShape };
       break;
 
-    case "circle":
-      canvasData = {
+      case "circle":
+        canvasData = {
         toolName: "circle",
         toolLineColor: canvasColorsValue[lineColorNumber],
         toolFillColor: canvasColorsValue[fillColorNumber],
@@ -91,144 +90,147 @@ var createRenderObject = function() {
         toolFillShape: $scope.fillShape };
       break;
 
-    default:
-      canvasData = {};
+      default:
+        canvasData = {};
       break;
-  }
+    }
 
-  return canvasData;
-};
+    return canvasData;
+  };
 
-/* Render/display canvasData using whiteboardRendererFactory */
-var renderPath = function(data) {
+  /* Render/display canvasData using whiteboardRendererFactory */
+  var renderPath = function(data) {
   if ($scope.whiteboardTool === "rectangle" || $scope.whiteboardTool === "line" || $scope.whiteboardTool === "circle")
     whiteboardRendererFactory.renderAll();
-  whiteboardRendererFactory.render(data);
-};
+    whiteboardRendererFactory.render(data);
+  };
 
 
 
-/*
-* SCOPE FUNCTIONS
-*/
+  /*
+  * SCOPE FUNCTIONS
+  */
 
-/* Scope variables default values */
-$scope.whiteboardTool = "pencil";
-$scope.lineColorCss = "black";
-$scope.fillColorCss = "black";
-$scope.fillShape = false;
-$scope.colorTarget = "line";
+  /* Scope variables default values */
+  $scope.whiteboardTool = "pencil";
+  $scope.lineColorCss = "black";
+  $scope.fillColorCss = "black";
+  $scope.fillShape = false;
+  $scope.colorTarget = "line";
 
-/* Initialize whiteboard canvas and controls, set default values */
-$scope.initializeWhiteboardControls = function()
-{
-  canvas = document.getElementById("whiteboard-canvas");
-  canvasContext = canvas.getContext("2d");
-  whiteboardRendererFactory.setCanvasContext(canvasContext);
-
-  canvasPoints = [];
-  canvasColorsArray = ['black'];
-  canvasColorsValue = ['#000000'];
-  canvasLineWidth = 0.5;
-  
-  lineColorNumber = 1;
-  fillColorNumber = 1;
-  isMousePressed = false;
-  mouseStartPosition = { x: 0, y: 0 };
-  mouseEndPosition = { x: 0, y: 0 };
-
-  /* Canvas default callback: mouse pressed */
-  canvas.onmousedown = function(eventPosition)
+  /* Initialize whiteboard canvas and controls, set default values */
+  $scope.initializeWhiteboardControls = function()
   {
-    var canvasData;
+    canvas = document.getElementById("whiteboard-canvas");
+    canvasContext = canvas.getContext("2d");
+    whiteboardRendererFactory.setCanvasContext(canvasContext);
 
-    canvasPoints.push({
-      toolPositionX: eventPosition.offsetX,
-      toolPositionY: eventPosition.offsetY,
-      toolColor: canvasColorsValue[lineColorNumber]
-    });
+    canvasPoints = [];
+    canvasColorsArray = ['black'];
+    canvasColorsValue = ['#000000'];
+    canvasLineWidth = 0.5;
 
-    isMousePressed = true;
+    lineColorNumber = 1;
+    fillColorNumber = 1;
+    isMousePressed = false;
+    mouseStartPosition = { x: 0, y: 0 };
+    mouseEndPosition = { x: 0, y: 0 };
 
-    mouseStartPosition.x = canvasPoints[0].toolPositionX;
-    mouseStartPosition.y = canvasPoints[0].toolPositionY;
-    mouseEndPosition.x = canvasPoints[0].toolPositionX;
-    mouseEndPosition.y = canvasPoints[0].toolPositionY;
+    /* Canvas default callback: mouse pressed */
+    canvas.onmousedown = function(eventPosition)
+    {
+      var canvasData;
 
-    canvasData = createRenderObject();
-    renderPath(canvasData);
+      canvasPoints.push({
+        toolPositionX: eventPosition.offsetX,
+        toolPositionY: eventPosition.offsetY,
+        toolColor: canvasColorsValue[lineColorNumber]
+      });
+
+      isMousePressed = true;
+
+      mouseStartPosition.x = canvasPoints[0].toolPositionX;
+      mouseStartPosition.y = canvasPoints[0].toolPositionY;
+      mouseEndPosition.x = canvasPoints[0].toolPositionX;
+      mouseEndPosition.y = canvasPoints[0].toolPositionY;
+
+      canvasData = createRenderObject();
+      renderPath(canvasData);
+    };
+
+    /* Canvas default callback: mouse drag */
+    canvas.onmousemove = function(eventPosition)
+    {
+      var x;
+      var y;
+      var lastPoint;
+      var canvasData;
+
+      if (isMousePressed)
+      {
+        x = eventPosition.offsetX;
+        y = eventPosition.offsetY;
+
+        canvasPoints.push({
+          x: x,
+          y: y,
+          toolColor: canvasColorsValue[lineColorNumber]
+        });
+
+        lastPoint = canvasPoints[canvasPoints.length - 1];
+        mouseEndPosition.x = lastPoint.x;
+        mouseEndPosition.y = lastPoint.y;
+
+        canvasData = createRenderObject();
+        renderPath(canvasData);    
+      }
+    };
+
+    /* Canvas default callback: mouse release */
+    canvas.onmouseup = function() {
+      var canvasData;
+
+      isMousePressed = false;
+      canvasData = createRenderObject();
+      whiteboardRendererFactory.addToCanvasBuffer(canvasData);
+
+      canvasPoints = [];
+      mouseStartPosition.x = 0;
+      mouseStartPosition.y = 0;
+      mouseEndPosition.x = 0;
+      mouseEndPosition.y = 0;
+    };
   };
 
-  /* Canvas default callback: mouse drag */
-  canvas.onmousemove = function(eventPosition)
-  {
-   var x;
-   var y;
-   var lastPoint;
-   var canvasData;
-
-   if (isMousePressed)
-   {
-    x = eventPosition.offsetX;
-    y = eventPosition.offsetY;
-
-    canvasPoints.push({
-     x: x,
-     y: y,
-     toolColor: canvasColorsValue[lineColorNumber]
-    });
-    
-    lastPoint = canvasPoints[canvasPoints.length - 1];
-    mouseEndPosition.x = lastPoint.x;
-    mouseEndPosition.y = lastPoint.y;
-
-    canvasData = createRenderObject();
-    renderPath(canvasData);    
-   }
-  };
-
-  /* Canvas default callback: mouse release */
-  canvas.onmouseup = function() {
-   var canvasData;
-
-   isMousePressed = false;
-   canvasData = createRenderObject();
-   whiteboardRendererFactory.addToCanvasBuffer(canvasData);
-
-   canvasPoints = [];
-   mouseStartPosition.x = 0;
-   mouseStartPosition.y = 0;
-   mouseEndPosition.x = 0;
-   mouseEndPosition.y = 0;
-  };
- };
-
-/* Handle color changes */
-$scope.selectColor = function(color) {
+  /* Handle color changes */
+  $scope.selectColor = function(color) {
     lineColorNumber = color;
     $scope.lineColorCss = canvasColorsArray[lineColorNumber];
 
     fillColorNumber = color;
     $scope.fillColorCss = canvasColorsArray[fillColorNumber];
-};
+  };
 
-/* Handle line width changes */
-$scope.changelineWidth = function(size)
-{
-  canvasLineWidth = Number(size);
-};
+  /* Handle line width changes */
+  $scope.changelineWidth = function(size) {
+    canvasLineWidth = Number(size);
+  };
 
-/* Handle 'Undo' button */
-$scope.undoCanvasAction = function()
-{
-  whiteboardRendererFactory.undoCanvasAction();
-  whiteboardRendererFactory.renderAll();
+  /* Handle 'Undo' button */
+  $scope.undoCanvasAction = function() {
+    whiteboardRendererFactory.undoCanvasAction();
+    whiteboardRendererFactory.renderAll();
 
-  canvasPoints = [];
-  mouseStartPosition.x = 0;
-  mouseStartPosition.y = 0;
-  mouseEndPosition.x = 0;
-  mouseEndPosition.y = 0;
-};
+    canvasPoints = [];
+    mouseStartPosition.x = 0;
+    mouseStartPosition.y = 0;
+    mouseEndPosition.x = 0;
+    mouseEndPosition.y = 0;
+  };
+
+  /* Handle 'Expand' button */
+  $scope.enableFullScreen = function() {
+    angular.element(document.querySelector('#app-wrapper')).toggleClass('hide-menu');
+  };
 
 }]);
