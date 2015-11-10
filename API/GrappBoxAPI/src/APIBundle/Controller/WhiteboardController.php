@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\Whiteboard;
 use DateTime;
 
@@ -28,19 +29,8 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
  */
-class WhiteboardController extends Controller
+class WhiteboardController extends RolesAndTokenVerificationController
 {
-
-	private function checkUserAutorisation($em, $user, $projectId)
-	{
-		$query = $em->createQuery(
-									    'SELECT roles.whiteboard
-									    FROM APIBundle:Role roles
-											JOIN APIBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
-									    WHERE projectUser.projectId = '.$projectId.' AND projectUser.userId = '.$user->getId());
-		$result = $query->setMaxResults(1)->getOneOrNullResult();
-		return $result['whiteboard'];
-	}
 
 	private function serializeInArray($objects)
 	{
@@ -51,7 +41,6 @@ class WhiteboardController extends Controller
 		return $content;
 	}
 
-
 	/**
 	* @api {get} /Whiteboard/list Request the list of whitebaord for a project
 	* @apiName listWhiteboard
@@ -61,8 +50,7 @@ class WhiteboardController extends Controller
 	* @apiParam {String} _token client authentification token
 	* @apiParam {int} projectId id of the selected project
 	*
-	* @apiSuccess {String} status status of the request (error or success)
-	* @apiSuccess {Object[]} data list of whiteboards informations
+	* @apiSuccess {Object[]} data list of whiteboards
 	* @apiSuccess {int} data.id whiteboard id
 	* @apiSuccess {string} data.name whiteboard name
 	* @apiSuccess {int} data.creator_id id of the whiteboard's creator
@@ -70,52 +58,54 @@ class WhiteboardController extends Controller
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*			"data": [
-	*					"0": {
-	*						"id": "12",
-	*						"name": "Brainstorming #5",
-	*						"creator_id": "65",
-	*						"updator_id": "54"},
-	*					"1": {
-	*						"id": "12",
-	*						"name": "Brainstorming #5",
-	*						"creator_id": "65",
-	*						"updator_id": "36"}
-	*				]
+	*		"0": {
+	*			"id": "12",
+	*			"name": "Brainstorming #5",
+	*			"creator_id": "65",
+	*			"updator_id": "54"},
+	*		"1": {
+	*			"id": "12",
+	*			"name": "Brainstorming #5",
+	*			"creator_id": "65",
+	*			"updator_id": "36"},
+	*		...
 	* 	}
 	*
-	* @apiErrorExample Bad Authentification Token
-	* 	HTTP/1.1 400 Bad Request
-	*   {
-	*     "data": "bad token"
-	*   }
-	* @apiErrorExample Insufficient User Rights
+	* @apiErrorExample Bad Authentication Token
  	* 	HTTP/1.1 400 Bad Request
   * 	{
-  * 		"data": "no rights"
+  * 		"Bad Authentication Token"
+  * 	}
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+	* @apiErrorExample Missing Parameter
+ 	* 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
   * 	}
 	*
 	*/
 	public function listWhiteboardAction(Request $request)
-	 {
-			 $response = new JsonResponse();
-			 $em = $this->getDoctrine()->getManager();
-			 $user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
-			 if (!$user)
-			 {
-			 	$response->setData(array('status' => 'error', 'data' => 'bad token'));
-			 	return $response;
-			 }
-			 if (!$this->checkUserAutorisation($em, $user, $request->request->get('projectId')))
-			 {
-			 	$response->setData(array('status' => 'error', 'data' => 'no rights'));
-			 	return $response;
-			 }
-			 $project = $em->getRepository('APIBundle:Project')->find($request->request->get('projectId'));
-			 $whiteboards = $project->getWhiteboards();
-			 $response->setData(array('status' => 'success', 'data' => $this->serializeInArray($whiteboards)));
-			 return $response;
-	 }
+	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "whiteboard"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('APIBundle:Project')->find($request->request->get('projectId'));
+		$whiteboards = $project->getWhiteboards();
+
+		$response = new JsonResponse();
+		$response->setData($this->serializeInArray($whiteboards));
+		return $response;
+	}
 
 	 /**
  	* @api {post} /Whiteboard/new Request the creation of a new Whiteboard
@@ -127,52 +117,49 @@ class WhiteboardController extends Controller
  	* @apiParam {int} projectId id of the selected project
 	* @apiParam {string} whiteboardName name of the new whiteboard
  	*
- 	* @apiSuccess {String} status status of the request (error or success)
- 	* @apiSuccess {Object[]} data the new whiteboard informations and a content array (empty)
- 	* @apiSuccess {int} data.id whiteboard id
- 	* @apiSuccess {string} data.name whiteboard name
- 	* @apiSuccess {int} data.creator_id id of the whiteboard's creator
- 	* @apiSuccess {int} data.updator_id id of the whiteboard's last updator (creator)
+ 	* @apiSuccess {Object} whiteboard the new whiteboard informations
+ 	* @apiSuccess {int} whiteboard.id whiteboard id
+ 	* @apiSuccess {string} whiteboard.name whiteboard name
+ 	* @apiSuccess {int} whiteboard.creator_id id of the whiteboard's creator
+ 	* @apiSuccess {int} whiteboard.updator_id id of the whiteboard's last updator (creator)
+	* @apiSuccess {Object[]} content the new whiteboard content (empty)
  	*
  	* @apiSuccessExample {json} Success-Response:
  	* 	{
- 	*		"data": [
- 	*			"whiteboard": {
- 	*				"id": "12",
- 	*				"name": "Brainstorming #5",
- 	*				"creator_id": "65",
- 	*				"updator_id": "54"},
- 	*			"content": [ ]
- 	*		]
+ 	*		"whiteboard": {
+ 	*			"id": "12",
+ 	*			"name": "Brainstorming #5",
+ 	*			"creator_id": "65",
+ 	*			"updator_id": "54"},
+ 	*		"content": [ ]
  	* 	}
  	*
- 	* @apiErrorExample Bad Authentification Token
- 	*     HTTP/1.1 400 Bad Request
- 	*     {
- 	*       "data": "bad token"
- 	*     }
+	* @apiErrorExample Bad Authentication Token
+ 	* 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
 	* @apiErrorExample Insufficient User Rights
- 	*			HTTP/1.1 400 Bad Request
-  * 		{
-  *    		"data": "no rights"
-  * 		}
+ 	* 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+	* @apiErrorExample Missing Parameter
+ 	* 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
+  * 	}
  	*
  	*/
 	public function newWhiteboardAction(Request $request)
 	{
-		$response = new JsonResponse();
-		$em = $this->getDoctrine()->getManager();
-	  $user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
-		{
-			$response->setData(array('status' => 'error', 'data' => 'bad token'));
-			return $response;
-		}
-		if (!$this->checkUserAutorisation($em, $user, $request->request->get('projectId')))
-		{
-			$response->setData(array('status' => 'error', 'data' => 'no rights'));
-			return $response;
-		}
+			 return ($this->setBadTokenError());
+		if (!$request->request->get('projectId') || !$request->request->get('whiteboardName'))
+			 return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "whiteboard"))
+			 return ($this->setNoRightsError());
 
 		$whiteboard = new Whiteboard();
 		$whiteboard->setProjectId($request->request->get('projectId'));
@@ -182,10 +169,12 @@ class WhiteboardController extends Controller
 		$whiteboard->setCreatedAt(new DateTime('now'));
 		$whiteboard->setUpdatedAt(new DateTime('now'));
 
+		$em = $this->getDoctrine()->getManager();
 		$em->persist($whiteboard);
 		$em->flush();
 
-		$response->setData(array('status' => 'success', 'data' => array('whiteboard' => $whiteboard->serialize(), 'content' => array())));
+		$response = new JsonResponse();
+		$response->setData(array('whiteboard' => $whiteboard->serialize(), 'content' => array()));
 		return $response;
 	}
 
@@ -197,78 +186,87 @@ class WhiteboardController extends Controller
 		*
 		* @apiParam {String} _token client authentification token
 		*
-		* @apiSuccess {String} status status of the request (error or success)
-		* @apiSuccess {Object[]} data the new whiteboard informations and a content array (empty)
-		* @apiSuccess {Object} data.whiteboard whiteboard information and content
-		* @apiSuccess {int} data.whiteboard.id whiteboard id
-		* @apiSuccess {string} data.whiteboard.name whiteboard name
-		* @apiSuccess {int} data.whiteboard.creator_id id of the whiteboard's creator
-		* @apiSuccess {int} data.whiteboard.updator_id id of the whiteboard's last updator
-		* @apiSuccess {Object[]} data.content content whiteboard content objects
-		* @apiSuccess {object} data.content.object object object
+		* @apiSuccess {Object} whiteboard whiteboard information and content
+		* @apiSuccess {int} whiteboard.id whiteboard id
+		* @apiSuccess {string} whiteboard.name whiteboard name
+		* @apiSuccess {int} whiteboard.creator_id id of the whiteboard's creator
+		* @apiSuccess {int} whiteboard.updator_id id of the whiteboard's last updator
+		* @apiSuccess {Object[]} content whiteboard content objects
+		* @apiSuccess {object} content.object object whiteboard's object
 		*
 		* @apiSuccessExample {json} Success-Response:
 		* 	{
-		*		"data": [
-		*			"whiteboard": {
-		*				"id": "12",
-		*				"name": "Brainstorming #5",
-		*				"creator_id": "65",
-		*				"updator_id": "54"},
-		*			"content": ["0": {
-		*										"id": 12,
-		*										"type": rectangle,
-		*										"color": "125,25,65",
-		*										"line": "1.5",
-		*										"position": "15;63.3",
-		*										"..."	},
-		*									"1": {
-		*										"id": 12,
-		*										"type": circle,
-		*										"color": "125,25,65",
-		*										"line": "1.5",
-		*										"position": "186.20;42.95",
-		*										"..."
-		*									},
-		*									...
-		*			]
+		*		"whiteboard": {
+		*			"id": "12",
+		*			"name": "Brainstorming #5",
+		*			"creator_id": "65",
+		*			"updator_id": "54"},
+		*		"content": [
+		*			"0": {
+		*				"id": 12,
+		*				"type": "rectangle",
+		*				"color": "125,25,65",
+		*				"line": "1.5",
+		*				"position": "15;63.3",
+		*				...
+		*			},
+		*			"1": {
+		*				"id": 12,
+		*				"type": "circle",
+		*				"color": "125,25,65",
+		*				"line": "1.5",
+		*				"position": "186.20;42.95",
+		*				...
+		*			},
+		*			...
 		*		]
 		* 	}
 		*
-		* @apiErrorExample Bad Authentification Token
-		*     HTTP/1.1 400 Bad Request
-		*     {
-		*       "data": "bad token"
-		*     }
+		* @apiErrorExample Bad Authentication Token
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Bad Authentication Token"
+	  * 	}
 		* @apiErrorExample Insufficient User Rights
-		*			HTTP/1.1 400 Bad Request
-	 	* 		{
-	 	*    		"data": "no rights"
-	 	* 		}
+	 	* 	HTTP/1.1 403 Forbidden
+	  * 	{
+	  * 		"Insufficient User Rights"
+	  * 	}
+		* @apiErrorExample Missing Parameter
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Missing Parameter"
+	  * 	}
+		* @apiErrorExample Bad Whiteboard Id
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Bad Whiteboard Id"
+	  * 	}
+		* @apiErrorExample Whiteboard Deleted
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Whiteboard Deleted"
+	  * 	}
 		*
 		*/
 	public function openWhiteboardAction(Request $request, $id)
 	{
-		$response = new JsonResponse();
-		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
-		{
-			$response->setData(array('status' => 'error', 'data' => 'bad token'));
-			return $response;
-		}
+			 return ($this->setBadTokenError());
+
+		$em = $this->getDoctrine()->getManager();
 		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
+		if (!$whiteboard)
+ 			 return $this->setBadRequest("Bad Whiteboard Id");
+
+		if (!$this->checkRoles($user, $whiteboard->getProjectId(), "whiteboard"))
+			 return ($this->setNoRightsError());
 		if ($whiteboard->getDeletedAt())
-		{
-			$response->setData(array('status' => 'error', 'data' => 'deleted'));
-			return $response;
-		}
-		if (!$this->checkUserAutorisation($em, $user, $whiteboard->getProjectId()))
-		{
-			$response->setData(array('status' => 'error', 'data' => 'no rights'));
-			return $response;
-		}
-		$response->setData(array('status' => 'success', 'data' => array('whiteboard' => $whiteboard->serialize(), 'content' => $this->serializeInArray($whiteboard->getObjects()))));
+			 return $this->setBadRequest("Whiteboard Deleted");
+
+		$response = new JsonResponse();
+		$response->setData(array('whiteboard' => $whiteboard->serialize(), 'content' => $this->serializeInArray($whiteboard->getObjects())));
 		return $response;
 	}
 
@@ -281,52 +279,66 @@ class WhiteboardController extends Controller
 		* @apiParam {String} _token client authentification token
 		* @apiParam {String}  modification type of modification ("add" or "del")
 		* @apiParam {int}  object_id IN CASE OF DEL: object's id
-		* @apiParam {object} object IN CASE OF ADD: object content (json array)
+		* @apiParam {object} object IN CASE OF ADD: whiteboard's object (json array)
 		*
-		* @apiSuccess {String} status status of the request (error or success)
-		* @apiSuccess {string} data success message
+		* @apiSuccess {String} data success message
 		*
 		* @apiSuccessExample {json} Success-Response:
-		* 	{
-		*		"data": "success"
-		* 	}
+		* 	HTTP/1.1 200 OK
+	  * 	{
+	  * 		"Success"
+	  * 	}
 		*
-		* @apiErrorExample Bad Authentification Token
-		*     HTTP/1.1 400 Bad Request
-		*     {
-		*       "data": "bad token"
-		*     }
+		* @apiErrorExample Bad Authentication Token
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Bad Authentication Token"
+	  * 	}
 		* @apiErrorExample Insufficient User Rights
-		*			HTTP/1.1 400 Bad Request
-	 	* 		{
-	 	*    		"data": "no rights"
-	 	* 		}
+	 	* 	HTTP/1.1 403 Forbidden
+	  * 	{
+	  * 		"Insufficient User Rights"
+	  * 	}
+		* @apiErrorExample Missing Parameter
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Missing Parameter"
+	  * 	}
+		* @apiErrorExample Bad Whiteboard Id
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Bad Whiteboard Id"
+	  * 	}
 		*
 		*/
 	public function pushDrawAction(Request $request, $id)
 	{
-		$response = new JsonResponse();
-		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
-		{
-			$response->setData(array('status' => 'error', 'data' => 'bad token'));
-			return $response;
-		}
+			 return ($this->setBadTokenError());
+
+		$em = $this->getDoctrine()->getManager();
 		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
-		if (!$this->checkUserAutorisation($em, $user, $whiteboard->getProjectId()))
-		{
-			$response->setData(array('status' => 'error', 'data' => 'no rights'));
-			return $response;
-		}
+		if (!$whiteboard)
+ 			 return $this->setBadRequest("Bad Whiteboard Id");
+
+		if (!$this->checkRoles($user, $whiteboard->getProjectId(), "whiteboard"))
+			 return ($this->setNoRightsError());
+		if (!$request->request->get('modification'))
+		 	 return $this->setBadRequest("Missing Parameter");
+
 		if ($request->request->get('modification') == "add")
 		{
+			if (!$request->request->get('object'))
+	 			 return $this->setBadRequest("Missing Parameter");
 			$object = new WhiteboardObject();
 			$object->setWhiteboardId($id);
 			$object->setObject($request->request->get('object'));
 			$object->setCreatedAt(new DateTime('now'));
 		}
 		else {
+			if (!$request->request->get('object_id'))
+	 			 return $this->setBadRequest("Missing Parameter");
 			$object = $em->getRepository('APIBundle:WhiteboardObject')->find($request->request->get('object_id'));
 			$object->setDelete(new DateTime('now'));
 		}
@@ -334,50 +346,85 @@ class WhiteboardController extends Controller
 		$em->persist($object);
 		$em->flush();
 
-		$response->setData(array('status' => 'success', 'data' => "success"));
+		$response = new JsonResponse();
+		$response->setData("Success");
 		return $response;
 	}
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="pull a draw on a whiteboard",
-	 * views = { "whiteboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the whiteboard you want"
-     *      }
-     *  },
-		 * parameters={
-		 *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
-		 *			{"name"="lastUpdate", "dataType"="varchar(255)", "required"=true, "description"="date of the last update format 'Y-m-d H:i:s'"}
-		 *  }
-	 * )
-	 *
-	 */
+	 /**
+		* @api {post} /Whiteboard/pullDraw/:id Request to pull a whiteboard modification
+		* @apiName pullDrawOnWhiteboard
+		* @apiGroup whiteboard
+		* @apiVersion 1.0.0
+		*
+		* @apiParam {String} _token client authentification token
+		* @apiParam {DateTime}  lastUpdate date of the last update
+		*
+		* @apiSuccess {Object[]} add array of the objects added  in the whiteboard
+		* @apiSuccess {Object} data.add.object  the objects to add
+		* @apiSuccess {Object[]} delete array of the objects deleted in the whiteboard
+		* @apiSuccess {Object} data.delete.object  the objects to delete
+		*
+		*
+		* @apiSuccessExample {json} Success-Response:
+		* 	{
+		*		"add":[
+		*			"0": {
+		*				"id": 22,
+		*				"content": {"type": "rectangle", "color":"154,25,95", ... }
+		*			},
+		*			"1": {
+		*				"id": 23,
+		*				"content": {"type": "square", "color":"54,125,95", ...}
+		*			},
+		*			...
+		*		],
+		*		"delete":[
+		*			"0": {
+		*				"id": 2,
+		*				"content": {"type": "line", "color":"14,85,105", ...}
+		*			},
+		*			...
+		*		]
+		* 	}
+		*
+		* @apiErrorExample Bad Authentication Token
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Bad Authentication Token"
+	  * 	}
+		* @apiErrorExample Insufficient User Rights
+	 	* 	HTTP/1.1 403 Forbidden
+	  * 	{
+	  * 		"Insufficient User Rights"
+	  * 	}
+		* @apiErrorExample Missing Parameter
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Missing Parameter"
+	  * 	}
+		* @apiErrorExample Bad Whiteboard Id
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Bad Whiteboard Id"
+	  * 	}
+		*
+		*/
 	public function pullDrawAction(Request $request, $id)
 	{
-		$response = new JsonResponse();
-		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
-		{
-			$response->setData(array('status' => 'error', 'data' => 'bad token'));
-			return $response;
-		}
-		if (!$this->checkUserAutorisation($em, $user, $whiteboard->getProjectId()))
-		{
-			$response->setData(array('status' => 'error', 'data' => 'no rights'));
-			return $response;
-		}
+			 return ($this->setBadTokenError());
+
+		$em = $this->getDoctrine()->getManager();
+		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
+		if (!$whiteboard)
+ 			 return $this->setBadRequest("Bad Whiteboard Id");
+
+		if (!$this->checkRoles($user, $whiteboard->getProjectId(), "whiteboard"))
+			 return ($this->setNoRightsError());
+		if (!$request->request->get('lastUpdate'))
+ 			 return $this->setBadRequest("Missing Parameter");
 
 		$date = new \DateTime($request->request->get('lastUpdate'));
 		$toAddQuery = $em->createQuery(
@@ -393,7 +440,8 @@ class WhiteboardController extends Controller
 											->setParameter('date', $date);
 		$to_del = $toDelQuery->getResult();
 
-		$response->setData(array('status' => 'succes', 'data' => array('add' => $to_add, 'delete' => $to_del)));
+		$response = new JsonResponse();
+		$response->setData(array('add' => $to_add, 'delete' => $to_del));
 		return $response;
 	}
 
@@ -428,47 +476,53 @@ class WhiteboardController extends Controller
 	// 	return new Response('exit Whiteboard '.$id.' Success');
 	// }
 
-	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="delete a whiteboard",
-	 * views = { "whiteboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the whiteboard you want"
-     *      }
-     *  },
-		 * parameters={
-	   *      {"name"="_token", "dataType"="varchar(255)", "required"=true, "description"="authentification token"},
-		 *  }
-	 * )
-	 *
-	 */
+	 /**
+ 	* @api {post} /Whiteboard/delete/:id Request the deletion of a Whiteboard
+ 	* @apiName deleteWhiteboard
+ 	* @apiGroup whiteboard
+ 	* @apiVersion 1.0.0
+ 	*
+ 	* @apiParam {String} _token client authentification token
+ 	*
+ 	* @apiSuccess {String} data success message
+ 	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 OK
+	* 	{
+	* 		"Success"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample Bad Whiteboard Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Whiteboard Id"
+	* 	}
+ 	*
+ 	*/
 	public function delWhiteboardAction(Request $request, $id)
 	{
-		$response = new JsonResponse();
-		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $request->request->get('_token')));
+		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
-		{
-			$response->setData(array('status' => 'error', 'data' => 'bad token'));
-			return $response;
-		}
-		if (!$this->checkUserAutorisation($em, $user, $request->request->get('projectId')))
-		{
-			$response->setData(array('status' => 'error', 'data' => 'no rights'));
-			return $response;
-		}
+			 return ($this->setBadTokenError());
 
-		$whiteboard = $em->getRepository('APIBundle:Whiteboard')->find($id);
+		$em = $this->getDoctrine()->getManager();
+		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
+		if (!$whiteboard)
+ 			 return $this->setBadRequest("Bad Whiteboard Id");
+
+		if (!$this->checkRoles($user, $whiteboard->getProjectId(), "whiteboard"))
+			 return ($this->setNoRightsError());
+
 		if ($whiteboard)
 		{
 				$whiteboard->setDeletedAt(new DateTime('now'));
@@ -476,7 +530,9 @@ class WhiteboardController extends Controller
 				// $em->remove($whiteboard);
 				$em->flush();
 		}
-		$response->setData(array('status' => 'success', 'data' => 'success'));
+
+		$response = new JsonResponse();
+		$response->setData('Success');
 		return $response;
 	}
 }

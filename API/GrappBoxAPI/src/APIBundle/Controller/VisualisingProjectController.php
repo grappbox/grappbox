@@ -33,6 +33,10 @@ class VisualisingProjectController extends Controller
 	 */
 	public function addActionAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('add Action '.$id.' Success');
 	}
 
@@ -59,6 +63,12 @@ class VisualisingProjectController extends Controller
 	 */
 	public function addActorAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "projectSettings"))
+			return ($this->setNoRightsError());
+
 		return new Response('add actor '.$id.' Success');
 	}
 
@@ -85,6 +95,12 @@ class VisualisingProjectController extends Controller
 	 */
 	public function addLinkAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "projectSettings"))
+			return ($this->setNoRightsError());
+
 		return new Response('add Link '.$id.' Success');
 	}
 
@@ -111,6 +127,12 @@ class VisualisingProjectController extends Controller
 	 */
 	public function newDiagramAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// if (!$this->checkRoles($user, $id, "projectSettings"))
+		// 	return ($this->setNoRightsError());
+
 		return new Response('new Diagram '.$id.' Success');
 	}
 
@@ -137,6 +159,12 @@ class VisualisingProjectController extends Controller
 	 */
 	public function openDiagramAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// if (!$this->checkRoles($user, $id, "projectSettings"))
+		// 	return ($this->setNoRightsError());
+
 		return new Response('open Diagram '.$id.' Success');
 	}
 
@@ -163,6 +191,12 @@ class VisualisingProjectController extends Controller
 	 */
 	public function invitePersonAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// if (!$this->checkRoles($user, $id, "projectSettings"))
+		// 	return ($this->setNoRightsError());
+
 		return new Response('invite Person '.$id.' Success');
 	}
 }

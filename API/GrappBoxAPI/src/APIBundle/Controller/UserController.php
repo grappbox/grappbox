@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\User;
 
 /**
@@ -21,10 +22,14 @@ use APIBundle\Entity\User;
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
  */
-class UserController extends Controller
+class UserController extends RolesAndTokenVerificationController
 {
 	public function basicInformationsAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		$method = $request->getMethod();
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository('APIBundle:User')->find($id);
@@ -189,6 +194,10 @@ class UserController extends Controller
 
 	public function passwordAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		$method = $request->getMethod();
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository('APIBundle:User')->find($id);
@@ -274,6 +283,8 @@ class UserController extends Controller
 	* @apiGroup Users
 	* @apiVersion 1.0.0
 	*
+	* @apiParam {string} _token user's authentication token
+	*
 	* @apiSuccess {Array} [User n] array of n persons
 	* @apiSuccess {Number} [User n].id id of the person
 	* @apiSuccess {String} [User n].first_name First name of the person
@@ -299,9 +310,12 @@ class UserController extends Controller
 	*/
 	public function getIdByNameAction(Request $request, $firstname, $lastname)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:User')->findUserByName($firstname, $lastname));
 	}
@@ -311,6 +325,8 @@ class UserController extends Controller
 	* @apiName getNextMeetings
 	* @apiGroup Users
 	* @apiVersion 1.0.0
+	*
+	* @apiParam {string} _token user's authentication token
 	*
 	* @apiSuccess {Array} [Meeting n] array of n meeting
 	* @apiSuccess {String} [Meeting n].project_name Name of the project
@@ -355,9 +371,12 @@ class UserController extends Controller
 	*/
 	public function getNextMeetingsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Event')->findNextMeetings($id));
 	}
@@ -367,6 +386,8 @@ class UserController extends Controller
 	* @apiName getProjects
 	* @apiGroup Users
 	* @apiVersion 1.0.0
+	*
+	* @apiParam {string} _token user's authentication token
 	*
 	* @apiSuccess {Array} [Project n] array of n project
 	* @apiSuccess {Number} [Project n].project_id id of the project
@@ -401,9 +422,12 @@ class UserController extends Controller
 	*/
 	public function getProjectsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findUserProjects($id));
 	}
@@ -413,6 +437,8 @@ class UserController extends Controller
 	* @apiName getAllTasks
 	* @apiGroup Users
 	* @apiVersion 1.0.0
+	*
+	* @apiParam {string} _token user's authentication token
 	*
 	* @apiSuccess {Array} [Task n] array of n project
 	* @apiSuccess {Number} [Task n].task_id id of the task
@@ -451,9 +477,12 @@ class UserController extends Controller
 	*/
 	public function getAllTasksAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserAllTasks($id));
 	}
@@ -464,6 +493,8 @@ class UserController extends Controller
 	* @apiGroup Users
 	* @apiVersion 1.0.0
 	*
+	* @apiParam {string} _token user's authentication token
+	* 
 	* @apiSuccess {Array} [Task n] array of n project
 	* @apiSuccess {Number} [Task n].task_id id of the task
 	* @apiSuccess {String} [Task n].task_title title of the task
@@ -501,9 +532,12 @@ class UserController extends Controller
 	*/
 	public function getCurrentAndNextTasksAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserCurrentAndNextTasks($id));
 	}

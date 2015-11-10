@@ -33,6 +33,14 @@ class GanttController extends Controller
 	 */
 	public function addTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
+
 		return new Response('add Task '.$id.' Success');
 	}
 
@@ -59,6 +67,14 @@ class GanttController extends Controller
 	 */
 	public function assignTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
+
 		return new Response('assignTask '.$id.' Success');
 	}
 
@@ -85,6 +101,14 @@ class GanttController extends Controller
 	 */
 	public function editTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
+
 		return new Response('edit Task '.$id.' Success');
 	}
 
@@ -111,6 +135,14 @@ class GanttController extends Controller
 	 */
 	public function delTaskAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
+
 		return new Response('del Task '.$id.' Success');
 	}
 
@@ -137,6 +169,14 @@ class GanttController extends Controller
 	 */
 	public function setTaskPropertiesAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "gantt"))
+			return ($this->setNoRightsError());
+
 		return new Response('set Task Properties '.$id.' Success');
 	}
 }

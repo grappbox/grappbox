@@ -33,6 +33,10 @@ class TimelineController extends Controller
 	 */
 	public function getTimelineTypeAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('get Timeline Type Success');
 	}
 
@@ -59,6 +63,22 @@ class TimelineController extends Controller
 	 */
 	public function postMessageAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		//get timeline
+		// determine timeline type
+		if ($type == "customerTimeline")
+		{
+			if (!$this->checkRoles($user, $request->request->get('projectId'), "customerTimeline"))
+				return ($this->setNoRightsError());
+		} else {
+			if (!$this->checkRoles($user, $request->request->get('projectId'), "teamTimeline"))
+				return ($this->setNoRightsError());
+		}
+
 		return new Response('post Message Success');
 	}
 
@@ -85,6 +105,20 @@ class TimelineController extends Controller
 	 */
 	public function getMessagesAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		//get timeline
+		// determine timeline type
+		if ($type == "customerTimeline")
+		{
+			if (!$this->checkRoles($user, $request->request->get('projectId'), "customerTimeline"))
+				return ($this->setNoRightsError());
+		} else {
+			if (!$this->checkRoles($user, $request->request->get('projectId'), "teamTimeline"))
+				return ($this->setNoRightsError());
+		}
+
 		return new Response('get Messages Success');
 	}
 
@@ -111,6 +145,10 @@ class TimelineController extends Controller
 	 */
 	public function delMessageAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new Response('del Message Success');
 	}
 }

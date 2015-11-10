@@ -33,6 +33,14 @@ class MeetingController extends Controller
 	 */
 	public function editMeetingAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "event"))
+			return ($this->setNoRightsError());
+
 		return new Response('edit Meeting '.$id.' Success');
 	}
 
@@ -59,6 +67,14 @@ class MeetingController extends Controller
 	 */
 	public function delMeetingAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "event"))
+			return ($this->setNoRightsError());
+
 		return new Response('del Meeting '.$id.' Success');
 	}
 
@@ -85,6 +101,14 @@ class MeetingController extends Controller
 	 */
 	public function invitePersonToMeetingAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$request->request->get('projectId'))
+			return $this->setBadRequest("Missing Parameter");
+		if (!$this->checkRoles($user, $request->request->get('projectId'), "event"))
+			return ($this->setNoRightsError());
+
 		return new Response('invite Person To Meeting '.$id.' Success');
 	}
 
@@ -111,6 +135,14 @@ class MeetingController extends Controller
 	 */
 	public function addAlertAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// if (!$request->request->get('projectId'))
+		// 	return $this->setBadRequest("Missing Parameter");
+		// if (!$this->checkRoles($user, $request->request->get('projectId'), "event"))
+		// 	return ($this->setNoRightsError());
+
 		return new Response('add Alert '.$id.' Success');
 	}
 }

@@ -8,12 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\Project;
 use APIBundle\Entity\User;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-class DashboardController extends Controller
+class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
 	 *
@@ -39,6 +40,10 @@ class DashboardController extends Controller
 	 */
 	public function getTeamOccupationAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findTeamOccupation($id));
 	}
 
@@ -66,6 +71,10 @@ class DashboardController extends Controller
 	 */
 	public function getNextMeetingsAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Event')->findNextMeetings($id));
 	}
 
@@ -93,6 +102,10 @@ class DashboardController extends Controller
 	 */
 	public function getProjectsGlobalProgressAction(Request $request, $id)
 	{
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findProjectGlobalProgress($id));
 	}
 
@@ -125,16 +138,20 @@ class DashboardController extends Controller
 	 */
 	public function getProjectCreatorAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('APIBundle:Project')->find($id);
 
 		if ($project === null)
 		{
-			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");
 		}
 
 		$creatorId = $project->getCreatorId();
@@ -143,7 +160,7 @@ class DashboardController extends Controller
 
 		if ($user === null)
 		{
-			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");
 		}
 
 		$userId = $user->getId();
@@ -182,16 +199,19 @@ class DashboardController extends Controller
 	 */
 	public function getProjectBasicInformationsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('APIBundle:Project')->find($id);
 
 		if ($project === null)
 		{
-			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");
 		}
 
 		$name = $project->getName();
@@ -235,16 +255,19 @@ class DashboardController extends Controller
 	 */
 	public function getProjectTasksAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojectId($id);
 
 		if ($tasks === null)
 		{
-			throw new NotFoundHttpException("The task with project id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The task with project id ".$id." doesn't exist");
 		}
 
 		$arr = array();
@@ -297,16 +320,20 @@ class DashboardController extends Controller
 	 */
 	public function getUserBasicInformationsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository('APIBundle:User')->find($id);
 
 		if ($user === null)
 		{
-			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
 		}
 
 		$firstName = $user->getFirstname();
@@ -353,16 +380,19 @@ class DashboardController extends Controller
 	 */
 	public function getProjectPersonsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$projectUsers = $em->getRepository('APIBundle:ProjectUserRole')->findByprojectId($id);
 
 		if ($projectUsers === null)
 		{
-			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");
 		}
 
 		$arr = array();
@@ -387,7 +417,7 @@ class DashboardController extends Controller
 
 				if ($user === null)
 				{
-					throw new NotFoundHttpException("The user with id ".$id." doesn't exist");			
+					throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
 				}
 
 				$firstName = $user->getFirstname();
@@ -429,16 +459,20 @@ class DashboardController extends Controller
 	 */
 	public function getPersonMeetingsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$userEvents = $em->getRepository('APIBundle:EventUser')->findByuserId($id);
 
 		if ($userEvents === null)
 		{
-			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
 		}
 
 		$arr = array();
@@ -492,16 +526,19 @@ class DashboardController extends Controller
 	 */
 	public function getMeetingBasicInformationsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$event = $em->getRepository('APIBundle:Event')->find($id);
 
 		if ($event === null)
 		{
-			throw new NotFoundHttpException("The event with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The event with id ".$id." doesn't exist");
 		}
 
 		$creatorId = $event->getCreatorId();
@@ -517,7 +554,7 @@ class DashboardController extends Controller
 		$user = $em->getRepository('APIBundle:User')->find($creatorId);
 		if ($user === null)
 		{
-			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
 		}
 		$creatorFirstName = $user->getFirstname();
 		$creatorLastName = $user->getLastname();
@@ -525,14 +562,14 @@ class DashboardController extends Controller
 		$project = $em->getRepository('APIBundle:Project')->find($projectId);
 		if ($project === null)
 		{
-			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
 		}
 		$projectName = $project->getName();
 
 		$eventType = $em->getRepository('APIBundle:EventType')->find($typeId);
 		if ($eventType === null)
 		{
-			throw new NotFoundHttpException("The event type with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The event type with id ".$id." doesn't exist");
 		}
 		$typeName = $eventType->getName();
 
@@ -570,16 +607,19 @@ class DashboardController extends Controller
 	 */
 	public function getProjectListAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$projectUserRoles = $em->getRepository('APIBundle:ProjectUserRole')->findByuserId($id);
 
 		if ($projectUserRoles === null)
 		{
-			throw new NotFoundHttpException("The project user role with id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The project user role with id ".$id." doesn't exist");
 		}
 
 		$arr = array();
@@ -646,16 +686,19 @@ class DashboardController extends Controller
 	 */
 	public function getTasksStatusAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojectId($id);
 
 		if ($tasks === null)
 		{
-			throw new NotFoundHttpException("The task with project id ".$id." doesn't exist");			
+			throw new NotFoundHttpException("The task with project id ".$id." doesn't exist");
 		}
 
 		$arr = array();
@@ -670,7 +713,7 @@ class DashboardController extends Controller
 
 			if ($taskTag === null)
 			{
-				throw new NotFoundHttpException("The task tag id ".$id." doesn't exist");			
+				throw new NotFoundHttpException("The task tag id ".$id." doesn't exist");
 			}
 
 			$tagId = $taskTag->getTagId();
@@ -678,7 +721,7 @@ class DashboardController extends Controller
 
 			if ($tag === null)
 			{
-				throw new NotFoundHttpException("The tag id ".$id." doesn't exist");			
+				throw new NotFoundHttpException("The tag id ".$id." doesn't exist");
 			}
 
 			$tagName = $tag->getName();
@@ -686,7 +729,7 @@ class DashboardController extends Controller
 			$arr["Status ".$i] = array("task_id" => $taskId, "status" => $tagName);
 			$i++;
 		}
-		return new JsonResponse($arr);		
+		return new JsonResponse($arr);
 	}
 
 	/**
@@ -718,16 +761,19 @@ class DashboardController extends Controller
 	 */
 	public function getNumberTimelineMessagesAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$timelineMessages = $em->getRepository('APIBundle:TimelineMessage')->findBytimelineId($id);
 
 		if ($timelineMessages === null)
 		{
-			throw new NotFoundHttpException("The're no messages for the timeline with id ".$id);			
+			throw new NotFoundHttpException("The're no messages for the timeline with id ".$id);
 		}
 
 		$messageCount = 0;
@@ -767,16 +813,19 @@ class DashboardController extends Controller
 	 */
 	public function getNumberBugsAction(Request $request, $id)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$bugs = $em->getRepository('APIBundle:Bug')->findByprojectId($id);
 
 		if ($bugs === null)
 		{
-			throw new NotFoundHttpException("The're no bugs for the project with id ".$id);			
+			throw new NotFoundHttpException("The're no bugs for the project with id ".$id);
 		}
 
 		$bugCount = 0;
@@ -822,16 +871,19 @@ class DashboardController extends Controller
 	 */
 	public function getPersonOccupationAction(Request $request, $idPerson, $idProject)
 	{
-		$method = $request->getMethod();
-		if ($method != "GET")
-			return header("HTTP/1.0 404 Not Found", True, 404);
+		$user = $this->checkToken($request->request->get('_token'));
+		if (!$user)
+			return ($this->setBadTokenError());
+		// $method = $request->getMethod();
+		// if ($method != "GET")
+		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojectId($idProject);
 
 		if ($tasks === null)
 		{
-			throw new NotFoundHttpException("The're no tasks for the project with id ".$idProject);			
+			throw new NotFoundHttpException("The're no tasks for the project with id ".$idProject);
 		}
 
 		$taskUserRepository = $em->getRepository('APIBundle:TaskUser');
@@ -845,7 +897,7 @@ class DashboardController extends Controller
 
 			if ($taskUsers === null)
 			{
-				throw new NotFoundHttpException("The're no user for the task with id ".$taskId);			
+				throw new NotFoundHttpException("The're no user for the task with id ".$taskId);
 			}
 
 			foreach ($taskUsers as $taskUser){
@@ -859,7 +911,7 @@ class DashboardController extends Controller
 		}
 		if ($busy == true)
 		{
-			return new JsonResponse(array("occupation" => "busy"));	
+			return new JsonResponse(array("occupation" => "busy"));
 		}
 		return new JsonResponse(array("occupation" => "free"));
 	}
