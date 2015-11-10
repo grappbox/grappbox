@@ -350,7 +350,7 @@ class CloudController extends Controller
   /**
 	 *
 	 * @api {get} /V1/API/Cloud/getList/:token/:idProject/:path/[:passwordSafe] "Download a file"
-	 * @apiDescription This method is there to start a download.
+	 * 
    * @apiGroup Cloud
    * @apiName List directory
    * @apiParam {string} token The token of authenticated user.
