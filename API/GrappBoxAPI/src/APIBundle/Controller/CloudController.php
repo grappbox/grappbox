@@ -17,18 +17,7 @@ use League\Flysystem\Filesystem;
 
 //use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-/**
- *  @IgnoreAnnotation("apiName")
- *  @IgnoreAnnotation("apiDescription")
- *  @IgnoreAnnotation("apiGroup")
- *  @IgnoreAnnotation("apiVersion")
- *  @IgnoreAnnotation("apiSuccess")
- *  @IgnoreAnnotation("apiSuccessExample")
- *  @IgnoreAnnotation("apiError")
- *  @IgnoreAnnotation("apiErrorExample")
- *  @IgnoreAnnotation("apiParam")
- *  @IgnoreAnnotation("apiParamExample")
- */
+
 
 class CurlRequest {
      protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
@@ -110,6 +99,19 @@ class CurlRequest {
       return $this->_webpage;
    }
 }
+
+/**
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ */
 
 class CloudController extends Controller
 {
@@ -350,7 +352,7 @@ class CloudController extends Controller
   /**
 	 *
 	 * @api {get} /V1/API/Cloud/getList/:token/:idProject/:path/[:passwordSafe] "Download a file"
-	 * 
+	 * @apiDescription This method is there to start a download.
    * @apiGroup Cloud
    * @apiName List directory
    * @apiParam {string} token The token of authenticated user.
