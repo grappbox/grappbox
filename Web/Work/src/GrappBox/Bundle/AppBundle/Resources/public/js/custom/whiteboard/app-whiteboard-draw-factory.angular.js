@@ -50,7 +50,7 @@ app.factory("whiteboardRendererFactory", function() {
     canvasContext.lineWidth = data.toolLineWidth;
     canvasContext.rect(data.toolStartX, data.toolStartY, data.toolWidth, data.toolHeight);
 
-    if (data.fillShape)
+    if (data.toolIsFillShapeEnabled)
       canvasContext.fill();
 
     canvasContext.stroke();
@@ -64,7 +64,7 @@ app.factory("whiteboardRendererFactory", function() {
     canvasContext.lineWidth = data.toolLineWidth;
     canvasContext.arc(data.toolStartX, data.toolStartY, data.toolRadius, 0, Math.PI * 2, false);
 
-    if (data.fillShape)
+    if (data.toolIsFillShapeEnabled)
       canvasContext.fill();
 
     canvasContext.stroke();
@@ -121,7 +121,7 @@ app.factory("whiteboardRendererFactory", function() {
       canvasContext = context;
     },
 
-    undoCanvasAction: function () {
+    undoLastCanvasAction: function () {
       canvasBuffer.pop();   
     }
   };
