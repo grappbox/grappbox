@@ -49,21 +49,23 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /User/basicInformations/:id Request the basic informations of a user
+	* @api {get} /V1/API/User/basicInformations/:id Request the basic informations of a user
 	* @apiName getBasicInformations
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
+	*
+	* @apiParam {String} _token token of the person connected
 	*
 	* @apiSuccess {String} first_name First name of the person
 	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
+	* @apiSuccess {Datetime} [birthday] Birthday of the person
+	* @apiSuccess {Text} [avatar] Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
+	* @apiSuccess {Number} [phone] Phone number of the person
+	* @apiSuccess {String} [country] Country the person in living in
+	* @apiSuccess {String} [linkedin] Linkedin of the person
+	* @apiSuccess {String} [viadeo] Viadeo of the person
+	* @apiSuccess {String} [twitter] Twitter of the person
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -105,30 +107,32 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /User/basicInformations/:id Update the basic informations of a user
+	* @api {put} /V1/API/User/basicInformations/:id Update the basic informations of a user
 	* @apiName putBasicInformations
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
 	*
-	* @apiParam {String} first_name First name of the person
-	* @apiParam {String} last_name Last name of the person
-	* @apiParam {Datetime} birthday Birthday of the person
-	* @apiParam {Text} avatar Avatr of the person
-	* @apiParam {String} email Email of the person
-	* @apiParam {Number} phone Phone number of the person
-	* @apiParam {String} country Country the person in living in
-	* @apiParam {String} linkedin Linkedin of the person
-	* @apiParam {String} viadeo Viadeo of the person
-	* @apiParam {String} twitter Twitter of the person
+	* @apiParam {String} _token Token of the person connected
+	* @apiParam {String} [first_name] First name of the person
+	* @apiParam {String} [last_name] Last name of the person
+	* @apiParam {Datetime} [birthday] Birthday of the person
+	* @apiParam {Text} [avatar] Avatr of the person
+	* @apiParam {String} [email] Email of the person
+	* @apiParam {Number} [phone] Phone number of the person
+	* @apiParam {String} [country] Country the person in living in
+	* @apiParam {String} [linkedin] Linkedin of the person
+	* @apiParam {String} [viadeo] Viadeo of the person
+	* @apiParam {String} [twitter] Twitter of the person
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
+	*		"_token": "f1a3f1ea35fae31f"
 	*		"first_name": "John",
 	*		"last_name": "Doe",
 	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
+	*		"email": "john.doe@gmail.com",
+	*		"phone": +33984231475,
 	*		"country": "France",
 	*		"linkedin": "linkedin.com/john.doe",
 	*		"viadeo": "viadeo.com/john.doe",
@@ -216,10 +220,12 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /User/password/:id Request the password of a user
+	* @api {get} /V1/API/User/password/:id Request the password of a user
 	* @apiName getPassword
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
+	*
+	* @apiParam {String} _token Token of the person connected
 	*
 	* @apiSuccess {String} password Person's password
 	*
@@ -242,15 +248,17 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /User/password/:id Update the password of a user
+	* @api {put} /V1/API/User/password/:id Update the password of a user
 	* @apiName putPassword
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
 	*
+	* @apiParam {String} _token Token of the person connected
 	* @apiParam {String} password The new password
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
+	*		"_token": "12f3qef13eqf1",
 	*		"password": "TarteAuxPommes"
 	* 	}
 	*
@@ -278,17 +286,17 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /User/getIdByName/:firstName.:lastName Request the user Id with the first and last name
+	* @api {get} /V1/API/User/getIdByName/:firstName.:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Array} [User n] array of n persons
-	* @apiSuccess {Number} [User n].id id of the person
-	* @apiSuccess {String} [User n].first_name First name of the person
-	* @apiSuccess {String} [User n].last_name Last name of the person
+	* @apiSuccess {Object[]} "User n" array of n persons
+	* @apiSuccess {Number} "User n".id id of the person
+	* @apiSuccess {String} "User n".first_name First name of the person
+	* @apiSuccess {String} "User n".last_name Last name of the person
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -313,29 +321,26 @@ class UserController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:User')->findUserByName($firstname, $lastname));
 	}
 
 	/**
-	* @api {get} /User/getNextMeetings/:id Request the next meetings of a user
+	* @api {get} /V1/API/User/getNextMeetings/:id Request the next meetings of a user
 	* @apiName getNextMeetings
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Array} [Meeting n] array of n meeting
-	* @apiSuccess {String} [Meeting n].project_name Name of the project
-	* @apiSuccess {String} [Meeting n].project_logo Logo of the project
-	* @apiSuccess {String} [Meeting n].event_type Type of meeting
-	* @apiSuccess {String} [Meeting n].event_title Title of the meeting
-	* @apiSuccess {String} [Meeting n].event_description Description of the event
-	* @apiSuccess {Datetime} [Meeting n].event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} [Meeting n].event_end_date Date of meeting's ending
+	* @apiSuccess {Object[]} "Meeting n" array of n meeting
+	* @apiSuccess {String} "Meeting n".project_name Name of the project
+	* @apiSuccess {String} "Meeting n".project_logo Logo of the project
+	* @apiSuccess {String} "Meeting n".event_type Type of meeting
+	* @apiSuccess {String} "Meeting n".event_title Title of the meeting
+	* @apiSuccess {String} "Meeting n".event_description Description of the event
+	* @apiSuccess {Datetime} "Meeting n".event_begin_date Date of the begining of the meeting
+	* @apiSuccess {Datetime} "Meeting n".event_end_date Date of meeting's ending
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -374,29 +379,26 @@ class UserController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Event')->findNextMeetings($id));
 	}
 
 	/**
-	* @api {get} /User/getProjects/:id Request the user's projects with the user's id
+	* @api {get} /V1/API/User/getProjects/:id Request the user's projects with the user's id
 	* @apiName getProjects
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Array} [Project n] array of n project
-	* @apiSuccess {Number} [Project n].project_id id of the project
-	* @apiSuccess {String} [Project n].project_name Name of the project
-	* @apiSuccess {String} [Project n].project_description Description of the project
-	* @apiSuccess {String} [Project n].project_logo Logo of the project
-	* @apiSuccess {String} [Project n].contact_mail Mail for the project
-	* @apiSuccess {String} [Project n].facebook Facebook of the project
-	* @apiSuccess {String} [Project n].twitter Twitter of the project
+	* @apiSuccess {Object[]} "Project n" array of n project
+	* @apiSuccess {Number} "Project n".project_id id of the project
+	* @apiSuccess {String} "Project n".project_name Name of the project
+	* @apiSuccess {String} "Project n".project_description Description of the project
+	* @apiSuccess {String} "Project n".project_logo Logo of the project
+	* @apiSuccess {String} "Project n".contact_mail Mail for the project
+	* @apiSuccess {String} "Project n".facebook Facebook of the project
+	* @apiSuccess {String} "Project n".twitter Twitter of the project
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -425,31 +427,28 @@ class UserController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findUserProjects($id));
 	}
 
 	/**
-	* @api {get} /User/getAllTasks/:id Request the user's tasks with the user's id
+	* @api {get} /V1/API/User/getAllTasks/:id Request the user's tasks with the user's id
 	* @apiName getAllTasks
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Array} [Task n] array of n project
-	* @apiSuccess {Number} [Task n].task_id id of the task
-	* @apiSuccess {String} [Task n].task_title title of the task
-	* @apiSuccess {String} [Task n].description Description of the task
-	* @apiSuccess {Number} [Task n].project_id Project id link to the task
-	* @apiSuccess {String} [Task n].project_name Project's name
-	* @apiSuccess {Datetime} [Task n].due_date Due date for the task
-	* @apiSuccess {Datetime} [Task n].started_at Begining of the task
-	* @apiSuccess {Datetime} [Task n].finished_at Task finished date
-	* @apiSuccess {Datetime} [Task n].created_at Date of creation of the task
+	* @apiSuccess {Object[]} "Task n" array of n project
+	* @apiSuccess {Number} "Task n".task_id id of the task
+	* @apiSuccess {String} "Task n".task_title title of the task
+	* @apiSuccess {String} "Task n".description Description of the task
+	* @apiSuccess {Number} "Task n".project_id Project id link to the task
+	* @apiSuccess {String} "Task n".project_name Project's name
+	* @apiSuccess {Datetime} "Task n".due_date Due date for the task
+	* @apiSuccess {Datetime} "Task n".started_at Begining of the task
+	* @apiSuccess {Datetime} "Task n".finished_at Task finished date
+	* @apiSuccess {Datetime} "Task n".created_at Date of creation of the task
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -480,31 +479,28 @@ class UserController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserAllTasks($id));
 	}
 
 	/**
-	* @api {get} /User/getCurrentAndNextTasks/:id Request the user's current and next tasks with the user's id
+	* @api {get} /V1/API/User/getCurrentAndNextTasks/:id Request the user's current and next tasks with the user's id
 	* @apiName getCurrentAndNextTasks
 	* @apiGroup Users
-	* @apiVersion 1.0.0
+	* @apiVersion 0.0.1
 	*
 	* @apiParam {string} _token user's authentication token
 	* 
-	* @apiSuccess {Array} [Task n] array of n project
-	* @apiSuccess {Number} [Task n].task_id id of the task
-	* @apiSuccess {String} [Task n].task_title title of the task
-	* @apiSuccess {String} [Task n].description Description of the task
-	* @apiSuccess {Number} [Task n].project_id Project id link to the task
-	* @apiSuccess {String} [Task n].project_name Project's name
-	* @apiSuccess {Datetime} [Task n].due_date Due date for the task
-	* @apiSuccess {Datetime} [Task n].started_at Begining of the task
-	* @apiSuccess {Datetime} [Task n].finished_at Task finished date
-	* @apiSuccess {Datetime} [Task n].created_at Date of creation of the task
+	* @apiSuccess {Object[]} "Task n" array of n project
+	* @apiSuccess {Number} "Task n".task_id id of the task
+	* @apiSuccess {String} "Task n".task_title title of the task
+	* @apiSuccess {String} "Task n".description Description of the task
+	* @apiSuccess {Number} "Task n".project_id Project id link to the task
+	* @apiSuccess {String} "Task n".project_name Project's name
+	* @apiSuccess {Datetime} ["ask n]"due_date Due date for the task
+	* @apiSuccess {Datetime} "Task n".started_at Begining of the task
+	* @apiSuccess {Datetime} "Task n".finished_at Task finished date
+	* @apiSuccess {Datetime} "Task n".created_at Date of creation of the task
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -535,9 +531,6 @@ class UserController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserCurrentAndNextTasks($id));
 	}
