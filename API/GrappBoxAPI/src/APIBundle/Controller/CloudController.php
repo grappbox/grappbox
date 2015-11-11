@@ -181,7 +181,7 @@ class CloudController extends Controller
    *      "stream_id" : 1
    *    }
    * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
    /**
  	 *
@@ -213,7 +213,7 @@ class CloudController extends Controller
     *      "infos" : "OK"
     *    }
     * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-    * @apiVersion 1
+    * @apiVersion 0.0.1
  	 */
 	public function streamAction(Request $request){
 		$method = $request->getMethod();
@@ -328,7 +328,7 @@ class CloudController extends Controller
    *      "infos" : "OK"
    *    }
    * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
 	public function sendFileAction(Request $request){
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
@@ -368,7 +368,7 @@ class CloudController extends Controller
    *      "infos" : "OK"
    *    }
    * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
 	public function getListAction($token, $idProject, $path, $password, Request $request)
 	{
@@ -426,7 +426,7 @@ class CloudController extends Controller
    *      "infos" : "OK"
    *    }
    * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
 	public function getFileAction($cloudPath, $token, $idProject, $password = null, $passwordSafe = null, Request $request){
     $userId = $this->getUserId($token);
@@ -492,7 +492,7 @@ class CloudController extends Controller
    *      "infos" : "OK"
    *    }
    * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
 	public function setSafePassAction(Request $request)
 	{
@@ -530,7 +530,7 @@ class CloudController extends Controller
    *    {
    *      "infos" : "OK"
    *    }
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
   public function createCloudAction($projectId, Request $request)
   {
@@ -575,7 +575,7 @@ class CloudController extends Controller
    *      "infos" : "OK"
    *    }
    * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
 	public function delAction(Request $request)
 	{
@@ -636,7 +636,7 @@ class CloudController extends Controller
    *      "infos" : "OK"
    *    }
    * @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-   * @apiVersion 1
+   * @apiVersion 0.0.1
 	 */
 	public function createDirAction(Request $request)
 	{
