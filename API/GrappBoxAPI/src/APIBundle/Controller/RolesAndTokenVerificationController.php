@@ -91,18 +91,18 @@ class RolesAndTokenVerificationController extends Controller
   *
   * @apiParamExample {json} Request-Example:
   * 	{
-  *		"_token": "aeqf231ced651qcd",
-  *		"projectId": 1,
-  *		"name": "Admin",
-  *		"teamTimeline": 1,
-  *		"customerTimeline": 1,
-  *		"gantt": 1,
-  *		"whiteboard": 1,
-  *		"bugtracker": 1,
-  *		"event": 1,
-  *		"task": 1,
-  *		"projectSettings": 1,
-  *		"cloud": 1
+  *			"_token": "aeqf231ced651qcd",
+  *			"projectId": 1,
+  *			"name": "Admin",
+  *			"teamTimeline": 1,
+  *			"customerTimeline": 1,
+  *			"gantt": 1,
+  *			"whiteboard": 1,
+  *			"bugtracker": 1,
+  *			"event": 1,
+  *			"task": 1,
+  *			"projectSettings": 1,
+  *			"cloud": 1
   * 	}
   *
   * @apiSuccess {Number} roleId Id of the role created
@@ -394,10 +394,10 @@ class RolesAndTokenVerificationController extends Controller
   *
   * @apiParamExample {json} Request-Example:
   * 	{
-  *		"_token": "aeqf231ced651qcd",
-  *		"projectId": 1,
-  *		"roleId": 2,
-  *		"purId": 1
+  *			"_token": "aeqf231ced651qcd",
+  *			"projectId": 1,
+  *			"roleId": 2,
+  *			"purId": 1
   * 	}
   *
   * @apiSuccess message Update of the project user role success.
@@ -453,9 +453,9 @@ class RolesAndTokenVerificationController extends Controller
   *
   * @apiParamExample {json} Request-Example:
   * 	{
-  *		"_token": "aeqf231ced651qcd",
-  *		"projectId": 1,
-  *		"purId": 1
+  *			"_token": "aeqf231ced651qcd",
+  *			"projectId": 1,
+  *			"purId": 1
   * 	}
   *
   * @apiSuccess message Update of the project user role success.

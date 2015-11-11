@@ -293,10 +293,10 @@ class UserController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Object[]} "User n" array of n persons
-	* @apiSuccess {Number} "User n".id id of the person
-	* @apiSuccess {String} "User n".first_name First name of the person
-	* @apiSuccess {String} "User n".last_name Last name of the person
+	* @apiSuccess {Object[]} User array of n persons
+	* @apiSuccess {Number} User.id id of the person
+	* @apiSuccess {String} User.first_name First name of the person
+	* @apiSuccess {String} User.last_name Last name of the person
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -333,14 +333,14 @@ class UserController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Object[]} "Meeting n" array of n meeting
-	* @apiSuccess {String} "Meeting n".project_name Name of the project
-	* @apiSuccess {String} "Meeting n".project_logo Logo of the project
-	* @apiSuccess {String} "Meeting n".event_type Type of meeting
-	* @apiSuccess {String} "Meeting n".event_title Title of the meeting
-	* @apiSuccess {String} "Meeting n".event_description Description of the event
-	* @apiSuccess {Datetime} "Meeting n".event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} "Meeting n".event_end_date Date of meeting's ending
+	* @apiSuccess {Object[]} Meeting array of n meeting
+	* @apiSuccess {String} Meeting.project_name Name of the project
+	* @apiSuccess {String} Meeting.project_logo Logo of the project
+	* @apiSuccess {String} Meeting.event_type Type of meeting
+	* @apiSuccess {String} Meeting.event_title Title of the meeting
+	* @apiSuccess {String} Meeting.event_description Description of the event
+	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
+	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -391,14 +391,14 @@ class UserController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Object[]} "Project n" array of n project
-	* @apiSuccess {Number} "Project n".project_id id of the project
-	* @apiSuccess {String} "Project n".project_name Name of the project
-	* @apiSuccess {String} "Project n".project_description Description of the project
-	* @apiSuccess {String} "Project n".project_logo Logo of the project
-	* @apiSuccess {String} "Project n".contact_mail Mail for the project
-	* @apiSuccess {String} "Project n".facebook Facebook of the project
-	* @apiSuccess {String} "Project n".twitter Twitter of the project
+	* @apiSuccess {Object[]} Project array of n project
+	* @apiSuccess {Number} Project.project_id id of the project
+	* @apiSuccess {String} Project.project_name Name of the project
+	* @apiSuccess {String} Project.project_description Description of the project
+	* @apiSuccess {String} Project.project_logo Logo of the project
+	* @apiSuccess {String} Project.contact_mail Mail for the project
+	* @apiSuccess {String} Project.facebook Facebook of the project
+	* @apiSuccess {String} Project.twitter Twitter of the project
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -439,16 +439,16 @@ class UserController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {string} _token user's authentication token
 	*
-	* @apiSuccess {Object[]} "Task n" array of n project
-	* @apiSuccess {Number} "Task n".task_id id of the task
-	* @apiSuccess {String} "Task n".task_title title of the task
-	* @apiSuccess {String} "Task n".description Description of the task
-	* @apiSuccess {Number} "Task n".project_id Project id link to the task
-	* @apiSuccess {String} "Task n".project_name Project's name
-	* @apiSuccess {Datetime} "Task n".due_date Due date for the task
-	* @apiSuccess {Datetime} "Task n".started_at Begining of the task
-	* @apiSuccess {Datetime} "Task n".finished_at Task finished date
-	* @apiSuccess {Datetime} "Task n".created_at Date of creation of the task
+	* @apiSuccess {Object[]} Task array of n project
+	* @apiSuccess {Number} Task.task_id id of the task
+	* @apiSuccess {String} Task.task_title title of the task
+	* @apiSuccess {String} Task.description Description of the task
+	* @apiSuccess {Number} Task.project_id Project id link to the task
+	* @apiSuccess {String} Task.project_name Project's name
+	* @apiSuccess {Datetime} Task.due_date Due date for the task
+	* @apiSuccess {Datetime} Task.started_at Begining of the task
+	* @apiSuccess {Datetime} Task.finished_at Task finished date
+	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -491,16 +491,16 @@ class UserController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {string} _token user's authentication token
 	* 
-	* @apiSuccess {Object[]} "Task n" array of n project
-	* @apiSuccess {Number} "Task n".task_id id of the task
-	* @apiSuccess {String} "Task n".task_title title of the task
-	* @apiSuccess {String} "Task n".description Description of the task
-	* @apiSuccess {Number} "Task n".project_id Project id link to the task
-	* @apiSuccess {String} "Task n".project_name Project's name
-	* @apiSuccess {Datetime} ["ask n]"due_date Due date for the task
-	* @apiSuccess {Datetime} "Task n".started_at Begining of the task
-	* @apiSuccess {Datetime} "Task n".finished_at Task finished date
-	* @apiSuccess {Datetime} "Task n".created_at Date of creation of the task
+	* @apiSuccess {Object[]} Task array of n project
+	* @apiSuccess {Number} Task.task_id id of the task
+	* @apiSuccess {String} Task.task_title title of the task
+	* @apiSuccess {String} Task.description Description of the task
+	* @apiSuccess {Number} Task.project_id Project id link to the task
+	* @apiSuccess {String} Task.project_name Project's name
+	* @apiSuccess {Datetime} Task.due_date Due date for the task
+	* @apiSuccess {Datetime} Task.started_at Begining of the task
+	* @apiSuccess {Datetime} Task.finished_at Task finished date
+	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
