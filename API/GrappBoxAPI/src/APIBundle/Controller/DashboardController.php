@@ -12,32 +12,75 @@ use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\Project;
 use APIBundle\Entity\User;
 
-//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-
+/**
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ */
 class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get team occupation for all project the person is the creator",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the person you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: project_name, first_name, last_name, occupation, number_of_tasks, number_of_ongoing_tasks, occupation_percent"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getTeamOccupation/:id Get a team occupation
+  	* @apiName getTeamOccupation
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.1
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Person Array of persons
+  	* @apiSuccess {String} Person.project_name Name of the project
+  	* @apiSuccess {String} Person.first_name First name of the person
+  	* @apiSuccess {String} Person.last_name Last name of the person
+  	* @apiSuccess {String} Person.occupation Occupation of the person
+  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
+  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Person 1":
+  	*		{
+	*			"project_name": "Grappbox",
+	*			"first_name": "John",
+	*			"last_name": "Doe",
+	*			"occupation": "Busy",
+	*			"number_of_tasks_begun": 2,
+	*			"number_of_ongoing_tasks": 3
+  	*		},
+  	*		"Person 2":
+  	*		{
+	*			"project_name": "Grappbox",
+	*			"first_name": "Thierry",
+	*			"last_name": "Doe",
+	*			"occupation": "Free",
+	*			"number_of_tasks_begun": 0,
+	*			"number_of_ongoing_tasks": 0
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"No projects for the id X"
+	* 	}
+  	*
+  	*/
 	public function getTeamOccupationAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
@@ -48,27 +91,84 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get a person next meetings",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the person you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: project_name, project_logo, event_type, event_title, event_description, event_begin_date, event_end_date"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getNextMeetings/:id Get a person next meetings
+  	* @apiName getNextMeetings
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.1
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Event Array of events
+  	* @apiSuccess {String} Event.project_name Name of the project
+  	* @apiSuccess {String} Event.project_logo Logo of the project
+  	* @apiSuccess {String} Event.event_type Type of the event
+  	* @apiSuccess {String} Event.event_title Title of the event
+  	* @apiSuccess {String} Event.event_description Description of the event
+  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
+  	* @apiSuccess {Date} Event.event_end_date End date of the event
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Event 1":
+  	*		{
+	*			"project_name": "Grappbox",
+	*			"project_logo": "data logo...",
+	*			"event_type": "Client",
+	*			"event_title": "Présentation du projet",
+	*			"event_description": "Présentation du projet grappbox au client",
+	*			"event_begin_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"event_end_date":
+	*			{
+	*				"date":"2015-10-15 16:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			}
+  	*		},
+  	*		"Event 2":
+  	*		{
+	*			"project_name": "",
+	*			"project_logo": "",
+	*			"event_type": "Personnel",
+	*			"event_title": "RDV dentiste",
+	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
+	*			"event_begin_date":
+	*			{
+	*				"date":"2015-10-17 11:30:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"event_end_date":
+	*			{
+	*				"date":"2015-10-17 12:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			}
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No event found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"No events for the id  X"
+	* 	}
+  	*
+  	*/
 	public function getNextMeetingsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
@@ -79,27 +179,64 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get the global progress for all project of the person",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the person you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: project_name, project_description, project_logo, contact_mail, facebook, twitter, number_finished_tasks, number_tasks, number_bugs, number_messages"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getProjectsGlobalProgress/:id Get the global progress of the projects of a user
+  	* @apiName getProjectsGlobalProgress
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.1
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Project Array of projects
+  	* @apiSuccess {Number} Project.project_id Id of the project
+  	* @apiSuccess {String} Project.project_name Name of the project
+  	* @apiSuccess {String} Project.project_description Description of the project
+  	* @apiSuccess {String} Project.project_logo Logo of the project
+  	* @apiSuccess {String} Project.contact_mail Contact mail of the project
+  	* @apiSuccess {String} Project.facebook Facebook of the project
+  	* @apiSuccess {String} Project.twitter Twitter of the project
+  	* @apiSuccess {Number} Project.number_finished_tasks Number of finished tasks
+  	* @apiSuccess {Number} Project.number_ongoing_tasks Number of ongoing tasks
+  	* @apiSuccess {Number} Project.number_tasks Total number of tasks
+  	* @apiSuccess {Number} Project.number_bugs Number of bugs
+  	* @apiSuccess {Number} Project.number_messages Number of messages
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Project 1":
+  	*		{
+  	*			"project_id": 1,
+	*			"project_name": "Grappbox",
+	*			"project_description": "Grappbox est un projet de gestion de projet",
+	*			"project_logo": "data logo...",
+	*			"contact_mail": "contact@grappbox.com",
+	*			"facebook": "http://facebook.com/Grappbox",
+	*			"twitter": "http://twitter.com/Grappbox",
+	*			"number_finished_tasks": 58,
+	*			"number_ongoing_tasks": 10,
+	*			"number_tasks": 600,
+	*			"number_bugs": 10,
+	*			"number_messages": 150
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"No projects for the id  X"
+	* 	}
+  	*
+  	*/
 	public function getProjectsGlobalProgressAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
@@ -110,41 +247,53 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get project creator",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the project you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: creator_id, first_name, last_name"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getProjectCreator/:id Get a project creator
+  	* @apiName getProjectCreator
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Number} project_id Id of the project creator
+  	* @apiSuccess {String} first_name First name of the project creator
+  	* @apiSuccess {String} last_name Last name of the project creator
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"creator_id": 5,
+	*		"first_name": "John",
+	*		"last_name": "Doe"
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The creator user with id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getProjectCreatorAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('APIBundle:Project')->find($id);
@@ -160,10 +309,9 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		if ($user === null)
 		{
-			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");
+			throw new NotFoundHttpException("The creator user with id ".$id." doesn't exist");
 		}
 
-		$userId = $user->getId();
 		$firstName = $user->getFirstname();
 		$lastName = $user->getLastname();
 
@@ -171,40 +319,60 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get project basic informations",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the project you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: name, description, logo, contact_mail, facebook, twitter, creation_date"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getProjectBasicInformations/:id Get a project basic informations
+  	* @apiName getProjectBasicInformations
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {String} name Name of the project
+  	* @apiSuccess {String} description Description of the project
+  	* @apiSuccess {String} logo Logo of the project
+  	* @apiSuccess {String} contact_mail Contact mail of the project
+  	* @apiSuccess {String} facebook Facebook of the project
+  	* @apiSuccess {String} twitter Twitter of the project
+  	* @apiSuccess {Date} creation_date Creation date of the project
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"name": "Grappbox",
+	*		"description": "Grappbox est un projet de gestion de projet",
+	*		"logo": "logo data",
+	*		"contact_mail": "contact@grappbox.com",
+	*		"facebook": "http://facebook.com/Grappbox",
+	*		"twitter": "http://twitter.com/Grappbox",
+	*		"creation_date":
+	*		{
+	*			"date":"2015-10-15 11:00:00",
+	*			"timezone_type":3,
+	*			"timezone":"Europe\/Paris"
+	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getProjectBasicInformationsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('APIBundle:Project')->find($id);
@@ -227,47 +395,93 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get project tasks",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the project you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array of 'Task n' array containing: creator_id, title, description, due_date, started_at, finished_at, created_at, deleted_at"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getProjectTasks/:id Get a project tasks
+  	* @apiName getProjectTasks
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Task Array of tasks
+  	* @apiSuccess {Number} Task.creator_id Creator id of the task
+  	* @apiSuccess {String} Task.title Title of the task
+  	* @apiSuccess {String} Task.description Description of the task
+  	* @apiSuccess {Date} Task.due_date Due date of the task
+  	* @apiSuccess {Date} Task.started_at Date of the begining of the task
+  	* @apiSuccess {Date} Task.finished_at Date of finishing the task
+  	* @apiSuccess {Date} Task.created_at Date of creation of the task
+  	* @apiSuccess {Date} Task.deleted_at Deletion date of the task
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Task 1":
+  	*		{
+	*			"creator_id": 6,
+	*			"title": "Site vitrine",
+	*			"description": "Faire le site vitrine de Grappbox",
+	*			"due_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"started_at":
+	*			{
+	*				"date":"2015-10-15 16:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"finished_at":
+	*			{
+	*				"date":"2015-10-15 16:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"created_at":
+	*			{
+	*				"date":"2015-10-15 16:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"deleted_at":
+	*			{
+	*				"date":"2015-10-15 16:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			}
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The're no tasks for the project X"
+	* 	}
+  	*
+  	*/
 	public function getProjectTasksAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojectId($id);
 
 		if ($tasks === null)
 		{
-			throw new NotFoundHttpException("The task with project id ".$id." doesn't exist");
+			throw new NotFoundHttpException("The're no tasks for the project ".$id);
 		}
 
 		$arr = array();
@@ -292,41 +506,66 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get user basic informations",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the user you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: first_name, last_name, birthday, avatar, e-mail, phone, country, linkedin, viadeo"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getUserBasicInformations/:id Get a user basic informations
+  	* @apiName getUserBasicInformations
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {String} first_name First name of the user
+  	* @apiSuccess {String} last_name Last name of the user
+  	* @apiSuccess {Date} birthday birthday date
+  	* @apiSuccess {String} avatar avatar of the user
+  	* @apiSuccess {String} email Email of the user
+  	* @apiSuccess {Number} phone Phone number of the user
+  	* @apiSuccess {String} country Country of the user
+  	* @apiSuccess {String} linkedin Linkedin of the user
+  	* @apiSuccess {String} viadeo Viadeo of the user
+  	* @apiSuccess {String} twitter Twitter of the user
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*			"first_name": "John",
+	*			"last_name": "Doe",
+	*			"birthday":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"avatar": "avatar data ...",
+	*			"email": "john.doe@gmail.com",
+	*			"phone": +33631245478,
+	*			"country": "France",
+	*			"linkedin": "http://linkedin.com/John.Doe",
+	*			"viadeo": "http://viadeo.com/John.Doe",
+	*			"twitter": "http://twitter.com/John.Doe"
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getUserBasicInformationsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository('APIBundle:User')->find($id);
@@ -347,45 +586,62 @@ class DashboardController extends RolesAndTokenVerificationController
 		$viadeo = $user->getViadeo();
 		$twitter = $user->getTwitter();
 
-		return new JsonResponse(array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday, "avatar" => $avatar, "e-mail" => $mail,
+		return new JsonResponse(array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday, "avatar" => $avatar, "email" => $mail,
 			"phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get all the persons on a project",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the project you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array of 'Person n' array containing: user_id, first_name, last_name"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getProjectPersons/:id Get all the persons on a project
+  	* @apiName getProjectPersons
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Person Array of persons
+  	* @apiSuccess {Number} Person.user_id User id
+  	* @apiSuccess {String} Person.first_name User first name
+  	* @apiSuccess {String} Person.last_name User last name
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Task 1":
+  	*		{
+	*			"user_id": 6,
+	*			"first_name": "John",
+	*			"last_name": "Doe"
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getProjectPersonsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$projectUsers = $em->getRepository('APIBundle:ProjectUserRole')->findByprojectId($id);
@@ -431,41 +687,55 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get a person meeting",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the person you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array of 'Event n' array containing: event_id, title"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getPersonMeetings/:id Get a person meetings
+  	* @apiName getPersonMeetings
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Event Array of events
+  	* @apiSuccess {Number} Event.event_id Event id
+  	* @apiSuccess {String} Event.title Event title
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Event 1":
+  	*		{
+	*			"event_id": 3,
+	*			"title": "Meeting with the client"
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No event found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The event with id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getPersonMeetingsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$userEvents = $em->getRepository('APIBundle:EventUser')->findByuserId($id);
@@ -498,40 +768,92 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get the basic informations of a meeting",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the meeting you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: creator_first_name, creator_last_name, project_name, event_type, title, description, begin_date, end_date, created_at"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getMeetingBasicInformations/:id Get a meeting basic informations
+  	* @apiName getMeetingBasicInformations
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {String} creator_first_name Creator first name
+  	* @apiSuccess {String} creator_last_name Creator last name
+  	* @apiSuccess {String} project_name Name of the project
+  	* @apiSuccess {String} event_type Type of the event
+  	* @apiSuccess {String} title Event title
+  	* @apiSuccess {String} description Event description
+  	* @apiSuccess {Date} begin_date Date of finishing the task
+  	* @apiSuccess {Date} end_date Deletion date of the task
+  	* @apiSuccess {Date} created_at Date of creation of the task
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*			"creator_first_name": "John,
+	*			"creator_last_naùe": "Doe",
+	*			"project_name": "Grappbox",
+	*			"event_type": "Client",
+	*			"title": "déjeuné client",
+	*			"descriptio,": "déjeuné avec un client potentiel",
+	*			"begin_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"end_date":
+	*			{
+	*				"date":"2015-10-15 16:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"created_at":
+	*			{
+	*				"date":"2015-10-15 16:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No event found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The event with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No event type found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The Event type with id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getMeetingBasicInformationsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$event = $em->getRepository('APIBundle:Event')->find($id);
@@ -562,7 +884,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		$project = $em->getRepository('APIBundle:Project')->find($projectId);
 		if ($project === null)
 		{
-			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
+			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");
 		}
 		$projectName = $project->getName();
 
@@ -577,42 +899,56 @@ class DashboardController extends RolesAndTokenVerificationController
 			"event_type" => $typeName, "title" => $title, "description" => $description, "begin_date" => $beginDate, "end_date" => $endDate, "created_at" => $createdAt));
 	}
 
-
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get a list of project",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the person you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array of 'Project n' array containing: project_id, name"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getProjectList/:id Get a list of projects the user is on
+  	* @apiName getProjectList
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Project Array of projects
+  	* @apiSuccess {Number} Project.project_id Project id
+  	* @apiSuccess {String} Project.name Project name
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Project 1":
+  	*		{
+	*			"project_id": 3,
+	*			"name": "Grappbox"
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project user role found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project user role with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getProjectListAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$projectUserRoles = $em->getRepository('APIBundle:ProjectUserRole')->findByuserId($id);
@@ -658,47 +994,68 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get the status of the tasks",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the project you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array of 'Status n' array containing: task_id, status"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getTasksStatus/:id Get the user tasks status
+  	* @apiName getTasksStatus
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Object[]} Status Array of status
+  	* @apiSuccess {Number} Status.task_id Task id
+  	* @apiSuccess {String} Status.status Status of the task
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"Status 1":
+  	*		{
+	*			"task_id": 3,
+	*			"status": "Doing"
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No task found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The're no tasks for the project with id X"
+	* 	}
+	*
+	* @apiErrorExample No task tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The task tag id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag id X doesn't exist"
+	* 	}
+  	*
+  	*/
 	public function getTasksStatusAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojectId($id);
 
 		if ($tasks === null)
 		{
-			throw new NotFoundHttpException("The task with project id ".$id." doesn't exist");
+			throw new NotFoundHttpException("The're no tasks for the project with id ".$id);
 		}
 
 		$arr = array();
@@ -733,40 +1090,43 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get the number of messages on a timeline",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the timeline you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: message_number"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getNumberTimelineMessages/:id Get the number of timeline messages
+  	* @apiName getNumberTimelineMessages
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Number} message_number Number of messages in a timeline 
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"bmessage_number": 10
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No messages found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The're no messages for the timeline with id X"
+	* 	}
+  	*
+  	*/
 	public function getNumberTimelineMessagesAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$timelineMessages = $em->getRepository('APIBundle:TimelineMessage')->findBytimelineId($id);
@@ -785,40 +1145,43 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get the number of bugs",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="id",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the project you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: bug_number"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getNumberBugs/:id Get the number of bugs for a project
+  	* @apiName getNumberBugs
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {Number} bug_number Number of bugs 
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"bug_number": 10
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No bugs found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The're no bugs for the project with id X"
+	* 	}
+  	*
+  	*/
 	public function getNumberBugsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$bugs = $em->getRepository('APIBundle:Bug')->findByprojectId($id);
@@ -837,46 +1200,49 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	 *
-	 * @ApiDoc(
-	 * resource=true,
-	 * description="get a person occupation",
-	 * views = { "dashboard" },
-  	 * requirements={
-     *      {
-     *          "name"="request",
-     *          "dataType"="Request",
-     *          "description"="The request object"
-     *      },
-     *      {
-     *          "name"="idPerson",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the person you want",
-     *          "requirement"="\d+"
-     *      },
-     *      {
-     *          "name"="idProject",
-     *          "dataType"="integer",
-     *          "description"="The id corresponding to the project you want",
-     *          "requirement"="\d+"
-     *      },
-     *		{
-     *          "name"="return",
-     *          "dataType"="array",
-     *          "description"="array containing: occupation"
-     *		}
-     *  }
-	 * )
-	 *
-	 */
+  	* @api {get} /V1/API/Dashboard/getPersonOccupation/:idPerson.:idProject Get a user occupation
+  	* @apiName getPersonOccupation
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.0.0
+  	*
+  	* @apiParam {String} _token Token of the person connected
+  	*
+  	* @apiParamExample {json} Request-Example:
+  	* 	{
+  	*			"_token": "aeqf231ced651qcd"
+  	* 	}
+  	*
+  	* @apiSuccess {String} occupation Occupation of the user 
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"occupation": "busy"
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No tasks found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The're no tasks for the project with id X"
+	* 	}
+	*
+	* @apiErrorExample No task user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The're no task user for the task with id X"
+	* 	}
+  	*
+  	*/
 	public function getPersonOccupationAction(Request $request, $idPerson, $idProject)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
 			return ($this->setBadTokenError());
-		// $method = $request->getMethod();
-		// if ($method != "GET")
-		// 	return header("HTTP/1.0 404 Not Found", True, 404);
 
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojectId($idProject);
@@ -897,7 +1263,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 			if ($taskUsers === null)
 			{
-				throw new NotFoundHttpException("The're no user for the task with id ".$taskId);
+				throw new NotFoundHttpException("The're no task user for the task with id ".$taskId);
 			}
 
 			foreach ($taskUsers as $taskUser){

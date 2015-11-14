@@ -22,6 +22,11 @@ class ProjectRepository extends EntityRepository
 		$i = 0;
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
+		if ($projects === null)
+		{
+			throw new NotFoundHttpException("No projects for the id ".$id);
+		}
+
 		foreach ($projects as $project)
 		{
 			$projectName = $project->getName();
@@ -31,8 +36,8 @@ class ProjectRepository extends EntityRepository
 				$firstName = $user->getFirstname();
 				$lastName = $user->getLastname();
 				$tasks = $user->getTasks();
-				$nbOfTasks = 0;
 				$nbOfOngoingTasks = 0;
+				$nbOfTasksBegun = 0;
 				$busy = false;
 
 				foreach ($tasks as $task) {
@@ -42,17 +47,18 @@ class ProjectRepository extends EntityRepository
 						{
 							$busy = true;
 							$nbOfOngoingTasks++;
-						}					
-						$nbOfTasks++;
+						}
+						if ($task->getStartedAt() != $defaultDate)
+							$nbOfTasksBegun++;
 					}
 				}
 				if ($busy == true)
 				{
-					$arr["Person ".$i] = array("project_name" => $projectName, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "busy", "number_of_tasks" => $nbOfTasks, "number_of_ongoing_tasks" => $nbOfOngoingTasks, "occupation_percent" => $nbOfOngoingTasks / $nbOfTasks);
+					$arr["Person ".$i] = array("project_name" => $projectName, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}				
 				else
 				{
-					$arr["Person ".$i] = array("project_name" => $projectName, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "free", "number_of_tasks" => $nbOfTasks, "number_of_ongoing_tasks" => $nbOfOngoingTasks, "occupation_percent" => 0);
+					$arr["Person ".$i] = array("project_name" => $projectName, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 				$i++;
 			}
@@ -71,6 +77,12 @@ class ProjectRepository extends EntityRepository
 		$i = 0;
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
+		if ($projects === null)
+		{
+			throw new NotFoundHttpException("No projects for the id ".$id);
+		}
+
+
 		foreach ($projects as $project) {
 			$projectId = $project->getId();
 			$projectName = $project->getName();
@@ -84,6 +96,7 @@ class ProjectRepository extends EntityRepository
 			$timelines = $project->getTimelines();
 			$nbTasks = 0;
 			$nbFinishedTasks = 0;
+			$nbOngoingTasks = 0;
 			$nbBugs = 0;
 			$nbMessages = 0;
 
@@ -92,6 +105,10 @@ class ProjectRepository extends EntityRepository
 				if ($task->getFinishedAt() != $defaultDate)
 				{
 					$nbFinishedTasks++;
+				}
+				else
+				{
+					$nbOngoingTasks++;
 				}
 			}
 
@@ -110,7 +127,7 @@ class ProjectRepository extends EntityRepository
 			}
 
 			$arr["Project ".$i] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_logo" => $projectLogo, "contact_mail" => $contactMail,
-				"facebook" => $facebook, "twitter" => $twitter, "number_finished_tasks" => $nbFinishedTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
+				"facebook" => $facebook, "twitter" => $twitter, "number_finished_tasks" => $nbFinishedTasks, "number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
 			$i++;
 		}
 

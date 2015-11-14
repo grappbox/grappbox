@@ -118,89 +118,105 @@ whiteboard_delete:
         id: \d+
     methods: [DELETE]
 
+
+
 dashboard_getTeamOccupation:
     path:       /Dashboard/getTeamOccupation/{id}
     defaults:   { _controller: APIBundle:Dashboard:getTeamOccupation }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getProjectsGlobalProgress:
     path:       /Dashboard/getProjectsGlobalProgress/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectsGlobalProgress }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getNextMeetings:
     path:       /Dashboard/getNextMeetings/{id}
     defaults:   { _controller: APIBundle:Dashboard:getNextMeetings }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getProjectCreator:
     path:       /Dashboard/getProjectCreator/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectCreator }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getBasicInformations:
     path:       /Dashboard/getBasicInformations/{id}
     defaults:   { _controller: APIBundle:Dashboard:getBasicInformations }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getProjectTasks:
     path:       /Dashboard/getProjectTasks/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectTasks }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getUserBasicInformations:
     path:       /Dashboard/getUserBasicInformations/{id}
     defaults:   { _controller: APIBundle:Dashboard:getUserBasicInformations }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getProjectPersons:
     path:       /Dashboard/getProjectPersons/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectPersons }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getPersonMeetings:
     path:       /Dashboard/getPersonMeetings/{id}
     defaults:   { _controller: APIBundle:Dashboard:getPersonMeetings }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getMeetingBasicInformations:
     path:       /Dashboard/getMeetingBasicInformations/{id}
     defaults:   { _controller: APIBundle:Dashboard:getMeetingBasicInformations }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getProjectList:
     path:       /Dashboard/getProjectList/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectList }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getTasksStatus:
     path:       /Dashboard/getTasksStatus/{id}
     defaults:   { _controller: APIBundle:Dashboard:getTasksStatus }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getNumberTimelineMessages:
     path:       /Dashboard/getNumberTimelineMessages/{id}
     defaults:   { _controller: APIBundle:Dashboard:getNumberTimelineMessages }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getNumberBugs:
     path:       /Dashboard/getNumberBugs/{id}
     defaults:   { _controller: APIBundle:Dashboard:getNumberBugs }
     requirements:
         id: \d+
+    methods: [GET]
 
 dashboard_getPersonOccupation:
     path:       /Dashboard/getPersonOccupation/{idPerson}.{idProject}
@@ -208,6 +224,7 @@ dashboard_getPersonOccupation:
     requirements:
         idPerson: \d+
         idProject: \d+
+    methods: [GET]
 
 
 
