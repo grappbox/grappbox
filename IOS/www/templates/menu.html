@@ -1,27 +1,23 @@
 ﻿<!--
     Summary: Abstract page menu for all other pages
+
+    Good representation of the application format:
+
+    |-----------------------<ion-side-menus-----------------------|
+    |   <ion-side-menu>            <ion-side-menu-content>        |
+    |-------------------------------------------------------------|
+    |       <header>    |   <ion-nav-back-button> <ion-nav-bar>   |
+    |-------------------|-----------------------------------------|
+    |    <ion-content>  |                         <ion-nav-view>  |
+    |    (Menu Items)   |                         (View Content)  |
+    |-------------------------------------------------------------|
 -->
 
 <ion-side-menus enable-menu-with-back-views="false">
 
-    <ion-side-menu-content edge-drag-threshold="true">
-        <ion-nav-bar class="bar-stable nav-title-slide-ios7">
-            <ion-nav-back-button></ion-nav-back-button>
-            <ion-nav-buttons side="left">
-                <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
-            </ion-nav-buttons>
-            <ion-nav-buttons side="right">
-                <ion-nav-button class="button button-icon button-clear ion-android-notifications-none"></ion-nav-button>
-                <ion-nav-button class="button button-icon ion-ios-settings"></ion-nav-button>
-            </ion-nav-buttons>
-        </ion-nav-bar>
-        <!-- On this line, "menuContent" allows to proceed inheritance, see in app.js -->
-        <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
-    </ion-side-menu-content>
-
     <ion-side-menu side="left">
         <ion-content>
-            <ion-list>
+            <ion-list> <!-- Display user picture & name -->
                 <ion-item class="item item-thumbnail-left">
                     <img src="images/GrappBox/pierre_hofman.jpg" />
                     <h2 style="font-size: 1.5em;" class="text-center col">Pierre</h2>
@@ -33,12 +29,28 @@
                 <a class="button icon button-icon ion-card"></a>
                 <a class="button icon button-icon ion-power"></a>
             </div>
-            <ion-list>
-                <ion-item nav-clear menu-close ui-sref="app.dashboard">Dashboard</ion-item><!--href="#/app/dashboard"-->
-                <ion-item nav-clear menu-close ui-sref="app.timelines">Timelines</ion-item><!--href="#/app/timelines"-->
-                <ion-item nav-clear menu-close ui-sref="app.whiteboards">Whiteboards</ion-item><!--href="#/app/whiteboard"-->
-                <ion-item nav-clear menu-close ui-sref="app.userSettings">Settings</ion-item><!--href="#/app/userSettings"-->
+            <ion-list><!-- List of all links in menu -->
+                <ion-item nav-clear menu-close ui-sref="app.dashboard">Dashboard</ion-item>
+                <ion-item nav-clear menu-close ui-sref="app.timelines">Timelines</ion-item>
+                <ion-item nav-clear menu-close ui-sref="app.whiteboards">Whiteboards</ion-item>
+                <ion-item nav-clear menu-close ui-sref="app.userSettings">Settings</ion-item>
             </ion-list>
         </ion-content>
     </ion-side-menu>
+
+    <ion-side-menu-content edge-drag-threshold="true"><!-- Make the possibility to swipe -->
+        <ion-nav-bar class="bar-stable nav-title-slide-ios7">
+            <ion-nav-back-button></ion-nav-back-button><!-- Configuration of back-button in app.js -->
+            <ion-nav-buttons side="left"> <!-- Menu button on top left -->
+                <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+            </ion-nav-buttons>
+            <ion-nav-buttons side="right"> <!-- Notification button & Settings button on top right -->
+                <ion-nav-button class="button button-icon button-clear ion-android-notifications-none"></ion-nav-button>
+                <ion-nav-button class="button button-icon ion-ios-settings"></ion-nav-button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <!-- On this line, "menuContent" allows to proceed inheritance, see in app.js -->
+        <ion-nav-view name="menuContent" animation="slide-left-right"></ion-nav-view>
+    </ion-side-menu-content>
+
 </ion-side-menus>
