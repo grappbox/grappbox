@@ -482,25 +482,25 @@ meeting_addAlert:
 
 # test login/signin
 accountAdministration_loginForm:
-    path:       /AccountAdministration/loginForm
+    path:       V1.0/accountadministration/loginform
     defaults:   { _controller: APIBundle:AccountAdministration:loginForm }
 accountAdministration_signInForm:
-    path:       /AccountAdministration/signInForm
+    path:       V1.0/accountadministration/signinform
     defaults:   { _controller: APIBundle:AccountAdministration:signInForm }
 # end test login/signin
 
 accountAdministration_login:
-    path:       /AccountAdministration/login
+    path:       V1.0/accountadministration/login
     defaults:   { _controller: APIBundle:AccountAdministration:login }
     methods:    [POST]
 
 accountAdministration_logout:
-    path:       /AccountAdministration/logout
+    path:       V1.0/accountadministration/logout
     defaults:   { _controller:APIBundle:AccountAdministration:logout}
     methods:    [POST]
 
 accountAdministration_signIn:
-    path:       /AccountAdministration/signIn
+    path:       V1.0/accountadministration/signin
     defaults:   { _controller: APIBundle:AccountAdministration:signIn }
     methods:    [POST]
 

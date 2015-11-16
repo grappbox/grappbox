@@ -42,8 +42,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
             ));
     }
 
-	 /**
- 	* @api {post} /AccountAdministration/login Request login
+	/**
+	* @api {post} V1.0/accountadministration/login Request login
  	* @apiName login
  	* @apiGroup AccountAdministration
  	* @apiVersion 1.0.0
@@ -69,16 +69,16 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			}
  	* 	}
  	*
- 	* @apiErrorExample Bad Email
+	* @apiErrorExample Bad Login
  	* 	HTTP/1.1 400 Bad Request
  	* 	{
  	* 		"Bad Login"
  	* 	}
 	* @apiErrorExample Bad Password
  	*		HTTP/1.1 400 Bad Request
-  * 	{
-  *   	"Bad Password"
-  * 	}
+	* 	{
+	*   	"Bad Password"
+	* 	}
  	*
  	*/
 	public function loginAction(Request $request)
@@ -111,8 +111,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			}
 	}
 
-	 /**
- 	* @api {any} /AccountAdministration/logout Request logout
+	/**
+	* @api {post} V1.0/accountadministration/logout Request logout
  	* @apiName logout
  	* @apiGroup AccountAdministration
  	* @apiVersion 1.0.0
@@ -129,10 +129,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	*
 	* @apiErrorExample Bad Authentication Token
  	* 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
- 	*
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
  	*/
  	public function logoutAction(Request $request)
  	{
@@ -151,98 +151,97 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $response;
  	}
 
-	 /**
-		* @api {post} /AccountAdministration/signin Request user creation and login
-		* @apiName signin
-		* @apiGroup AccountAdministration
-		* @apiVersion 1.0.0
-		*
-		* @apiParam {string} firstname user's firstname (required)
-		* @apiParam {string} lastname user's lastname (required)
-		* @apiParam {DateTime} birthday user's birthday
-		* @apiParam {file} avatar user's avatar
-		* @apiParam {string} password user's password (required)
-		* @apiParam {email} email user's email (required)
-		* @apiParam {string} phone user's phone
-		* @apiParam {string} country user's country
-		* @apiParam {url} linkedin user's linkedin
-		* @apiParam {url} viadeo user's viadeo
-		* @apiParam {url} twitter user's twitter
-		*
-		* @apiSuccess {Object} user user's informations
-		* @apiSuccess {int} user.id whiteboard id
-		* @apiSuccess {string} user.firstname user's firstname
-		* @apiSuccess {string} user.lastname user's lastname
-		* @apiSuccess {string} user.email user's email
-		* @apiSuccess {string} user.token user's authentication token
-		*
-		* @apiSuccessExample {json} Success-Response:
-		* 	{
-		*		"user": {
-		*			"id": 12,
-		*			"firstname": "John",
-		*			"lastname": "Doe",
-		*			"email": "john.doe@gmail.com",
-		*			"token": "fkE35dcDneOjF...."
-		*		}
-		* 	}
-		*
-		* @apiErrorExample Missing Parameter
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Missing Parameter"
-	  * 	}
-		*
-		*/
+	/**
+	* @api {post} V1.0/accountadministration/signin Request user creation and login
+	* @apiName signin
+	* @apiGroup AccountAdministration
+	* @apiVersion 1.0.0
+	*
+	* @apiParam {string} firstname user's firstname
+	* @apiParam {string} lastname user's lastname
+	* @apiParam {DateTime} [birthday] user's birthday
+	* @apiParam {file} [avatar] user's avatar
+	* @apiParam {string} password user's password
+	* @apiParam {email} email user's email
+	* @apiParam {string} [phone] user's phone
+	* @apiParam {string} [country] user's country
+	* @apiParam {url} [linkedin] user's linkedin
+	* @apiParam {url} [viadeo] user's viadeo
+	* @apiParam {url} [twitter] user's twitter
+	*
+	* @apiSuccess {Object} user user's informations
+	* @apiSuccess {int} user.id whiteboard id
+	* @apiSuccess {string} user.firstname user's firstname
+	* @apiSuccess {string} user.lastname user's lastname
+	* @apiSuccess {string} user.email user's email
+	* @apiSuccess {string} user.token user's authentication token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"user": {
+	*			"id": 12,
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"email": "john.doe@gmail.com",
+	*			"token": "fkE35dcDneOjF...."
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	*/
 	public function signInAction(Request $request)
 	{
-			if (!$request->request->get('firstname') || !$request->request->get('lastname') || !$request->request->get('password') || !$request->request->get('email'))
-				return $this->setBadRequest("Missing Parameter");
-			$user = new User();
-      $user->setFirstname($request->request->get('firstname'));
-      $user->setLastname($request->request->get('lastname'));
-			if ($request->request->get('birthday'))
-				$user->setBirthday(new Datetime($request->request->get('birthday')));
+		if (!$request->request->get('firstname') || !$request->request->get('lastname') || !$request->request->get('password') || !$request->request->get('email'))
+			return $this->setBadRequest("Missing Parameter");
+		$user = new User();
+		$user->setFirstname($request->request->get('firstname'));
+		$user->setLastname($request->request->get('lastname'));
+		if ($request->request->get('birthday'))
+			$user->setBirthday(new Datetime($request->request->get('birthday')));
 
-			if ($request->files->get('avatar'))
-			{
-				$generator = $this->get('security.secure_random');
-	      $random = $generator->nextBytes(10);
-	      $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
-	      $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
-	      $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
+		if ($request->files->get('avatar'))
+		{
+			$generator = $this->get('security.secure_random');
+			$random = $generator->nextBytes(10);
+			$fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
+			$fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
+			$avatar = $request->files->get('avatar')->move($fileDir, $fileName);
 
-	      $user->setAvatar($fileDir.'/'.$fileName);
-			}
+			$user->setAvatar($fileDir.'/'.$fileName);
+		}
 
-      $encoder = $this->container->get('security.password_encoder');
-      $encoded = $encoder->encodePassword($user, $request->request->get('password'));
-      $user->setPassword($encoded);
+		$encoder = $this->container->get('security.password_encoder');
+		$encoded = $encoder->encodePassword($user, $request->request->get('password'));
+		$user->setPassword($encoded);
 
-			$user->setEmail($request->request->get('email'));
-			if ($request->request->get('phone'))
-      	$user->setPhone($request->request->get('phone'));
-			if ($request->request->get('country'))
-      	$user->setCountry($request->request->get('country'));
-			if ($request->request->get('linkedin'))
-      	$user->setLinkedin($request->request->get('linkedin'));
-			if ($request->request->get('viadeo'))
-      	$user->setViadeo($request->request->get('viadeo'));
-			if ($request->request->get('twitter'))
-      	$user->setTwitter($request->request->get('twitter'));
+		$user->setEmail($request->request->get('email'));
+		if ($request->request->get('phone'))
+			$user->setPhone($request->request->get('phone'));
+		if ($request->request->get('country'))
+			$user->setCountry($request->request->get('country'));
+		if ($request->request->get('linkedin'))
+			$user->setLinkedin($request->request->get('linkedin'));
+		if ($request->request->get('viadeo'))
+			$user->setViadeo($request->request->get('viadeo'));
+		if ($request->request->get('twitter'))
+			$user->setTwitter($request->request->get('twitter'));
 
-			$secureUtils = $this->get('security.secure_random');
-			$tmpToken = $secureUtils->nextBytes(25);
-			$token = md5($tmpToken);
-			$user->setToken($token);
+		$secureUtils = $this->get('security.secure_random');
+		$tmpToken = $secureUtils->nextBytes(25);
+		$token = md5($tmpToken);
+		$user->setToken($token);
 
-      $em = $this->getDoctrine()->getManager();
-      $em->persist($user);
-      $em->flush();
+		$em = $this->getDoctrine()->getManager();
+		$em->persist($user);
+		$em->flush();
 
-			$response = new JsonResponse();
-			$response->setData(array('user' => $user->serialize()));
-			return $response;
+		$response = new JsonResponse();
+		$response->setData(array('user' => $user->serialize()));
+		return $response;
 	}
-
 }
