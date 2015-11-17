@@ -41,7 +41,7 @@ class ProjectRepository extends EntityRepository
 				$busy = false;
 
 				foreach ($tasks as $task) {
-					if ($task->getProjectId() == $projectId)
+					if ($task->getProjects()->getId() == $projectId)
 					{
 						if ($task->getFinishedAt() == $defaultDate)
 						{

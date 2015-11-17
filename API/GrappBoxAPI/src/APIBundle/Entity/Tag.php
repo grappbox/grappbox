@@ -19,6 +19,18 @@ class Tag
      */
     private $name;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tasks;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -51,5 +63,38 @@ class Tag
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Add tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     * @return Tag
+     */
+    public function addTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks[] = $tasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     */
+    public function removeTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks->removeElement($tasks);
+    }
+
+    /**
+     * Get tasks
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
     }
 }

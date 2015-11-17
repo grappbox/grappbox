@@ -3,7 +3,7 @@
 namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+
 use Symfony\Component\Security\Core\User\UserInterface;
 
 use Symfony\Component\Serializer\Serializer;
@@ -89,19 +89,32 @@ class User implements UserInterface, \Serializable
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $event_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $projects;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $events;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tasks;
 
-
-
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $this->isActive = true;
-        $this->projects = new ArrayCollection();
+        $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->events = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getUsername()
@@ -123,30 +136,36 @@ class User implements UserInterface, \Serializable
     {
     }
 
-    // /** @see \Serializable::serialize() */
-    // public function serialize()
-    // {
-    //     return serialize(array(
-    //         $this->id,
-    //         $this->email,
-    //         $this->password,
-    //     ));
-    // }
-    //
-    // /** @see \Serializable::unserialize() */
-    // public function unserialize($serialized)
-    // {
-    //     list (
-    //         $this->id,
-    //         $this->email,
-    //         $this->password,
-    //     ) = unserialize($serialized);
-    // }
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->firstname,
+            $this->lastname,
+            $this->email,
+            $this->token
+            //avatar
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+        $this->id,
+        $this->firstname,
+        $this->lastname,
+        $this->email,
+        $this->token
+        //avatar
+        ) = unserialize($serialized);
+    }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -169,7 +188,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get firstname
      *
-     * @return string
+     * @return string 
      */
     public function getFirstname()
     {
@@ -192,7 +211,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get lastname
      *
-     * @return string
+     * @return string 
      */
     public function getLastname()
     {
@@ -215,7 +234,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get birthday
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getBirthday()
     {
@@ -238,7 +257,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get avatar
      *
-     * @return string
+     * @return string 
      */
     public function getAvatar()
     {
@@ -261,7 +280,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get password
      *
-     * @return string
+     * @return string 
      */
     public function getPassword()
     {
@@ -284,7 +303,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get email
      *
-     * @return string
+     * @return string 
      */
     public function getEmail()
     {
@@ -307,7 +326,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get phone
      *
-     * @return string
+     * @return string 
      */
     public function getPhone()
     {
@@ -330,7 +349,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get country
      *
-     * @return string
+     * @return string 
      */
     public function getCountry()
     {
@@ -353,7 +372,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get linkedin
      *
-     * @return string
+     * @return string 
      */
     public function getLinkedin()
     {
@@ -376,7 +395,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get viadeo
      *
-     * @return string
+     * @return string 
      */
     public function getViadeo()
     {
@@ -399,7 +418,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get twitter
      *
-     * @return string
+     * @return string 
      */
     public function getTwitter()
     {
@@ -422,11 +441,67 @@ class User implements UserInterface, \Serializable
     /**
      * Get isActive
      *
-     * @return boolean
+     * @return boolean 
      */
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     * @return User
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string 
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * Add event_creator
+     *
+     * @param \APIBundle\Entity\Event $eventCreator
+     * @return User
+     */
+    public function addEventCreator(\APIBundle\Entity\Event $eventCreator)
+    {
+        $this->event_creator[] = $eventCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove event_creator
+     *
+     * @param \APIBundle\Entity\Event $eventCreator
+     */
+    public function removeEventCreator(\APIBundle\Entity\Event $eventCreator)
+    {
+        $this->event_creator->removeElement($eventCreator);
+    }
+
+    /**
+     * Get event_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEventCreator()
+    {
+        return $this->event_creator;
     }
 
     /**
@@ -455,11 +530,44 @@ class User implements UserInterface, \Serializable
     /**
      * Get projects
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * Add events
+     *
+     * @param \APIBundle\Entity\Event $events
+     * @return User
+     */
+    public function addEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events[] = $events;
+
+        return $this;
+    }
+
+    /**
+     * Remove events
+     *
+     * @param \APIBundle\Entity\Event $events
+     */
+    public function removeEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events->removeElement($events);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 
     /**
@@ -488,59 +596,10 @@ class User implements UserInterface, \Serializable
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTasks()
     {
         return $this->tasks;
     }
-
-    /**
-     * Get Token
-     *
-     * @return string
-     */
-     public function getToken()
-     {
-       return $token;
-     }
-
-     /**
-      * Set token
-      *
-      * @param string $token
-      * @return User
-      */
-      public function setToken($token)
-      {
-          $this->token = $token;
-
-          return $this;
-      }
-
-      /** @see \Serializable::serialize() */
-      public function serialize()
-      {
-          return serialize(array(
-              $this->id,
-              $this->firstname,
-              $this->lastname,
-              $this->email,
-              $this->token
-              //avatar
-          ));
-      }
-
-      /** @see \Serializable::unserialize() */
-      public function unserialize($serialized)
-      {
-          list (
-          $this->id,
-          $this->firstname,
-          $this->lastname,
-          $this->email,
-          $this->token
-          //avatar
-          ) = unserialize($serialized);
-      }
 }

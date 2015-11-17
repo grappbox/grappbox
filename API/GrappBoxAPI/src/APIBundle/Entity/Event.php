@@ -20,21 +20,6 @@ class Event implements \Serializable
     private $id;
 
     /**
-     * @var integer
-     */
-    private $creatorId;
-
-    /**
-     * @var integer
-     */
-    private $projectId;
-
-    /**
-     * @var integer
-     */
-    private $typeId;
-
-    /**
      * @var string
      */
     private $title;
@@ -75,95 +60,61 @@ class Event implements \Serializable
     private $eventtypes;
 
     /**
+     * @var \APIBundle\Entity\User
+     */
+    private $creator_user;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $eventusers;
+    private $users;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->eventusers = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->eventtypes->name,
+            $this->title,
+            $this->description,
+            $this->beginDate,
+            $this->endDate,
+            $this->createdAt,
+            $this->deletedAt
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->eventtypes->name,
+            $this->title,
+            $this->description,
+            $this->beginDate,
+            $this->endDate,
+            $this->createdAt,
+            $this->deletedAt,
+        ) = unserialize($serialized);
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set creatorId
-     *
-     * @param integer $creatorId
-     * @return Event
-     */
-    public function setCreatorId($creatorId)
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get creatorId
-     *
-     * @return integer
-     */
-    public function getCreatorId()
-    {
-        return $this->creatorId;
-    }
-
-    /**
-     * Set projectId
-     *
-     * @param integer $projectId
-     * @return Event
-     */
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
-
-        return $this;
-    }
-
-    /**
-     * Get projectId
-     *
-     * @return integer
-     */
-    public function getProjectId()
-    {
-        return $this->projectId;
-    }
-
-    /**
-     * Set typeId
-     *
-     * @param integer $typeId
-     * @return Event
-     */
-    public function setTypeId($typeId)
-    {
-        $this->typeId = $typeId;
-
-        return $this;
-    }
-
-    /**
-     * Get typeId
-     *
-     * @return integer
-     */
-    public function getTypeId()
-    {
-        return $this->typeId;
     }
 
     /**
@@ -182,7 +133,7 @@ class Event implements \Serializable
     /**
      * Get title
      *
-     * @return string
+     * @return string 
      */
     public function getTitle()
     {
@@ -205,7 +156,7 @@ class Event implements \Serializable
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -228,7 +179,7 @@ class Event implements \Serializable
     /**
      * Get beginDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getBeginDate()
     {
@@ -251,7 +202,7 @@ class Event implements \Serializable
     /**
      * Get endDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getEndDate()
     {
@@ -274,7 +225,7 @@ class Event implements \Serializable
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -297,7 +248,7 @@ class Event implements \Serializable
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
@@ -320,7 +271,7 @@ class Event implements \Serializable
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project
+     * @return \APIBundle\Entity\Project 
      */
     public function getProjects()
     {
@@ -343,7 +294,7 @@ class Event implements \Serializable
     /**
      * Get eventtypes
      *
-     * @return \APIBundle\Entity\EventType
+     * @return \APIBundle\Entity\EventType 
      */
     public function getEventtypes()
     {
@@ -351,71 +302,58 @@ class Event implements \Serializable
     }
 
     /**
-     * Add eventusers
+     * Set creator_user
      *
-     * @param \APIBundle\Entity\EventUser $eventusers
+     * @param \APIBundle\Entity\User $creatorUser
      * @return Event
      */
-    public function addEventuser(\APIBundle\Entity\EventUser $eventusers)
+    public function setCreatorUser(\APIBundle\Entity\User $creatorUser = null)
     {
-        $this->eventusers[] = $eventusers;
+        $this->creator_user = $creatorUser;
 
         return $this;
     }
 
     /**
-     * Remove eventusers
+     * Get creator_user
      *
-     * @param \APIBundle\Entity\EventUser $eventusers
+     * @return \APIBundle\Entity\User 
      */
-    public function removeEventuser(\APIBundle\Entity\EventUser $eventusers)
+    public function getCreatorUser()
     {
-        $this->eventusers->removeElement($eventusers);
+        return $this->creator_user;
     }
 
     /**
-     * Get eventusers
+     * Add users
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @param \APIBundle\Entity\User $users
+     * @return Event
      */
-    public function getEventusers()
+    public function addUser(\APIBundle\Entity\User $users)
     {
-        return $this->eventusers;
+        $this->users[] = $users;
+
+        return $this;
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize()
+    /**
+     * Remove users
+     *
+     * @param \APIBundle\Entity\User $users
+     */
+    public function removeUser(\APIBundle\Entity\User $users)
     {
-        return serialize(array(
-            $this->id,
-            $this->creatorId,
-            $this->projectId,
-            $this->typeID,
-            $this->eventtypes->name,
-            $this->title,
-            $this->description,
-            $this->beginDate,
-            $this->endDate,
-            $this->createdAt,
-            $this->deletedAt
-        ));
+        $this->users->removeElement($users);
     }
 
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
     {
-        list (
-            $this->id,
-            $this->creatorId,
-            $this->projectId,
-            $this->typeID,
-            $this->eventtypes->name,
-            $this->title,
-            $this->description,
-            $this->beginDate,
-            $this->endDate,
-            $this->createdAt,
-            $this->deletedAt,
-        ) = unserialize($serialized);
+        return $this->users;
     }
 }

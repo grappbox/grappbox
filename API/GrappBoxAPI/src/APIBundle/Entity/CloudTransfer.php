@@ -17,17 +17,12 @@ class CloudTransfer
     /**
      * @var string
      */
-     private $creator_id;
+    private $filename;
 
-     /**
-      * @var string
-      */
-     private $filename;
-
-     /**
-      * @var string
-      */
-     private $path;
+    /**
+     * @var string
+     */
+    private $path;
 
     /**
      * @var \DateTime
@@ -44,11 +39,16 @@ class CloudTransfer
      */
     private $password;
 
+    /**
+     * @var integer
+     */
+    private $creator_id;
+
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -69,6 +69,16 @@ class CloudTransfer
     }
 
     /**
+     * Get filename
+     *
+     * @return string 
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
      * Set path
      *
      * @param string $path
@@ -84,43 +94,11 @@ class CloudTransfer
     /**
      * Get path
      *
-     * @return $path
+     * @return string 
      */
     public function getPath()
     {
         return $this->path;
-    }
-
-    /**
-     * Get transfer creator id
-     *
-     * @return integer
-     */
-     public function getCreatorId()
-     {
-       return $this->creator_id;
-     }
-
-     /**
-      * Set transfer creator id
-      *
-      * @param integer $creator_id
-      * @return CloudTransfer
-      */
-      public function setCreatorId($creatorId)
-      {
-        $this->creator_id = $creatorId;
-        return $this;
-      }
-
-    /**
-     * Get filename
-     *
-     * @return string
-     */
-    public function getFilename()
-    {
-        return $this->filename;
     }
 
     /**
@@ -139,17 +117,17 @@ class CloudTransfer
     /**
      * Get creationDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
-    public function getDeletionDate()
+    public function getCreationDate()
     {
-        return $this->deletionDate;
+        return $this->creationDate;
     }
 
     /**
-     * Set creationDate
+     * Set deletionDate
      *
-     * @param \DateTime $creationDate
+     * @param \DateTime $deletionDate
      * @return CloudTransfer
      */
     public function setDeletionDate($deletionDate)
@@ -160,13 +138,13 @@ class CloudTransfer
     }
 
     /**
-     * Get creationDate
+     * Get deletionDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
-    public function getCreationDate()
+    public function getDeletionDate()
     {
-        return $this->creationDate;
+        return $this->deletionDate;
     }
 
     /**
@@ -185,10 +163,33 @@ class CloudTransfer
     /**
      * Get password
      *
-     * @return string
+     * @return string 
      */
     public function getPassword()
     {
         return $this->password;
+    }
+
+    /**
+     * Set creator_id
+     *
+     * @param integer $creatorId
+     * @return CloudTransfer
+     */
+    public function setCreatorId($creatorId)
+    {
+        $this->creator_id = $creatorId;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_id
+     *
+     * @return integer 
+     */
+    public function getCreatorId()
+    {
+        return $this->creator_id;
     }
 }

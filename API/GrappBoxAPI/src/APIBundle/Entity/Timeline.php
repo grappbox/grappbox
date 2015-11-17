@@ -47,7 +47,6 @@ class Timeline
         $this->timelineMessages = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-
     /**
      * Get id
      *

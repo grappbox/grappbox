@@ -22,11 +22,6 @@ class Task
     /**
      * @var integer
      */
-    private $projectId;
-
-    /**
-     * @var integer
-     */
     private $creatorId;
 
     /**
@@ -65,47 +60,52 @@ class Task
     private $deletedAt;
 
     /**
-     * @var \APIBundle\Entity\User
-     */
-    private $users;
-
-    /**
      * @var \APIBundle\Entity\Project
      */
     private $projects;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $users;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tags;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+    * Serialize the object
+    *
+    * @return json encoded array
+    */
+    public function serializeMe()
+    {
+      $encoders = array(new XmlEncoder(), new JsonEncoder());
+      $normalizers = array(new ObjectNormalizer());
+
+      $serializer = new Serializer($normalizers, $encoders);
+
+      return $serializer->serialize($this, 'json');
+    }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set projectId
-     *
-     * @param integer $projectId
-     * @return Task
-     */
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
-
-        return $this;
-    }
-
-    /**
-     * Get projectId
-     *
-     * @return integer
-     */
-    public function getProjectId()
-    {
-        return $this->projectId;
     }
 
     /**
@@ -124,7 +124,7 @@ class Task
     /**
      * Get creatorId
      *
-     * @return integer
+     * @return integer 
      */
     public function getCreatorId()
     {
@@ -147,7 +147,7 @@ class Task
     /**
      * Get title
      *
-     * @return string
+     * @return string 
      */
     public function getTitle()
     {
@@ -170,7 +170,7 @@ class Task
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -193,7 +193,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDueDate()
     {
@@ -216,7 +216,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getStartedAt()
     {
@@ -239,7 +239,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getFinishedAt()
     {
@@ -262,7 +262,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -285,34 +285,11 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
         return $this->deletedAt;
-    }
-
-    /**
-     * Set users
-     *
-     * @param \APIBundle\Entity\User $users
-     * @return Task
-     */
-    public function setUsers(\APIBundle\Entity\User $users = null)
-    {
-        $this->users = $users;
-
-        return $this;
-    }
-
-    /**
-     * Get users
-     *
-     * @return \APIBundle\Entity\User
-     */
-    public function getUsers()
-    {
-        return $this->users;
     }
 
     /**
@@ -331,7 +308,7 @@ class Task
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project
+     * @return \APIBundle\Entity\Project 
      */
     public function getProjects()
     {
@@ -339,17 +316,68 @@ class Task
     }
 
     /**
-     * Serialize the object
+     * Add users
      *
-     * @return json encoded array
+     * @param \APIBundle\Entity\User $users
+     * @return Task
      */
-    public function serializeMe()
+    public function addUser(\APIBundle\Entity\User $users)
     {
-      $encoders = array(new XmlEncoder(), new JsonEncoder());
-      $normalizers = array(new ObjectNormalizer());
+        $this->users[] = $users;
 
-      $serializer = new Serializer($normalizers, $encoders);
+        return $this;
+    }
 
-      return $serializer->serialize($this, 'json');
+    /**
+     * Remove users
+     *
+     * @param \APIBundle\Entity\User $users
+     */
+    public function removeUser(\APIBundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * Add tags
+     *
+     * @param \APIBundle\Entity\Tag $tags
+     * @return Task
+     */
+    public function addTag(\APIBundle\Entity\Tag $tags)
+    {
+        $this->tags[] = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param \APIBundle\Entity\Tag $tags
+     */
+    public function removeTag(\APIBundle\Entity\Tag $tags)
+    {
+        $this->tags->removeElement($tags);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 }

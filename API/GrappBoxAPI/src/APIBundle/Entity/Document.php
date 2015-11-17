@@ -35,10 +35,32 @@ class Document implements \Serializable
     private $hash;
 
 
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->creatorId,
+            $this->path,
+            $this->hash
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->creatorId,
+            $this->path,
+            $this->hash,
+        ) = unserialize($serialized);
+    }
+
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -61,7 +83,7 @@ class Document implements \Serializable
     /**
      * Get creatorId
      *
-     * @return integer
+     * @return integer 
      */
     public function getCreatorId()
     {
@@ -84,7 +106,7 @@ class Document implements \Serializable
     /**
      * Get path
      *
-     * @return string
+     * @return string 
      */
     public function getPath()
     {
@@ -107,32 +129,10 @@ class Document implements \Serializable
     /**
      * Get hash
      *
-     * @return string
+     * @return string 
      */
     public function getHash()
     {
         return $this->hash;
-    }
-
-    /** @see \Serializable::serialize() */
-    public function serialize()
-    {
-        return serialize(array(
-            $this->id,
-            $this->creatorId,
-            $this->path,
-            $this->hash
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->creatorId,
-            $this->path,
-            $this->hash,
-        ) = unserialize($serialized);
     }
 }

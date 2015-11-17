@@ -9,16 +9,6 @@ APIBundle\Entity\Event:
             generator:
                 strategy: AUTO
     fields:
-        creatorId:
-            type: integer
-            column: creator_id
-        projectId:
-            type: integer
-            column: project_id
-            nullable: TRUE
-        typeId:
-            type: integer
-            column: type_id
         title:
             type: string
             length: 255
@@ -45,14 +35,29 @@ APIBundle\Entity\Event:
           joinColumn:
             name: project_id
             referencedColumnName: id
+            nullable: TRUE
         eventtypes:
           targetEntity: EventType
           inversedBy: events
           joinColumn:
             name: type_id
             referencedColumnName: id
-    oneToMany:
-        eventusers:
-          targetEntity: EventUser
-          mappedBy: events
+        creator_user:
+          targetEntity: User
+          inveredBy: event_creator
+          joinColumn:
+            name: creator_id
+            referencedColumnName: id
+    manyToMany:
+        users:
+          targetEntity: User
+          inversedBy: events
+          joinTable:
+            name: events_user
+            joinColumns:
+              event_id:
+                referencedColumnName: id
+            inverseJoinColumns:
+              user_id:
+                referencedColumnName: id
     lifecycleCallbacks: {  }

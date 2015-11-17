@@ -70,9 +70,9 @@ class Project implements \Serializable
     private $deletedAt;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var string
      */
-    private $users;
+    private $safePassword;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -100,24 +100,61 @@ class Project implements \Serializable
     private $whiteboards;
 
     /**
-     * @var string
+     * @var \Doctrine\Common\Collections\Collection
      */
-    private $safePassword;
-
-
+    private $users;
 
     /**
      * Constructor
      */
     public function __construct()
     {
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->timelines = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->events = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->whiteboards = new \Doctrine\Common\Collections\ArrayCollection();
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+        /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->creatorId,
+            $this->name,
+            $this->description,
+            $this->logo,
+            $this->contactEmail,
+            $this->facebook,
+            $this->twitter,
+            $this->createdAt,
+            $this->deletedAt
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->creatorId,
+            $this->name,
+            $this->description,
+            $this->logo,
+            $this->contactEmail,
+            $this->facebook,
+            $this->twitter,
+            $this->createdAt,
+            $this->deletedAt,
+        ) = unserialize($serialized);
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -140,7 +177,7 @@ class Project implements \Serializable
     /**
      * Get creatorId
      *
-     * @return integer
+     * @return integer 
      */
     public function getCreatorId()
     {
@@ -163,7 +200,7 @@ class Project implements \Serializable
     /**
      * Get name
      *
-     * @return string
+     * @return string 
      */
     public function getName()
     {
@@ -186,7 +223,7 @@ class Project implements \Serializable
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -209,7 +246,7 @@ class Project implements \Serializable
     /**
      * Get logo
      *
-     * @return string
+     * @return string 
      */
     public function getLogo()
     {
@@ -232,7 +269,7 @@ class Project implements \Serializable
     /**
      * Get teamId
      *
-     * @return integer
+     * @return integer 
      */
     public function getTeamId()
     {
@@ -255,7 +292,7 @@ class Project implements \Serializable
     /**
      * Get contactEmail
      *
-     * @return string
+     * @return string 
      */
     public function getContactEmail()
     {
@@ -278,7 +315,7 @@ class Project implements \Serializable
     /**
      * Get facebook
      *
-     * @return string
+     * @return string 
      */
     public function getFacebook()
     {
@@ -301,7 +338,7 @@ class Project implements \Serializable
     /**
      * Get twitter
      *
-     * @return string
+     * @return string 
      */
     public function getTwitter()
     {
@@ -324,7 +361,7 @@ class Project implements \Serializable
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -347,7 +384,7 @@ class Project implements \Serializable
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
@@ -355,36 +392,26 @@ class Project implements \Serializable
     }
 
     /**
-     * Add users
+     * Set safePassword
      *
-     * @param \APIBundle\Entity\User $users
+     * @param string $safePassword
      * @return Project
      */
-    public function addUser(\APIBundle\Entity\User $users)
+    public function setSafePassword($safePassword)
     {
-        $this->users[] = $users;
+        $this->safePassword = $safePassword;
 
         return $this;
     }
 
     /**
-     * Remove users
+     * Get safePassword
      *
-     * @param \APIBundle\Entity\User $users
+     * @return string 
      */
-    public function removeUser(\APIBundle\Entity\User $users)
+    public function getSafePassword()
     {
-        $this->users->removeElement($users);
-    }
-
-    /**
-     * Get users
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getUsers()
-    {
-        return $this->users;
+        return $this->safePassword;
     }
 
     /**
@@ -413,7 +440,7 @@ class Project implements \Serializable
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTasks()
     {
@@ -446,7 +473,7 @@ class Project implements \Serializable
     /**
      * Get bugs
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getBugs()
     {
@@ -479,7 +506,7 @@ class Project implements \Serializable
     /**
      * Get timelines
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTimelines()
     {
@@ -512,7 +539,7 @@ class Project implements \Serializable
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getEvents()
     {
@@ -545,7 +572,7 @@ class Project implements \Serializable
     /**
      * Get whiteboards
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getWhiteboards()
     {
@@ -553,54 +580,35 @@ class Project implements \Serializable
     }
 
     /**
-     * @return string
+     * Add users
+     *
+     * @param \APIBundle\Entity\User $users
+     * @return Project
      */
-    public function getSafePassword()
+    public function addUser(\APIBundle\Entity\User $users)
     {
-      return $this->safePassword;
+        $this->users[] = $users;
+
+        return $this;
     }
 
     /**
-     * @var string
-     * @return Project
+     * Remove users
+     *
+     * @param \APIBundle\Entity\User $users
      */
-    public function setSafePassword($safePassword)
+    public function removeUser(\APIBundle\Entity\User $users)
     {
-      $this->safePassword = $safePassword;
-      return $this;
+        $this->users->removeElement($users);
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize()
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
     {
-        return serialize(array(
-            $this->id,
-            $this->creatorId,
-            $this->name,
-            $this->description,
-            $this->logo,
-            $this->contactEmail,
-            $this->facebook,
-            $this->twitter,
-            $this->createdAt,
-            $this->deletedAt
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->creatorId,
-            $this->name,
-            $this->description,
-            $this->logo,
-            $this->contactEmail,
-            $this->facebook,
-            $this->twitter,
-            $this->createdAt,
-            $this->deletedAt,
-        ) = unserialize($serialized);
+        return $this->users;
     }
 }

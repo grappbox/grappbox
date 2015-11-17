@@ -57,10 +57,16 @@ APIBundle\Entity\User:
         projects:
           targetEntity: Project
           mappedBy: users
-    oneToMany:
+        events:
+          targetEntity: Event
+          mappedBy: users
         tasks:
           targetEntity: Task
           mappedBy: users
+    oneToMany:
+        event_creator:
+          targetEntity: Event
+          mappedBy: creator_user
         # whiteboards:
         #   targetEntity: Whiteboard
         #   mappedBy: updators
