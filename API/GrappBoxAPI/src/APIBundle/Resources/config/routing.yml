@@ -79,31 +79,37 @@ user_password:
 
 
 whiteboard_list:
-    path:		/Whiteboard/list
+    path:		V1.2/whiteboard/list/{token}/{projectId}
     defaults:	{ _controller: APIBundle:Whiteboard:listWhiteboard }
+    requirements:
+        projectId: \d+
+    methods: [GET]
 
 whiteboard_new:
-    path:		/Whiteboard/new
+    path:		V1.2/whiteboard/new
     defaults:	{ _controller: APIBundle:Whiteboard:newWhiteboard }
     methods: [POST]
 
 whiteboard_open:
-    path:		/Whiteboard/open/{id}
+    path:		V1.2/whiteboard/open/{token}/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:openWhiteboard }
     requirements:
         id: \d+
+    methods: [GET]
 
 whiteboard_pushDraw:
-    path:		/Whiteboard/pushDraw/{id}
+    path:		V1.2/whiteboard/pushdraw/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:pushDraw }
     requirements:
         id: \d+
+    methods: [PUT]
 
 whiteboard_pullDraw:
-    path:		/Whiteboard/pullDraw/{id}
+    path:		V1.2/whiteboard/pulldraw/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:pullDraw }
     requirements:
         id: \d+
+    methods: [GET]
 
 # whiteboard_exit:
 #     path:		/Whiteboard/exit/{id}
@@ -112,7 +118,7 @@ whiteboard_pullDraw:
 #         id: \d+
 
 whiteboard_delete:
-    path:		/Whiteboard/delete/{id}
+    path:		V1.2/whiteboard/delete/{token}/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:delWhiteboard }
     requirements:
         id: \d+
