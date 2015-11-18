@@ -24,7 +24,7 @@ use APIBundle\Entity\User;
  */
 class UserController extends RolesAndTokenVerificationController
 {
-	public function basicInformationsAction(Request $request, $id)
+	public function basicInformationsAction(Request $request, $token)
 	{
 		$user = $this->checkToken($request->request->get('_token'));
 		if (!$user)
@@ -32,40 +32,34 @@ class UserController extends RolesAndTokenVerificationController
 
 		$method = $request->getMethod();
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->find($id);
 		$dataReceived = $request->request->get("basicInfos");
-
-		if ($user === null)
-		{
-			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
-		}
 
 		if ($method == "GET")
 			return new JsonResponse($this->getBasicInformations($user));
 		else if ($method == "PUT")
-				return new JsonResponse($this->putBasicInformations($dataReceived, $user, $em));
+			return new JsonResponse($this->putBasicInformations($dataReceived, $user, $em));
 		else
 			return header("HTTP/1.0 404 Not Found", True, 404);
 	}
 
 	/**
-	* @api {get} /V1/API/User/basicInformations/:id Request the basic informations of a user
+	* @api {get} /V1.3/user/basicinformations/:token Request the basic informations of the connected user
 	* @apiName getBasicInformations
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {String} _token token of the person connected
+	* @apiParam {String} token token of the person connected
 	*
 	* @apiSuccess {String} first_name First name of the person
 	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} [birthday] Birthday of the person
-	* @apiSuccess {Text} [avatar] Avatr of the person
+	* @apiSuccess {Datetime} birthday Birthday of the person
+	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} [phone] Phone number of the person
-	* @apiSuccess {String} [country] Country the person in living in
-	* @apiSuccess {String} [linkedin] Linkedin of the person
-	* @apiSuccess {String} [viadeo] Viadeo of the person
-	* @apiSuccess {String} [twitter] Twitter of the person
+	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} country Country the person in living in
+	* @apiSuccess {String} linkedin Linkedin of the person
+	* @apiSuccess {String} viadeo Viadeo of the person
+	* @apiSuccess {String} twitter Twitter of the person
 	*
 	* @apiSuccessExample Success-Response:
 	* 	{
@@ -81,12 +75,11 @@ class UserController extends RolesAndTokenVerificationController
 	*		"twitter": "twitter.com/john.doe"
 	* 	}
 	*
-	* @apiError message The user with id $id doesn't exist.
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
 	*
 	*/
 	private function getBasicInformations($user)
@@ -107,12 +100,12 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V1/API/User/basicInformations/:id Update the basic informations of a user
+	* @api {put} /V1.3/user/basicinformations/:token Update the basic informations of the user connected
 	* @apiName putBasicInformations
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {String} _token Token of the person connected
+	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} [first_name] First name of the person
 	* @apiParam {String} [last_name] Last name of the person
 	* @apiParam {Datetime} [birthday] Birthday of the person
@@ -126,7 +119,6 @@ class UserController extends RolesAndTokenVerificationController
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
-	*		"_token": "f1a3f1ea35fae31f"
 	*		"first_name": "John",
 	*		"last_name": "Doe",
 	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -139,19 +131,23 @@ class UserController extends RolesAndTokenVerificationController
 	*		"twitter": "twitter.com/john.doe"
 	* 	}
 	*
-	* @apiSuccess message User Basic Informations changed.
 	* @apiSuccessExample Success-Response
 	*     HTTP/1.1 200 OK
 	*	  {
 	*		"message" : "User Basic Informations changed."
 	*	  }
 	*
-	* @apiError message The user with id $id doesn't exist.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
 	*
 	*/
 	private function putBasicInformations($dataReceived, $user, $em)
@@ -196,20 +192,14 @@ class UserController extends RolesAndTokenVerificationController
 		return "User Basic Informations changed.";
 	}
 
-	public function passwordAction(Request $request, $id)
+	public function passwordAction(Request $request, $token)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
 		$method = $request->getMethod();
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->find($id);
-
-		if ($user === null)
-		{
-			throw new NotFoundHttpException("The user with id ".$id." doesn't exist");
-		}
 
 		if ($method == "GET")
 			return new JsonResponse($this->getPassword($user));
@@ -220,12 +210,12 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1/API/User/password/:id Request the password of a user
+	* @api {get} /V1.3/user/password/:token Request the password of the user connected
 	* @apiName getPassword
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {String} _token Token of the person connected
+	* @apiParam {String} token Token of the person connected
 	*
 	* @apiSuccess {String} password Person's password
 	*
@@ -234,12 +224,17 @@ class UserController extends RolesAndTokenVerificationController
 	*		"password": "toto42"
 	* 	}
 	*
-	* @apiError message The user with id $id doesn't exist.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
 	*
 	*/
 	private function getPassword($user)
@@ -248,17 +243,16 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V1/API/User/password/:id Update the password of a user
+	* @api {put} /V1.3/user/password/:token Update the password of the user connected
 	* @apiName putPassword
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {String} _token Token of the person connected
+	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} password The new password
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
-	*		"_token": "12f3qef13eqf1",
 	*		"password": "TarteAuxPommes"
 	* 	}
 	*
@@ -269,12 +263,17 @@ class UserController extends RolesAndTokenVerificationController
 	*		"message" : "Password successfully changed."
 	*	  }
 	*
-	* @apiError message The user with id $id doesn't exist.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
 	*
 	*/
 	private function putPassword($request, $user, $em)
@@ -286,12 +285,14 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1/API/User/getIdByName/:firstName.:lastName Request the user Id with the first and last name
+	* @api {get} /V1.3/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {string} _token user's authentication token
+	* @apiParam {string} token user's authentication token
+	* @apiParam {String} firstName first name of the user
+	* @apiParam {String} lastName last name of the user
 	*
 	* @apiSuccess {Object[]} User array of n persons
 	* @apiSuccess {Number} User.id id of the person
@@ -308,17 +309,22 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiError message 404 not found.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
 	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
 	*/
-	public function getIdByNameAction(Request $request, $firstname, $lastname)
+	public function getIdByNameAction(Request $request, $token, $firstname, $lastname)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -326,12 +332,12 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1/API/User/getNextMeetings/:id Request the next meetings of a user
+	* @api {get} /V1.3/user/getnextmeetings/:token Request the next meetings of the connected user
 	* @apiName getNextMeetings
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {string} _token user's authentication token
+	* @apiParam {string} token user's authentication token
 	*
 	* @apiSuccess {Object[]} Meeting array of n meeting
 	* @apiSuccess {String} Meeting.project_name Name of the project
@@ -366,36 +372,41 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiError message The user with id $id doesn't exist.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
 	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
 	*/
-	public function getNextMeetingsAction(Request $request, $id)
+	public function getNextMeetingsAction(Request $request, $token)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Event')->findNextMeetings($id));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Event')->findNextMeetings($user->getId()));
 	}
 
 	/**
-	* @api {get} /V1/API/User/getProjects/:id Request the user's projects with the user's id
+	* @api {get} /V1.3/user/getprojects/:token Request the user connected projects
 	* @apiName getProjects
 	* @apiGroup Users
 	* @apiVersion 0.0.1
 	*
-	* @apiParam {string} _token user's authentication token
+	* @apiParam {string} token user's authentication token
 	*
 	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.project_id id of the project
-	* @apiSuccess {String} Project.project_name Name of the project
-	* @apiSuccess {String} Project.project_description Description of the project
-	* @apiSuccess {String} Project.project_logo Logo of the project
+	* @apiSuccess {Number} Project.id id of the project
+	* @apiSuccess {String} Project.name Name of the project
+	* @apiSuccess {String} Project.description Description of the project
+	* @apiSuccess {String} Project.logo Logo of the project
 	* @apiSuccess {String} Project.contact_mail Mail for the project
 	* @apiSuccess {String} Project.facebook Facebook of the project
 	* @apiSuccess {String} Project.twitter Twitter of the project
@@ -404,44 +415,49 @@ class UserController extends RolesAndTokenVerificationController
 	* 	{
 	*		"Project 1":
 	*		{
-	*			"project_id": 2,
-	*			"project_name": "Grappbox",
-	*			"project_description": "Grappbox est une application de gestion de projet.",
-	*			"project_logo": "Grappbox.com/logo.png",
+	*			"id": 2,
+	*			"name": "Grappbox",
+	*			"description": "Grappbox est une application de gestion de projet.",
+	*			"logo": "Grappbox.com/logo.png",
 	*			"contact_mail": "contact@grappbox.com",
 	*			"facebook": "www.facebook.com/GrappBox",
 	*			"twitter": "twitter.com/GrappBox"
 	*		}
 	* 	}
 	*
-	* @apiError message 404 not found.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
 	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
 	*/
-	public function getProjectsAction(Request $request, $id)
+	public function getProjectsAction(Request $request, $token)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findUserProjects($id));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findUserProjects($user->getId()));
 	}
 
 	/**
-	* @api {get} /V1/API/User/getAllTasks/:id Request the user's tasks with the user's id
+	* @api {get} /V1.3/user/getalltasks/:token Request the user connected tasks
 	* @apiName getAllTasks
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {string} _token user's authentication token
+	* @apiParam {string} token user's authentication token
 	*
 	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.task_id id of the task
-	* @apiSuccess {String} Task.task_title title of the task
+	* @apiSuccess {Number} Task.id id of the task
+	* @apiSuccess {String} Task.title title of the task
 	* @apiSuccess {String} Task.description Description of the task
 	* @apiSuccess {Number} Task.project_id Project id link to the task
 	* @apiSuccess {String} Task.project_name Project's name
@@ -454,8 +470,8 @@ class UserController extends RolesAndTokenVerificationController
 	* 	{
 	*		"Task 1":
 	*		{
-	*			"task_id": 2,
-	*			"task_title": "Whiteboard API",
+	*			"id": 2,
+	*			"title": "Whiteboard API",
 	*			"description": "Implémentation de la partie whiteboard de l'API",
 	*			"project_id": 3,
 	*			"project_name": "Grappbox",
@@ -466,34 +482,39 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiError message 404 not found.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
 	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
 	*/
-	public function getAllTasksAction(Request $request, $id)
+	public function getAllTasksAction(Request $request, $token)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserAllTasks($id));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserAllTasks($user->getId()));
 	}
 
 	/**
-	* @api {get} /V1/API/User/getCurrentAndNextTasks/:id Request the user's current and next tasks with the user's id
+	* @api {get} /V1.3/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
 	* @apiName getCurrentAndNextTasks
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 1.3.0
 	*
-	* @apiParam {string} _token user's authentication token
+	* @apiParam {string} token user's authentication token
 	* 
 	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.task_id id of the task
-	* @apiSuccess {String} Task.task_title title of the task
+	* @apiSuccess {Number} Task.id id of the task
+	* @apiSuccess {String} Task.title title of the task
 	* @apiSuccess {String} Task.description Description of the task
 	* @apiSuccess {Number} Task.project_id Project id link to the task
 	* @apiSuccess {String} Task.project_name Project's name
@@ -506,8 +527,8 @@ class UserController extends RolesAndTokenVerificationController
 	* 	{
 	*		"Task 1":
 	*		{
-	*			"task_id": 2,
-	*			"task_title": "Whiteboard API",
+	*			"id": 2,
+	*			"title": "Whiteboard API",
 	*			"description": "Implémentation de la partie whiteboard de l'API",
 	*			"project_id": 3,
 	*			"project_name": "Grappbox",
@@ -518,20 +539,25 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiError message 404 not found.
 	* @apiErrorExample Invalid Method Value
 	*     HTTP/1.1 404 Not Found
 	*     {
 	*       "message": "404 not found."
 	*     }
 	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
 	*/
-	public function getCurrentAndNextTasksAction(Request $request, $id)
+	public function getCurrentAndNextTasksAction(Request $request, $token)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserCurrentAndNextTasks($id));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserCurrentAndNextTasks($user->getId()));
 	}
 }

@@ -14,7 +14,7 @@ class TaskRepository extends EntityRepository
 {
 	public function findUserAllTasks($id)
 	{
-		$qb = $this->createQueryBuilder('t')->where('t.users = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
 		
 		$tasks = $qb->getQuery()->getResult();
 
@@ -34,7 +34,7 @@ class TaskRepository extends EntityRepository
 			$finishedAt = $task->getFinishedAt();
 			$createdAt = $task->getCreatedAt();
 
-			$arr["Task ".$i] = array("task_id" => $taskId, "task_title" => $taskTitle, "description" => $description, "project_id" => $projectId, "project_name" => $projectName,
+			$arr["Task ".$i] = array("id" => $taskId, "title" => $taskTitle, "description" => $description, "project_id" => $projectId, "project_name" => $projectName,
 				"due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt);
 			$i++;
 		}
@@ -44,7 +44,7 @@ class TaskRepository extends EntityRepository
 
 	public function findUserCurrentAndNextTasks($id)
 	{
-		$qb = $this->createQueryBuilder('t')->where('t.users = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
 		
 		$tasks = $qb->getQuery()->getResult();
 
@@ -67,7 +67,7 @@ class TaskRepository extends EntityRepository
 				$startedAt = $task->getStartedAt();
 				$createdAt = $task->getCreatedAt();
 
-				$arr["Task ".$i] = array("task_id" => $taskId, "task_title" => $taskTitle, "description" => $description, "project_id" => $projectId, "project_name" => $projectName,
+				$arr["Task ".$i] = array("id" => $taskId, "title" => $taskTitle, "description" => $description, "project_id" => $projectId, "project_name" => $projectName,
 					"due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt);
 				$i++;
 			}

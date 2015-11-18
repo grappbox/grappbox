@@ -155,7 +155,7 @@ class ProjectRepository extends EntityRepository
 				$contactMail = $project->getContactEmail();
 				$facebook = $project->getFacebook();
 				$twitter = $project->getTwitter();
-				$arr["Project ".$i] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_logo" => $projectLogo, "contact_mail" => $contactMail,
+				$arr["Project ".$i] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "contact_mail" => $contactMail,
 					"facebook" => $facebook, "twitter" => $twitter);
 				$i++;
 			}
@@ -175,7 +175,7 @@ class ProjectRepository extends EntityRepository
 						$contactMail = $project->getContactEmail();
 						$facebook = $project->getFacebook();
 						$twitter = $project->getTwitter();
-						$arr["Project ".$i] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_logo" => $projectLogo, "contact_mail" => $contactMail,
+						$arr["Project ".$i] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "contact_mail" => $contactMail,
 							"facebook" => $facebook, "twitter" => $twitter);
 						$i++;
 					}

@@ -28,7 +28,7 @@ class EventRepository extends EntityRepository
 
 		foreach ($meetings as $meeting) {
 			$endDate = $meeting->getEndDate();
-			$creatorId = $meeting->getCreatorId();
+			$creatorId = $meeting->getCreatorUser()->getId();
 
 			if ($endDate > $defaultDate && $creatorId == $id)
 			{
@@ -53,10 +53,10 @@ class EventRepository extends EntityRepository
 			}
 			else if ($endDate > $defaultDate)
 			{
-				$eventUsers = $meeting->getEventusers();
+				$users = $meeting->getUsers();
 
-				foreach ($eventUsers as $eventUser) {
-					$userId = $eventUser->getUserId();
+				foreach ($users as $user) {
+					$userId = $user->getId();
 
 					if ($userId == $id)
 					{

@@ -30,51 +30,41 @@ role_delPersonRole:
 
 
 user_basicInformations:
-    path:       /User/basicInformations/{id}
+    path:       V1.3/user/basicinformations/{token}
     defaults:   { _controller: APIBundle:User:basicInformations }
+    methods: [GET, PUT]
+
+user_password:
+    path:       V1.3/user/password/{id}
+    defaults:   { _controller: APIBundle:User:password }
     requirements:
         id: \d+
     methods: [GET, PUT]
 
 user_getIdByName:
-    path:       /User/getIdByName/{firstname}.{lastname}
+    path:       V1.3/user/getidbyname/{token}/{firstname}/{lastname}
     defaults:   { _controller: APIBundle:User:getIdByName }
     methods: [GET]
 
 user_getNextMeetings:
-    path:       /User/getNextMeetings/{id}
+    path:       V1.3/user/getnextmeetings/{token}
     defaults:   { _controller: APIBundle:User:getNextMeetings }
-    requirements:
-        id: \d+
     methods: [GET]
 
 user_getProjects:
-    path:       User/getProjects/{id}
+    path:       V1.3/user/getprojects/{token}
     defaults:   { _controller: APIBundle:User:getProjects }
-    requirements:
-        id: \d+
     methods: [GET]
 
 user_getAllTasks:
-    path:       /User/getAllTasks/{id}
+    path:       V1.3/user/getalltasks/{token}
     defaults:   { _controller: APIBundle:User:getAllTasks }
-    requirements:
-        id: \d+
     methods: [GET]
 
 user_getCurrentAndNextTasks:
-    path:       /User/getCurrentAndNextTasks/{id}
+    path:       V1.3/user/getcurrentandnexttasks/{token}
     defaults:   { _controller: APIBundle:User:getCurrentAndNextTasks }
-    requirements:
-        id: \d+
     methods: [GET]
-
-user_password:
-    path:       /User/password/{id}
-    defaults:   { _controller: APIBundle:User:password }
-    requirements:
-        id: \d+
-    methods: [GET, PUT]
 
 
 
