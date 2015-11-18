@@ -1,0 +1,34 @@
+﻿<Page
+    x:Class="GrappBox.View.WhiteBoardList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:viewModel="using:GrappBox.ViewModel"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customControler="using:GrappBox.CustomControler"
+    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
+    xmlns:local="using:GrappBox.View"
+    xmlns:model="using:GrappBox.Model"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    DataContext="GrappBox.ViewModel.WhiteBoardListViewModel"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1" MenuState="Left" IsDoubleTapEnabled="False">
+        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
+            <Grid>
+                <Button Content="DashBoard"/>
+            </Grid>
+        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+        <slideMenu:SlideInMenuContentControl.Content>
+            <Grid Width="400" Height="640" Background="Black">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+                <ComboBox Grid.Row="0" ItemsSource="{Binding Projects}"></ComboBox>
+                <ListView Grid.Row="1" ItemsSource="{Binding WhiteBoards}"/>
+            </Grid>
+        </slideMenu:SlideInMenuContentControl.Content>
+    </slideMenu:SlideInMenuContentControl>
+</Page>

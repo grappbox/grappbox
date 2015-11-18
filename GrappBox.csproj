@@ -70,6 +70,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>bin\x86\Debug\GrappBox.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -92,28 +93,44 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\CustomCanvas.cs" />
-    <Compile Include="CustomControler\FlyoutMenu.xaml.cs">
-      <DependentUpon>FlyoutMenu.xaml</DependentUpon>
+    <Compile Include="CustomControler\BrushPan.xaml.cs">
+      <DependentUpon>BrushPan.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControler\Colorpan.xaml.cs">
+      <DependentUpon>Colorpan.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControler\CustomCanvas.cs" />
     <Compile Include="CustomControler\SlidingMenu\ActiveState.cs" />
     <Compile Include="CustomControler\CustomPivot.cs" />
     <Compile Include="CustomControler\SlidingMenu\MenuState.cs" />
     <Compile Include="CustomControler\SlidingMenu\SlideInMenuContentControl.cs" />
     <Compile Include="ApiCommunication\User.cs" />
+    <Compile Include="CustomControler\WBListViewElements.xaml.cs">
+      <DependentUpon>WBListViewElements.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControler\WhiteBoardText.xaml.cs">
+      <DependentUpon>WhiteBoardText.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ApiCommunication\ApiCommunication.cs" />
+    <Compile Include="Model\CustomShapes.cs" />
     <Compile Include="Model\DashBoardModel.cs" />
+    <Compile Include="Model\ICustomShape.cs" />
     <Compile Include="Model\ShapeControler.cs" />
+    <Compile Include="Model\WhiteBoardListModel.cs" />
     <Compile Include="Model\WhiteBoardModel.cs" />
+    <Compile Include="ViewModel\WhiteBoardListViewModel.cs" />
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WhiteBoardListView.xaml.cs">
+      <DependentUpon>WhiteBoardListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WhiteBoardView.xaml.cs">
       <DependentUpon>WhiteBoardView.xaml</DependentUpon>
@@ -125,6 +142,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\colors.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
@@ -137,9 +155,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="CustomControler\FlyoutMenu.xaml">
+    <Page Include="CustomControler\BrushPan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\Colorpan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\WBListViewElements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\WhiteBoardText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ressources\Converters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ressources\CustomColors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="CustomControler\SlidingMenu\Generic.xaml">
       <SubType>Designer</SubType>
@@ -150,7 +189,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Ressources\CustomStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="View\DashBoardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\WhiteBoardListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

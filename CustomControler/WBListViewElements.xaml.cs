@@ -17,11 +17,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GrappBox.CustomControler
 {
-    public sealed partial class FlyoutMenu : UserControl
+    public sealed partial class WBListViewElements : UserControl
     {
-        public FlyoutMenu()
+        public WBListViewElements()
         {
             this.InitializeComponent();
         }
+
     }
 }

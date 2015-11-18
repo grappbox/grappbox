@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml.Controls;
+﻿using System;
+using System.Diagnostics;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
 
@@ -11,7 +13,14 @@ namespace GrappBox.View
     {
         public WhiteBoardView()
         {
-            this.InitializeComponent();
+            try
+            {
+                this.InitializeComponent();
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
             this.DataContext = new ViewModel.WhiteBoardViewModel();
         }
         /// <summary>

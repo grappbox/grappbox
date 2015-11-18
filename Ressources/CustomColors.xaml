@@ -1,0 +1,13 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox">
+    <Color x:Key="RedGrappBox">#c0392b</Color>
+    <Color x:Key="GrayGrappBox">#3c3b3b</Color>
+    <SolidColorBrush x:Key="GrayGrappBoxBrush" Color="{StaticResource GrayGrappBox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="RedGrappBoxBrush" Color="{StaticResource RedGrappBox}"></SolidColorBrush>
+    <Style TargetType="CommandBar">
+        <Setter Property="Background" Value="{StaticResource GrayGrappBox}"/>
+        <Setter Property="Foreground" Value="{StaticResource RedGrappBox}"/>
+    </Style>
+</ResourceDictionary>

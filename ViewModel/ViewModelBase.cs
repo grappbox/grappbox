@@ -12,9 +12,59 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.Foundation;
 using System.Diagnostics;
+using Windows.UI.Xaml.Media;
+using GrappBox.CustomControler;
+using Windows.UI.Text;
 
 namespace GrappBox.ViewModel
 {
+    public enum MenuEnum
+    {
+        DASHBOARD,
+        WHITEBOARD
+    }
+    public class SenderParameterConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType,
+                              object parameter, string language)
+        {
+            return parameter;
+        }
+
+        public object ConvertBack(object value, Type targetType,
+                                  object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class BoolToFontWeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType,
+                              object parameter, string language)
+        {
+            return ((bool)value) ? FontWeights.Bold : FontWeights.Normal;
+        }
+
+        public object ConvertBack(object value, Type targetType,
+                                  object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class BoolToFontStyleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType,
+                              object parameter, string language)
+        {
+            return ((bool)value) ? FontStyle.Italic : FontStyle.Normal;
+        }
+
+        public object ConvertBack(object value, Type targetType,
+                                  object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class TappedPositionConverter : IValueConverter
     {
         public object Convert(
@@ -36,6 +86,77 @@ namespace GrappBox.ViewModel
             string language)
         {
             throw new NotImplementedException();
+        }
+    }
+    public class DoubleInputConverter : IValueConverter
+    {
+        public object Convert(
+        object value,
+        Type targetType,
+        object parameter,
+        string language)
+        {
+            var elem = (BrushPan)parameter;
+            return elem.SelectedThickness;
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class BrushTappedConverter : IValueConverter
+    {
+        public object Convert(
+        object value,
+        Type targetType,
+        object parameter,
+        string language)
+        {
+            var element = (Colorpan)parameter;
+
+            return element.SelectedColor;
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class NumberInverter : IValueConverter
+    {
+        public object Convert(
+        object value,
+        Type targetType,
+        object parameter,
+        string language)
+        {
+            if (value.GetType() == typeof(double))
+                value = (double)(value) * -1.0;
+            if (value.GetType() == typeof(int))
+                value = (int)(value) * -1;
+            return value;
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            string language)
+        {
+            if (value.GetType() == typeof(double))
+                value = (double)(value) * -1.0;
+            if (value.GetType() == typeof(int))
+                value = (int)(value) * -1;
+            return value;
         }
     }
     public class HoldPositionConverter : IValueConverter
@@ -61,7 +182,7 @@ namespace GrappBox.ViewModel
             throw new NotImplementedException();
         }
     }
-    public class ManipPositionConverter : IValueConverter
+    public class ManipStartedPositionConverter : IValueConverter
     {
         public object Convert(
         object value,
@@ -70,6 +191,52 @@ namespace GrappBox.ViewModel
         string language)
         {
             var args = (ManipulationStartedRoutedEventArgs)value;
+            var element = (FrameworkElement)parameter;
+
+            return args.Position;
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ManipDeltaPositionConverter : IValueConverter
+    {
+        public object Convert(
+        object value,
+        Type targetType,
+        object parameter,
+        string language)
+        {
+            var args = (ManipulationDeltaRoutedEventArgs)value;
+            var element = (FrameworkElement)parameter;
+
+            return args.Position;
+        }
+
+        public object ConvertBack(
+            object value,
+            Type targetType,
+            object parameter,
+            string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ManipCompletedPositionConverter : IValueConverter
+    {
+        public object Convert(
+        object value,
+        Type targetType,
+        object parameter,
+        string language)
+        {
+            var args = (ManipulationCompletedRoutedEventArgs)value;
             var element = (FrameworkElement)parameter;
 
             return args.Position;

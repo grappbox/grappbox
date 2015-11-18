@@ -5,52 +5,54 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GrappBox.View"
     xmlns:customControl="using:GrappBox.CustomControler"
+    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="viewModel.DashBoardViewModel">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"></RowDefinition>
-            <RowDefinition Height="15*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Button x:Name="MenuButton" Content="Menu" Grid.Row="0" BorderThickness="0" HorizontalAlignment="Center">
-            <Button.Flyout>
-                <Flyout Placement="Top">
-                    <customControl:FlyoutMenu/>
-                </Flyout>
-            </Button.Flyout>
-        </Button>
-        <Pivot Title="DashBoard" Grid.Row="1">
-        <PivotItem Header="General Menu">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl">
+        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
             <Grid>
-                <ListBox x:Name="listView" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White">
-                    <ListBoxItem Content="Next Meetings"></ListBoxItem>
-                    <ListBoxItem Content="Project Progression"></ListBoxItem>
-                    <ListBoxItem Content="Teams Occupation"></ListBoxItem>
-                    <ListBoxItem Content="Bug Tracker"></ListBoxItem>
-                </ListBox>
+                <Button Content="WhiteBoard" Click="Button_Click" />
             </Grid>
-        </PivotItem>
-        <PivotItem Header="Next Meetings">
-            <Grid>
-                <TextBlock>No Meetings</TextBlock>
-            </Grid>
-        </PivotItem>
-        <PivotItem Header="Teams Occupation">
-            <Grid>
-                <TextBlock>No Team</TextBlock>
-            </Grid>
-        </PivotItem>
-        <PivotItem Header="Projects Progression">
-            <Grid>
-                <TextBlock>No Projects</TextBlock>
-            </Grid>
-        </PivotItem>
-        <PivotItem Header="Bug Tracker">
+        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+        <slideMenu:SlideInMenuContentControl.RightMenuContent>
             <Grid/>
-        </PivotItem>
-    </Pivot>
-</Grid>
+        </slideMenu:SlideInMenuContentControl.RightMenuContent>
+        <slideMenu:SlideInMenuContentControl.Content>
+            <Grid Background="#FF0C0C0C" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" >
+                <Pivot Title="DashBoard">
+                    <PivotItem Header="General Menu">
+                        <Grid>
+                            <ListBox x:Name="listView" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White">
+                                <ListBoxItem Content="Next Meetings"></ListBoxItem>
+                                <ListBoxItem Content="Project Progression"></ListBoxItem>
+                                <ListBoxItem Content="Teams Occupation"></ListBoxItem>
+                                <ListBoxItem Content="Bug Tracker"></ListBoxItem>
+                            </ListBox>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="Next Meetings">
+                        <Grid>
+                            <TextBlock>No Meetings</TextBlock>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="Teams Occupation">
+                        <Grid>
+                            <TextBlock>No Team</TextBlock>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="Projects Progression">
+                        <Grid>
+                            <TextBlock>No Projects</TextBlock>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="Bug Tracker">
+                        <Grid/>
+                    </PivotItem>
+                </Pivot>
+            </Grid>
+        </slideMenu:SlideInMenuContentControl.Content>
+    </slideMenu:SlideInMenuContentControl>
 </Page>

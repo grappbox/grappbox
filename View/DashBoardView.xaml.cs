@@ -14,8 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// Pour en savoir plus sur le modèle d’élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkID=390556
-
 namespace GrappBox.View
 {
     /// <summary>
@@ -36,6 +34,11 @@ namespace GrappBox.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(WhiteBoardList));
         }
     }
 }
