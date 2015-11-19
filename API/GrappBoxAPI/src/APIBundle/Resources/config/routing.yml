@@ -1,30 +1,37 @@
 role_addProjectRoles:
-    path:       /Roles/addProjectRoles
+    path:       V1.6/roles/addprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:addProjectRoles }
     methods: [POST]
 
 role_delProjectRoles:
-    path:       /Roles/delProjectRoles
+    path:       V1.6/roles/delprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delProjectRoles }
     methods: [DELETE]
 
 role_putProjectRoles:
-    path:       /Roles/putProjectRoles
+    path:       V1.6/roles/putprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:updateProjectRoles }
     methods: [PUT]
 
+role_getProjectRoles:
+    path:       V1.6/roles/getprojectroles/{token}/{projectId}
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getProjectRoles }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
 role_assignPersonToRole:
-    path:       /Roles/assignPersonToRole
+    path:       V1.6/roles/assignpersontorole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:assignPersonToRole }
     methods: [POST]
 
 role_updatePersonRole:
-    path:       /Roles/updatePersonRole
+    path:       V1.6/roles/putpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:updatePersonRole }
     methods: [PUT]
 
 role_delPersonRole:
-    path:       /Roles/delPersonRole
+    path:       V1.6/roles/delpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delPersonRole }
     methods: [DELETE]
 
@@ -201,44 +208,69 @@ dashboard_getNumberBugs:
 
 
 
+# test login/signin
+accountAdministration_loginForm:
+    path:       V1.0/accountadministration/loginform
+    defaults:   { _controller: APIBundle:AccountAdministration:loginForm }
+accountAdministration_signInForm:
+    path:       V1.0/accountadministration/signinform
+    defaults:   { _controller: APIBundle:AccountAdministration:signInForm }
+# end test login/signin
+
+accountAdministration_login:
+    path:       V1.0/accountadministration/login
+    defaults:   { _controller: APIBundle:AccountAdministration:login }
+    methods:    [POST]
+
+accountAdministration_logout:
+    path:       V1.0/accountadministration/logout
+    defaults:   { _controller:APIBundle:AccountAdministration:logout}
+    methods:    [POST]
+
+accountAdministration_signIn:
+    path:       V1.0/accountadministration/signin
+    defaults:   { _controller: APIBundle:AccountAdministration:signIn }
+    methods:    [POST]
+
+
+
 cloud_streamActions:
-  path:     /Cloud/stream
+  path:     V1.5/cloud/stream
   defaults:   { _controller: APIBundle:Cloud:stream, _format: json}
   methods: [POST, DELETE]
 
-
 cloud_sendFile:
-  path:     /Cloud/sendFile
+  path:     V1.5/cloud/sendfile
   defaults:   { _controller: APIBundle:Cloud:sendFile , _format: json}
   methods: [PUT]
 
 cloud_getList:
-    path:       /Cloud/getList/{token}/{idProject}/{path}/{password}
+    path:       V1.5/cloud/getlist/{token}/{idProject}/{path}/{password}
     defaults:   { _controller: APIBundle:Cloud:getList,  password: null, _format: json}
     methods: [GET]
 
 cloud_getFile:
-    path:       /Cloud/getFile/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
+    path:       V1.5/cloud/getfile/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
     defaults:   { _controller: APIBundle:Cloud:getFile, password: null, passwordSafe: null }
     methods: [GET]
 
 cloud_setSafePass:
-    path:       /Cloud/setSafePass
+    path:       V1.5/cloud/setsafepass
     defaults:   { _controller: APIBundle:Cloud:setSafePass }
     methods: [POST]
 
 cloud_delete:
-    path:       /Cloud/del
+    path:       V1.5/cloud/del
     defaults:   { _controller: APIBundle:Cloud:del , _format: json}
     methods: [DELETE]
 
 cloud_createDir:
-    path:       /Cloud/createDir
+    path:       V1.5/cloud/createdir
     defaults:   { _controller: APIBundle:Cloud:createDir, _format: json }
     methods: [POST]
 
 cloud_createCloud: #TODO : Delete this route, it's a test route
-    path:       /Cloud/createCloud/{projectId}
+    path:       V1.5/cloud/createcloud/{projectId}
     defaults:   { _controller: APIBundle:Cloud:createCloud }
     methods: [GET]
 
@@ -452,30 +484,6 @@ meeting_addAlert:
     requirements:
         id: \d+
 
-
-# test login/signin
-accountAdministration_loginForm:
-    path:       V1.0/accountadministration/loginform
-    defaults:   { _controller: APIBundle:AccountAdministration:loginForm }
-accountAdministration_signInForm:
-    path:       V1.0/accountadministration/signinform
-    defaults:   { _controller: APIBundle:AccountAdministration:signInForm }
-# end test login/signin
-
-accountAdministration_login:
-    path:       V1.0/accountadministration/login
-    defaults:   { _controller: APIBundle:AccountAdministration:login }
-    methods:    [POST]
-
-accountAdministration_logout:
-    path:       V1.0/accountadministration/logout
-    defaults:   { _controller:APIBundle:AccountAdministration:logout}
-    methods:    [POST]
-
-accountAdministration_signIn:
-    path:       V1.0/accountadministration/signin
-    defaults:   { _controller: APIBundle:AccountAdministration:signIn }
-    methods:    [POST]
 
 
 personnalSettings_editPhoto:

@@ -12,16 +12,16 @@ use APIBundle\Entity\Role;
 use APIBundle\Entity\ProjectUserRole;
 
 /**
- *  @IgnoreAnnotation("apiName")
- *  @IgnoreAnnotation("apiGroup")
- *  @IgnoreAnnotation("apiVersion")
- *  @IgnoreAnnotation("apiSuccess")
- *  @IgnoreAnnotation("apiSuccessExample")
- *  @IgnoreAnnotation("apiError")
- *  @IgnoreAnnotation("apiErrorExample")
- *  @IgnoreAnnotation("apiParam")
- *  @IgnoreAnnotation("apiParamExample")
- */
+*  @IgnoreAnnotation("apiName")
+*  @IgnoreAnnotation("apiGroup")
+*  @IgnoreAnnotation("apiVersion")
+*  @IgnoreAnnotation("apiSuccess")
+*  @IgnoreAnnotation("apiSuccessExample")
+*  @IgnoreAnnotation("apiError")
+*  @IgnoreAnnotation("apiErrorExample")
+*  @IgnoreAnnotation("apiParam")
+*  @IgnoreAnnotation("apiParamExample")
+*/
 class RolesAndTokenVerificationController extends Controller
 {
   // return user if token is correct
@@ -71,10 +71,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {post} /V1/API/Roles/addProjectRoles Add a project role
+  * @api {post} /V1.6/roles/addprojectroles Add a project role
   * @apiName addProjectRoles
   * @apiGroup Roles
-  * @apiVersion 0.0.1
+  * @apiVersion 1.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -112,9 +112,21 @@ class RolesAndTokenVerificationController extends Controller
   *			"roleId":1
   * 	}
   *
-  * @apiError message Missing parameter
-  * @apiError message Bad authentication token
-  * @apiError message Insufficient user rights
+  * @apiErrorExample Missing Parameter
+  *		HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
+  * 	}
+  * @apiErrorExample Bad Authentication Token
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
+  * @apiErrorExample Insufficient User Rights
+  * 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
   * @apiErrorExample Invalid Method Value
   *     HTTP/1.1 404 Not Found
   *     {
@@ -154,39 +166,56 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-	* @api {delete} /V1/API/Roles/delProjectRoles Delete a project role
-	* @apiName delProjectRoles
-	* @apiGroup Roles
-	* @apiVersion 0.0.1
-	*
-	* @apiParam {String} _token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} roleId Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"_token": "aeqf231ced651qcd",
-	*		"projectId": 1,
-	*		"roleId": 3
-	* 	}
-	*
-	* @apiSuccess message Remove role success.
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "Remove role success."
-	*	  }
-	*
-	* @apiError message Missing parameters
-	* @apiError message Bad authentication token
-	* @apiError message Insufficient user rights
-	* @apiErrorExample Role not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The role with id 3 doesn't exist."
-	*     }
-	*
-	*/
+  * @api {delete} /V1.6/roles/delprojectroles Delete a project role
+  * @apiName delProjectRoles
+  * @apiGroup Roles
+  * @apiVersion 1.6.0
+  *
+  * @apiParam {String} _token Token of the person connected
+  * @apiParam {Number} projectId Id of the project
+  * @apiParam {Number} roleId Id of the role
+  *
+  * @apiParamExample {json} Request-Example:
+  * 	{
+  *		"_token": "aeqf231ced651qcd",
+  *		"projectId": 1,
+  *		"roleId": 3
+  * 	}
+  *
+  * @apiSuccess message Remove role success.
+  * @apiSuccessExample Success-Response
+  *     HTTP/1.1 200 OK
+  *	  {
+  *		"message" : "Remove role success."
+  *	  }
+  *
+  * @apiErrorExample Missing Parameter
+  *		HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
+  * 	}
+  * @apiErrorExample Bad Authentication Token
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
+  * @apiErrorExample Insufficient User Rights
+  * 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+  * @apiErrorExample Invalid Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "message": "404 not found."
+  *     }
+  * @apiErrorExample Role not found
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "The role with id 3 doesn't exist."
+  *     }
+  *
+  */
   public function delProjectRolesAction(Request $request)
   {
   	$user = $this->checkToken($request->request->get('_token'));
@@ -212,53 +241,71 @@ class RolesAndTokenVerificationController extends Controller
 	return new JsonResponse("Remove role success.");
   }
 
-  	/**
-	* @api {put} /V1/API/Roles/updateProjectRoles Update a project role
-	* @apiName updateProjectRoles
-	* @apiGroup Roles
-	* @apiVersion 0.0.1
-	*
-	* @apiParam {String} _token Token of the person connected
-	* @apiParam {Number} roleId Id of the role
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} [name] Name of the role
-	* @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-	* @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-	* @apiParam {Number} [gantt] Access rights on the project's gantt
-	* @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-	* @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-	* @apiParam {Number} [event] Access rights on the project's meetings
-	* @apiParam {Number} [task] Access rights on the project's tasks
-	* @apiParam {Number} [projectSettings] Access rights on the project's settings
-	* @apiParam {Number} [cloud] Access rights on the project's cloud
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"_token": "aeqf231ced651qcd",
-	*		"roleId": 2,
-	*		"projectId": 1,
-	*		"name": "Admin",
-	*		"customerTimeline": 0,
-	*		"cloud": 0
-	* 	}
-	*
-	* @apiSuccess message Update role success.
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Update role success."
-	* 	}
-	*
-	* @apiError message Missing parameter
-	* @apiError message Bad authentication token
-	* @apiError message Insufficient user rights
-	* @apiErrorExample Role not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The role with id 2 doesn't exist."
-	*     }
-	*
-	*/
+  /**
+  * @api {put} /V1.6/roles/putprojectroles Update a project role
+  * @apiName updateProjectRoles
+  * @apiGroup Roles
+  * @apiVersion 1.6.0
+  *
+  * @apiParam {String} _token Token of the person connected
+  * @apiParam {Number} roleId Id of the role
+  * @apiParam {Number} projectId Id of the project
+  * @apiParam {String} [name] Name of the role
+  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
+  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
+  * @apiParam {Number} [gantt] Access rights on the project's gantt
+  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
+  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
+  * @apiParam {Number} [event] Access rights on the project's meetings
+  * @apiParam {Number} [task] Access rights on the project's tasks
+  * @apiParam {Number} [projectSettings] Access rights on the project's settings
+  * @apiParam {Number} [cloud] Access rights on the project's cloud
+  *
+  * @apiParamExample {json} Request-Example:
+  * 	{
+  *			"_token": "aeqf231ced651qcd",
+  *			"roleId": 2,
+  *			"projectId": 1,
+  *			"name": "Admin",
+  *			"customerTimeline": 0,
+  *			"event": 1,
+  *			"cloud": 0
+  * 	}
+  *
+  * @apiSuccess message Update role success.
+  *
+  * @apiSuccessExample Success-Response:
+  * 	{
+  *		"Update role success."
+  * 	}
+  *
+  * @apiErrorExample Missing Parameter
+  *		HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
+  * 	}
+  * @apiErrorExample Bad Authentication Token
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
+  * @apiErrorExample Insufficient User Rights
+  * 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+  * @apiErrorExample Invalid Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "message": "404 not found."
+  *     }
+  * @apiErrorExample Role not found
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "The role with id 2 doesn't exist."
+  *     }
+  *
+  */
   public function updateProjectRolesAction(Request $request)
   {
   	$user = $this->checkToken($request->request->get('_token'));
@@ -322,42 +369,133 @@ class RolesAndTokenVerificationController extends Controller
 	return new JsonResponse("Update role success.");
   }
 
-	/**
-	* @api {post} /V1/API/Roles/assignPersonToRole Assign a person to a role
-	* @apiName assignPersonToRole
-	* @apiGroup Roles
-	* @apiVersion 0.0.1
-	*
-	* @apiParam {String} _token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} userId Id of the user
-	* @apiParam {Number} roleId Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"_token": "aeqf231ced651qcd",
-	*		"projectId": 1,
-	*		"userId": 6,
-	*		"roleId": 2
-	* 	}
-	*
-	* @apiSuccess {Number} purId Id of the project user role created
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"purId":1
-	* 	}
-	*
-	* @apiError message Missing parameter
-	* @apiError message Bad authentication token
-	* @apiError message Insufficient user rights
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	*/
+  /**
+  * @api {get} /V1.6/roles/getprojectroles/:token/:projectId Get all project roles
+  * @apiName GetProjectRoles
+  * @apiGroup Roles
+  * @apiVersion 1.6.0
+  *
+  * @apiParam {String} token Token of the person connected
+  * @apiParam {Number} projectId Id of the projectId
+  *
+  * @apiSuccess message Update role success.
+  *
+  * @apiSuccessExample Success-Response:
+  * 	{
+  *		"Update role success."
+  * 	}
+  *
+  * @apiErrorExample Bad Authentication Token
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
+  * @apiErrorExample Insufficient User Rights
+  * 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+  * @apiErrorExample Invalid Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "message": "404 not found."
+  *     }
+  * @apiErrorExample Roles not found
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "The're no roles for the project with id 2"
+  *     }
+  *
+  */
+  public function getProjectRolesAction(Request $request, $token, $projectId)
+  {
+	$user = $this->checkToken($token);
+	if (!$user)
+		return ($this->setBadTokenError());
+	if (!$this->checkRoles($user, $projectId, "role"))
+		return $this->setNoRightsError();
+
+	$em = $this->getDoctrine()->getManager();
+
+	$roles = $em->getRepository('APIBundle:Role')->findByprojectId($projectId);
+	
+	if ($roles === null)
+	{
+		throw new NotFoundHttpException("The're no roles for the project with id ".$projectId);
+	}
+
+	$arr =array();
+	$i = 1;
+
+	foreach ($roles as $role) {
+		$roleId = $role->getId();
+		$roleName = $role->getName();
+		$teamTimeline = $role->getTeamTimeline();
+		$customerTimeline = $role->getCustomerTimeline();
+		$gantt = $role->getGantt();
+		$whiteboard = $role->getWhiteboard();
+		$bugtracker = $role->getBugtracker();
+		$event = $role->getEvent();
+		$task = $role->getTask();
+		$projectSettings = $role->getProjectSettings();
+		$cloud = $role->getCloud();
+
+		$arr["Role ".$i] = array("id" => $roleId, "name" => $roleName, "team_timeline" => $teamTimeline, "customer_timeline" => $customerTimeline, "gantt" => $gantt,
+			"whiteboard" => $whiteboard, "bugtracker" => $bugtracker, "event" => $event, "task" => $task, "projectSettings" => $projectSettings, "cloud" => $cloud);
+		$i++;
+	}
+
+	return new JsonResponse($arr);
+  }
+
+  /**
+  * @api {post} /V1.6/roles/assignpersontorole Assign a person to a role
+  * @apiName assignPersonToRole
+  * @apiGroup Roles
+  * @apiVersion 1.6.0
+  *
+  * @apiParam {String} _token Token of the person connected
+  * @apiParam {Number} projectId Id of the project
+  * @apiParam {Number} userId Id of the user
+  * @apiParam {Number} roleId Id of the role
+  *
+  * @apiParamExample {json} Request-Example:
+  * 	{
+  *		"_token": "aeqf231ced651qcd",
+  *		"projectId": 1,
+  *		"userId": 6,
+  *		"roleId": 2
+  * 	}
+  *
+  * @apiSuccess {Number} purId Id of the project user role created
+  *
+  * @apiSuccessExample Success-Response:
+  * 	{
+  *			"purId":1
+  * 	}
+  *
+  * @apiErrorExample Missing Parameter
+  *		HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
+  * 	}
+  * @apiErrorExample Bad Authentication Token
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
+  * @apiErrorExample Insufficient User Rights
+  * 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+  * @apiErrorExample Invalid Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "message": "404 not found."
+  *     }
+  *
+  */
   public function assignPersonToRoleAction(Request $request)
   {
   	$user = $this->checkToken($request->request->get('_token'));
@@ -382,10 +520,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {put} /V1/API/Roles/updatePersonRole Update a person role
+  * @api {put} /V1.6/roles/putpersonrole Update a person role
   * @apiName updatePersonRole
   * @apiGroup Roles
-  * @apiVersion 0.0.1
+  * @apiVersion 1.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -407,9 +545,26 @@ class RolesAndTokenVerificationController extends Controller
   *			"Update of the project user role success."
   * 	}
   *
-  * @apiError message Missing parameter
-  * @apiError message Bad authentication token
-  * @apiError message Insufficient user rights
+  * @apiErrorExample Missing Parameter
+  *		HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
+  * 	}
+  * @apiErrorExample Bad Authentication Token
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
+  * @apiErrorExample Insufficient User Rights
+  * 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+  * @apiErrorExample Invalid Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "message": "404 not found."
+  *     }
   * @apiErrorExample Project user role not found
   *     HTTP/1.1 404 Not Found
   *     {
@@ -442,7 +597,7 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {delete} /V1/API/Roles/delPersonRole Delete a person role
+  * @api {delete} /V1.6/roles/delpersonrole Delete a person role
   * @apiName delPersonRole
   * @apiGroup Roles
   * @apiVersion 0.0.1
@@ -465,9 +620,26 @@ class RolesAndTokenVerificationController extends Controller
   *			"Remove project user role success."
   * 	}
   *
-  * @apiError message Missing parameter
-  * @apiError message Bad authentication token
-  * @apiError message Insufficient user rights
+  * @apiErrorExample Missing Parameter
+  *		HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Missing Parameter"
+  * 	}
+  * @apiErrorExample Bad Authentication Token
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  * 		"Bad Authentication Token"
+  * 	}
+  * @apiErrorExample Insufficient User Rights
+  * 	HTTP/1.1 403 Forbidden
+  * 	{
+  * 		"Insufficient User Rights"
+  * 	}
+  * @apiErrorExample Invalid Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "message": "404 not found."
+  *     }
   * @apiErrorExample Project user role not found
   *     HTTP/1.1 404 Not Found
   *     {
