@@ -33,7 +33,8 @@ SOURCES += main.cpp \
     WhiteboardButtonChoice.cpp \
     WhiteboardGraphicsView.cpp \
     customgraphicsdiamonditem.cpp \
-    CustomGraphicsHandWriteItem.cpp
+    CustomGraphicsHandWriteItem.cpp \
+    BodyWhiteboardWritingText.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -52,8 +53,11 @@ HEADERS  += MainWindow.h \
     WhiteboardButtonChoice.h \
     WhiteboardGraphicsView.h \
     customgraphicsdiamonditem.h \
-    CustomGraphicsHandWriteItem.h
+    CustomGraphicsHandWriteItem.h \
+    BodyWhiteboardWritingText.h
 
 RESOURCES += \
     temporaryressources.qrc \
     finalressources.qrc
+
+DISTFILES +=

@@ -14,6 +14,7 @@ void WhiteboardGraphicsView::contextMenuEvent(QContextMenuEvent *event)
     dropDownMenu.addAction("Losange");
     dropDownMenu.addSeparator();
     dropDownMenu.addAction("Hand write");
+    dropDownMenu.addAction("Add text");
     dropDownMenu.addSeparator();
     dropDownMenu.addAction("Erase");
 

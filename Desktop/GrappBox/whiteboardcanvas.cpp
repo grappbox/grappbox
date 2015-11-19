@@ -18,13 +18,14 @@ void WhiteboardCanvas::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton)
     {
+        if (event->button() == Qt::RightButton)
+            _MouseRightClickPoint = event->scenePos();
         DeleteCurrentObjectDraw();
         return;
     }
     QPointF mousePos = event->scenePos();
     QPen pen( QPen(QBrush(_BrushColor), _BrushWidth));
     QBrush backgroud(_BackgroundColor);
-    qDebug() << "Current Type = " << _CurrentType;
     switch (_CurrentType)
     {
         case LINE:
@@ -131,6 +132,31 @@ void WhiteboardCanvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void WhiteboardCanvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    if (_CurrentLine)
+    {
+        _ItemStacked.append(_CurrentLine);
+        //Send here to API
+    }
+    if (_CurrentEllipse)
+    {
+        _ItemStacked.append(_CurrentLine);
+        //Send here to API
+    }
+    if (_CurrentRect)
+    {
+        _ItemStacked.append(_CurrentRect);
+        //Send here to API
+    }
+    if (_CurrentDiamond)
+    {
+        _ItemStacked.append(_CurrentDiamond);
+        //Send here to API
+    }
+    if (_CurrentHandWriting)
+    {
+        _ItemStacked.append(_CurrentHandWriting);
+        //Send here to API
+    }
     _CurrentLine = NULL;
     _CurrentEllipse = NULL;
     _CurrentRect = NULL;
@@ -159,7 +185,51 @@ void WhiteboardCanvas::SetGraphicsType(GraphicsType type)
 {
     if (type == NONE)
         return;
+    if (type == TEXT)
+    {
+        _Popup = new BodyWhiteboardWritingText(dynamic_cast<QWidget*>(this->parent()));
+        _Popup->show();
+        connect(_Popup, SIGNAL(Accept(QString, bool, bool, int)), this, SLOT(OnTextPopupAdd(QString, bool, bool, int)));
+        connect(_Popup, SIGNAL(Cancel()), this, SLOT(OnTextPopupCancel()));
+    }
     if (type != _CurrentType)
         DeleteCurrentObjectDraw();
+    if (type != TEXT)
     _CurrentType = type;
+}
+
+void WhiteboardCanvas::SetBrushColor(const QColor &col)
+{
+    _BrushColor = col;
+}
+
+void WhiteboardCanvas::SetBrushWidth(qreal width)
+{
+    _BrushWidth = width;
+}
+
+void WhiteboardCanvas::SetBackgroundColor(const QColor &col)
+{
+    _BackgroundColor = col;
+}
+
+void WhiteboardCanvas::OnTextPopupCancel()
+{
+    _Popup->hide();
+    delete _Popup;
+}
+
+void WhiteboardCanvas::OnTextPopupAdd(QString str, bool italic, bool bold, int size)
+{
+    QGraphicsTextItem *text = new QGraphicsTextItem(str);
+    QFont font = text->font();
+    font.setItalic(italic);
+    font.setBold(bold);
+    font.setPixelSize(size);
+    text->setFont(font);
+    text->setPos(_MouseRightClickPoint - QPointF(text->document()->size().width() / 2, text->document()->size().height() / 2));
+    this->addItem(text);
+    _ItemStacked.append(text);
+    //Send here to API
+    OnTextPopupCancel();
 }

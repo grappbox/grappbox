@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/Mask">
         <file>Ressources/Mask/CircleMaskMemberPicture.png</file>
-        <file>Ressources/Mask/MaskProfil.bmp</file>
     </qresource>
     <qresource prefix="/Font">
         <file>Ressources/Font/OpenSans-Bold.ttf</file>
@@ -25,5 +24,8 @@
     </qresource>
     <qresource prefix="/Image">
         <file>Ressources/Title.png</file>
+    </qresource>
+    <qresource prefix="/Configuration">
+        <file>Ressources/ConfigurationFiles/WhiteboardColors.xml</file>
     </qresource>
 </RCC>

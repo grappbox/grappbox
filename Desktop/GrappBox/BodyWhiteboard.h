@@ -25,7 +25,18 @@ public:
 signals:
 
 public slots:
+    void OnQuitWhiteboard();
+    void OnEditWhiteboard(int id);
     void OnActionWhiteboard(int id);
+    void OnColorPenChange();
+    void OnColorBackgroudChange();
+    void OnPenSizeChange(int index);
+
+private:
+    void InitializeComboBox();
+    void InitializeColorPen();
+    void InitializeBackground();
+    void InitializePenWidth();
 
 private:
     int         _ProjectId;
@@ -33,7 +44,7 @@ private:
     MainWindow  *_MainApplication;
 
     QStackedLayout *_MainLayout;
-    QGridLayout *_WhiteboardChoice;
+    QVBoxLayout *_WhiteboardChoice;
     QScrollArea *_Area;
 
     QVBoxLayout *_MainLayoutWhiteboard;
@@ -41,10 +52,12 @@ private:
     WhiteboardCanvas    *_Whiteboard;
 
     QHBoxLayout *_MenuLayout;
-    QTableView *_Table;
+    QTableView *_TableColorPen;
+    QTableView *_TableBackgroud;
     QComboBox *_ColorPenChoice;
     QComboBox *_ColorBackgroundChoice;
     QComboBox *_PenSizeChoice;
+    QList<QPair<QString, QString> > _HexaList;
 
     QMap<int,GraphicsType>  _MapId;
 };

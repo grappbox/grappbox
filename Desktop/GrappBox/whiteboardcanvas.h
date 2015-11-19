@@ -7,8 +7,12 @@
 #include <QGraphicsLineItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QPen>
+#include <QMap>
+#include <QStack>
+
 #include "customgraphicsdiamonditem.h"
 #include "CustomGraphicsHandWriteItem.h"
+#include "BodyWhiteboardWritingText.h"
 
 enum GraphicsType
 {
@@ -17,12 +21,14 @@ enum GraphicsType
     CIRCLE = 2,
     LOZENGE = 3,
     HAND_WRITE = 5,
-    ERASER = 7,
+    TEXT = 6,
+    ERASER = 8,
     NONE = -1
 };
 
 class WhiteboardCanvas : public QGraphicsScene
 {
+    Q_OBJECT
 public:
     WhiteboardCanvas(QWidget *parent = 0);
 
@@ -34,6 +40,8 @@ public:
 signals:
 
 public slots:
+    void OnTextPopupCancel();
+    void OnTextPopupAdd(QString str, bool italic, bool bold, int size);
 
 protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
@@ -57,6 +65,10 @@ private:
     QColor _BrushColor;
     qreal _BrushWidth;
     QColor _BackgroundColor;
+    BodyWhiteboardWritingText *_Popup;
+    QPointF _MouseRightClickPoint;
+    QMap<int, QGraphicsItem*>   _ItemMap;
+    QStack<QGraphicsItem*> _ItemStacked;
 };
 
 #endif // WHITEBOARDCANVAS_H

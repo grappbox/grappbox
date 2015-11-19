@@ -131,5 +131,8 @@ void MainWindow::OnMenuChange(int id)
     }
     (dynamic_cast<IBodyContener*>(currentWidget))->Hide();
     _CurrentCanvas = id;
+    _StackedLayout->update();
+    _StackedLayout->setCurrentIndex(id);
     (dynamic_cast<IBodyContener*>(nextWidget))->Show(-1, this);
+    nextWidget->updateGeometry();
 }
