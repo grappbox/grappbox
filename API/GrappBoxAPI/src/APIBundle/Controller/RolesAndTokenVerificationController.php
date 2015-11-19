@@ -71,10 +71,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {post} /V1.6/roles/addprojectroles Add a project role
+  * @api {post} /V1.4/roles/addprojectroles Add a project role
   * @apiName addProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.6.0
+  * @apiVersion 1.4.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -166,10 +166,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {delete} /V1.6/roles/delprojectroles Delete a project role
+  * @api {delete} /V1.4/roles/delprojectroles Delete a project role
   * @apiName delProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.6.0
+  * @apiVersion 1.4.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -242,10 +242,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {put} /V1.6/roles/putprojectroles Update a project role
+  * @api {put} /V1.4/roles/putprojectroles Update a project role
   * @apiName updateProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.6.0
+  * @apiVersion 1.4.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} roleId Id of the role
@@ -370,10 +370,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {get} /V1.6/roles/getprojectroles/:token/:projectId Get all project roles
+  * @api {get} /V1.4/roles/getprojectroles/:token/:projectId Get all project roles
   * @apiName GetProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.6.0
+  * @apiVersion 1.4.0
   *
   * @apiParam {String} token Token of the person connected
   * @apiParam {Number} projectId Id of the projectId
@@ -449,10 +449,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {post} /V1.6/roles/assignpersontorole Assign a person to a role
+  * @api {post} /V1.4/roles/assignpersontorole Assign a person to a role
   * @apiName assignPersonToRole
   * @apiGroup Roles
-  * @apiVersion 1.6.0
+  * @apiVersion 1.4.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -520,10 +520,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {put} /V1.6/roles/putpersonrole Update a person role
+  * @api {put} /V1.4/roles/putpersonrole Update a person role
   * @apiName updatePersonRole
   * @apiGroup Roles
-  * @apiVersion 1.6.0
+  * @apiVersion 1.4.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -597,10 +597,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {delete} /V1.6/roles/delpersonrole Delete a person role
+  * @api {delete} /V1.4/roles/delpersonrole Delete a person role
   * @apiName delPersonRole
   * @apiGroup Roles
-  * @apiVersion 0.0.1
+  * @apiVersion 1.4.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project

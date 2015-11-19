@@ -1,37 +1,37 @@
 role_addProjectRoles:
-    path:       V1.6/roles/addprojectroles
+    path:       V1.4/roles/addprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:addProjectRoles }
     methods: [POST]
 
 role_delProjectRoles:
-    path:       V1.6/roles/delprojectroles
+    path:       V1.4/roles/delprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delProjectRoles }
     methods: [DELETE]
 
 role_putProjectRoles:
-    path:       V1.6/roles/putprojectroles
+    path:       V1.4/roles/putprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:updateProjectRoles }
     methods: [PUT]
 
 role_getProjectRoles:
-    path:       V1.6/roles/getprojectroles/{token}/{projectId}
+    path:       V1.4/roles/getprojectroles/{token}/{projectId}
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:getProjectRoles }
     requirements:
         projectId: \d+
     methods: [GET]
 
 role_assignPersonToRole:
-    path:       V1.6/roles/assignpersontorole
+    path:       V1.4/roles/assignpersontorole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:assignPersonToRole }
     methods: [POST]
 
 role_updatePersonRole:
-    path:       V1.6/roles/putpersonrole
+    path:       V1.4/roles/putpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:updatePersonRole }
     methods: [PUT]
 
 role_delPersonRole:
-    path:       V1.6/roles/delpersonrole
+    path:       V1.4/roles/delpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delPersonRole }
     methods: [DELETE]
 
