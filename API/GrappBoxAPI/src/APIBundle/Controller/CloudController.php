@@ -149,7 +149,7 @@ class CloudController extends Controller
 
   /**
 	 *
-	 * @api {post} /V1/API/Cloud/stream Open a new stream in order to upload file
+	 * @api {post} /{VERSION}/Cloud/stream Open a new stream in order to upload file
 	 * @apiDescription This method is here to create an upload process between API and Cloud.
    * @apiGroup Cloud
    * @apiName Stream opening
@@ -185,7 +185,7 @@ class CloudController extends Controller
 	 */
    /**
  	 *
- 	 * @api {delete} /V1/API/Cloud/stream Close a stream in order to complete an upload
+ 	 * @api {delete} /{VERSION}/Cloud/stream Close a stream in order to complete an upload
  	 * @apiDescription This method is here to finalize an upload and make the file downloadable.
     * @apiGroup Cloud
     * @apiName Stream closing
@@ -296,8 +296,8 @@ class CloudController extends Controller
 
   /**
 	 *
-	 * @api {put} /V1/API/Cloud/sendFile send a file chunk. You have to open a stream before.
-	 * @apiDescription This method is there to upload a file in the given project cloud
+	 * @api {put} /{VERSION}/Cloud/sendFile send a file chunk.
+	 * @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
    * @apiGroup Cloud
    * @apiName Send file
    * @apiParam {Object[]} session_infos All informations about the session have to be here
@@ -351,8 +351,8 @@ class CloudController extends Controller
 
   /**
 	 *
-	 * @api {get} /V1/API/Cloud/getList/:token/:idProject/:path/[:passwordSafe] "Download a file"
-	 * @apiDescription This method is there to start a download.
+	 * @api {get} /{VERSION}/Cloud/getList/:token/:idProject/:path/[:passwordSafe] Cloud LS
+	 * @apiDescription Get the list of a given directory.
    * @apiGroup Cloud
    * @apiName List directory
    * @apiParam {string} token The token of authenticated user.
@@ -360,7 +360,7 @@ class CloudController extends Controller
    * @apiParam {string} path The path to the file with coma instead of slash. This have to start with a coma
    * @apiParam {string} [passwordSafe] The project safe password. Use it only if the user want the safe content
    * @apiParamExample {curl} Request Example:
-   *   curl http://api.grappbox.com/V1/API/Cloud/getList/minus5percent/1/,Sauron/satan
+   *   curl http://api.grappbox.com/{VERSION}/Cloud/getList/minus5percent/1/,Sauron/satan
    * @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
    * @apiSuccessExample {json} Success Response:
    *    HTTP/1.1 200 OK
@@ -408,7 +408,7 @@ class CloudController extends Controller
 
   /**
 	 *
-	 * @api {get} /V1/API/Cloud/getFile/:CloudPath/:token/:idProject/[:password]/[:passwordSafe] "Download a file"
+	 * @api {get} /{VERSION}/Cloud/getFile/:CloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
 	 * @apiDescription This method is there to start a download.
    * @apiGroup Cloud
    * @apiName Download file
@@ -418,7 +418,7 @@ class CloudController extends Controller
    * @apiParam {string} [password] The password hashed in a clear way. Use only if file is password protected.
    * @apiParam {string} [passwordSafe] The project safe password. Use it only if the file is in the safe
    * @apiParamExample {curl} Request Example:
-   *   curl http://api.grappbox.com/V1/API/Cloud/getFile/,Sauron/minus5percent/1/mustache/satan
+   *   curl http://api.grappbox.com/{VERSION}/Cloud/getFile/,Sauron/minus5percent/1/mustache/satan
    * @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
    * @apiSuccessExample {json} Success Response:
    *    HTTP/1.1 200 OK
@@ -465,7 +465,7 @@ class CloudController extends Controller
 
 	/**
 	 *
-	 * @api {post} /V1/API/Cloud/setSafePass "Set the safe password"
+	 * @api {post} /{VERSION}/Cloud/setSafePass Set the safe password
 	 * @apiDescription This method is there to change the safe password for
    * a given project.
    * @apiGroup Cloud
@@ -513,7 +513,7 @@ class CloudController extends Controller
 
   /**
 	 *
-	 * @api {get} /V1/API/Cloud/createCloud/:id "Create the cloud for a given project"
+	 * @api {get} /{VERSION}/Cloud/createCloud/:id Create the cloud for a given project
 	 * @apiDescription This method have to be used only for test or between symfony controllers. Clients don't have to call it.
    * @apiGroup Cloud
    * @apiName Create cloud
@@ -523,7 +523,7 @@ class CloudController extends Controller
    * @apiParam {Number} safe_infos.project_id The project id to execute the command.
    * @apiParam {string} safe_infos.password The password hashed in SHA-1 512
    * @apiParamExample {curl} Request Example:
-   *    curl http://api.grappbox.com/V1/API/Cloud/createCloud/1
+   *    curl http://api.grappbox.com/{VERSION}/Cloud/createCloud/1
    * @apiSuccess (200) {string} infos The state of the request, will always be OK. This method can't fail.
    * @apiSuccessExample {json} Success Response:
    *    HTTP/1.1 200 OK
@@ -547,7 +547,7 @@ class CloudController extends Controller
 
   /**
 	 *
-	 * @api {delete} /V1/API/Cloud/del Delete a file or a directory
+	 * @api {delete} /{VERSION}/Cloud/del Delete a file or a directory
 	 * @apiDescription This method is there to delete something in the cloud
    * @apiGroup Cloud
    * @apiName Delete
@@ -607,7 +607,7 @@ class CloudController extends Controller
 
   /**
 	 *
-	 * @api {post} /V1/API/Cloud/createDir create a directory
+	 * @api {post} /{VERSION}/Cloud/createDir create a directory
 	 * @apiDescription This method is there to create a directory in the cloud
    * @apiGroup Cloud
    * @apiName Create Directory
