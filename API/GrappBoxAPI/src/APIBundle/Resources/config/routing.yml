@@ -1,108 +1,106 @@
 role_addProjectRoles:
-    path:       V1.4/roles/addprojectroles
+    path:       roles/addprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:addProjectRoles }
     methods: [POST]
 
 role_delProjectRoles:
-    path:       V1.4/roles/delprojectroles
+    path:       roles/delprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delProjectRoles }
     methods: [DELETE]
 
 role_putProjectRoles:
-    path:       V1.4/roles/putprojectroles
+    path:       roles/putprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:updateProjectRoles }
     methods: [PUT]
 
 role_getProjectRoles:
-    path:       V1.4/roles/getprojectroles/{token}/{projectId}
+    path:       roles/getprojectroles/{token}/{projectId}
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:getProjectRoles }
     requirements:
         projectId: \d+
     methods: [GET]
 
 role_assignPersonToRole:
-    path:       V1.4/roles/assignpersontorole
+    path:       roles/assignpersontorole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:assignPersonToRole }
     methods: [POST]
 
 role_updatePersonRole:
-    path:       V1.4/roles/putpersonrole
+    path:       roles/putpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:updatePersonRole }
     methods: [PUT]
 
 role_delPersonRole:
-    path:       V1.4/roles/delpersonrole
+    path:       roles/delpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delPersonRole }
     methods: [DELETE]
 
 
 user_basicInformations:
-    path:       V1.3/user/basicinformations/{token}
+    path:       user/basicinformations/{token}
     defaults:   { _controller: APIBundle:User:basicInformations }
     methods: [GET, PUT]
 
 user_password:
-    path:       V1.3/user/password/{id}
+    path:       user/password/{token}
     defaults:   { _controller: APIBundle:User:password }
-    requirements:
-        id: \d+
     methods: [GET, PUT]
 
 user_getIdByName:
-    path:       V1.3/user/getidbyname/{token}/{firstname}/{lastname}
+    path:       user/getidbyname/{token}/{firstname}/{lastname}
     defaults:   { _controller: APIBundle:User:getIdByName }
     methods: [GET]
 
 user_getNextMeetings:
-    path:       V1.3/user/getnextmeetings/{token}
+    path:       user/getnextmeetings/{token}
     defaults:   { _controller: APIBundle:User:getNextMeetings }
     methods: [GET]
 
 user_getProjects:
-    path:       V1.3/user/getprojects/{token}
+    path:       user/getprojects/{token}
     defaults:   { _controller: APIBundle:User:getProjects }
     methods: [GET]
 
 user_getAllTasks:
-    path:       V1.3/user/getalltasks/{token}
+    path:       user/getalltasks/{token}
     defaults:   { _controller: APIBundle:User:getAllTasks }
     methods: [GET]
 
 user_getCurrentAndNextTasks:
-    path:       V1.3/user/getcurrentandnexttasks/{token}
+    path:       user/getcurrentandnexttasks/{token}
     defaults:   { _controller: APIBundle:User:getCurrentAndNextTasks }
     methods: [GET]
 
 
 
 whiteboard_list:
-    path:		V1.2/whiteboard/list/{token}/{projectId}
+    path:		whiteboard/list/{token}/{projectId}
     defaults:	{ _controller: APIBundle:Whiteboard:listWhiteboard }
     requirements:
         projectId: \d+
     methods: [GET]
 
 whiteboard_new:
-    path:		V1.2/whiteboard/new
+    path:		whiteboard/new
     defaults:	{ _controller: APIBundle:Whiteboard:newWhiteboard }
     methods: [POST]
 
 whiteboard_open:
-    path:		V1.2/whiteboard/open/{token}/{id}
+    path:		whiteboard/open/{token}/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:openWhiteboard }
     requirements:
         id: \d+
     methods: [GET]
 
 whiteboard_pushDraw:
-    path:		V1.2/whiteboard/pushdraw/{id}
+    path:		whiteboard/pushdraw/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:pushDraw }
     requirements:
         id: \d+
     methods: [PUT]
 
 whiteboard_pullDraw:
-    path:		V1.2/whiteboard/pulldraw/{id}
+    path:		whiteboard/pulldraw/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:pullDraw }
     requirements:
         id: \d+
@@ -115,7 +113,7 @@ whiteboard_pullDraw:
 #         id: \d+
 
 whiteboard_delete:
-    path:		V1.2/whiteboard/delete/{token}/{id}
+    path:		whiteboard/delete/{token}/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:delWhiteboard }
     requirements:
         id: \d+
@@ -124,83 +122,83 @@ whiteboard_delete:
 
 
 dashboard_getTeamOccupation:
-    path:       V1.1/dashboard/getteamoccupation/{token}
+    path:       dashboard/getteamoccupation/{token}
     defaults:   { _controller: APIBundle:Dashboard:getTeamOccupation }
     methods: [GET]
 
 dashboard_getNextMeetings:
-    path:       V1.1/dashboard/getnextmeetings/{token}
+    path:       dashboard/getnextmeetings/{token}
     defaults:   { _controller: APIBundle:Dashboard:getNextMeetings }
     methods: [GET]
 
 dashboard_getProjectsGlobalProgress:
-    path:       V1.1/dashboard/getprojectsglobalprogress/{token}
+    path:       dashboard/getprojectsglobalprogress/{token}
     defaults:   { _controller: APIBundle:Dashboard:getProjectsGlobalProgress }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectCreator:
-    path:       V1.1/dashboard/getprojectcreator/{token}/{id}
+    path:       dashboard/getprojectcreator/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectCreator }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectBasicInformations:
-    path:       V1.1/dashboard/getprojectbasicinformations/{token}/{id}
+    path:       dashboard/getprojectbasicinformations/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectBasicInformations }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectTasks:
-    path:       V1.1/dashboard/getprojecttasks/{token}/{id}
+    path:       dashboard/getprojecttasks/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectTasks }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getUserBasicInformations:
-    path:       V1.1/dashboard/getuserbasicinformations/{token}
+    path:       dashboard/getuserbasicinformations/{token}
     defaults:   { _controller: APIBundle:Dashboard:getUserBasicInformations }
     methods: [GET]
 
 dashboard_getProjectPersons:
-    path:       V1.1/dashboard/getprojectpersons/{token}/{id}
+    path:       dashboard/getprojectpersons/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectPersons }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getMeetingBasicInformations:
-    path:       V1.1/dashboard/getmeetingbasicinformations/{token}/{id}
+    path:       dashboard/getmeetingbasicinformations/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getMeetingBasicInformations }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectList:
-    path:       V1.1/dashboard/getprojectlist/{token}
+    path:       dashboard/getprojectlist/{token}
     defaults:   { _controller: APIBundle:Dashboard:getProjectList }
     methods: [GET]
 
 dashboard_getProjectTasksStatus:
-    path:       V1.1/dashboard/getprojecttasksstatus/{token}/{id}
+    path:       dashboard/getprojecttasksstatus/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getProjectTasksStatus }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getNumberTimelineMessages:
-    path:       V1.1/dashboard/getnumbertimelinemessages/{token}/{id}
+    path:       dashboard/getnumbertimelinemessages/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getNumberTimelineMessages }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getNumberBugs:
-    path:       V1.1/dashboard/getnumberbugs/{token}/{id}
+    path:       dashboard/getnumberbugs/{token}/{id}
     defaults:   { _controller: APIBundle:Dashboard:getNumberBugs }
     requirements:
         id: \d+
@@ -210,67 +208,67 @@ dashboard_getNumberBugs:
 
 # test login/signin
 accountAdministration_loginForm:
-    path:       V1.0/accountadministration/loginform
+    path:       accountadministration/loginform
     defaults:   { _controller: APIBundle:AccountAdministration:loginForm }
 accountAdministration_signInForm:
-    path:       V1.0/accountadministration/signinform
+    path:       accountadministration/signinform
     defaults:   { _controller: APIBundle:AccountAdministration:signInForm }
 # end test login/signin
 
 accountAdministration_login:
-    path:       V1.0/accountadministration/login
+    path:       accountadministration/login
     defaults:   { _controller: APIBundle:AccountAdministration:login }
     methods:    [POST]
 
 accountAdministration_logout:
-    path:       V1.0/accountadministration/logout
+    path:       accountadministration/logout
     defaults:   { _controller:APIBundle:AccountAdministration:logout}
     methods:    [POST]
 
 accountAdministration_signIn:
-    path:       V1.0/accountadministration/signin
+    path:       accountadministration/signin
     defaults:   { _controller: APIBundle:AccountAdministration:signIn }
     methods:    [POST]
 
 
 
 cloud_streamActions:
-  path:     V1.5/cloud/stream
+  path:     cloud/stream
   defaults:   { _controller: APIBundle:Cloud:stream, _format: json}
   methods: [POST, DELETE]
 
 cloud_sendFile:
-  path:     V1.5/cloud/sendfile
+  path:     cloud/sendfile
   defaults:   { _controller: APIBundle:Cloud:sendFile , _format: json}
   methods: [PUT]
 
 cloud_getList:
-    path:       V1.5/cloud/getlist/{token}/{idProject}/{path}/{password}
+    path:       cloud/getlist/{token}/{idProject}/{path}/{password}
     defaults:   { _controller: APIBundle:Cloud:getList,  password: null, _format: json}
     methods: [GET]
 
 cloud_getFile:
-    path:       V1.5/cloud/getfile/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
+    path:       cloud/getfile/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
     defaults:   { _controller: APIBundle:Cloud:getFile, password: null, passwordSafe: null }
     methods: [GET]
 
 cloud_setSafePass:
-    path:       V1.5/cloud/setsafepass
+    path:       cloud/setsafepass
     defaults:   { _controller: APIBundle:Cloud:setSafePass }
     methods: [POST]
 
 cloud_delete:
-    path:       V1.5/cloud/del
+    path:       cloud/del
     defaults:   { _controller: APIBundle:Cloud:del , _format: json}
     methods: [DELETE]
 
 cloud_createDir:
-    path:       V1.5/cloud/createdir
+    path:       cloud/createdir
     defaults:   { _controller: APIBundle:Cloud:createDir, _format: json }
     methods: [POST]
 
 cloud_createCloud: #TODO : Delete this route, it's a test route
-    path:       V1.5/cloud/createcloud/{projectId}
+    path:       cloud/createcloud/{projectId}
     defaults:   { _controller: APIBundle:Cloud:createCloud }
     methods: [GET]
 

@@ -26,10 +26,10 @@ use APIBundle\Entity\User;
 class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
-  	* @api {get} /V1.1/dashboard/getteamoccupation/:token Get a team occupation
+  	* @api {get} /V0.6/dashboard/getteamoccupation/:token Get a team occupation
   	* @apiName getTeamOccupation
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.1
+  	* @apiVersion 0.6.1
   	*
   	* @apiParam {String} token Token of the person connected
   	*
@@ -86,10 +86,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getnextmeetings/:token Get the person connected next meetings
+  	* @api {get} /V0.6/dashboard/getnextmeetings/:token Get the person connected next meetings
   	* @apiName getNextMeetings
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.1
+  	* @apiVersion 0.6.1
   	*
   	* @apiParam {String} token Token of the person connected
   	*
@@ -169,10 +169,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getprojectsglobalprogress/:token Get the global progress of the projects of a user
+  	* @api {get} /V0.6/dashboard/getprojectsglobalprogress/:token Get the global progress of the projects of a user
   	* @apiName getProjectsGlobalProgress
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.1
+  	* @apiVersion 0.6.1
   	*
   	* @apiParam {String} token Token of the person connected
   	*
@@ -232,10 +232,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getprojectcreator/:token/:id Get a project creator
+  	* @api {get} /V0.6/dashboard/getprojectcreator/:token/:id Get a project creator
   	* @apiName getProjectCreator
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} id Project id
@@ -300,10 +300,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getprojectbasicinformations/:token/:id Get a project basic informations
+  	* @api {get} /V0.6/dashboard/getprojectbasicinformations/:token/:id Get a project basic informations
   	* @apiName getProjectBasicInformations
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} id Id of the project
@@ -372,10 +372,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getprojecttasks/:token/:id Get a project tasks
+  	* @api {get} /V0.6/dashboard/getprojecttasks/:token/:id Get a project tasks
   	* @apiName getProjectTasks
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} id Id of the project
@@ -479,10 +479,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getuserbasicinformations/:token Get the connected user basic informations
+  	* @api {get} /V0.6/dashboard/getuserbasicinformations/:token Get the connected user basic informations
   	* @apiName getUserBasicInformations
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	*
@@ -547,10 +547,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getprojectpersons/:token/:id Get all the persons on a project
+  	* @api {get} /V0.6/dashboard/getprojectpersons/:token/:id Get all the persons on a project
   	* @apiName getProjectPersons
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} id Id of the project
@@ -615,10 +615,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getmeetingbasicinformations/:token/:id Get a meeting basic informations
+  	* @api {get} /V0.6/dashboard/getmeetingbasicinformations/:token/:id Get a meeting basic informations
   	* @apiName getMeetingBasicInformations
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {String} id Id of the meeting
@@ -746,10 +746,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getprojectlist/:token Get a list of projects the user connected is on
+  	* @api {get} /V0.6/dashboard/getprojectlist/:token Get a list of projects the user connected is on
   	* @apiName getProjectList
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	*
@@ -811,10 +811,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getprojecttasksstatus/:token/:id Get the project tasks status
+  	* @api {get} /V0.6/dashboard/getprojecttasksstatus/:token/:id Get the project tasks status
   	* @apiName getProjectTasksStatus
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} id Id of the project
@@ -890,10 +890,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getnumbertimelinemessages/:token/:id Get the number of messages for a timeline
+  	* @api {get} /V0.6/dashboard/getnumbertimelinemessages/:token/:id Get the number of messages for a timeline
   	* @apiName getNumberTimelineMessages
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} id Id of the timeline
@@ -941,10 +941,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-  	* @api {get} /V1.1/dashboard/getnumberbugs/:token/:id Get the number of bugs for a project
+  	* @api {get} /V0.6/dashboard/getnumberbugs/:token/:id Get the number of bugs for a project
   	* @apiName getNumberBugs
   	* @apiGroup Dashboard
-  	* @apiVersion 1.1.0
+  	* @apiVersion 0.6.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} id Id of the project

@@ -43,10 +43,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1.3/user/basicinformations/:token Request the basic informations of the connected user
+	* @api {get} /V0.6/user/basicinformations/:token Request the basic informations of the connected user
 	* @apiName getBasicInformations
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} token token of the person connected
 	*
@@ -100,10 +100,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V1.3/user/basicinformations/:token Update the basic informations of the user connected
+	* @api {put} /V0.6/user/basicinformations/:token Update the basic informations of the user connected
 	* @apiName putBasicInformations
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} [first_name] First name of the person
@@ -210,10 +210,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1.3/user/password/:token Request the password of the user connected
+	* @api {get} /V0.6/user/password/:token Request the password of the user connected
 	* @apiName getPassword
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} token Token of the person connected
 	*
@@ -243,10 +243,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V1.3/user/password/:token Update the password of the user connected
+	* @api {put} /V0.6/user/password/:token Update the password of the user connected
 	* @apiName putPassword
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} password The new password
@@ -285,10 +285,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1.3/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
+	* @api {get} /V0.6/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {string} token user's authentication token
 	* @apiParam {String} firstName first name of the user
@@ -332,10 +332,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1.3/user/getnextmeetings/:token Request the next meetings of the connected user
+	* @api {get} /V0.6/user/getnextmeetings/:token Request the next meetings of the connected user
 	* @apiName getNextMeetings
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {string} token user's authentication token
 	*
@@ -395,10 +395,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1.3/user/getprojects/:token Request the user connected projects
+	* @api {get} /V0.6/user/getprojects/:token Request the user connected projects
 	* @apiName getProjects
 	* @apiGroup Users
-	* @apiVersion 0.0.1
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {string} token user's authentication token
 	*
@@ -448,10 +448,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1.3/user/getalltasks/:token Request the user connected tasks
+	* @api {get} /V0.6/user/getalltasks/:token Request the user connected tasks
 	* @apiName getAllTasks
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {string} token user's authentication token
 	*
@@ -505,10 +505,10 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V1.3/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
+	* @api {get} /V0.6/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
 	* @apiName getCurrentAndNextTasks
 	* @apiGroup Users
-	* @apiVersion 1.3.0
+	* @apiVersion 0.6.0
 	*
 	* @apiParam {string} token user's authentication token
 	*

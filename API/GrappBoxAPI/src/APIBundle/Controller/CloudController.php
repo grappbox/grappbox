@@ -15,8 +15,6 @@ use Sabre\DAV\Client;
 use League\Flysystem\WebDAV\WebDAVAdapter;
 use League\Flysystem\Filesystem;
 
-//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-
 class CurlRequest {
 	protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
 	protected $_url;
@@ -146,7 +144,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V1.5/cloud/stream Open a new stream in order to upload file
+	* @api {post} /V0.6/cloud/stream Open a new stream in order to upload file
 	* @apiDescription This method is here to create an upload process between API and Cloud.
 	* @apiGroup Cloud
 	* @apiName Stream opening
@@ -178,12 +176,12 @@ class CloudController extends Controller
 	*		"stream_id" : 1
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 
 	/**
 	*
-	* @api {delete} /V1.5/cloud/stream Close a stream in order to complete an upload
+	* @api {delete} /V0.6/cloud/stream Close a stream in order to complete an upload
 	* @apiDescription This method is here to finalize an upload and make the file downloadable.
 	* @apiGroup Cloud
 	* @apiName Stream closing
@@ -211,7 +209,7 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function streamAction(Request $request){
 		$method = $request->getMethod();
@@ -294,7 +292,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {put} /V1.5/cloud/sendfile send a file chunk.
+	* @api {put} /V0.6/cloud/sendfile send a file chunk.
 	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
 	* @apiGroup Cloud
 	* @apiName Send file
@@ -326,7 +324,7 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function sendFileAction(Request $request){
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
@@ -349,7 +347,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V1.5/cloud/getlist/:token/:idProject/:path/[:passwordSafe] Cloud LS
+	* @api {get} /V0.6/cloud/getlist/:token/:idProject/:path/[:passwordSafe] Cloud LS
 	* @apiDescription Get the list of a given directory.
 	* @apiGroup Cloud
 	* @apiName List directory
@@ -358,7 +356,7 @@ class CloudController extends Controller
 	* @apiParam {string} path The path to the file with coma instead of slash. This have to start with a coma
 	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the user want the safe content
 	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V1.5/cloud/getlist/minus5percent/1/,Sauron/satan
+	*	curl http://api.grappbox.com/V0.6/cloud/getlist/minus5percent/1/,Sauron/satan
 	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
@@ -366,7 +364,7 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function getListAction($token, $idProject, $path, $password, Request $request)
 	{
@@ -405,7 +403,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V1.5/cloud/getfile/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
+	* @api {get} /V0.6/cloud/getfile/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
 	* @apiName Download file
@@ -415,7 +413,7 @@ class CloudController extends Controller
 	* @apiParam {string} [password] The password hashed in a clear way. Use only if file is password protected.
 	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the file is in the safe
 	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V1.5/cloud/getfile/,Sauron/minus5percent/1/mustache/satan
+	*	curl http://api.grappbox.com/V0.6/cloud/getfile/,Sauron/minus5percent/1/mustache/satan
 	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
@@ -423,7 +421,7 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function getFileAction($cloudPath, $token, $idProject, $password = null, $passwordSafe = null, Request $request){
 		$userId = $this->getUserId($token);
@@ -462,7 +460,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /v1.5/Cloud/setsafepass Set the safe password
+	* @api {post} /v0.6/cloud/setsafepass Set the safe password
 	* @apiDescription This method is there to change the safe password for a given project.
 	* @apiGroup Cloud
 	* @apiName Set Safe Password
@@ -488,7 +486,7 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function setSafePassAction(Request $request)
 	{
@@ -509,20 +507,20 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V1.5/cloud/createcloud/:projectId Create the cloud for a given project
+	* @api {get} /V0.6/cloud/createcloud/:projectId Create the cloud for a given project
 	* @apiDescription This method have to be used only for test or between symfony controllers. Clients don't have to call it.
 	* @apiGroup Cloud
 	* @apiName Create cloud
 	* @apiParam {Number} projectId The project id in which the cloud have to be created.
 	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/{VERSION}/Cloud/createCloud/1
+	*	curl http://api.grappbox.com/V0.6/Cloud/createCloud/1
 	* @apiSuccess (200) {string} infos The state of the request, will always be OK. This method can't fail.
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"infos" : "OK"
 	*	}
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function createCloudAction(Request $request, $projectId)
 	{
@@ -539,7 +537,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V1.5/cloud/del Delete a file or a directory
+	* @api {delete} /V0.6/cloud/del Delete a file or a directory
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
 	* @apiName Delete
@@ -567,7 +565,7 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function delAction(Request $request)
 	{
@@ -599,7 +597,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V1.5/cloud/createdir create a directory
+	* @api {post} /V0.6/cloud/createdir create a directory
 	* @apiDescription This method is there to create a directory in the cloud
 	* @apiGroup Cloud
 	* @apiName Create Directory
@@ -628,7 +626,7 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-	* @apiVersion 1.5.0
+	* @apiVersion 0.6.0
 	*/
 	public function createDirAction(Request $request)
 	{

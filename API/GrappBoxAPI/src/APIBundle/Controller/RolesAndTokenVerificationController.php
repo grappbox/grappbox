@@ -71,10 +71,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {post} /V1.4/roles/addprojectroles Add a project role
+  * @api {post} /V0.6/roles/addprojectroles Add a project role
   * @apiName addProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.4.0
+  * @apiVersion 0.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -166,10 +166,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {delete} /V1.4/roles/delprojectroles Delete a project role
+  * @api {delete} /V0.6/roles/delprojectroles Delete a project role
   * @apiName delProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.4.0
+  * @apiVersion 0.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -221,31 +221,31 @@ class RolesAndTokenVerificationController extends Controller
   	$user = $this->checkToken($request->request->get('_token'));
   	if (!$request->request->get('projectId') && !$request->request->get('roleId'))
 		return $this->setBadRequest("Missing Parameters");
-	if (!$user)
-		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
-		return $this->setNoRightsError();
+    if (!$user)
+		  return ($this->setBadTokenError());
+    if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
+		  return $this->setNoRightsError();
 
-	$em = $this->getDoctrine()->getManager();
+    $em = $this->getDoctrine()->getManager();
 
-	$role = $em->getRepository('APIBundle:Role')->find($request->request->get('roleId'));
+    $role = $em->getRepository('APIBundle:Role')->find($request->request->get('roleId'));
 	
-	if ($role === null)
-	{
-		throw new NotFoundHttpException("The role with id ".$request->request->get('roleId')." doesn't exist.");
-	}
+    if ($role === null)
+    {
+      throw new NotFoundHttpException("The role with id ".$request->request->get('roleId')." doesn't exist.");
+    }
 
-	$em->remove($role);
-	$em->flush();
+    $em->remove($role);
+    $em->flush();
 
-	return new JsonResponse("Remove role success.");
+    return new JsonResponse("Remove role success.");
   }
 
   /**
-  * @api {put} /V1.4/roles/putprojectroles Update a project role
+  * @api {put} /V0.6/roles/putprojectroles Update a project role
   * @apiName updateProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.4.0
+  * @apiVersion 0.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} roleId Id of the role
@@ -370,10 +370,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {get} /V1.4/roles/getprojectroles/:token/:projectId Get all project roles
+  * @api {get} /V0.6/roles/getprojectroles/:token/:projectId Get all project roles
   * @apiName GetProjectRoles
   * @apiGroup Roles
-  * @apiVersion 1.4.0
+  * @apiVersion 0.6.0
   *
   * @apiParam {String} token Token of the person connected
   * @apiParam {Number} projectId Id of the projectId
@@ -449,10 +449,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {post} /V1.4/roles/assignpersontorole Assign a person to a role
+  * @api {post} /V0.6/roles/assignpersontorole Assign a person to a role
   * @apiName assignPersonToRole
   * @apiGroup Roles
-  * @apiVersion 1.4.0
+  * @apiVersion 0.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -520,10 +520,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {put} /V1.4/roles/putpersonrole Update a person role
+  * @api {put} /V0.6/roles/putpersonrole Update a person role
   * @apiName updatePersonRole
   * @apiGroup Roles
-  * @apiVersion 1.4.0
+  * @apiVersion 0.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project
@@ -597,10 +597,10 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {delete} /V1.4/roles/delpersonrole Delete a person role
+  * @api {delete} /V0.6/roles/delpersonrole Delete a person role
   * @apiName delPersonRole
   * @apiGroup Roles
-  * @apiVersion 1.4.0
+  * @apiVersion 0.6.0
   *
   * @apiParam {String} _token Token of the person connected
   * @apiParam {Number} projectId Id of the project

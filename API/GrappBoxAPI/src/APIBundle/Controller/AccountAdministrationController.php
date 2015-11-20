@@ -43,10 +43,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
     }
 
 	 /**
- 	* @api {post} V1.0/accountadministration/login Request login
+ 	* @api {post} V0.6/accountadministration/login Request login
  	* @apiName login
  	* @apiGroup AccountAdministration
- 	* @apiVersion 1.0.0
+ 	* @apiVersion 0.6.0
  	*
  	* @apiParam {email} login login (user's email)
  	* @apiParam {string} password password
@@ -112,10 +112,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	 /**
- 	* @api {post} V1.0/accountadministration/logout Request logout
+ 	* @api {post} V0.6/accountadministration/logout Request logout
  	* @apiName logout
  	* @apiGroup AccountAdministration
- 	* @apiVersion 1.0.0
+ 	* @apiVersion 0.6.0
  	*
  	* @apiParam {string} _token user's authentication token
  	*
@@ -152,10 +152,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	}
 
 	 /**
-		* @api {post} V1.0/accountadministration/signin Request user creation and login
+		* @api {post} V0.6/accountadministration/signin Request user creation and login
 		* @apiName signin
 		* @apiGroup AccountAdministration
-		* @apiVersion 1.0.0
+		* @apiVersion 0.6.0
 		*
 		* @apiParam {string} firstname user's firstname
 		* @apiParam {string} lastname user's lastname
