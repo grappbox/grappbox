@@ -4,15 +4,10 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-
 /**
  * Event
  */
-class Event implements \Serializable
+class Event
 {
     /**
      * @var integer
@@ -77,40 +72,24 @@ class Event implements \Serializable
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize()
+    public function objectToArray()
     {
-        return serialize(array(
-            $this->id,
-            $this->eventtypes->name,
-            $this->title,
-            $this->description,
-            $this->beginDate,
-            $this->endDate,
-            $this->createdAt,
-            $this->deletedAt
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->eventtypes->name,
-            $this->title,
-            $this->description,
-            $this->beginDate,
-            $this->endDate,
-            $this->createdAt,
-            $this->deletedAt,
-        ) = unserialize($serialized);
+        return array(
+            'id' => $this->id,
+            'eventType' => $this->eventtypes->name,
+            'title' => $this->title,
+            'description' => $this->description,
+            'beginDate' => $this->beginDate,
+            'endDate' => $this->endDate,
+            'createdAt' => $this->createdAt,
+            'deletedAt' => $this->deletedAt
+        );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -133,7 +112,7 @@ class Event implements \Serializable
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -156,7 +135,7 @@ class Event implements \Serializable
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -179,7 +158,7 @@ class Event implements \Serializable
     /**
      * Get beginDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getBeginDate()
     {
@@ -202,7 +181,7 @@ class Event implements \Serializable
     /**
      * Get endDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEndDate()
     {
@@ -225,7 +204,7 @@ class Event implements \Serializable
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -248,7 +227,7 @@ class Event implements \Serializable
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -271,7 +250,7 @@ class Event implements \Serializable
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \APIBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -294,7 +273,7 @@ class Event implements \Serializable
     /**
      * Get eventtypes
      *
-     * @return \APIBundle\Entity\EventType 
+     * @return \APIBundle\Entity\EventType
      */
     public function getEventtypes()
     {
@@ -317,7 +296,7 @@ class Event implements \Serializable
     /**
      * Get creator_user
      *
-     * @return \APIBundle\Entity\User 
+     * @return \APIBundle\Entity\User
      */
     public function getCreatorUser()
     {
@@ -350,7 +329,7 @@ class Event implements \Serializable
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {

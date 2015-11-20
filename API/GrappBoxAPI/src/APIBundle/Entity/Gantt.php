@@ -4,15 +4,10 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-
 /**
  * Gantt
  */
-class Gantt implements \Serializable
+class Gantt
 {
     /**
      * @var integer
@@ -44,37 +39,22 @@ class Gantt implements \Serializable
      */
     private $createdAt;
 
-
-    /** @see \Serializable::serialize() */
-    public function serialize()
+    public function objectToArray()
     {
-        return serialize(array(
-            $this->id,
-            $this->projectId,
-            $this->creatorId,
-            $this->updatorId,
-            $this->createdAt,
-            $this->updatedAt
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->projectId,
-            $this->creatorId,
-            $this->updatorId,
-            $this->createdAt,
-            $this->updatedAt,
-        ) = unserialize($serialized);
+        return array(
+            'id' => $this->id,
+            'projectId' => $this->projectId,
+            'creatorId' => $this->creatorId,
+            'updatorId' => $this->updatorId,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt
+        );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -97,7 +77,7 @@ class Gantt implements \Serializable
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -120,7 +100,7 @@ class Gantt implements \Serializable
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -143,7 +123,7 @@ class Gantt implements \Serializable
     /**
      * Get updatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUpdatorId()
     {
@@ -166,7 +146,7 @@ class Gantt implements \Serializable
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -189,7 +169,7 @@ class Gantt implements \Serializable
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {

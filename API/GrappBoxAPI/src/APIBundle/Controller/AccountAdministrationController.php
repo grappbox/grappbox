@@ -101,7 +101,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		      $em->flush();
 
 					$response = new JsonResponse();
-					$response->setData(array('user' => $user->serialize()));
+					$response->setData(array('user' => $user->objectToArray()));
 					return $response;
 			}
 			else
@@ -241,7 +241,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
       	$em->flush();
 
 		$response = new JsonResponse();
-		$response->setData(array('user' => $user->serialize()));
+		$response->setData(array('user' => $user->objectToArray()));
 		return $response;
 	}
 }

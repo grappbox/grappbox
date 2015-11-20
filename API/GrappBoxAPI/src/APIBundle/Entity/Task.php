@@ -4,11 +4,6 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-
 /**
  * Task
  */
@@ -83,25 +78,25 @@ class Task
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    /**
-    * Serialize the object
-    *
-    * @return json encoded array
-    */
-    public function serializeMe()
+    public function objectToArray()
     {
-      $encoders = array(new XmlEncoder(), new JsonEncoder());
-      $normalizers = array(new ObjectNormalizer());
-
-      $serializer = new Serializer($normalizers, $encoders);
-
-      return $serializer->serialize($this, 'json');
+      return array(
+        'id' => $this->id,
+        'creatorId' => $this->creatorId ,
+        'title' => $this->title ,
+        'description' => $this->description ,
+        'dueDate' => $this->dueDate ,
+        'startedAt' => $this->startedAt ,
+        'finishedAt' => $this->finishedAt ,
+        'projectId' => $this->projects->id ,
+        //'users' => $this-> ,  TODO: array of users_id and/or user_name assigned to this tasks
+      );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -124,7 +119,7 @@ class Task
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -147,7 +142,7 @@ class Task
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -170,7 +165,7 @@ class Task
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -193,7 +188,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDueDate()
     {
@@ -216,7 +211,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStartedAt()
     {
@@ -239,7 +234,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFinishedAt()
     {
@@ -262,7 +257,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -285,7 +280,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -308,7 +303,7 @@ class Task
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \APIBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -341,7 +336,7 @@ class Task
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -374,7 +369,7 @@ class Task
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTags()
     {

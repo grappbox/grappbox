@@ -6,15 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-
 /**
  * User
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface
 {
     /**
      * @var integer
@@ -115,6 +110,8 @@ class User implements UserInterface, \Serializable
         $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+
+        $this->isActive = true;
     }
 
     public function getUsername()
@@ -136,36 +133,23 @@ class User implements UserInterface, \Serializable
     {
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize()
+    public function objectToArray()
     {
-        return serialize(array(
-            $this->id,
-            $this->firstname,
-            $this->lastname,
-            $this->email,
-            $this->token
-            //avatar
-        ));
-    }
 
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-        $this->id,
-        $this->firstname,
-        $this->lastname,
-        $this->email,
-        $this->token
-        //avatar
-        ) = unserialize($serialized);
+      return array(
+          'id' => $this->id,
+          'firstname' => $this->firstname,
+          'lastname' => $this->lastname,
+          'email' => $this->email,
+          'token' => $this->token,
+          'avatar' => $this->avatar
+      );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -188,7 +172,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get firstname
      *
-     * @return string 
+     * @return string
      */
     public function getFirstname()
     {
@@ -211,7 +195,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get lastname
      *
-     * @return string 
+     * @return string
      */
     public function getLastname()
     {
@@ -234,7 +218,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get birthday
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getBirthday()
     {
@@ -257,7 +241,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get avatar
      *
-     * @return string 
+     * @return string
      */
     public function getAvatar()
     {
@@ -280,7 +264,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -303,7 +287,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -326,7 +310,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -349,7 +333,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get country
      *
-     * @return string 
+     * @return string
      */
     public function getCountry()
     {
@@ -372,7 +356,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get linkedin
      *
-     * @return string 
+     * @return string
      */
     public function getLinkedin()
     {
@@ -395,7 +379,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get viadeo
      *
-     * @return string 
+     * @return string
      */
     public function getViadeo()
     {
@@ -418,7 +402,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get twitter
      *
-     * @return string 
+     * @return string
      */
     public function getTwitter()
     {
@@ -441,7 +425,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -464,7 +448,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get token
      *
-     * @return string 
+     * @return string
      */
     public function getToken()
     {
@@ -497,7 +481,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get event_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEventCreator()
     {
@@ -530,7 +514,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get projects
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProjects()
     {
@@ -563,7 +547,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {
@@ -596,7 +580,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasks()
     {

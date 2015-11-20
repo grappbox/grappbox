@@ -11,10 +11,10 @@ use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\Whiteboard;
 use DateTime;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+// use Symfony\Component\Serializer\Serializer;
+// use Symfony\Component\Serializer\Encoder\XmlEncoder;
+// use Symfony\Component\Serializer\Encoder\JsonEncoder;
+// use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 //use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
@@ -36,7 +36,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	{
 		$content = array();
 		foreach ($objects as $key => $value) {
-			$content[] = $value->serialize();
+			$content[] = $value->objectToArray();
 		}
 		return $content;
 	}
@@ -181,7 +181,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$response = new JsonResponse();
-		$response->setData(array('whiteboard' => $whiteboard->serialize(), 'content' => array()));
+		$response->setData(array('whiteboard' => $whiteboard->objectToArray(), 'content' => array()));
 		return $response;
 	}
 
@@ -274,7 +274,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			 return $this->setBadRequest("Whiteboard Deleted");
 
 		$response = new JsonResponse();
-		$response->setData(array('whiteboard' => $whiteboard->serialize(), 'content' => $this->serializeInArray($whiteboard->getObjects())));
+		$response->setData(array('whiteboard' => $whiteboard->objectToArray(), 'content' => $this->serializeInArray($whiteboard->getObjects())));
 		return $response;
 	}
 

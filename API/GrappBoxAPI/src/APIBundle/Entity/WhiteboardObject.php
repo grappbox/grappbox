@@ -4,15 +4,10 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-
 /**
  * WhiteboardObject
  */
-class WhiteboardObject implements \Serializable
+class WhiteboardObject
 {
     /**
      * @var integer
@@ -44,35 +39,21 @@ class WhiteboardObject implements \Serializable
      */
     private $whiteboard;
 
-
-    /** @see \Serializable::serialize() */
-    public function serialize()
+    public function objectToArray()
     {
-        return serialize(array(
-            $this->id,
-            $this->whiteboardId,
-            $this->object,
-            $this->createdAt,
-            $this->deletedAt
-        ));
-    }
-
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->whiteboardId,
-            $this->object,
-            $this->createdAt,
-            $this->deletedAt,
-        ) = unserialize($serialized);
+        return array(
+            'id' => $this->id,
+            'whiteboard' => $this->whiteboardId,
+            'object' => $this->object,
+            'createdAt' => $this->createdAt,
+            'deletedAt' => $this->deletedAt
+        );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -95,7 +76,7 @@ class WhiteboardObject implements \Serializable
     /**
      * Get whiteboardId
      *
-     * @return integer 
+     * @return integer
      */
     public function getWhiteboardId()
     {
@@ -118,7 +99,7 @@ class WhiteboardObject implements \Serializable
     /**
      * Get object
      *
-     * @return string 
+     * @return string
      */
     public function getObject()
     {
@@ -141,7 +122,7 @@ class WhiteboardObject implements \Serializable
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -164,7 +145,7 @@ class WhiteboardObject implements \Serializable
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -187,7 +168,7 @@ class WhiteboardObject implements \Serializable
     /**
      * Get whiteboard
      *
-     * @return \APIBundle\Entity\Whiteboard 
+     * @return \APIBundle\Entity\Whiteboard
      */
     public function getWhiteboard()
     {

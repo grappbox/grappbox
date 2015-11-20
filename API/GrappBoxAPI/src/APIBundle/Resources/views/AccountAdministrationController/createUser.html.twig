@@ -4,7 +4,7 @@
 
 {% block body %}
 
-<form method="post" action="/V1/API/AccountAdministration/signIn" enctype="multipart/form-data">
+<form method="post" action="/V1.0/accountadministration/signin" enctype="multipart/form-data">
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
     <label name="firstname">Firstname</label>
     <input type="text" name="firstname"><br/>

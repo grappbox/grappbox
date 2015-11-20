@@ -4,15 +4,10 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-
 /**
  * Project
  */
-class Project implements \Serializable
+class Project
 {
     /**
      * @var integer
@@ -117,44 +112,27 @@ class Project implements \Serializable
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-        /** @see \Serializable::serialize() */
-    public function serialize()
+    public function objectToArray()
     {
-        return serialize(array(
-            $this->id,
-            $this->creatorId,
-            $this->name,
-            $this->description,
-            $this->logo,
-            $this->contactEmail,
-            $this->facebook,
-            $this->twitter,
-            $this->createdAt,
-            $this->deletedAt
-        ));
+        return array(
+            'id' => $this->id,
+            'creatorId' => $this->creatorId,
+            'name' => $this->name,
+            'description' => $this->description,
+            'logo' => $this->logo,
+            'contactEmail' => $this->contactEmail,
+            'facebook' => $this->facebook,
+            'twitter' => $this->twitter,
+            'createdAt' => $this->createdAt,
+            'deletedAt' => $this->deletedAt
+        );
     }
 
-    /** @see \Serializable::unserialize() */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->creatorId,
-            $this->name,
-            $this->description,
-            $this->logo,
-            $this->contactEmail,
-            $this->facebook,
-            $this->twitter,
-            $this->createdAt,
-            $this->deletedAt,
-        ) = unserialize($serialized);
-    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -177,7 +155,7 @@ class Project implements \Serializable
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -200,7 +178,7 @@ class Project implements \Serializable
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -223,7 +201,7 @@ class Project implements \Serializable
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -246,7 +224,7 @@ class Project implements \Serializable
     /**
      * Get logo
      *
-     * @return string 
+     * @return string
      */
     public function getLogo()
     {
@@ -269,7 +247,7 @@ class Project implements \Serializable
     /**
      * Get teamId
      *
-     * @return integer 
+     * @return integer
      */
     public function getTeamId()
     {
@@ -292,7 +270,7 @@ class Project implements \Serializable
     /**
      * Get contactEmail
      *
-     * @return string 
+     * @return string
      */
     public function getContactEmail()
     {
@@ -315,7 +293,7 @@ class Project implements \Serializable
     /**
      * Get facebook
      *
-     * @return string 
+     * @return string
      */
     public function getFacebook()
     {
@@ -338,7 +316,7 @@ class Project implements \Serializable
     /**
      * Get twitter
      *
-     * @return string 
+     * @return string
      */
     public function getTwitter()
     {
@@ -361,7 +339,7 @@ class Project implements \Serializable
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -384,7 +362,7 @@ class Project implements \Serializable
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -407,7 +385,7 @@ class Project implements \Serializable
     /**
      * Get safePassword
      *
-     * @return string 
+     * @return string
      */
     public function getSafePassword()
     {
@@ -440,7 +418,7 @@ class Project implements \Serializable
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasks()
     {
@@ -473,7 +451,7 @@ class Project implements \Serializable
     /**
      * Get bugs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBugs()
     {
@@ -506,7 +484,7 @@ class Project implements \Serializable
     /**
      * Get timelines
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTimelines()
     {
@@ -539,7 +517,7 @@ class Project implements \Serializable
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {
@@ -572,7 +550,7 @@ class Project implements \Serializable
     /**
      * Get whiteboards
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getWhiteboards()
     {
@@ -605,7 +583,7 @@ class Project implements \Serializable
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
