@@ -26,7 +26,7 @@ class UserController extends RolesAndTokenVerificationController
 {
 	public function basicInformationsAction(Request $request, $token)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -511,7 +511,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiVersion 1.3.0
 	*
 	* @apiParam {string} token user's authentication token
-	* 
+	*
 	* @apiSuccess {Object[]} Task array of n project
 	* @apiSuccess {Number} Task.id id of the task
 	* @apiSuccess {String} Task.title title of the task
