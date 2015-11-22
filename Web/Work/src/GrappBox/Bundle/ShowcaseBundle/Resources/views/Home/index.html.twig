@@ -9,40 +9,46 @@
 {% block body %}
 
 <body>
-    <section id="home" class="intro-header">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="intro-message">
-                        <h1>Grapp<span class="red">Box</span></h1>
-                        <h2>The new way to manage projects</h2>
+    <section id="home">
+     <div class="header-section home-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="home-title">
+                            <h1>Grapp<span class="red">Box</span></h1>
+                            <h2>The new way to manage projects</h2>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <ul class="list-inline intro-social-buttons">
-                        <li>
-                            <a target="_blank" title="GrappBox on Twitter" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
-                        </li>
-                        <li>
-                            <a target="_blank" title="GrappBox on Facebook" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
-                        </li>
-                        <li>
-                            <a target="_blank" title="GrappBox on Google+" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-google-plus" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
-                        </li>
-                        <li>
-                            <a target="_blank" title="Contact GrappBox by email" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
-                        </li>
-                    </ul>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="list-inline btn-social-list">
+                            <li>
+                                <a target="_blank" title="GrappBox on Twitter" class="btn-social btn-twitter btn-radial" href="https://twitter.com/GrappBox">
+                                <i class="fa fa-twitter fa-fw"></i></a>
+                            </li>
+                            <li>
+                                <a target="_blank" title="GrappBox on Facebook" class="btn-social btn-facebook btn-radial" href="https://facebook.com/GrappBox">
+                                <i class="fa fa-facebook fa-fw"></i></a>
+                            </li>
+                            <li>
+                                <a target="_blank" title="GrappBox on Google+" class="btn-social btn-google-plus btn-radial" href="https://plus.google.com/115657691021326143456/posts">
+                                <i class="fa fa-google-plus fa-fw"></i></a>
+                            </li>
+                            <li>
+                                <a target="_blank" title="Contact GrappBox by email" class="btn-social btn-mail btn-radial" href="mailto:grappbox@gmail.com">
+                                <i class="fa fa-envelope-o fa-fw"></i></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
@@ -54,26 +60,23 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-menu">
                 <ul class="nav navbar-nav">
-                    <li><a href="#home" title="Home" class="hvr-underline-from-center nav-active"><i class="fa fa-home"></i>Home</a></li>
-                    <li><a href="#about" title="About GrappBox" class="hvr-underline-from-center"><i class="fa fa-list"></i>About</a></li>
-                    <li><a href="#register" title="Create your GrappBox account" class="hvr-underline-from-center"><i class="fa fa-check"></i>Register</a></li>
-                    <li><a href="#register" title="Sign in to your GrappBox account" class="app-login hvr-sweep-to-right"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
-{#
-                    <li><a href="#" title="Sign in to your GrappBox account" class="app-login hvr-sweep-to-right" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
-#}
+                    <li><a href="#home" title="Home" class="btn-center-underline active"><i class="fa fa-home"></i>Home</a></li>
+                    <li><a href="#about" title="About GrappBox" class="btn-center-underline"><i class="fa fa-list"></i>About</a></li>
+                    <li><a href="#register" title="Create your GrappBox account" class="btn-center-underline"><i class="fa fa-check"></i>Register</a></li>
+                    <li><a href="#register" title="Sign in to your GrappBox account" class="btn-right-sweep app-login"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <section id="about">
-        <div class="content-section content-section-b">
+        <div class="content-section even-section">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-5 col-sm-6">
                         <div class="clearfix"></div>
                         <h3 class="section-heading">Manage YOUR projects the way YOU want.<br></h3>
-                        <p class="lead">If you want a tool for managing your projects, teams, tasks, ideas, files, and even clients, GrappBox is for you!<br>We wanted to design a simple platform, fresh and fast that allows you to create and manage your projects from A to Z!</p>
+                        <p class="section-text">If you want a tool for managing your projects, teams, tasks, ideas, files, and even clients, GrappBox is for you!<br>We wanted to design a simple platform, fresh and fast that allows you to create and manage your projects from A to Z!</p>
                     </div>
                     <div class="col-lg-5 col-lg-offset-2 col-sm-6">
                         <img class="img-responsive" alt="Teamwork !" src="resources/images/business-team_wide.min.png">
@@ -82,13 +85,13 @@
             </div>
         </div>
 
-        <div class="content-section content-section-a">
+        <div class="content-section odd-section">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-5 col-lg-offset-1 col-sm-push-6 col-sm-6">
                         <div class="clearfix"></div>
                         <h3 class="section-heading">Think, design and create!<br></h3>
-                        <p class="lead">With GrappBox, creating technology projects have never been so easy.<br>Manage all your projects, add teams and team members, schedule appointments, store your files on your reserved cloud storage, share your ideas on the real-time collaborative whiteboard, give life to them thanks to our visualization diagram maker, and discuss with your clients via the timeline!</p>
+                        <p class="section-text">With GrappBox, creating technology projects have never been so easy.<br>Manage all your projects, add teams and team members, schedule appointments, store your files on your reserved cloud storage, share your ideas on the real-time collaborative whiteboard, give life to them thanks to our visualization diagram maker, and discuss with your clients via the timeline!</p>
                     </div>
                     <div class="col-lg-5 col-sm-pull-6 col-sm-6">
                         <img class="img-responsive img-reduced img-round-radius" alt="Lead by your imagination." src="resources/images/business-work.min.png">
@@ -97,13 +100,13 @@
             </div>
         </div>
 
-        <div class="content-section content-section-b">
+        <div class="content-section even-section">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-5 col-sm-6">
                         <div class="clearfix"></div>
                         <h3 class="section-heading">On all your devices.<br></h3>
-                        <p class="lead">We are for world peace, be it the computer world as yours. Therefore, we try to create a homogeneous ecosystem, simple and harmonious, and most importantly, accessible.<br>Also, we try to be everywhere you need: Web, Android, iPhone, Windows Phone ...<br>You don't have Internet access? No problem, the Windows and Linux applications are made for you!</p>
+                        <p class="section-text">We are for world peace, be it the computer world as yours. Therefore, we try to create a homogeneous ecosystem, simple and harmonious, and most importantly, accessible.<br>Also, we try to be everywhere you need: Web, Android, iPhone, Windows Phone ...<br>You don't have Internet access? No problem, the Windows and Linux applications are made for you!</p>
                     </div>
                     <div class="col-lg-5 col-lg-offset-2 col-sm-6">
                         <img class="img-responsive img-reduced" lt="On all your devices." src="resources/images/travel-around-world_square.min.png" id='around-world'>
@@ -114,23 +117,23 @@
     </section>
 
     <section id="register">
-        <div class="content-section content-section-a">
+        <div class="content-section odd-section">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="clearfix"></div>
-                        <h2 class="section-heading text-center login-heading">Already ready to join us?</h2>
-                        <p class="lead text-center">That's awesome, thanks a lot!<br>But please wait a bit more, we're not ready yet... (but we will, soon)</p>
-                        <ul class="list-inline account-action-buttons">
+                        <h3 class="section-heading text-center">Already ready to join us?</h3>
+                        <p class="section-text text-center">That's awesome, thanks a lot!<br>But please wait a bit more, we're not ready yet... (but we will, soon)</p>
+                        <ul class="btn-account-list list-inline text-center">
                             <li>
-                                <a title="Create your GrappBox account" class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-register disabled"><i class="fa fa-check fa-fw"></i>Register</a>
+                                <a title="Create your GrappBox account" class="btn btn-account btn-register btn-fade disabled">
+                                <i class="fa fa-check fa-fw"></i>Register</a>
                             </li>
 
-{#
                             <li>
-                                <a title="Log in to your GrappBox account" class="btn btn-default btn-lg btn-account-action hvr-fade hvr-pulse-shrink btn-login" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Sign in</a>
+                                <a title="Log in to your GrappBox account" class="btn btn-account btn-login btn-fade" data-toggle="modal" data-target="#app-modal">
+                                <i class="fa fa-sign-in fa-fw"></i>Sign in</a>
                             </li>
-#}
 
                         </ul>
                     </div>
@@ -138,65 +141,70 @@
             </div>
         </div>
 
-        <div class="content-section wide-background contact-background"></div>
-        <div class="content-section content-section-a" id="contact">
-            <div class="contact-banner banner">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            <h3>Stay in touch!</h3>
-                        </div>
-                        <div class="col-lg-9">
-                            <ul class="list-inline banner-social-buttons">
-                                <li>
-                                    <a target="_blank" title="GrappBox on Twitter" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
-                                    <span class="network-name">@GrappBox</span>
-                                </li>
-                                <li>
-                                    <a target="_blank" title="GrappBox on Facebook" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
-                                    <span class="network-name">GrappBox</span>
-                                </li>
-                                <li>
-                                    <a target="_blank" title="GrappBox on Google+" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-google-plus" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
-                                    <span class="network-name">+GrappBox</span>
-                                </li>
-                                <li>
-                                    <a target="_blank" title="Contact GrappBox by email" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
-                                    <span class="network-name">grappbox@gmail.com</span>
-                                </li>
-                            </ul>
-                        </div>
+        <div class="content-section" id="contact-header"></div>
+
+        <div class="content-section odd-section" id="contact">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <h3>Stay in touch!</h3>
+                    </div>
+                    <div class="col-lg-9">
+                        <ul class="list-inline btn-social-list">
+                            <li>
+                                <a target="_blank" title="GrappBox on Twitter" class="btn-social btn-twitter btn-radial" href="https://twitter.com/GrappBox">
+                                <i class="fa fa-twitter fa-fw"></i></a><span class="network-name">@GrappBox</span>
+                            </li>
+                            <li>
+                                <a target="_blank" title="GrappBox on Facebook" class="btn-social btn-facebook btn-radial" href="https://facebook.com/GrappBox">
+                                <i class="fa fa-facebook fa-fw"></i></a><span class="network-name">GrappBox</span>
+                            </li>
+                            <li>
+                                <a target="_blank" title="GrappBox on Google+" class="btn-social btn-google-plus btn-radial" href="https://plus.google.com/115657691021326143456/posts">
+                                <i class="fa fa-google-plus fa-fw"></i></a><span class="network-name">+GrappBox</span>
+                            </li>
+                            <li>
+                                <a target="_blank" title="Contact GrappBox by email" class="btn-social btn-mail btn-radial" href="mailto:grappbox@gmail.com">
+                                <i class="fa fa-envelope-o fa-fw"></i></a><span class="network-name">grappbox@gmail.com</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-{#
     <div class="modal fade" id="app-modal" tabindex="-1" role="dialog" aria-labelledby="app-modal-label">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h2 class="modal-title" id="app-modal-label">Sign in to GRAPP<span class="red">BOX</span></h2>
+                    <h3 class="modal-title" id="app-modal-label">Sign in to GRAPP<span class="red">BOX</span></h3>
                 </div>
+
                 <div class="modal-body">
-                    <form class="form-signin">
-                        <label for="inputEmail" class="sr-only">Email</label>
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus>
-                        <label for="inputPassword" class="sr-only">Password</label>
-                        <input type="password" id="inputPassword" class="form-control" placeholder="Password">
-                    </form>
+                    {{ form_start(loginForm, {'attr': {'class': 'form-signin'}}) }}
+                    {{ form_widget(loginForm.email, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_widget(loginForm.password, {'attr': {'class': 'form-control'}}) }}
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" title="Cancel" class="btn btn-lg btn-primary btn-block btn-lg-account btn-cancel hvr-fade" data-dismiss="modal"><i class="fa fa-close"></i>Cancel</button>
-                    <a href="/app"><button type="submit" title="Log in to your GrappBox account" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-fade"><i class="fa fa-check"></i>Sign in</button></a>
+                    <div class="btn-account-list">
+                        <button type="button" title="Cancel" class="btn btn-account btn-cancel btn-fade" data-dismiss="modal"><i class="fa fa-close"></i>Cancel</button>
+                        
+                        {{ form_widget(loginForm.submit, {
+                            'attr': {'title': 'Log in to your GrappBox account', 'class': 'btn btn-account btn-submit btn-fade'},
+                            'icon': 'fa-check'
+                            })
+                        }}
+                    </div>
                 </div>
+
+                <div class="clearfix"></div>
             </div>
         </div>
     </div>
-#}
-
+    
     <footer>
         <div class="container">
             <div class="row">

@@ -1,5 +1,5 @@
 {# This file is subject to the terms and conditions defined in
- # file 'LICENSE.txt', which is part of the GRAPPBOX source code package. #}
+# file 'LICENSE.txt', which is part of the GRAPPBOX source code package. #}
 
 {% extends 'ShowcaseBundle:Shared:base.html.twig' %}
 
@@ -8,11 +8,11 @@
 {% block body %}
 
 <body>
-    <section id="error-header" class="intro-header">
+    <section id="error">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="intro-message">
+                    <div class="home-title">
                         <h1>Grapp<span class="red">Box</span></h1>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
         </div>
     </section>
 
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
@@ -32,30 +32,30 @@
             </div>
             <div class="collapse navbar-collapse" id="navbar-menu">
                 <ul class="nav navbar-nav">
-                    <li><a href="/" title="Get back to GrappBox main page" class="hvr-underline-from-center"><i class="fa fa-long-arrow-left"></i>Get back to home</a></li>
-                    <li><a href="#contact" title="Contact Grappbox" class="hvr-underline-from-center"><i class="fa fa-comment"></i>Contact us</a></li>
-                    <li><a href="#" title="Sign in to your GrappBox account" class="app-login hvr-sweep-to-right" data-toggle="modal" data-target="#app-modal"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
+                    <li><a href="/" title="Get back to GrappBox main page" class="btn-center-underline"><i class="fa fa-long-arrow-left"></i>Get back to home</a></li>
+                    <li><a href="#contact" title="Contact Grappbox" class="btn-center-underline"><i class="fa fa-comment"></i>Contact us</a></li>
+                    <li><a href="/?return=login" title="Sign in to your GrappBox account" class="btn-right-sweep app-login"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <section id="error-content">
-        <div class="content-section content-section-b">
+    <section id="message">
+        <div class="content-section even-section">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="clearfix"></div>
                         <h2 class="section-heading">An error occurred ({{ status_code }}).</h2>
-                        <p class="lead">The requested resource does not exist or could not be reached.</p>
-                        <p class="lead">If this is the first time you have this error, try to <strong>reload your page</strong> first.<br>If not, try the following solutions:
-                            <ul class="lead">
+                        <p class="section-text">The requested resource does not exist or could not be reached.</p>
+                        <p class="section-text">If this is the first time you have this error, try to <strong>reload your page</strong> first.<br>If not, try the following solutions:
+                            <ul class="section-text">
                                 <li>Check the adress you entered is correct.</li>
                                 <li>Empty your browser's cache, and reload the page.</li>
                                 <li>Check you have the rights to see this page.</li>
                             </ul>
                         </p>
-                        <p class="lead">If none of these solutions work, <strong>please contact us</strong> using the links below, and tell us what happened.<br>We'll try to solve the problem as quickly as possible.<br><br>Thanks a lot.</p>
+                        <p class="section-text">If none of these solutions work, <strong>please contact us</strong> using the links below, and tell us what happened.<br>We'll try to solve the problem as quickly as possible.<br><br>Thanks a lot.</p>
                     </div>
                 </div>
             </div>
@@ -63,61 +63,36 @@
     </section>
 
     <section id="contact">
-        <div class="content-section content-section-a">
-            <div class="contact-banner banner">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3">
-                            <h2>Stay in touch!</h2>
-                        </div>
-                        <div class="col-lg-9">
-                            <ul class="list-inline banner-social-buttons">
-                                <li>
-                                    <a target="_blank" title="GrappBox on Twitter" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-twitter" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
-                                    <span class="network-name">@GrappBox</span>
-                                </li>
-                                <li>
-                                    <a target="_blank" title="GrappBox on Facebook" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-facebook" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
-                                    <span class="network-name">GrappBox</span>
-                                </li>
-                                <li>
-                                    <a target="_blank" title="GrappBox on Google+" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-google-plus" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
-                                    <span class="network-name">+GrappBox</span>
-                                </li>
-                                <li>
-                                    <a target="_blank" title="Contact GrappBox by email" class="btn btn-default btn-lg btn-social-round hvr-radial-out btn-mail" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
-                                    <span class="network-name">grappbox@gmail.com</span>
-                                </li>
-                            </ul>
-                        </div>
+        <div class="content-section odd-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <h3>Stay in touch!</h3>
+                    </div>
+                    <div class="col-lg-9">
+                        <ul class="list-inline btn-social-list">
+                            <li>
+                                <a target="_blank" title="GrappBox on Twitter" class="btn-social btn-twitter btn-radial" href="https://twitter.com/GrappBox">
+                                <i class="fa fa-twitter fa-fw"></i></a><span class="network-name">@GrappBox</span>
+                            </li>
+                            <li>
+                                <a target="_blank" title="GrappBox on Facebook" class="btn-social btn-facebook btn-radial" href="https://facebook.com/GrappBox">
+                                <i class="fa fa-facebook fa-fw"></i></a><span class="network-name">GrappBox</span>
+                            </li>
+                            <li>
+                                <a target="_blank" title="GrappBox on Google+" class="btn-social btn-google-plus btn-radial" href="https://plus.google.com/115657691021326143456/posts">
+                                <i class="fa fa-google-plus fa-fw"></i></a><span class="network-name">+GrappBox</span>
+                            </li>
+                            <li>
+                                <a target="_blank" title="Contact GrappBox by email" class="btn-social btn-mail btn-radial" href="mailto:grappbox@gmail.com">
+                                <i class="fa fa-envelope-o fa-fw"></i></a><span class="network-name">grappbox@gmail.com</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <div class="modal fade" id="app-modal" tabindex="-1" role="dialog" aria-labelledby="app-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h2 class="modal-title" id="app-modal-label">Sign in to GRAPP<span class="red">BOX</span></h2>
-                </div>
-                <div class="modal-body">
-                    <form class="form-signin">
-                        <label for="inputEmail" class="sr-only">Email</label>
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email (grappbox@awesome.com)" autofocus>
-                        <label for="inputPassword" class="sr-only">Password</label>
-                        <input type="password" id="inputPassword" class="form-control" placeholder="Password">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" title="Cancel" class="btn btn-lg btn-primary btn-block btn-lg-account btn-cancel hvr-fade" data-dismiss="modal"><i class="fa fa-close"></i>Cancel</button>
-                    <a href="/app"><button type="submit" title="Log in to your GrappBox account" class="btn btn-lg btn-primary btn-block btn-lg-account btn-login hvr-fade"><i class="fa fa-check"></i>Sign in</button></a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <footer>
         <div class="container">

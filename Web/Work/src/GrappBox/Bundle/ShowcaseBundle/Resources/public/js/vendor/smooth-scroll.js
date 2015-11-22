@@ -1,5 +1,23 @@
+/*!
+* This file is subject to the terms and conditions defined in
+* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+* COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
+*/
+
+/**
+* GRAPPBOX
+* SHOWCASE navigation scripts
+*
+*/
+
+/**
+* Global smooth scroll
+*
+*/
 function ssc_init() {
-    if (!document.body) return;
+    if (!document.body)
+        return;
+    
     var e = document.body;
     var t = document.documentElement;
     var n = window.innerHeight;
@@ -44,7 +62,7 @@ function ssc_scrollArray(e, t, n, r) {
     if (ssc_pending)
         return;
 
-    var i = function () {
+    var i = function() {
         var s = +(new Date);
         var o = 0;
         var u = 0;
@@ -281,13 +299,13 @@ var ssc_que = [];
 var ssc_pending = false;
 var ssc_cache = {};
 
-setInterval(function () {
+setInterval(function() {
     ssc_cache = {}
 }, 10 * 1e3);
 
-var ssc_uniqueID = function () {
+var ssc_uniqueID = function() {
     var e = 0;
-    return function (t) {
+    return function(t) {
         return t.ssc_uniqueID || (t.ssc_uniqueID = e++)
     }
 }();
