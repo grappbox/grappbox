@@ -1,8 +1,9 @@
 #ifndef IDATACONNECTOR
 #define IDATACONNECTOR
 
-#include <QList>
+#include <QVector>
 #include <QString>
+#include <QObject>
 
 namespace API
 {
@@ -33,14 +34,21 @@ namespace API
         GR_WHITEBOARD
     };
 
+    enum PostRequest
+    {
+        PR_LOGIN,
+    };
+
     class IDataConnector
     {
-    public:
-        virtual ~IDataConnector() {};
 
-        virtual bool Update(DataPart part, int id, QList<QString> data) = 0;
-        virtual bool Get(DataPart part, int id, QList<QString> data) = 0;
-        virtual bool Delete(DataPart part, int id, QList<QString> data) = 0;
+    public:
+
+        virtual ~IDataConnector() {}
+
+        virtual int Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
+        virtual int Get(DataPart part, int request, QVector<QString> &data, QObject *requestReturn, const char* slotSuccess, const char* slotFailure) = 0;
+        virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
 
     };
 

@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets network
 
 TARGET = GrappBox
 TEMPLATE = app
@@ -15,7 +15,8 @@ QMAKE_CXXFLAGS += -Wunused-parameter \
     -Wunused-variable
 
 INCLUDEPATH += Body \
-    Body/Dashboard
+    Body/Dashboard \
+    API
 
 SOURCES += main.cpp \
     MainWindow.cpp \
@@ -24,7 +25,6 @@ SOURCES += main.cpp \
     Body\Dashboard\DashboardMember.cpp \
     Body\Dashboard\DashboardMeeting.cpp \
     Body\Dashboard\DashboardGlobalProgress.cpp \
-    SDataManager.cpp \
     Body\Dashboard\DashboardInformation.cpp \
     SFontLoader.cpp \
     ProfilMainInformation.cpp \
@@ -34,7 +34,10 @@ SOURCES += main.cpp \
     WhiteboardGraphicsView.cpp \
     customgraphicsdiamonditem.cpp \
     CustomGraphicsHandWriteItem.cpp \
-    BodyWhiteboardWritingText.cpp
+    BodyWhiteboardWritingText.cpp \
+    API/SDataManager.cpp \
+    API/DataConnectorOnline.cpp \
+    LoginWindow.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -43,8 +46,6 @@ HEADERS  += MainWindow.h \
     Body\Dashboard\DashboardMember.h \
     Body\Dashboard\DashboardMeeting.h \
     Body\Dashboard\DashboardGlobalProgress.h \
-    SDataManager.h \
-    IDataConnector.h \
     Body\Dashboard\DashboardInformation.h \
     SFontLoader.h \
     ProfilMainInformation.h \
@@ -54,7 +55,11 @@ HEADERS  += MainWindow.h \
     WhiteboardGraphicsView.h \
     customgraphicsdiamonditem.h \
     CustomGraphicsHandWriteItem.h \
-    BodyWhiteboardWritingText.h
+    BodyWhiteboardWritingText.h \
+    API/IDataConnector.h \
+    API/SDataManager.h \
+    API/DataConnectorOnline.h \
+    LoginWindow.h
 
 RESOURCES += \
     temporaryressources.qrc \

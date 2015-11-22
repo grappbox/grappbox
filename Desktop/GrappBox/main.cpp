@@ -1,18 +1,11 @@
-#include "MainWindow.h"
+#include "LoginWindow.h"
 #include <QApplication>
-
-#include <QDebug>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QTableView>
-#include <QComboBox>
-#include <QHeaderView>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    MainWindow w;
+    LoginWindow w;
     w.show();
 
     return a.exec();
