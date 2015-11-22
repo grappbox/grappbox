@@ -28,6 +28,8 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   var canvasPoints = [];
   var canvasColorValues = [];
   
+  var textMode = false;
+
   var mouseStartPosition;
   var mouseEndPosition;
   var isMousePressed;
@@ -46,7 +48,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       case "pencil":
         canvasData = {
         toolName: "pencil",
-        toolLineWidth: Number($scope.whiteboardLineWidth),
+        toolLineWidth: Number($scope.selectedLineWidth),
         toolPoints: canvasPoints,
         toolColor: canvasColorValues[lineColorIndex] };
       break;
@@ -55,7 +57,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         canvasData = {
         toolName: "line",
         toolLineColor: canvasColorValues[lineColorIndex],
-        toolLineWidth: Number($scope.whiteboardLineWidth),
+        toolLineWidth: Number($scope.selectedLineWidth),
         toolStartX: mouseStartPosition.x,
         toolStartY: mouseStartPosition.y,
         toolEndX: mouseEndPosition.x,
@@ -67,12 +69,12 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         toolName: "rectangle",
         toolLineColor: canvasColorValues[lineColorIndex],
         toolFillColor: canvasColorValues[fillColorIndex],
-        toolLineWidth: Number($scope.whiteboardLineWidth),
+        toolLineWidth: Number($scope.selectedLineWidth),
         toolStartX: mouseStartPosition.x,
         toolStartY: mouseStartPosition.y,
         toolWidth: mouseEndPosition.x - mouseStartPosition.x,
         toolHeight: mouseEndPosition.y - mouseStartPosition.y,
-        toolIsFillShapeEnabled: $scope.isFillShapeEnabled };
+        toolIsFillShapeEnabled: $scope.isFillModeEnabled };
       break;
 
       case "circle":
@@ -80,11 +82,21 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         toolName: "circle",
         toolLineColor: canvasColorValues[lineColorIndex],
         toolFillColor: canvasColorValues[fillColorIndex],
-        toolLineWidth: Number($scope.whiteboardLineWidth),
+        toolLineWidth: Number($scope.selectedLineWidth),
         toolStartX: mouseStartPosition.x,
         toolStartY: mouseStartPosition.y,
         toolRadius: (Math.abs(mouseEndPosition.x - mouseStartPosition.x) + (Math.abs(mouseEndPosition.y - mouseStartPosition.y)) / 2),
-        toolIsFillShapeEnabled: $scope.isFillShapeEnabled };
+        toolIsFillShapeEnabled: $scope.isFillModeEnabled };
+      break;
+
+      case "text":
+        canvasData = {
+        toolName: "text",
+        toolFont: '30pt Arial',
+        toolContent: $scope.drawTextValue,
+        toolStartX: mouseStartPosition.x,
+        toolStartY: mouseStartPosition.y,
+        toolColor: canvasColorValues[lineColorIndex] };
       break;
 
       default:
@@ -110,11 +122,11 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
 
   /* Scope variables default values */
   $scope.whiteboardTools = "pencil";
-  $scope.whiteboardLineWidth = "0.5";
-  $scope.whiteboardDrawType = "line";
-  $scope.lineColor = canvasColorValues[lineColorIndex];
-  $scope.fillColor = canvasColorValues[fillColorIndex];
-  $scope.isFillShapeEnabled = false;
+  $scope.selectedLineWidth = "0.5";
+  $scope.drawColorMode = "line";
+  $scope.lineColorMode = canvasColorValues[lineColorIndex];
+  $scope.fillColorMode = canvasColorValues[fillColorIndex];
+  $scope.isFillModeEnabled = false;
 
   /* Initialize whiteboard canvas and controls, set default values */
   $scope.initializeWhiteboardControls = function() {
@@ -198,28 +210,28 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   };
 
   /* Handle color changes */
-  $scope.setWhiteboardColor = function(color) {
-    switch ($scope.whiteboardDrawType) {
+  $scope.setDrawColor = function(newDrawColor) {
+    switch ($scope.drawColorMode) {
       case "line":
-      lineColorIndex = color;
-      $scope.lineColor = canvasColorValues[lineColorIndex];
+      lineColorIndex = newDrawColor;
+      $scope.lineColorMode = canvasColorValues[lineColorIndex];
       break;
 
       case "fill":
-      fillColorIndex = color;
-      $scope.fillColor = canvasColorValues[fillColorIndex];
+      fillColorIndex = newDrawColor;
+      $scope.fillColorMode = canvasColorValues[fillColorIndex];
       break;
 
       default:
-      lineColorIndex = color;
-      $scope.lineColor = canvasColorValues[lineColorIndex];
+      lineColorIndex = newDrawColor;
+      $scope.lineColorMode = canvasColorValues[lineColorIndex];
       break;
     }
   };
 
   /* Handle draw type changes */
-  $scope.setWhiteboardDrawType = function(drawType) {
-    $scope.whiteboardDrawType = drawType;
+  $scope.setDrawColorMode = function(newDrawColorMode) {
+    $scope.drawColorMode = newDrawColorMode;
   };
 
   /* Handle 'Undo' button */

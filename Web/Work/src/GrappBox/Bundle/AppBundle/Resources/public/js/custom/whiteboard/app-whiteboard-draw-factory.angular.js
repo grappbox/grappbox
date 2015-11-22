@@ -71,6 +71,16 @@ app.factory("whiteboardRendererFactory", function() {
     canvasContext.stroke();
   };
 
+  var renderText = function(data) {
+    canvasContext.beginPath();
+
+    canvasContext.strokeStyle = data.toolLineColor;
+    canvasContext.fillText(data.toolContent, data.toolStartX, data.toolStartY);
+
+    canvasContext.stroke();
+  };
+
+
   var renderAll = function() {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -87,6 +97,9 @@ app.factory("whiteboardRendererFactory", function() {
           break;
         case "line":
           renderLine(canvasBuffer[i]);
+          break;
+        case "text":
+          renderText(canvasBuffer[i]);
           break;
       }
     }
@@ -114,6 +127,9 @@ app.factory("whiteboardRendererFactory", function() {
           break;
         case "line":
           renderLine(data);
+          break;
+        case "text":
+          renderText(data);
           break;
       }
     },
