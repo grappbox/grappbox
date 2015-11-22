@@ -19,9 +19,9 @@ app.factory("whiteboardRendererFactory", function() {
   var renderPencil = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.lineCap = 'round';
     canvasContext.strokeStyle = data.toolColor;
     canvasContext.lineWidth = data.toolLineWidth;
+    canvasContext.lineCap = 'round';
     canvasContext.moveTo(data.toolPoints[0].x, data.toolPoints[0].y);
 
     for (var i = 0; i < data.toolPoints.length; ++i) {
@@ -39,6 +39,7 @@ app.factory("whiteboardRendererFactory", function() {
     canvasContext.lineCap = 'round';
     canvasContext.moveTo(data.toolStartX, data.toolStartY);
     canvasContext.lineTo(data.toolEndX, data.toolEndY);
+
     canvasContext.stroke();
   };
 

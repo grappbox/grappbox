@@ -22,10 +22,7 @@
 		{% stylesheets
 		'@ShowcaseBundle/Resources/public/css/vendor/bootstrap.css'
 		'@ShowcaseBundle/Resources/public/css/vendor/font-awesome.css'
-		'@ShowcaseBundle/Resources/public/css/vendor/hover.css'
-		'@ShowcaseBundle/Resources/public/css/vendor/landing-page.css'
 		'@ShowcaseBundle/Resources/public/css/custom/base.css'
-		'@AppBundle/Resources/public/css/vendor/sbadmin-two.css'
 		'@AppBundle/Resources/public/css/custom/app.angular.css'
 		filter='?yui_css' output='resources/css/app.min.css' %}
 		<link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
@@ -60,33 +57,33 @@
 		<div id="app-wrapper">
 
 			<!-- Navigation content -->
-			<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<nav class="navbar navbar-static-top" role="navigation">
 				<div class="navbar-brand">
-					<a href="/" title="Return to GrappBox main page (stay logged in)">Grapp<span class="red">Box</span></a>
+					<a href="./" title="Return to GrappBox dashboard">Grapp<span class="red">Box</span></a>
 				</div>
 				<!-- Navigation menu (left) -->
-				<div class="navbar-default sidebar-wrapper" role="navigation">
+				<div class="sidebar-wrapper" role="navigation">
 					<div id="menu-wrapper" class="navbar-collapse sidebar-menu" ng-controller="sidebarController">
 						<ul class="sidebar">
 							<li>
-								<a href="notifications" title="See all your notifications" class="sidebar-link sidebar-notifications hvr-sweep-to-right ng-class:{ 'active' : isActive('/notifications') };">
-								<i class="fa fa-exclamation fa-fw"></i> Notifications</a>
+								<a href="notifications" title="See all your notifications" class="btn-right-sweep ng-class:{ 'active' : isActive('/notifications') };">
+								<i class="fa fa-exclamation fa-fw"></i>Notifications</a>
 							</li>
 							<li>
-								<a href="./" title="Go to your dashboard" class="sidebar-link sidebar-dashboard hvr-sweep-to-right ng-class:{ 'active' : isActive('/') };">
-								<i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+								<a href="./" title="Go to your dashboard" class="btn-right-sweep ng-class:{ 'active' : isActive('/') };">
+								<i class="fa fa-dashboard fa-fw"></i>Dashboard</a></li>
 							<li>
-								<a href="whiteboard" title="Go to the collaborative whiteboard" class="sidebar-link sidebar-whiteboard hvr-sweep-to-right ng-class:{ 'active' : isActive('/whiteboard') };">
-								<i class="fa fa-edit fa-fw"></i> Whiteboard</a></li>
+								<a href="whiteboard" title="Go to the collaborative whiteboard" class="btn-right-sweep ng-class:{ 'active' : isActive('/whiteboard') };">
+								<i class="fa fa-edit fa-fw"></i>Whiteboard</a></li>
 							<li>
-								<a href="profile" title="Manage your profile" class="sidebar-link sidebar-profile hvr-sweep-to-right ng-class:{ 'active' : isActive('/profile') };">
-								<i class="fa fa-user fa-fw"></i> Profile</a></li>
+								<a href="profile" title="Manage your profile" class="btn-right-sweep ng-class:{ 'active' : isActive('/profile') };">
+								<i class="fa fa-user fa-fw"></i>Profile</a></li>
 							<li>
-								<a href="settings" title="Manage your account settings" class="sidebar-link sidebar-settings hvr-sweep-to-right ng-class:{ 'active' : isActive('/settings') };">
-								<i class="fa fa-gear fa-fw"></i> Settings</a></li>
+								<a href="settings" title="Manage your account settings" class="btn-right-sweep ng-class:{ 'active' : isActive('/settings') };">
+								<i class="fa fa-gear fa-fw"></i>Settings</a></li>
 							<li>
-								<a href="/" title="Sign out of GrappBox" class="sidebar-link sidebar-logout hvr-sweep-to-right">
-								<i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+								<a href="/" title="Sign out of GrappBox" class="btn-right-sweep">
+								<i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
 						</ul>
 					</div>
 				</div>
@@ -120,8 +117,8 @@
 		{% javascripts
 		'@ShowcaseBundle/Resources/public/js/vendor/jquery.js'
 		'@ShowcaseBundle/Resources/public/js/vendor/bootstrap.js'
-		'@ShowcaseBundle/Resources/public/js/vendor/smoothscroll.js'
-		'@AppBundle/Resources/public/js/vendor/sbadmin-two.js'
+		'@ShowcaseBundle/Resources/public/js/vendor/smooth-scroll.js'
+		'@AppBundle/Resources/public/js/custom/app.jquery.js'
 		filter='?yui_js' output='resources/js/app.jquery.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}

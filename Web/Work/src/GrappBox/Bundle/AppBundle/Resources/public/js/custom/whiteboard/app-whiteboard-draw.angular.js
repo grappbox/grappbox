@@ -23,11 +23,11 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
 
   /* Canvas-related variables */
   var canvas;
+  var canvasData;
   var canvasContext;
   var canvasPoints = [];
   var canvasColorValues = [];
-  var whiteboardLineWidth;
-
+  
   var mouseStartPosition;
   var mouseEndPosition;
   var isMousePressed;
@@ -40,8 +40,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
 
   /* Create/compile canvasData to render */
   var createRenderObject = function() {
-    var canvasPointsLength = canvasPoints.length;
-    var canvasData = "";
+    canvasData = {};
 
     switch ($scope.whiteboardTools) {
       case "pencil":
@@ -99,7 +98,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   /* Render/display canvasData using whiteboardRendererFactory */
   var renderPath = function(data) {
   if ($scope.whiteboardTools === "rectangle" || $scope.whiteboardTools === "line" || $scope.whiteboardTools === "circle")
-    whiteboardRendererFactory.renderAll();
+      whiteboardRendererFactory.renderAll();
     whiteboardRendererFactory.render(data);
   };
 
@@ -124,21 +123,8 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     whiteboardRendererFactory.setCanvasContext(canvasContext);
 
     canvasPoints = [];
-    canvasColorValues = ['#000000', "#F44336",
-                         "#E91E63", "#9C27B0",
-                         "#673AB7", "#3F51B5",
-                         "#2196F3", "#03A9F4",
-                         "#00BCD4", "#009688",
-                         "#4CAF50", "#8BC34A",
-                         "#CDDC39", "#FFEB3B",
-                         "#FFC107", "#FF9800",
-                         "#FF5722", "#795548",
-                         "#607D8B", "#FFFFFF",
-                         "#EEEEEE", "#BDBDBD",
-                         "#9E9E9E", "#757575",
-                         "#424242", "#000000"];
-
-    whiteboardLineWidth = 0.5;
+    canvasColorValues = ['#000000', "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39",
+                         "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B", "#FFFFFF", "#EEEEEE", "#BDBDBD", "#9E9E9E", "#757575", "#424242", "#000000"];
 
     lineColorIndex = 0;
     fillColorIndex = 0;

@@ -1,99 +1,102 @@
 /*
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
- * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
+* This file is subject to the terms and conditions defined in
+* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+* COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
 /* ==================== Angular preloader ==================== */
 
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak { display: none!important; }
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak { display: none !important; }
 
 
 /* ==================== General layout ==================== */
 
-#app-wrapper section:nth-of-type(1) { margin: 0; }
-#app-wrapper .alert { margin: 50px 1px -20px 1px; border-radius: 0; }
-#app-wrapper .alert span { font-size: 18px; }
+#app-wrapper { background: #fff; }
+#page-wrapper { height: auto; padding: 0 30px 50px 30px; background: #fff; border-left: 1px solid #e0e0e0; transition: .2s ease all; }
 
-#app-wrapper #page-wrapper { height: auto; padding: 0 30px 50px 30px; background: #fff; border-left: 1px solid #e0e0e0; transition: .2s ease all; }
+.alert { margin: 50px 1px -20px 1px; border-radius: 0; }
+.alert span { font-size: 18px; }
 
-@media (max-width: 767px) {
-	#app-wrapper section:nth-of-type(1) { min-height: auto; }
-	#app-wrapper section { margin: 0 0 60px 0; }
+section:nth-of-type(1) { min-height: auto; margin: 30px 0 60px 0; }
+section { margin: 0 0 60px 0; }
+
+footer .app-footer { margin: 0 0 0 250px; }
+
+@media (max-width:767px) {
+	section:nth-of-type(1) { min-height: auto; }
+	section { margin: 0 0 60px 0; }
 }
 
-@media (min-width: 768px) {
-	#app-wrapper section:nth-of-type(1) { min-height: auto; margin: 30px 0 60px 0; }
-	#app-wrapper section { margin: 0 0 60px 0; }
+@media (min-width:768px) {
+	#page-wrapper { margin: 0 0 0 250px; }
+}
 
-	#app-wrapper footer .app-footer { margin: 0 0 0 250px ;}
-}	
+
+/* ==================== General layout (animations) ==================== */
+
+.btn-float { display: inline-block; vertical-align: middle; transform: translateZ(0); box-shadow: 0 0 1px rgba(0, 0, 0, 0); backface-visibility: hidden; transition-duration: .3s; transition-property: transform; transition-timing-function: ease-out; }
+
+.btn-float:active,
+.btn-float:focus,
+.btn-float:hover { transform: translateY(-8px); }
 
 
 /* ==================== Navigation ==================== */
 
-#app-wrapper { background: #fff; }
-#app-wrapper #menu-wrapper { transition: .2s ease all; }
+#menu-wrapper { transition: .2s ease all; }
 
-#app-wrapper .navbar { position: relative; min-height: 60px; margin: 0; background: #f5f5f5; box-shadow: none; }
-#app-wrapper .navbar .navbar-header { float: none; margin: 0; padding: 0; }
+.navbar { position: relative; min-height: 60px; margin: 0; background: #f5f5f5; box-shadow: none; }
 
-#app-wrapper .navbar .navbar-brand a,
-#app-wrapper .navbar .navbar-brand span { font-size: 44px; letter-spacing: -2px; text-transform: uppercase; }
-#app-wrapper .navbar .navbar-brand { line-height: normal; display: inline-block; float: none; width: 100%; height: 60px; margin: 0 auto; padding: 2px 0 0 15px; text-align: left; color: #212121; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
+.navbar-brand a,
+.navbar-brand span { font-size: 44px; letter-spacing: -2px; text-transform: uppercase; }
 
-#app-wrapper .navbar .navbar-brand a:active,
-#app-wrapper .navbar .navbar-brand a:hover,
-#app-wrapper .navbar .navbar-brand a:focus,
-#app-wrapper .navbar .navbar-brand a:active span,
-#app-wrapper .navbar .navbar-brand a:hover span,
-#app-wrapper .navbar .navbar-brand a:focus span,
-#app-wrapper .navbar .navbar-brand span:active,
-#app-wrapper .navbar .navbar-brand span:hover,
-#app-wrapper .navbar .navbar-brand span:focus { color: #ff5722; }
+.navbar-brand { line-height: normal; display: inline-block; float: none; width: 100%; height: 60px; margin: 0 auto; padding: 2px 0 0 15px; text-align: left; color: #212121; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
 
-#app-wrapper .navbar .sidebar-wrapper .divider { height: 2px; background: #e0e0e0; }
-#app-wrapper .navbar .sidebar { margin: 30px 0 0 0; padding: 0; list-style: none; }
+.navbar-brand a:active,
+.navbar-brand a:hover,
+.navbar-brand a:focus,
+.navbar-brand a:active span,
+.navbar-brand a:hover span,
+.navbar-brand a:focus span,
+.navbar-brand span:active,
+.navbar-brand span:hover,
+.navbar-brand span:focus { color: #ff5722; }
 
-#app-wrapper .navbar .sidebar .sidebar-menu { border: none; }
+.sidebar { margin: 30px 0 0 0; padding: 0; list-style: none; }
 
-#app-wrapper .navbar .sidebar li a { font-size: 18px; font-weight: 400; display: block; padding: 20px; background: #fff; }
-#app-wrapper .navbar .sidebar li a.hvr-sweep-to-right:before { transition-duration: .2s; background: #616161; }
+.sidebar li a { font-size: 18px; font-weight: 400; display: block; padding: 20px; background: #fff; }
+.sidebar li a.active { color: #f5f5f5; background: #616161; }
+.sidebar li a:before { transition-duration: .2s; background: #616161; }
 
-#app-wrapper .navbar .sidebar li a:active,
-#app-wrapper .navbar .sidebar li a:hover,
-#app-wrapper .navbar .sidebar li a:focus,
-#app-wrapper .navbar .sidebar li a.active:active,
-#app-wrapper .navbar .sidebar li a.active:hover,
-#app-wrapper .navbar .sidebar li a.active:focus { color: #f5f5f5; }
+.sidebar li a:active,
+.sidebar li a:hover,
+.sidebar li a:focus,
+.sidebar li a.active:active,
+.sidebar li a.active:hover,
+.sidebar li a.active:focus { color: #f5f5f5; }
 
-#app-wrapper .navbar .sidebar li a.active { color: #f5f5f5; background: #616161; }
-#app-wrapper .navbar .sidebar li a i { margin: 0; padding: 0 10px 0 0; }
+@media (min-width:768px) {
+	.sidebar { z-index: 1; position: absolute; width: 250px; }
+}
 
 
 /* ==================== General laytout (sections) ==================== */
 
-.app-header {
-	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
-	font-size: 44px;
-	font-weight: 300;
-	margin: 40px 0 20px;
-	padding: 0 0 11px 0;
-	letter-spacing: -1px;
-	color: #212121;
-	border-bottom: 1px solid #e0e0e0;
-}
-
 .app-section { margin: 0 0 50px 0; padding: 0; border: none; box-shadow: none; }
 .app-section .col-lg-12 { padding: 0; }
-
 .app-section .app-container { width: 100%; }
+
 .app-section .app-section-heading { margin: 0; }
-.app-section .app-section-heading h2 { font-size: 22px; margin: 0; padding: 15px 0; letter-spacing: 0; }
+.app-section .app-section-heading h2 { margin: 0; padding: 15px 0; letter-spacing: 0; }
 
 .app-section .app-section-heading .lead,
 .app-section .app-section-heading ul,
-.app-section .app-section-heading li { font-size: 18px; margin: 0 0 18px 0; line-height: initial; }
+.app-section .app-section-heading li { font-size: 18px; line-height: initial; font-weight: 400; }
 
 .app-section .app-section-content ul,
 .app-section .app-section-content li,
@@ -147,17 +150,7 @@
 #whiteboard-list-view .app-data { display: table-cell; }
 #whiteboard-list-view .app-data .app-data-list li { display: block; }
 #whiteboard-list-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
-#whiteboard-list-view .app-data .app-data-list {
-	display: block;
-	margin: 20px 10px 20px 10px;
-	padding: 0;
-	list-style: none;
-	transition-duration: .1s;
-	text-align: left;
-	color: #212121;
-	background: #f5f5f5;
-	box-shadow: 0 2px 2px rgba(33, 33, 33, .35);
-}
+#whiteboard-list-view .app-data .app-data-list { display: block; margin: 20px 10px 20px 10px; padding: 0; list-style: none; transition-duration: .1s; text-align: left; color: #212121; background: #f5f5f5; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
 
 #whiteboard-list-view .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
 #whiteboard-list-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
@@ -172,7 +165,6 @@
 
 #whiteboard-list-view .each-available-whiteboard .whiteboard-name a,
 #whiteboard-list-view .each-available-whiteboard .whiteboard-link a { display: block; padding: 15px; text-align: center; color: #f5f5f5; }
-
 #whiteboard-list-view .each-available-whiteboard .whiteboard-name a { border-bottom: 1px solid #f5f5f5; background-color: #607d8b; }
 #whiteboard-list-view .each-available-whiteboard .whiteboard-link a { border-top: 1px solid #f5f5f5; background-color: #8bc34a; }
 
@@ -184,20 +176,19 @@
 
 /* ==================== Section: whiteboard (draw) ==================== */
 
-#app-wrapper #whiteboard-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
-#app-wrapper #whiteboard-data { transition: .2s ease all; transition-delay: .2s; }
+#whiteboard-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
+#whiteboard-data { transition: .2s ease all; transition-delay: .2s; }
 
 #app-wrapper.hide-menu #page-wrapper { margin: 0; }
-#app-wrapper.hide-menu #menu-wrapper { transform: translateX(-250px)!important; transform: translate3d(-250px, 0, 0)!important; }
-#app-wrapper.hide-menu #whiteboard-header { transform: translateY(-150px)!important; transform: translate3d(0, -150px, 0)!important; }
-#app-wrapper.hide-menu #whiteboard-data { transform: translateY(-130px)!important; transform: translate3d(0, -130px, 0)!important; }
+#app-wrapper.hide-menu #menu-wrapper { transform: translateX(-250px) !important; transform: translate3d(-250px, 0, 0) !important; }
+#app-wrapper.hide-menu #whiteboard-header { transform: translateY(-150px) !important; transform: translate3d(0, -150px, 0) !important; }
+#app-wrapper.hide-menu #whiteboard-data { transform: translateY(-130px) !important; transform: translate3d(0, -130px, 0) !important; }
 #app-wrapper.hide-menu #whiteboard-data .app-data { max-height: 88vh; }
 
 #whiteboard-view #whiteboard { margin: 0 0 30px 0; }
-
 #whiteboard-view .app-section-content { position: relative; }
-#whiteboard-view .app-actions { position: absolute; bottom: 0; border: 1px solid #212121; left: 35%; bottom: 5%; padding: 20px; background: #fff; }
 
+#whiteboard-view .app-actions { position: absolute; bottom: 0; border: 1px solid #212121; left: 35%; bottom: 5%; padding: 20px; background: #fff; }
 #whiteboard-view .app-actions .app-actions-list,
 #whiteboard-view .app-actions .app-actions-list li { display: inline; }
 

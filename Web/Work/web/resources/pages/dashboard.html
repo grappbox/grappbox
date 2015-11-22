@@ -15,7 +15,7 @@
                     <div class="section-content app-section-content">
                         <div id="team-occupation-data" panhandler>
                             <div class="app-data" ng-repeat="member in teamOccupationList">
-                                <ul class="app-data-list each-member-data hvr-float">
+                                <ul class="app-data-list each-member-data btn-float">
                                     <li class="team-member-picture"><img data-ng-src="{[{ member.picture }]}" height="120" width="120"></li>
                                     <li class="team-member-name">{[{ member.name }]}</li>
                                     <li class="team-member-status {[{ member.status == 'available' ? 'member-available' : 'member-busy' }]}">
@@ -42,7 +42,7 @@
                     <div class="section-content app-section-content">
                         <div id="next-meetings-data" panhandler>
                             <div class="app-data" ng-repeat="meeting in nextMeetingsList">
-                                <ul class="app-data-list each-meeting-data hvr-float">
+                                <ul class="app-data-list each-meeting-data btn-float">
                                     <li class="meeting-type">{[{ meeting.type }]}</li>
                                     <li class="meeting-schedule">
                                         <div class="meeting-schedule-data meeting-date"><i class="fa fa-calendar"></i>{[{ meeting.date }]}</div>
@@ -69,7 +69,7 @@
                     <div class="section-content app-section-content">
                         <div id="global-progress-data" panhandler>
                             <div class="app-data" ng-repeat="progress in globalProgressList">
-                                <ul class="app-data-list each-progress-data hvr-float">
+                                <ul class="app-data-list each-progress-data btn-float">
                                     <li class="project-picture"><img data-ng-src="{[{ progress.picture }]}" height="120²" width="120²"></li>
                                     <li class="project-details">
                                         <div class="project-name">{[{ progress.project }]}</div>
