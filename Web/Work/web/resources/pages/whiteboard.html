@@ -25,7 +25,7 @@
           <div class="section-content app-section-content">
             <div id="whiteboard-data">
               <div class="app-data">
-                <canvas id="whiteboard-canvas" class="draw-mode" height="2160px" width="4096px"></canvas>
+                <canvas id="whiteboard-canvas" height="2160px" width="4096px"></canvas>
               </div>
 
               <div class="app-actions">
@@ -82,6 +82,8 @@
 
                   <div class="app-actions-list" id="drawText">
                     <input type="text" value="Enter text to draw" data-ng-model="drawTextValue"/>
+                    <input type="checkbox" data-ng-model="isItalicEnabled">Italic?</li>
+                    <input type="checkbox" data-ng-model="isBoldEnabled">Bold?</li>
                   </div>
 
                 </div>

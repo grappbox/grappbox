@@ -92,11 +92,13 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       case "text":
         canvasData = {
         toolName: "text",
-        toolFont: '30pt Arial',
+        toolFont: '40pt \'Roboto Condensed\'',
+        toolIsItalic: $scope.isItalicEnabled,
+        toolIsBold: $scope.isBoldEnabled,
         toolContent: $scope.drawTextValue,
         toolStartX: mouseStartPosition.x,
         toolStartY: mouseStartPosition.y,
-        toolColor: canvasColorValues[lineColorIndex] };
+        toolLineColor: canvasColorValues[lineColorIndex] };
       break;
 
       default:

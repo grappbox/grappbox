@@ -74,7 +74,12 @@ app.factory("whiteboardRendererFactory", function() {
   var renderText = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolLineColor;
+/*    canvasContext.strokeStyle = data.toolLineColor;
+*/    canvasContext.fillStyle = data.toolLineColor;
+    canvasContext.font = (data.toolIsItalic ? "italic " : '') + (data.toolIsBold ? "bold " : '') + data.toolFont;
+
+    console.log(canvasContext.fillFont);
+
     canvasContext.fillText(data.toolContent, data.toolStartX, data.toolStartY);
 
     canvasContext.stroke();
