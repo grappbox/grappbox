@@ -33,12 +33,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function addTeamMemberAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('add Team '.$id.' Member Success');
@@ -67,12 +70,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function generateClientAccessAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('genreate Client Access '.$id.' Success');
@@ -101,12 +107,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function delTeamMemberAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('del Team Member '.$id.' Success');
@@ -135,12 +144,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function assignRoleAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('assign Role '.$id.' Success');
@@ -169,12 +181,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function editRoleAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('edit Role '.$id.' Success');
@@ -203,12 +218,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function getRolesAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('getRoles '.$id.' Success');
@@ -237,12 +255,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function checkPermissionsAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('check Permissions '.$id.' Success');
@@ -266,7 +287,10 @@ class ProjectSettingsController extends Controller
 	 */
 	public function createProjectAction(Request $request)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -296,12 +320,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function archiveProjectAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('archive Project '.$id.' Success');
@@ -330,12 +357,15 @@ class ProjectSettingsController extends Controller
 	 */
 	public function setProjectFinishedAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 
 		return new Response('set Project Finished '.$id.' Success');

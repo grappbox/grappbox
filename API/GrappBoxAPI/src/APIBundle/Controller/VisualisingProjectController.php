@@ -33,7 +33,10 @@ class VisualisingProjectController extends Controller
 	 */
 	public function addActionAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -63,7 +66,10 @@ class VisualisingProjectController extends Controller
 	 */
 	public function addActorAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 		if (!$this->checkRoles($user, $id, "projectSettings"))
@@ -95,7 +101,10 @@ class VisualisingProjectController extends Controller
 	 */
 	public function addLinkAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 		if (!$this->checkRoles($user, $id, "projectSettings"))
@@ -127,7 +136,10 @@ class VisualisingProjectController extends Controller
 	 */
 	public function newDiagramAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 		// if (!$this->checkRoles($user, $id, "projectSettings"))
@@ -159,7 +171,10 @@ class VisualisingProjectController extends Controller
 	 */
 	public function openDiagramAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 		// if (!$this->checkRoles($user, $id, "projectSettings"))
@@ -191,7 +206,10 @@ class VisualisingProjectController extends Controller
 	 */
 	public function invitePersonAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 		// if (!$this->checkRoles($user, $id, "projectSettings"))

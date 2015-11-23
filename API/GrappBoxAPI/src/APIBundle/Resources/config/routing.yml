@@ -206,28 +206,19 @@ dashboard_getNumberBugs:
 
 
 
-# test login/signin
-accountAdministration_loginForm:
-    path:       accountadministration/loginform
-    defaults:   { _controller: APIBundle:AccountAdministration:loginForm }
-accountAdministration_signInForm:
-    path:       accountadministration/signinform
-    defaults:   { _controller: APIBundle:AccountAdministration:signInForm }
-# end test login/signin
-
 accountAdministration_login:
     path:       accountadministration/login
     defaults:   { _controller: APIBundle:AccountAdministration:login }
     methods:    [POST]
 
 accountAdministration_logout:
-    path:       accountadministration/logout
+    path:       accountadministration/logout/{token}
     defaults:   { _controller:APIBundle:AccountAdministration:logout}
-    methods:    [POST]
+    methods:    [GET]
 
-accountAdministration_signIn:
-    path:       accountadministration/signin
-    defaults:   { _controller: APIBundle:AccountAdministration:signIn }
+accountAdministration_register:
+    path:       accountadministration/register
+    defaults:   { _controller: APIBundle:AccountAdministration:register }
     methods:    [POST]
 
 

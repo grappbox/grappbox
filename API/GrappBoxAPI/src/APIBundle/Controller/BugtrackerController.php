@@ -40,12 +40,15 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	 */
 	public function postTicketAction(Request $request)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 
 		return new Response('post Ticket Success');
@@ -74,12 +77,15 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	 */
 	public function modifyTicketAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 
 		return new Response('modify Ticket '.$id.' Success');
@@ -108,12 +114,15 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	 */
 	public function getTicketListAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 		return new Response('get '.$id.' Ticket List Success');
 	}
@@ -141,12 +150,15 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	 */
 	public function commentTicketAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 		return new Response('comment '.$id.' Ticket Success');
 	}
@@ -174,12 +186,15 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	 */
 	public function closeTicketAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 
 		return new Response('close '.$id.' Ticket Success');
@@ -208,12 +223,15 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	 */
 	public function getTicketDetailsAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "bugtracker"))
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 
 		return new Response('get '.$id.' Ticket Deatils Success');

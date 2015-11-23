@@ -33,7 +33,10 @@ class PersonnalSettingsController extends Controller
 	 */
 	public function editPhotoAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -63,7 +66,10 @@ class PersonnalSettingsController extends Controller
 	 */
 	public function editPersonalInfosAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -93,7 +99,10 @@ class PersonnalSettingsController extends Controller
 	 */
 	public function changePasswordAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -123,7 +132,10 @@ class PersonnalSettingsController extends Controller
 	 */
 	public function editPreferencesAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -153,10 +165,13 @@ class PersonnalSettingsController extends Controller
 	 */
 	public function getRoleAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-			
+
 		return new Response('get Role '.$id.' Success');
 	}
 }

@@ -29,19 +29,6 @@ use DateTime;
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 
-	public function loginFormAction()
-    {
-        return $this->render('APIBundle:AccountAdministrationController:login.html.twig', array(
-                //
-            ));
-    }
-	public function signInFormAction()
-    {
-        return $this->render('APIBundle:AccountAdministrationController:createUser.html.twig', array(
-                //
-            ));
-    }
-
 	 /**
  	* @api {post} V0.6/accountadministration/login Request login
  	* @apiName login
@@ -83,15 +70,18 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	*/
 	public function loginAction(Request $request)
 	{
+			$content = $request->getContent();
+			$content = json_decode($content);
+
 		  $em = $this->getDoctrine()->getManager();
-		  $user = $em->getRepository('APIBundle:User')->findOneBy(array('email' => $request->request->get('login')));
+		  $user = $em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->login));
 			if (!$user)
 			{
 				$response = new JsonResponse('Bad Login', JsonResponse::HTTP_BAD_REQUEST);
 				return $response;
 			}
 
-			if ($this->container->get('security.password_encoder')->isPasswordValid($user, $request->request->get('password')))
+			if ($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password))
 			{
 					$secureUtils = $this->get('security.secure_random');
 					$tmpToken = $secureUtils->nextBytes(25);
@@ -111,32 +101,33 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			}
 	}
 
-	 /**
- 	* @api {post} V0.6/accountadministration/logout Request logout
- 	* @apiName logout
- 	* @apiGroup AccountAdministration
- 	* @apiVersion 0.6.0
- 	*
- 	* @apiParam {string} _token user's authentication token
- 	*
- 	* @apiSuccess {string} data	success message
- 	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	HTTP/1.1 200 OK
-	* 	{
-	* 		"Logout Successfully"
-	* 	}
- 	*
-	* @apiErrorExample Bad Authentication Token
- 	* 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
- 	*
- 	*/
- 	public function logoutAction(Request $request)
+
+	/**
+ * @api {get} V0.6/accountadministration/logout/:token Request logout
+ * @apiName logout
+ * @apiGroup AccountAdministration
+ * @apiVersion 0.6.0
+ *
+ * @apiParam {string} token user's authentication token
+ *
+ * @apiSuccess {string} data	success message
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 	HTTP/1.1 200 OK
+ * 	{
+ * 		"Logout Successfully"
+ * 	}
+ *
+ * @apiErrorExample Bad Authentication Token
+ * 	HTTP/1.1 400 Bad Request
+ * 	{
+ * 		"Bad Authentication Token"
+ * 	}
+ *
+ */
+ 	public function logoutAction(Request $request, $token)
  	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -152,8 +143,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	}
 
 	 /**
-		* @api {post} V0.6/accountadministration/signin Request user creation and login
-		* @apiName signin
+		* @api {post} V0.6/accountadministration/register Request user creation and login
+		* @apiName register
 		* @apiGroup AccountAdministration
 		* @apiVersion 0.6.0
 		*
@@ -194,51 +185,55 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	  * 	}
 		*
 		*/
-	public function signInAction(Request $request)
+	public function registerAction(Request $request)
 	{
-		if (!$request->request->get('firstname') || !$request->request->get('lastname') || !$request->request->get('password') || !$request->request->get('email'))
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content) || !array_key_exists('password', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$user = new User();
-      	$user->setFirstname($request->request->get('firstname'));
-      	$user->setLastname($request->request->get('lastname'));
-		if ($request->request->get('birthday'))
-			$user->setBirthday(new Datetime($request->request->get('birthday')));
+    $user->setFirstname($content->firstname);
+    $user->setLastname($content->lastname);
+
+		if (array_key_exists('birthday', $content))
+			$user->setBirthday(new Datetime($content->birthday));
 
 		if ($request->files->get('avatar'))
 		{
 			$generator = $this->get('security.secure_random');
-	    	$random = $generator->nextBytes(10);
-	      	$fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
-	      	$fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
-	      	$avatar = $request->files->get('avatar')->move($fileDir, $fileName);
+	    $random = $generator->nextBytes(10);
+	    $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
+	    $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
+	    $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
 
-	      	$user->setAvatar($fileDir.'/'.$fileName);
+	    $user->setAvatar($fileDir.'/'.$fileName);
 		}
 
-      	$encoder = $this->container->get('security.password_encoder');
-      	$encoded = $encoder->encodePassword($user, $request->request->get('password'));
-      	$user->setPassword($encoded);
+    $encoder = $this->container->get('security.password_encoder');
+    $encoded = $encoder->encodePassword($user, $content->password);
+    $user->setPassword($encoded);
 
-		$user->setEmail($request->request->get('email'));
-		if ($request->request->get('phone'))
-      		$user->setPhone($request->request->get('phone'));
-		if ($request->request->get('country'))
-      		$user->setCountry($request->request->get('country'));
-		if ($request->request->get('linkedin'))
-      		$user->setLinkedin($request->request->get('linkedin'));
-		if ($request->request->get('viadeo'))
-      		$user->setViadeo($request->request->get('viadeo'));
-		if ($request->request->get('twitter'))
-      		$user->setTwitter($request->request->get('twitter'));
+		$user->setEmail($content->email);
+		if (array_key_exists('phone', $content))
+    	$user->setPhone($content->phone);
+		if (array_key_exists('country', $content))
+      $user->setCountry($content->country);
+		if (array_key_exists('linkedin', $content))
+      $user->setLinkedin($content->linkedin);
+		if (array_key_exists('viadeo', $content))
+      $user->setViadeo($content->viadeo);
+		if (array_key_exists('twitter', $content))
+      $user->setTwitter($content->twitter);
 
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
 		$token = md5($tmpToken);
 		$user->setToken($token);
 
-      	$em = $this->getDoctrine()->getManager();
-      	$em->persist($user);
-      	$em->flush();
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($user);
+    $em->flush();
 
 		$response = new JsonResponse();
 		$response->setData(array('user' => $user->objectToArray()));

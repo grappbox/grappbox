@@ -33,7 +33,10 @@ class TimelineController extends Controller
 	 */
 	public function getTimelineTypeAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -63,7 +66,10 @@ class TimelineController extends Controller
 	 */
 	public function postMessageAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 		if (!$request->request->get('projectId'))
@@ -72,10 +78,10 @@ class TimelineController extends Controller
 		// determine timeline type
 		if ($type == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $request->request->get('projectId'), "customerTimeline"))
+			if (!$this->checkRoles($user, $content->projectId, "customerTimeline"))
 				return ($this->setNoRightsError());
 		} else {
-			if (!$this->checkRoles($user, $request->request->get('projectId'), "teamTimeline"))
+			if (!$this->checkRoles($user, $content->projectId, "teamTimeline"))
 				return ($this->setNoRightsError());
 		}
 
@@ -105,17 +111,20 @@ class TimelineController extends Controller
 	 */
 	public function getMessagesAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 		//get timeline
 		// determine timeline type
 		if ($type == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $request->request->get('projectId'), "customerTimeline"))
+			if (!$this->checkRoles($user, $content->projectId, "customerTimeline"))
 				return ($this->setNoRightsError());
 		} else {
-			if (!$this->checkRoles($user, $request->request->get('projectId'), "teamTimeline"))
+			if (!$this->checkRoles($user, $content->projectId, "teamTimeline"))
 				return ($this->setNoRightsError());
 		}
 
@@ -145,7 +154,10 @@ class TimelineController extends Controller
 	 */
 	public function delMessageAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 

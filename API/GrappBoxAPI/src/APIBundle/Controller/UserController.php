@@ -26,20 +26,20 @@ class UserController extends RolesAndTokenVerificationController
 {
 	public function basicInformationsAction(Request $request, $token)
 	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
 		$method = $request->getMethod();
 		$em = $this->getDoctrine()->getManager();
-		$dataReceived = $request->request->get("basicInfos");
 
 		if ($method == "GET")
 			return new JsonResponse($this->getBasicInformations($user));
 		else if ($method == "PUT")
-			return new JsonResponse($this->putBasicInformations($dataReceived, $user, $em));
-		else
-			return header("HTTP/1.0 404 Not Found", True, 404);
+			return new JsonResponse($this->putBasicInformations($content, $user, $em));
 	}
 
 	/**
@@ -95,8 +95,8 @@ class UserController extends RolesAndTokenVerificationController
 		$viadeo = $user->getViadeo();
 		$twitter = $user->getTwitter();
 
-		return array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday,
-			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter);
+		return new JsonResponse(array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday,
+			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
@@ -150,46 +150,46 @@ class UserController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	private function putBasicInformations($dataReceived, $user, $em)
+	private function putBasicInformations($content, $user, $em)
 	{
-		foreach ($dataReceived as $key => $value) {
+		foreach ($content as $key => $value) {
 			switch ($key) {
 				case 'firstname':
-					$user->setFirstname($dataReceived["firstname"]);
+					$user->setFirstname($content->firstname);
 					break;
 				case 'lastname':
-					$user->setLastname($dataReceived["lastname"]);
+					$user->setLastname($content->lastname);
 					break;
 				case 'birthday':
-					$user->setBirthday($dataReceived["birthday"]);
+					$user->setBirthday($content->birthday);
 					break;
 				case 'avatar':
-					$user->setAvatar($dataReceived["avatar"]);
+					$user->setAvatar($content->avatar);
 					break;
 				case 'email':
-					$user->setEmail($dataReceived["email"]);
+					$user->setEmail($content->email);
 					break;
 				case 'phone':
-					$user->setPhone($dataReceived["phone"]);
+					$user->setPhone($content->phone);
 					break;
 				case 'country':
-					$user->setCountry($dataReceived["country"]);
+					$user->setCountry($content->country);
 					break;
 				case 'linkedin':
-					$user->setLinkedin($dataReceived["linkedin"]);
+					$user->setLinkedin($content->linkedin);
 					break;
 				case 'viadeo':
-					$user->setViadeo($dataReceived["viadeo"]);
+					$user->setViadeo($content->viadeo);
 					break;
 				case 'twitter':
-					$user->setTwitter($dataReceived["twitter"]);
+					$user->setTwitter($content->twitter);
 					break;
 				default:
 					break;
 			}
 		}
 		$em->flush();
-		return "User Basic Informations changed.";
+		return new JsonResponse("User Basic Informations changed.");
 	}
 
 	public function passwordAction(Request $request, $token)
@@ -205,8 +205,6 @@ class UserController extends RolesAndTokenVerificationController
 			return new JsonResponse($this->getPassword($user));
 		else if ($method == "PUT")
 			return new JsonResponse($this->putPassword($request, $user, $em));
-		else
-			return header("HTTP/1.0 404 Not Found", True, 404);
 	}
 
 	/**
@@ -281,7 +279,7 @@ class UserController extends RolesAndTokenVerificationController
 		$user->setPassword($request->request->get('password'));
 
 		$em->flush();
-		return "Password successfully changed.";
+		return new JsonResponse("Password successfully changed.");
 	}
 
 	/**

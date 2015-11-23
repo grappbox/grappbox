@@ -160,19 +160,22 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*/
 	public function newWhiteboardAction(Request $request)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			 return ($this->setBadTokenError());
-		if (!$request->request->get('projectId') || !$request->request->get('whiteboardName'))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('whiteboardName', $content))
 			 return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "whiteboard"))
+		if (!$this->checkRoles($user, $content->projectId, "whiteboard"))
 			 return ($this->setNoRightsError());
 
 		$whiteboard = new Whiteboard();
-		$whiteboard->setProjectId($request->request->get('projectId'));
+		$whiteboard->setProjectId($content->projectId);
 		$whiteboard->setUserId($user->getId());
 		$whiteboard->setUpdatorId($user->getId());
-		$whiteboard->setName($request->request->get('whiteboardName'));
+		$whiteboard->setName($content->whiteboardName);
 		$whiteboard->setCreatedAt(new DateTime('now'));
 		$whiteboard->setUpdatedAt(new DateTime('now'));
 
@@ -322,7 +325,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*/
 	public function pushDrawAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
 
@@ -333,22 +339,22 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		if (!$this->checkRoles($user, $whiteboard->getProjectId(), "whiteboard"))
 			return ($this->setNoRightsError());
-		if (!$request->request->get('modification'))
+		if (!array_key_exists('modification', $content))
 		 	return $this->setBadRequest("Missing Parameter");
 
-		if ($request->request->get('modification') == "add")
+		if ($content->modification == "add")
 		{
-			if (!$request->request->get('object'))
+			if (!array_key_exists('object', $content))
 	 			return $this->setBadRequest("Missing Parameter");
 			$object = new WhiteboardObject();
 			$object->setWhiteboardId($id);
-			$object->setObject($request->request->get('object'));
+			$object->setObject($content->object);
 			$object->setCreatedAt(new DateTime('now'));
 		}
 		else {
-			if (!$request->request->get('object_id'))
+			if (!array_key_exists('objectId', $content))
 	 			return $this->setBadRequest("Missing Parameter");
-			$object = $em->getRepository('APIBundle:WhiteboardObject')->find($request->request->get('object_id'));
+			$object = $em->getRepository('APIBundle:WhiteboardObject')->find($content->objectId);
 			$object->setDelete(new DateTime('now'));
 		}
 
@@ -421,7 +427,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*/
 	public function pullDrawAction(Request $request, $id)
 	{
-		$user = $this->checkToken($request->request->get('_token'));
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
 			 return ($this->setBadTokenError());
 
@@ -432,10 +441,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		if (!$this->checkRoles($user, $whiteboard->getProjectId(), "whiteboard"))
 			 return ($this->setNoRightsError());
-		if (!$request->request->get('lastUpdate'))
+		if (!array_key_exists('lastUpdate', $content))
  			 return $this->setBadRequest("Missing Parameter");
 
-		$date = new \DateTime($request->request->get('lastUpdate'));
+		$date = new \DateTime($content->lastUpdate);
 		$toAddQuery = $em->createQuery(
 									    'SELECT objects.object
 									    FROM APIBundle:WhiteboardObject objects
