@@ -16,7 +16,10 @@ app.controller('whiteboardListController', ['$scope', '$routeParams', '$http', f
   };
 
   if ($routeParams.id)
-    $scope.alertList.push( { type: 'danger', message: 'Whiteboard #' + $routeParams.id + ' doesn\'t exist, or you might not have the rights to see it. Please try again.' } );
+    $scope.alertList.push({
+      type: 'danger',
+      message: 'Whiteboard #' + $routeParams.id + ' doesn\'t exist, or you might not have the rights to see it. Please try again.'
+    });
 
   $http.get('../resources/_temp/whiteboards.json').success(function(data) {
     $scope.whiteboardListContent = data;
@@ -31,18 +34,18 @@ var isWhiteboardAccessible = function($http, $route, $q, $location) {
   $http.get('../resources/_temp/whiteboards.json').success(function(data) {
     whiteboardListContent = angular.fromJson(data);
 
-    for (i = 0; i < whiteboardListContent.length; ++i)
-    {
+    for (i = 0; i < whiteboardListContent.length; ++i) {
       if (whiteboardListContent[i].id == $route.current.params.id)
         isAccessible = true;
     }
 
     if (isAccessible)
       deferred.resolve(true);
-    else
-    {
+    else {
       deferred.reject();
-      $location.path('whiteboard').search( {'id': $route.current.params.id} );
+      $location.path('whiteboard').search({
+        'id': $route.current.params.id
+      });
     }
 
     return deferred.promise;

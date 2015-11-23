@@ -2,7 +2,9 @@
      which is part of the GRAPPBOX source code package.
      COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="user-profile-view">
+<div class="view view-content" id="user-profile-view" ng-controller="userProfileController">
+
+    <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}">{[{ alert.message }]}</uib-alert>
 
     <section class="app-section" id="user-profile">
         <div class="container app-container">

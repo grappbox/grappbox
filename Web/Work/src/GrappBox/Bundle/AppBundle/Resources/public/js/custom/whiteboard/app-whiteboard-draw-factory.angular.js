@@ -83,7 +83,7 @@ app.factory("whiteboardRendererFactory", function() {
   /* Text */
   var renderText = function(data) {
     canvasContext.beginPath();
-    
+
     canvasContext.font = (data.isItalicEnabled ? "italic " : '') + (data.isBoldEnabled ? "bold " : '') + data.font;
     canvasContext.fillStyle = data.drawColor;
     canvasContext.fillText(data.content, data.startX, data.startY);
@@ -148,8 +148,8 @@ app.factory("whiteboardRendererFactory", function() {
       canvasContext = context;
     },
 
-    undoLastCanvasAction: function () {
-      canvasBuffer.pop();   
+    undoLastCanvasAction: function() {
+      canvasBuffer.pop();
     }
   };
 
