@@ -4,6 +4,11 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
+/**
+* Whiteboard controller: renderer factory
+*
+*/
+
 app.factory("whiteboardRendererFactory", function() {
   var canvasContext;
   var canvasBuffer = [];
@@ -16,81 +21,81 @@ app.factory("whiteboardRendererFactory", function() {
 
   var canvas = document.getElementById("whiteboard-canvas");
 
+  /* Free-hand drawing */
   var renderPencil = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolColor;
-    canvasContext.lineWidth = data.toolLineWidth;
+    canvasContext.strokeStyle = data.drawColor;
+    canvasContext.lineWidth = data.lineWidth;
     canvasContext.lineCap = 'round';
-    canvasContext.moveTo(data.toolPoints[0].x, data.toolPoints[0].y);
+    canvasContext.moveTo(data.points[0].x, data.points[0].y);
 
-    for (var i = 0; i < data.toolPoints.length; ++i) {
-      canvasContext.lineTo(data.toolPoints[i].x, data.toolPoints[i].y);
+    for (var i = 0; i < data.points.length; ++i) {
+      canvasContext.lineTo(data.points[i].x, data.points[i].y);
     }
 
     canvasContext.stroke();
   };
 
+  /* Line */
   var renderLine = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolDrawColor;
-    canvasContext.lineWidth = data.toolLineWidth;
+    canvasContext.strokeStyle = data.drawColor;
+    canvasContext.lineWidth = data.lineWidth;
     canvasContext.lineCap = 'round';
-    canvasContext.moveTo(data.toolStartX, data.toolStartY);
-    canvasContext.lineTo(data.toolEndX, data.toolEndY);
+    canvasContext.moveTo(data.startX, data.startY);
+    canvasContext.lineTo(data.endX, data.endY);
 
     canvasContext.stroke();
   };
 
+  /* Rectangle */
   var renderRectangle = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolDrawColor;
-    canvasContext.fillStyle = data.toolFillColor;
-    canvasContext.lineWidth = data.toolLineWidth;
-    canvasContext.rect(data.toolStartX, data.toolStartY, data.toolWidth, data.toolHeight);
+    canvasContext.strokeStyle = data.drawColor;
+    canvasContext.fillStyle = data.fillColor;
+    canvasContext.lineWidth = data.lineWidth;
+    canvasContext.rect(data.startX, data.startY, data.fillWidth, data.fillHeight);
 
-    if (data.toolIsFillShapeEnabled)
+    if (data.isFillModeEnabled)
       canvasContext.fill();
 
     canvasContext.stroke();
   };
 
+  /* Circle */
   var renderCircle = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolDrawColor;
-    canvasContext.fillStyle = data.toolFillColor;
-    canvasContext.lineWidth = data.toolLineWidth;
-    canvasContext.arc(data.toolStartX, data.toolStartY, data.toolRadius, 0, Math.PI * 2, false);
+    canvasContext.strokeStyle = data.drawColor;
+    canvasContext.fillStyle = data.fillColor;
+    canvasContext.lineWidth = data.lineWidth;
+    canvasContext.arc(data.startX, data.startY, data.fillRadius, 0, Math.PI * 2, false);
 
-    if (data.toolIsFillShapeEnabled)
+    if (data.isFillModeEnabled)
       canvasContext.fill();
 
     canvasContext.stroke();
   };
 
+  /* Text */
   var renderText = function(data) {
     canvasContext.beginPath();
-
-/*    canvasContext.strokeStyle = data.toolDrawColor;
-*/    canvasContext.fillStyle = data.toolDrawColor;
-    canvasContext.font = (data.toolIsItalic ? "italic " : '') + (data.toolIsBold ? "bold " : '') + data.toolFont;
-
-    console.log(canvasContext.fillFont);
-
-    canvasContext.fillText(data.toolContent, data.toolStartX, data.toolStartY);
+    
+    canvasContext.font = (data.isItalicEnabled ? "italic " : '') + (data.isBoldEnabled ? "bold " : '') + data.font;
+    canvasContext.fillStyle = data.drawColor;
+    canvasContext.fillText(data.content, data.startX, data.startY);
 
     canvasContext.stroke();
   };
-
 
   var renderAll = function() {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
     for (var i = 0; i < canvasBuffer.length; ++i) {
-      switch (canvasBuffer[i].toolName) {
+      switch (canvasBuffer[i].tool) {
         case "pencil":
           renderPencil(canvasBuffer[i]);
           break;
@@ -120,7 +125,7 @@ app.factory("whiteboardRendererFactory", function() {
     },
 
     render: function(data) {
-      switch (data.toolName) {
+      switch (data.tool) {
         case "pencil":
           renderPencil(data);
           break;

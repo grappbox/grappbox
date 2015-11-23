@@ -17,116 +17,6 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   });
 
 
-  /*
-  * CANVAS FUNCTIONS
-  */
-
-  /* Canvas-related variables */
-  var canvas;
-  var canvasData;
-  var canvasContext;
-  var canvasPoints = [];
-  var canvasColorValues = [];
-
-  var textMode = false;
-
-  var mouseStartPosition;
-  var mouseEndPosition;
-  var isMousePressed;
-
-  var lineColorIndex = 0;
-  var fillColorIndex = 0;
-
-  var createRenderObject;
-  var renderPath;
-
-  /* Create/compile canvasData to render */
-  var createRenderObject = function() {
-    canvasData = {};
-
-    switch ($scope.whiteboardTools) {
-      case "pencil":
-      canvasData = {
-        toolName: "pencil",
-        toolLineWidth: Number($scope.selectedLineWidth),
-        toolPoints: canvasPoints,
-        toolColor: $scope.color.selectedDrawColor.value
-      };
-      break;
-
-      case "line":
-      canvasData = {
-        toolName: "line",
-        toolDrawColor: $scope.color.selectedDrawColor.value,
-        toolLineWidth: Number($scope.selectedLineWidth),
-        toolStartX: mouseStartPosition.x,
-        toolStartY: mouseStartPosition.y,
-        toolEndX: mouseEndPosition.x,
-        toolEndY: mouseEndPosition.y
-      };
-      break;
-
-      case "rectangle":
-      canvasData = {
-        toolName: "rectangle",
-        toolDrawColor: $scope.color.selectedDrawColor.value,
-        toolFillColor: $scope.color.selectedFillColor.value,
-        toolLineWidth: Number($scope.selectedLineWidth),
-        toolStartX: mouseStartPosition.x,
-        toolStartY: mouseStartPosition.y,
-        toolWidth: mouseEndPosition.x - mouseStartPosition.x,
-        toolHeight: mouseEndPosition.y - mouseStartPosition.y,
-        toolIsFillShapeEnabled: $scope.isFillModeEnabled
-      };
-      break;
-
-      case "circle":
-      canvasData = {
-        toolName: "circle",
-        toolDrawColor: $scope.color.selectedDrawColor.value,
-        toolFillColor: $scope.color.selectedFillColor.value,
-        toolLineWidth: Number($scope.selectedLineWidth),
-        toolStartX: mouseStartPosition.x,
-        toolStartY: mouseStartPosition.y,
-        toolRadius: (Math.abs(mouseEndPosition.x - mouseStartPosition.x) + (Math.abs(mouseEndPosition.y - mouseStartPosition.y)) / 2),
-        toolIsFillShapeEnabled: $scope.isFillModeEnabled
-      };
-      break;
-
-      case "text":
-      canvasData = {
-        toolName: "text",
-        toolFont: '40pt Roboto Condensed',
-        toolIsItalic: $scope.isItalicEnabled,
-        toolIsBold: $scope.isBoldEnabled,
-        toolContent: $scope.drawTextValue,
-        toolStartX: mouseStartPosition.x,
-        toolStartY: mouseStartPosition.y,
-        toolDrawColor: $scope.color.selectedDrawColor.value
-      };
-      break;
-
-      default:
-      canvasData = {};
-      break;
-    }
-
-    return canvasData;
-  };
-
-  /* Render/display canvasData using whiteboardRendererFactory */
-  var renderPath = function(data) {
-    if ($scope.whiteboardTools === "rectangle" || $scope.whiteboardTools === "line" || $scope.whiteboardTools === "circle")
-      whiteboardRendererFactory.renderAll();
-    whiteboardRendererFactory.render(data);
-  };
-
-
-
-  /*
-  * SCOPE FUNCTIONS
-  */
-
   /* Scope variables default values */
   $scope.whiteboardTools = "pencil";
   $scope.selectedLineWidth = "0.5";
@@ -165,8 +55,103 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     selectedFillColor: { name: 'Black', value: '#000000' },    
   };
 
+  /* Canvas-related variables */
+  var canvas;
+  var canvasData;
+  var canvasContext;
+  var canvasPoints = [];
 
-  /* Initialize whiteboard canvas and controls, set default values */
+  var mouseStartPosition;
+  var mouseEndPosition;
+  var isMousePressed;
+
+  var createRenderObject;
+  var renderPath;
+
+
+  /* Create/compile canvasData to render */
+  var createRenderObject = function() {
+    canvasData = {};
+
+    switch ($scope.whiteboardTools) {
+      case "pencil":
+      canvasData = {
+        tool: "pencil",
+        lineWidth: Number($scope.selectedLineWidth),
+        points: canvasPoints,
+        drawColor: $scope.color.selectedDrawColor.value
+      };
+      break;
+
+      case "line":
+      canvasData = {
+        tool: "line",
+        drawColor: $scope.color.selectedDrawColor.value,
+        lineWidth: Number($scope.selectedLineWidth),
+        startX: mouseStartPosition.x,
+        startY: mouseStartPosition.y,
+        endX: mouseEndPosition.x,
+        endY: mouseEndPosition.y
+      };
+      break;
+
+      case "rectangle":
+      canvasData = {
+        tool: "rectangle",
+        drawColor: $scope.color.selectedDrawColor.value,
+        fillColor: $scope.color.selectedFillColor.value,
+        lineWidth: Number($scope.selectedLineWidth),
+        startX: mouseStartPosition.x,
+        startY: mouseStartPosition.y,
+        fillWidth: mouseEndPosition.x - mouseStartPosition.x,
+        fillHeight: mouseEndPosition.y - mouseStartPosition.y,
+        isFillModeEnabled: $scope.isFillModeEnabled
+      };
+      break;
+
+      case "circle":
+      canvasData = {
+        tool: "circle",
+        drawColor: $scope.color.selectedDrawColor.value,
+        fillColor: $scope.color.selectedFillColor.value,
+        lineWidth: Number($scope.selectedLineWidth),
+        startX: mouseStartPosition.x,
+        startY: mouseStartPosition.y,
+        fillRadius: (Math.abs(mouseEndPosition.x - mouseStartPosition.x) + (Math.abs(mouseEndPosition.y - mouseStartPosition.y)) / 2),
+        isFillModeEnabled: $scope.isFillModeEnabled
+      };
+      break;
+
+      case "text":
+      canvasData = {
+        tool: "text",
+        font: '40pt Roboto Condensed',
+        isItalicEnabled: $scope.isItalicEnabled,
+        isBoldEnabled: $scope.isBoldEnabled,
+        content: $scope.drawTextValue,
+        startX: mouseStartPosition.x,
+        startY: mouseStartPosition.y,
+        drawColor: $scope.color.selectedDrawColor.value
+      };
+      break;
+
+      default:
+      canvasData = {};
+      break;
+    }
+
+    return canvasData;
+  };
+
+  /* Render/display canvasData using whiteboardRendererFactory */
+  var renderPath = function(data) {
+    if ($scope.whiteboardTools === "rectangle" || $scope.whiteboardTools === "line" || $scope.whiteboardTools === "circle")
+      whiteboardRendererFactory.renderAll();
+    whiteboardRendererFactory.render(data);
+  };
+
+
+  /* Initialize whiteboard canvas and controls */
   $scope.initializeWhiteboardControls = function() {
 
     canvas = document.getElementById("whiteboard-canvas");
@@ -174,7 +159,6 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     whiteboardRendererFactory.setCanvasContext(canvasContext);
 
     canvasPoints = [];
-
     isMousePressed = false;
 
     mouseStartPosition = { x: 0, y: 0 };
@@ -187,7 +171,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       canvasPoints.push({
         toolPositionX: eventPosition.offsetX,
         toolPositionY: eventPosition.offsetY,
-        toolColor: $scope.color.selectedDrawColor.value
+        drawColor: $scope.color.selectedDrawColor.value
       });
 
       isMousePressed = true;
@@ -212,7 +196,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         x = eventPosition.offsetX;
         y = eventPosition.offsetY;
 
-        canvasPoints.push({ x: x, y: y, toolColor: $scope.color.selectedDrawColor.value });
+        canvasPoints.push({ x: x, y: y, drawColor: $scope.color.selectedDrawColor.value });
 
         lastPoint = canvasPoints[canvasPoints.length - 1];
         mouseEndPosition.x = lastPoint.x;
