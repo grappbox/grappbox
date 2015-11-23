@@ -116,4 +116,9 @@ $(document).ready(function() {
         matchLoginModalURL();
     });
 
+    $('#app-modal').on('shown.bs.modal', function () {
+        window.location.hash = "#login";
+        $('#form_email').focus();
+    });
+
 });
