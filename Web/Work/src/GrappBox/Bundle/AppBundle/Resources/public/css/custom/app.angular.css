@@ -199,7 +199,7 @@ footer .app-footer { margin: 0 0 0 250px; }
 #whiteboard-view .app-actions .app-actions-list label,
 #whiteboard-view .app-actions .app-actions-list select { font-size: 18px; }
 
-#whiteboard-view .app-actions .app-actions-list label { font-weight: 400; }
+#whiteboard-view .app-actions .app-actions-list label { font-weight: 400; cursor: pointer; }
 #whiteboard-view .app-actions .app-actions-list li { display: inline; }
 #whiteboard-view .app-actions .app-actions-list ul { padding: 0; margin: 0; }
 
