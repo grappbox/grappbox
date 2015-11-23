@@ -18,7 +18,8 @@ $(function() {
 	$(window).bind("load resize", function() {
 
 		newWidth = (this.window.innernewWidth > 0) ? this.window.innernewWidth : this.screen.newWidth;
-		offsetTop = 50;
+		offsetTop = 60;
+		offsetBottom = 123;
 
 		if (newWidth < 768) {
 			$('div.navbar-collapse').addClass('collapse');
@@ -28,7 +29,7 @@ $(function() {
 			$('div.navbar-collapse').removeClass('collapse');
 
 		newHeight = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
-		newHeight = newHeight - offsetTop;
+		newHeight = newHeight - offsetTop - offsetBottom;
 
 		if (newHeight < 1)
 			newHeight = 1;
