@@ -457,13 +457,6 @@ class User implements UserInterface
      */
     public function getToken()
     {
-        if ($this->token && $this->tokenValidity && $this->tokenValidity < new Datime('now'))
-          $this->token = null;
-        else if ($this->token && $this->tokenValidity)
-        {
-          $date = new DateTime('now');
-          $this->tokenValidity = $date->add(new DateInterval("P1D"));
-        }
         return $this->token;
     }
 

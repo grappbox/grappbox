@@ -10,6 +10,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use APIBundle\Entity\Role;
 use APIBundle\Entity\ProjectUserRole;
+use DateTime;
+use DateInterval;
 
 /**
 *  @IgnoreAnnotation("apiName")
@@ -32,6 +34,18 @@ class RolesAndTokenVerificationController extends Controller
       return NULL;
     $em = $this->getDoctrine()->getManager();
     $user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $token));
+
+    if ($user->getToken() && $user->getTokenValidity() && $user->getTokenValidity() < new DateTime('now'))
+      $this->token = null;
+    else if ($user->getToken() && $user->getTokenValidity())
+    {
+      $date = new DateTime('now');
+      $user->setTokenValidity($date->add(new DateInterval("P1D")));
+
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($user);
+      $em->flush();
+    }
     return $user;
   }
 
@@ -66,7 +80,7 @@ class RolesAndTokenVerificationController extends Controller
   protected function setBadRequest($message)
   {
     $response = new JsonResponse($message, JsonResponse::HTTP_BAD_REQUEST);
-    
+
     return $response;
   }
 
@@ -229,7 +243,7 @@ class RolesAndTokenVerificationController extends Controller
     $em = $this->getDoctrine()->getManager();
 
     $role = $em->getRepository('APIBundle:Role')->find($request->request->get('roleId'));
-	
+
     if ($role === null)
     {
       throw new NotFoundHttpException("The role with id ".$request->request->get('roleId')." doesn't exist.");
@@ -319,7 +333,7 @@ class RolesAndTokenVerificationController extends Controller
 	$em = $this->getDoctrine()->getManager();
 
 	$role = $em->getRepository('APIBundle:Role')->find($request->request->get('roleId'));
-	
+
 	if ($role === null)
 	{
 		throw new NotFoundHttpException("The role with id ".$request->request->get('roleId')." doesn't exist.");
@@ -418,7 +432,7 @@ class RolesAndTokenVerificationController extends Controller
 	$em = $this->getDoctrine()->getManager();
 
 	$roles = $em->getRepository('APIBundle:Role')->findByprojectId($projectId);
-	
+
 	if ($roles === null)
 	{
 		throw new NotFoundHttpException("The're no roles for the project with id ".$projectId);
@@ -660,7 +674,7 @@ class RolesAndTokenVerificationController extends Controller
 	$em = $this->getDoctrine()->getManager();
 
 	$role = $em->getRepository('APIBundle:ProjectUserRole')->find($request->request->get('purId'));
-	
+
 	if ($role === null)
 	{
 		throw new NotFoundHttpException("The project user role with id ".$request->request->get('purId')." doesn't exist.");
