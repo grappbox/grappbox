@@ -30,38 +30,55 @@
 
               <div class="app-actions">
                 <div id="whitebboard-actions">
-                  <ul class="app-actions-list">
-                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="pencil">Pencil</li>
-                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="line">Line</li>
-                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="rectangle">Rectangle</li>
-                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="circle">Circle</li>
-                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="text">Text</li>
-                  </ul>
 
                   <div class="app-actions-list">
-                    <label for="draw-color">Draw color</label>
-                    <select name="draw-color" ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" ng-model="color.selectedDrawColor">
-                    </select>
-                    <label for="fill-color">Fill color</label>
-                    <select name="fill-color" ng-options="fillColor.name for fillColor in color.availableColors track by fillColor.value" ng-model="color.selectedFillColor">
-                    </select>
+                    <ul>
+                      <li>
+                        <input type="radio" data-ng-model="whiteboardTools" id="tool-pencil" value="pencil">
+                        <label for="tool-pencil" class="right-offset">Pencil</label>
+                      </li>
+                      <li>
+                        <input type="radio" data-ng-model="whiteboardTools" id="tool-line" value="line">
+                        <label for="tool-line" class="right-offset">Line</label>
+                      </li>
+                      <li>
+                        <input type="radio" data-ng-model="whiteboardTools" id="tool-rectangle" value="rectangle">
+                        <label for="tool-rectangle" class="right-offset">Rectangle</label>
+                      </li>
+                      <li>
+                        <input type="radio" data-ng-model="whiteboardTools" id="tool-circle" value="circle">
+                        <label for="tool-circle">Circle</label>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div class="app-actions-list">
+                      <input type="radio" data-ng-model="whiteboardTools" id="tool-text" value="text"/>
+                      <label for="tool-text" class="right-offset">Text</label>
+                      
+                      <input type="text" class="right-offset" data-ng-model="text.textValue"/>
+
+                      <input type="checkbox" id="text-italic" data-ng-model="text.isItalicEnabled"/>
+                      <label for="text-italic" class="right-offset">Italic</label>
+
+                      <input type="checkbox" id="text-bold" data-ng-model="text.isBoldEnabled"/>
+                      <label for="text-bold">Bold</label>
+                  </div>
+
+                  <div class="app-actions-list">
+                    <label for="draw-color" class="right-offset">Draw color</label>
+                    <select id="draw-color" class="right-offset" ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" ng-model="color.selectedDrawColor"></select>
+
+                    <label for="fill-color" class="right-offset left-offset">Fill color (shape) </label>
+                    <select id="fill-color" ng-options="fillColor.name  for fillColor in color.availableColors track by fillColor.value" ng-model="color.selectedFillColor"></select>
+
+<!--                     <input type="checkbox" id="fill-mode" data-ng-model="color.isFillModeEnabled"/>
                     <label for="fill-mode">Fill shape?</label>
-                    <input type="checkbox" name="fill-mode" data-ng-model="color.isFillModeEnabled">
-                  </div>
+ -->                  </div>
 
                   <div class="app-actions-list">
-                    <label for="line-width">Line width</label>
-                    <select name="line-width" ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" ng-model="line.selectedLineWidth">
-                    </select>
-                  </div>
-
-                  <div class="app-actions-list">
-                    <label for="text-value">Enter text to draw</label>
-                    <input type="text" name="text-value" data-ng-model="text.textValue"/>
-                    <label for="text-italic">Italic?</label>
-                    <input type="checkbox" name="text-italic" data-ng-model="text.isItalicEnabled">
-                    <label for="text-bold">Bold?</label>
-                    <input type="checkbox" name="text-bold" data-ng-model="text.isBoldEnabled">
+                    <label for="line-width" class="right-offset">Line width</label>
+                    <select id="line-width" ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" ng-model="line.selectedLineWidth"></select>
                   </div>
 
                   <div class="app-actions-list">
