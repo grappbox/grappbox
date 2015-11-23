@@ -19,41 +19,62 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
 
   /* Scope variables default values */
   $scope.whiteboardTools = "pencil";
-  $scope.selectedLineWidth = "0.5";
-  $scope.isFillModeEnabled = false;
 
   $scope.color = {
     availableColors: [
-    { name: 'Red', value: '#F44336' },
-    { name: 'Pink', value: '#E91E63' },
-    { name: 'Purple', value: '#9C27B0' },
-    { name: 'Deep Purple', value: '#673AB7' },
-    { name: 'Indigo', value: '#3F51B5' },
-    { name: 'Blue', value: '#2196F3' },
-    { name: 'Light Blue', value: '#03A9F4' },
-    { name: 'Cyan', value: '#00BCD4' },
-    { name: 'Teal', value: '#009688' },
-    { name: 'Green', value: '#4CAF50' },
-    { name: 'Light Green', value: '#8BC34A' },
-    { name: 'Lime', value: '#CDDC39' },
-    { name: 'Yellow', value: '#FFEB3B' },
-    { name: 'Amber', value: '#FFC107' },
-    { name: 'Orange', value: '#FF9800' },
-    { name: 'Deep Orange', value: '#FF5722' },
-    { name: 'Brown', value: '#795548' },
-    { name: 'Blue Grey', value: '#607D8B' },
-    { name: 'White', value: '#FFFFFF' },
-    { name: 'Grey 20%', value: '#EEEEEE' },
-    { name: 'Grey 40%', value: '#BDBDBD' },
-    { name: 'Grey 50%', value: '#9E9E9E' },
-    { name: 'Grey 60%', value: '#757575' },
-    { name: 'Grey 80%', value: '#424242' },
-    { name: 'Black', value: '#000000' },
-
+      { name: 'Red', value: '#F44336' },
+      { name: 'Pink', value: '#E91E63' },
+      { name: 'Purple', value: '#9C27B0' },
+      { name: 'Deep Purple', value: '#673AB7' },
+      { name: 'Indigo', value: '#3F51B5' },
+      { name: 'Blue', value: '#2196F3' },
+      { name: 'Light Blue', value: '#03A9F4' },
+      { name: 'Cyan', value: '#00BCD4' },
+      { name: 'Teal', value: '#009688' },
+      { name: 'Green', value: '#4CAF50' },
+      { name: 'Light Green', value: '#8BC34A' },
+      { name: 'Lime', value: '#CDDC39' },
+      { name: 'Yellow', value: '#FFEB3B' },
+      { name: 'Amber', value: '#FFC107' },
+      { name: 'Orange', value: '#FF9800' },
+      { name: 'Deep Orange', value: '#FF5722' },
+      { name: 'Brown', value: '#795548' },
+      { name: 'Blue Grey', value: '#607D8B' },
+      { name: 'White', value: '#FFFFFF' },
+      { name: 'Grey 20%', value: '#EEEEEE' },
+      { name: 'Grey 40%', value: '#BDBDBD' },
+      { name: 'Grey 50%', value: '#9E9E9E' },
+      { name: 'Grey 60%', value: '#757575' },
+      { name: 'Grey 80%', value: '#424242' },
+      { name: 'Black', value: '#000000' }
     ],
+
     selectedDrawColor: { name: 'Black', value: '#000000' },
-    selectedFillColor: { name: 'Black', value: '#000000' },    
+    selectedFillColor: { name: 'Black', value: '#000000' },
+    isFillModeEnabled: false
   };
+
+  $scope.line = {
+    availableWidths: [
+      { label: '0.5 pt', value: '0.5' },
+      { label: '1 pt', value: '1' },
+      { label: '1.5 pt', value: '1.5' },
+      { label: '2 pt', value: '2' },
+      { label: '2.5 pt', value: '2.5' },
+      { label: '3 pt', value: '3' },
+      { label: '4 pt', value: '4' },
+      { label: '5 pt', value: '5' }
+    ],
+
+    selectedLineWidth: { label: '1 pt', value: '1' }
+  };
+
+  $scope.text = {
+    textValue: "",
+    isItalicEnabled: false,
+    isBoldEnabled: false
+  };
+
 
   /* Canvas-related variables */
   var canvas;
@@ -77,7 +98,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       case "pencil":
       canvasData = {
         tool: "pencil",
-        lineWidth: Number($scope.selectedLineWidth),
+        lineWidth: Number($scope.line.selectedLineWidth.value),
         points: canvasPoints,
         drawColor: $scope.color.selectedDrawColor.value
       };
@@ -87,7 +108,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       canvasData = {
         tool: "line",
         drawColor: $scope.color.selectedDrawColor.value,
-        lineWidth: Number($scope.selectedLineWidth),
+        lineWidth: Number($scope.line.selectedLineWidth.value),
         startX: mouseStartPosition.x,
         startY: mouseStartPosition.y,
         endX: mouseEndPosition.x,
@@ -100,12 +121,12 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         tool: "rectangle",
         drawColor: $scope.color.selectedDrawColor.value,
         fillColor: $scope.color.selectedFillColor.value,
-        lineWidth: Number($scope.selectedLineWidth),
+        lineWidth: Number($scope.line.selectedLineWidth.value),
         startX: mouseStartPosition.x,
         startY: mouseStartPosition.y,
         fillWidth: mouseEndPosition.x - mouseStartPosition.x,
         fillHeight: mouseEndPosition.y - mouseStartPosition.y,
-        isFillModeEnabled: $scope.isFillModeEnabled
+        isFillModeEnabled: $scope.color.isFillModeEnabled
       };
       break;
 
@@ -114,11 +135,11 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         tool: "circle",
         drawColor: $scope.color.selectedDrawColor.value,
         fillColor: $scope.color.selectedFillColor.value,
-        lineWidth: Number($scope.selectedLineWidth),
+        lineWidth: Number($scope.line.selectedLineWidth.value),
         startX: mouseStartPosition.x,
         startY: mouseStartPosition.y,
         fillRadius: (Math.abs(mouseEndPosition.x - mouseStartPosition.x) + (Math.abs(mouseEndPosition.y - mouseStartPosition.y)) / 2),
-        isFillModeEnabled: $scope.isFillModeEnabled
+        isFillModeEnabled: $scope.color.isFillModeEnabled
       };
       break;
 
@@ -126,9 +147,9 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       canvasData = {
         tool: "text",
         font: '40pt Roboto Condensed',
-        isItalicEnabled: $scope.isItalicEnabled,
-        isBoldEnabled: $scope.isBoldEnabled,
-        content: $scope.drawTextValue,
+        isItalicEnabled: $scope.text.isItalicEnabled,
+        isBoldEnabled: $scope.text.isBoldEnabled,
+        content: $scope.text.textValue,
         startX: mouseStartPosition.x,
         startY: mouseStartPosition.y,
         drawColor: $scope.color.selectedDrawColor.value

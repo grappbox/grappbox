@@ -36,42 +36,37 @@
                     <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="rectangle">Rectangle</li>
                     <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="circle">Circle</li>
                     <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="text">Text</li>
-                    <li><button data-ng-click="undoLastCanvasAction()">Undo</button></li>
                   </ul>
 
                   <div class="app-actions-list">
                     <label for="draw-color">Draw color</label>
                     <select name="draw-color" ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" ng-model="color.selectedDrawColor">
                     </select>
-                  </div>
-
-                  <div class="app-actions-list">
                     <label for="fill-color">Fill color</label>
                     <select name="fill-color" ng-options="fillColor.name for fillColor in color.availableColors track by fillColor.value" ng-model="color.selectedFillColor">
                     </select>
+                    <label for="fill-mode">Fill shape?</label>
+                    <input type="checkbox" name="fill-mode" data-ng-model="color.isFillModeEnabled">
                   </div>
 
-                  <div class="app-actions-list"><input type="checkbox" data-ng-model="isFillModeEnabled">Fill shape?</div>
-
                   <div class="app-actions-list">
-                    <select ng-model="selectedLineWidth">
-                      <option value="0.5">0.5 pt</option>
-                      <option value="1">1 pt</option>
-                      <option value="1.5">1.5 pt</option>
-                      <option value="2">2 pt</option>
-                      <option value="2.5">2.5 pt</option>
-                      <option value="3">3 pt</option>
-                      <option value="4">4 pt</option>
-                      <option value="5">5 pt</option>
+                    <label for="line-width">Line width</label>
+                    <select name="line-width" ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" ng-model="line.selectedLineWidth">
                     </select>
                   </div>
 
-                  <div class="app-actions-list" id="whiteboardExpand"><button data-ng-click="expandWhiteboard()">Expand</button></div>
+                  <div class="app-actions-list">
+                    <label for="text-value">Enter text to draw</label>
+                    <input type="text" name="text-value" data-ng-model="text.textValue"/>
+                    <label for="text-italic">Italic?</label>
+                    <input type="checkbox" name="text-italic" data-ng-model="text.isItalicEnabled">
+                    <label for="text-bold">Bold?</label>
+                    <input type="checkbox" name="text-bold" data-ng-model="text.isBoldEnabled">
+                  </div>
 
-                  <div class="app-actions-list" id="drawText">
-                    <input type="text" value="Enter text to draw" data-ng-model="drawTextValue"/>
-                    <input type="checkbox" data-ng-model="isItalicEnabled">Italic?</li>
-                    <input type="checkbox" data-ng-model="isBoldEnabled">Bold?</li>
+                  <div class="app-actions-list">
+                    <button data-ng-click="undoLastCanvasAction()">Undo</button>
+                    <button data-ng-click="expandWhiteboard()">Expand</button>
                   </div>
 
                 </div>

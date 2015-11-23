@@ -188,8 +188,9 @@ footer .app-footer { margin: 0 0 0 250px; }
 #whiteboard-view #whiteboard { margin: 0 0 30px 0; }
 #whiteboard-view .app-section-content { position: relative; }
 
-#whiteboard-view .app-actions { position: absolute; bottom: 0; border: 1px solid #212121; left: 35%; bottom: 5%; padding: 20px; background: #fff; }
-#whiteboard-view .app-actions .app-actions-list,
+#whiteboard-view .app-actions { position: absolute; width: 100%; bottom: 0; border: 1px solid #e0e0e0; background: #fff; }
+#whiteboard-view .app-actions .app-actions-list { display: inline-block; margin: 0; padding: 20px; border-left: 1px solid #e0e0e0 }
+#whiteboard-view .app-actions .app-actions-list:first-child { border: none; }
 #whiteboard-view .app-actions .app-actions-list li { display: inline; }
 
 #whiteboard-view .app-data { overflow: scroll; max-height: 75vh; border: 1px solid #e0e0e0; transition: .2s ease all; transition-delay: .2s; }
