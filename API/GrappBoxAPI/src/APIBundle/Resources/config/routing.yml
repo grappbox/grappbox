@@ -211,6 +211,11 @@ accountAdministration_login:
     defaults:   { _controller: APIBundle:AccountAdministration:login }
     methods:    [POST]
 
+accountAdministration_clientLogin:
+    path:       accountadministration/login/{token}
+    defaults:   { _controller: APIBundle:AccountAdministration:clientLogin }
+    methods:    [GET]
+
 accountAdministration_logout:
     path:       accountadministration/logout/{token}
     defaults:   { _controller:APIBundle:AccountAdministration:logout}

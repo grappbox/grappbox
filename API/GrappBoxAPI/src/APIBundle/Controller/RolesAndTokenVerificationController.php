@@ -35,17 +35,24 @@ class RolesAndTokenVerificationController extends Controller
     $em = $this->getDoctrine()->getManager();
     $user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $token));
 
-    if ($user->getToken() && $user->getTokenValidity() && $user->getTokenValidity() < new DateTime('now'))
+    if (!$user)
+      return $user;
+
+    $now = new DateTime('now');
+    if ($user->getToken() && $user->getTokenValidity() && $user->getTokenValidity() < $now)
+    {
       $this->token = null;
+      return null;
+    }
     else if ($user->getToken() && $user->getTokenValidity())
     {
-      $date = new DateTime('now');
-      $user->setTokenValidity($date->add(new DateInterval("P1D")));
+      $user->setTokenValidity($now->add(new DateInterval("P1D")));
 
       $em = $this->getDoctrine()->getManager();
       $em->persist($user);
       $em->flush();
     }
+
     return $user;
   }
 
