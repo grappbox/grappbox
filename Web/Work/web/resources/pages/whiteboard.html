@@ -31,37 +31,27 @@
               <div class="app-actions">
                 <div id="whitebboard-actions">
                   <ul class="app-actions-list">
-                    <li><input type="radio" name="whiteboardTools" value="pencil" checked data-ng-model="whiteboardTools">Pencil</li>
-                    <li><input type="radio" name="whiteboardTools" value="line" data-ng-model="whiteboardTools">Line</li>
-                    <li><input type="radio" name="whiteboardTools" value="rectangle" data-ng-model="whiteboardTools">Rectangle</li>
-                    <li><input type="radio" name="whiteboardTools" value="circle" data-ng-model="whiteboardTools">Circle</li>
-                    <li><input type="radio" name="whiteboardTools" value="text" data-ng-model="whiteboardTools">Text</li>
+                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="pencil">Pencil</li>
+                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="line">Line</li>
+                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="rectangle">Rectangle</li>
+                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="circle">Circle</li>
+                    <li><input type="radio" name="whiteboardTools" data-ng-model="whiteboardTools" value="text">Text</li>
                     <li><button data-ng-click="undoLastCanvasAction()">Undo</button></li>
                   </ul>
 
-                  <ul class="app-actions-list">
-                    <li><button name="drawColor" data-ng-click="setDrawColor(0)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(1)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(2)">Black</button></li>
-<!--                     <li><button name="drawColor" data-ng-click="setDrawColor(3)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(4)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(5)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(6)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(7)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(8)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(9)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(10)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(11)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(12)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(13)">Black</button></li>
-                    <li><button name="drawColor" data-ng-click="setDrawColor(14)">Black</button></li> -->
-                  </ul>
+                  <div class="app-actions-list">
+                    <label for="draw-color">Draw color</label>
+                    <select name="draw-color" ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" ng-model="color.selectedDrawColor">
+                    </select>
+                  </div>
 
-                  <ul class="app-actions-list" id="drawColorMode">
-                    <li><button title="Line color" data-ng-class="lineColorMode" data-ng-click="setDrawColorMode('line')">Line color</button></li>
-                    <li><button title="Fill color" data-ng-class="fillColorMode" data-ng-click="setDrawColorMode('fill')">Fill color</button></li>
-                    <li><input type="checkbox" data-ng-model="isFillModeEnabled">Fill shape?</li>
-                  </ul>
+                  <div class="app-actions-list">
+                    <label for="fill-color">Fill color</label>
+                    <select name="fill-color" ng-options="fillColor.name for fillColor in color.availableColors track by fillColor.value" ng-model="color.selectedFillColor">
+                    </select>
+                  </div>
+
+                  <div class="app-actions-list"><input type="checkbox" data-ng-model="isFillModeEnabled">Fill shape?</div>
 
                   <div class="app-actions-list">
                     <select ng-model="selectedLineWidth">
@@ -76,9 +66,7 @@
                     </select>
                   </div>
 
-                  <div class="app-actions-list" id="whiteboardExpand">
-                    <button data-ng-click="expandWhiteboard()">Expand</button>
-                  </div>
+                  <div class="app-actions-list" id="whiteboardExpand"><button data-ng-click="expandWhiteboard()">Expand</button></div>
 
                   <div class="app-actions-list" id="drawText">
                     <input type="text" value="Enter text to draw" data-ng-model="drawTextValue"/>

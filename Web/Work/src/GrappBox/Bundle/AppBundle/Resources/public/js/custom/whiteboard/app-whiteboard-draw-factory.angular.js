@@ -34,7 +34,7 @@ app.factory("whiteboardRendererFactory", function() {
   var renderLine = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolLineColor;
+    canvasContext.strokeStyle = data.toolDrawColor;
     canvasContext.lineWidth = data.toolLineWidth;
     canvasContext.lineCap = 'round';
     canvasContext.moveTo(data.toolStartX, data.toolStartY);
@@ -46,7 +46,7 @@ app.factory("whiteboardRendererFactory", function() {
   var renderRectangle = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolLineColor;
+    canvasContext.strokeStyle = data.toolDrawColor;
     canvasContext.fillStyle = data.toolFillColor;
     canvasContext.lineWidth = data.toolLineWidth;
     canvasContext.rect(data.toolStartX, data.toolStartY, data.toolWidth, data.toolHeight);
@@ -60,7 +60,7 @@ app.factory("whiteboardRendererFactory", function() {
   var renderCircle = function(data) {
     canvasContext.beginPath();
 
-    canvasContext.strokeStyle = data.toolLineColor;
+    canvasContext.strokeStyle = data.toolDrawColor;
     canvasContext.fillStyle = data.toolFillColor;
     canvasContext.lineWidth = data.toolLineWidth;
     canvasContext.arc(data.toolStartX, data.toolStartY, data.toolRadius, 0, Math.PI * 2, false);
@@ -74,8 +74,8 @@ app.factory("whiteboardRendererFactory", function() {
   var renderText = function(data) {
     canvasContext.beginPath();
 
-/*    canvasContext.strokeStyle = data.toolLineColor;
-*/    canvasContext.fillStyle = data.toolLineColor;
+/*    canvasContext.strokeStyle = data.toolDrawColor;
+*/    canvasContext.fillStyle = data.toolDrawColor;
     canvasContext.font = (data.toolIsItalic ? "italic " : '') + (data.toolIsBold ? "bold " : '') + data.toolFont;
 
     console.log(canvasContext.fillFont);
