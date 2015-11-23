@@ -183,6 +183,11 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	  * 	{
 	  * 		"Missing Parameter"
 	  * 	}
+		* @apiErrorExample Email Already Used
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Email already in DB"
+	  * 	}
 		*
 		*/
 	public function registerAction(Request $request)
@@ -192,6 +197,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content) || !array_key_exists('password', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("Missing Parameter");
+		$em = $this->getDoctrine()->getManager();
+		if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
+			return $this->setBadRequest("Email already in DB");
 		$user = new User();
     $user->setFirstname($content->firstname);
     $user->setLastname($content->lastname);
@@ -231,7 +239,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$token = md5($tmpToken);
 		$user->setToken($token);
 
-    $em = $this->getDoctrine()->getManager();
     $em->persist($user);
     $em->flush();
 

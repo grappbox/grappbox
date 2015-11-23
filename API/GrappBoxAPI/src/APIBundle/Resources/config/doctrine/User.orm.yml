@@ -27,6 +27,7 @@ APIBundle\Entity\User:
         email:
             type: string
             length: 255
+            unique: TRUE
         phone:
             type: string
             length: 255
@@ -52,6 +53,9 @@ APIBundle\Entity\User:
         token:
           type: string
           length: 255
+          nullable: TRUE
+        tokenValidity:
+          type: datetime
           nullable: TRUE
     manyToMany:
         projects:

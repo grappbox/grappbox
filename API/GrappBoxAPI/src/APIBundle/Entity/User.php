@@ -82,6 +82,11 @@ class User implements UserInterface
     private $token;
 
     /**
+     * @var DateTime
+     */
+    private $tokenValidity;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $event_creator;
@@ -452,7 +457,37 @@ class User implements UserInterface
      */
     public function getToken()
     {
+        if ($this->token && $this->tokenValidity && $this->tokenValidity < new Datime('now'))
+          $this->token = null;
+        else if ($this->token && $this->tokenValidity)
+        {
+          $date = new DateTime('now');
+          $this->tokenValidity = $date->add(new DateInterval("P1D"));
+        }
         return $this->token;
+    }
+
+    /**
+     * Set token validity date
+     *
+     * @param string $tokenValidity
+     * @return User
+     */
+    public function setTokenValidity($date)
+    {
+        $this->tokenValidity = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get token validity date
+     *
+     * @return string
+     */
+    public function getTokenValidity()
+    {
+        return $this->tokenValidity;
     }
 
     /**

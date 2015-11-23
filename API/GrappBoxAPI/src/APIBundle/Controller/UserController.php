@@ -37,9 +37,9 @@ class UserController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 
 		if ($method == "GET")
-			return new JsonResponse($this->getBasicInformations($user));
+			return $this->getBasicInformations($user);
 		else if ($method == "PUT")
-			return new JsonResponse($this->putBasicInformations($content, $user, $em));
+			return $this->putBasicInformations($content, $user, $em);
 	}
 
 	/**
@@ -167,7 +167,10 @@ class UserController extends RolesAndTokenVerificationController
 					$user->setAvatar($content->avatar);
 					break;
 				case 'email':
-					$user->setEmail($content->email);
+					if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
+						return $this->setBadRequest("Email already in DB");
+					else
+						$user->setEmail($content->email);
 					break;
 				case 'phone':
 					$user->setPhone($content->phone);
