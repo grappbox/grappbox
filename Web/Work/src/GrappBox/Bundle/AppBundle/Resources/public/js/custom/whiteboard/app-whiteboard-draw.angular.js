@@ -22,6 +22,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
 
   $scope.color = {
     availableColors: [
+    { name: '-None-', value: 'none' },
     { name: 'Red', value: '#F44336' },
     { name: 'Pink', value: '#E91E63' },
     { name: 'Purple', value: '#9C27B0' },
@@ -50,8 +51,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     ],
 
     selectedDrawColor: { name: 'Black', value: '#000000' },
-    selectedFillColor: { name: 'Black', value: '#000000' },
-    isFillModeEnabled: false
+    selectedFillColor: { name: '-None-', value: 'none' },
   };
 
   $scope.line = {
@@ -126,7 +126,6 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         startY: mouseStartPosition.y,
         fillWidth: mouseEndPosition.x - mouseStartPosition.x,
         fillHeight: mouseEndPosition.y - mouseStartPosition.y,
-        isFillModeEnabled: $scope.color.isFillModeEnabled
       };
       break;
 
@@ -139,7 +138,6 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
         startX: mouseStartPosition.x,
         startY: mouseStartPosition.y,
         fillRadius: (Math.abs(mouseEndPosition.x - mouseStartPosition.x) + (Math.abs(mouseEndPosition.y - mouseStartPosition.y)) / 2),
-        isFillModeEnabled: $scope.color.isFillModeEnabled
       };
       break;
 

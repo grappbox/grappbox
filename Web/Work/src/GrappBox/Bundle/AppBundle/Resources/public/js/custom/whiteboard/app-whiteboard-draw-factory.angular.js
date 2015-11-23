@@ -23,72 +23,75 @@ app.factory("whiteboardRendererFactory", function() {
 
   /* Free-hand drawing */
   var renderPencil = function(data) {
-    canvasContext.beginPath();
+    if (data.drawColor != "none") {
+      canvasContext.beginPath();
+      canvasContext.strokeStyle = data.drawColor;
+      canvasContext.lineWidth = data.lineWidth;
+      canvasContext.lineCap = 'round';
+      canvasContext.moveTo(data.points[0].x, data.points[0].y);
 
-    canvasContext.strokeStyle = data.drawColor;
-    canvasContext.lineWidth = data.lineWidth;
-    canvasContext.lineCap = 'round';
-    canvasContext.moveTo(data.points[0].x, data.points[0].y);
+      for (var i = 0; i < data.points.length; ++i) {
+        canvasContext.lineTo(data.points[i].x, data.points[i].y);
+      }
 
-    for (var i = 0; i < data.points.length; ++i) {
-      canvasContext.lineTo(data.points[i].x, data.points[i].y);
+      canvasContext.stroke();
     }
-
-    canvasContext.stroke();
   };
 
   /* Line */
   var renderLine = function(data) {
-    canvasContext.beginPath();
-
-    canvasContext.strokeStyle = data.drawColor;
-    canvasContext.lineWidth = data.lineWidth;
-    canvasContext.lineCap = 'round';
-    canvasContext.moveTo(data.startX, data.startY);
-    canvasContext.lineTo(data.endX, data.endY);
-
-    canvasContext.stroke();
+    if (data.drawColor != "none") {
+      canvasContext.beginPath();
+      canvasContext.strokeStyle = data.drawColor;
+      canvasContext.lineWidth = data.lineWidth;
+      canvasContext.lineCap = 'round';
+      canvasContext.moveTo(data.startX, data.startY);
+      canvasContext.lineTo(data.endX, data.endY);
+      canvasContext.stroke();
+    }
   };
 
   /* Rectangle */
   var renderRectangle = function(data) {
     canvasContext.beginPath();
-
-    canvasContext.strokeStyle = data.drawColor;
-    canvasContext.fillStyle = data.fillColor;
-    canvasContext.lineWidth = data.lineWidth;
     canvasContext.rect(data.startX, data.startY, data.fillWidth, data.fillHeight);
 
-    if (data.isFillModeEnabled)
+    if (data.drawColor != "none") {
+      canvasContext.lineWidth = data.lineWidth;
+      canvasContext.strokeStyle = data.drawColor;
+      canvasContext.stroke();
+    }
+    if (data.fillColor != "none") {
+      canvasContext.fillStyle = data.fillColor;
       canvasContext.fill();
-
-    canvasContext.stroke();
+    }
   };
 
   /* Circle */
   var renderCircle = function(data) {
     canvasContext.beginPath();
-
-    canvasContext.strokeStyle = data.drawColor;
-    canvasContext.fillStyle = data.fillColor;
-    canvasContext.lineWidth = data.lineWidth;
     canvasContext.arc(data.startX, data.startY, data.fillRadius, 0, Math.PI * 2, false);
 
-    if (data.isFillModeEnabled)
+    if (data.drawColor != "none") {
+      canvasContext.lineWidth = data.lineWidth;
+      canvasContext.strokeStyle = data.drawColor;
+      canvasContext.stroke();
+    }
+    if (data.fillColor != "none") {
+      canvasContext.fillStyle = data.fillColor;
       canvasContext.fill();
-
-    canvasContext.stroke();
+    }
   };
 
   /* Text */
   var renderText = function(data) {
-    canvasContext.beginPath();
-
-    canvasContext.font = (data.isItalicEnabled ? "italic " : '') + (data.isBoldEnabled ? "bold " : '') + data.font;
-    canvasContext.fillStyle = data.drawColor;
-    canvasContext.fillText(data.content, data.startX, data.startY);
-
-    canvasContext.stroke();
+    if (data.drawColor != "none") {
+      canvasContext.beginPath();
+      canvasContext.font = (data.isItalicEnabled ? "italic " : '') + (data.isBoldEnabled ? "bold " : '') + data.font;
+      canvasContext.fillStyle = data.drawColor;
+      canvasContext.fillText(data.content, data.startX, data.startY);
+      canvasContext.stroke();
+    }
   };
 
   var renderAll = function() {

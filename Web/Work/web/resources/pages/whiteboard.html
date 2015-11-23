@@ -1,6 +1,6 @@
 <!-- This file is subject to the terms and conditions defined in file 'LICENSE.txt',
-     which is part of the GRAPPBOX source code package.
-     COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
+which is part of the GRAPPBOX source code package.
+COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div class="view view-content" id="whiteboard-view" ng-controller="whiteboardController" data-ng-init="initializeWhiteboardControls()">
 
@@ -10,89 +10,84 @@
         <div class="col-lg-12">
           <div class="section-heading app-section-heading">
             <h2>Whiteboard #{[{ whiteboardID }]}</h2>
-            <p class="lead">Use the toolbox below the whiteboard to draw and share your ideas.<br>If you or one of your team members have trouble connecting to this whiteboard, please check your access rights using the project settings page.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="app-section" id="whiteboard">
-    <div class="container app-container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : whiteboard -->
-          <div class="section-content app-section-content">
-            <div id="whiteboard-data">
-              <div class="app-data">
-                <canvas id="whiteboard-canvas" height="2160px" width="4096px"></canvas>
-              </div>
-
-              <div class="app-actions">
-                <div id="whitebboard-actions">
-
-                  <div class="app-actions-list">
-                    <ul>
-                      <li>
-                        <input type="radio" data-ng-model="whiteboardTools" id="tool-pencil" value="pencil">
-                        <label for="tool-pencil" class="right-offset">Pencil</label>
-                      </li>
-                      <li>
-                        <input type="radio" data-ng-model="whiteboardTools" id="tool-line" value="line">
-                        <label for="tool-line" class="right-offset">Line</label>
-                      </li>
-                      <li>
-                        <input type="radio" data-ng-model="whiteboardTools" id="tool-rectangle" value="rectangle">
-                        <label for="tool-rectangle" class="right-offset">Rectangle</label>
-                      </li>
-                      <li>
-                        <input type="radio" data-ng-model="whiteboardTools" id="tool-circle" value="circle">
-                        <label for="tool-circle">Circle</label>
-                      </li>
-                    </ul>
-                  </div>
-                  
-                  <div class="app-actions-list">
-                      <input type="radio" data-ng-model="whiteboardTools" id="tool-text" value="text"/>
-                      <label for="tool-text" class="right-offset">Text</label>
-                      
-                      <input type="text" class="right-offset" data-ng-model="text.textValue"/>
-
-                      <input type="checkbox" id="text-italic" data-ng-model="text.isItalicEnabled"/>
-                      <label for="text-italic" class="right-offset">Italic</label>
-
-                      <input type="checkbox" id="text-bold" data-ng-model="text.isBoldEnabled"/>
-                      <label for="text-bold">Bold</label>
-                  </div>
-
-                  <div class="app-actions-list">
-                    <label for="draw-color" class="right-offset">Draw color</label>
-                    <select id="draw-color" class="right-offset" ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" ng-model="color.selectedDrawColor"></select>
-
-                    <label for="fill-color" class="right-offset left-offset">Fill color (shape) </label>
-                    <select id="fill-color" ng-options="fillColor.name  for fillColor in color.availableColors track by fillColor.value" ng-model="color.selectedFillColor"></select>
-
-<!--                     <input type="checkbox" id="fill-mode" data-ng-model="color.isFillModeEnabled"/>
-                    <label for="fill-mode">Fill shape?</label>
- -->                  </div>
-
-                  <div class="app-actions-list">
-                    <label for="line-width" class="right-offset">Line width</label>
-                    <select id="line-width" ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" ng-model="line.selectedLineWidth"></select>
-                  </div>
-
-                  <div class="app-actions-list">
-                    <button data-ng-click="undoLastCanvasAction()">Undo</button>
-                    <button data-ng-click="expandWhiteboard()">Expand</button>
-                  </div>
-
-                </div>
-              </div>
-
+            <p class="lead">Use the toolbox below the whiteboard to draw and share your ideas.
+              <br>If you or one of your team members have trouble connecting to this whiteboard, please check your access rights using the project settings page.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-  </div>
+    <section class="app-section" id="whiteboard">
+      <div class="container app-container">
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- grappbox.data : whiteboard -->
+            <div class="section-content app-section-content">
+              <div id="whiteboard-data">
+
+                <div class="app-data">
+                  <canvas id="whiteboard-canvas" height="2160px" width="4096px"></canvas>
+                </div>
+                <div class="app-actions">
+
+                  <div id="whitebboard-actions">
+                    <div class="app-actions-list">
+                      <ul>
+                        <li>
+                          <input type="radio" data-ng-model="whiteboardTools" id="tool-pencil" value="pencil">
+                          <label for="tool-pencil" class="right-offset">Pencil</label>
+                        </li>
+                        <li>
+                          <input type="radio" data-ng-model="whiteboardTools" id="tool-line" value="line">
+                          <label for="tool-line" class="right-offset">Line</label>
+                        </li>
+                        <li>
+                          <input type="radio" data-ng-model="whiteboardTools" id="tool-rectangle" value="rectangle">
+                          <label for="tool-rectangle" class="right-offset">Rectangle</label>
+                        </li>
+                        <li>
+                          <input type="radio" data-ng-model="whiteboardTools" id="tool-circle" value="circle">
+                          <label for="tool-circle">Circle</label>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="app-actions-list">
+                      <input type="radio" data-ng-model="whiteboardTools" id="tool-text" value="text" />
+                      <label for="tool-text" class="right-offset">Text</label>
+                      <input type="text" class="right-offset" data-ng-model="text.textValue" />
+                      <input type="checkbox" id="text-italic" data-ng-model="text.isItalicEnabled" />
+                      <label for="text-italic" class="right-offset">Italic</label>
+                      <input type="checkbox" id="text-bold" data-ng-model="text.isBoldEnabled" />
+                      <label for="text-bold">Bold</label>
+                    </div>
+
+                    <div class="app-actions-list">
+                      <label for="draw-color" class="right-offset">Draw color</label>
+                      <select id="draw-color" class="right-offset" ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" ng-model="color.selectedDrawColor"></select>
+                      <label for="fill-color" class="right-offset left-offset">Fill color (shape) </label>
+                      <select id="fill-color" ng-options="fillColor.name  for fillColor in color.availableColors track by fillColor.value" ng-model="color.selectedFillColor"></select>
+                    </div>
+
+                    <div class="app-actions-list">
+                      <label for="line-width" class="right-offset">Line width</label>
+                      <select id="line-width" ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" ng-model="line.selectedLineWidth"></select>
+                    </div>
+
+                    <div class="app-actions-list">
+                      <button data-ng-click="undoLastCanvasAction()">Undo</button>
+                      <button data-ng-click="expandWhiteboard()">Expand</button>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+</div>
