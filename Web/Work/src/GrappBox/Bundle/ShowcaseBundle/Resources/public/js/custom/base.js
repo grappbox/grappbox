@@ -89,24 +89,8 @@ $(document).ready(function() {
     * Login modal behavior depending on URL parameters
     *
     */
-    function getURLParameters() {
-        var hashesArray = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        var parametersArray = [];
-        var hash;
-
-        for (var i = 0; i < hashesArray.length; ++i) {
-            hash = hashesArray[i].split('=');
-            parametersArray.push(hash[0]);
-            parametersArray[hash[0]] = hash[1];
-        }
-
-        return parametersArray;
-    }
-
     function matchLoginModalURL() {
-        var URLParameters = getURLParameters();
-
-        if (window.location.hash == "#login" || ((URLParameters.indexOf("return") > -1 && URLParameters.return == "login")))
+        if (window.location.hash == "#login")
             $('#app-modal').modal('show');
     }
 
