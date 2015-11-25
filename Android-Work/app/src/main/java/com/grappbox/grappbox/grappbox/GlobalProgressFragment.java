@@ -49,28 +49,6 @@ public class GlobalProgressFragment  extends Fragment {
         map.put("project_problem_progress", "3");
         listNextMeeting.add(map);
 
-        map = new HashMap<String, String>();
-        map.put("project_image", String.valueOf(R.drawable.game_sphere));
-        map.put("project_name", "Game Sphere");
-        map.put("project_client", "Ninvento");
-        map.put("client_telephone_contact", "+(1)3-81-21-34");
-        map.put("client_mail_contact", "contact@ninvento.com");
-        map.put("project_task_progress", "31/42");
-        map.put("project_waiting_progress", "4");
-        map.put("project_problem_progress", "3");
-        listNextMeeting.add(map);
-
-        map = new HashMap<String, String>();
-        map.put("project_image", String.valueOf(R.drawable.game_sphere));
-        map.put("project_name", "Game Sphere");
-        map.put("project_client", "Ninvento");
-        map.put("client_telephone_contact", "+(1)3-81-21-34");
-        map.put("client_mail_contact", "contact@ninvento.com");
-        map.put("project_task_progress", "31/42");
-        map.put("project_waiting_progress", "4");
-        map.put("project_problem_progress", "3");
-        listNextMeeting.add(map);
-
         SimpleAdapter meetingAdapter = new SimpleAdapter(v.getContext(), listNextMeeting, R.layout.global_project_progress_item,
                 new String[] {"project_image", "project_name", "project_client", "client_telephone_contact", "client_mail_contact", "project_task_progress", "project_waiting_progress", "project_problem_progress"},
                 new int[] {R.id.profil_image, R.id.project_name, R.id.project_client, R.id.client_telephone_contact, R.id.client_mail_contact, R.id.project_task_progress, R.id.project_waiting_progress, R.id.project_problem_progress});

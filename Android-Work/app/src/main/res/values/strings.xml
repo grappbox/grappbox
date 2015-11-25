@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Grappbox</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -21,4 +20,15 @@
     <string name="navigation_drawer_settings_name">Settings</string>
     <string name="navigation_drawer_profile_name">Profile</string>
     <string name="navigation_drawer_logout_name">Logout</string>
+    <string name="whiteboard_selection_title">Whiteboard selection</string>
+    <string name="loginDescription">Grappbox logo</string>
+
+
+    <string name="login">Login</string>
+    <string name="loginHint">Enter your login</string>
+    <string name="psw">Password</string>
+    <string name="pswHint">Enter your password</string>
+    <string name="loginConnectButton">Connect</string>
+    <string name="loginError">Your login or password is incorrect</string>
+    <string name="loginErrorReturn">Return</string>
 </resources>

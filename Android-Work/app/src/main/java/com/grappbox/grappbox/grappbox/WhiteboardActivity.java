@@ -15,10 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import java.util.List;
-import java.util.Vector;
-
-public class DashboardActivity extends AppCompatActivity {
+public class WhiteboardActivity extends AppCompatActivity {
 
     private ListView _DrawerList;
     private ActionBarDrawerToggle _DrawerToggle;
@@ -26,68 +23,15 @@ public class DashboardActivity extends AppCompatActivity {
     private ImageView _DrawerImage;
     private ArrayAdapter<String> _Adapter;
 
-    private PagerAdapter _PagerAdapter;
 
     private String _ActivityTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_whiteboard);
 
         initializeNavigationDrawer();
-        initializeActivity();
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
-        super.onPostCreate(savedInstanceState);
-        _DrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-        super.onConfigurationChanged(newConfig);
-        _DrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_dashboard, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        if (_DrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void initializeActivity()
-    {
-        List<Fragment> fragments = new Vector<Fragment>();
-        fragments.add(Fragment.instantiate(this, TeamOccupationFragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, NextMeetingFragment.class.getName()));
-        fragments.add(Fragment.instantiate(this, GlobalProgressFragment.class.getName()));
-
-        this._PagerAdapter = new GrappboxPagerAdapter(super.getSupportFragmentManager(), fragments);
-        ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
-        pager.setAdapter(_PagerAdapter);
     }
 
     private void initializeNavigationDrawer()
@@ -102,7 +46,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("Dashboard");
+        getSupportActionBar().setTitle("Whiteboard");
         _DrawerImage.setImageResource(R.drawable.allyriane_launois);
     }
 
@@ -130,7 +74,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onDrawerClosed(View view)
             {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle("Dashboard");
+                getSupportActionBar().setTitle("Whiteboard");
                 invalidateOptionsMenu();
             }
         };
