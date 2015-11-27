@@ -25,8 +25,9 @@ use DateTime;
 */
 class TimelineController extends RolesAndTokenVerificationController
 {
+	//getTimelineType
 	/**
-	* @api {get} /V0.7/timeline/gettimelinetype/:token/:id Get the timeline type
+	* @-api {get} /V0.7/timeline/gettimelinetype/:token/:id Get the timeline type
 	* @apiName getTimelineType
 	* @apiGroup Timeline
 	* @apiVersion 0.7.0
@@ -56,23 +57,29 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getTimelineTypeAction(Request $request, $token, $id)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-
-		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
-
-		/*
-		* TODO: check Rights
-		*/
-
-		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
-
-		return new JsonResponse($type->objectToArray());
-	}
+	// public function getTimelineTypeAction(Request $request, $token, $id)
+	// {
+	// 	$user = $this->checkToken($token);
+	// 	if (!$user)
+	// 		return ($this->setBadTokenError());
+	//
+	// 	$em = $this->getDoctrine()->getManager();
+	// 	$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+	//
+	// 	// $type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+	// 	// if ($type->getName() == "customerTimeline")
+	// 	// {
+	// 	// 	if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+	// 	// 		return ($this->setNoRightsError());
+	// 	// } else {
+	// 	// 	if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+	// 	// 		return ($this->setNoRightsError());
+	// 	// }
+	//
+	// 	$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+	//
+	// 	return new JsonResponse($type->objectToArray());
+	// }
 
 	/**
 	* @api {post} /V0.7/timeline/postmessage/:id Post a new message or comment
@@ -128,15 +135,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
 
-		//TODO: check Rights
-		// if ($type == "customerTimeline")
-		// {
-		// 	if (!$this->checkRoles($user, $content->projectId, "customerTimeline"))
-		// 		return ($this->setNoRightsError());
-		// } else {
-		// 	if (!$this->checkRoles($user, $content->projectId, "teamTimeline"))
-		// 		return ($this->setNoRightsError());
-		// }
+		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		if ($type->getName() == "customerTimeline")
+		{
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+				return ($this->setNoRightsError());
+		} else {
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+				return ($this->setNoRightsError());
+		}
 
 		$message = new TimelineMessage();
 		$message->setUserId($user->getId());
@@ -207,15 +214,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
 
-		//TODO: check Rights
-		// if ($type == "customerTimeline")
-		// {
-		// 	if (!$this->checkRoles($user, $content->projectId, "customerTimeline"))
-		// 		return ($this->setNoRightsError());
-		// } else {
-		// 	if (!$this->checkRoles($user, $content->projectId, "teamTimeline"))
-		// 		return ($this->setNoRightsError());
-		// }
+		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		if ($type->getName() == "customerTimeline")
+		{
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+				return ($this->setNoRightsError());
+		} else {
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+				return ($this->setNoRightsError());
+		}
 
 		$message = $em->getRepository('APIBundle:TimelineMessage')->find($content->messageId);
 		$message->setMessage($content->message);
@@ -271,15 +278,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
 
-		//TODO: check Rights
-		// if ($type == "customerTimeline")
-		// {
-		// 	if (!$this->checkRoles($user, $content->projectId, "customerTimeline"))
-		// 		return ($this->setNoRightsError());
-		// } else {
-		// 	if (!$this->checkRoles($user, $content->projectId, "teamTimeline"))
-		// 		return ($this->setNoRightsError());
-		// }
+		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		if ($type->getName() == "customerTimeline")
+		{
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+				return ($this->setNoRightsError());
+		} else {
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+				return ($this->setNoRightsError());
+		}
 
 		$messages = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null));
 		$timelineMessages = array();
