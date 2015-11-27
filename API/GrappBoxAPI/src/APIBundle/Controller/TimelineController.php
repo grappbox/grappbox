@@ -161,7 +161,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.6/timeline/editmessage/:id Edit a message
+	* @api {post} /V0.7/timeline/editmessage/:id Edit a message
 	* @apiName editMessage
 	* @apiGroup Timeline
 	* @apiVersion 0.7.0
@@ -235,7 +235,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.6/timeline/getmessages/:token/:id Get all messages from a timeline
+	* @api {get} /V0.7/timeline/getmessages/:token/:id Get all messages from a timeline
 	* @apiName getMessages
 	* @apiGroup Timeline
 	* @apiVersion 0.7.0
@@ -298,7 +298,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.6/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
+	* @api {get} /V0.7/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
 	* @apiVersion 0.7.0
