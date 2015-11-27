@@ -28,6 +28,50 @@ use DateTime;
  */
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
+	/**
+	* @api {get} V0.6/accountadministration/login/:token Request login with client access
+	* @apiName client login
+	* @apiGroup AccountAdministration
+	* @apiVersion 0.6.0
+	*
+	* @apiParam {token} client token access
+	*
+	* @apiSuccess {Object} user user's information
+	* @apiSuccess {int} user.id whiteboard id
+	* @apiSuccess {string} user.firstname user's firstname
+	* @apiSuccess {string} user.lastname user's lastname
+	* @apiSuccess {string} user.email user's email
+	* @apiSuccess {string} user.token user's authentication token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"user": {
+	*				"id": 12,
+	*				"firstname": "John",
+	*				"lastname": "Doe",
+	*				"email": "john.doe@gmail.com",
+	*				"token": "fkE35dcDneOjF...."
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	*/
+	public function clientLoginAction(Request $request, $token)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $token));
+		if (!$user || $user->getTokenValidity())
+			return $this->setBadTokenError();
+
+		$response = new JsonResponse();
+		$response->setData(array('user' => $user->objectToArray()));
+		return $response;
+	}
 
 	 /**
  	* @api {post} V0.6/accountadministration/login Request login
@@ -87,6 +131,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 					$tmpToken = $secureUtils->nextBytes(25);
 					$token = md5($tmpToken);
 					$user->setToken($token);
+
+					$now = new DateTime('now');
+					$user->setTokenValidity($now->add(new DateInterval("P1D")));
+
 					$em->persist($user);
 		      $em->flush();
 

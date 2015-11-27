@@ -30,15 +30,36 @@ class TimelineMessage
     private $message;
 
     /**
+     * @var integer
+     */
+    private $parentId;
+
+
+    /**
      * @var \APIBundle\Entity\Timeline
      */
     private $timelines;
+
+    /**
+     * @var DateTime
+     */
+    private $createdAt;
+
+    /**
+     * @var DateTime
+     */
+    private $editedAt;
+
+    /**
+     * @var DateTime
+     */
+    private $deletedAt;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,7 +82,7 @@ class TimelineMessage
     /**
      * Get userId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUserId()
     {
@@ -84,7 +105,7 @@ class TimelineMessage
     /**
      * Get timelineId
      *
-     * @return integer 
+     * @return integer
      */
     public function getTimelineId()
     {
@@ -107,11 +128,103 @@ class TimelineMessage
     /**
      * Get message
      *
-     * @return string 
+     * @return string
      */
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * Set parentId
+     *
+     * @param integer $parenteId
+     * @return TimelineMessage
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+
+        return $this;
+    }
+
+    /**
+     * Get parentId
+     *
+     * @return integer
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param DateTime $createdAt
+     * @return TimelineMessage
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set editedAt
+     *
+     * @param DateTime $editedAt
+     * @return TimelineMessage
+     */
+    public function setEditedAt($editedAt)
+    {
+        $this->editedAt = $editedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get editedAt
+     *
+     * @return DateTime
+     */
+    public function getEditedAt()
+    {
+        return $this->editedAt;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param DateTime $deletedAt
+     * @return TimelineMessage
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
     }
 
     /**
@@ -130,10 +243,25 @@ class TimelineMessage
     /**
      * Get timelines
      *
-     * @return \APIBundle\Entity\Timeline 
+     * @return \APIBundle\Entity\Timeline
      */
     public function getTimelines()
     {
         return $this->timelines;
     }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "userId" => $this->userId,
+        "timelineId" => $this->timelineId,
+        "message" => $this->message,
+        "parentId" => $this->parentId,
+        "createdAt" => $this->createdAt,
+        "editedAt" => $this->editedAt,
+        "deletedAt" => $this->deletedAt
+      );
+    }
+
 }

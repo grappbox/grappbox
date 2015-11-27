@@ -42,9 +42,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.6/whiteboard/list/:token/:projectId Request the list of whitebaord for a project
+	* @api {get} /V0.6/whiteboard/list/:token/:projectId Get the whiteboards' list of a project
 	* @apiName listWhiteboard
-	* @apiGroup whiteboard
+	* @apiGroup Whiteboard
 	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} token client authentification token
@@ -108,9 +108,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.6/whiteboard/new Request the creation of a new Whiteboard
+	* @api {post} /V0.6/whiteboard/new Create a new Whiteboard
 	* @apiName createWhiteboard
-	* @apiGroup whiteboard
+	* @apiGroup Whiteboard
 	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} _token client authentification token
@@ -189,9 +189,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.6/whiteboard/open/:token/:id Request open a whiteboard
+	* @api {get} /V0.6/whiteboard/open/:token/:id Open a whiteboard
 	* @apiName openWhiteboard
-	* @apiGroup whiteboard
+	* @apiGroup Whiteboard
 	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} token client authentification token
@@ -282,9 +282,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} V0.6/whiteboard/pushdraw/:id Request to push a whiteboard modification
+	* @api {put} V0.6/whiteboard/pushdraw/:id Push a whiteboard modification
 	* @apiName pushDrawOnWhiteboard
-	* @apiGroup whiteboard
+	* @apiGroup Whiteboard
 	* @apiVersion 0.6.0
 	*
 	* @apiParam {int} id Id of the whiteboard
@@ -367,9 +367,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.6/whiteboard/pulldraw/:id Request to pull a whiteboard modification
+	* @api {get} /V0.6/whiteboard/pulldraw/:id Pull a whiteboard modification
 	* @apiName pullDrawOnWhiteboard
-	* @apiGroup whiteboard
+	* @apiGroup Whiteboard
 	* @apiVersion 0.6.0
 	*
 	* @apiParam {int} id Id of the whiteboard
@@ -474,9 +474,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	// }
 
 	/**
-	* @api {delete} /V0.6/whiteboard/delete/:token/:id Request the deletion of a Whiteboard
+	* @api {delete} /V0.6/whiteboard/delete/:token/:id Delete a Whiteboard
 	* @apiName deleteWhiteboard
-	* @apiGroup whiteboard
+	* @apiGroup Whiteboard
 	* @apiVersion 0.6.0
 	*
 	* @apiParam {String} token client authentification token

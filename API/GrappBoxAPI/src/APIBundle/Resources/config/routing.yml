@@ -271,29 +271,39 @@ cloud_createCloud: #TODO : Delete this route, it's a test route
 
 
 timeline_getTimelineType:
-    path:       /Timeline/getTimelineType/{id}
+    path:       /timeline/gettimelinetype/{token}/{id}
     defaults:   { _controller: APIBundle:Timeline:getTimelineType }
     requirements:
         id: \d+
+    methods: [GET]
 
 timeline_postMessage:
-    path:       /Timeline/postMessage/{id}
+    path:       /timeline/postmessage/{id}
     defaults:   { _controller: APIBundle:Timeline:postMessage }
     requirements:
         id: \d+
+    methods: [POST]
+
+timeline_editMessage:
+    path:       /timeline/editmessage/{id}
+    defaults:   { _controller: APIBundle:Timeline:editMessage }
+    requirements:
+        id: \d+
+    methods: [POST]
 
 timeline_getMessages:
-    path:       /Timeline/getMessages/{id}
+    path:       /timeline/getmessages/{token}/{id}
     defaults:   { _controller: APIBundle:Timeline:getMessages }
     requirements:
         id: \d+
+    methods: [GET]
 
-timeline_delMessage:
-    path:       /Timeline/delMessage/{id}
-    defaults:   { _controller: APIBundle:Timeline:delMessage }
+timeline_archiveMessage:
+    path:       /timeline/archivemessage/{token}/{id}/{messageId}
+    defaults:   { _controller: APIBundle:Timeline:archiveMessage }
     requirements:
         id: \d+
-
+    methods: [GET]
 
 
 bugtracker_postTicket:

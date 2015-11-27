@@ -23,7 +23,7 @@ class TimelineType
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -46,10 +46,18 @@ class TimelineType
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name
+      );
     }
 }
