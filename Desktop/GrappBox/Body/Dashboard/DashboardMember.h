@@ -1,14 +1,14 @@
 #ifndef DASHBOARDMEMBER_H
 #define DASHBOARDMEMBER_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include <QImage>
-#include <QLabel>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QStyleOption>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QStyleOption>
 #include <QPainter>
 
 #include "DashboardInformation.h"

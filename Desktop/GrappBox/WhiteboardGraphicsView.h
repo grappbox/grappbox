@@ -2,9 +2,9 @@
 #define WHITEBOARDGRAPHICSVIEW_H
 
 #include <QPoint>
-#include <QMenu>
-#include <QAction>
-#include <QGraphicsView>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QGraphicsView>
 #include <QContextMenuEvent>
 #include <QWheelEvent>
 #include <QPoint>

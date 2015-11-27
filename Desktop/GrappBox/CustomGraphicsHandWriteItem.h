@@ -1,7 +1,7 @@
 #ifndef CUSTOMGRAPHICSHANDWRITEITEM_H
 #define CUSTOMGRAPHICSHANDWRITEITEM_H
 
-#include <QGraphicsItem>
+#include <QtWidgets/QGraphicsItem>
 #include <QList>
 #include <QPointF>
 #include <QPainter>

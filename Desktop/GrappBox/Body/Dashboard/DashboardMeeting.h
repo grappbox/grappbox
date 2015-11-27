@@ -3,12 +3,12 @@
 
 #include "DashboardInformation.h"
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QStyleOption>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QStyleOption>
 #include <QPainter>
 
 class DashboardMeeting : public QWidget

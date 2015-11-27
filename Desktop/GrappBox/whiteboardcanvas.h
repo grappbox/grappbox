@@ -1,11 +1,11 @@
 #ifndef WHITEBOARDCANVAS_H
 #define WHITEBOARDCANVAS_H
 
-#include <QWidget>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QGraphicsLineItem>
-#include <QGraphicsSceneMouseEvent>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QGraphicsScene>
+#include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QGraphicsLineItem>
+#include <QtWidgets/QGraphicsSceneMouseEvent>
 #include <QPen>
 #include <QMap>
 #include <QStack>

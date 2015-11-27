@@ -1,14 +1,14 @@
 #ifndef LOGINWINDOW_H
 #define LOGINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QImage>
-#include <QLineEdit>
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 #include <QPicture>
-#include <QPushButton>
-#include <QMessageBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMessageBox>
 #include <QJsonObject>
 #include <QJsonDocument>
 
@@ -19,6 +19,7 @@ public:
     explicit LoginWindow(QWidget *parent = 0);
 
 signals:
+    void OnLogin();
 
 public slots:
     void OnAccept();

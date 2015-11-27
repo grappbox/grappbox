@@ -31,12 +31,13 @@ namespace API
         GR_TASK,
         GR_TIMELINE,
         GR_USER_DATA,
-        GR_WHITEBOARD
+        GR_WHITEBOARD,
+        GR_LOGOUT
     };
 
     enum PostRequest
     {
-        PR_LOGIN,
+        PR_LOGIN
     };
 
     class IDataConnector

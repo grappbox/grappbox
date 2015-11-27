@@ -1,11 +1,11 @@
 #ifndef WHITEBOARDBUTTONCHOICE_H
 #define WHITEBOARDBUTTONCHOICE_H
 
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
 
 class BodyDashboard;
 

@@ -1,5 +1,6 @@
 #include <QDebug>
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
+#include "SDataManager.h"
 
 #include "Body/BodyDashboard.h"
 #include "BodyWhiteboard.h"
@@ -36,13 +37,21 @@ MainWindow::MainWindow(QWidget *parent)
     _ContainLayout->setSpacing(0);
 
 
-    _ProfilWidget = new ProfilMainInformation(0);
+    _ProfilWidget = new ProfilMainInformation(this);
 
     _MenuWidget = new SliderMenu();
     _CurrentCanvas = _StackedLayout->addWidget(new BodyDashboard());
     _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas);
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(new BodyWhiteboard()));
-    _CurrentCanvas = 1;
+
+    // Here change the body for settings
+    _UserSettingsId = _StackedLayout->addWidget(new BodyWhiteboard());
+    _SettingsId = _StackedLayout->addWidget(new BodyDashboard());
+
+    _MenuWidget->AddMenuItem("", _UserSettingsId, true);
+    _MenuWidget->AddMenuItem("", _SettingsId, true);
+
+    _CurrentCanvas = 0;
 
     _GrabboxNameLabel = new QLabel();
     _GrabboxNameLabel->setPixmap(QPixmap(":/Image/Ressources/Title.png"));
@@ -106,16 +115,54 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainWidget->setLayout(_MainLayout);
     this->setCentralWidget(mainWidget);
-    _MenuWidget->ForceChangeMenu(_CurrentCanvas);
     _StackedLayout->setCurrentIndex(_CurrentCanvas);
     dynamic_cast<IBodyContener*>((_StackedLayout->itemAt(_CurrentCanvas)->widget()))->Show(0, NULL);
 
+    _Login = new LoginWindow(this);
+
     QObject::connect(_MenuWidget, SIGNAL(MenuChanged(int)), this, SLOT(OnMenuChange(int)));
+
+    _Login->show();
+    hide();
+
+    connect(_ProfilWidget, SIGNAL(OnUserSettings()), this, SLOT(OnUserSettings()));
+    connect(_ProfilWidget, SIGNAL(OnMainSettings()), this, SLOT(OnSettings()));
 }
 
 MainWindow::~MainWindow()
 {
 
+}
+
+void MainWindow::OnLogin()
+{
+    _Login->hide();
+    this->show();
+    _MenuWidget->ForceChangeMenu(_CurrentCanvas);
+}
+
+void MainWindow::OnLogout()
+{
+    qDebug() << "Logout !";
+    QVector<QString> data;
+    data.push_back(API::SDataManager::GetDataManager()->GetToken());
+    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_USER_DATA, API::GR_LOGOUT, data, NULL, NULL, NULL);
+    _Login->show();
+    hide();
+}
+
+void MainWindow::OnSettings()
+{
+    _CurrentCanvas = _SettingsId;
+    _MenuWidget->ForceChangeMenu(_CurrentCanvas);
+    OnMenuChange(_CurrentCanvas);
+}
+
+void MainWindow::OnUserSettings()
+{
+    _CurrentCanvas = _UserSettingsId;
+    _MenuWidget->ForceChangeMenu(_CurrentCanvas);
+    OnMenuChange(_CurrentCanvas);
 }
 
 void MainWindow::OnMenuChange(int id)

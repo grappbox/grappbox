@@ -1,13 +1,13 @@
 #ifndef BODYWHITEBOARDWRITINGTEXT_H
 #define BODYWHITEBOARDWRITINGTEXT_H
 
-#include <QWidget>
-#include <QTextEdit>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QSpinBox>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QSpinBox>
 
 class BodyWhiteboardWritingText : public QWidget
 {
