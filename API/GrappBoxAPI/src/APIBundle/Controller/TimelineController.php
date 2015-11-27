@@ -335,19 +335,19 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
 
-		//TODO: check Rights
-		// if ($type == "customerTimeline")
-		// {
-		// 	if (!$this->checkRoles($user, $content->projectId, "customerTimeline"))
-		// 		return ($this->setNoRightsError());
-		// } else {
-		// 	if (!$this->checkRoles($user, $content->projectId, "teamTimeline"))
-		// 		return ($this->setNoRightsError());
-		// }
+		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		if ($type->getName() == "customerTimeline")
+		{
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+				return ($this->setNoRightsError());
+		} else {
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+				return ($this->setNoRightsError());
+		}
 
 		$message = $em->getRepository('APIBundle:TimelineMessage')->find($messageId);
-		// while($message instanceof TimelineMessage)
-		// {
+		while($message instanceof TimelineMessage)
+		{
 			$parentMsg = $message->getId();
 			$message->setDeletedAt(new DateTime('now'));
 
@@ -355,11 +355,11 @@ class TimelineController extends RolesAndTokenVerificationController
 			$em->flush();
 
 			$message = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
-		// }
+		}
 		// TEST
-		if($message instanceof TimelineMessage)
-			return new JsonResponse(array("parentid" => $messageId, "message object" => $message->objectToArray()));
-		return new JsonResponse(array("parentid" => $messageId, "message object" => $message, "type" => "non object"));
+		// if($message instanceof TimelineMessage)
+		//  	return new JsonResponse(array("parentid" => $messageId, "message object" => $message->objectToArray()));
+		// return new JsonResponse(array("parentid" => $messageId, "message object" => $message, "type" => "non object"));
 		// ! TEST
 		return new JsonResponse('Success');
 	}

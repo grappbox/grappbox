@@ -97,14 +97,14 @@ whiteboard_pushDraw:
     defaults:	{ _controller: APIBundle:Whiteboard:pushDraw }
     requirements:
         id: \d+
-    methods: [PUT]
+    methods: [POST]
 
 whiteboard_pullDraw:
     path:		whiteboard/pulldraw/{id}
     defaults:	{ _controller: APIBundle:Whiteboard:pullDraw }
     requirements:
         id: \d+
-    methods: [GET]
+    methods: [POST]
 
 # whiteboard_exit:
 #     path:		/Whiteboard/exit/{id}

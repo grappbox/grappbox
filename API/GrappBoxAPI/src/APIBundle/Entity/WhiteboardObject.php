@@ -43,7 +43,7 @@ class WhiteboardObject
     {
         return array(
             'id' => $this->id,
-            'whiteboard' => $this->whiteboardId,
+            'whiteboardId' => $this->whiteboardId,
             'object' => $this->object,
             'createdAt' => $this->createdAt,
             'deletedAt' => $this->deletedAt

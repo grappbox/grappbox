@@ -66,10 +66,11 @@ class Whiteboard
     {
         return array(
             'id' => $this->id,
-            'projectId' => $this->projectId,
+            'projectId' => $this->getProjects()->getId(),
             'userId' => $this->userId,
             'name' => $this->name,
             'updatorId' => $this->updatorId,
+            'updatedAt' => $this->updatedAt,
             'createdAt' => $this->createdAt,
             'deletedAt' => $this->deletedAt
         );
