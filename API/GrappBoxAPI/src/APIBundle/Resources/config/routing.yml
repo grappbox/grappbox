@@ -1,3 +1,8 @@
+project_projectCreation:
+    path:       projects/projectCreation/{token}
+    defaults:   { _controller: APIBundle:Project:projectCreation }
+    methods: [POST]
+
 role_addProjectRoles:
     path:       roles/addprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:addProjectRoles }
@@ -39,11 +44,6 @@ role_delPersonRole:
 user_basicInformations:
     path:       user/basicinformations/{token}
     defaults:   { _controller: APIBundle:User:basicInformations }
-    methods: [GET, PUT]
-
-user_password:
-    path:       user/password/{token}
-    defaults:   { _controller: APIBundle:User:password }
     methods: [GET, PUT]
 
 user_getIdByName:

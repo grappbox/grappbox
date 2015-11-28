@@ -191,8 +191,9 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiParam {String} [first_name] First name of the person
 	* @apiParam {String} [last_name] Last name of the person
 	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatr of the person
+	* @apiParam {Text} [avatar] Avatar of the person
 	* @apiParam {String} [email] Email of the person
+	* @apiParam {String} [password] Password of the person
 	* @apiParam {Number} [phone] Phone number of the person
 	* @apiParam {String} [country] Country the person in living in
 	* @apiParam {String} [linkedin] Linkedin of the person
@@ -206,6 +207,7 @@ class UserController extends RolesAndTokenVerificationController
 	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*		"avatar": "10001111001100110010101010",
 	*		"email": "john.doe@gmail.com",
+	*		"password": "azertyuiop",
 	*		"phone": +33984231475,
 	*		"country": "France",
 	*		"linkedin": "linkedin.com/john.doe",
@@ -338,265 +340,40 @@ class UserController extends RolesAndTokenVerificationController
 	*/
 	private function putBasicInformations($content, $user, $em)
 	{
-		foreach ($content as $key => $value) {
-			switch ($key) {
-				case 'firstname':
-					$user->setFirstname($content->firstname);
-					break;
-				case 'lastname':
-					$user->setLastname($content->lastname);
-					break;
-				case 'birthday':
-					$user->setBirthday($content->birthday);
-					break;
-				case 'avatar':
-					$user->setAvatar($content->avatar);
-					break;
-				case 'email':
-					if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
-						return $this->setBadRequest("Email already in DB");
-					else
-						$user->setEmail($content->email);
-					break;
-				case 'phone':
-					$user->setPhone($content->phone);
-					break;
-				case 'country':
-					$user->setCountry($content->country);
-					break;
-				case 'linkedin':
-					$user->setLinkedin($content->linkedin);
-					break;
-				case 'viadeo':
-					$user->setViadeo($content->viadeo);
-					break;
-				case 'twitter':
-					$user->setTwitter($content->twitter);
-					break;
-				default:
-					break;
-			}
+		if (array_key_exists('firstname', $content))
+			$user->setFirstname($content->firstname);
+		if (array_key_exists('lastname', $content))
+			$user->setLastname($content->lastname);
+		if (array_key_exists('birthday', $content))
+			$user->setBirthday($content->birthday);
+		if (array_key_exists('avatar', $content))
+			$user->setAvatar($content->avatar);
+		if (array_key_exists('email', $content))
+		{
+			if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
+				return $this->setBadRequest("Email already in DB");
+			else
+				$user->setEmail($content->email);
 		}
+		if (array_key_exists('phone', $content))
+			$user->setPhone($content->phone);
+		if (array_key_exists('country', $content))
+			$user->setCountry($content->country);
+		if (array_key_exists('linkedin', $content))
+			$user->setLinkedin($content->linkedin);
+		if (array_key_exists('viadeo', $content))
+			$user->setViadeo($content->viadeo);
+		if (array_key_exists('twitter', $content))
+			$user->setTwitter($content->twitter);
+		if (array_key_exists('password', $content))
+		{
+			$encoder = $this->container->get('security.password_encoder');
+   			$encoded = $encoder->encodePassword($user, $content->password);
+			$user->setPassword($encoded);
+		}
+		
 		$em->flush();
 		return new JsonResponse("User Basic Informations changed.");
-	}
-
-	public function passwordAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-
-		$method = $request->getMethod();
-		$em = $this->getDoctrine()->getManager();
-
-		if ($method == "GET")
-			return new JsonResponse($this->getPassword($user));
-		else if ($method == "PUT")
-			return new JsonResponse($this->putPassword($request, $user, $em));
-	}
-
-	/**
-	* @api {get} /V0.7/user/password/:token Request the password of the user connected
-	* @apiName getPassword
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {String} token Token of the person connected
-	*
-	* @apiSuccess {String} password Person's password
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"password": "toto42"
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/password/:token Request the password of the user connected
-	* @apiName getPassword
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {String} token Token of the person connected
-	*
-	* @apiSuccess {String} password Person's password
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"password": "toto42"
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/password/:token Request the password of the user connected
-	* @apiName getPassword
-	* @apiGroup Users
-	* @apiVersion 0.6.0
-	*
-	* @apiParam {String} token Token of the person connected
-	*
-	* @apiSuccess {String} password Person's password
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"password": "toto42"
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-	private function getPassword($user)
-	{
-		return array("password" => $user->getPassword());
-	}
-
-	/**
-	* @api {put} /V0.7/user/password/:token Update the password of the user connected
-	* @apiName putPassword
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} password The new password
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"password": "TarteAuxPommes"
-	* 	}
-	*
-	* @apiSuccess message Password successfully changed.
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "Password successfully changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.6/user/password/:token Update the password of the user connected
-	* @apiName putPassword
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} password The new password
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"password": "TarteAuxPommes"
-	* 	}
-	*
-	* @apiSuccess message Password successfully changed.
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "Password successfully changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.6/user/password/:token Update the password of the user connected
-	* @apiName putPassword
-	* @apiGroup Users
-	* @apiVersion 0.6.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} password The new password
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"password": "TarteAuxPommes"
-	* 	}
-	*
-	* @apiSuccess message Password successfully changed.
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "Password successfully changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-	private function putPassword($request, $user, $em)
-	{
-		$user->setPassword($request->request->get('password'));
-
-		$em->flush();
-		return new JsonResponse("Password successfully changed.");
 	}
 
 	/**

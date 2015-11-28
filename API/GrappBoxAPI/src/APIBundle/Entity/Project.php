@@ -15,11 +15,6 @@ class Project
     private $id;
 
     /**
-     * @var integer
-     */
-    private $creatorId;
-
-    /**
      * @var string
      */
     private $name;
@@ -35,9 +30,14 @@ class Project
     private $logo;
 
     /**
-     * @var integer
+     * @var string
      */
-    private $teamId;
+    private $phone;
+
+    /**
+     * @var string
+     */
+    private $company;
 
     /**
      * @var string
@@ -95,6 +95,11 @@ class Project
     private $whiteboards;
 
     /**
+     * @var \APIBundle\Entity\User
+     */
+    private $creator_user;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $users;
@@ -112,54 +117,14 @@ class Project
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function objectToArray()
-    {
-        return array(
-            'id' => $this->id,
-            'creatorId' => $this->creatorId,
-            'name' => $this->name,
-            'description' => $this->description,
-            'logo' => $this->logo,
-            'contactEmail' => $this->contactEmail,
-            'facebook' => $this->facebook,
-            'twitter' => $this->twitter,
-            'createdAt' => $this->createdAt,
-            'deletedAt' => $this->deletedAt
-        );
-    }
-
-
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set creatorId
-     *
-     * @param integer $creatorId
-     * @return Project
-     */
-    public function setCreatorId($creatorId)
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get creatorId
-     *
-     * @return integer
-     */
-    public function getCreatorId()
-    {
-        return $this->creatorId;
     }
 
     /**
@@ -178,7 +143,7 @@ class Project
     /**
      * Get name
      *
-     * @return string
+     * @return string 
      */
     public function getName()
     {
@@ -201,7 +166,7 @@ class Project
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -224,381 +189,12 @@ class Project
     /**
      * Get logo
      *
-     * @return string
+     * @return string 
      */
     public function getLogo()
     {
         return $this->logo;
     }
-
-    /**
-     * Set teamId
-     *
-     * @param integer $teamId
-     * @return Project
-     */
-    public function setTeamId($teamId)
-    {
-        $this->teamId = $teamId;
-
-        return $this;
-    }
-
-    /**
-     * Get teamId
-     *
-     * @return integer
-     */
-    public function getTeamId()
-    {
-        return $this->teamId;
-    }
-
-    /**
-     * Set contactEmail
-     *
-     * @param string $contactEmail
-     * @return Project
-     */
-    public function setContactEmail($contactEmail)
-    {
-        $this->contactEmail = $contactEmail;
-
-        return $this;
-    }
-
-    /**
-     * Get contactEmail
-     *
-     * @return string
-     */
-    public function getContactEmail()
-    {
-        return $this->contactEmail;
-    }
-
-    /**
-     * Set facebook
-     *
-     * @param string $facebook
-     * @return Project
-     */
-    public function setFacebook($facebook)
-    {
-        $this->facebook = $facebook;
-
-        return $this;
-    }
-
-    /**
-     * Get facebook
-     *
-     * @return string
-     */
-    public function getFacebook()
-    {
-        return $this->facebook;
-    }
-
-    /**
-     * Set twitter
-     *
-     * @param string $twitter
-     * @return Project
-     */
-    public function setTwitter($twitter)
-    {
-        $this->twitter = $twitter;
-
-        return $this;
-    }
-
-    /**
-     * Get twitter
-     *
-     * @return string
-     */
-    public function getTwitter()
-    {
-        return $this->twitter;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     * @return Project
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set deletedAt
-     *
-     * @param \DateTime $deletedAt
-     * @return Project
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
-     * Set safePassword
-     *
-     * @param string $safePassword
-     * @return Project
-     */
-    public function setSafePassword($safePassword)
-    {
-        $this->safePassword = $safePassword;
-
-        return $this;
-    }
-
-    /**
-     * Get safePassword
-     *
-     * @return string
-     */
-    public function getSafePassword()
-    {
-        return $this->safePassword;
-    }
-
-    /**
-     * Add tasks
-     *
-     * @param \APIBundle\Entity\Task $tasks
-     * @return Project
-     */
-    public function addTask(\APIBundle\Entity\Task $tasks)
-    {
-        $this->tasks[] = $tasks;
-
-        return $this;
-    }
-
-    /**
-     * Remove tasks
-     *
-     * @param \APIBundle\Entity\Task $tasks
-     */
-    public function removeTask(\APIBundle\Entity\Task $tasks)
-    {
-        $this->tasks->removeElement($tasks);
-    }
-
-    /**
-     * Get tasks
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTasks()
-    {
-        return $this->tasks;
-    }
-
-    /**
-     * Add bugs
-     *
-     * @param \APIBundle\Entity\Bug $bugs
-     * @return Project
-     */
-    public function addBug(\APIBundle\Entity\Bug $bugs)
-    {
-        $this->bugs[] = $bugs;
-
-        return $this;
-    }
-
-    /**
-     * Remove bugs
-     *
-     * @param \APIBundle\Entity\Bug $bugs
-     */
-    public function removeBug(\APIBundle\Entity\Bug $bugs)
-    {
-        $this->bugs->removeElement($bugs);
-    }
-
-    /**
-     * Get bugs
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBugs()
-    {
-        return $this->bugs;
-    }
-
-    /**
-     * Add timelines
-     *
-     * @param \APIBundle\Entity\Timeline $timelines
-     * @return Project
-     */
-    public function addTimeline(\APIBundle\Entity\Timeline $timelines)
-    {
-        $this->timelines[] = $timelines;
-
-        return $this;
-    }
-
-    /**
-     * Remove timelines
-     *
-     * @param \APIBundle\Entity\Timeline $timelines
-     */
-    public function removeTimeline(\APIBundle\Entity\Timeline $timelines)
-    {
-        $this->timelines->removeElement($timelines);
-    }
-
-    /**
-     * Get timelines
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTimelines()
-    {
-        return $this->timelines;
-    }
-
-    /**
-     * Add events
-     *
-     * @param \APIBundle\Entity\Event $events
-     * @return Project
-     */
-    public function addEvent(\APIBundle\Entity\Event $events)
-    {
-        $this->events[] = $events;
-
-        return $this;
-    }
-
-    /**
-     * Remove events
-     *
-     * @param \APIBundle\Entity\Event $events
-     */
-    public function removeEvent(\APIBundle\Entity\Event $events)
-    {
-        $this->events->removeElement($events);
-    }
-
-    /**
-     * Get events
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEvents()
-    {
-        return $this->events;
-    }
-
-    /**
-     * Add whiteboards
-     *
-     * @param \APIBundle\Entity\Whiteboard $whiteboards
-     * @return Project
-     */
-    public function addWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
-    {
-        $this->whiteboards[] = $whiteboards;
-
-        return $this;
-    }
-
-    /**
-     * Remove whiteboards
-     *
-     * @param \APIBundle\Entity\Whiteboard $whiteboards
-     */
-    public function removeWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
-    {
-        $this->whiteboards->removeElement($whiteboards);
-    }
-
-    /**
-     * Get whiteboards
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getWhiteboards()
-    {
-        return $this->whiteboards;
-    }
-
-    /**
-     * Add users
-     *
-     * @param \APIBundle\Entity\User $users
-     * @return Project
-     */
-    public function addUser(\APIBundle\Entity\User $users)
-    {
-        $this->users[] = $users;
-
-        return $this;
-    }
-
-    /**
-     * Remove users
-     *
-     * @param \APIBundle\Entity\User $users
-     */
-    public function removeUser(\APIBundle\Entity\User $users)
-    {
-        $this->users->removeElement($users);
-    }
-
-    /**
-     * Get users
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
-    /**
-     * @var string
-     */
-    private $phone;
-
-    /**
-     * @var string
-     */
-    private $company;
-
 
     /**
      * Set phone
@@ -644,5 +240,364 @@ class Project
     public function getCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * Set contactEmail
+     *
+     * @param string $contactEmail
+     * @return Project
+     */
+    public function setContactEmail($contactEmail)
+    {
+        $this->contactEmail = $contactEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get contactEmail
+     *
+     * @return string 
+     */
+    public function getContactEmail()
+    {
+        return $this->contactEmail;
+    }
+
+    /**
+     * Set facebook
+     *
+     * @param string $facebook
+     * @return Project
+     */
+    public function setFacebook($facebook)
+    {
+        $this->facebook = $facebook;
+
+        return $this;
+    }
+
+    /**
+     * Get facebook
+     *
+     * @return string 
+     */
+    public function getFacebook()
+    {
+        return $this->facebook;
+    }
+
+    /**
+     * Set twitter
+     *
+     * @param string $twitter
+     * @return Project
+     */
+    public function setTwitter($twitter)
+    {
+        $this->twitter = $twitter;
+
+        return $this;
+    }
+
+    /**
+     * Get twitter
+     *
+     * @return string 
+     */
+    public function getTwitter()
+    {
+        return $this->twitter;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     * @return Project
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param \DateTime $deletedAt
+     * @return Project
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime 
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set safePassword
+     *
+     * @param string $safePassword
+     * @return Project
+     */
+    public function setSafePassword($safePassword)
+    {
+        $this->safePassword = $safePassword;
+
+        return $this;
+    }
+
+    /**
+     * Get safePassword
+     *
+     * @return string 
+     */
+    public function getSafePassword()
+    {
+        return $this->safePassword;
+    }
+
+    /**
+     * Add tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     * @return Project
+     */
+    public function addTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks[] = $tasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     */
+    public function removeTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks->removeElement($tasks);
+    }
+
+    /**
+     * Get tasks
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    /**
+     * Add bugs
+     *
+     * @param \APIBundle\Entity\Bug $bugs
+     * @return Project
+     */
+    public function addBug(\APIBundle\Entity\Bug $bugs)
+    {
+        $this->bugs[] = $bugs;
+
+        return $this;
+    }
+
+    /**
+     * Remove bugs
+     *
+     * @param \APIBundle\Entity\Bug $bugs
+     */
+    public function removeBug(\APIBundle\Entity\Bug $bugs)
+    {
+        $this->bugs->removeElement($bugs);
+    }
+
+    /**
+     * Get bugs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBugs()
+    {
+        return $this->bugs;
+    }
+
+    /**
+     * Add timelines
+     *
+     * @param \APIBundle\Entity\Timeline $timelines
+     * @return Project
+     */
+    public function addTimeline(\APIBundle\Entity\Timeline $timelines)
+    {
+        $this->timelines[] = $timelines;
+
+        return $this;
+    }
+
+    /**
+     * Remove timelines
+     *
+     * @param \APIBundle\Entity\Timeline $timelines
+     */
+    public function removeTimeline(\APIBundle\Entity\Timeline $timelines)
+    {
+        $this->timelines->removeElement($timelines);
+    }
+
+    /**
+     * Get timelines
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTimelines()
+    {
+        return $this->timelines;
+    }
+
+    /**
+     * Add events
+     *
+     * @param \APIBundle\Entity\Event $events
+     * @return Project
+     */
+    public function addEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events[] = $events;
+
+        return $this;
+    }
+
+    /**
+     * Remove events
+     *
+     * @param \APIBundle\Entity\Event $events
+     */
+    public function removeEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events->removeElement($events);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * Add whiteboards
+     *
+     * @param \APIBundle\Entity\Whiteboard $whiteboards
+     * @return Project
+     */
+    public function addWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
+    {
+        $this->whiteboards[] = $whiteboards;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboards
+     *
+     * @param \APIBundle\Entity\Whiteboard $whiteboards
+     */
+    public function removeWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
+    {
+        $this->whiteboards->removeElement($whiteboards);
+    }
+
+    /**
+     * Get whiteboards
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWhiteboards()
+    {
+        return $this->whiteboards;
+    }
+
+    /**
+     * Set creator_user
+     *
+     * @param \APIBundle\Entity\User $creatorUser
+     * @return Project
+     */
+    public function setCreatorUser(\APIBundle\Entity\User $creatorUser = null)
+    {
+        $this->creator_user = $creatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_user
+     *
+     * @return \APIBundle\Entity\User 
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
+    }
+
+    /**
+     * Add users
+     *
+     * @param \APIBundle\Entity\User $users
+     * @return Project
+     */
+    public function addUser(\APIBundle\Entity\User $users)
+    {
+        $this->users[] = $users;
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \APIBundle\Entity\User $users
+     */
+    public function removeUser(\APIBundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers()
+    {
+        return $this->users;
     }
 }
