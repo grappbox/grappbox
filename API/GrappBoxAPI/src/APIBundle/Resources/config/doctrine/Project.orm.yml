@@ -22,6 +22,12 @@ APIBundle\Entity\Project:
             type: string
             length: 255
             nullable: TRUE
+        phone:
+            type: string
+            nullable: true
+        company:
+            type: string
+            nullable: true
         teamId:
             type: integer
             column: team_id

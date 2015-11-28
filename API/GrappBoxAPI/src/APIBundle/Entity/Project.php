@@ -589,4 +589,60 @@ class Project
     {
         return $this->users;
     }
+    /**
+     * @var string
+     */
+    private $phone;
+
+    /**
+     * @var string
+     */
+    private $company;
+
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return Project
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string 
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set company
+     *
+     * @param string $company
+     * @return Project
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return string 
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
 }

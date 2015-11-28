@@ -61,6 +61,40 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} V0.7/accountadministration/login/:token Request login with client access
+	* @apiName client login
+	* @apiGroup AccountAdministration
+	* @apiVersion 0.7.0
+	*
+	* @apiParam {token} client token access
+	*
+	* @apiSuccess {Object} user user's information
+	* @apiSuccess {int} user.id whiteboard id
+	* @apiSuccess {string} user.firstname user's firstname
+	* @apiSuccess {string} user.lastname user's lastname
+	* @apiSuccess {string} user.email user's email
+	* @apiSuccess {string} user.token user's authentication token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"user": {
+	*				"id": 12,
+	*				"firstname": "John",
+	*				"lastname": "Doe",
+	*				"email": "john.doe@gmail.com",
+	*				"token": "fkE35dcDneOjF...."
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	*/
 	public function clientLoginAction(Request $request, $token)
 	{
 		$em = $this->getDoctrine()->getManager();
@@ -73,11 +107,51 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $response;
 	}
 
-	 /**
+	/**
  	* @api {post} V0.6/accountadministration/login Request login
  	* @apiName login
  	* @apiGroup AccountAdministration
  	* @apiVersion 0.6.0
+ 	*
+ 	* @apiParam {email} login login (user's email)
+ 	* @apiParam {string} password password
+ 	*
+ 	* @apiSuccess {Object} user user's information
+ 	* @apiSuccess {int} user.id whiteboard id
+ 	* @apiSuccess {string} user.firstname user's firstname
+ 	* @apiSuccess {string} user.lastname user's lastname
+ 	* @apiSuccess {string} user.email user's email
+	* @apiSuccess {string} user.token user's authentication token
+ 	*
+ 	* @apiSuccessExample {json} Success-Response:
+ 	* 	{
+ 	*			"user": {
+	*				"id": 12,
+	*				"firstname": "John",
+	*				"lastname": "Doe",
+	*				"email": "john.doe@gmail.com",
+	*				"token": "fkE35dcDneOjF...."
+	*			}
+ 	* 	}
+ 	*
+ 	* @apiErrorExample Bad Login
+ 	* 	HTTP/1.1 400 Bad Request
+ 	* 	{
+ 	* 		"Bad Login"
+ 	* 	}
+	* @apiErrorExample Bad Password
+ 	*		HTTP/1.1 400 Bad Request
+  * 	{
+  *   	"Bad Password"
+  * 	}
+ 	*
+ 	*/
+
+ 	/**
+ 	* @api {post} V0.7/accountadministration/login Request login
+ 	* @apiName login
+ 	* @apiGroup AccountAdministration
+ 	* @apiVersion 0.7.0
  	*
  	* @apiParam {email} login login (user's email)
  	* @apiParam {string} password password
@@ -173,6 +247,30 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  * 	}
  *
  */
+
+	/**
+ * @api {get} V0.7/accountadministration/logout/:token Request logout
+ * @apiName logout
+ * @apiGroup AccountAdministration
+ * @apiVersion 0.7.0
+ *
+ * @apiParam {string} token user's authentication token
+ *
+ * @apiSuccess {string} data	success message
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * 	HTTP/1.1 200 OK
+ * 	{
+ * 		"Logout Successfully"
+ * 	}
+ *
+ * @apiErrorExample Bad Authentication Token
+ * 	HTTP/1.1 400 Bad Request
+ * 	{
+ * 		"Bad Authentication Token"
+ * 	}
+ *
+ */
  	public function logoutAction(Request $request, $token)
  	{
 		$user = $this->checkToken($token);
@@ -190,7 +288,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $response;
  	}
 
-	 /**
+	/**
 		* @api {post} V0.6/accountadministration/register Request user creation and login
 		* @apiName register
 		* @apiGroup AccountAdministration
@@ -228,6 +326,55 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		*
 		* @apiErrorExample Missing Parameter
 	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Missing Parameter"
+	  * 	}
+		* @apiErrorExample Email Already Used
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Email already in DB"
+	  * 	}
+		*
+		*/
+
+	/**
+	* @api {post} V0.7/accountadministration/register Request user creation and login
+	* @apiName register
+	* @apiGroup AccountAdministration
+	* @apiVersion 0.7.0
+	*
+	* @apiParam {string} firstname user's firstname
+	* @apiParam {string} lastname user's lastname
+	* @apiParam {DateTime} [birthday] user's birthday
+	* @apiParam {file} [avatar] user's avatar
+	* @apiParam {string} password user's password
+	* @apiParam {email} email user's email
+	* @apiParam {string} [phone] user's phone
+	* @apiParam {string} [country] user's country
+	* @apiParam {url} [linkedin] user's linkedin
+	* @apiParam {url} [viadeo] user's viadeo
+	* @apiParam {url} [twitter] user's twitter
+	*
+	* @apiSuccess {Object} user user's informations
+	* @apiSuccess {int} user.id whiteboard id
+	* @apiSuccess {string} user.firstname user's firstname
+	* @apiSuccess {string} user.lastname user's lastname
+	* @apiSuccess {string} user.email user's email
+	* @apiSuccess {string} user.token user's authentication token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"user": {
+	*			"id": 12,
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"email": "john.doe@gmail.com",
+	*			"token": "fkE35dcDneOjF...."
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Missing Parameter
+ 	* 	HTTP/1.1 400 Bad Request
 	  * 	{
 	  * 		"Missing Parameter"
 	  * 	}
