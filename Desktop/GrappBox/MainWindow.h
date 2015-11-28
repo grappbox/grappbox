@@ -38,6 +38,7 @@ public slots:
     void OnLogout();
     void OnSettings();
     void OnUserSettings();
+    void OnLoadingFinished();
 
 private:
     LoginWindow         *_Login;
@@ -57,6 +58,8 @@ private:
     // Canvas
     QStackedLayout      *_StackedLayout;
     int                 _CurrentCanvas;
+    QLabel              *_LoadingImage;
+    int                 _LoadingId;
 
     // Profil
     ProfilMainInformation       *_ProfilWidget;

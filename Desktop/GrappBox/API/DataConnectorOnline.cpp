@@ -23,10 +23,10 @@ void DataConnectorOnline::OnResponseAPI()
     if (request->error())
     {
         qDebug() << request->errorString();
-        emit responseAPIFailure(_Request[request], req);
+        QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
     }
     else
-        emit responseAPISuccess(_Request[request], req);
+        QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotSuccess, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
 }
 
 int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
@@ -35,11 +35,15 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
     switch (request)
     {
     case PR_LOGIN:
-        reply = Login(data, requestResponseObject, slotSuccess, slotFailure);
+        reply = Login(data);
         break;
     }
     if (reply == NULL)
         throw QException();
+    _CallBack[reply] = DataConnectorCallback();
+    _CallBack[reply]._Request = requestResponseObject;
+    _CallBack[reply]._SlotFailure = slotFailure;
+    _CallBack[reply]._SlotSuccess = slotSuccess;
     int maxInt = 1;
     for (QMap<QNetworkReply*,int>::const_iterator it = _Request.constBegin(); it != _Request.constEnd(); ++it)
     {
@@ -58,11 +62,35 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
     switch (request)
     {
     case GR_LOGOUT:
-        reply = Logout(data, requestResponseObject, slotSuccess, slotFailure);
+        reply = Logout(data);
+        break;
+
+    case GR_LIST_PROJECT:
+        reply = GetAction("dashboard/getprojectlist", data);
+        break;
+
+    case GR_PROJECT:
+        reply = GetAction("dashboard/getprojectbasicinformations", data);
+        break;
+
+    case GR_CREATOR_PROJECT:
+        reply = GetAction("dashboard/getprojectcreator", data);
+        break;
+
+    case GR_LIST_MEMBER_PROJECT:
+        reply = GetAction("dashboard/getteamoccupation", data);
+        break;
+
+    case GR_LIST_MEETING:
+        reply = GetAction("dashboard/getnextmeetings", data);
         break;
     }
     if (reply == NULL)
         throw QException();
+    _CallBack[reply] = DataConnectorCallback();
+    _CallBack[reply]._Request = requestResponseObject;
+    _CallBack[reply]._SlotFailure = slotFailure;
+    _CallBack[reply]._SlotSuccess = slotSuccess;
     int maxInt = 1;
     for (QMap<QNetworkReply*,int>::const_iterator it = _Request.constBegin(); it != _Request.constEnd(); ++it)
     {
@@ -80,7 +108,7 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
 
 }
 
-QNetworkReply *DataConnectorOnline::Login(QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
+QNetworkReply *DataConnectorOnline::Login(QVector<QString> &data)
 {
     QJsonObject json;
     json["login"] = data[0];
@@ -93,15 +121,10 @@ QNetworkReply *DataConnectorOnline::Login(QVector<QString> &data, QObject *reque
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
     QNetworkReply *request = _Manager->post(requestSend, jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
-    if (requestResponseObject != NULL)
-    {
-        QObject::connect(this, SIGNAL(responseAPISuccess(int, QByteArray)), requestResponseObject, slotSuccess, Qt::UniqueConnection);
-        QObject::connect(this, SIGNAL(responseAPIFailure(int, QByteArray)), requestResponseObject, slotFailure, Qt::UniqueConnection);
-    }
     return request;
 }
 
-QNetworkReply *DataConnectorOnline::Logout(QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure)
+QNetworkReply *DataConnectorOnline::Logout(QVector<QString> &data)
 {
     QString url = URL_API + QString("accountadministration/login");
     for (QVector<QString>::const_iterator it = data.constBegin(); it != data.constEnd(); ++it)
@@ -112,10 +135,20 @@ QNetworkReply *DataConnectorOnline::Logout(QVector<QString> &data, QObject *requ
     QNetworkReply *request = _Manager->get(QNetworkRequest(QUrl(url)));
 
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
-    if (requestResponseObject != NULL)
+
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::GetAction(QString urlIn, QVector<QString> &data)
+{
+    QString url = URL_API + urlIn;
+    for (QVector<QString>::const_iterator it = data.constBegin(); it != data.constEnd(); ++it)
     {
-        QObject::connect(this, SIGNAL(responseAPISuccess(int, QByteArray)), requestResponseObject, slotSuccess, Qt::UniqueConnection);
-        QObject::connect(this, SIGNAL(responseAPIFailure(int, QByteArray)), requestResponseObject, slotFailure, Qt::UniqueConnection);
+        url += QString("/") + *it;
     }
+    QNetworkReply *request = _Manager->get(QNetworkRequest(QUrl(url)));
+
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+
     return request;
 }

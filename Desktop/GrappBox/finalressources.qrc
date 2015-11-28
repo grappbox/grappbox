@@ -21,9 +21,13 @@
         <file>Ressources/Icon/Message.png</file>
         <file>Ressources/Icon/Notification.png</file>
         <file>Ressources/Icon/Settings.png</file>
+        <file>Ressources/Icon/Loading.gif</file>
     </qresource>
     <qresource prefix="/Image">
         <file>Ressources/Title.png</file>
+        <file>Ressources/Icon/MeetingDefault.png</file>
+        <file>Ressources/Icon/ProjectDefault.png</file>
+        <file>Ressources/Icon/UserDefault.png</file>
     </qresource>
     <qresource prefix="/Configuration">
         <file>Ressources/ConfigurationFiles/WhiteboardColors.xml</file>

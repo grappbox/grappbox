@@ -37,8 +37,9 @@ QString SliderMenu::GetMenuItem(int id)
 
 void SliderMenu::ForceChangeMenu(int menu)
 {
+    qDebug() << "Menu = " << menu;
     if (!_ListButton.contains(menu))
-        throw new QException();
+        throw QString("Force change menu");
     _CurrentIndex = menu;
     for (QMap<int, QPushButton*>::iterator it = _ListButton.begin(); it != _ListButton.end(); ++it)
     {

@@ -39,7 +39,8 @@ void LoginWindow::OnAccept()
     QVector<QString> data;
     data.push_back(_Login->text());
     data.push_back(_Password->text());
-    _RequestId = API::SDataManager::GetCurrentDataConnector()->Post(API::DP_USER_DATA, API::PR_LOGIN, data, this, SLOT(OnLoginSuccess(int, QByteArray)), SLOT(OnLoginFailure(int,QByteArray)));
+    qDebug() << " On accept !";
+    _RequestId = API::SDataManager::GetCurrentDataConnector()->Post(API::DP_USER_DATA, API::PR_LOGIN, data, this, "OnLoginSuccess", "OnLoginFailure");
     this->setDisabled(true);
 }
 
@@ -54,7 +55,6 @@ void LoginWindow::OnLoginSuccess(int id, QByteArray response)
     QString userToken = obj["user"].toObject()["token"].toString();
     API::SDataManager::GetDataManager()->RegisterUserConnected(idUser, userName, userLastName, userToken);
     this->setDisabled(false);
-
     emit OnLogin();
 }
 

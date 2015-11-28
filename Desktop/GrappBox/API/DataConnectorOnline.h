@@ -13,6 +13,13 @@
 
 namespace API
 {
+    struct DataConnectorCallback
+    {
+        QObject *_Request;
+        const char *_SlotSuccess;
+        const char *_SlotFailure;
+    };
+
     class DataConnectorOnline : public QObject, public IDataConnector
     {
         Q_OBJECT
@@ -32,18 +39,17 @@ namespace API
 
     private:
         QMap<QNetworkReply*, int> _Request;
+        QMap<QNetworkReply*, DataConnectorCallback> _CallBack;
         QNetworkAccessManager *_Manager;
 
         // Post
     private:
-        QNetworkReply *Login(QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
+        QNetworkReply *Login(QVector<QString> &data);
 
         // Get
     private:
-        QNetworkReply *Logout(QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
-        QNetworkReply *GetAllProjectsOfUser(QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure);
-        QNetworkReply *GetAllMeetingOfUser(QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure);
-        QNetworkReply *GetAllManagedUsersOfUser(QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure);
+        QNetworkReply *Logout(QVector<QString> &data);
+        QNetworkReply *GetAction(QString urlIn, QVector<QString> &data);
     };
 
 }

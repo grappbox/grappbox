@@ -19,6 +19,7 @@ DashboardGlobalProgress::DashboardGlobalProgress(DashboardInformation::GlobalPro
     fontTitle.setBold(true);
 
     _ProjectPicture = new QLabel();
+    info->ProjectPicture = new QPixmap(info->ProjectPicture->scaled(64, 64));
     _ProjectPicture->setPixmap(*info->ProjectPicture);
     _ProjectPicture->setFixedSize(120, 120);
     _ProjectPicture->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);

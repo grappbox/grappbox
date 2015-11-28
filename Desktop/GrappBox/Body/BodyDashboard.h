@@ -5,11 +5,16 @@
 #include "Dashboard\DashboardMember.h"
 #include "Dashboard\DashboardGlobalProgress.h"
 #include "Dashboard\DashboardMeeting.h"
+#include "Dashboard/DashboardInformation.h"
 
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QScrollArea>
+#include <QMap>
+
+using namespace DashboardInformation;
 
 class BodyDashboard : public QWidget, public IBodyContener
 {
@@ -20,13 +25,18 @@ public:
     virtual void Hide();
 
 signals:
+    void OnLoadingDone();
 
 public slots:
-    /*void Failure(int, QByteArray);
+    void Failure(int, QByteArray);
+    void GetMemberProject(int, QByteArray);
+    void GetNextMeeting(int, QByteArray);
     void GetAllProject(int, QByteArray);
-    void NextMeeting(int, QByteArray);*/
+    void GetProjectsId(int, QByteArray);
 
 private:
+    void UpdateLayout();
+
     int                 _ProjectId;
     MainWindow          *_MainApplication;
 
@@ -37,10 +47,22 @@ private:
     QVBoxLayout         *_MainLayoutLoaded;
     QLabel              *_TitleMemberAvaible;
     QHBoxLayout         *_MemberAvaible;
+    QScrollArea         *_ScrollMember;
     QLabel              *_TitleNextMeeting;
     QHBoxLayout         *_NextMeeting;
     QLabel              *_TitleGlobalProgress;
     QHBoxLayout         *_GlobalProgress;
+    QScrollArea         *_ScrollProgress;
+
+    //Information API
+    bool                                _IsInitializing;
+    int                                 _NumberBeforeInitializingDone;
+
+    QMap<int, MemberAvaiableInfo*>      _MemberData;
+    QMap<int, NextMeetingInfo*>         _NextMeetingData;
+    QMap<int, GlobalProgressInfo*>      _GlobalProgressData;
+    QMap<int, int>                      _ProjectIdsData;
+    QMap<int, int>                      _ProjectCreatorIdsData;
 };
 
 #endif // BODYDASHBOARD_H

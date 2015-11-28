@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QtWidgets/QMessageBox>
+#include <QMovie>
 #include "SDataManager.h"
 
 #include "Body/BodyDashboard.h"
@@ -40,7 +41,17 @@ MainWindow::MainWindow(QWidget *parent)
     _ProfilWidget = new ProfilMainInformation(this);
 
     _MenuWidget = new SliderMenu();
-    _CurrentCanvas = _StackedLayout->addWidget(new BodyDashboard());
+
+    _LoadingImage = new QLabel(this);
+    _LoadingImage->setAlignment(Qt::AlignCenter);
+    QMovie *loading = new QMovie(":/icon/Ressources/Icon/Loading.gif");
+    _LoadingImage->setMovie(loading);
+    loading->start();
+    _LoadingId = _StackedLayout->addWidget(_LoadingImage);
+
+    BodyDashboard *dashboard = new BodyDashboard();
+    connect(dashboard, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
+    _CurrentCanvas = _StackedLayout->addWidget(dashboard);
     _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas);
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(new BodyWhiteboard()));
 
@@ -50,8 +61,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     _MenuWidget->AddMenuItem("", _UserSettingsId, true);
     _MenuWidget->AddMenuItem("", _SettingsId, true);
-
-    _CurrentCanvas = 0;
 
     _GrabboxNameLabel = new QLabel();
     _GrabboxNameLabel->setPixmap(QPixmap(":/Image/Ressources/Title.png"));
@@ -115,8 +124,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     mainWidget->setLayout(_MainLayout);
     this->setCentralWidget(mainWidget);
-    _StackedLayout->setCurrentIndex(_CurrentCanvas);
-    dynamic_cast<IBodyContener*>((_StackedLayout->itemAt(_CurrentCanvas)->widget()))->Show(0, NULL);
 
     _Login = new LoginWindow(this);
 
@@ -138,12 +145,13 @@ void MainWindow::OnLogin()
 {
     _Login->hide();
     this->show();
+    qDebug() << "On Login !";
     _MenuWidget->ForceChangeMenu(_CurrentCanvas);
+    OnMenuChange(_CurrentCanvas);
 }
 
 void MainWindow::OnLogout()
 {
-    qDebug() << "Logout !";
     QVector<QString> data;
     data.push_back(API::SDataManager::GetDataManager()->GetToken());
     API::SDataManager::GetCurrentDataConnector()->Post(API::DP_USER_DATA, API::GR_LOGOUT, data, NULL, NULL, NULL);
@@ -167,7 +175,7 @@ void MainWindow::OnUserSettings()
 
 void MainWindow::OnMenuChange(int id)
 {
-    qDebug() << "Menu change into " << id;
+    qDebug() << "On Menu Change";
     QWidget *currentWidget = _StackedLayout->itemAt(_CurrentCanvas)->widget();
     QWidget *nextWidget = _StackedLayout->itemAt(id)->widget();
     if (nextWidget == NULL)
@@ -178,8 +186,13 @@ void MainWindow::OnMenuChange(int id)
     }
     (dynamic_cast<IBodyContener*>(currentWidget))->Hide();
     _CurrentCanvas = id;
-    _StackedLayout->update();
-    _StackedLayout->setCurrentIndex(id);
+    _StackedLayout->setCurrentIndex(0);
+    qDebug() << "Show !";
     (dynamic_cast<IBodyContener*>(nextWidget))->Show(-1, this);
     nextWidget->updateGeometry();
+}
+
+void MainWindow::OnLoadingFinished()
+{
+    _StackedLayout->setCurrentIndex(_CurrentCanvas);
 }
