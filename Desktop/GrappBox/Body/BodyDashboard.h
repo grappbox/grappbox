@@ -6,10 +6,10 @@
 #include "Dashboard\DashboardGlobalProgress.h"
 #include "Dashboard\DashboardMeeting.h"
 
-#include <QWidget>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 
 class BodyDashboard : public QWidget, public IBodyContener
 {
@@ -22,6 +22,9 @@ public:
 signals:
 
 public slots:
+    /*void Failure(int, QByteArray);
+    void GetAllProject(int, QByteArray);
+    void NextMeeting(int, QByteArray);*/
 
 private:
     int                 _ProjectId;

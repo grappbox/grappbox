@@ -1,12 +1,12 @@
 #ifndef DASHBOARDGLOBALPROGRESS_H
 #define DASHBOARDGLOBALPROGRESS_H
 
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QLabel>
 #include <QImage>
-#include <QStyleOption>
+#include <QtWidgets/QStyleOption>
 #include <QPainter>
 
 #include "DashboardInformation.h"

@@ -1,14 +1,14 @@
 #include <QDebug>
 #include <QStandardItem>
-#include <QHeaderView>
+#include <QtWidgets/QHeaderView>
 #include <QStandardItemModel>
 #include <QFile>
 #include <QXmlStreamReader>
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include <QPainter>
 #include <QPair>
 #include <QMap>
-#include <QStackedLayout>
+#include <QtWidgets/QStackedLayout>
 #include "BodyWhiteboard.h"
 
 BodyWhiteboard::BodyWhiteboard(QWidget *parent) : QWidget(parent)

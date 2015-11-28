@@ -1,9 +1,9 @@
+#include <QDebug>
 #include "ProfilMainInformation.h"
 #include "SFontLoader.h"
 
-ProfilMainInformation::ProfilMainInformation(int idUser, QWidget *parent) : QWidget(parent)
+ProfilMainInformation::ProfilMainInformation(QObject *mainWindow, QWidget *parent) : QWidget(parent)
 {
-    _CurrentIdUser = idUser;
 
     _MainLayout = new QVBoxLayout();
     _ProgressLayout = new QHBoxLayout();
@@ -79,6 +79,10 @@ ProfilMainInformation::ProfilMainInformation(int idUser, QWidget *parent) : QWid
 
     _ProfilPicture->setPixmap(tmpPixmap);
     this->setStyleSheet("background: #705b5c;");
+
+    connect(_LogoutButton, SIGNAL(clicked(bool)), mainWindow, SLOT(OnLogout()));
+    connect(_SettingsButton, &QPushButton::clicked, [=] {emit OnMainSettings();});
+    connect(_ProfilButton, &QPushButton::clicked, [=] {emit OnUserSettings();});
 }
 
 void ProfilMainInformation::Update(int newIdUser)

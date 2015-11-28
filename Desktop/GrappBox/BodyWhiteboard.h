@@ -5,12 +5,12 @@
 #include "whiteboardcanvas.h"
 #include "IBodyContener.h"
 #include "WhiteboardGraphicsView.h"
-#include <QWidget>
-#include <QScrollArea>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QScrollArea>
 #include <QPoint>
-#include <QStackedLayout>
-#include <QComboBox>
-#include <QTableView>
+#include <QtWidgets/QStackedLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QTableView>
 
 #include <QMap>
 

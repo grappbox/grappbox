@@ -1,5 +1,5 @@
 #include <QDebug>
-#include <QScrollArea>
+#include <QtWidgets/QScrollArea>
 
 #include "SFontLoader.h"
 #include "Dashboard/DashboardInformation.h"

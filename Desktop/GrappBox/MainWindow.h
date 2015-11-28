@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include "ProfilMainInformation.h"
 
 class IBodyContener;
@@ -10,14 +10,15 @@ class IBodyContener;
 
 // Widget include
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QGridLayout>
-#include <QStackedLayout>
+#include <QtWidgets/QStackedLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include "SliderMenu.h"
+#include "LoginWindow.h"
 
 // UI include
 
@@ -33,6 +34,13 @@ public:
 
 public slots:
     void OnMenuChange(int id);
+    void OnLogin();
+    void OnLogout();
+    void OnSettings();
+    void OnUserSettings();
+
+private:
+    LoginWindow         *_Login;
 
 /*
  * Private field
@@ -52,6 +60,8 @@ private:
 
     // Profil
     ProfilMainInformation       *_ProfilWidget;
+    int                         _UserSettingsId;
+    int                         _SettingsId;
 
     // Menu
     SliderMenu          *_MenuWidget;

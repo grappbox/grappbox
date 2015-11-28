@@ -2,7 +2,7 @@
 #define CUSTOMGRAPHICSDIAMONDITEM_H
 
 #include <QPainter>
-#include <QGraphicsItem>
+#include <QtWidgets/QGraphicsItem>
 
 class CustomGraphicsDiamondItem : public QGraphicsItem
 {

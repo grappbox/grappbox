@@ -12,7 +12,7 @@ SliderMenu::SliderMenu(QWidget *parent) : QWidget(parent)
     _CurrentIndex = 0;
 }
 
-void SliderMenu::AddMenuItem(QString name, int id)
+void SliderMenu::AddMenuItem(QString name, int id, bool hided)
 {
     QPushButton *newItem = new QPushButton(name);
     newItem->setMaximumHeight(40);
@@ -21,7 +21,8 @@ void SliderMenu::AddMenuItem(QString name, int id)
                            "border-style: none;"
                            "}");
     newItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    qDebug() << "Create button with id " << id << " with name " << name;
+    if (hided)
+        newItem->hide();
     _ListButton[id] = newItem;
     _MainLayout->addWidget(newItem);
     QObject::connect(newItem, SIGNAL(clicked(bool)), this, SLOT(ButtonChangeMenu()));

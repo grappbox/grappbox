@@ -6,8 +6,8 @@ LoginWindow::LoginWindow(QWidget *parent) : QMainWindow(parent)
 {
     _Layout = new QVBoxLayout();
     _GrappboxImage = new QImage(":/Image/Ressources/Title.png");
-    _Login = new QLineEdit("Test");
-    _Password = new QLineEdit("Password");
+    _Login = new QLineEdit("leo.nadeau@epitech.eu");
+    _Password = new QLineEdit("nadeau_l");
     _Password->setEchoMode(QLineEdit::Password);
     _GrappboxLabel = new QLabel();
     _GrappboxLabel->setPixmap(QPixmap::fromImage(*_GrappboxImage));
@@ -30,6 +30,8 @@ LoginWindow::LoginWindow(QWidget *parent) : QMainWindow(parent)
     connect(_LoginButton, SIGNAL(clicked(bool)), this, SLOT(OnAccept()));
     connect(_Login, SIGNAL(returnPressed()), this, SLOT(OnAccept()));
     connect(_Password, SIGNAL(returnPressed()), this, SLOT(OnAccept()));
+
+    connect(this, SIGNAL(OnLogin()), parent, SLOT(OnLogin()));
 }
 
 void LoginWindow::OnAccept()
@@ -44,7 +46,7 @@ void LoginWindow::OnAccept()
 void LoginWindow::OnLoginSuccess(int id, QByteArray response)
 {
     QJsonDocument doc;
-    doc.fromJson(response);
+    doc = QJsonDocument::fromJson(response);
     QJsonObject obj = doc.object();
     int idUser = obj["user"].toObject()["id"].toInt();
     QString userName = obj["user"].toObject()["firstname"].toString();
@@ -52,6 +54,8 @@ void LoginWindow::OnLoginSuccess(int id, QByteArray response)
     QString userToken = obj["user"].toObject()["token"].toString();
     API::SDataManager::GetDataManager()->RegisterUserConnected(idUser, userName, userLastName, userToken);
     this->setDisabled(false);
+
+    emit OnLogin();
 }
 
 void LoginWindow::OnLoginFailure(int id, QByteArray response)

@@ -4,15 +4,15 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets network
+QT       += core gui widgets network
 
 TARGET = GrappBox
 TEMPLATE = app
 
 QMAKE_CXXFLAGS += -Wunused-parameter \
     -Wunused-variable
+
+CONFIG += c++11
 
 INCLUDEPATH += Body \
     Body/Dashboard \

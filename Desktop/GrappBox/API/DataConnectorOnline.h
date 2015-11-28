@@ -37,10 +37,10 @@ namespace API
         // Post
     private:
         QNetworkReply *Login(QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
-        QNetworkReply *Logout(QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
 
         // Get
     private:
+        QNetworkReply *Logout(QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
         QNetworkReply *GetAllProjectsOfUser(QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure);
         QNetworkReply *GetAllMeetingOfUser(QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure);
         QNetworkReply *GetAllManagedUsersOfUser(QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure);

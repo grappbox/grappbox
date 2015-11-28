@@ -1,25 +1,27 @@
 #ifndef PROFILMAININFORMATION_H
 #define PROFILMAININFORMATION_H
 
-#include <QWidget>
-#include <QLabel>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLabel>
 #include <QImage>
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
 #include <QBitmap>
 #include <QPixmap>
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 
 class ProfilMainInformation : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ProfilMainInformation(int idUser, QWidget *parent = 0);
+    explicit ProfilMainInformation(QObject *mainWindow, QWidget *parent = 0);
 
     void Update(int newIdUser = -1);
 
 signals:
+    void OnMainSettings();
+    void OnUserSettings();
 
 public slots:
 
