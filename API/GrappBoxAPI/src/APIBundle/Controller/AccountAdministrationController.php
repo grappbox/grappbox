@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Util\SecureRandom;
 use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\User;
 use DateTime;
+use DateInterval;
 
 //use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
