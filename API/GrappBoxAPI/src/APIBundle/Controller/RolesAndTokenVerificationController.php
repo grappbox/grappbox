@@ -414,7 +414,7 @@ class RolesAndTokenVerificationController extends Controller
   *
   * @apiSuccessExample Success-Response:
   * 	{
-  *		"Update role success."
+  *			"Update role success."
   * 	}
   *
   * @apiErrorExample Missing Parameter
@@ -582,12 +582,36 @@ class RolesAndTokenVerificationController extends Controller
   * @apiParam {String} token Token of the person connected
   * @apiParam {Number} projectId Id of the projectId
   *
-  * @apiSuccess message Update role success.
+  * @apiSuccess {Object[]} Role Array of roles
+  * @apiSuccess {Number} Role.id Role id
+  * @apiSuccess {String} Role.name Role name
+  * @apiSuccess {Number} Role.team_timeline Team timeline role
+  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
+  * @apiSuccess {Number} Role.gantt Gantt role
+  * @apiSuccess {Number} Role.whiteboard Whiteboard role
+  * @apiSuccess {Number} Role.bugtracker Bugtracker role
+  * @apiSuccess {Number} Role.event Event role
+  * @apiSuccess {Number} Role.task Task role
+  * @apiSuccess {Number} Role.project_settings Project settings role
+  * @apiSuccess {Number} Role.cloud Cloud role
   *
   * @apiSuccessExample Success-Response:
   * 	{
-  *		"Update role success."
-  * 	}
+  *			"Role 1":
+  *			{
+  *				"id": 10,
+  *				"name": "Intern roles",
+  *				"team_timeline": 1,
+  *				"customer_timeline": 0,
+  *				"gantt": 0,
+  *				"whiteboard": 0,
+  *				"bugtracker": 1,
+  *				"event": 0,
+  *				"task": 0,
+  *				"project_settings": 0,
+  *				"cloud": 1
+  * 		}
+  *		}
   *
   * @apiErrorExample Bad Authentication Token
   * 	HTTP/1.1 400 Bad Request
@@ -621,12 +645,36 @@ class RolesAndTokenVerificationController extends Controller
   * @apiParam {String} token Token of the person connected
   * @apiParam {Number} projectId Id of the projectId
   *
-  * @apiSuccess message Update role success.
+  * @apiSuccess {Object[]} Role Array of roles
+  * @apiSuccess {Number} Role.id Role id
+  * @apiSuccess {String} Role.name Role name
+  * @apiSuccess {Number} Role.team_timeline Team timeline role
+  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
+  * @apiSuccess {Number} Role.gantt Gantt role
+  * @apiSuccess {Number} Role.whiteboard Whiteboard role
+  * @apiSuccess {Number} Role.bugtracker Bugtracker role
+  * @apiSuccess {Number} Role.event Event role
+  * @apiSuccess {Number} Role.task Task role
+  * @apiSuccess {Number} Role.project_settings Project settings role
+  * @apiSuccess {Number} Role.cloud Cloud role
   *
   * @apiSuccessExample Success-Response:
-  *   {
-  *   "Update role success."
-  *   }
+  * 	{
+  *			"Role 1":
+  *			{
+  *				"id": 10,
+  *				"name": "Intern roles",
+  *				"team_timeline": 1,
+  *				"customer_timeline": 0,
+  *				"gantt": 0,
+  *				"whiteboard": 0,
+  *				"bugtracker": 1,
+  *				"event": 0,
+  *				"task": 0,
+  *				"project_settings": 0,
+  *				"cloud": 1
+  * 		}
+  *		}
   *
   * @apiErrorExample Bad Authentication Token
   *   HTTP/1.1 400 Bad Request
@@ -684,7 +732,7 @@ class RolesAndTokenVerificationController extends Controller
 		$cloud = $role->getCloud();
 
 		$arr["Role ".$i] = array("id" => $roleId, "name" => $roleName, "team_timeline" => $teamTimeline, "customer_timeline" => $customerTimeline, "gantt" => $gantt,
-			"whiteboard" => $whiteboard, "bugtracker" => $bugtracker, "event" => $event, "task" => $task, "projectSettings" => $projectSettings, "cloud" => $cloud);
+			"whiteboard" => $whiteboard, "bugtracker" => $bugtracker, "event" => $event, "task" => $task, "project_settings" => $projectSettings, "cloud" => $cloud);
 		$i++;
 	}
 
