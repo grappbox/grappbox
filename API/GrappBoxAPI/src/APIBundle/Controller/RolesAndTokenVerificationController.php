@@ -219,36 +219,52 @@ class RolesAndTokenVerificationController extends Controller
   *       "message": "404 not found."
   *     }
   *
+  * @apiErrorExample Project Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "The project with id X doesn't exist"
+  *     }
+  *
   */
   public function addProjectRolesAction(Request $request)
   {
-  	$user = $this->checkToken($request->request->get('_token'));
-  	if (!$request->request->get('projectId'))
+    $content = $request->getContent();
+    $content = json_decode($content);
+
+  	$user = $this->checkToken($content->_token);
+  	if (!$content->projectId)
 		return $this->setBadRequest("Missing Parameter");
-	if (!$user)
-		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
-		return $this->setNoRightsError();
+	  if (!$user)
+		  return ($this->setBadTokenError());
+    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		  return $this->setNoRightsError();
 
-	$em = $this->getDoctrine()->getManager();
-	$role = new Role();
+  	$em = $this->getDoctrine()->getManager();
+  	$role = new Role();
 
-	$role->setProjectId($request->request->get('projectId'));
-	$role->setName($request->request->get('name'));
-	$role->setTeamTimeline($request->request->get('teamTimeline'));
-	$role->setCustomerTimeline($request->request->get('customerTimeline'));
-	$role->setGantt($request->request->get('gantt'));
-	$role->setWhiteboard($request->request->get('whiteboard'));
-	$role->setBugtracker($request->request->get('bugtracker'));
-	$role->setEvent($request->request->get('event'));
-	$role->setTask($request->request->get('task'));
-	$role->setProjectSettings($request->request->get('projectSettings'));
-	$role->setCloud($request->request->get('cloud'));
+    $project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+    if ($project === null)
+    {
+      throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
+      
+    }
 
-	$em->persist($role);
-	$em->flush();
+  	$role->setProjects($project);
+  	$role->setName($content->name);
+  	$role->setTeamTimeline($content->teamTimeline);
+  	$role->setCustomerTimeline($content->customerTimeline);
+  	$role->setGantt($content->gantt);
+  	$role->setWhiteboard($content->whiteboard);
+  	$role->setBugtracker($content->bugtracker);
+  	$role->setEvent($content->event);
+  	$role->setTask($content->task);
+  	$role->setProjectSettings($content->projectSettings);
+  	$role->setCloud($content->cloud);
 
-	return new JsonResponse(array("roleId" => $role->getId()));
+  	$em->persist($role);
+  	$em->flush();
+
+  	return new JsonResponse(array("roleId" => $role->getId()));
   }
 
   /**
@@ -356,21 +372,24 @@ class RolesAndTokenVerificationController extends Controller
   */
   public function delProjectRolesAction(Request $request)
   {
-  	$user = $this->checkToken($request->request->get('_token'));
-  	if (!$request->request->get('projectId') && !$request->request->get('roleId'))
-		return $this->setBadRequest("Missing Parameters");
+    $content = $request->getContent();
+    $content = json_decode($content);
+
+  	$user = $this->checkToken($content->_token);
+  	if (!$content->projectId && !$content->roleId)
+		  return $this->setBadRequest("Missing Parameters");
     if (!$user)
 		  return ($this->setBadTokenError());
-    if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
+    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 		  return $this->setNoRightsError();
 
     $em = $this->getDoctrine()->getManager();
 
-    $role = $em->getRepository('APIBundle:Role')->find($request->request->get('roleId'));
+    $role = $em->getRepository('APIBundle:Role')->find($content->roleId);
 
     if ($role === null)
     {
-      throw new NotFoundHttpException("The role with id ".$request->request->get('roleId')." doesn't exist.");
+      throw new NotFoundHttpException("The role with id ".$content->roleId." doesn't exist.");
     }
 
     $em->remove($role);
@@ -512,65 +531,50 @@ class RolesAndTokenVerificationController extends Controller
   */
   public function updateProjectRolesAction(Request $request)
   {
-  	$user = $this->checkToken($request->request->get('_token'));
-  	if (!$request->request->get('projectId') && !$request->request->get('roleId'))
-		return $this->setBadRequest("Missing Parameters");
-	if (!$user)
-		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
-		return $this->setNoRightsError();
+    $content = $request->getContent();
+    $content = json_decode($content);
 
-	$em = $this->getDoctrine()->getManager();
+  	$user = $this->checkToken($content->_token);
+  	if (!$content->projectId && !$content->roleId)
+		  return $this->setBadRequest("Missing Parameters");
+    if (!$user)
+		  return ($this->setBadTokenError());
+    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		  return $this->setNoRightsError();
 
-	$role = $em->getRepository('APIBundle:Role')->find($request->request->get('roleId'));
+    $em = $this->getDoctrine()->getManager();
 
-	if ($role === null)
-	{
-		throw new NotFoundHttpException("The role with id ".$request->request->get('roleId')." doesn't exist.");
-	}
+    $role = $em->getRepository('APIBundle:Role')->find($content->roleId);
 
-	$req = $request->request->all();
+    if ($role === null)
+    {
+		  throw new NotFoundHttpException("The role with id ".$content->roleId." doesn't exist.");
+    }
 
-	foreach ($req as $key => $value) {
-		switch ($key) {
-			case 'name':
-				$role->setName($request->request->get('name'));
-				break;
-			case 'teamTimeline':
-				$role->setTeamTimeline($request->request->get('teamTimeline'));
-				break;
-			case 'customerTimeline':
-				$role->setCustomerTimeline($request->request->get('customerTimeline'));
-				break;
-			case 'gantt':
-				$role->setGantt($request->request->get('gantt'));
-				break;
-			case 'whiteboard':
-				$role->setWhiteboard($request->request->get('whiteboard'));
-				break;
-			case 'bugtracker':
-				$role->setBugtracker($request->request->get('bugtracker'));
-				break;
-			case 'event':
-				$role->setEvent($request->request->get('event'));
-				break;
-			case 'task':
-				$role->setTask($request->request->get('task'));
-				break;
-			case 'projectSettings':
-				$role->setProjectSettings($request->request->get('projectSettings'));
-				break;
-			case 'cloud':
-				$role->setCloud($request->request->get('cloud'));
-				break;
-			default:
-				break;
-		}
-	}
+    if (array_key_exists('name', $content))
+      $role->setName($content->name);
+    if (array_key_exists('teamTimeline', $content))
+      $role->setTeamTimeline($content->teamTimeline);
+    if (array_key_exists('customerTimeline', $content))
+      $role->setCustomerTimeline($content->customerTimeline);
+    if (array_key_exists('gantt', $content))
+      $role->setGantt($content->gantt);
+    if (array_key_exists('whiteboard', $content))
+      $role->setWhiteboard($content->whiteboard);
+    if (array_key_exists('bugtracker', $content))
+      $role->setBugtracker($content->bugtracker);
+    if (array_key_exists('event', $content))
+      $role->setEvent($content->event);
+    if (array_key_exists('task', $content))
+      $role->setTask($content->task);
+    if (array_key_exists('projectSettings', $content))
+      $role->setProjectSettings($content->projectSettings);
+    if (array_key_exists('cloud', $content))
+      $role->setcloud($content->cloud);
 
-	$em->flush();
+	  $em->flush();
 
-	return new JsonResponse("Update role success.");
+	  return new JsonResponse("Update role success.");
   }
 
   /**
@@ -700,40 +704,43 @@ class RolesAndTokenVerificationController extends Controller
   */
   public function getProjectRolesAction(Request $request, $token, $projectId)
   {
-	$user = $this->checkToken($token);
-	if (!$user)
-		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $projectId, "role"))
-		return $this->setNoRightsError();
+    $content = $request->getContent();
+    $content = json_decode($content);
 
-	$em = $this->getDoctrine()->getManager();
+  	$user = $this->checkToken($token);
+  	if (!$user)
+  		return ($this->setBadTokenError());
+  	if (!$this->checkRoles($user, $projectId, "projectSettings"))
+  		return $this->setNoRightsError();
 
-	$roles = $em->getRepository('APIBundle:Role')->findByprojectId($projectId);
+  	$em = $this->getDoctrine()->getManager();
 
-	if ($roles === null)
-	{
-		throw new NotFoundHttpException("The're no roles for the project with id ".$projectId);
-	}
+  	$roles = $em->getRepository('APIBundle:Role')->findByprojects($projectId);
 
-	$arr =array();
-	$i = 1;
+  	if ($roles === null)
+  	{
+  		throw new NotFoundHttpException("The're no roles for the project with id ".$projectId);
+  	}
 
-	foreach ($roles as $role) {
-		$roleId = $role->getId();
-		$roleName = $role->getName();
-		$teamTimeline = $role->getTeamTimeline();
-		$customerTimeline = $role->getCustomerTimeline();
-		$gantt = $role->getGantt();
-		$whiteboard = $role->getWhiteboard();
-		$bugtracker = $role->getBugtracker();
-		$event = $role->getEvent();
-		$task = $role->getTask();
-		$projectSettings = $role->getProjectSettings();
-		$cloud = $role->getCloud();
+  	$arr =array();
+  	$i = 1;
 
-		$arr["Role ".$i] = array("id" => $roleId, "name" => $roleName, "team_timeline" => $teamTimeline, "customer_timeline" => $customerTimeline, "gantt" => $gantt,
-			"whiteboard" => $whiteboard, "bugtracker" => $bugtracker, "event" => $event, "task" => $task, "project_settings" => $projectSettings, "cloud" => $cloud);
-		$i++;
+  	foreach ($roles as $role) {
+  		$roleId = $role->getId();
+  		$roleName = $role->getName();
+  		$teamTimeline = $role->getTeamTimeline();
+  		$customerTimeline = $role->getCustomerTimeline();
+  		$gantt = $role->getGantt();
+  		$whiteboard = $role->getWhiteboard();
+  		$bugtracker = $role->getBugtracker();
+  		$event = $role->getEvent();
+  		$task = $role->getTask();
+  		$projectSettings = $role->getProjectSettings();
+  		$cloud = $role->getCloud();
+
+  		$arr["Role ".$i] = array("id" => $roleId, "name" => $roleName, "team_timeline" => $teamTimeline, "customer_timeline" => $customerTimeline, "gantt" => $gantt,
+  			"whiteboard" => $whiteboard, "bugtracker" => $bugtracker, "event" => $event, "task" => $task, "project_settings" => $projectSettings, "cloud" => $cloud);
+  		$i++;
 	}
 
 	return new JsonResponse($arr);
@@ -838,25 +845,28 @@ class RolesAndTokenVerificationController extends Controller
   */
   public function assignPersonToRoleAction(Request $request)
   {
-  	$user = $this->checkToken($request->request->get('_token'));
-  	if (!$request->request->get('projectId') && !$request->request->get('roleId') && !$request->request->get('userId'))
-		return $this->setBadRequest("Missing Parameters");
-	if (!$user)
-		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
-		return $this->setNoRightsError();
+    $content = $request->getContent();
+    $content = json_decode($content);
 
-	$em = $this->getDoctrine()->getManager();
-	$ProjectUserRole = new ProjectUserRole();
+  	$user = $this->checkToken($content->_token);
+  	if (!$content->projectId && !$content->roleId && !$content->userId)
+	    return $this->setBadRequest("Missing Parameters");
+    if (!$user)
+		  return ($this->setBadTokenError());
+    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		  return $this->setNoRightsError();
 
-	$ProjectUserRole->setProjectId($request->request->get('projectId'));
-	$ProjectUserRole->setUserId($request->request->get('userId'));
-	$ProjectUserRole->setRoleId($request->request->get('roleId'));
+    $em = $this->getDoctrine()->getManager();
+    $ProjectUserRole = new ProjectUserRole();
 
-	$em->persist($ProjectUserRole);
-	$em->flush();
+    $ProjectUserRole->setProjectId($content->projectId);
+    $ProjectUserRole->setUserId($content->userId);
+    $ProjectUserRole->setRoleId($content->roleId);
 
-	return new JsonResponse(array("purId" => $ProjectUserRole->getId()));
+    $em->persist($ProjectUserRole);
+    $em->flush();
+
+    return new JsonResponse(array("purId" => $ProjectUserRole->getId()));
   }
 
   /**
@@ -968,23 +978,26 @@ class RolesAndTokenVerificationController extends Controller
   */
   public function updatePersonRoleAction(Request $request)
   {
-  	$user = $this->checkToken($request->request->get('_token'));
-  	if (!$request->request->get('projectId') && !$request->request->get('roleId') && !$request->request->get('purId'))
+    $content = $request->getContent();
+    $content = json_decode($content);
+
+  	$user = $this->checkToken($content->_token);
+  	if (!$content->projectId && !$content->roleId && !$content->purId)
 		return $this->setBadRequest("Missing Parameters");
 	if (!$user)
 		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
+	if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 		return $this->setNoRightsError();
 
 	$em = $this->getDoctrine()->getManager();
-	$ProjectUserRole = $em->getRepository('APIBundle:ProjectUserRole')->find($request->request->get('purId'));
+	$ProjectUserRole = $em->getRepository('APIBundle:ProjectUserRole')->find($content->purId);
 
 	if ($ProjectUserRole === null)
 	{
-		throw new NotFoundHttpException("The project user role ".$request->request->get('purID')." doesn't exist.");
+		throw new NotFoundHttpException("The project user role ".$content->purId." doesn't exist.");
 	}
 
-	$ProjectUserRole->setRoleId($request->request->get('roleId'));
+	$ProjectUserRole->setRoleId($content->roleId);
 	$em->flush();
 
 	return new JsonResponse("Update of the project user role success.");
@@ -1095,21 +1108,24 @@ class RolesAndTokenVerificationController extends Controller
   */
   public function delPersonRoleAction(Request $request)
   {
-  	$user = $this->checkToken($request->request->get('_token'));
-  	if (!$request->request->get('projectId') && !$request->request->get('purId'))
+    $content = $request->getContent();
+    $content = json_decode($content);
+
+  	$user = $this->checkToken($content->_token);
+  	if (!$content->projectId && !$content->purId)
 		return $this->setBadRequest("Missing Parameters");
 	if (!$user)
 		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $request->request->get('projectId'), "role"))
+	if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 		return $this->setNoRightsError();
 
 	$em = $this->getDoctrine()->getManager();
 
-	$role = $em->getRepository('APIBundle:ProjectUserRole')->find($request->request->get('purId'));
+	$role = $em->getRepository('APIBundle:ProjectUserRole')->find($content->purId);
 
 	if ($role === null)
 	{
-		throw new NotFoundHttpException("The project user role with id ".$request->request->get('purId')." doesn't exist.");
+		throw new NotFoundHttpException("The project user role with id ".$content->purId." doesn't exist.");
 	}
 
 	$em->remove($role);

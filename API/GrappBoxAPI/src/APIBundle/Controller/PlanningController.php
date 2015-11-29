@@ -118,9 +118,9 @@ class PlanningController extends Controller
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError());
-		if (!$request->request->get('projectId'))
+		if (!$content->projectId)
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $request->request->get('projectId'), "event"))
+		if (!$this->checkRoles($user, $content->projectId, "event"))
 			return ($this->setNoRightsError());
 
 		return new Response('modify Event Success');

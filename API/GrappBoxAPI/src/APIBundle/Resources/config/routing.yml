@@ -1,7 +1,17 @@
 project_projectCreation:
-    path:       projects/projectCreation/{token}
+    path:       projects/projectcreation/{token}
     defaults:   { _controller: APIBundle:Project:projectCreation }
     methods: [POST]
+
+project_updateInformations:
+    path:       projects/updateinformations
+    defaults:   { _controller: APIBundle:Project:updateInformations }
+    methods: [PUT]
+
+project_delProject:
+    path:       projects/delproject
+    defaults:   { _controller: APIBundle:Project:delProject }
+    methods: [DELETE]
 
 role_addProjectRoles:
     path:       roles/addprojectroles

@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
 use APIBundle\Controller\RolesAndTokenVerificationController;
+use APIBundle\Entity\Project;
 use APIBundle\Entity\User;
 use DateTime;
 use DateInterval;
@@ -211,7 +212,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 					$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
 					$em->persist($user);
-		      $em->flush();
+		      		$em->flush();
+
+		      		$this->checkProjectsDeletedTime($user);
 
 					$response = new JsonResponse();
 					$response->setData(array('user' => $user->objectToArray()));
@@ -222,6 +225,57 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 				$response = new JsonResponse('Bad Password', JsonResponse::HTTP_BAD_REQUEST);
 				return $response;
 			}
+	}
+
+	private function checkProjectsDeletedTime($user)
+	{
+		$em = $this->getDoctrine()->getManager();
+		$repository = $em->getRepository('APIBundle:Project');
+
+		$qb = $repository->createQueryBuilder('p');
+		
+		$projects = $qb->getQuery()->getResult();
+		$nullDate = date_create("0000-00-00 00:00:00");
+		$defDate = new \DateTime;
+
+		if ($projects === null)
+			return;
+
+		foreach ($projects as $project) {
+			$creatorId = $project->getCreatorUser()->getId();
+
+			if ($creatorId == $user->getId())
+			{
+				if ($project->getDeletedAt() != $nullDate)
+				{
+					if ($project->getDeletedAt() < $defDate)
+					{
+						$em->remove($project);
+					}
+				}
+			}
+			else
+			{
+				$projectUsers = $project->getUsers();
+				
+				foreach ($projectUsers as $projectUser) {
+					$userId = $projectUser->getId();
+
+					if ($userId == $user->getId())
+					{
+						if ($project->getDeletedAt() != $nullDate)
+						{
+							if ($project->getDeletedAt() < $defDate)
+							{
+								$em->remove($project);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		$em->flush();
 	}
 
 

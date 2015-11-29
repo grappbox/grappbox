@@ -15,21 +15,6 @@ class Gantt
     private $id;
 
     /**
-     * @var integer
-     */
-    private $projectId;
-
-    /**
-     * @var integer
-     */
-    private $creatorId;
-
-    /**
-     * @var integer
-     */
-    private $updatorId;
-
-    /**
      * @var \DateTime
      */
     private $updatedAt;
@@ -39,13 +24,28 @@ class Gantt
      */
     private $createdAt;
 
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $projects;
+
+    /**
+     * @var \APIBundle\Entity\User
+     */
+    private $creator_user;
+
+    /**
+     * @var \APIBundle\Entity\User
+     */
+    private $updator_user;
+
     public function objectToArray()
     {
         return array(
             'id' => $this->id,
-            'projectId' => $this->projectId,
-            'creatorId' => $this->creatorId,
-            'updatorId' => $this->updatorId,
+            'projectId' => $this->projects,
+            'creatorId' => $this->creator_user,
+            'updatorId' => $this->updator_user,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt
         );
@@ -54,80 +54,11 @@ class Gantt
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set projectId
-     *
-     * @param integer $projectId
-     * @return Gantt
-     */
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
-
-        return $this;
-    }
-
-    /**
-     * Get projectId
-     *
-     * @return integer
-     */
-    public function getProjectId()
-    {
-        return $this->projectId;
-    }
-
-    /**
-     * Set creatorId
-     *
-     * @param integer $creatorId
-     * @return Gantt
-     */
-    public function setCreatorId($creatorId)
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get creatorId
-     *
-     * @return integer
-     */
-    public function getCreatorId()
-    {
-        return $this->creatorId;
-    }
-
-    /**
-     * Set updatorId
-     *
-     * @param integer $updatorId
-     * @return Gantt
-     */
-    public function setUpdatorId($updatorId)
-    {
-        $this->updatorId = $updatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get updatorId
-     *
-     * @return integer
-     */
-    public function getUpdatorId()
-    {
-        return $this->updatorId;
     }
 
     /**
@@ -146,7 +77,7 @@ class Gantt
     /**
      * Get updatedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getUpdatedAt()
     {
@@ -169,10 +100,79 @@ class Gantt
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return Gantt
+     */
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Set creator_user
+     *
+     * @param \APIBundle\Entity\User $creatorUser
+     * @return Gantt
+     */
+    public function setCreatorUser(\APIBundle\Entity\User $creatorUser = null)
+    {
+        $this->creator_user = $creatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_user
+     *
+     * @return \APIBundle\Entity\User 
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
+    }
+
+    /**
+     * Set updator_user
+     *
+     * @param \APIBundle\Entity\User $updatorUser
+     * @return Gantt
+     */
+    public function setUpdatorUser(\APIBundle\Entity\User $updatorUser = null)
+    {
+        $this->updator_user = $updatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get updator_user
+     *
+     * @return \APIBundle\Entity\User 
+     */
+    public function getUpdatorUser()
+    {
+        return $this->updator_user;
     }
 }

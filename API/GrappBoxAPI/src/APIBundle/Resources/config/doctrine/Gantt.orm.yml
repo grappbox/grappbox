@@ -8,19 +8,30 @@ APIBundle\Entity\Gantt:
             generator:
                 strategy: AUTO
     fields:
-        projectId:
-            type: integer
-            column: project_id
-        creatorId:
-            type: integer
-            column: creator_id
-        updatorId:
-            type: integer
-            column: updator_id
         updatedAt:
             type: datetime
             column: updated_at
         createdAt:
             type: datetime
             column: created_at
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: gantts
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+            nullable: TRUE
+        creator_user:
+          targetEntity: User
+          inveredBy: gantt_creator
+          joinColumn:
+            name: creator_id
+            referencedColumnName: id
+        updator_user:
+          targetEntity: User
+          inveredBy: gantt_updator
+          joinColumn:
+            name: updator_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

@@ -652,4 +652,80 @@ class User implements UserInterface
     {
         return $this->project_creator;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $gantt_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $gantt_updator;
+
+
+    /**
+     * Add gantt_creator
+     *
+     * @param \APIBundle\Entity\Gantt $ganttCreator
+     * @return User
+     */
+    public function addGanttCreator(\APIBundle\Entity\Gantt $ganttCreator)
+    {
+        $this->gantt_creator[] = $ganttCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove gantt_creator
+     *
+     * @param \APIBundle\Entity\Gantt $ganttCreator
+     */
+    public function removeGanttCreator(\APIBundle\Entity\Gantt $ganttCreator)
+    {
+        $this->gantt_creator->removeElement($ganttCreator);
+    }
+
+    /**
+     * Get gantt_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGanttCreator()
+    {
+        return $this->gantt_creator;
+    }
+
+    /**
+     * Add gantt_updator
+     *
+     * @param \APIBundle\Entity\Gantt $ganttUpdator
+     * @return User
+     */
+    public function addGanttUpdator(\APIBundle\Entity\Gantt $ganttUpdator)
+    {
+        $this->gantt_updator[] = $ganttUpdator;
+
+        return $this;
+    }
+
+    /**
+     * Remove gantt_updator
+     *
+     * @param \APIBundle\Entity\Gantt $ganttUpdator
+     */
+    public function removeGanttUpdator(\APIBundle\Entity\Gantt $ganttUpdator)
+    {
+        $this->gantt_updator->removeElement($ganttUpdator);
+    }
+
+    /**
+     * Get gantt_updator
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGanttUpdator()
+    {
+        return $this->gantt_updator;
+    }
 }

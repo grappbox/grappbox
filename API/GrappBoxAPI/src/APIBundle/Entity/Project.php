@@ -95,6 +95,16 @@ class Project
     private $whiteboards;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $roles;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $gantts;
+
+    /**
      * @var \APIBundle\Entity\User
      */
     private $creator_user;
@@ -114,6 +124,8 @@ class Project
         $this->timelines = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->whiteboards = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->gantts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -543,6 +555,72 @@ class Project
     public function getWhiteboards()
     {
         return $this->whiteboards;
+    }
+
+    /**
+     * Add roles
+     *
+     * @param \APIBundle\Entity\Role $roles
+     * @return Project
+     */
+    public function addRole(\APIBundle\Entity\Role $roles)
+    {
+        $this->roles[] = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Remove roles
+     *
+     * @param \APIBundle\Entity\Role $roles
+     */
+    public function removeRole(\APIBundle\Entity\Role $roles)
+    {
+        $this->roles->removeElement($roles);
+    }
+
+    /**
+     * Get roles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * Add gantts
+     *
+     * @param \APIBundle\Entity\Gantt $gantts
+     * @return Project
+     */
+    public function addGantt(\APIBundle\Entity\Gantt $gantts)
+    {
+        $this->gantts[] = $gantts;
+
+        return $this;
+    }
+
+    /**
+     * Remove gantts
+     *
+     * @param \APIBundle\Entity\Gantt $gantts
+     */
+    public function removeGantt(\APIBundle\Entity\Gantt $gantts)
+    {
+        $this->gantts->removeElement($gantts);
+    }
+
+    /**
+     * Get gantts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGantts()
+    {
+        return $this->gantts;
     }
 
     /**

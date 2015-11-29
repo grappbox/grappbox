@@ -74,6 +74,12 @@ APIBundle\Entity\User:
         project_creator:
           targetEntity: Project
           mappedBy: creator_user
+        gantt_creator:
+          targetEntity: Gantt
+          mappedBy: creator_user
+        gantt_updator:
+          targetEntity: Gantt
+          mappedBy: updator_id
         # whiteboards:
         #   targetEntity: Whiteboard
         #   mappedBy: updators

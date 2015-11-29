@@ -8,9 +8,6 @@ APIBundle\Entity\Role:
             generator:
                 strategy: AUTO
     fields:
-        projectId:
-            type: integer
-            column: project_id
         name:
             type: string
             length: 255
@@ -37,4 +34,11 @@ APIBundle\Entity\Role:
             type: smallint
             column: cloud
             nullable: FALSE
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: roles
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

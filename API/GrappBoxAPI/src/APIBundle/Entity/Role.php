@@ -15,11 +15,6 @@ class Role
     private $id;
 
     /**
-     * @var integer
-     */
-    private $projectId;
-
-    /**
      * @var string
      */
     private $name;
@@ -69,6 +64,11 @@ class Role
      */
     private $cloud;
 
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $projects;
+
 
     /**
      * Get id
@@ -78,29 +78,6 @@ class Role
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set projectId
-     *
-     * @param integer $projectId
-     * @return Role
-     */
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
-
-        return $this;
-    }
-
-    /**
-     * Get projectId
-     *
-     * @return integer 
-     */
-    public function getProjectId()
-    {
-        return $this->projectId;
     }
 
     /**
@@ -331,5 +308,28 @@ class Role
     public function getCloud()
     {
         return $this->cloud;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return Role
+     */
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
     }
 }
