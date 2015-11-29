@@ -53,7 +53,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(dashboard, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
     _CurrentCanvas = _StackedLayout->addWidget(dashboard);
     _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas);
-    _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(new BodyWhiteboard()));
+    BodyWhiteboard *whiteboard = new BodyWhiteboard();
+    connect(whiteboard, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
+    _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
 
     // Here change the body for settings
     _UserSettingsId = _StackedLayout->addWidget(new BodyWhiteboard());
@@ -154,7 +156,8 @@ void MainWindow::OnLogout()
 {
     QVector<QString> data;
     data.push_back(API::SDataManager::GetDataManager()->GetToken());
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_USER_DATA, API::GR_LOGOUT, data, NULL, NULL, NULL);
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_USER_DATA, API::GR_LOGOUT, data, NULL, NULL, NULL);
+    API::SDataManager::GetDataManager()->LogoutUser();
     _Login->show();
     hide();
 }
@@ -188,7 +191,7 @@ void MainWindow::OnMenuChange(int id)
     _CurrentCanvas = id;
     _StackedLayout->setCurrentIndex(0);
     qDebug() << "Show !";
-    (dynamic_cast<IBodyContener*>(nextWidget))->Show(-1, this);
+    (dynamic_cast<IBodyContener*>(nextWidget))->Show(API::SDataManager::GetDataManager()->GetUserId(), this);
     nextWidget->updateGeometry();
 }
 
