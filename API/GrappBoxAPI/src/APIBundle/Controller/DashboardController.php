@@ -736,7 +736,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			throw new NotFoundHttpException("The project with id ".$id." doesn't exist");
 		}
 
-		$creatorId = $project->getCreatorId();
+		$creatorId = $project->getCreatorUser();
 
 		$user = $em->getRepository('APIBundle:User')->find($creatorId);
 

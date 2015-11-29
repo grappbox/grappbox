@@ -14,7 +14,7 @@ class ProjectRepository extends EntityRepository
 {
 	public function findTeamOccupation($id)
 	{
-		$qb = $this->createQueryBuilder('p')->where('p.creatorId = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
 		
 		$projects = $qb->getQuery()->getResult();
 
@@ -146,7 +146,7 @@ class ProjectRepository extends EntityRepository
 		$i = 1;
 
 		foreach ($projects as $project) {
-			$creatorId = $project->getCreatorId();
+			$creatorId = $project->getCreatorUser()->getId();
 
 			if ($creatorId == $id)
 			{
