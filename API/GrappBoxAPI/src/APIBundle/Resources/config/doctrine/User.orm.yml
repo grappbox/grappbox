@@ -71,6 +71,9 @@ APIBundle\Entity\User:
         event_creator:
           targetEntity: Event
           mappedBy: creator_user
+        project_creator:
+          targetEntity: Project
+          mappedBy: creator_user
         # whiteboards:
         #   targetEntity: Whiteboard
         #   mappedBy: updators

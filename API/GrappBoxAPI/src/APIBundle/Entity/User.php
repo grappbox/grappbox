@@ -614,4 +614,42 @@ class User implements UserInterface
     {
         return $this->tasks;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $project_creator;
+
+
+    /**
+     * Add project_creator
+     *
+     * @param \APIBundle\Entity\Project $projectCreator
+     * @return User
+     */
+    public function addProjectCreator(\APIBundle\Entity\Project $projectCreator)
+    {
+        $this->project_creator[] = $projectCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove project_creator
+     *
+     * @param \APIBundle\Entity\Project $projectCreator
+     */
+    public function removeProjectCreator(\APIBundle\Entity\Project $projectCreator)
+    {
+        $this->project_creator->removeElement($projectCreator);
+    }
+
+    /**
+     * Get project_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProjectCreator()
+    {
+        return $this->project_creator;
+    }
 }

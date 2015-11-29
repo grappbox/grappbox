@@ -141,6 +141,34 @@ class CloudController extends Controller
 		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
 	}
 
+	public function streamAction(Request $request){
+		$method = $request->getMethod();
+		$dbManager = $this->getDoctrine()->getManager();
+		$json = json_decode($request->getContent(), true);
+		$token = $json["session_infos"]["token"];
+		$userId = $this->getUserId($token);
+		$receivedData = $json["stream_infos"];
+		$isSafe = ($method == "DELETE" ? false : preg_match("/Safe/", $receivedData["path"]));
+		if ($isSafe){
+			$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+			$passwordEncrypted = (isset($json["session_infos"]["safe_password"]) ? $json["session_infos"]["safe_password"] : NULL); // TODO : SHA-1 512 Hashing when algo created!
+		}
+		else{
+			$project = null;
+			$passwordEncrypted = null;
+		}
+		if ($method == "POST")
+		{
+			$receivedData["filename"] = str_replace(" ", "|", $receivedData["filename"]);
+			$receivedData["path"] = str_replace(" ", "|", $receivedData["path"]);
+			$idProject = $receivedData["project_id"];
+		}
+		if (($method == "POST" && $this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
+			throw $this->createAccessDeniedException();
+		return ($method == "POST"
+							? $this->openStream($receivedData, $userId, $idProject)
+							: $this->closeStream($receivedData, $token));
+	}
 
 	/**
 	*
@@ -181,6 +209,59 @@ class CloudController extends Controller
 
 	/**
 	*
+	* @api {post} /V0.7/cloud/stream Open a new stream in order to upload file
+	* @apiDescription This method is here to create an upload process between API and Cloud.
+	* @apiGroup Cloud
+	* @apiName Stream opening
+	* @apiParam {Object[]} session_infos All informations about the session have to be here
+	* @apiParam {string} session_infos.token The token of authenticated user.
+	* @apiParam {string} [session_infos.safe_password] The password of the project safe. Use it only if the future file will be in the safe.
+	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
+	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
+	* @apiParam {string} stream_infos.filename The filename of the future file with extension
+	* @apiParam {string} stream_infos.path The path where the future file will be uploaded
+	* @apiParam {string} [stream_infos.password] The password to protect the file. Use it only if password protected required.
+	* @apiParamExample {json} Request Example:
+	*	{
+	*		"session_infos": {
+	*			"token": "48q98d",
+	*			"safe_password" : "satan"
+	*		},
+	*		"stream_infos": {
+	*			"project_id": 42,
+	*			"path" : "/LabEIP/Golum",
+	*			"password" : "My Precious!"
+	*			"filename" : "The ring.worldDomination"
+	*		}
+	* 	}
+	* @apiSuccess (200) {string} stream_id The id of the stream newly created.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"stream_id" : 1
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
+	* @apiVersion 0.7.0
+	*/
+
+	private function openStream($receivedData, $userId, $idProject){
+		if ($receivedData["path"][0] != "/")
+			return header("HTTP1.0 400 Bad Request", True, 400);
+		$em = $this->getDoctrine()->getManager();
+		$stream = new CloudTransfer();
+		$stream->setCreatorId($userId)
+					 ->setFilename($receivedData["filename"])
+					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
+					 ->setPassword($receivedData["password"])
+					 ->setCreationDate(new DateTime("now"))
+					 ->setDeletionDate(null);
+		$em->persist($stream);
+		$em->flush();
+		return new JsonResponse(array("stream_id" => $stream->getId()));
+	}
+
+	/**
+	*
 	* @api {delete} /V0.6/cloud/stream Close a stream in order to complete an upload
 	* @apiDescription This method is here to finalize an upload and make the file downloadable.
 	* @apiGroup Cloud
@@ -211,51 +292,39 @@ class CloudController extends Controller
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
 	* @apiVersion 0.6.0
 	*/
-	public function streamAction(Request $request){
-		$method = $request->getMethod();
-		$dbManager = $this->getDoctrine()->getManager();
-		$json = json_decode($request->getContent(), true);
-		$token = $json["session_infos"]["token"];
-		$userId = $this->getUserId($token);
-		$receivedData = $json["stream_infos"];
-		$isSafe = ($method == "DELETE" ? false : preg_match("/Safe/", $receivedData["path"]));
-		if ($isSafe){
-			$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
-			$passwordEncrypted = (isset($json["session_infos"]["safe_password"]) ? $json["session_infos"]["safe_password"] : NULL); // TODO : SHA-1 512 Hashing when algo created!
-		}
-		else{
-			$project = null;
-			$passwordEncrypted = null;
-		}
-		if ($method == "POST")
-		{
-			$receivedData["filename"] = str_replace(" ", "|", $receivedData["filename"]);
-			$receivedData["path"] = str_replace(" ", "|", $receivedData["path"]);
-			$idProject = $receivedData["project_id"];
-		}
-		if (($method == "POST" && $this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
-			throw $this->createAccessDeniedException();
-		return ($method == "POST"
-							? $this->openStream($receivedData, $userId, $idProject)
-							: $this->closeStream($receivedData, $token));
-	}
 
-	private function openStream($receivedData, $userId, $idProject){
-		if ($receivedData["path"][0] != "/")
-			return header("HTTP1.0 400 Bad Request", True, 400);
-		$em = $this->getDoctrine()->getManager();
-		$stream = new CloudTransfer();
-		$stream->setCreatorId($userId)
-					 ->setFilename($receivedData["filename"])
-					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
-					 ->setPassword($receivedData["password"])
-					 ->setCreationDate(new DateTime("now"))
-					 ->setDeletionDate(null);
-		$em->persist($stream);
-		$em->flush();
-		return new JsonResponse(array("stream_id" => $stream->getId()));
-	}
-
+	/**
+	*
+	* @api {delete} /V0.7/cloud/stream Close a stream in order to complete an upload
+	* @apiDescription This method is here to finalize an upload and make the file downloadable.
+	* @apiGroup Cloud
+	* @apiName Stream closing
+	* @apiParam {Object[]} session_infos All informations about the session have to be here
+	* @apiParam {string} session_infos.token The token of authenticated user.
+	* @apiParam {string} [session_infos.safe_password] The password of the project safe. Use it only if the future file will be in the safe.
+	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
+	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
+	* @apiParam {Number} stream_infos.stream_id The id of the stream to close.
+	* @apiParamExample {json} Request Example:
+	*	{
+	*		"session_infos": {
+	*			"token": "48q98d",
+	*			"safe_password" : "satan"
+	*		},
+	*		"stream_infos": {
+	*			"project_id": 42,
+	*			"stream_id" : 1
+	*		}
+	*	}
+	* @apiSuccess (200) {string} infos. This will always be OK. Check the HTTP status code instead.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
+	* @apiVersion 0.7.0
+	*/
 	private function closeStream($receivedData, $token){
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
 		$em = $this->getDoctrine()->getManager();
@@ -326,6 +395,43 @@ class CloudController extends Controller
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
 	* @apiVersion 0.6.0
 	*/
+
+	/**
+	*
+	* @api {put} /V0.7/cloud/sendfile send a file chunk.
+	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
+	* @apiGroup Cloud
+	* @apiName Send file
+	* @apiParam {Object[]} session_infos All informations about the session have to be here
+	* @apiParam {string} session_infos.token The token of authenticated user.
+	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
+	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
+	* @apiParam {Number} stream_infos.stream_id The stream id which contains the uploaded file metadata (use POST stream action route to open one)
+	* @apiParam {Number} stream_infos.chunk_numbers The numbers of chunk you will upload for this file.
+	* @apiParam {Number} stream_infos.current_chunk The index of current chunk. This start to 0 and end to (chunk_numbers - 1)
+	* @apiParam {string} stream_infos.file_chunk The file chunk encoded in base64
+	* @apiParamExample {json} Request Example:
+	*	{
+	*		"session_infos": {
+	*			"token": "48q98d"
+	*		},
+	*		"stream_infos": {
+	*			"stream_id" : 21,
+	*			"project_id": 42,
+	*			"chunk_numbers" : 2,
+	*			"current_chunk" : 1,
+	*			"file_chunk" : "Here put your chunk encoded in base 64"
+	*		}
+	*	}
+	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
+	* @apiVersion 0.7.0
+	*/
 	public function sendFileAction(Request $request){
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
 		$json = json_decode($request->getContent(), true);
@@ -365,6 +471,28 @@ class CloudController extends Controller
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
 	* @apiVersion 0.6.0
+	*/
+
+	/**
+	*
+	* @api {get} /V0.7/cloud/getlist/:token/:idProject/:path/[:passwordSafe] Cloud LS
+	* @apiDescription Get the list of a given directory.
+	* @apiGroup Cloud
+	* @apiName List directory
+	* @apiParam {string} token The token of authenticated user.
+	* @apiParam {Number} idProject The project id to execute the command.
+	* @apiParam {string} path The path to the file with coma instead of slash. This have to start with a coma
+	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the user want the safe content
+	* @apiParamExample {curl} Request Example:
+	*	curl http://api.grappbox.com/V0.6/cloud/getlist/minus5percent/1/,Sauron/satan
+	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
+	* @apiVersion 0.7.0
 	*/
 	public function getListAction($token, $idProject, $path, $password, Request $request)
 	{
@@ -422,6 +550,29 @@ class CloudController extends Controller
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
 	* @apiVersion 0.6.0
+	*/
+
+	/**
+	*
+	* @api {get} /V0.7/cloud/getfile/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
+	* @apiDescription This method is there to start a download.
+	* @apiGroup Cloud
+	* @apiName Download file
+	* @apiParam {string} CloudPath The path to the file with coma instead of slash. This have to start with a coma
+	* @apiParam {string} token The token of authenticated user.
+	* @apiParam {Number} idProject The project id to execute the command.
+	* @apiParam {string} [password] The password hashed in a clear way. Use only if file is password protected.
+	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the file is in the safe
+	* @apiParamExample {curl} Request Example:
+	*	curl http://api.grappbox.com/V0.6/cloud/getfile/,Sauron/minus5percent/1/mustache/satan
+	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
+	* @apiVersion 0.7.0
 	*/
 	public function getFileAction($cloudPath, $token, $idProject, $password = null, $passwordSafe = null, Request $request){
 		$userId = $this->getUserId($token);
@@ -488,6 +639,37 @@ class CloudController extends Controller
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
 	* @apiVersion 0.6.0
 	*/
+
+	/**
+	*
+	* @api {post} /v0.7/cloud/setsafepass Set the safe password
+	* @apiDescription This method is there to change the safe password for a given project.
+	* @apiGroup Cloud
+	* @apiName Set Safe Password
+	* @apiParam {Object[]} session_infos All informations about the session have to be here
+	* @apiParam {string} session_infos.token The token of authenticated user.
+	* @apiParam {Object[]} safe_infos All informations about the core request have to be here
+	* @apiParam {Number} safe_infos.project_id The project id to execute the command.
+	* @apiParam {string} safe_infos.password The password hashed in SHA-1 512
+	* @apiParamExample {json} Request Example:
+	*	{
+	*		"session_infos": {
+	*			"token": "48q98d"
+	*		},
+	*		"safe_infos": {
+	*			"project_id": 42,
+	*			"password": "6q8d4zq68d"
+	*		}
+	*	}
+	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
+	* @apiVersion 0.7.0
+	*/
 	public function setSafePassAction(Request $request)
 	{
 		$dbManager = $this->getDoctrine()->getManager();
@@ -521,6 +703,24 @@ class CloudController extends Controller
 	*		"infos" : "OK"
 	*	}
 	* @apiVersion 0.6.0
+	*/
+
+	/**
+	*
+	* @api {get} /V0.7/cloud/createcloud/:projectId Create the cloud for a given project
+	* @apiDescription This method have to be used only for test or between symfony controllers. Clients don't have to call it.
+	* @apiGroup Cloud
+	* @apiName Create cloud
+	* @apiParam {Number} projectId The project id in which the cloud have to be created.
+	* @apiParamExample {curl} Request Example:
+	*	curl http://api.grappbox.com/V0.6/Cloud/createCloud/1
+	* @apiSuccess (200) {string} infos The state of the request, will always be OK. This method can't fail.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiVersion 0.7.0
 	*/
 	public function createCloudAction(Request $request, $projectId)
 	{
@@ -566,6 +766,39 @@ class CloudController extends Controller
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
 	* @apiVersion 0.6.0
+	*/
+
+	/**
+	*
+	* @api {delete} /V0.7/cloud/del Delete a file or a directory
+	* @apiDescription This method is there to delete something in the cloud
+	* @apiGroup Cloud
+	* @apiName Delete
+	* @apiParam {Object[]} session_infos All informations about the session have to be here
+	* @apiParam {string} session_infos.token The token of authenticated user.
+	* @apiParam {Object[]} deletion_infos All informations about the core request have to be here
+	* @apiParam {Number} deletion_infos.project_id The project id to execute the command.
+	* @apiParam {string} deletion_infos.path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
+	* @apiParam {string} [deletion_infos.password] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
+	* @apiParamExample {json} Request Example:
+	*	{
+	*		"session_infos": {
+	*			"token": "48q98d"
+	*		},
+	*		"deletion_infos": {
+	*			"project_id": 42,
+	*			"path": "/Gandalf le gris"
+	*			"password" : "Ajax"
+	*		}
+	*	}
+	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
+	* @apiVersion 0.7.0
 	*/
 	public function delAction(Request $request)
 	{
@@ -627,6 +860,40 @@ class CloudController extends Controller
 	*	}
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
 	* @apiVersion 0.6.0
+	*/
+
+	/**
+	*
+	* @api {post} /V0.7/cloud/createdir create a directory
+	* @apiDescription This method is there to create a directory in the cloud
+	* @apiGroup Cloud
+	* @apiName Create Directory
+	* @apiParam {Object[]} session_infos All informations about the session have to be here
+	* @apiParam {string} session_infos.token The token of authenticated user.
+	* @apiParam {Object[]} creation_infos All informations about the core request have to be here
+	* @apiParam {Number} creation_infos.project_id The project id to execute the command.
+	* @apiParam {string} creation_infos.path The path of the directory in the cloud where the new directory have to be created (absolute path from the root of the project's cloud)
+	* @apiParam {string} creation_infos.dir_name The new directory's name.
+	* @apiParam {string} [creation_infos.password] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
+	* @apiParamExample {json} Request Example:
+	* 	{
+	*		"session_infos": {
+	*			"token": "48q98d"
+	*		},
+	*		"creation_infos": {
+	*			"project_id": 42,
+	*			"path": "/Gandalf le gris"
+	*			"dir_name" : "Beard"
+	*		}
+	*	}
+	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : "OK"
+	*	}
+	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
+	* @apiVersion 0.7.0
 	*/
 	public function createDirAction(Request $request)
 	{

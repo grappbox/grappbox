@@ -15,11 +15,6 @@ class Project
     private $id;
 
     /**
-     * @var integer
-     */
-    private $creatorId;
-
-    /**
      * @var string
      */
     private $name;
@@ -35,9 +30,14 @@ class Project
     private $logo;
 
     /**
-     * @var integer
+     * @var string
      */
-    private $teamId;
+    private $phone;
+
+    /**
+     * @var string
+     */
+    private $company;
 
     /**
      * @var string
@@ -95,6 +95,11 @@ class Project
     private $whiteboards;
 
     /**
+     * @var \APIBundle\Entity\User
+     */
+    private $creator_user;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $users;
@@ -112,54 +117,14 @@ class Project
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function objectToArray()
-    {
-        return array(
-            'id' => $this->id,
-            'creatorId' => $this->creatorId,
-            'name' => $this->name,
-            'description' => $this->description,
-            'logo' => $this->logo,
-            'contactEmail' => $this->contactEmail,
-            'facebook' => $this->facebook,
-            'twitter' => $this->twitter,
-            'createdAt' => $this->createdAt,
-            'deletedAt' => $this->deletedAt
-        );
-    }
-
-
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set creatorId
-     *
-     * @param integer $creatorId
-     * @return Project
-     */
-    public function setCreatorId($creatorId)
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get creatorId
-     *
-     * @return integer
-     */
-    public function getCreatorId()
-    {
-        return $this->creatorId;
     }
 
     /**
@@ -178,7 +143,7 @@ class Project
     /**
      * Get name
      *
-     * @return string
+     * @return string 
      */
     public function getName()
     {
@@ -201,7 +166,7 @@ class Project
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -224,7 +189,7 @@ class Project
     /**
      * Get logo
      *
-     * @return string
+     * @return string 
      */
     public function getLogo()
     {
@@ -232,26 +197,49 @@ class Project
     }
 
     /**
-     * Set teamId
+     * Set phone
      *
-     * @param integer $teamId
+     * @param string $phone
      * @return Project
      */
-    public function setTeamId($teamId)
+    public function setPhone($phone)
     {
-        $this->teamId = $teamId;
+        $this->phone = $phone;
 
         return $this;
     }
 
     /**
-     * Get teamId
+     * Get phone
      *
-     * @return integer
+     * @return string 
      */
-    public function getTeamId()
+    public function getPhone()
     {
-        return $this->teamId;
+        return $this->phone;
+    }
+
+    /**
+     * Set company
+     *
+     * @param string $company
+     * @return Project
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company
+     *
+     * @return string 
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 
     /**
@@ -270,7 +258,7 @@ class Project
     /**
      * Get contactEmail
      *
-     * @return string
+     * @return string 
      */
     public function getContactEmail()
     {
@@ -293,7 +281,7 @@ class Project
     /**
      * Get facebook
      *
-     * @return string
+     * @return string 
      */
     public function getFacebook()
     {
@@ -316,7 +304,7 @@ class Project
     /**
      * Get twitter
      *
-     * @return string
+     * @return string 
      */
     public function getTwitter()
     {
@@ -339,7 +327,7 @@ class Project
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -362,7 +350,7 @@ class Project
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
@@ -385,7 +373,7 @@ class Project
     /**
      * Get safePassword
      *
-     * @return string
+     * @return string 
      */
     public function getSafePassword()
     {
@@ -418,7 +406,7 @@ class Project
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTasks()
     {
@@ -451,7 +439,7 @@ class Project
     /**
      * Get bugs
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getBugs()
     {
@@ -484,7 +472,7 @@ class Project
     /**
      * Get timelines
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTimelines()
     {
@@ -517,7 +505,7 @@ class Project
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getEvents()
     {
@@ -550,11 +538,34 @@ class Project
     /**
      * Get whiteboards
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getWhiteboards()
     {
         return $this->whiteboards;
+    }
+
+    /**
+     * Set creator_user
+     *
+     * @param \APIBundle\Entity\User $creatorUser
+     * @return Project
+     */
+    public function setCreatorUser(\APIBundle\Entity\User $creatorUser = null)
+    {
+        $this->creator_user = $creatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_user
+     *
+     * @return \APIBundle\Entity\User 
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
     }
 
     /**
@@ -583,7 +594,7 @@ class Project
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getUsers()
     {
