@@ -35,9 +35,10 @@ public slots:
     void GetProjectsId(int, QByteArray);
 
 private:
-    void UpdateLayout();
+    void UpdateLayout(bool sendSignal = true);
+    void DeleteLayout();
 
-    int                 _ProjectId;
+    int                 _UserId;
     MainWindow          *_MainApplication;
 
     //Widgets
@@ -53,6 +54,10 @@ private:
     QLabel              *_TitleGlobalProgress;
     QHBoxLayout         *_GlobalProgress;
     QScrollArea         *_ScrollProgress;
+
+    QWidget             *_TopWidget;
+    QWidget             *_MiddleWidget;
+    QWidget             *_BottomWidget;
 
     //Information API
     bool                                _IsInitializing;

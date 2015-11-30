@@ -23,6 +23,7 @@ public:
     virtual void Hide();
 
 signals:
+    void OnLoadingDone();
 
 public slots:
     void OnQuitWhiteboard();

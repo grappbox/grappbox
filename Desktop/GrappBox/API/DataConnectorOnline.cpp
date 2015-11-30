@@ -19,7 +19,6 @@ void DataConnectorOnline::OnResponseAPI()
         QMessageBox::critical(NULL, "Critical error", "Unable to cast the reply of the API response.", QMessageBox::Ok);
     }
     QByteArray req = request->readAll();
-    qDebug() << "Request response : " << req;
     if (request->error())
     {
         qDebug() << request->errorString();
@@ -66,7 +65,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
         break;
 
     case GR_LIST_PROJECT:
-        reply = GetAction("dashboard/getprojectlist", data);
+        reply = GetAction("dashboard/getprojectsglobalprogress", data);
         break;
 
     case GR_PROJECT:
@@ -126,7 +125,7 @@ QNetworkReply *DataConnectorOnline::Login(QVector<QString> &data)
 
 QNetworkReply *DataConnectorOnline::Logout(QVector<QString> &data)
 {
-    QString url = URL_API + QString("accountadministration/login");
+    QString url = URL_API + QString("accountadministration/logout");
     for (QVector<QString>::const_iterator it = data.constBegin(); it != data.constEnd(); ++it)
     {
         url += QString("/") + *it;

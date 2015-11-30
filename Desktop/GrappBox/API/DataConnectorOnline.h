@@ -9,7 +9,7 @@
 
 #include "IDataConnector.h"
 
-#define URL_API QString("http://api.grappbox.com/app_dev.php/V0.6/")
+#define URL_API QString("http://api.grappbox.com/app_dev.php/V0.7/")
 
 namespace API
 {
