@@ -14,6 +14,7 @@ using namespace DashboardInformation;
 BodyDashboard::BodyDashboard(QWidget *parent) : QWidget(parent)
 {
     _IsInitializing = false;
+    _IsInitialized = false;
 
     _MainLayoutLoaded = new QVBoxLayout();
     _MemberAvaible = new QHBoxLayout();
@@ -125,8 +126,10 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
     _MainLayoutLoaded->addWidget(_MiddleWidget, 5);
     _MainLayoutLoaded->addWidget(_BottomWidget, 5);
 
+    _IsInitialized = true;
     if (sendSignal)
     {
+        _IsInitializing = false;
         show();
         emit OnLoadingDone();
     }
@@ -159,24 +162,20 @@ void BodyDashboard::DeleteLayout()
     delete _TopWidget;
     delete _MiddleWidget;
     delete _BottomWidget;
+    _MemberAvaible = new QHBoxLayout();
+    _NextMeeting = new QHBoxLayout();
+    _GlobalProgress = new QHBoxLayout();
 }
 
 void BodyDashboard::Show(int ID, MainWindow *mainApp)
 {
-    if (_UserId != ID && _IsInitializing)
-    {
-        _IsInitializing = false;
+    if (_IsInitializing)
+        return;
+    if (_IsInitialized)
         DeleteLayout();
-    }
     _UserId = ID;
     _MainApplication = mainApp;
 
-    if (_IsInitializing)
-    {
-        show();
-        emit OnLoadingDone();
-        return;
-    }
     _IsInitializing = true;
     _NumberBeforeInitializingDone = 3;
 
@@ -228,9 +227,30 @@ void BodyDashboard::GetMemberProject(int, QByteArray byte)
     for (QJsonValueRef ref : objmain)
     {
         QJsonObject obj = ref.toObject();
+        int userId = obj["user_id"].toInt();
+        bool exist = false;
+        QLayoutItem *item;
+        for (int i = 0; (item = _MemberAvaible->itemAt(i)) != NULL; ++i)
+        {
+            if (item->widget())
+            {
+                DashboardMember *member = dynamic_cast<DashboardMember*>(item->widget());
+                if (member != NULL)
+                {
+                    if (member->GetMemberInfo()->Id == userId)
+                    {
+                        exist = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (exist)
+            continue;
         MemberAvaiableInfo *info = new MemberAvaiableInfo("", false, NULL);
         info->MemberName = obj["first_name"].toString() + QString(" ") + obj["last_name"].toString();
         info->IsBusy = obj["occupation"].toBool();
+        info->Id = userId;
         info->MemberPicture = new QPixmap(QPixmap::fromImage(QImage(":/Image/Ressources/Icon/UserDefault.png")));
         _MemberAvaible->addWidget(new DashboardMember(info, this));
 

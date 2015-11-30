@@ -2,7 +2,7 @@
 #include "SDataManager.h"
 #include "LoginWindow.h"
 
-LoginWindow::LoginWindow(QWidget *parent) : QMainWindow(parent)
+LoginWindow::LoginWindow(QWidget *mainP, QWidget *parent) : QMainWindow(parent)
 {
     _Layout = new QVBoxLayout();
     _GrappboxImage = new QImage(":/Image/Ressources/Title.png");
@@ -31,7 +31,7 @@ LoginWindow::LoginWindow(QWidget *parent) : QMainWindow(parent)
     connect(_Login, SIGNAL(returnPressed()), this, SLOT(OnAccept()));
     connect(_Password, SIGNAL(returnPressed()), this, SLOT(OnAccept()));
 
-    connect(this, SIGNAL(OnLogin()), parent, SLOT(OnLogin()));
+    connect(this, SIGNAL(OnLogin()), mainP, SLOT(OnLogin()));
 }
 
 void LoginWindow::OnAccept()
