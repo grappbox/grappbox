@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QPixmap>
+#include <QDebug>
 
 class BodyProjectSettings: public QWidget, public IBodyContener
 {
@@ -28,8 +29,9 @@ public slots:
     void                PassToEditMode();
     void                PassToStaticMode();
 
+
 signals:
-    void                OnLoadingDone();
+    void                OnLoadingDone(int);
 
 private:
     MainWindow          *_mainApplication;
@@ -47,6 +49,7 @@ private:
     RoleTableWidget     *_usersRoles;
     QLineEdit           *_facebook;
     QLineEdit           *_twitter;
+    int                 _id;
 };
 
 #endif // BODYPROJECTSETTINGS_H

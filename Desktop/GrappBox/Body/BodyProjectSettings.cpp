@@ -60,11 +60,11 @@ BodyProjectSettings::~BodyProjectSettings()
 
 }
 
-void BodyProjectSettings::Show(__attribute__((unused)) int ID, MainWindow *mainApp)
+void BodyProjectSettings::Show(int ID, MainWindow *mainApp)
 {
     _mainApplication = mainApp;
-    show();
-    emit OnLoadingDone();
+    emit OnLoadingDone(ID);
+    _id = ID;
 }
 
 void BodyProjectSettings::Hide()

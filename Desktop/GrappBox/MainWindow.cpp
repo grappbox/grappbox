@@ -55,14 +55,14 @@ MainWindow::MainWindow(QWidget *parent)
     BodyUserSettings *userSettings = new BodyUserSettings();
     BodyProjectSettings *projectSettings = new BodyProjectSettings();
 
-    connect(dashboard, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
-    connect(userSettings, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
-    connect(projectSettings, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
+    connect(dashboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
+    connect(userSettings, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
+    connect(projectSettings, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
 
     _CurrentCanvas = _StackedLayout->addWidget(dashboard);
     _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas);
     BodyWhiteboard *whiteboard = new BodyWhiteboard();
-    connect(whiteboard, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
+    connect(whiteboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
 
     // Here change the body for settings
@@ -199,11 +199,18 @@ void MainWindow::OnMenuChange(int id)
     _CurrentCanvas = id;
     _StackedLayout->setCurrentIndex(0);
     qDebug() << "Show !";
-    (dynamic_cast<IBodyContener*>(nextWidget))->Show(API::SDataManager::GetDataManager()->GetUserId(), this);
+    (dynamic_cast<IBodyContener*>(nextWidget))->Show(_CurrentCanvas, this);
     nextWidget->updateGeometry();
 }
 
-void MainWindow::OnLoadingFinished()
+void MainWindow::OnLoadingFinished(int canvas)
 {
-    _StackedLayout->setCurrentIndex(_CurrentCanvas);
+    qDebug() << "Canvs : " << canvas;
+    qDebug() << "Current :" << _CurrentCanvas;
+    if (canvas == _CurrentCanvas)
+    {
+        _StackedLayout->setCurrentIndex(_CurrentCanvas);
+        _StackedLayout->itemAt(canvas)->widget()->show();
+        qDebug("TATA");
+    }
 }

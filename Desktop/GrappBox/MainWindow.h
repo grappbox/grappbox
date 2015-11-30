@@ -38,7 +38,7 @@ public slots:
     void OnLogout();
     void OnSettings();
     void OnUserSettings();
-    void OnLoadingFinished();
+    void OnLoadingFinished(int);
 
 private:
     LoginWindow         *_Login;

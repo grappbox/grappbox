@@ -25,7 +25,7 @@ public:
     virtual void Hide();
 
 signals:
-    void OnLoadingDone();
+    void OnLoadingDone(int);
 
 public slots:
     void Failure(int, QByteArray);

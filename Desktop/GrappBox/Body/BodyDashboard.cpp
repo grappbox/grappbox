@@ -126,8 +126,7 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
 
     if (sendSignal)
     {
-        show();
-        emit OnLoadingDone();
+        emit OnLoadingDone(_UserId);
     }
 }
 
@@ -172,8 +171,7 @@ void BodyDashboard::Show(int ID, MainWindow *mainApp)
 
     if (_IsInitializing)
     {
-        show();
-        emit OnLoadingDone();
+        emit OnLoadingDone(_UserId);
         return;
     }
     _IsInitializing = true;

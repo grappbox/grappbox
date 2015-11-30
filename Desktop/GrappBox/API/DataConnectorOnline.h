@@ -6,6 +6,7 @@
 #include <QJSONObject>
 #include <QJsonDocument>
 #include <QMap>
+#include <QTimeZone>
 
 #include "IDataConnector.h"
 
@@ -29,6 +30,7 @@ namespace API
         virtual int Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
         virtual int Get(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
         virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
+        virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
 
     signals:
         void responseAPISuccess(int, QByteArray);
@@ -45,6 +47,7 @@ namespace API
         // Post
     private:
         QNetworkReply *Login(QVector<QString> &data);
+        QNetworkReply *PutUserSettings(QVector<QString> &data);
 
         // Get
     private:

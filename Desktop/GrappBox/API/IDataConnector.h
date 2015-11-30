@@ -35,12 +35,18 @@ namespace API
         GR_TIMELINE,
         GR_USER_DATA,
         GR_WHITEBOARD,
-        GR_LOGOUT
+        GR_LOGOUT,
+        GR_USER_SETTINGS
     };
 
     enum PostRequest
     {
         PR_LOGIN
+    };
+
+    enum PutRequest
+    {
+        PUTR_UserSettings
     };
 
     class IDataConnector
@@ -53,6 +59,7 @@ namespace API
         virtual int Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
         virtual int Get(DataPart part, int request, QVector<QString> &data, QObject *requestReturn, const char* slotSuccess, const char* slotFailure) = 0;
         virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
+        virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
 
     };
 
