@@ -6,6 +6,7 @@ BodyUserSettings::BodyUserSettings(QWidget *parent) : QWidget(parent)
     _mainLayout = new QVBoxLayout(this);
     _personalInformationLayout = new QFormLayout();
     _socialInformationLayout = new QFormLayout();
+    _avatar = new ImageUploadWidget();
     _firstname = new QLineEdit(tr("Enter your firstname here"));
     _lastname = new QLineEdit(tr("Enter your lastname here"));
     _birthday = new QDateTimeEdit();
@@ -25,26 +26,27 @@ BodyUserSettings::BodyUserSettings(QWidget *parent) : QWidget(parent)
     this->SetWidgetActiveState(false);
 
     //Then we set up the personal and social informations layout
-    _personalInformationLayout->addRow(new QLabel(tr("Your firstname")), _firstname);
-    _personalInformationLayout->addRow(new QLabel(tr("Your lastname")), _lastname);
-    _personalInformationLayout->addRow(new QLabel(tr("Your birthday")), _birthday);
-    _personalInformationLayout->addRow(new QLabel(tr("Your email")), _email);
-    _personalInformationLayout->addRow(new QLabel(tr("Your phone")), _phone);
-    _personalInformationLayout->addRow(new QLabel(tr("Your country")), _country);
+    _personalInformationLayout->addWidget(_avatar);
+    _personalInformationLayout->addRow(new QLabel(tr("Your firstname : ")), _firstname);
+    _personalInformationLayout->addRow(new QLabel(tr("Your lastname : ")), _lastname);
+    _personalInformationLayout->addRow(new QLabel(tr("Your birthday : ")), _birthday);
+    _personalInformationLayout->addRow(new QLabel(tr("Your email : ")), _email);
+    _personalInformationLayout->addRow(new QLabel(tr("Your phone : ")), _phone);
+    _personalInformationLayout->addRow(new QLabel(tr("Your country : ")), _country);
 
 
-    _socialInformationLayout->addRow(new QLabel(tr("Your linkedin")), _linkedin);
-    _socialInformationLayout->addRow(new QLabel(tr("Your viadeo")), _viadeo);
-    _socialInformationLayout->addRow(new QLabel(tr("Your twitter")), _twitter);
+    _socialInformationLayout->addRow(new QLabel(tr("Your linkedin : ")), _linkedin);
+    _socialInformationLayout->addRow(new QLabel(tr("Your viadeo : ")), _viadeo);
+    _socialInformationLayout->addRow(new QLabel(tr("Your twitter : ")), _twitter);
 
     //We make the basic connexions
-    QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(passToEditMode()));
+    QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToEditMode()));
 
     //Finaly, we form the main layout and link it to the widget
     _mainLayout->addWidget(_btnEditMode);
-    _mainLayout->addWidget(new QLabel(tr("Personal Informations")));
+    _mainLayout->addWidget(new QLabel(tr("<h2>Personal Informations</h2>")));
     _mainLayout->addLayout(_personalInformationLayout);
-    _mainLayout->addWidget(new QLabel(tr("Social Informations")));
+    _mainLayout->addWidget(new QLabel(tr("<h2>Social Informations</h2>")));
     _mainLayout->addLayout(_socialInformationLayout);
     this->setLayout(_mainLayout);
 }
@@ -57,6 +59,7 @@ BodyUserSettings::~BodyUserSettings()
 void BodyUserSettings::Show(__attribute__((unused)) int ID, MainWindow *mainApp)
 {
     _mainApplication = mainApp;
+    emit OnLoadingDone();
     show();
 }
 
@@ -76,20 +79,21 @@ void BodyUserSettings::SetWidgetActiveState(bool active)
     _linkedin->setEnabled(active);
     _viadeo->setEnabled(active);
     _twitter->setEnabled(active);
+    _avatar->setEnabled(active);
 }
 
-void BodyUserSettings::passToEditMode()
+void BodyUserSettings::PassToEditMode()
 {
     //Activate the widgets modifications and change the button text
-    QObject::disconnect(_btnEditMode, SIGNAL(released()), this, SLOT(passToEditMode());
+    QObject::disconnect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToEditMode()));
     _btnEditMode->setText("Save");
-    QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(passToStaticMode()));
+    QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToStaticMode()));
 
     this->SetWidgetActiveState(true);
     _btnEditMode->setEnabled(true);
 }
 
-void BodyUserSettings::passToStaticMode()
+void BodyUserSettings::PassToStaticMode()
 {
     //First disable all the widgets
     this->SetWidgetActiveState(false);
@@ -98,8 +102,8 @@ void BodyUserSettings::passToStaticMode()
     //Then we have to save all the content thanks to the API
 
     //Finally, reconnect the button and reactivate it
-    QObject::disconnect(_btnEditMode, SIGNAL(released()), this, SLOT(passToStaticMode());
+    QObject::disconnect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToStaticMode()));
     _btnEditMode->setText(tr("Pass in edit mode"));
-    QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(passToEditMode()));
+    QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToEditMode()));
     _btnEditMode->setEnabled(true);
 }

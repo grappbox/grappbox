@@ -5,6 +5,8 @@
 
 #include "Body/BodyDashboard.h"
 #include "BodyWhiteboard.h"
+#include "Body/BodyUserSettings.h"
+#include "Body/BodyProjectSettings.h"
 
 #include "MainWindow.h"
 
@@ -50,14 +52,20 @@ MainWindow::MainWindow(QWidget *parent)
     _LoadingId = _StackedLayout->addWidget(_LoadingImage);
 
     BodyDashboard *dashboard = new BodyDashboard();
+    BodyUserSettings *userSettings = new BodyUserSettings();
+    BodyProjectSettings *projectSettings = new BodyProjectSettings();
+
     connect(dashboard, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
+    connect(userSettings, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
+    connect(projectSettings, SIGNAL(OnLoadingDone()), this, SLOT(OnLoadingFinished()));
+
     _CurrentCanvas = _StackedLayout->addWidget(dashboard);
     _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas);
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(new BodyWhiteboard()));
 
     // Here change the body for settings
-    _UserSettingsId = _StackedLayout->addWidget(new BodyWhiteboard());
-    _SettingsId = _StackedLayout->addWidget(new BodyDashboard());
+    _UserSettingsId = _StackedLayout->addWidget(userSettings);
+    _SettingsId = _StackedLayout->addWidget(projectSettings);
 
     _MenuWidget->AddMenuItem("", _UserSettingsId, true);
     _MenuWidget->AddMenuItem("", _SettingsId, true);
