@@ -53,7 +53,6 @@ APIBundle\Entity\Project:
         users:
           targetEntity: User
           inversedBy: projects
-          cascade: [remove]
           joinTable:
             name: team_project
             joinColumns:

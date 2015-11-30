@@ -246,7 +246,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 			if ($creatorId == $user->getId())
 			{
-				if ($project->getDeletedAt() != $nullDate)
+				if ($project->getDeletedAt() != $nullDate && $project->getDeletedAt() != null)
 				{
 					if ($project->getDeletedAt() < $defDate)
 					{
@@ -263,7 +263,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 					if ($userId == $user->getId())
 					{
-						if ($project->getDeletedAt() != $nullDate)
+						if ($project->getDeletedAt() != $nullDate && $project->getDeletedAt() != null)
 						{
 							if ($project->getDeletedAt() < $defDate)
 							{

@@ -52,7 +52,6 @@ APIBundle\Entity\Event:
         users:
           targetEntity: User
           inversedBy: events
-          cascade: [remove]
           joinTable:
             name: events_user
             joinColumns:

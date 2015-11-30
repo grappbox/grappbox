@@ -60,7 +60,6 @@ APIBundle\Entity\Task:
           inversedBy: tasks
           joinTable:
             name: task_tags
-            cascade: [remove]
             joinColumns:
               task_id:
                 referencedColumnName: id
