@@ -11,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QLayoutItem>
 
 class RoleTableWidget: public QWidget
 {
@@ -26,6 +27,7 @@ public:
     const QMap<int, QList<int>> getRolesByUsers(); //<ID user, List ID roles>
     const QMap<int, QString>    &getRoles();
     const QMap<int, QString>    &getUsers();
+    void                        Clear();
 
 private:
     void ClearLayout(QLayout* layout, bool deleteWidgets = true);

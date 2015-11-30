@@ -48,6 +48,13 @@ void RoleTableWidget::setUsers(const QMap<int, QString> &users)
         addUser(it.value(), it.key());
 }
 
+void RoleTableWidget::Clear()
+{
+    _roles = new QMap<int, QString>();
+    _users = new QMap<int, QString>();
+
+}
+
 const QMap<int, QList<int>> RoleTableWidget::getRolesByUsers()
 {
     QMap<int, QList<int>> rolesByUsers;
@@ -71,7 +78,7 @@ const QMap<int, QString> &RoleTableWidget::getUsers()
 {
     return (*_users);
 }
-#include <QLayoutItem>
+
 void RoleTableWidget::reset()
 {
     QLayoutItem *item;

@@ -4,6 +4,7 @@
 #include "ibodycontener.h"
 #include "Settings/ImageUploadWidget.h"
 #include "Settings/RoleTableWidget.h"
+#include "SDataManager.h"
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QPushButton>
@@ -11,6 +12,8 @@
 #include <QTextEdit>
 #include <QPixmap>
 #include <QDebug>
+
+#define UNUSED __attribute__((unused))
 
 class BodyProjectSettings: public QWidget, public IBodyContener
 {
@@ -28,6 +31,10 @@ private:
 public slots:
     void                PassToEditMode();
     void                PassToStaticMode();
+    void                Failure(int, QByteArray);
+    void                GetSettingsSuccess(int, QByteArray);
+    void                GetRolesSuccess(int, QByteArray);
+    void                GetUsersSuccess(int, QByteArray);
 
 
 signals:
@@ -50,6 +57,8 @@ private:
     QLineEdit           *_facebook;
     QLineEdit           *_twitter;
     int                 _id;
+    int                 _projectID;
+    API::IDataConnector *_api;
 };
 
 #endif // BODYPROJECTSETTINGS_H

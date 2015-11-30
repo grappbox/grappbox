@@ -114,6 +114,15 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
     case GR_USER_SETTINGS:
         reply = GetAction("user/basicinformations", data);
         break;
+    case GR_PROJECTS_USER:
+        reply = GetAction("user/getprojects", data);
+        break;
+    case GR_PROJECT_ROLE:
+        reply = GetAction("roles/getprojectroles", data);
+        break;
+    case GR_PROJECT_USERS:
+        reply = GetAction("dashboard/getprojectpersons", data);
+        break;
     }
     if (reply == NULL)
         throw QException();

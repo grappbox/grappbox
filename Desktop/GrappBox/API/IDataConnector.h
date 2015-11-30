@@ -36,7 +36,10 @@ namespace API
         GR_USER_DATA,
         GR_WHITEBOARD,
         GR_LOGOUT,
-        GR_USER_SETTINGS
+        GR_USER_SETTINGS,
+        GR_PROJECTS_USER,
+        GR_PROJECT_ROLE,
+        GR_PROJECT_USERS
     };
 
     enum PostRequest

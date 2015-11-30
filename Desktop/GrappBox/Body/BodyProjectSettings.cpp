@@ -3,6 +3,7 @@
 BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
 {
     //First we create the widgets and disable them (read mode)
+    _api = API::SDataManager::GetCurrentDataConnector();
     _mainLayout = new QVBoxLayout(this);
     _basicProjectInformations = new QFormLayout();
     _socialInformations = new QFormLayout();
@@ -29,19 +30,6 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
     _socialInformations->addRow(new QLabel(tr("Facebook link : ")), _facebook);
     _socialInformations->addRow(new QLabel(tr("Twitter link : ")), _twitter);
 
-    //TODO : DELETE START
-    _usersRoles->addRole(QString("Intern"), 1);
-    _usersRoles->addRole(QString("Designer"), 21);
-    _usersRoles->addRole(QString("Developers"), 42);
-    _usersRoles->addRole(QString("Project Leader"), 36);
-    _usersRoles->addRole(QString("Boss"), 100);
-    _usersRoles->addUser(QString("Cathal Mc Cosker"), 21);
-    _usersRoles->addUser(QString("Candy Chiu"), 42);
-    _usersRoles->addUser(QString("Roland Hemmer"), 117);
-    _usersRoles->addUser(QString("Allyriane Launois"), 265);
-    _usersRoles->refresh();
-    //TODO : DELETE END
-
     //We connect the events
     QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToEditMode()));
 
@@ -62,9 +50,13 @@ BodyProjectSettings::~BodyProjectSettings()
 
 void BodyProjectSettings::Show(int ID, MainWindow *mainApp)
 {
+    QVector<QString> data;
+
     _mainApplication = mainApp;
-    emit OnLoadingDone(ID);
     _id = ID;
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    _api->Get(API::DP_PROJECT, API::GR_PROJECTS_USER, data, this, "GetSettingsSuccess", "Failure");
+
 }
 
 void BodyProjectSettings::Hide()
@@ -110,4 +102,73 @@ void BodyProjectSettings::PassToStaticMode()
     //Then reactivate the button
     _btnEditMode->setText(tr("Pass in edit mode"));
     _btnEditMode->setEnabled(true);
+}
+
+void BodyProjectSettings::Failure(int UNUSED id , QByteArray data)
+{
+    QMessageBox::critical(this, "Internal Error", "Fail to retreive data from internet");
+    qDebug() << data;
+}
+
+
+void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object()["Project 1"].toObject();
+    QVector<QString> dataRole;
+
+    _projectID = json["id"].toInt();
+    if (!json["name"].isNull())
+        _projectName->setText(json["name"].toString());
+    if (!json["description"].isNull())
+        _projectDesc->setText(json["description"].toString());
+    if (!json["phone"].isNull())
+        _contactPhone->setText(json["phone"].toString());
+    if (!json["company"].isNull())
+        _companyName->setText(json["company"].toString());
+    if (!json["contact_mail"].isNull())
+        _contactMail->setText(json["contact_mail"].toString());
+    if (!json["facebook"].isNull())
+        _facebook->setText(json["facebook"].toString());
+    if (!json["twitter"].isNull())
+        _twitter->setText(json["twitter"].toString());
+    emit OnLoadingDone(_id);
+    dataRole.append(API::SDataManager::GetDataManager()->GetToken());
+    dataRole.append(QString::number(_projectID));
+    _usersRoles->Clear();
+    _usersRoles->reset();
+    _api->Get(API::DP_PROJECT, API::GR_PROJECT_ROLE, dataRole, this, "GetRolesSuccess", "Failure");
+    _api->Get(API::DP_PROJECT, API::GR_PROJECT_USERS, dataRole, this, "GetUsersSuccess", "Failure");
+}
+
+void BodyProjectSettings::GetRolesSuccess(int UNUSED id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object();
+    QJsonObject::iterator jIt;
+
+    for (jIt = json.begin(); jIt != json.end(); jIt++)
+    {
+        QJsonObject current = (*jIt).toObject();
+        _usersRoles->addRole(current["name"].toString(), current["id"].toInt());
+    }
+    _usersRoles->reset();
+    _usersRoles->refresh();
+}
+
+void BodyProjectSettings::GetUsersSuccess(int UNUSED id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object();
+    QJsonObject::iterator jIt;
+
+    for (jIt = json.begin(); jIt != json.end(); jIt++)
+    {
+        QJsonObject current = (*jIt).toObject();
+
+        _usersRoles->addUser(current["first_name"].toString() + " " + current["last_name"].toString(), current["user_id"].toInt());
+        qDebug() << "TOTOa";
+    }
+    _usersRoles->reset();
+    _usersRoles->refresh();
 }

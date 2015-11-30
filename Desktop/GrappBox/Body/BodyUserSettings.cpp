@@ -85,7 +85,7 @@ void BodyUserSettings::GetUserData(int UNUSED id, QByteArray data)
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
     QJsonObject birthdayJson = json["birthday"].toObject();
-    QStringList date(birthdayJson["date"].toString().split(QChar(' '))[0]);
+    QStringList date(birthdayJson["date"].toString().split(QChar(' ')));
     QPixmap avatar;
     int idCountry;
 
