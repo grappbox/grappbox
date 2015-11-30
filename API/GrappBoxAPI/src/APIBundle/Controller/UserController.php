@@ -340,12 +340,15 @@ class UserController extends RolesAndTokenVerificationController
 	*/
 	private function putBasicInformations($content, $user, $em)
 	{
-		if (array_key_exists('firstname', $content))
-			$user->setFirstname($content->firstname);
-		if (array_key_exists('lastname', $content))
-			$user->setLastname($content->lastname);
+		if (array_key_exists('first_name', $content))
+			$user->setFirstname($content->first_name);
+		if (array_key_exists('last_name', $content))
+			$user->setLastname($content->last_name);
 		if (array_key_exists('birthday', $content))
-			$user->setBirthday($content->birthday);
+		{
+			$birthday = new \Datetime($content->birthday->date, new \DatetimeZone($content->birthday->timezone));
+			$user->setBirthday($birthday);
+		}
 		if (array_key_exists('avatar', $content))
 			$user->setAvatar($content->avatar);
 		if (array_key_exists('email', $content))
