@@ -45,6 +45,11 @@ role_updatePersonRole:
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:updatePersonRole }
     methods: [PUT]
 
+role_getUserRoles:
+    path:       roles/getuserroles/{token}
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUserRoles }
+    methods: [GET]
+
 role_delPersonRole:
     path:       roles/delpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delPersonRole }

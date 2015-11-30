@@ -1004,6 +1004,75 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
+  * @api {get} /V0.7/roles/getuserroles/:token Get the roles of the user connected
+  * @apiName updatePersonRole
+  * @apiGroup Roles
+  * @apiVersion 0.7.0
+  *
+  * @apiParam {String} token Token of the person connected
+  *
+  * @apiSuccess {Object[]} UserRole Array of user roles
+  * @apiSuccess {Number} UserRole.id Project user role id
+  * @apiSuccess {Number} UserRole.project_id Id of the project
+  * @apiSuccess {Number} UserRole.role_id Id of the role
+  *
+  * @apiSuccessExample Success-Response:
+  * 	{
+  *			"UserRole 1":
+  *			{
+  *				"id": 10,
+  *				"project_id": 5,
+  *				"role_id": 1
+  * 		}
+  *		}
+  *
+  * @apiErrorExample Bad Authentication Token
+  *   HTTP/1.1 400 Bad Request
+  *   {
+  *     "Bad Authentication Token"
+  *   }
+  * @apiErrorExample Invalid Method Value
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "message": "404 not found."
+  *     }
+  * @apiErrorExample User roles not found
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "The user X don't have roles."
+  *     }
+  *
+  */
+  public function getUserRolesAction(Request $request, $token)
+  {
+  	$user = $this->checkToken($token);
+  	if (!$user)
+		return ($this->setBadTokenError());
+
+  	$em = $this->getDoctrine()->getManager();
+	$userRoles = $em->getRepository('APIBundle:ProjectUserRole')->findByuserId($user->getId());
+
+	if ($userRoles === null)
+	{
+		throw new NotFoundHttpException("The user ".$user->getId()." don't have roles.");
+	}
+
+	$arr = array();
+	$i = 0;
+
+	foreach ($userRoles as $role) {
+		$purId = $role->getId();
+		$projectId = $role->getProjectId();
+		$roleId = $role->getRoleId();
+
+		$arr["UserRole ".$i] = array("id" => $purId, "project_id" => $projectId, "role_id" => $roleId);
+		$i++;
+	}
+
+	return new JsonResponse($arr);
+  }
+
+  /**
   * @api {delete} /V0.6/roles/delpersonrole Delete a person role
   * @apiName delPersonRole
   * @apiGroup Roles

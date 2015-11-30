@@ -346,7 +346,10 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setLastname($content->last_name);
 		if (array_key_exists('birthday', $content))
 		{
-			$birthday = new \Datetime($content->birthday->date, new \DatetimeZone($content->birthday->timezone));
+			if (array_key_exists('timezone', $content->birthday) && $content->birthday->timezone != "")
+				$birthday = new \Datetime($content->birthday->date, new \DatetimeZone($content->birthday->timezone));
+			else
+				$birthday = new \Datetime($content->birthday->date);
 			$user->setBirthday($birthday);
 		}
 		if (array_key_exists('avatar', $content))
