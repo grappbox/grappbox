@@ -212,9 +212,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 					$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
 					$em->persist($user);
-		      		$em->flush();
+		      $em->flush();
 
-		      		$this->checkProjectsDeletedTime($user);
+		      $this->checkProjectsDeletedTime($user);
 
 					$response = new JsonResponse();
 					$response->setData(array('user' => $user->objectToArray()));
@@ -233,7 +233,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$repository = $em->getRepository('APIBundle:Project');
 
 		$qb = $repository->createQueryBuilder('p');
-		
+
 		$projects = $qb->getQuery()->getResult();
 		$nullDate = date_create("0000-00-00 00:00:00");
 		$defDate = new \DateTime;
@@ -257,7 +257,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			else
 			{
 				$projectUsers = $project->getUsers();
-				
+
 				foreach ($projectUsers as $projectUser) {
 					$userId = $projectUser->getId();
 

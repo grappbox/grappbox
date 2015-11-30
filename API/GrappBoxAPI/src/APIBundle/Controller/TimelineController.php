@@ -356,11 +356,7 @@ class TimelineController extends RolesAndTokenVerificationController
 
 			$message = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
 		}
-		// TEST
-		// if($message instanceof TimelineMessage)
-		//  	return new JsonResponse(array("parentid" => $messageId, "message object" => $message->objectToArray()));
-		// return new JsonResponse(array("parentid" => $messageId, "message object" => $message, "type" => "non object"));
-		// ! TEST
+		
 		return new JsonResponse('Success');
 	}
 }
