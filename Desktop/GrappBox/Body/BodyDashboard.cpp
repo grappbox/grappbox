@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDateTime>
+#include <QStringList>
 
 #include "SDataManager.h"
 #include "SFontLoader.h"
@@ -207,9 +208,11 @@ void BodyDashboard::GetNextMeeting(int, QByteArray byte)
         QJsonObject obj = ref.toObject();
         NextMeetingInfo *info = new NextMeetingInfo(NextMeetingInfo::Personnal, "", "", "", NULL);
         info->MeetingName = obj["event_title"].toString();
-        QDateTime dateTime(QDateTime::fromString(obj["event_begin_date"].toObject()["date"].toString(), "yyyy-MM-dd hh:mm:ss"));
-        info->Date = dateTime.toString("yyyy-MM-dd");
-        info->Hours = dateTime.toString("hh:mm");
+        QJsonObject date = obj["event_begin_date"].toObject();
+        QStringList l = date["date"].toString().split(' ');
+        info->Date = l.at(0);
+        l = l.at(1).split(':');
+        info->Hours = l.at(0) + QString(":") + l.at(1);
         info->ProjectIcon = new QPixmap(QPixmap::fromImage(QImage(":/Image/Ressources/Icon/ProjectDefault.png")));
         _NextMeeting->addWidget(new DashboardMeeting(info, this));
     }
