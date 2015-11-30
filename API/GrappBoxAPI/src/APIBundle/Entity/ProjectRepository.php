@@ -33,6 +33,7 @@ class ProjectRepository extends EntityRepository
 			$projectUsers = $project->getUsers();
 			$projectId = $project->getId();
 			foreach ($projectUsers as $user) {
+				$id = $user->getId();
 				$firstName = $user->getFirstname();
 				$lastName = $user->getLastname();
 				$tasks = $user->getTasks();
@@ -54,11 +55,11 @@ class ProjectRepository extends EntityRepository
 				}
 				if ($busy == true)
 				{
-					$arr["Person ".$i] = array("project_name" => $projectName, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr["Person ".$i] = array("project_name" => $projectName, "user_id" => $id, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}				
 				else
 				{
-					$arr["Person ".$i] = array("project_name" => $projectName, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr["Person ".$i] = array("project_name" => $projectName, "user_id" => $id, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 				$i++;
 			}
