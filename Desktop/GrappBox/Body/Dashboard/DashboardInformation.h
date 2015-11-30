@@ -13,6 +13,7 @@ namespace DashboardInformation
         QString     MemberName;
         bool        IsBusy;
         QPixmap      *MemberPicture;
+        int         Id;
     };
 
     struct NextMeetingInfo

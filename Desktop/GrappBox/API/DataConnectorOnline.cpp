@@ -22,6 +22,7 @@ void DataConnectorOnline::OnResponseAPI()
     if (request->error())
     {
         qDebug() << request->errorString();
+        qDebug() << request->error();
         QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
     }
     else

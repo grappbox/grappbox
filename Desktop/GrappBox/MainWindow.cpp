@@ -140,7 +140,7 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(_MenuWidget, SIGNAL(MenuChanged(int)), this, SLOT(OnMenuChange(int)));
 
     _Login->show();
-    hide();
+    this->hide();
 
     connect(_ProfilWidget, SIGNAL(OnUserSettings()), this, SLOT(OnUserSettings()));
     connect(_ProfilWidget, SIGNAL(OnMainSettings()), this, SLOT(OnSettings()));

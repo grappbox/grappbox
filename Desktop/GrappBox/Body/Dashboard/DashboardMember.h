@@ -18,6 +18,8 @@ class DashboardMember : public QWidget
     Q_OBJECT
 public:
     explicit DashboardMember(DashboardInformation::MemberAvaiableInfo *info, QWidget *parent = 0, int userId = 0);
+    const DashboardInformation::MemberAvaiableInfo *GetMemberInfo();
+
     void paintEvent(QPaintEvent *);
 signals:
 
@@ -28,8 +30,7 @@ private:
 
 //Widget
 private:
-    // Overlay
-
+    DashboardInformation::MemberAvaiableInfo *_Info;
 
     // Base card
     QVBoxLayout     *_MainLayout;

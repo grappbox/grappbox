@@ -12,7 +12,7 @@ DashboardMember::DashboardMember(DashboardInformation::MemberAvaiableInfo *info,
     _UserId = userId;
     _MemberPictureDrawer = new QLabel();
 
-
+    _Info = info;
     _MemberName = new QLabel(info->MemberName);
     _MemberName->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     QFont font = SFontLoader::GetFont(SFontLoader::OPEN_SANS_BOLD);
@@ -77,6 +77,11 @@ DashboardMember::DashboardMember(DashboardInformation::MemberAvaiableInfo *info,
     this->setStyleSheet("DashboardMember {background: #2d2f31;"
                         "border-radius: 10px;"
                         "border: none;}");
+}
+
+const DashboardInformation::MemberAvaiableInfo *DashboardMember::GetMemberInfo()
+{
+    return (_Info);
 }
 
 void DashboardMember::paintEvent(QPaintEvent *)

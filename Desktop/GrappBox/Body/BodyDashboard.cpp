@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDateTime>
+#include <QStringList>
 
 #include "SDataManager.h"
 #include "SFontLoader.h"
@@ -13,6 +14,7 @@ using namespace DashboardInformation;
 BodyDashboard::BodyDashboard(QWidget *parent) : QWidget(parent)
 {
     _IsInitializing = false;
+    _IsInitialized = false;
 
     _MainLayoutLoaded = new QVBoxLayout();
     _MemberAvaible = new QHBoxLayout();
@@ -124,9 +126,11 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
     _MainLayoutLoaded->addWidget(_MiddleWidget, 5);
     _MainLayoutLoaded->addWidget(_BottomWidget, 5);
 
+    _IsInitialized = true;
     if (sendSignal)
     {
         emit OnLoadingDone(_UserId);
+        _IsInitializing = false;
     }
 }
 
@@ -157,15 +161,17 @@ void BodyDashboard::DeleteLayout()
     delete _TopWidget;
     delete _MiddleWidget;
     delete _BottomWidget;
+    _MemberAvaible = new QHBoxLayout();
+    _NextMeeting = new QHBoxLayout();
+    _GlobalProgress = new QHBoxLayout();
 }
 
 void BodyDashboard::Show(int ID, MainWindow *mainApp)
 {
-    if (_UserId != ID && _IsInitializing)
-    {
-        _IsInitializing = false;
+    if (_IsInitializing)
+        return;
+    if (_IsInitialized)
         DeleteLayout();
-    }
     _UserId = ID;
     _MainApplication = mainApp;
 
@@ -174,6 +180,7 @@ void BodyDashboard::Show(int ID, MainWindow *mainApp)
         emit OnLoadingDone(_UserId);
         return;
     }
+
     _IsInitializing = true;
     _NumberBeforeInitializingDone = 3;
 
@@ -205,9 +212,11 @@ void BodyDashboard::GetNextMeeting(int, QByteArray byte)
         QJsonObject obj = ref.toObject();
         NextMeetingInfo *info = new NextMeetingInfo(NextMeetingInfo::Personnal, "", "", "", NULL);
         info->MeetingName = obj["event_title"].toString();
-        QDateTime dateTime(QDateTime::fromString(obj["event_begin_date"].toObject()["date"].toString(), "yyyy-MM-dd hh:mm:ss"));
-        info->Date = dateTime.toString("yyyy-MM-dd");
-        info->Hours = dateTime.toString("hh:mm");
+        QJsonObject date = obj["event_begin_date"].toObject();
+        QStringList l = date["date"].toString().split(' ');
+        info->Date = l.at(0);
+        l = l.at(1).split(':');
+        info->Hours = l.at(0) + QString(":") + l.at(1);
         info->ProjectIcon = new QPixmap(QPixmap::fromImage(QImage(":/Image/Ressources/Icon/ProjectDefault.png")));
         _NextMeeting->addWidget(new DashboardMeeting(info, this));
     }
@@ -223,9 +232,30 @@ void BodyDashboard::GetMemberProject(int, QByteArray byte)
     for (QJsonValueRef ref : objmain)
     {
         QJsonObject obj = ref.toObject();
+        int userId = obj["user_id"].toInt();
+        bool exist = false;
+        QLayoutItem *item;
+        for (int i = 0; (item = _MemberAvaible->itemAt(i)) != NULL; ++i)
+        {
+            if (item->widget())
+            {
+                DashboardMember *member = dynamic_cast<DashboardMember*>(item->widget());
+                if (member != NULL)
+                {
+                    if (member->GetMemberInfo()->Id == userId)
+                    {
+                        exist = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (exist)
+            continue;
         MemberAvaiableInfo *info = new MemberAvaiableInfo("", false, NULL);
         info->MemberName = obj["first_name"].toString() + QString(" ") + obj["last_name"].toString();
         info->IsBusy = obj["occupation"].toBool();
+        info->Id = userId;
         info->MemberPicture = new QPixmap(QPixmap::fromImage(QImage(":/Image/Ressources/Icon/UserDefault.png")));
         _MemberAvaible->addWidget(new DashboardMember(info, this));
 

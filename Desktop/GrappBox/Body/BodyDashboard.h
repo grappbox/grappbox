@@ -61,6 +61,7 @@ private:
 
     //Information API
     bool                                _IsInitializing;
+    bool                                _IsInitialized;
     int                                 _NumberBeforeInitializingDone;
 
     QMap<int, MemberAvaiableInfo*>      _MemberData;
