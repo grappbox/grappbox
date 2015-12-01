@@ -120,7 +120,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @apiIgnore Not finished Method
 	* @api {put} /V0.7/projects/updateinformations Update a project informations
 	* @apiName updateInformations
 	* @apiGroup Project
