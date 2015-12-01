@@ -15,20 +15,26 @@
     <link href="css/index.css" rel="stylesheet" />
 
     <!-- Libraries -->
-    <script src="scripts/lib/ionic.bundle.js"></script>
-    <script src="scripts/lib/fabric.js"></script>
-    <script src="scripts/lib/fastclick.js"></script>
+    <script src="scripts/lib/ionic.bundle.js"></script> <!-- Ionic encapsulates Angular.js -->
+    <script src="scripts/lib/angular-resource.js"></script> <!-- Angular's ngResource are used for the RESTful API -->
+    <script src="scripts/lib/fabric.js"></script> <!-- fabric.js is a library used for the whiteboard -->
+    <script src="scripts/lib/fastclick.js"></script> <!-- fastclick.js is a library used to avoid 300ms click lag -->
     <script>
         window.addEventListener('load', function() {
             new FastClick(document.body);
         }, false);
     </script>
 
+    <!-- API -->
+    <script src="scripts/api.js"></script>
+
     <!-- Application configuration -->
     <script src="scripts/app.js"></script>
 
     <!-- Controllers -->
-    <script src="scripts/controllers/mainController.js"></script>
+    <script src="scripts/controllers/mainController.js"></script> <!-- We use a main controller to avoid issues -->
+    <script src="scripts/controllers/authController.js"></script>
+    <script src="scripts/controllers/signupController.js"></script>
     <script src="scripts/controllers/dashboardController.js"></script>
     <script src="scripts/controllers/timelinesController.js"></script>
     <script src="scripts/controllers/whiteboardController.js"></script>

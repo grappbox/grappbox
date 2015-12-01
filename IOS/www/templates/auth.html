@@ -1,0 +1,20 @@
+﻿<ion-view>
+    <ion-content scroll="false">
+        <form>
+            <div class="list">
+                <label class="item item-input">
+                    <input type="email" placeholder="Email" name="user_email" ng-model="user.email" required>
+                </label>
+                <label class="item item-input">
+                    <input type="password" placeholder="Password" name="user_password" ng-model="user.password" required>
+                </label>
+            </div>
+            <a class="button button-block button-stable" ng-click="login()">
+                Log In
+            </a>
+        </form>
+        <a class="sign-up button button-block button-stable" ui-sref="signup">
+            Sign Up
+        </a>
+    </ion-content>
+</ion-view>

@@ -4,13 +4,14 @@
 
 <ion-view>
     <ion-nav-title>Dashboard</ion-nav-title>
-    <ion-content class="has-header">
+    <ion-content>
 
         <!-- Team Occupation -->
         <ion-slide-box show-pager="false">
             <ion-slide ng-controller="TeamOccupationCtrl">
-                <h2 class="text-center">Team Occupation</h2>
-                <ion-nav-title>Team Occupation</ion-nav-title>
+                <div class="item item-divider">
+                    Team Occupation
+                </div>
                 <div class="list">
                     <a class="item item-avatar" href="#/{{ item.id }}" ng-repeat="item in items">
                         <img ng-src="{{ item.image }}" />
@@ -22,7 +23,9 @@
 
             <!-- Next Meeting -->
             <ion-slide ng-controller="NextMeetingsCtrl">
-                <h2 class="text-center">Next Meetings</h2>
+                <div class="item item-divider">
+                    Next Meetings
+                </div>
                 <div class="list">
                     <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
                         <img ng-src="{{ item.image }}" />
@@ -35,7 +38,9 @@
 
             <!-- Global Progress -->
             <ion-slide ng-controller="GlobalProgressCtrl">
-                <h2 class="text-center">Global Progress</h2>
+                <div class="item item-divider">
+                    Global Progress
+                </div>
                 <div class="list">
                     <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
                         <img src="{{ item.image }}" />

@@ -3,6 +3,7 @@
 */
 
 angular.module('GrappBox.controllers')
+
 .controller('DashboardCtrl', function ($scope) {
 })
 

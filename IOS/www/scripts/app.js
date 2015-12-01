@@ -3,14 +3,16 @@
     Every pages mentionned here are stocked in Templates folder
 */
 
-angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
+angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
 
-.run(function ($ionicPlatform) {
+// on starting
+.run(function ($ionicPlatform, $rootScope) {
     $ionicPlatform.ready(function () {
         if (window.StatusBar) {
             StatusBar.styleDefault();
         }
     });
+    $rootScope.API = 'http://api.grappbox.com/app_dev.php/V0.7/'; // actual version of the API using rootScope
 })
 
 .config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
@@ -21,10 +23,22 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
     $ionicConfigProvider.backButton.previousTitleText(false);   // hides the 'Back' text
 
     $stateProvider
+        .state('auth', {
+            url: "/auth", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
+            templateUrl: "templates/auth.html", //'templateUrl' is where app will search for the "physical" page
+            controller: 'AuthCtrl' //link to controller
+        })
+
+        .state('signup', {
+            url: "/signup",
+            templateUrl: "templates/signup.html",
+            controller: 'SignupCtrl'
+        })
+
         .state('app', {
-            url: "/app", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
-            abstract: true, //'abstract' means this state will be an abstract, so will never render, but every page will inherit of it
-            templateUrl: "templates/menu.html" //'templateUrl' is where app will search for the "physical" page
+            url: "/app", 
+            abstract: true, //'abstract' means this state will be an abstract, so will never render, but pages can inherit of it
+            templateUrl: "templates/menu.html"
         })
 
         .state('app.dashboard', {
@@ -32,7 +46,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
                     templateUrl: "templates/dashboard.html",
-                    controller: 'DashboardCtrl' //link to controller
+                    controller: 'DashboardCtrl' 
                 }
             } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
         })
@@ -78,5 +92,5 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers'])
         })
 
     // if no state are found, here is the fallback url - It's also the default page when starting application
-    $urlRouterProvider.otherwise('/app/dashboard');
+    $urlRouterProvider.otherwise('/auth');
 });
