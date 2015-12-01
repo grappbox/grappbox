@@ -44,12 +44,14 @@ namespace API
 
     enum PostRequest
     {
-        PR_LOGIN
+        PR_LOGIN,
+        PR_ROLE_ADD
     };
 
     enum PutRequest
     {
-        PUTR_UserSettings
+        PUTR_UserSettings,
+        PUTR_ProjectSettings,
     };
 
     class IDataConnector

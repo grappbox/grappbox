@@ -3,6 +3,9 @@
 
 #include "UserRoleCheckbox.h"
 #include "CreateNewRole.h"
+#include "InfoPushButton.h"
+#include "API/IDataConnector.h"
+#include "API/SDataManager.h"
 #include <QWidget>
 #include <QList>
 #include <QString>
@@ -12,6 +15,10 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QLayoutItem>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
+#include <QDebug>
 
 class RoleTableWidget: public QWidget
 {
@@ -28,6 +35,7 @@ public:
     const QMap<int, QString>    &getRoles();
     const QMap<int, QString>    &getUsers();
     void                        Clear();
+    void                        SetProjectId(int id);
 
 private:
     void ClearLayout(QLayout* layout, bool deleteWidgets = true);
@@ -36,7 +44,11 @@ public slots:
     void                        reset();
     void                        refresh();
     void                        NewRoleTriggered();
+    void                        SuccessAddRole(int id, QByteArray data);
+    void                        Failure(int id, QByteArray data);
     void                        inviteUser();
+    void                        deleteUser(int);
+    void                        deleteRole(int);
 
 private:
     QMap<int, QString>          *_roles;
@@ -47,6 +59,9 @@ private:
     QPushButton                 *_newUserBtn;
     QPushButton                 *_newRoleBtn;
     CreateNewRole               *_newRoleWindow;
+    API::IDataConnector         *_api;
+    int                         _projectId;
+    QList<QString>              _stackRole;
 };
 
 #endif // ROLETABLEWIDGET_H

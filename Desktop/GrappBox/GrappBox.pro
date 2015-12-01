@@ -43,7 +43,8 @@ SOURCES += main.cpp \
     Body/Settings/ImageUploadWidget.cpp \
     Body/Settings/RoleTableWidget.cpp \
     Body/Settings/UserRoleCheckbox.cpp \
-    Body/Settings/CreateNewRole.cpp
+    Body/Settings/CreateNewRole.cpp \
+    Body/Settings/InfoPushButton.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -71,7 +72,8 @@ HEADERS  += MainWindow.h \
     Body/Settings/ImageUploadWidget.h \
     Body/Settings/RoleTableWidget.h \
     Body/Settings/UserRoleCheckbox.h \
-    Body/Settings/CreateNewRole.h
+    Body/Settings/CreateNewRole.h \
+    Body/Settings/InfoPushButton.h
 
 RESOURCES += \
     temporaryressources.qrc \

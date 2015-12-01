@@ -9,6 +9,7 @@ RoleTableWidget::RoleTableWidget(QWidget *parent) : QWidget(parent)
     _newUserBtn = new QPushButton(tr("Add user"));
     _newRoleBtn = new QPushButton(tr("Create role"));
     _rowLayout = new QVBoxLayout();
+    _api = API::SDataManager::GetCurrentDataConnector();
     this->setLayout(_rowLayout);
 
     QObject::connect(_newRoleWindow, SIGNAL(RoleConfirmed()), this, SLOT(NewRoleTriggered()));
@@ -124,7 +125,10 @@ void RoleTableWidget::refresh()
     for (usersIT = _users->begin(); usersIT != _users->end(); usersIT++)
     {
         QLabel *newLabel = new QLabel(usersIT.value());
+        InfoPushButton *btnDeleteUsr = new InfoPushButton();
 
+        btnDeleteUsr->setText(tr("Delete User"));
+        btnDeleteUsr->SetInfo(usersIT.key());
         newLabel->setStyleSheet("font-weight: bold;");
         _colLayout->append(new QHBoxLayout());
         _rowLayout->addLayout(_colLayout->back());
@@ -139,27 +143,86 @@ void RoleTableWidget::refresh()
             _colLayout->back()->addWidget(userRoleCheckbox);
             _colLayout->back()->setAlignment(userRoleCheckbox, Qt::AlignCenter);
             _usersRolesCheckboxes->append(userRoleCheckbox);
+
         }
-        _colLayout->back()->addWidget(new QLabel(""));
+        QObject::connect(btnDeleteUsr, SIGNAL(ReleaseInfo(int)), this, SLOT(deleteUser(int)));
+        _colLayout->back()->addWidget(btnDeleteUsr);
     }
 
     _colLayout->first()->addWidget(_newRoleBtn);
     _colLayout->append(new QHBoxLayout());
     _rowLayout->addLayout(_colLayout->back());
     _colLayout->back()->addWidget(_newUserBtn);
+    for (rolesIT = _roles->begin(); rolesIT != _roles->end(); rolesIT++)
+    {
+        InfoPushButton *deleteRoleButton = new InfoPushButton();
+
+        deleteRoleButton->setText(tr("Delete role"));
+        deleteRoleButton->SetInfo(rolesIT.key());
+        QObject::connect(deleteRoleButton, SIGNAL(ReleaseInfo(int)), this, SLOT(deleteRole(int)));
+        _colLayout->back()->addWidget(deleteRoleButton);
+    }
+    _colLayout->back()->addWidget(new QLabel(""));
+}
+
+void RoleTableWidget::SetProjectId(int id)
+{
+    _projectId = id;
 }
 
 void RoleTableWidget::NewRoleTriggered()
 {
     QMap<QString, bool> authorizations = _newRoleWindow->GetRoleAuthorizations();
     QString roleName = _newRoleWindow->GetRoleName();
+    QVector<QString> data;
+    QMap<QString, bool>::iterator it;
 
-    //Trigger new role window
-    this->reset();// Todo after API answer
-    this->refresh(); // Todo after API answer
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectId));
+    data.append(roleName);
+    data.append(QString(authorizations["teamTimeline"]));
+    data.append(QString(authorizations["customerTimeline"]));
+    data.append(QString(authorizations["gantt"]));
+    data.append(QString(authorizations["whiteboard"]));
+    data.append(QString(authorizations["bugtracker"]));
+    data.append(QString(authorizations["event"]));
+    data.append(QString(authorizations["task"]));
+    data.append(QString(authorizations["projectSettings"]));
+    data.append(QString(authorizations["cloud"]));
+
+    _stackRole.append(roleName);
+    _api->Post(API::DP_PROJECT, API::PR_ROLE_ADD, data, this, "SuccessAddRole", "Failure");
 }
 
 void RoleTableWidget::inviteUser()
 {
     //Trigger inviteUserWindow
+}
+
+void RoleTableWidget::deleteUser(int idUser)
+{
+
+}
+
+void RoleTableWidget::deleteRole(int idRole)
+{
+
+}
+
+void RoleTableWidget::SuccessAddRole(int id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object();
+
+    this->addRole(_stackRole.first(), json["roleId"].toInt());
+    _stackRole.pop_front();
+    reset();
+    refresh();
+}
+
+
+void RoleTableWidget::Failure(int id, QByteArray data)
+{
+    QMessageBox::critical(this, "Connexion Error", "Failure to retreive data from internet");
+    qDebug() << data;
 }

@@ -37,6 +37,9 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
     case PR_LOGIN:
         reply = Login(data);
         break;
+    case PR_ROLE_ADD:
+        reply = AddRole(data);
+        break;
     }
     if (reply == NULL)
         throw QException();
@@ -63,6 +66,9 @@ int DataConnectorOnline::Put(DataPart part, int request, QVector<QString> &data,
     {
     case PUTR_UserSettings:
         reply = PutUserSettings(data);
+        break;
+    case PUTR_ProjectSettings:
+        reply = PutProjectSettings(data);
         break;
     }
     if (reply == NULL)
@@ -183,23 +189,57 @@ QNetworkReply *DataConnectorOnline::PutUserSettings(QVector<QString> &data)
 
     if (data[3] != "")
         json["avatar"] = data[3];
-    if (data[5] != "")
+    if (data[4] != "")
         json["phone"] = data[4];
-    if (data[6] != "")
+    if (data[5] != "")
         json["country"] = data[5];
-    if (data[7] != "")
+    if (data[6] != "")
         json["linkedin"] = data[6];
-    if (data[8] != "")
+    if (data[7] != "")
         json["viadeo"] = data[7];
-    if (data[9] != "")
+    if (data[8] != "")
         json["twitter"] = data[8];
-    if (data[10] != "")
+    if (data[9] != "")
         json["password"] = data[9];
 
     QJsonDocument doc(json);
     QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
-    qDebug() << jsonba;
     QNetworkRequest requestSend(QUrl(URL_API + QString("user/basicinformations/") + data[10]));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+    QNetworkReply *request = _Manager->put(requestSend, jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::PutProjectSettings(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["token"] = data[0];
+    json["projectId"] = data[1];
+    if (data[2] != "")
+        json["name"] = data[2];
+    if (data[3] != "")
+        json["description"] = data[3];
+    if (data[4] != "")
+        json["logo"] = data[4];
+    if (data[5] != "")
+        json["phone"] = data[5];
+    if (data[6] != "")
+        json["company"] = data[6];
+    if (data[7] != "")
+        json["email"] = data[7];
+    if (data[8] != "")
+        json["facebook"] = data[8];
+    if (data[9] != "")
+        json["twitter"] = data[9];
+    if (data[10] != "")
+        json["password"] = data[10];
+
+    QJsonDocument doc(json);
+    QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
+    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/updateinformations")));
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
     QNetworkReply *request = _Manager->put(requestSend, jsonba);
@@ -233,5 +273,32 @@ QNetworkReply *DataConnectorOnline::GetAction(QString urlIn, QVector<QString> &d
 
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::AddRole(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["_token"] = data[0];
+    json["projectId"] = data[1];
+    json["name"] = data[2];
+    json["teamTimeline"] = data[3];
+    json["customerTimeline"] = data[4];
+    json["gantt"] = data[5];
+    json["whiteboard"] = data[6];
+    json["bugtracker"] = data[7];
+    json["event"] = data[8];
+    json["task"] = data[9];
+    json["projectSettings"] = data[10];
+    json["cloud"] = data[11];
+
+    QJsonDocument doc(json);
+    QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
+    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/updateinformations")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+    QNetworkReply *request = _Manager->post(requestSend, jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
 }

@@ -49,8 +49,8 @@ const QMap<QString, bool> CreateNewRole::GetRoleAuthorizations()
 {
     QMap<QString, bool> auth;
 
-    auth["timelineTeam"] = _timelineTeam->isChecked();
-    auth["timelineCustomer"] = _timelineCustomer->isChecked();
+    auth["teamTimeline"] = _timelineTeam->isChecked();
+    auth["customerTimeline"] = _timelineCustomer->isChecked();
     auth["gantt"] = _gantt->isChecked();
     auth["whiteboard"] = _whiteboard->isChecked();
     auth["bugtracker"] = _bugtracker->isChecked();
@@ -85,5 +85,5 @@ void CreateNewRole::Open()
 void CreateNewRole::OkTriggered()
 {
     emit RoleConfirmed();
-    this->close();
+    this->hide();
 }

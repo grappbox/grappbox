@@ -44,10 +44,15 @@ namespace API
         QMap<QNetworkReply*, DataConnectorCallback> _CallBack;
         QNetworkAccessManager *_Manager;
 
+        //Put
+    private:
+        QNetworkReply *PutUserSettings(QVector<QString> &data);
+        QNetworkReply *PutProjectSettings(QVector<QString> &data);
+
         // Post
     private:
         QNetworkReply *Login(QVector<QString> &data);
-        QNetworkReply *PutUserSettings(QVector<QString> &data);
+        QNetworkReply *AddRole(QVector<QString> &data);
 
         // Get
     private:

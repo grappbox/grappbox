@@ -14,6 +14,13 @@
 #include <QDebug>
 
 #define UNUSED __attribute__((unused))
+#define PH_PROJECT_NAME     tr("Enter your project name here...")
+#define PH_PROJECT_DESC     tr("Enter your project description here...")
+#define PH_COMPANY_NAME     tr("Enter the company who order the project...")
+#define PH_PROJECT_PHONE    tr("Enter the company phone here...")
+#define PH_PROJECT_MAIL     tr("Enter your project contact mail here...")
+#define PH_PROJECT_FACEBOOK tr("Enter the project's facebook page link here...")
+#define PH_PROJECT_TWITTER  tr("Enter the project's twitter account link here...")
 
 class BodyProjectSettings: public QWidget, public IBodyContener
 {
@@ -35,7 +42,7 @@ public slots:
     void                GetSettingsSuccess(int, QByteArray);
     void                GetRolesSuccess(int, QByteArray);
     void                GetUsersSuccess(int, QByteArray);
-
+    void                SetProjectSuccess(int, QByteArray);
 
 signals:
     void                OnLoadingDone(int);
@@ -45,6 +52,7 @@ private:
     QVBoxLayout         *_mainLayout;
     QFormLayout         *_basicProjectInformations;
     QFormLayout         *_socialInformations;
+    QFormLayout         *_passwordInformations;
     QPushButton         *_btnEditMode;
 
     ImageUploadWidget   *_logo;
@@ -56,6 +64,9 @@ private:
     RoleTableWidget     *_usersRoles;
     QLineEdit           *_facebook;
     QLineEdit           *_twitter;
+    QLineEdit           *_password;
+    QLineEdit           *_passwordConfirmation;
+
     int                 _id;
     int                 _projectID;
     API::IDataConnector *_api;

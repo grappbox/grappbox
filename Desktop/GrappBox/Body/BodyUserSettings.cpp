@@ -59,7 +59,7 @@ BodyUserSettings::BodyUserSettings(QWidget *parent) : QWidget(parent)
     _mainLayout->addLayout(_personalInformationLayout);
     _mainLayout->addWidget(new QLabel(tr("<h2>Social Informations</h2>")));
     _mainLayout->addLayout(_socialInformationLayout);
-    _mainLayout->addWidget(new QLabel(tr("<h2>New password (fill only to modify it) </h2>")));
+    _mainLayout->addWidget(new QLabel(tr("<h2>New password (fill only to modify it)</h2>")));
     _mainLayout->addLayout(_newPassword);
     this->setLayout(_mainLayout);
 }
@@ -200,8 +200,8 @@ void BodyUserSettings::PassToStaticMode()
        if (_password->text() != _confirmPassword->text())
        {
            QMessageBox::critical(this, "Password error", "The password and the confirmation fields are different.");
-           this->SetWidgetActiveState(false);
-           _btnEditMode->setEnabled(false);
+           this->SetWidgetActiveState(true);
+           _btnEditMode->setEnabled(true);
            return;
        }
        data.append(_password->text());
