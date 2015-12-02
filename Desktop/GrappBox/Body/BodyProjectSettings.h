@@ -43,6 +43,7 @@ public slots:
     void                GetRolesSuccess(int, QByteArray);
     void                GetUsersSuccess(int, QByteArray);
     void                SetProjectSuccess(int, QByteArray);
+    void                FailureGetSettings(int id, QByteArray data);
 
 signals:
     void                OnLoadingDone(int);

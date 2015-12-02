@@ -67,7 +67,7 @@ void BodyProjectSettings::Show(int ID, MainWindow *mainApp)
     _id = ID;
     _roleRequestNb = 0;
     data.append(API::SDataManager::GetDataManager()->GetToken());
-    _api->Get(API::DP_PROJECT, API::GR_PROJECTS_USER, data, this, "GetSettingsSuccess", "Failure");
+    _api->Get(API::DP_PROJECT, API::GR_PROJECTS_USER, data, this, "GetSettingsSuccess", "FailureGetSettings");
 
 }
 
@@ -232,4 +232,10 @@ void BodyProjectSettings::SetProjectSuccess(int, QByteArray)
     QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToEditMode()));
     _btnEditMode->setText(tr("Pass in edit mode"));
     _btnEditMode->setEnabled(true);
+}
+
+void BodyProjectSettings::FailureGetSettings(int id, QByteArray data)
+{
+    QMessageBox::critical(this, tr("Security Level Error"), tr("Due to your security level, you can't access to project settings, contact your leader to know more about that problem."));
+    Hide();
 }

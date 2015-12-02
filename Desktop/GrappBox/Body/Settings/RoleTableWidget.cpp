@@ -246,7 +246,7 @@ void RoleTableWidget::SuccessAddRole(int id, QByteArray data)
 
 void RoleTableWidget::Failure(int id, QByteArray data)
 {
-    QMessageBox::critical(this, "Connexion Error", "Failure to retreive data from internet");
+    QMessageBox::critical(this, tr("Connexion Error"), tr("Failure to retreive data from internet"));
     qDebug() << data;
 }
 
