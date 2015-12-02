@@ -5,6 +5,7 @@ RoleTableWidget::RoleTableWidget(QWidget *parent) : QWidget(parent)
     _roles = new QMap<int, QString>();
     _users = new QMap<int, QString>();
     _newRoleWindow = new CreateNewRole();
+    _inviteUserWindow = new InviteUserWindow();
     _colLayout = new QList<QHBoxLayout *>();
     _newUserBtn = new QPushButton(tr("Add user"));
     _newRoleBtn = new QPushButton(tr("Create role"));
@@ -13,7 +14,8 @@ RoleTableWidget::RoleTableWidget(QWidget *parent) : QWidget(parent)
     this->setLayout(_rowLayout);
 
     QObject::connect(_newRoleWindow, SIGNAL(RoleConfirmed()), this, SLOT(NewRoleTriggered()));
-    QObject::connect(_newUserBtn, SIGNAL(released()), this, SLOT(inviteUser()));
+    QObject::connect(_inviteUserWindow, SIGNAL(InviteUserCompleted(QString)), this, SLOT(InviteUser(QString)));
+    QObject::connect(_newUserBtn, SIGNAL(released()), _inviteUserWindow, SLOT(Open()));
     QObject::connect(_newRoleBtn, SIGNAL(released()), _newRoleWindow, SLOT(Open()));
     this->reset();
 }
@@ -127,6 +129,7 @@ void RoleTableWidget::refresh()
         QLabel *newLabel = new QLabel(usersIT.value());
         InfoPushButton *btnDeleteUsr = new InfoPushButton();
 
+        QObject::connect(btnDeleteUsr, SIGNAL(ReleaseInfo(int)), this, SLOT(deleteUser(int)));
         btnDeleteUsr->setText(tr("Delete User"));
         btnDeleteUsr->SetInfo(usersIT.key());
         newLabel->setStyleSheet("font-weight: bold;");
@@ -138,6 +141,8 @@ void RoleTableWidget::refresh()
             UserRoleCheckbox *userRoleCheckbox = new UserRoleCheckbox();
 
 
+            QObject::connect(userRoleCheckbox, SIGNAL(checked(UserRoleCheckbox *,QPair<const QString&,const int>,QPair<const QString&,const int>)), this, SLOT(AssignRole(UserRoleCheckbox *,QPair<const QString&,const int>,QPair<const QString&,const int>)));
+            QObject::connect(userRoleCheckbox, SIGNAL(unchecked(UserRoleCheckbox *,QPair<const QString&,const int>,QPair<const QString&,const int>)), this, SLOT(DetachRole(UserRoleCheckbox *,QPair<const QString&,const int>,QPair<const QString&,const int>)));
             userRoleCheckbox->SetUser(usersIT.value(), usersIT.key());
             userRoleCheckbox->SetRole(rolesIT.value(), rolesIT.key());
             _colLayout->back()->addWidget(userRoleCheckbox);
@@ -180,33 +185,52 @@ void RoleTableWidget::NewRoleTriggered()
     data.append(API::SDataManager::GetDataManager()->GetToken());
     data.append(QString::number(_projectId));
     data.append(roleName);
-    data.append(QString(authorizations["teamTimeline"]));
-    data.append(QString(authorizations["customerTimeline"]));
-    data.append(QString(authorizations["gantt"]));
-    data.append(QString(authorizations["whiteboard"]));
-    data.append(QString(authorizations["bugtracker"]));
-    data.append(QString(authorizations["event"]));
-    data.append(QString(authorizations["task"]));
-    data.append(QString(authorizations["projectSettings"]));
-    data.append(QString(authorizations["cloud"]));
+    data.append(QString::number(authorizations["teamTimeline"]));
+    data.append(QString::number(authorizations["customerTimeline"]));
+    data.append(QString::number(authorizations["gantt"]));
+    data.append(QString::number(authorizations["whiteboard"]));
+    data.append(QString::number(authorizations["bugtracker"]));
+    data.append(QString::number(authorizations["event"]));
+    data.append(QString::number(authorizations["task"]));
+    data.append(QString::number(authorizations["projectSettings"]));
+    data.append(QString::number(authorizations["cloud"]));
 
     _stackRole.append(roleName);
-    _api->Post(API::DP_PROJECT, API::PR_ROLE_ADD, data, this, "SuccessAddRole", "Failure");
+    _api->Post(API::DP_PROJECT, API::PR_ROLE_ADD, data, this, "SuccessAddRole", "FailureAddRole");
 }
 
-void RoleTableWidget::inviteUser()
+void RoleTableWidget::InviteUser(QString usermail) //TODO: To confirm by API
 {
-    //Trigger inviteUserWindow
+    QVector<QString> data;
+
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectId));
+    data.append(usermail);
+
+    _api->Post(API::DP_PROJECT, API::PR_PROJECT_INVITE, data, this, "SuccessInvite", "Failure");
 }
 
 void RoleTableWidget::deleteUser(int idUser)
 {
+    QVector<QString> data;
 
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectId));
+    data.append(QString::number(idUser));
+
+    _api->Delete(API::DP_PROJECT, API::DR_PROJECT_USER, data, this, "SuccessDeleteUser", "Failure");
 }
 
 void RoleTableWidget::deleteRole(int idRole)
 {
+    QVector<QString> data;
 
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectId));
+    data.append(QString::number(idRole));
+    _stackRoleDelete.append(idRole);
+
+    _api->Delete(API::DP_PROJECT, API::DR_PROJECT_ROLE, data, this, "SuccessDeleteRole", "FailureDeleteRole");
 }
 
 void RoleTableWidget::SuccessAddRole(int id, QByteArray data)
@@ -220,9 +244,100 @@ void RoleTableWidget::SuccessAddRole(int id, QByteArray data)
     refresh();
 }
 
-
 void RoleTableWidget::Failure(int id, QByteArray data)
 {
     QMessageBox::critical(this, "Connexion Error", "Failure to retreive data from internet");
     qDebug() << data;
+}
+
+void RoleTableWidget::FailureAddRole(int id, QByteArray data)
+{
+    _stackRole.pop_front();
+    Failure(id, data);
+}
+
+void RoleTableWidget::SuccessDeleteRole(int id, QByteArray data)
+{
+    _roles->remove(_stackRoleDelete.first());
+    _stackRoleDelete.pop_front();
+    reset();
+    refresh();
+}
+
+void RoleTableWidget::AssignRole(UserRoleCheckbox *checkbox,const QPair<const QString &, const int> user, const QPair<const QString &, const int> role)
+{
+    QVector<QString> data;
+
+    this->setEnabled(false);
+    _stackRoleAssign.append(checkbox);
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectId));
+    data.append(QString::number(user.second));
+    data.append(QString::number(role.second));
+    _api->Post(API::DP_PROJECT, API::PR_ROLE_ASSIGN, data, this, "SuccessAttachRole", "FailureAttachRole");
+}
+
+void RoleTableWidget::DetachRole(UserRoleCheckbox *checkbox,const QPair<const QString &, const int> user, const QPair<const QString &, const int> role)
+{
+    QVector<QString> data;
+
+    this->setEnabled(false);
+    _stackRoleDetach.append(checkbox);
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectId));
+    data.append(QString::number(user.second));
+    data.append(QString::number(role.second));
+    _api->Delete(API::DP_PROJECT, API::DR_ROLE_DETACH, data, this, "SuccessDetachRole", "FailureDetachRole");
+}
+
+void RoleTableWidget::FailureAttachRole(int id, QByteArray data)
+{
+    _stackRoleAssign.first()->setChecked(false);
+    _stackRoleAssign.pop_front();
+    this->setEnabled(true);
+    Failure(id, data);
+}
+
+void RoleTableWidget::FailureDetachRole(int id, QByteArray data)
+{
+    _stackRoleDetach.first()->setChecked(true);
+    _stackRoleDetach.pop_front();
+}
+
+void RoleTableWidget::FailureDeleteRole(int id, QByteArray data)
+{
+    _stackRoleDelete.pop_front();
+    this->setEnabled(true);
+    Failure(id, data);
+}
+
+void RoleTableWidget::SuccessAttachRole(int id, QByteArray data)
+{
+    _stackRoleAssign.pop_front();
+    this->setEnabled(true);
+}
+
+void RoleTableWidget::SuccessDetachRole(int id, QByteArray data)
+{
+    _stackRoleDetach.pop_front();
+    this->setEnabled(true);
+}
+
+void RoleTableWidget::SuccessInviteUser(int id, QByteArray data) // TODO : to confirm by api
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object();
+
+    _users->insert(json["idUser"].toInt(), QString(json["userFirst_name"].toString() + " " + json["userLast_name"].toString()));
+    reset();
+    refresh();
+}
+
+void RoleTableWidget::SuccessDeleteUser(int id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object();
+    _users->remove(json["idUser"].toInt());
+    reset();
+    refresh();
 }

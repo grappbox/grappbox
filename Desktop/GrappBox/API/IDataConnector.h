@@ -45,7 +45,16 @@ namespace API
     enum PostRequest
     {
         PR_LOGIN,
-        PR_ROLE_ADD
+        PR_ROLE_ADD,
+        PR_ROLE_ASSIGN,
+        PR_PROJECT_INVITE
+    };
+
+    enum DeleteRequest
+    {
+        DR_PROJECT_ROLE,
+        DR_ROLE_DETACH,
+        DR_PROJECT_USER
     };
 
     enum PutRequest

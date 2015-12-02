@@ -40,6 +40,12 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
     case PR_ROLE_ADD:
         reply = AddRole(data);
         break;
+    case PR_ROLE_ASSIGN:
+        reply = AttachRole(data);
+        break;
+    case PR_PROJECT_INVITE:
+        reply = ProjectInvite(data);
+        break;
     }
     if (reply == NULL)
         throw QException();
@@ -150,7 +156,35 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 
 int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
-
+    QNetworkReply *reply = NULL;
+    switch (request)
+    {
+    case DR_PROJECT_ROLE:
+        reply = DeleteProjectRole(data);
+        break;
+    case DR_ROLE_DETACH:
+        reply = DetachRole(data);
+        break;
+    case DR_PROJECT_USER:
+        reply = DeleteProjectUser(data);
+        break;
+    }
+    if (reply == NULL)
+        throw QException();
+    _CallBack[reply] = DataConnectorCallback();
+    _CallBack[reply]._Request = requestResponseObject;
+    _CallBack[reply]._SlotFailure = slotFailure;
+    _CallBack[reply]._SlotSuccess = slotSuccess;
+    int maxInt = 1;
+    for (QMap<QNetworkReply*,int>::const_iterator it = _Request.constBegin(); it != _Request.constEnd(); ++it)
+    {
+        if (it.value() >= maxInt)
+        {
+            maxInt = it.value() + 1;
+        }
+    }
+    _Request[reply] = maxInt;
+    return maxInt;
 }
 
 QNetworkReply *DataConnectorOnline::Login(QVector<QString> &data)
@@ -295,10 +329,105 @@ QNetworkReply *DataConnectorOnline::AddRole(QVector<QString> &data)
 
     QJsonDocument doc(json);
     QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
-    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/updateinformations")));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("roles/addprojectroles")));
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
     QNetworkReply *request = _Manager->post(requestSend, jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::DeleteProjectRole(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["_token"] = data[0];
+    json["projectId"] = data[1];
+    json["roleId"] = data[2];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("roles/delprojectroles")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->sendCustomRequest(requestSend, QByteArray("DELETE"), new QBuffer(jsonba));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+
+}
+
+QNetworkReply *DataConnectorOnline::AttachRole(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["_token"] = data[0];
+    json["projectId"] = data[1];
+    json["userId"] = data[2];
+    json["roleId"] = data[3];
+
+    QJsonDocument doc(json);
+    QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
+    QNetworkRequest requestSend(QUrl(URL_API + QString("roles/assignpersontorole")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+    QNetworkReply *request = _Manager->post(requestSend, jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::DetachRole(QVector<QString> &data)
+{
+    QJsonObject json;
+
+
+    json["_token"] = data[0];
+    json["projectId"] = data[1];
+    json["userId"] = data[2];
+    json["roleId"] = data[3];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("roles/delpersonrole")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    qDebug() << *jsonba;
+    QNetworkReply *request = _Manager->sendCustomRequest(requestSend,QByteArray("DELETE"), new QBuffer(jsonba));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::ProjectInvite(QVector<QString> &data) // TODO : to confirm by api
+{
+    QJsonObject json;
+
+    json["_token"] = data[0];
+    json["projectId"] = data[1];
+    json["userMail"] = data[2];
+
+    QJsonDocument doc(json);
+    QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
+    QNetworkRequest requestSend(QUrl(URL_API + QString("route doesn't exist yet")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+    QNetworkReply *request = _Manager->post(requestSend, jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::DeleteProjectUser(QVector<QString> &data) // TODO : to confirm by api
+{
+    QJsonObject json;
+
+    json["_token"] = data[0];
+    json["projectId"] = data[1];
+    json["userId"] = data[2];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("route doesn't exist yet")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->sendCustomRequest(requestSend, QByteArray("DELETE"), new QBuffer(jsonba));
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
 }

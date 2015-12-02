@@ -42,7 +42,7 @@ CreateNewRole::CreateNewRole(QWidget *parent) : QWidget(parent)
     _mainLayout->addLayout(_okForm);
 
     QObject::connect(_btnOK, SIGNAL(released()), this, SLOT(OkTriggered()));
-    QObject::connect(_btnCancel, SIGNAL(released()), this, SLOT(close()));
+    QObject::connect(_btnCancel, SIGNAL(released()), this, SLOT(hide()));
 }
 
 const QMap<QString, bool> CreateNewRole::GetRoleAuthorizations()

@@ -4,6 +4,7 @@
 #include "UserRoleCheckbox.h"
 #include "CreateNewRole.h"
 #include "InfoPushButton.h"
+#include "InviteUserWindow.h"
 #include "API/IDataConnector.h"
 #include "API/SDataManager.h"
 #include <QWidget>
@@ -19,6 +20,7 @@
 #include <QJsonObject>
 #include <QMessageBox>
 #include <QDebug>
+#include <QPair>
 
 class RoleTableWidget: public QWidget
 {
@@ -45,10 +47,21 @@ public slots:
     void                        refresh();
     void                        NewRoleTriggered();
     void                        SuccessAddRole(int id, QByteArray data);
+    void                        SuccessDeleteRole(int id, QByteArray data);
+    void                        SuccessAttachRole(int id, QByteArray data);
+    void                        SuccessInviteUser(int id, QByteArray data);
+    void                        SuccessDetachRole(int id, QByteArray data);
+    void                        SuccessDeleteUser(int id, QByteArray data);
     void                        Failure(int id, QByteArray data);
-    void                        inviteUser();
+    void                        FailureAddRole(int id, QByteArray data);
+    void                        FailureDeleteRole(int id, QByteArray data);
+    void                        FailureAttachRole(int id, QByteArray data);
+    void                        FailureDetachRole(int id, QByteArray data);
+    void                        InviteUser(QString usermail);
     void                        deleteUser(int);
     void                        deleteRole(int);
+    void                        AssignRole(UserRoleCheckbox *,const QPair<const QString &, const int>, const QPair<const QString &, const int>);
+    void                        DetachRole(UserRoleCheckbox *,const QPair<const QString &, const int>, const QPair<const QString &, const int>);
 
 private:
     QMap<int, QString>          *_roles;
@@ -59,9 +72,13 @@ private:
     QPushButton                 *_newUserBtn;
     QPushButton                 *_newRoleBtn;
     CreateNewRole               *_newRoleWindow;
+    InviteUserWindow            *_inviteUserWindow;
     API::IDataConnector         *_api;
     int                         _projectId;
     QList<QString>              _stackRole;
+    QList<int>                  _stackRoleDelete;
+    QList<UserRoleCheckbox *>   _stackRoleAssign;
+    QList<UserRoleCheckbox *>   _stackRoleDetach;
 };
 
 #endif // ROLETABLEWIDGET_H

@@ -65,6 +65,7 @@ void BodyProjectSettings::Show(int ID, MainWindow *mainApp)
 
     _mainApplication = mainApp;
     _id = ID;
+    _roleRequestNb = 0;
     data.append(API::SDataManager::GetDataManager()->GetToken());
     _api->Get(API::DP_PROJECT, API::GR_PROJECTS_USER, data, this, "GetSettingsSuccess", "Failure");
 
@@ -179,6 +180,7 @@ void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
     emit OnLoadingDone(_id);
     dataRole.append(API::SDataManager::GetDataManager()->GetToken());
     dataRole.append(QString::number(_projectID));
+    _usersRoles->SetProjectId(_projectID);
     _usersRoles->Clear();
     _usersRoles->reset();
     _api->Get(API::DP_PROJECT, API::GR_PROJECT_ROLE, dataRole, this, "GetRolesSuccess", "Failure");
@@ -196,8 +198,12 @@ void BodyProjectSettings::GetRolesSuccess(int UNUSED id, QByteArray data)
         QJsonObject current = (*jIt).toObject();
         _usersRoles->addRole(current["name"].toString(), current["id"].toInt());
     }
-    _usersRoles->reset();
-    _usersRoles->refresh();
+    ++_roleRequestNb;
+    if (_roleRequestNb >= 2)
+    {
+        _usersRoles->reset();
+        _usersRoles->refresh();
+    }
 }
 
 void BodyProjectSettings::GetUsersSuccess(int UNUSED id, QByteArray data)
@@ -211,8 +217,12 @@ void BodyProjectSettings::GetUsersSuccess(int UNUSED id, QByteArray data)
         QJsonObject current = (*jIt).toObject();
         _usersRoles->addUser(current["first_name"].toString() + " " + current["last_name"].toString(), current["user_id"].toInt());
     }
-    _usersRoles->reset();
-    _usersRoles->refresh();
+    ++_roleRequestNb;
+    if (_roleRequestNb >= 2)
+    {
+        _usersRoles->reset();
+        _usersRoles->refresh();
+    }
 }
 
 void BodyProjectSettings::SetProjectSuccess(int, QByteArray)

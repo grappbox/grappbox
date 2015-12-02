@@ -2,7 +2,7 @@
 
 UserRoleCheckbox::UserRoleCheckbox(QWidget *parent) : QCheckBox(parent)
 {
-
+    QObject::connect(this, SIGNAL(toggled(bool)), this, SLOT(checkChange(bool)));
 }
 
 void UserRoleCheckbox::SetUser(const QString &username, const int ID)
@@ -25,4 +25,12 @@ const QPair<const QString &, const int> UserRoleCheckbox::getUser()
 const QPair<const QString &, const int> UserRoleCheckbox::getRole()
 {
     return QPair<const QString &, const int>(_roleName, _roleID);
+}
+
+void UserRoleCheckbox::checkChange(bool state)
+{
+    if (state)
+        emit checked(this, QPair<QString, int>(_userName, _userID), QPair<QString, int>(_roleName, _roleID));
+    else
+        emit unchecked(this, QPair<QString, int>(_userName, _userID), QPair<QString, int>(_roleName, _roleID));
 }

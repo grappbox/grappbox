@@ -70,6 +70,7 @@ private:
     int                 _id;
     int                 _projectID;
     API::IDataConnector *_api;
+    int                 _roleRequestNb;
 };
 
 #endif // BODYPROJECTSETTINGS_H

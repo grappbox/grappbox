@@ -44,7 +44,8 @@ SOURCES += main.cpp \
     Body/Settings/RoleTableWidget.cpp \
     Body/Settings/UserRoleCheckbox.cpp \
     Body/Settings/CreateNewRole.cpp \
-    Body/Settings/InfoPushButton.cpp
+    Body/Settings/InfoPushButton.cpp \
+    Body/Settings/InviteUserWindow.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -73,7 +74,8 @@ HEADERS  += MainWindow.h \
     Body/Settings/RoleTableWidget.h \
     Body/Settings/UserRoleCheckbox.h \
     Body/Settings/CreateNewRole.h \
-    Body/Settings/InfoPushButton.h
+    Body/Settings/InfoPushButton.h \
+    Body/Settings/InviteUserWindow.h
 
 RESOURCES += \
     temporaryressources.qrc \

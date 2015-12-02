@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QMap>
 #include <QTimeZone>
+#include <QBuffer>
 
 #include "IDataConnector.h"
 
@@ -53,6 +54,14 @@ namespace API
     private:
         QNetworkReply *Login(QVector<QString> &data);
         QNetworkReply *AddRole(QVector<QString> &data);
+        QNetworkReply *AttachRole(QVector<QString> &data);
+        QNetworkReply *ProjectInvite(QVector<QString> &data);
+
+        // Delete
+    private:
+        QNetworkReply *DeleteProjectRole(QVector<QString> &data);
+        QNetworkReply *DetachRole(QVector<QString> &data);
+        QNetworkReply *DeleteProjectUser(QVector<QString> &data);
 
         // Get
     private:
