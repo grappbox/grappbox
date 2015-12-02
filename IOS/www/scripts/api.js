@@ -13,4 +13,7 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'accountadministration/logout/:token', {token: "@token"});
 })
 
-// DASHBOARD
+// PROJECTS
+.factory('Projects', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'dashboard/getprojectlist/:token', { token: "@token" });
+})

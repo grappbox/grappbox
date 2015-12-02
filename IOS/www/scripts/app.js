@@ -12,7 +12,8 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             StatusBar.styleDefault();
         }
     });
-    $rootScope.API = 'http://api.grappbox.com/app_dev.php/V0.7/'; // actual version of the API using rootScope
+    $rootScope.API_VERSION = '0.7'; //actual API's version
+    $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
 })
 
 .config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
@@ -36,19 +37,29 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
         })
 
         .state('app', {
-            url: "/app", 
+            url: "/app",
             abstract: true, //'abstract' means this state will be an abstract, so will never render, but pages can inherit of it
             templateUrl: "templates/menu.html"
         })
 
-        .state('app.dashboard', {
-            url: "/dashboard",
+        .state('app.projects', {
+            url: "/projects",
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
-                    templateUrl: "templates/dashboard.html",
-                    controller: 'DashboardCtrl' 
+                    templateUrl: "templates/projects.html",
+                    controller: 'ProjectsCtrl'
                 }
-            } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
+            } // because 'app.projects' inherits from 'app', urls are concatenated : '/app/dashboard'
+        })
+
+        .state('app.dashboard', {
+            url: "/dashboard",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/dashboard.html",
+                    controller: 'DashboardCtrl'
+                }
+            } 
         })
 
         .state('app.timelines', {

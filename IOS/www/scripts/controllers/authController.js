@@ -11,35 +11,33 @@ angular.module('GrappBox.controllers')
         Login.save({ login: $scope.user.email, password: $scope.user.password }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
-                console.log(data);
                 $rootScope.userDatas = data.user;
-                $state.go('app.dashboard');
+                $state.go('app.projects');
             })
             .catch(function (error) {
-                console.error('Connexion failed ! Reason: ' + error.data.reason);
+                console.error('Connexion failed ! Reason: ' + error);
+            })
+    }
+
+    $scope.loginWithToken = function () {
+        Login.save({ token: $rootScope.userDatas.token }).$promise
+            .then(function (data) {
+                console.log('Connexion successful !');
+                $rootScope.userDatas = data.user;
+                $state.go('app.projects');
+            })
+            .catch(function (error) {
+                console.error('Connexion failed ! Reason: ' + error);
             })
     }
 
     $scope.logout = function () {
-        Logout.get({ token: $rootScope.userDatas.user.token }).$promise
+        Logout.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Deconnexion successful !');
-                console.log(data);
             })
             .catch(function (error) {
-                console.error('Deconnexion failed ! Reason: ' + error.data.reason);
-            })
-
-    }
-
-    $scope.loginWithToken = function () {
-        Login.save({ token: $rootScope.userDatas.user.token }).$promise
-            .then(function (data) {
-                console.log('Connexion successful !');
-                console.log(data);
-            })
-            .catch(function (error) {
-                console.error('Connexion failed ! Reason: ' + error.data.reason);
+                console.error('Deconnexion failed ! Reason: ' + error);
             })
     }
 })
