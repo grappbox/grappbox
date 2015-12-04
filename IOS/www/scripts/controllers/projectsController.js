@@ -1,12 +1,12 @@
 ﻿/*
-    Summary: Projects list after login GrappBox
+    Summary: Projects list
 */
 
 angular.module('GrappBox.controllers')
 // PROJECTS LIST
 .controller('ProjectsCtrl', function ($scope, $ionicModal, $rootScope, $state, Projects) {
     $scope.projectsTab = {};
-    $scope.listProjects = function () {
+    $scope.GetProjects = function () {
         Projects.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
@@ -16,7 +16,7 @@ angular.module('GrappBox.controllers')
                 console.error('Get projects list failed ! Reason: ' + error);
             })
     }
-    $scope.listProjects();
+    $scope.GetProjects();
 
     //Search for addProjectModal.html ng-template in projects.html
     $ionicModal.fromTemplateUrl('addProjectModal.html', {
@@ -55,18 +55,4 @@ angular.module('GrappBox.controllers')
     $scope.onProjectDelete = function (project) {
         $scope.projectsTab.splice($scope.projectsTab.indexOf(project), 1);
     };
-
-    /*$scope.projectsTab = [
-    {
-        id: 1,
-        name: "Project"
-    },
-    {
-        id: 2,
-        name: "Project"
-    },
-    {
-        id: 3,
-        name: "Project"
-    }];*/
 })

@@ -1,161 +1,53 @@
 ﻿/*
-    Summary: DASHBOARD & GLOBAL PROGRESS & NEXT MEETINGS & TEAM OCCUPATION Controllers
+    Summary: Dashboard Controllers
 */
 
 angular.module('GrappBox.controllers')
 
-.controller('DashboardCtrl', function ($scope) {
-})
+.controller('DashboardCtrl', function ($scope, $rootScope, $state, TeamOccupation, NextMeetings, GlobalProgress) {
 
-.controller('TeamOccupationCtrl', function ($scope) {
-    $scope.items = [
-        {
-            id: 1,
-            name: "Allyriane Launois",
-            occupation: "Free",
-            image: 'images/GrappBox/allyriane_launois.jpg'
-        },
-        {
-            id: 2,
-            name: "Frédéric Tan",
-            occupation: "Busy",
-            image: 'images/GrappBox/frederic_tan.jpg'
-        },
-        {
-            id: 3,
-            name: "Léo Nadeau",
-            occupation: "Busy",
-            image: 'images/GrappBox/leo_nadeau.jpg'
-        },
-        {
-            id: 4,
-            name: "Marc Wieser",
-            occupation: "Free",
-            image: 'images/GrappBox/marc_wieser.jpeg'
-        },
-        {
-            id: 5,
-            name: "Pierre Feytout",
-            occupation: "Busy",
-            image: 'images/GrappBox/pierre_feytout.jpg'
-        },
-        {
-            id: 6,
-            name: "Pierre Hofman",
-            occupation: "Busy",
-            image: 'images/GrappBox/pierre_hofman.jpg'
-        },
-        {
-            id: 7,
-            name: "Roland Hemmer",
-            occupation: "Busy",
-            image: 'images/GrappBox/roland_hemmer.jpg'
-        },
-        {
-            id: 8,
-            name: "Valentin Mougenot",
-            occupation: "Free",
-            image: 'images/GrappBox/valentin_mougenot.jpg'
-        }
-    ];
-})
+    //Get Team Occupation
+    $scope.teamOccupationTab = {};
+    $scope.GetTeamOccupation = function () {
+        TeamOccupation.get({ token: $rootScope.userDatas.token }).$promise
+            .then(function (data) {
+                console.log('Get team occupation list successful !');
+                console.log(data);
+                $scope.teamOccupationTab = data;
+            })
+            .catch(function (error) {
+                console.error('Get team occupation list failed ! Reason: ' + error);
+            })
+    }
+    $scope.GetTeamOccupation();
 
-.controller('NextMeetingsCtrl', function ($scope) {
-    $scope.items = [
-        {
-            id: 1,
-            type: "Client Meeting",
-            date: "2015/10/06",
-            hour: "01:00 pm",
-            image: 'images/NextMeetings/Client_Meeting.png'
-        },
-        {
-            id: 2,
-            type: "Team Meeting",
-            date: "2015/10/06",
-            hour: "04:30 pm",
-            image: 'images/NextMeetings/Team_Meeting.png'
-        },
-        {
-            id: 3,
-            type: "Presentation",
-            date: "2015/10/07",
-            hour: "01:00 pm",
-            image: 'images/NextMeetings/Presentation.png'
-        },
-        {
-            id: 4,
-            type: "Exceptional",
-            date: "2015/10/08",
-            hour: "08:00 pm",
-            image: 'images/NextMeetings/Exceptional.png'
-        },
-        {
-            id: 5,
-            type: "Relax",
-            date: "2015/10/09",
-            hour: "06:00 pm",
-            image: 'images/NextMeetings/Relax.png'
-        },
-        {
-            id: 6,
-            type: "Client Meeting",
-            date: "2015/10/10",
-            hour: "01:00 pm",
-            image: 'images/NextMeetings/Client_Meeting.png'
-        }
-    ];
-})
+    //Get Next Meetings
+    $scope.nextMeetingsTab = {};
+    $scope.GetNextMeetings = function () {
+        NextMeetings.query({ token: $rootScope.userDatas.token }).$promise
+            .then(function (data) {
+                console.log('Get next meetings list successful !');
+                console.log(data);
+                $scope.nextMeetingsTab = data;
+            })
+            .catch(function (error) {
+                console.error('Get next meetings list failed ! Reason: ' + error);
+            })
+    }
+    $scope.GetNextMeetings();
 
-.controller('GlobalProgressCtrl', function ($scope) {
-    $scope.items = [
-        {
-            id: 1,
-            product: "Game Sphere",
-            author: "Nivento",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Game_Sphere.png'
-        },
-        {
-            id: 2,
-            product: "Goot",
-            author: "Goot",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Goot.png'
-        },
-        {
-            id: 3,
-            product: "Game Sphere",
-            author: "Nivento",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Game_Sphere.png'
-        },
-        {
-            id: 4,
-            product: "Game Sphere",
-            author: "Nivento",
-            tel: "(+33)6.01.02.03.04",
-            email: "caribou@nivento.ca",
-            tasksDone: 21,
-            tasksToDo: 42,
-            messages: 5,
-            problems: 3,
-            image: 'images/GlobalProgress/Game_Sphere.png'
-        }
-    ];
+    //Get Global Progress
+    $scope.globalProgressTab = {};
+    $scope.GetGlobalProgress = function () {
+        GlobalProgress.get({ token: $rootScope.userDatas.token }).$promise
+            .then(function (data) {
+                console.log('Get global progress list successful !');
+                console.log(data);
+                $scope.globalProgressTab = data;
+            })
+            .catch(function (error) {
+                console.error('Get global progress list failed ! Reason: ' + error);
+            })
+    }
+    $scope.GetGlobalProgress();
 })

@@ -12,7 +12,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Connexion successful !');
                 $rootScope.userDatas = data.user;
-                $state.go('app.projects');
+                $state.go('app.dashboard');
             })
             .catch(function (error) {
                 console.error('Connexion failed ! Reason: ' + error);

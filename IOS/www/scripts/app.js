@@ -36,30 +36,31 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             controller: 'SignupCtrl'
         })
 
+        //entering application
         .state('app', {
             url: "/app",
             abstract: true, //'abstract' means this state will be an abstract, so will never render, but pages can inherit of it
             templateUrl: "templates/menu.html"
         })
 
-        .state('app.projects', {
-            url: "/projects",
+        .state('app.dashboard', {
+            url: "/dashboard/:projectId",
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
-                    templateUrl: "templates/projects.html",
-                    controller: 'ProjectsCtrl'
-                }
-            } // because 'app.projects' inherits from 'app', urls are concatenated : '/app/dashboard'
-        })
-
-        .state('app.dashboard', {
-            url: "/dashboard",
-            views: {
-                'menuContent': {
                     templateUrl: "templates/dashboard.html",
                     controller: 'DashboardCtrl'
                 }
-            } 
+            } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
+        })
+
+        .state('app.projects', {
+            url: "/projects",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/projects.html",
+                    controller: 'ProjectsCtrl'
+                }
+            }
         })
 
         .state('app.timelines', {

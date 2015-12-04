@@ -8,49 +8,53 @@
 
         <!-- Team Occupation -->
         <ion-slide-box show-pager="false">
-            <ion-slide ng-controller="TeamOccupationCtrl">
+            <ion-slide>
                 <div class="item item-divider">
                     Team Occupation
                 </div>
                 <div class="list">
-                    <a class="item item-avatar" href="#/{{ item.id }}" ng-repeat="item in items">
-                        <img ng-src="{{ item.image }}" />
-                        <h2>{{ item.name }}</h2>
-                        <h3>{{ item.occupation }}</h3>
+                    <a class="item item-avatar" href="#/{{ teamOccupation.user_id }}" ng-repeat="teamOccupation in teamOccupationTab">
+                        <img ng-src="{{ teamOccupation.image }}" />
+                        <h2>{{ teamOccupation.project_name }}</h2>
+                        <h3>{{ teamOccupation.first_name }} {{ teamOccupation.last_name }}</h3>
+                        <h3>{{ teamOccupation.occupation }}</h3>
+                        <h3>Tasks begun: {{ teamOccupation.number_of_tasks_begun }}</h3>
+                        <h3>Ongoing Tasks: {{ teamOccupation.number_of_ongoing_tasks }}</h3>
                     </a>
                 </div>
             </ion-slide>
 
             <!-- Next Meeting -->
-            <ion-slide ng-controller="NextMeetingsCtrl">
+            <ion-slide>
                 <div class="item item-divider">
                     Next Meetings
                 </div>
                 <div class="list">
-                    <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
-                        <img ng-src="{{ item.image }}" />
-                        <h2>{{ item.type }}</h2>
-                        <h4 class="icon-left ion-ios-calendar-outline"> {{ item.date }}</h4>
-                        <h4 class="icon-left ion-ios-clock-outline"> {{ item.hour }}</h4>
+                    <a class="item item-thumbnail-left" href="#/{{ nextMeeting.id }}" ng-repeat="nextMeeting in nextMeetingsTab">
+                        <img ng-src="{{ nextMeeting.project_logo }}" />
+                        <h2>{{ nextMeeting.event_type }}: {{ nextMeeting.event_title }}</h2>
+                        <h4>"{{ nextMeeting.event_description }}"</h4>
+                        <h4 class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.event_begin_date.date }}</h4>
+                        <h4 class="icon-left ion-ios-clock-outline"> {{ nextMeeting.event_end_date.date }}</h4>
                     </a>
                 </div>
             </ion-slide>
 
             <!-- Global Progress -->
-            <ion-slide ng-controller="GlobalProgressCtrl">
+            <ion-slide>
                 <div class="item item-divider">
                     Global Progress
                 </div>
                 <div class="list">
-                    <a class="item item-thumbnail-left" href="#/{{ item.id }}" ng-repeat="item in items">
-                        <img src="{{ item.image }}" />
-                        <h2>{{ item.product }}</h2>
-                        <h3 class="icon-left ion-ios-people-outline"> {{ item.author }}</h3>
-                        <h4 class="icon-left ion-ios-telephone-outline"> Tel: {{ item.tel }}</h4>
-                        <h4 class="icon-left ion-ios-paperplane-outline"> eMail: {{ item.email }}</h4>
-                        <h4 class="icon-left ion-ios-list-outline"> {{ item.tasksDone }} / {{ item.tasksToDo }} tasks done</h4>
-                        <h4 class="icon-left ion-ios-email-outline"> {{ item.messages }} messages</h4>
-                        <h4 class="icon-left ion-bug"> {{ item.problems }} problems</h4>
+                    <a class="item item-thumbnail-left" href="#/{{ globalProgress.project_id }}" ng-repeat="globalProgress in globalProgressTab">
+                        <img src="{{ globalProgress.project_logo }}" />
+                        <h2>{{ globalProgress.project_name }}</h2>
+                        <h3 class="icon-left ion-ios-people-outline"> {{ globalProgress.project_company }}</h3>
+                        <h4 class="icon-left ion-ios-telephone-outline"> {{ globalProgress.project_phone }}</h4>
+                        <h4 class="icon-left ion-ios-paperplane-outline"> {{ globalProgress.contact_mail }}</h4>
+                        <h4 class="icon-left ion-ios-list-outline"> {{ globalProgress.number_finished_tasks }} / {{ globalProgress.number_ongoing_tasks }} tasks done</h4>
+                        <h4 class="icon-left ion-ios-email-outline"> {{ globalProgress.number_messages }} messages</h4>
+                        <h4 class="icon-left ion-bug"> {{ globalProgress.number_bugs }} problems</h4>
                     </a>
                 </div>
             </ion-slide>

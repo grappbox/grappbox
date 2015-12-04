@@ -13,7 +13,19 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'accountadministration/logout/:token', {token: "@token"});
 })
 
-// PROJECTS
+// DASHBOARD
 .factory('Projects', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'dashboard/getprojectlist/:token', { token: "@token" });
+})
+
+.factory('TeamOccupation', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'dashboard/getteamoccupation/:token', { token: "@token" });
+})
+
+.factory('NextMeetings', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'dashboard/getnextmeetings/:token', { token: "@token" });
+})
+
+.factory('GlobalProgress', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'dashboard/getprojectsglobalprogress/:token', { token: "@token" });
 })
