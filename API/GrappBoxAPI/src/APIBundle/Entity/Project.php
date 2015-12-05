@@ -115,6 +115,11 @@ class Project
     private $users;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $customers_access;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -677,5 +682,38 @@ class Project
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Add customers_access
+     *
+     * @param \APIBundle\Entity\CustomerAccess $customersAccess
+     * @return Project
+     */
+    public function addCustomersAccess(\APIBundle\Entity\CustomerAccess $customersAccess)
+    {
+        $this->customers_access[] = $customersAccess;
+
+        return $this;
+    }
+
+    /**
+     * Remove customers_access
+     *
+     * @param \APIBundle\Entity\CustomerAccess $customersAccess
+     */
+    public function removeCustomersAccess(\APIBundle\Entity\CustomerAccess $customersAccess)
+    {
+        $this->customers_access->removeElement($customersAccess);
+    }
+
+    /**
+     * Get customers_access
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCustomersAccess()
+    {
+        return $this->customers_access;
     }
 }

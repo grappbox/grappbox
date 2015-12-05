@@ -8,10 +8,67 @@ project_updateInformations:
     defaults:   { _controller: APIBundle:Project:updateInformations }
     methods: [PUT]
 
+project_getInformations:
+    path:       projects/getinformations/{token}/{projectId}
+    defaults:   { _controller: APIBundle:Project:getInformations }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
 project_delProject:
     path:       projects/delproject
     defaults:   { _controller: APIBundle:Project:delProject }
     methods: [DELETE]
+
+project_retrieveProject:
+    path:       projects/retrieveproject/{token}/{projectId}
+    defaults:   { _controller: APIBundle:Project:retrieveProject }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+project_generateCustomerAccess:
+    path:       projects/generatecustomeraccess
+    defaults:   { _controller: APIBundle:Project:generateCustomerAccess }
+    methods: [POST]
+
+project_getCustomerAccessById:
+    path:       projects/getcustomeraccessbyid/{token}/{id}
+    defaults:   { _controller: APIBundle:Project:getCustomerAccessById }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+project_getCustomerAccessByProject:
+    path:       projects/getcustomeraccessbyproject/{token}/{projectId}
+    defaults:   { _controller: APIBundle:Project:getCustomerAccessByProject }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+project_delCustomerAccess:
+    path:       projects/delcustomeraccess
+    defaults:   { _controller: APIBundle:Project:delCustomerAccess }
+    methods: [DELETE]
+
+project_addUserToProject:
+    path:       projects/addusertoproject
+    defaults:   { _controller: APIBundle:Project:addUserToProject }
+    methods: [PUT]
+
+project_removeUserToProject:
+    path:       projects/removeusertoproject
+    defaults:   { _controller: APIBundle:Project:removeUserToProject }
+    methods: [DELETE]
+
+project_getUserToProject:
+    path:       projects/getusertoproject/{token}/{projectId}
+    defaults:   { _controller: APIBundle:Project:getUserToProject }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+
 
 role_addProjectRoles:
     path:       roles/addprojectroles
@@ -54,6 +111,14 @@ role_delPersonRole:
     path:       roles/delpersonrole
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:delPersonRole }
     methods: [DELETE]
+
+role_getRoleByProjectAndUser:
+    path:       roles/getrolebyprojectanduser/{token}/{projectId}/{userId}
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getRoleByProjectAndUser }
+    requirements:
+        projectId: \d+
+        userId: \d+
+    methods: [GET]
 
 
 user_basicInformations:
@@ -379,65 +444,6 @@ planning_getEventDetails:
     requirements:
         id: \d+
 
-
-
-projectSettings_addTeamMember:
-    path:       /ProjectSettings/addTeamMember/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:addTeamMember }
-    requirements:
-        id: \d+
-
-projectSettings_generateClientAccess:
-    path:       /ProjectSettings/generateClientAccess/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:generateClientAccess }
-    requirements:
-        id: \d+
-
-projectSettings_delTeamMember:
-    path:       /ProjectSettings/delTeamMember/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:delTeamMember }
-    requirements:
-        id: \d+
-
-projectSettings_assignRole:
-    path:       /ProjectSettings/assignRole/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:assignRole }
-    requirements:
-        id: \d+
-
-projectSettings_editRole:
-    path:       /ProjectSettings/editRole/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:editRole }
-    requirements:
-        id: \d+
-
-projectSettings_getRoles:
-    path:       /ProjectSettings/getRoles/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:getRoles }
-    requirements:
-        id: \d+
-
-projectSettings_checkPermissions:
-    path:       /ProjectSettings/checkPermissions/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:checkPermissions }
-    requirements:
-        id: \d+
-
-projectSettings_createProject:
-    path:       /ProjectSettings/createProject
-    defaults:   { _controller: APIBundle:ProjectSettings:createProject }
-
-projectSettings_archiveProject:
-    path:       /ProjectSettings/archiveProject/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:archiveProject }
-    requirements:
-        id: \d+
-
-projectSettings_setProjectFinished:
-    path:       /ProjectSettings/setProjectFinished/{id}
-    defaults:   { _controller: APIBundle:ProjectSettings:setProjectFinished }
-    requirements:
-        id: \d+
 
 
 

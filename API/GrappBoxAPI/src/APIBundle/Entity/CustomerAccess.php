@@ -15,11 +15,6 @@ class CustomerAccess
     private $id;
 
     /**
-     * @var integer
-     */
-    private $userId;
-
-    /**
      * @var string
      */
     private $hash;
@@ -34,6 +29,11 @@ class CustomerAccess
      */
     private $deletedAt;
 
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $projects;
+
 
     /**
      * Get id
@@ -43,29 +43,6 @@ class CustomerAccess
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
-     * @return CustomerAccess
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return integer 
-     */
-    public function getUserId()
-    {
-        return $this->userId;
     }
 
     /**
@@ -135,5 +112,28 @@ class CustomerAccess
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return CustomerAccess
+     */
+    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
     }
 }

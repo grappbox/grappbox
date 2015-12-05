@@ -8,9 +8,6 @@ APIBundle\Entity\CustomerAccess:
             generator:
                 strategy: AUTO
     fields:
-        userId:
-            type: integer
-            column: user_id
         hash:
             type: string
             length: 255
@@ -21,4 +18,11 @@ APIBundle\Entity\CustomerAccess:
             type: datetime
             column: deleted_at
             nullable: TRUE
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: customers_access
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }
