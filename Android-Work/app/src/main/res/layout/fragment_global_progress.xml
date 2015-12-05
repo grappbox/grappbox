@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -7,14 +6,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/global_progress_title"
+        android:text="@string/next_meeting_title"
         android:textSize="30dip"
         android:paddingLeft="10dip"
         android:textColor="#c0392b"
         android:textStyle="bold"/>
 
     <ListView
-        android:id="@+id/list_progress"
+        android:id="@+id/list_global_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

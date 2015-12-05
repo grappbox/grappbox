@@ -14,14 +14,14 @@
         android:layout_gravity="center"
         android:layout_width="200dip"
         android:layout_height="200dip"
-        android:src="@drawable/grappbox_logo"
-        android:contentDescription="@string/loginDescription" />
+        android:src="@mipmap/icon_launcher"
+        android:contentDescription="@string/logo_description" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="@string/login"
+        android:text="@string/login_label"
         android:textSize="@dimen/login_text_size"
         android:layout_marginTop="15dip"/>
 
@@ -29,7 +29,7 @@
         android:id="@+id/loginInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/loginHint"
+        android:hint="@string/login_hint"
         android:textSize="@dimen/login_input_size"
         android:layout_marginTop="15dip"/>
 
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:text="@string/psw"
+        android:text="@string/password_label"
         android:textSize="@dimen/login_text_size"
         android:layout_marginTop="15dip"/>
 
@@ -45,7 +45,7 @@
         android:id="@+id/passwInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/pswHint"
+        android:hint="@string/password_hint"
         android:textSize="@dimen/login_input_size"
         android:inputType="textPassword"
         android:layout_marginTop="15dip"/>
@@ -53,9 +53,9 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/loginConnectButton"
+        android:text="@string/login_connect_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dip"
-        android:onClick="CheckLogin"/>
+        android:onClick="LoginUser"/>
 
 </LinearLayout>

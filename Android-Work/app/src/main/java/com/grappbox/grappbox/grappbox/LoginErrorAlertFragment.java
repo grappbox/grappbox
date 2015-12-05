@@ -6,9 +6,6 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-/**
- * Created by Arkanice on 25/11/2015.
- */
 public class LoginErrorAlertFragment extends DialogFragment {
 
     @Override
@@ -16,7 +13,7 @@ public class LoginErrorAlertFragment extends DialogFragment {
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setMessage(R.string.loginError).setPositiveButton(R.string.loginErrorReturn, new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.login_error).setPositiveButton(R.string.login_error_return_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

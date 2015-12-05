@@ -1,34 +1,32 @@
 <resources>
     <string name="app_name">Grappbox</string>
 
+    <string name="logo_description">Grappbox logo</string>
+    <string name="login_label">Login</string>
+    <string name="login_hint">Enter your login</string>
+    <string name="password_label">password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="login_connect_button">Connexion</string>
+
+    <string name="login_error">Your login or password is incorrect</string>
+    <string name="login_error_return_button">Return</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="action_settings">Settings</string>
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
-    <string name="team_occupation_title">Your team occupation</string>
-    <string name="next_meeting_title">Your next meeting</string>
-    <string name="global_progress_title">Global progress</string>
-    <string name="waiting_progress_dashboard">waiting</string>
-    <string name="problem_progress_dashboard">problems</string>
-    <string name="zero_number_string_value">0</string>
-    <string-array name="MenuComponent">
-        <item>Dashboard</item>
-        <item>Whiteboard</item>
-        <item>Timeline</item>
-        <item>Settings</item>
-    </string-array>
-    <string name="title_activity_navigation_drawer">NavigationDrawer</string>
-    <string name="navigation_drawer_settings_name">Settings</string>
-    <string name="navigation_drawer_profile_name">Profile</string>
-    <string name="navigation_drawer_logout_name">Logout</string>
-    <string name="whiteboard_selection_title">Whiteboard selection</string>
-    <string name="loginDescription">Grappbox logo</string>
 
+    <string name="team_occupation_title">Team occupation</string>
+    <string name="next_meeting_title">Next meeting</string>
 
-    <string name="login">Login</string>
-    <string name="loginHint">Enter your login</string>
-    <string name="psw">Password</string>
-    <string name="pswHint">Enter your password</string>
-    <string name="loginConnectButton">Connect</string>
-    <string name="loginError">Your login or password is incorrect</string>
-    <string name="loginErrorReturn">Return</string>
+    <string name="image_profile">image profil</string>
+    <string name="username_label">Name :</string>
+    <string name="occupation_project_label">Project :</string>
+    <string name="occupation_state_label">State :</string>
+
+    <string name="list_whiteboard">List whiteboard</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

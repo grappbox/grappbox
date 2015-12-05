@@ -1,7 +1,7 @@
 package com.grappbox.grappbox.grappbox;
 
-import android.content.res.Resources;
-import android.graphics.Color;
+import android.content.ContentValues;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,66 +10,148 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
-
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
-/**
- * Created by Arkanice on 18/09/2015.
- */
 public class TeamOccupationFragment extends Fragment {
 
     private ListView _TeamList;
+    private View    _view;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceBundle)
     {
-        View v = inflater.inflate(R.layout.fragment_team_occupation_, container, false);
+        super.onCreate(savedInstanceBundle);
+    }
 
-        _TeamList = (ListView)v.findViewById(R.id.list_team_occupation);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        _view = inflater.inflate(R.layout.fragment_team_occupation, container, false);
+        APIRequestLogin api = new APIRequestLogin();
+        api.execute();
+        return _view;
+    }
+
+    public void createContentView(List<ContentValues> contentValues)
+    {
+        _TeamList = (ListView)_view.findViewById(R.id.list_team_occupation);
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
 
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("name_member", "Roland Hemmer");
-        map.put("occupation_state", "Busy");
-        map.put("profil_image", String.valueOf(R.drawable.roland_hemmer));
-        listMemberTeam.add(map);
+        for (ContentValues item : contentValues){
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("name_member", item.get("first_name").toString() + " " + item.get("last_name").toString());
+            map.put("occupation_state", item.get("occupation").toString());
+            map.put("occupation_project_name", item.get("project_name").toString());
+            map.put("profil_image", String.valueOf(R.mipmap.icon_launcher));
+            listMemberTeam.add(map);
+        }
 
-        map = new HashMap<String, String>();
-        map.put("name_member", "Pierre Feytou");
-        map.put("occupation_state", "Free");
-        map.put("profil_image", String.valueOf(R.drawable.pierre_feytout));
-        listMemberTeam.add(map);
-
-        map = new HashMap<String, String>();
-        map.put("name_member", "Allyrian Launois");
-        map.put("occupation_state", "Busy");
-        map.put("profil_image", String.valueOf(R.drawable.allyriane_launois));
-        listMemberTeam.add(map);
-
-        map = new HashMap<String, String>();
-        map.put("name_member", "Pierre Hofman");
-        map.put("occupation_state", "Busy");
-        map.put("profil_image", String.valueOf(R.drawable.pierre_hofman));
-        listMemberTeam.add(map);
-
-        map = new HashMap<String, String>();
-        map.put("name_member", "Valentin Mougenot");
-        map.put("occupation_state", "Busy");
-        map.put("profil_image", String.valueOf(R.drawable.valentin_mougenot));
-        listMemberTeam.add(map);
-
-        map = new HashMap<String, String>();
-        map.put("name_member", "Frédéric Tan");
-        map.put("occupation_state", "Free");
-        map.put("profil_image", String.valueOf(R.drawable.frederic_tan));
-        listMemberTeam.add(map);
-
-        SimpleAdapter teamAdapter = new SimpleAdapter(v.getContext(), listMemberTeam, R.layout.team_occupation_item,
-                new String[] {"profil_image", "name_member", "occupation_state"}, new int[] {R.id.profil_image, R.id.name_member, R.id.occupation_state});
+        SimpleAdapter teamAdapter = new SimpleAdapter(_view.getContext(), listMemberTeam, R.layout.item_team_occupation,
+                new String[] {"profil_image", "name_member", "occupation_state", "occupation_project_name"}, new int[] {R.id.profil_image, R.id.name_member, R.id.occupation_state, R.id.occupation_project_name});
         _TeamList.setAdapter(teamAdapter);
+    }
 
-        return v;
+    public class APIRequestLogin extends AsyncTask<String, Void, List<ContentValues>> {
+
+        private static final String _API_URL_BASE = "http://api.grappbox.com/app_dev.php/";
+
+        private List<ContentValues> getTeamOccupation(String result) throws JSONException
+        {
+            final String[] DATA_TEAM = {"project_name", "user_id", "first_name", "last_name", "occupation", "number_of_tasks_begun", "number_of_ongoing_tasks"};
+
+            if (result.length() == 0 || result.equals("[]"))
+                return null;
+            JSONObject forecastJSON = new JSONObject(result);
+            List<ContentValues> list = new Vector<ContentValues>();
+            int i = 0;
+            while (1 == 1) {
+                String person = "Person " + String.valueOf(i);
+                if (!forecastJSON.has(person) || forecastJSON.getString(person).length() == 0)
+                    break;
+                ContentValues values = new ContentValues();
+                for (int data = 0; data < DATA_TEAM.length; ++data){
+                    values.put(DATA_TEAM[data], forecastJSON.getJSONObject(person).getString(DATA_TEAM[data]));
+                }
+                list.add(values);
+                ++i;
+            }
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<ContentValues> result) {
+            super.onPostExecute(result);
+            if (result != null)
+                createContentView(result);
+        }
+
+        @Override
+        protected List<ContentValues> doInBackground(String ... param)
+        {
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            String resultAPI;
+            List<ContentValues> listResult = null;
+
+            try {
+                String urlPath = "http://api.grappbox.com/app_dev.php/V0.8/dashboard/getteamoccupation/" + SessionAdapter.getInstance().getToken();
+                URL url = new URL(urlPath);
+                connection = (HttpURLConnection)url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                InputStream inputStream = connection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                String nLine;
+                while ((line = reader.readLine()) != null) {
+                    nLine = line + "\n";
+                    buffer.append(nLine);
+                }
+
+                if (buffer.length() == 0) {
+                    return null;
+                }
+
+                resultAPI = buffer.toString();
+                listResult =  getTeamOccupation(resultAPI);
+
+            } catch (IOException e){
+                Log.e("APIConnection", "Error ", e);
+                return null;
+            } catch (JSONException j){
+                Log.e("APIConnection", "Error ", j);
+                return null;
+            } finally {
+                if (connection != null){
+                    connection.disconnect();
+                }
+                if (reader != null){
+                    try {
+                        reader.close();
+                    } catch (final IOException e){
+                        Log.e("APIConnection", "Error ", e);
+                    }
+                }
+            }
+            return listResult;
+        }
+
     }
 }

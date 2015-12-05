@@ -6,14 +6,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next_meeting_title"
+        android:text="@string/list_whiteboard"
         android:textSize="30dip"
         android:paddingLeft="10dip"
         android:textColor="#c0392b"
         android:textStyle="bold"/>
 
     <ListView
-        android:id="@+id/list_next_meeting"
+        android:id="@+id/list_whiteboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

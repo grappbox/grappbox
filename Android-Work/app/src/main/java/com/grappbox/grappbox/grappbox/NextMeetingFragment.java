@@ -1,53 +1,179 @@
 package com.grappbox.grappbox.grappbox;
 
+import android.content.ContentValues;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
-/**
- * Created by Arkanice on 18/09/2015.
- */
-public class NextMeetingFragment   extends Fragment {
 
-    private ListView _ListMeeting;
+public class NextMeetingFragment extends Fragment {
+
+    ListView _TeamList;
+    View _view;
+
+    public NextMeetingFragment() {
+        // Required empty public constructor
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceBundle)
     {
-        View v;
+        super.onCreate(savedInstanceBundle);
+    }
 
-        v = inflater.inflate(R.layout.fragment_next_meeting, container, false);
-        _ListMeeting = (ListView)v.findViewById(R.id.list_next_meeting);
-        ArrayList<HashMap<String, String>> listNextMeeting = new ArrayList<HashMap<String, String>>();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        _view = inflater.inflate(R.layout.fragment_next_meeting, container, false);
+        APIRequestLogin api = new APIRequestLogin();
+        api.execute();
+        return _view;
+    }
 
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("meeting_subject", "Meeting Client");
-        map.put("date_meeting", "21/2/2016");
-        map.put("hour_meeting", "12h51");
-        listNextMeeting.add(map);
+    public void createContentView(List<ContentValues> contentValues)
+    {
+        _TeamList = (ListView)_view.findViewById(R.id.list_next_meeting);
+        ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
 
-        map = new HashMap<String, String>();
-        map.put("meeting_subject", "Meeting Client");
-        map.put("date_meeting", "21/2/2016");
-        map.put("hour_meeting", "12h51");
-        listNextMeeting.add(map);
+        for (ContentValues item : contentValues){
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("meeting_title", item.get("project_name").toString() + " " + item.get("event_title").toString());
+            map.put("meeting_subject", item.get("event_description").toString());
+            map.put("date_meeting_start", item.get("event_begin_date").toString());
+            map.put("place_meeting_start", item.get("event_begin_place").toString());
+            map.put("date_meeting_end", item.get("event_end_date").toString());
+            map.put("place_meeting_end", item.get("event_end_place").toString());
+            map.put("logo_project_image_metting", String.valueOf(R.mipmap.icon_launcher));
+            listMemberTeam.add(map);
+        }
 
-        map = new HashMap<String, String>();
-        map.put("meeting_subject", "Meeting Client");
-        map.put("date_meeting", "21/2/2016");
-        map.put("hour_meeting", "12h51");
-        listNextMeeting.add(map);
+        SimpleAdapter meetingAdapter = new SimpleAdapter(_view.getContext(), listMemberTeam, R.layout.item_next_meeting,
+                new String[] {"meeting_title", "meeting_subject", "date_meeting_start", "place_meeting_start", "date_meeting_end", "place_meeting_end", "logo_project_image_metting"},
+                new int[] {R.id.meeting_title, R.id.meeting_subject, R.id.date_meeting_start, R.id.place_meeting_start, R.id.date_meeting_end, R.id.place_meeting_end, R.id.logo_project_image_metting});
+        _TeamList.setAdapter(meetingAdapter);
+    }
 
-        SimpleAdapter meetingAdapter = new SimpleAdapter(v.getContext(), listNextMeeting, R.layout.next_meeting_item,
-                new String[] {"meeting_subject", "date_meeting", "hour_meeting"}, new int[] {R.id.meeting_subject, R.id.date_meeting, R.id.hour_meeting});
-        _ListMeeting.setAdapter(meetingAdapter);
-        return v;
+    public class APIRequestLogin extends AsyncTask<String, Void, List<ContentValues>> {
+
+        private static final String _API_URL_BASE = "http://api.grappbox.com/app_dev.php/";
+
+        @Override
+        protected void onPostExecute(List<ContentValues> result)
+        {
+            super.onPostExecute(result);
+            if (result != null)
+                createContentView(result);
+        }
+
+        private List<ContentValues> getNextMeeting(String result)  throws JSONException
+        {
+            final String[] DATA_MEETING = {"project_name", "project_logo", "event_type", "event_title", "event_description", "event_begin_date", "event_end_date"};
+            final String[] DATA_DATE_EVENT = {"date", "timezone"};
+            final String[] KEY_MEETING = {"project_name", "project_logo", "event_type", "event_title", "event_description", "event_begin_date", "event_begin_place", "event_end_date", "event_end_place"};
+
+
+            JSONObject forecastJSON = new JSONObject(result);
+            List<ContentValues> list = new Vector<ContentValues>();
+            int i = 0;
+            while (1 == 1) {
+                String person = "Meeting " + String.valueOf(i);
+                if (!forecastJSON.has(person) || forecastJSON.getString(person).length() == 0)
+                    break;
+                ContentValues values = new ContentValues();
+                for (int data = 0; data < 5; ++data) {
+                    if (forecastJSON.getJSONObject(person).getString(DATA_MEETING[data]) == null)
+                        values.put(KEY_MEETING[data], "");
+                    else
+                        values.put(KEY_MEETING[data], forecastJSON.getJSONObject(person).getString(DATA_MEETING[data]));
+                }
+                values.put(KEY_MEETING[5], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[5]).getString(DATA_DATE_EVENT[0]));
+                values.put(KEY_MEETING[6], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[5]).getString(DATA_DATE_EVENT[1]));
+                values.put(KEY_MEETING[7], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[6]).getString(DATA_DATE_EVENT[0]));
+                values.put(KEY_MEETING[8], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[6]).getString(DATA_DATE_EVENT[1]));
+
+                list.add(values);
+                ++i;
+            }
+            return list;
+        }
+
+        @Override
+        protected List<ContentValues> doInBackground(String ... param)
+        {
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            ContentValues contentAPI = null;
+            String resultAPI;
+            List<ContentValues> listResult = null;
+
+            try {
+                String urlPath = "http://api.grappbox.com/app_dev.php/V0.8/dashboard/getnextmeetings/" + SessionAdapter.getInstance().getToken();
+                URL url = new URL(urlPath);
+                connection = (HttpURLConnection)url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+
+                InputStream inputStream = connection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                String nLine;
+                while ((line = reader.readLine()) != null) {
+                    nLine = line + "\n";
+                    buffer.append(nLine);
+                }
+
+                if (buffer.length() == 0) {
+                    return null;
+                }
+
+                resultAPI = buffer.toString();
+                listResult = getNextMeeting(resultAPI);
+
+            } catch (IOException e){
+                Log.e("APIConnection", "Error ", e);
+                return null;
+            } catch (JSONException j){
+                Log.e("APIConnection", "Error ", j);
+                return null;
+            }finally {
+                if (connection != null){
+                    connection.disconnect();
+                }
+                if (reader != null){
+                    try {
+                        reader.close();
+                    } catch (final IOException e){
+                        Log.e("APIConnection", "Error ", e);
+                    }
+                }
+            }
+            return listResult;
+        }
+
     }
 }
