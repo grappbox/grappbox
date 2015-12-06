@@ -26,6 +26,7 @@
     <string name="occupation_state_label">State :</string>
 
     <string name="list_whiteboard">List whiteboard</string>
+    <string name="data_not_specified">Not specified</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -1,12 +1,13 @@
 package com.grappbox.grappbox.grappbox;
 
 
-import android.content.ContentValues;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -55,5 +56,14 @@ public class WhiteboardListFragment extends Fragment {
                 new String[] {"whiteboard_title", "project_name", },
                 new int[] {R.id.whiteboard_title, R.id.whiteboard_project_name, });
         _ListWhiteboard.setAdapter(meetingAdapter);
+        _ListWhiteboard.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fragment whiteboard = new WhiteboardFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_frame, whiteboard);
+                transaction.commit();
+            }
+        });
     }
 }

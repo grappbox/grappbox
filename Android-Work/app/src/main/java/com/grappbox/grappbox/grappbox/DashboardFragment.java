@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.grappbox;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Vector;
 
 public class DashboardFragment extends Fragment {
@@ -18,6 +18,7 @@ public class DashboardFragment extends Fragment {
     public static final String TAG = DashboardFragment.class.getSimpleName();
     private SectionsPagerAdapter _SectionPagerAdapter;
     private ViewPager           _viewPager;
+    private TabLayout           _tabLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle)
@@ -39,12 +40,17 @@ public class DashboardFragment extends Fragment {
         _SectionPagerAdapter = new SectionsPagerAdapter(super.getChildFragmentManager(), fragment);
         _viewPager = (ViewPager)rootView.findViewById(R.id.pager);
         _viewPager.setAdapter(_SectionPagerAdapter);
+        _tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
+        _tabLayout.setupWithViewPager(_viewPager);
+
         return rootView;
     }
+
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private List<Fragment>  _fragments = null;
+        private String tabTitle[] = {"Dashboard", "Next Meeting", "Timeline"};
 
         public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
             super(fm);
@@ -63,12 +69,7 @@ public class DashboardFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                default:
-                    break;
-            }
-            return null;
+            return tabTitle[position];
         }
     }
 }

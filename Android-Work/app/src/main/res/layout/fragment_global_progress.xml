@@ -6,7 +6,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next_meeting_title"
+        android:text="Global Progress"
         android:textSize="30dip"
         android:paddingLeft="10dip"
         android:textColor="#c0392b"

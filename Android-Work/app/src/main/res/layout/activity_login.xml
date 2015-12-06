@@ -29,6 +29,7 @@
         android:id="@+id/loginInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:singleLine="true"
         android:hint="@string/login_hint"
         android:textSize="@dimen/login_input_size"
         android:layout_marginTop="15dip"/>

@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeoutException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         _login = (EditText) findViewById(R.id.loginInput);
         _passw = (EditText) findViewById(R.id.passwInput);
 
+        Log.v("Test", "Connection");
         APIRequestLogin api = new APIRequestLogin();
         api.execute(_login.getText().toString(), _passw.getText().toString());
     }
@@ -107,26 +109,22 @@ public class LoginActivity extends AppCompatActivity {
             String resultAPI;
 
             try {
-
                 URL url = new URL("http://api.grappbox.com/app_dev.php/V0.8/accountadministration/login");
                 connection = (HttpURLConnection)url.openConnection();
                 connection.setRequestMethod("POST");
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
 
+                connection.setReadTimeout(10000 /* milliseconds */);
+                connection.setConnectTimeout(15000 /* milliseconds */);
                 DataOutputStream dataOutputStream;
 
                 JSONObject JSONParam = new JSONObject();
                 JSONParam.put("login", param[0]);
                 JSONParam.put("password", param[1]);
-
                 dataOutputStream = new DataOutputStream(connection.getOutputStream());
                 dataOutputStream.write(JSONParam.toString().getBytes("UTF-8"));
                 dataOutputStream.flush();
                 dataOutputStream.close();
                 connection.connect();
-                // Read the input stream into a String
-
                 InputStream inputStream = connection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
@@ -146,7 +144,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 resultAPI = buffer.toString();
-                Log.v("Connection result : ", resultAPI);
                 if ((contentAPI = getLoginDataFromJSON(resultAPI)) == null)
                     return null;
 

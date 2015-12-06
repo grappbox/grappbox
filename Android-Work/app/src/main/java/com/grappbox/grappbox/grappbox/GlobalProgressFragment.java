@@ -50,6 +50,16 @@ public class GlobalProgressFragment extends Fragment {
         return _view;
     }
 
+    private String getValueContennt(String item)
+    {
+        final String notSpecified = getResources().getString(R.string.data_not_specified);
+        if (item.equals("null") || item.length() == 0)
+        {
+            return notSpecified;
+        }
+        return item;
+    }
+
     private void createContentView(List<ContentValues> values)
     {
         _projectList = (ListView)_view.findViewById(R.id.list_global_progress);
@@ -57,13 +67,13 @@ public class GlobalProgressFragment extends Fragment {
 
         for (ContentValues item : values){
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put("project_name", item.get("project_name").toString());
-            map.put("project_description", "Description : " + item.get("project_description").toString());
-            map.put("client_telephone_contact", "Contact Phone : " + item.get("project_phone").toString());
-            map.put("client_company", item.get("project_company").toString());
-            map.put("client_contact_mail", "Mail : " + item.get("contact_mail").toString());
-            map.put("client_contact_facebook", "Facebook : " + item.get("facebook").toString());
-            map.put("client_contact_twitter", "Twitter : " + item.get("twitter").toString());
+            map.put("project_name", getValueContennt(item.get("project_name").toString()));
+            map.put("project_description", "Description : " + getValueContennt(item.get("project_description").toString()));
+            map.put("client_telephone_contact", "Contact Phone : " + getValueContennt(item.get("project_phone").toString()));
+            map.put("client_company", getValueContennt(item.get("project_company").toString()));
+            map.put("client_contact_mail", "Mail : " + getValueContennt(item.get("contact_mail").toString()));
+            map.put("client_contact_facebook", "Facebook : " + getValueContennt(item.get("facebook").toString()));
+            map.put("client_contact_twitter", "Twitter : " + getValueContennt(item.get("twitter").toString()));
             map.put("project_image", String.valueOf(R.mipmap.icon_launcher));
             listMemberTeam.add(map);
         }

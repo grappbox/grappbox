@@ -1,8 +1,13 @@
 package com.grappbox.grappbox.grappbox;
 
+import android.support.v4.app.FragmentTransaction;
 import android.content.ContentValues;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,6 +34,9 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Toolbar _toolbar;
+    private Fragment _activeFrag;
+    private FragmentManager _fragmentManager;
+    private ActionBarDrawerToggle _actionBarDrawerToggle;
 
     DrawerLayout _Drawer;
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +45,14 @@ public class MainActivity extends AppCompatActivity
 
         _toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(_toolbar);
+        changeToolbarTitle("Dashboard");
 
         _Drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        _actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this, _Drawer, _toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        _Drawer.setDrawerListener(toggle);
-        toggle.syncState();
-        getSupportActionBar().setTitle("Dashboard");
-
+        _Drawer.setDrawerListener(_actionBarDrawerToggle);
+        _actionBarDrawerToggle.syncState();
+        _actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -52,6 +60,21 @@ public class MainActivity extends AppCompatActivity
         TextView text = (TextView)headerView.findViewById(R.id.nav_head_name_user);
         String name = SessionAdapter.getInstance().getFisrname() + " " + SessionAdapter.getInstance().getLastname();
         text.setText(name);
+        _activeFrag = new DashboardFragment();
+        _fragmentManager = getSupportFragmentManager();
+        _fragmentManager.beginTransaction().add(R.id.content_frame, _activeFrag, DashboardFragment.TAG).commit();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        _actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        _actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -73,9 +96,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -98,11 +118,23 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        FragmentTransaction transaction;
         if (id == R.id.nav_dashboard) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
+            transaction = _fragmentManager.beginTransaction();
+            transaction.remove(_activeFrag);
+            changeToolbarTitle("Dashboard");
+            _activeFrag = new DashboardFragment();
+            transaction.add(R.id.content_frame, _activeFrag, _activeFrag.getTag());
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (id == R.id.nav_whiteboard) {
-
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new WhiteboardListFragment(), DashboardFragment.TAG).commit();
+            transaction = _fragmentManager.beginTransaction();
+            transaction.remove(_activeFrag);
+            changeToolbarTitle("Whiteboard");
+            _activeFrag = new WhiteboardListFragment();
+            transaction.add(R.id.content_frame, _activeFrag, _activeFrag.getTag());
+            transaction.addToBackStack(null);
+            transaction.commit();
         } else if (id == R.id.nav_Timeline) {
 
         }
@@ -115,6 +147,12 @@ public class MainActivity extends AppCompatActivity
     public void logoutUser()
     {
         super.onBackPressed();
+    }
+
+    private void changeToolbarTitle(String title)
+    {
+        _toolbar.setTitle(title);
+        setSupportActionBar(_toolbar);
     }
 
     public class APIRequestLogout extends AsyncTask<String, Void, Void> {
