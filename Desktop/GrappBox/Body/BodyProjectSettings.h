@@ -38,12 +38,16 @@ private:
 public slots:
     void                PassToEditMode();
     void                PassToStaticMode();
+    void                DeleteProject();
+    void                RetreiveProject();
     void                Failure(int, QByteArray);
     void                GetSettingsSuccess(int, QByteArray);
     void                GetRolesSuccess(int, QByteArray);
     void                GetUsersSuccess(int, QByteArray);
     void                SetProjectSuccess(int, QByteArray);
     void                FailureGetSettings(int id, QByteArray data);
+    void                DeleteProjectSuccess(int id, QByteArray data);
+    void                RetreiveProjectSuccess(int id, QByteArray data);
 
 signals:
     void                OnLoadingDone(int);
@@ -67,6 +71,8 @@ private:
     QLineEdit           *_twitter;
     QLineEdit           *_password;
     QLineEdit           *_passwordConfirmation;
+    QPushButton         *_deleteProject;
+    QPushButton         *_cancelDeletion;
 
     int                 _id;
     int                 _projectID;

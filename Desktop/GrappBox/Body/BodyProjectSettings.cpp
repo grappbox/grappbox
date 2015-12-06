@@ -20,6 +20,8 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
     _twitter = new QLineEdit(PH_PROJECT_TWITTER);
     _password = new QLineEdit();
     _passwordConfirmation = new QLineEdit();
+    _deleteProject = new QPushButton(tr("Delete the project"));
+    _cancelDeletion = new QPushButton(tr("Retreive project from deletion"));
 
     SetWidgetsActive(false);
     _password->setEchoMode(QLineEdit::Password);
@@ -32,6 +34,7 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
     _basicProjectInformations->addRow(new QLabel(tr("Company name : ")), _companyName);
     _basicProjectInformations->addRow(new QLabel(tr("Contact phone : ")), _contactPhone);
     _basicProjectInformations->addRow(new QLabel(tr("Contact mail : ")), _contactMail);
+    _basicProjectInformations->addRow(_deleteProject, _cancelDeletion);
 
     _socialInformations->addRow(new QLabel(tr("Facebook link : ")), _facebook);
     _socialInformations->addRow(new QLabel(tr("Twitter link : ")), _twitter);
@@ -41,6 +44,8 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
 
     //We connect the events
     QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToEditMode()));
+    QObject::connect(_deleteProject, SIGNAL(released()), this, SLOT(DeleteProject()));
+    QObject::connect(_cancelDeletion, SIGNAL(released()), this, SLOT(RetreiveProject()));
 
     //Finally we build all the layouts and widgets together
     _mainLayout->addWidget(_btnEditMode);
@@ -238,4 +243,33 @@ void BodyProjectSettings::FailureGetSettings(int id, QByteArray data)
 {
     QMessageBox::critical(this, tr("Security Level Error"), tr("Due to your security level, you can't access to project settings, contact your leader to know more about that problem."));
     Hide();
+}
+
+void BodyProjectSettings::DeleteProject()
+{
+    QVector<QString> data;
+
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectID));
+
+    _api->Delete(API::DP_PROJECT, API::DR_PROJECT, data, this, "DeleteProjectSuccess", "Failure");
+}
+
+void BodyProjectSettings::RetreiveProject()
+{
+    QVector<QString> data;
+
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectID));
+    _api->Get(API::DP_PROJECT, API::GR_PROJECT_CANCEL_DELETE, data, this, "RetreiveProjectSuccess", "Failure");
+}
+
+void BodyProjectSettings::DeleteProjectSuccess(int UNUSED id, QByteArray UNUSED data)
+{
+    QMessageBox::information(this, tr("Project deleted"), tr("Project successfully deleted, you have 7 days to retreive it."));
+}
+
+void BodyProjectSettings::RetreiveProjectSuccess(int UNUSED id, QByteArray UNUSED data)
+{
+    QMessageBox::information(this, tr("Project retreived"), tr("Project successfully retreived."));
 }

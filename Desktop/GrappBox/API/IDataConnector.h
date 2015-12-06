@@ -39,7 +39,9 @@ namespace API
         GR_USER_SETTINGS,
         GR_PROJECTS_USER,
         GR_PROJECT_ROLE,
-        GR_PROJECT_USERS
+        GR_PROJECT_USERS,
+        GR_PROJECT_CANCEL_DELETE,
+        GR_PROJECT_USER_ROLE
     };
 
     enum PostRequest
@@ -47,20 +49,23 @@ namespace API
         PR_LOGIN,
         PR_ROLE_ADD,
         PR_ROLE_ASSIGN,
-        PR_PROJECT_INVITE
+        PR_CUSTOMER_GENERATE_ACCESS
     };
 
     enum DeleteRequest
     {
         DR_PROJECT_ROLE,
         DR_ROLE_DETACH,
-        DR_PROJECT_USER
+        DR_PROJECT_USER,
+        DR_PROJECT,
+        DR_CUSTOMER_ACCESS
     };
 
     enum PutRequest
     {
         PUTR_UserSettings,
         PUTR_ProjectSettings,
+        PUTR_INVITE_USER
     };
 
     class IDataConnector

@@ -44,7 +44,7 @@ private:
 
 public slots:
     void                        reset();
-    void                        refresh();
+    void                        refresh(bool reset = false);
     void                        NewRoleTriggered();
     void                        SuccessAddRole(int id, QByteArray data);
     void                        SuccessDeleteRole(int id, QByteArray data);
@@ -53,6 +53,7 @@ public slots:
     void                        SuccessDetachRole(int id, QByteArray data);
     void                        SuccessDeleteUser(int id, QByteArray data);
     void                        Failure(int id, QByteArray data);
+    void                        FailureDeleteUser(int id, QByteArray data);
     void                        FailureAddRole(int id, QByteArray data);
     void                        FailureDeleteRole(int id, QByteArray data);
     void                        FailureAttachRole(int id, QByteArray data);
@@ -77,6 +78,7 @@ private:
     int                         _projectId;
     QList<QString>              _stackRole;
     QList<int>                  _stackRoleDelete;
+    QList<int>                  _stackUserDelete;
     QList<UserRoleCheckbox *>   _stackRoleAssign;
     QList<UserRoleCheckbox *>   _stackRoleDetach;
 };

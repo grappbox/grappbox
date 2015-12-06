@@ -43,8 +43,8 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
     case PR_ROLE_ASSIGN:
         reply = AttachRole(data);
         break;
-    case PR_PROJECT_INVITE:
-        reply = ProjectInvite(data);
+    case PR_CUSTOMER_GENERATE_ACCESS:
+        reply = CustomerGenerateAccess(data);
         break;
     }
     if (reply == NULL)
@@ -75,6 +75,9 @@ int DataConnectorOnline::Put(DataPart part, int request, QVector<QString> &data,
         break;
     case PUTR_ProjectSettings:
         reply = PutProjectSettings(data);
+        break;
+    case PUTR_INVITE_USER:
+        reply = ProjectInvite(data);
         break;
     }
     if (reply == NULL)
@@ -135,6 +138,12 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
     case GR_PROJECT_USERS:
         reply = GetAction("dashboard/getprojectpersons", data);
         break;
+    case GR_PROJECT_CANCEL_DELETE:
+        reply = GetAction("projects/retrieveproject", data);
+        break;
+    case GR_PROJECT_USER_ROLE:
+        reply = GetAction("roles/getrolebyprojectanduser", data);
+        break;
     }
     if (reply == NULL)
         throw QException();
@@ -167,6 +176,12 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
         break;
     case DR_PROJECT_USER:
         reply = DeleteProjectUser(data);
+        break;
+    case DR_PROJECT:
+        reply = DeleteProject(data);
+        break;
+    case DR_CUSTOMER_ACCESS:
+        reply = DeleteCustomerAccess(data);
         break;
     }
     if (reply == NULL)
@@ -396,38 +411,90 @@ QNetworkReply *DataConnectorOnline::DetachRole(QVector<QString> &data)
     return request;
 }
 
-QNetworkReply *DataConnectorOnline::ProjectInvite(QVector<QString> &data) // TODO : to confirm by api
+QNetworkReply *DataConnectorOnline::ProjectInvite(QVector<QString> &data)
 {
     QJsonObject json;
 
-    json["_token"] = data[0];
+    json["token"] = data[0];
     json["projectId"] = data[1];
-    json["userMail"] = data[2];
+    json["userEmail"] = data[2];
 
     QJsonDocument doc(json);
     QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
-    QNetworkRequest requestSend(QUrl(URL_API + QString("route doesn't exist yet")));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/addusertoproject")));
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
-    QNetworkReply *request = _Manager->post(requestSend, jsonba);
+    QNetworkReply *request = _Manager->put(requestSend, jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
 }
 
-QNetworkReply *DataConnectorOnline::DeleteProjectUser(QVector<QString> &data) // TODO : to confirm by api
+QNetworkReply *DataConnectorOnline::DeleteProjectUser(QVector<QString> &data)
 {
     QJsonObject json;
 
-    json["_token"] = data[0];
+    json["token"] = data[0];
     json["projectId"] = data[1];
     json["userId"] = data[2];
 
     QJsonDocument doc(json);
     QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
-    QNetworkRequest requestSend(QUrl(URL_API + QString("route doesn't exist yet")));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/removeusertoproject")));
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
     QNetworkReply *request = _Manager->sendCustomRequest(requestSend, QByteArray("DELETE"), new QBuffer(jsonba));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::DeleteCustomerAccess(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["token"] = data[0];
+    json["projectId"] = data[1];
+    json["customerAccessId"] = data[2];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/delcustomeraccess")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->sendCustomRequest(requestSend, QByteArray("DELETE"), new QBuffer(jsonba));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::DeleteProject(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["token"] = data[0];
+    json["projectId"] = data[1];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/delproject")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->sendCustomRequest(requestSend, QByteArray("DELETE"), new QBuffer(jsonba));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::CustomerGenerateAccess(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["token"] = data[0];
+    json["projectId"] = data[1];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("projects/generatecustomeraccess")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
 }

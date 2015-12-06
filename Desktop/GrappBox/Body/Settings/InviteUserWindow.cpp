@@ -7,7 +7,7 @@ InviteUserWindow::InviteUserWindow(QWidget *parent) : QWidget(parent)
     _ok = new QPushButton(tr("OK"));
     _cancel = new QPushButton(tr("Cancel"));
 
-    _mainLayout->addWidget(new QLabel(tr("<h2>Invite a user in the project</h2>")));
+    _mainLayout->addRow(new QLabel(tr("<h2>Invite a user in the project</h2>")));
     _mainLayout->addRow(new QLabel(tr("Enter E-mail : ")), _mail);
     _mainLayout->addRow(_ok, _cancel);
 

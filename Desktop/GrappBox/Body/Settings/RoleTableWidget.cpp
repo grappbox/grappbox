@@ -105,14 +105,16 @@ void RoleTableWidget::reset()
     }
     delete _rowLayout;
     _rowLayout = new QVBoxLayout(this);
-    //TODO : Make API call HERE to GET informations
+    repaint();
 }
 
-void RoleTableWidget::refresh()
+void RoleTableWidget::refresh(bool reset)
 {
     QMap<int, QString>::iterator rolesIT;
     QMap<int, QString>::iterator usersIT;
 
+    if (reset)
+        this->reset();
     //Repopulate with new data
     _colLayout->append(new QHBoxLayout());
     _rowLayout->addLayout(_colLayout->back());
@@ -145,6 +147,7 @@ void RoleTableWidget::refresh()
             QObject::connect(userRoleCheckbox, SIGNAL(unchecked(UserRoleCheckbox *,QPair<const QString&,const int>,QPair<const QString&,const int>)), this, SLOT(DetachRole(UserRoleCheckbox *,QPair<const QString&,const int>,QPair<const QString&,const int>)));
             userRoleCheckbox->SetUser(usersIT.value(), usersIT.key());
             userRoleCheckbox->SetRole(rolesIT.value(), rolesIT.key());
+            userRoleCheckbox->InitEnd(_projectId);
             _colLayout->back()->addWidget(userRoleCheckbox);
             _colLayout->back()->setAlignment(userRoleCheckbox, Qt::AlignCenter);
             _usersRolesCheckboxes->append(userRoleCheckbox);
@@ -207,7 +210,7 @@ void RoleTableWidget::InviteUser(QString usermail) //TODO: To confirm by API
     data.append(QString::number(_projectId));
     data.append(usermail);
 
-    _api->Post(API::DP_PROJECT, API::PR_PROJECT_INVITE, data, this, "SuccessInvite", "Failure");
+    _api->Put(API::DP_PROJECT, API::PUTR_INVITE_USER, data, this, "SuccessInviteUser", "Failure");
 }
 
 void RoleTableWidget::deleteUser(int idUser)
@@ -218,7 +221,8 @@ void RoleTableWidget::deleteUser(int idUser)
     data.append(QString::number(_projectId));
     data.append(QString::number(idUser));
 
-    _api->Delete(API::DP_PROJECT, API::DR_PROJECT_USER, data, this, "SuccessDeleteUser", "Failure");
+    _stackUserDelete.append(idUser);
+    _api->Delete(API::DP_PROJECT, API::DR_PROJECT_USER, data, this, "SuccessDeleteUser", "FailureDeleteUser");
 }
 
 void RoleTableWidget::deleteRole(int idRole)
@@ -323,21 +327,23 @@ void RoleTableWidget::SuccessDetachRole(int id, QByteArray data)
     this->setEnabled(true);
 }
 
-void RoleTableWidget::SuccessInviteUser(int id, QByteArray data) // TODO : to confirm by api
+void RoleTableWidget::SuccessInviteUser(int id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
 
-    _users->insert(json["idUser"].toInt(), QString(json["userFirst_name"].toString() + " " + json["userLast_name"].toString()));
-    reset();
-    refresh();
+    //_users->insert(json["idUser"].toInt(), QString(json["userFirst_name"].toString() + " " + json["userLast_name"].toString()));
 }
 
 void RoleTableWidget::SuccessDeleteUser(int id, QByteArray data)
 {
-    QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonObject json = doc.object();
-    _users->remove(json["idUser"].toInt());
-    reset();
-    refresh();
+    _users->remove(_stackUserDelete.first());
+    _stackUserDelete.pop_front();
+   refresh(true);
+}
+
+void RoleTableWidget::FailureDeleteUser(int id, QByteArray data)
+{
+    _stackUserDelete.pop_front();
+    Failure(id, data);
 }
