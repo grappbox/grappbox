@@ -1,5 +1,5 @@
 ﻿/*
-    Summary: Dashboard Controllers
+    Summary: Dashboard Controller
 */
 
 angular.module('GrappBox.controllers')
@@ -24,7 +24,7 @@ angular.module('GrappBox.controllers')
     //Get Next Meetings
     $scope.nextMeetingsTab = {};
     $scope.GetNextMeetings = function () {
-        NextMeetings.query({ token: $rootScope.userDatas.token }).$promise
+        NextMeetings.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
                 console.log(data);

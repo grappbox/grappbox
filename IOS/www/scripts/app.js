@@ -12,7 +12,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             StatusBar.styleDefault();
         }
     });
-    $rootScope.API_VERSION = '0.7'; //actual API's version
+    $rootScope.API_VERSION = '0.8'; //actual API's version
     $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
 })
 
@@ -24,27 +24,31 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
     $ionicConfigProvider.backButton.previousTitleText(false);   // hides the 'Back' text
 
     $stateProvider
+        // authentification view
         .state('auth', {
             url: "/auth", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
             templateUrl: "templates/auth.html", //'templateUrl' is where app will search for the "physical" page
             controller: 'AuthCtrl' //link to controller
         })
 
+        // signup view
         .state('signup', {
             url: "/signup",
             templateUrl: "templates/signup.html",
             controller: 'SignupCtrl'
         })
 
-        //entering application
+        // entering application
         .state('app', {
             url: "/app",
             abstract: true, //'abstract' means this state will be an abstract, so will never render, but pages can inherit of it
-            templateUrl: "templates/menu.html"
+            templateUrl: "templates/menu.html",
+            controller: 'MenuCtrl'
         })
 
+        // dashboard with Team Occupation, Next Meetings and Global Progress
         .state('app.dashboard', {
-            url: "/dashboard/:projectId",
+            url: "/dashboard",
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
                     templateUrl: "templates/dashboard.html",
@@ -53,6 +57,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
         })
 
+        // projects list view
         .state('app.projects', {
             url: "/projects",
             views: {
@@ -63,6 +68,29 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        // single project view
+        .state('app.project', {
+            url: "/projects/:projectId",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/project.html",
+                    controller: 'ProjectCtrl'
+                }
+            }
+        })
+
+        // next meeting view
+        .state('app.nextMeeting', {
+            url: "/projects/:nextMeetingId",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/nextMeeting.html",
+                    controller: 'NextMeetingCtrl'
+                }
+            }
+        })
+
+        // timeline view
         .state('app.timelines', {
             url: "/timelines",
             views: {
@@ -73,6 +101,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        // whiteboards list view
         .state('app.whiteboards', {
             url: "/whiteboards",
             views: {
@@ -83,6 +112,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        // single whiteboard view
         .state('app.whiteboard', {
             url: "/whiteboards/:whiteboardId",
             views: {
@@ -93,6 +123,18 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        // user view
+        .state('app.user', {
+            url: "/user/:userId",
+            views: {
+                'menuContent': {
+                    templateUrl: "templates/user.html",
+                    controller: 'UserCtrl'
+                }
+            }
+        })
+
+        // user settings view
         .state('app.userSettings', {
             url: "/userSettings",
             views: {

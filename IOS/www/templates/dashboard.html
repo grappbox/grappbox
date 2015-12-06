@@ -13,7 +13,9 @@
                     Team Occupation
                 </div>
                 <div class="list">
-                    <a class="item item-avatar" href="#/{{ teamOccupation.user_id }}" ng-repeat="teamOccupation in teamOccupationTab">
+                    <a class="item item-avatar"
+                       ng-repeat="teamOccupation in teamOccupationTab"
+                       ui-sref="app.user({userId: teamOccupation.user_id})">
                         <img ng-src="{{ teamOccupation.image }}" />
                         <h2>{{ teamOccupation.project_name }}</h2>
                         <h3>{{ teamOccupation.first_name }} {{ teamOccupation.last_name }}</h3>
@@ -30,7 +32,9 @@
                     Next Meetings
                 </div>
                 <div class="list">
-                    <a class="item item-thumbnail-left" href="#/{{ nextMeeting.id }}" ng-repeat="nextMeeting in nextMeetingsTab">
+                    <a class="item item-thumbnail-left"
+                       ng-repeat="nextMeeting in nextMeetingsTab"
+                       ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
                         <img ng-src="{{ nextMeeting.project_logo }}" />
                         <h2>{{ nextMeeting.event_type }}: {{ nextMeeting.event_title }}</h2>
                         <h4>"{{ nextMeeting.event_description }}"</h4>
@@ -46,7 +50,9 @@
                     Global Progress
                 </div>
                 <div class="list">
-                    <a class="item item-thumbnail-left" href="#/{{ globalProgress.project_id }}" ng-repeat="globalProgress in globalProgressTab">
+                    <a class="item item-thumbnail-left"
+                       ng-repeat="globalProgress in globalProgressTab"
+                       ui-sref="app.project({projectId: globalProgress.project_id})">
                         <img src="{{ globalProgress.project_logo }}" />
                         <h2>{{ globalProgress.project_name }}</h2>
                         <h3 class="icon-left ion-ios-people-outline"> {{ globalProgress.project_company }}</h3>

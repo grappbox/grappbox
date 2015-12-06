@@ -19,9 +19,9 @@
         <ion-content>
             <ion-list> <!-- Display user picture & name -->
                 <ion-item class="item item-thumbnail-left">
-                    <img src="images/GrappBox/pierre_hofman.jpg" />
-                    <h2 style="font-size: 1.5em;" class="text-center col">Pierre</h2>
-                    <h2 style="font-size: 1.5em;" class="text-center col">Hofman</h2>
+                    <img src="{{ userDatas.avatar }}" />
+                    <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
+                    <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>
                 </ion-item>
             </ion-list>
             <div class="button-bar">

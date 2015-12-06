@@ -8,7 +8,7 @@
         <ion-list show-delete="minusButton.showDelete">
             <ion-item ng-repeat="project in projectsTab"
                       class="item-remove-animate item-icon-right"
-                      ui-sref="app.dashboard({projectId: project.project_id})">
+                      ui-sref="app.project({projectId: project.project_id})">
                 {{project.name}}
                 <ion-delete-button class="ion-minus-circled"
                                    ng-click="onProjectDelete(project)">
