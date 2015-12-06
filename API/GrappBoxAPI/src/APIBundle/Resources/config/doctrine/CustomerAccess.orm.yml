@@ -8,6 +8,9 @@ APIBundle\Entity\CustomerAccess:
             generator:
                 strategy: AUTO
     fields:
+        name:
+            type: string
+            length: 255
         hash:
             type: string
             length: 255

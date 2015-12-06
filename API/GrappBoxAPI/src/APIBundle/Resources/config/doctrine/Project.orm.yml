@@ -16,8 +16,7 @@ APIBundle\Entity\Project:
             type: text
             nullable: TRUE
         logo:
-            type: string
-            length: 255
+            type: text
             nullable: TRUE
         phone:
             type: string

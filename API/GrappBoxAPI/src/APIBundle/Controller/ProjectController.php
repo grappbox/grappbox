@@ -527,12 +527,67 @@ class ProjectController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {post} /V0.8/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
+	* @apiName generateCustomerAccess
+	* @apiGroup Project
+	* @apiVersion 0.8.1
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {String} projectId Id of the project
+	* @apiParam {String} name Name of the customer access
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "13cqs43c54vqd3",
+	*		"projectId": 2,
+	*		"name": "access for Toyota"
+	* 	}
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"id": 3
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	* @apiErrorExample Insufficient User Rights
+	*   HTTP/1.1 403 Forbidden
+	*   {
+	*     "Insufficient User Rights"
+	*   }
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	*/
 	public function generateCustomerAccessAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content))
+		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content) && !array_key_exists('name', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$user = $this->checkToken($content->token);
 		if (!$user)
@@ -547,15 +602,23 @@ class ProjectController extends RolesAndTokenVerificationController
 			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
 		}
 
-		$customerAccess = $em->getRepository('APIBundle:CustomerAccess')->findOneByprojects($content->projectId);
+		$repository = $em->getRepository('APIBundle:CustomerAccess');
 
-		if ($customerAccess === null)
+		$qb = $repository->createQueryBuilder('ca')->join('ca.projects', 'p')->where('ca.name = :name', 'p.id = :id')->setParameter('name', $content->name)->setParameter('id', $content->projectId)->getQuery();
+		$customerAccess = $qb->getResult();
+
+  		if (count($customerAccess) == 0)
 		{
 			$customerAccess = new CustomerAccess();
 			$customerAccess->setProjects($project);
 		}
+		else
+		{
+			$customerAccess = $customerAccess[0];
+		}
 
 		$customerAccess->setCreatedAt(new \DateTime);
+		$customerAccess->setName($content->name);
 
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
@@ -567,7 +630,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->addCustomersAccess($customerAccess);
 		$em->flush();
 
-		return new JsonResponse("Customer access generated with id: ".$customerAccess->getId());
+		return new JsonResponse(array("id" => $customerAccess->getId()));
 	}
 
 	/**
@@ -581,12 +644,60 @@ class ProjectController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} customer_token Customer access token
   	* @apiSuccess {Number} project_id Id of the project
+  	* @apiSuccess {String} name Name of the customer access
   	* @apiSuccess {Datetime} creation_date Date of creation of the customer access
   	*
   	* @apiSuccessExample Success-Response:
   	* 	{
 	*		"customer_token": "dizjflqfq41c645w",
 	*		"project_id": 2,
+	*		"creation_date":
+	*		{
+	*			"date":"2015-10-15 11:00:00",
+	*			"timezone_type":3,
+	*			"timezone":"Europe\/Paris"
+	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No custromer access found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The custromer access with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+  	*
+  	*/
+
+  	/**
+  	* @api {get} /V0.8/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
+  	* @apiName getCustomerAccessById
+  	* @apiGroup Project
+  	* @apiVersion 0.8.1
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	* @apiParam {Number} id Id of the customer access
+  	*
+  	* @apiSuccess {String} customer_token Customer access token
+  	* @apiSuccess {Number} project_id Id of the project
+  	* @apiSuccess {String} name Name of the customer access
+  	* @apiSuccess {Datetime} creation_date Date of creation of the customer access
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"customer_token": "dizjflqfq41c645w",
+	*		"project_id": 2,
+	*		"name": "access for X company",
 	*		"creation_date":
 	*		{
 	*			"date":"2015-10-15 11:00:00",
@@ -627,15 +738,16 @@ class ProjectController extends RolesAndTokenVerificationController
 			throw new NotFoundHttpException("The custromer access with id ".$id." doesn't exist");
 		}
 
+		$name = $customerAccess->getName();
 		$hash = $customerAccess->getHash();
 		$createdAt = $customerAccess->getCreatedAt();
 		$project = $customerAccess->getProjects()->getId();
 
-		return new JsonResponse(array("customer_token" => $hash, "creation_date" => $createdAt, "project_id" => $project));
+		return new JsonResponse(array("name" => $name, "customer_token" => $hash, "creation_date" => $createdAt, "project_id" => $project));
 	}
 
 	/**
-  	* @api {get} /V0.8/projects/getcustomeraccessbyproject/:token/:projectId Get a customer access by it's id
+  	* @api {get} /V0.8/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
   	* @apiName getCustomerAccessByProject
   	* @apiGroup Project
   	* @apiVersion 0.8.0
@@ -643,19 +755,74 @@ class ProjectController extends RolesAndTokenVerificationController
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} projectId Id of the project
   	*
-  	* @apiSuccess {Number} id Id of the customer access
-  	* @apiSuccess {String} customer_token Customer access token
-  	* @apiSuccess {Datetime} creation_date Date of creation of the customer access
+  	* @apiSuccess {Object[]} CustomerAccess Array of customer access
+  	* @apiSuccess {Number} CustomerAccess.id Id of the customer access
+  	* @apiSuccess {String} CustomerAccess.customer_token Customer access token
+  	* @apiSuccess {Datetime} CustomerAccess.creation_date Date of creation of the customer access
   	*
   	* @apiSuccessExample Success-Response:
   	* 	{
-	*		"customer_token": "Grappbox",
-	*		"id": 2,
-	*		"creation_date":
-	*		{
-	*			"date":"2015-10-15 11:00:00",
-	*			"timezone_type":3,
-	*			"timezone":"Europe\/Paris"
+  	*		"CustomerAccess 1": 
+  	*		{
+	*			"customer_token": "dizjflqfq41c645w",
+	*			"id": 2,
+	*			"creation_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			}
+	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No custromer access found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The custromer access with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+  	*
+  	*/
+
+  	/**
+  	* @api {get} /V0.8/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
+  	* @apiName getCustomerAccessByProject
+  	* @apiGroup Project
+  	* @apiVersion 0.8.1
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	* @apiParam {Number} projectId Id of the project
+  	*
+  	* @apiSuccess {Object[]} CustomerAccess Array of customer access
+  	* @apiSuccess {String} CustomerAccess.name Name of the customer access
+  	* @apiSuccess {Number} CustomerAccess.id Id of the customer access
+  	* @apiSuccess {String} CustomerAccess.customer_token Customer access token
+  	* @apiSuccess {Datetime} CustomerAccess.creation_date Date of creation of the customer access
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"CustomerAccess 1": 
+  	*		{
+  	*			"name": "access for client X",
+	*			"customer_token": "dizjflqfq41c645w",
+	*			"id": 2,
+	*			"creation_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			}
 	*		}
   	* 	}
   	*
@@ -696,10 +863,11 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		foreach ($customerAccess as $ca) {
 			$id = $ca->getId();
+			$name = $ca->getName();
 			$hash = $ca->getHash();
 			$createdAt = $ca->getCreatedAt();
 
-			$arr["CustomerAccess ".$i] = array( "id" => $id, "customer_token" => $hash, "creation_date" => $createdAt);
+			$arr["CustomerAccess ".$i] = array("id" => $id, "name" => $name, "customer_token" => $hash, "creation_date" => $createdAt);
 			$i++;
 		}
 
