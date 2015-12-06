@@ -376,6 +376,39 @@ class ProjectController extends RolesAndTokenVerificationController
 				
 			}
 
+			$repository = $em->getRepository('APIBundle:Role');
+
+			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $content->projectId)->getQuery();
+			$role = $qb->getResult();
+
+			if (count($role) == 0)
+			{
+				throw new NotFoundHttpException("No admin role found");
+			}
+			else
+			{
+				$role = $role[0];
+			}
+
+			$repository = $em->getRepository('APIBundle:ProjectUserRole');
+			$creatorUserId = $project->getCreatorUser()->getId();
+			$roleId = $role->getId();
+
+		    $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
+		    ->setParameter('projectId', $content->projectId)->setParameter('userId', $creatorUserId)->setParameter('roleId', $roleId)->getQuery();
+		    $ProjectUserRoles = $qb->getResult();
+
+			if (count($ProjectUserRoles) == 0)
+			{
+				throw new NotFoundHttpException("The project user role doesn't exist.");
+			}
+			else
+			{
+				$ProjectUserRoles = $ProjectUserRoles[0];
+			}
+
+			$ProjectUserRoles->setUserId($creatorUser->getId());
+
 			$project->setCreatorUser($creatorUser);
 		}
 		if (array_key_exists('name', $content))
