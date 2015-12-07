@@ -12,6 +12,7 @@
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
+#include <QBuffer>
 
 #define IMG_PREVIEW_WIDTH 128
 #define IMG_PREVIEW_HEIGHT IMG_PREVIEW_WIDTH
@@ -23,8 +24,9 @@ class ImageUploadWidget : public QWidget
 public:
     explicit            ImageUploadWidget(QWidget *parent = 0);
     virtual             ~ImageUploadWidget();
-    void                setImage(const QPixmap &pixmap);
+    void                setImage(const QString &pixmap);
     const QPixmap       &getImage();
+    QString             getEncodedImage();
     bool                isImageFromComputer();
 
 public slots:
@@ -36,7 +38,7 @@ signals:
     void                OnImageSelected();
 
 private:
-    QGridLayout         *_mainLayout;
+    QHBoxLayout         *_mainLayout;
     QGraphicsView       *_imagePresented;
     QGraphicsScene      *_scene;
     QGraphicsPixmapItem *_currentPixmap;

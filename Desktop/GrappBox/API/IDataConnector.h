@@ -41,7 +41,9 @@ namespace API
         GR_PROJECT_ROLE,
         GR_PROJECT_USERS,
         GR_PROJECT_CANCEL_DELETE,
-        GR_PROJECT_USER_ROLE
+        GR_PROJECT_USER_ROLE,
+        GR_CUSTOMER_ACCESSES,
+        GR_CUSTOMER_ACCESS_BY_ID
     };
 
     enum PostRequest

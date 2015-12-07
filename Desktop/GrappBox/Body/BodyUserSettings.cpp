@@ -122,8 +122,7 @@ void BodyUserSettings::GetUserData(int UNUSED id, QByteArray data)
     }
     if (!json["avatar"].isNull())
     {
-        avatar.loadFromData(QByteArray(json["avatar"].toString().toStdString().c_str()));
-        _avatar->setImage(avatar);
+        _avatar->setImage(json["avatar"].toString());
     }
     emit OnLoadingDone(_id);
 }
@@ -168,8 +167,7 @@ void BodyUserSettings::PassToEditMode()
 void BodyUserSettings::PassToStaticMode()
 {
     QVector<QString> data;
-    QString avatar = "";
-    uchar *avatarBits;
+    QString avatarBits;
 
     //First disable all the widgets
     this->SetWidgetActiveState(false);
@@ -177,19 +175,14 @@ void BodyUserSettings::PassToStaticMode()
 
     if (_avatar->isImageFromComputer())
     {
-        avatarBits = _avatar->getImage().toImage().bits();
-        while (*avatarBits)
-        {
-            avatar.append(QChar(*avatarBits));
-            ++avatarBits;
-        }
+        avatarBits = _avatar->getEncodedImage();
     }
 
     //Then we have to save all the content thanks to the API
     data.append((_firstname->text() != tr(PH_FIRSTNAME)) ? _firstname->text() : "");
     data.append((_lastname->text() != tr(PH_LASTNAME)) ? _lastname->text() : "");
     data.append(_birthday->dateTime().toString("yyyy-MM-dd hh:mm:ss"));
-    data.append(_avatar->isImageFromComputer() ? avatar : "");
+    data.append(_avatar->isImageFromComputer() ? avatarBits : "");
     data.append((_phone->text() != tr(PH_PHONE)) ? _phone->text() : "");
     data.append(_country->currentText());
     data.append((_linkedin->text() != tr(PH_LINKEDIN)) ? _linkedin->text() : "");

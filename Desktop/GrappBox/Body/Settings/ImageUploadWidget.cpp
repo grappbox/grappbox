@@ -2,7 +2,8 @@
 
 ImageUploadWidget::ImageUploadWidget(QWidget *parent) : QWidget(parent)
 {
-    _mainLayout = new QGridLayout(this);
+
+    _mainLayout = new QHBoxLayout(this);
     _imagePresented = new QGraphicsView();
     _scene = new QGraphicsScene(0,0, 128, 128);
     _filenameSelected = new QLabel(tr("Select a file..."));
@@ -10,6 +11,7 @@ ImageUploadWidget::ImageUploadWidget(QWidget *parent) : QWidget(parent)
     _filename = QString("");
     _currentPixmap = NULL;
     _fitImg = new QPushButton(tr("Fit"));
+    QVBoxLayout *layoutImage = new QVBoxLayout();
 
     _imagePresented->setMaximumSize(IMG_PREVIEW_SIZE);
     _imagePresented->setMinimumSize(IMG_PREVIEW_SIZE);
@@ -21,10 +23,12 @@ ImageUploadWidget::ImageUploadWidget(QWidget *parent) : QWidget(parent)
     QObject::connect(_fitImg, SIGNAL(released()), this, SLOT(OnFitTriggered()));
     QObject::connect(_scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(SceneChanged(QList<QRectF>)));
 
-    _mainLayout->addWidget(_imagePresented, 0, 0, 3, 3);
-    _mainLayout->addWidget(_fitImg, 3, 0, 3, 1);
-    _mainLayout->addWidget(_selectFileBtn, 1, 3, 1, 2);
-    _mainLayout->addWidget(_filenameSelected, 1, 7, 1, 3);
+    layoutImage->addWidget(_imagePresented);
+    layoutImage->addWidget(_fitImg);
+    _mainLayout->addLayout(layoutImage);
+
+    _mainLayout->addWidget(_selectFileBtn);
+    _mainLayout->addWidget(_filenameSelected);
 }
 
 ImageUploadWidget::~ImageUploadWidget()
@@ -32,12 +36,14 @@ ImageUploadWidget::~ImageUploadWidget()
 
 }
 
-void ImageUploadWidget::setImage(const QPixmap &pixmap)
+void ImageUploadWidget::setImage(const QString &pixmap)
 {
-    QPixmap img(pixmap);
+    QByteArray dataimg = QByteArray::fromBase64(pixmap.toStdString().c_str());
+    QImage img = QImage::fromData(dataimg, "PNG");
+    QPixmap pix = QPixmap::fromImage(img);
 
     _imagePresented->scene()->clear();
-    _currentPixmap = _scene->addPixmap(img);
+    _currentPixmap = _scene->addPixmap(pix);
     _currentPixmap->setFlag(QGraphicsItem::ItemIsSelectable);
     _currentPixmap->setFlag(QGraphicsItem::ItemIsMovable);
     _currentPixmap->setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
@@ -46,8 +52,17 @@ void ImageUploadWidget::setImage(const QPixmap &pixmap)
 
 const QPixmap   &ImageUploadWidget::getImage()
 {
-    _lastTakenImage = QPixmap::grabWidget(_imagePresented);
+    _lastTakenImage = _imagePresented->grab();
     return _lastTakenImage;
+}
+
+QString ImageUploadWidget::getEncodedImage()
+{
+    QBuffer encodedImage;
+
+    _lastTakenImage = _imagePresented->grab();
+    _lastTakenImage.save(&encodedImage, "PNG");
+    return QString(encodedImage.buffer().toBase64().toStdString().c_str());
 }
 
 bool            ImageUploadWidget::isImageFromComputer()

@@ -4,10 +4,14 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
 {
     //First we create the widgets and disable them (read mode)
     _api = API::SDataManager::GetCurrentDataConnector();
-    _mainLayout = new QVBoxLayout(this);
+    _windowLayout = new QHBoxLayout(this);
+    _mainLayout = new QVBoxLayout();
+    _secondaryLayout = new QVBoxLayout();
+
     _basicProjectInformations = new QFormLayout();
     _socialInformations = new QFormLayout();
     _passwordInformations = new QFormLayout();
+    _deleteRetreiveProject = new QHBoxLayout();
     _btnEditMode = new QPushButton(tr("Pass in edit mode"));
     _logo = new ImageUploadWidget();
     _projectName = new QLineEdit(PH_PROJECT_NAME);
@@ -22,6 +26,9 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
     _passwordConfirmation = new QLineEdit();
     _deleteProject = new QPushButton(tr("Delete the project"));
     _cancelDeletion = new QPushButton(tr("Retreive project from deletion"));
+    _customerAccess = new QVBoxLayout();
+    _createAccess = new QPushButton(tr("Create a new customer access"));
+    _createAccessWindow = new CreateNewCustomerAccessWindow();
 
     SetWidgetsActive(false);
     _password->setEchoMode(QLineEdit::Password);
@@ -34,7 +41,9 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
     _basicProjectInformations->addRow(new QLabel(tr("Company name : ")), _companyName);
     _basicProjectInformations->addRow(new QLabel(tr("Contact phone : ")), _contactPhone);
     _basicProjectInformations->addRow(new QLabel(tr("Contact mail : ")), _contactMail);
-    _basicProjectInformations->addRow(_deleteProject, _cancelDeletion);
+    _deleteRetreiveProject->addWidget(_deleteProject);
+    _deleteRetreiveProject->addWidget(_cancelDeletion);
+    _basicProjectInformations->addItem(_deleteRetreiveProject);
 
     _socialInformations->addRow(new QLabel(tr("Facebook link : ")), _facebook);
     _socialInformations->addRow(new QLabel(tr("Twitter link : ")), _twitter);
@@ -46,6 +55,8 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
     QObject::connect(_btnEditMode, SIGNAL(released()), this, SLOT(PassToEditMode()));
     QObject::connect(_deleteProject, SIGNAL(released()), this, SLOT(DeleteProject()));
     QObject::connect(_cancelDeletion, SIGNAL(released()), this, SLOT(RetreiveProject()));
+    QObject::connect(_createAccess, SIGNAL(released()), _createAccessWindow, SLOT(Open()));
+    QObject::connect(_createAccessWindow, SIGNAL(CustomerCreationProcessEnd(QString)), this, SLOT(AccessCreated(QString)));
 
     //Finally we build all the layouts and widgets together
     _mainLayout->addWidget(_btnEditMode);
@@ -55,8 +66,15 @@ BodyProjectSettings::BodyProjectSettings(QWidget *parent) : QWidget(parent)
     _mainLayout->addLayout(_socialInformations);
     _mainLayout->addWidget(new QLabel(tr("<h2>New password (fill only to modify it)</h2>")));
     _mainLayout->addLayout(_passwordInformations);
-    _mainLayout->addWidget(new QLabel(tr("<h2>Users and roles (Direct modification)</h2>")));
-    _mainLayout->addWidget(_usersRoles);
+    _secondaryLayout->addWidget(new QLabel(tr("<h2>Users and roles (Direct modification)</h2>")));
+    _secondaryLayout->addWidget(_usersRoles);
+    _secondaryLayout->addWidget(new QLabel(tr("<h2>CustomerAccess</h2>")));
+    _secondaryLayout->addWidget(_createAccess);
+    _secondaryLayout->addLayout(_customerAccess);
+    _windowLayout->addLayout(_mainLayout);
+    _windowLayout->addLayout(_secondaryLayout);
+    _windowLayout->setAlignment(_secondaryLayout,Qt::AlignTop);
+
 }
 
 BodyProjectSettings::~BodyProjectSettings()
@@ -110,7 +128,7 @@ void BodyProjectSettings::PassToStaticMode()
 {
     QVector<QString> data;
     QString logo;
-    uchar *logobits;
+    QString logobits;
 
     //Disable the button and widgets
     _btnEditMode->setEnabled(false);
@@ -123,13 +141,8 @@ void BodyProjectSettings::PassToStaticMode()
     data.append(_projectDesc->toPlainText() != PH_PROJECT_DESC ? _projectDesc->toPlainText() : "");
     if (_logo->isImageFromComputer())
     {
-        logobits = _logo->getImage().toImage().bits();
-        while (*logobits)
-        {
-            logo.append(QChar(*logobits));
-            ++logobits;
-        }
-        data.append(logo);
+        logobits = _logo->getEncodedImage();
+        data.append(logobits);
     }
     else
         data.append("");
@@ -167,6 +180,13 @@ void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
     QJsonObject json = doc.object()["Project 1"].toObject();
     QVector<QString> dataRole;
 
+    while (QLayoutItem *item = _customerAccess->takeAt(0))
+    {
+        if (item->widget())
+            item->widget()->setParent(NULL);
+        delete item;
+    }
+
     _projectID = json["id"].toInt();
     if (!json["name"].isNull())
         _projectName->setText(json["name"].toString());
@@ -182,14 +202,18 @@ void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
         _facebook->setText(json["facebook"].toString());
     if (!json["twitter"].isNull())
         _twitter->setText(json["twitter"].toString());
+    if (!json["logo"].isNull())
+        _logo->setImage(json["logo"].toString());
     emit OnLoadingDone(_id);
     dataRole.append(API::SDataManager::GetDataManager()->GetToken());
     dataRole.append(QString::number(_projectID));
     _usersRoles->SetProjectId(_projectID);
     _usersRoles->Clear();
     _usersRoles->reset();
+
     _api->Get(API::DP_PROJECT, API::GR_PROJECT_ROLE, dataRole, this, "GetRolesSuccess", "Failure");
     _api->Get(API::DP_PROJECT, API::GR_PROJECT_USERS, dataRole, this, "GetUsersSuccess", "Failure");
+    _api->Get(API::DP_PROJECT, API::GR_CUSTOMER_ACCESSES, dataRole, this, "GetCustomerAccessSuccess", "Failure");
 }
 
 void BodyProjectSettings::GetRolesSuccess(int UNUSED id, QByteArray data)
@@ -272,4 +296,63 @@ void BodyProjectSettings::DeleteProjectSuccess(int UNUSED id, QByteArray UNUSED 
 void BodyProjectSettings::RetreiveProjectSuccess(int UNUSED id, QByteArray UNUSED data)
 {
     QMessageBox::information(this, tr("Project retreived"), tr("Project successfully retreived."));
+}
+
+void BodyProjectSettings::GetCustomerAccessSuccess(int id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject obj = doc.object();
+    QJsonObject::iterator it;
+
+    for (it = obj.begin(); it != obj.end(); ++it)
+    {
+        QJsonObject currentAccess = (*it).toObject();
+        CustomerAccessSettings *newAccess = new CustomerAccessSettings(currentAccess["name"].toString(), currentAccess["id"].toInt(), _projectID, currentAccess["customer_token"].toString());
+
+        QObject::connect(newAccess, SIGNAL(Deleted(CustomerAccessSettings*)), this, SLOT(CustomerAccessDeleted(CustomerAccessSettings*)));
+        _customerAccess->addWidget(newAccess);
+    }
+}
+
+void BodyProjectSettings::CustomerAccessDeleted(CustomerAccessSettings *access)
+{
+    _customerAccess->removeWidget(access);
+    delete access;
+}
+
+void BodyProjectSettings::AccessCreated(QString accessName)
+{
+    QVector<QString> data;
+
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(_projectID));
+    data.append(accessName);
+    _api->Post(API::DP_PROJECT, API::PR_CUSTOMER_GENERATE_ACCESS, data, this, "AccessCreatedSuccess", "Failure");
+}
+
+void BodyProjectSettings::AccessCreatedSuccess(int id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object();
+    QVector<QString> params;
+
+    _stackAccessID.append(json["id"].toInt());
+    params.append(API::SDataManager::GetDataManager()->GetToken());
+    params.append(QString::number(json["id"].toInt()));
+    _api->Get(API::DP_PROJECT, API::GR_CUSTOMER_ACCESS_BY_ID, params, this, "GetOneCustomerAccessSuccess", "GetOneCustomerAccessFailure");
+}
+
+void BodyProjectSettings::GetOneCustomerAccessSuccess(int id, QByteArray data)
+{
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+
+    CustomerAccessSettings *newAccess = new CustomerAccessSettings(json["name"].toString(), _stackAccessID.first(), _projectID, json["customer_token"].toString());
+    _stackAccessID.pop_front();
+   _customerAccess->addWidget(newAccess);
+}
+
+void BodyProjectSettings::GetOneCustomerAccessFailure(int id, QByteArray data)
+{
+    _stackAccessID.pop_front();
+    Failure(id, data);
 }

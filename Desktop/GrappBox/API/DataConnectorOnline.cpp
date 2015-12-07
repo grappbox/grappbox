@@ -144,6 +144,12 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
     case GR_PROJECT_USER_ROLE:
         reply = GetAction("roles/getrolebyprojectanduser", data);
         break;
+    case GR_CUSTOMER_ACCESSES:
+        reply = GetAction("projects/getcustomeraccessbyproject", data);
+        break;
+    case GR_CUSTOMER_ACCESS_BY_ID:
+        reply = GetAction("projects/getcustomeraccessbyid", data);
+        break;
     }
     if (reply == NULL)
         throw QException();
@@ -488,6 +494,7 @@ QNetworkReply *DataConnectorOnline::CustomerGenerateAccess(QVector<QString> &dat
 
     json["token"] = data[0];
     json["projectId"] = data[1];
+    json["name"] = data[2];
 
     QJsonDocument doc(json);
     QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));

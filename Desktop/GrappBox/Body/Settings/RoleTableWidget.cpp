@@ -332,7 +332,8 @@ void RoleTableWidget::SuccessInviteUser(int id, QByteArray data)
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
 
-    //_users->insert(json["idUser"].toInt(), QString(json["userFirst_name"].toString() + " " + json["userLast_name"].toString()));
+    _users->insert(json["user_id"].toInt(), QString(json["user_firstname"].toString() + " " + json["user_lastname"].toString()));
+    refresh(true);
 }
 
 void RoleTableWidget::SuccessDeleteUser(int id, QByteArray data)

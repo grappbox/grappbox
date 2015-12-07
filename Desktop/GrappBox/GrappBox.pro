@@ -45,7 +45,9 @@ SOURCES += main.cpp \
     Body/Settings/UserRoleCheckbox.cpp \
     Body/Settings/CreateNewRole.cpp \
     Body/Settings/InfoPushButton.cpp \
-    Body/Settings/InviteUserWindow.cpp
+    Body/Settings/InviteUserWindow.cpp \
+    Body/Settings/CustomerAccessSettings.cpp \
+    Body/Settings/CreateNewCustomerAccessWindow.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -75,7 +77,9 @@ HEADERS  += MainWindow.h \
     Body/Settings/UserRoleCheckbox.h \
     Body/Settings/CreateNewRole.h \
     Body/Settings/InfoPushButton.h \
-    Body/Settings/InviteUserWindow.h
+    Body/Settings/InviteUserWindow.h \
+    Body/Settings/CustomerAccessSettings.h \
+    Body/Settings/CreateNewCustomerAccessWindow.h
 
 RESOURCES += \
     temporaryressources.qrc \
