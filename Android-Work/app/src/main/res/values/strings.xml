@@ -27,7 +27,15 @@
 
     <string name="list_whiteboard">List whiteboard</string>
     <string name="data_not_specified">Not specified</string>
+    <string name="dialog_color_select">Color selection</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="italic_checkbox_label"><i>Italic</i></string>
+    <string name="bold_checkbox_label"><b>Bold</b></string>
+    <string name="underline_checkbox_label"><u>Underline</u></string>
+    
+    <string-array name="size_text">
+        <item>14</item>
+        <item>18</item>
+        <item>22</item>
+    </string-array>
 </resources>

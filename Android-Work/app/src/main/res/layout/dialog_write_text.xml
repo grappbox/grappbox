@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your text"
+        android:textSize="25sp"
+        android:textColor="#c0392b"/>
+
+    <EditText
+        android:id="@+id/dialog_write_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
+
+        <CheckBox
+            android:id="@+id/italic_text_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/italic_checkbox_label"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"/>
+
+        <CheckBox
+            android:id="@+id/bold_text_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bold_checkbox_label"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"/>
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/text_size_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

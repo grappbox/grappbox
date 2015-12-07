@@ -1,6 +1,10 @@
 package com.grappbox.grappbox.grappbox;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,12 +12,27 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import java.lang.reflect.Type;
 
 public class DrawingView extends View {
 
+    private Context _context;
     private Path _DrawPath;
     private Paint _DrawPaint;
     private Paint _CanvasPaint;
@@ -32,6 +51,7 @@ public class DrawingView extends View {
     public DrawingView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        _context = context;
         setupDraw();
     }
 
@@ -66,17 +86,13 @@ public class DrawingView extends View {
     protected void onDraw(Canvas canvas)
     {
         //canvas.drawBitmap(_WhiteboardBitmap, new Rect(0, 0, 4096, 2160), new RectF(0, 0, 100, 100), _CanvasPaint);
-        if (_OnDraw)
-        {
-            canvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
-            canvas.drawPath(_DrawPath, _DrawPaint);
+        if (_OnDraw) {
             _CanvasBitmap = _WhiteboardBitmap;
         }
-        else
-        {
-            canvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
-            canvas.drawPath(_DrawPath, _DrawPaint);
-        }
+        canvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
+        canvas.drawPath(_DrawPath, _DrawPaint);
+        if(_ShapeType != 2)
+            _DrawPath.reset();
     }
 
     @Override
@@ -85,6 +101,7 @@ public class DrawingView extends View {
         float touchX = event.getX();
         float touchY = event.getY();
 
+        invalidate();
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
@@ -94,7 +111,10 @@ public class DrawingView extends View {
                 touchYStart = event.getY();
                 _DrawPath.moveTo(touchX, touchY);
                 if (_ShapeType == 3) {
-                    _DrawCanvas.drawText("TOTO", touchXStart, touchYStart, _DrawText);
+                    ColorSelectionDIalogFragment color = new ColorSelectionDIalogFragment();
+                    FragmentManager fm = ((FragmentActivity) _context).getSupportFragmentManager();
+                    color.show(fm, "color selection");
+//                    _DrawCanvas.drawText("TOTO", touchXStart, touchYStart, _DrawText);
                 }
 
                 break;
@@ -172,5 +192,53 @@ public class DrawingView extends View {
         _DrawPaint.setStyle(Paint.Style.STROKE);
         _DrawPaint.setStrokeJoin(Paint.Join.ROUND);
         _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
+    }
+
+
+    public class ColorSelectionDIalogFragment extends DialogFragment {
+
+        EditText _msg;
+        CheckBox _italic;
+        CheckBox _bold;
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            // Get the layout inflater
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View view = inflater.inflate(R.layout.dialog_write_text, null);
+            final Spinner spinner = (Spinner) view.findViewById(R.id.text_size_spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.size_text, android.R.layout.simple_spinner_item);
+            spinner.setAdapter(adapter);
+            _msg = (EditText)view.findViewById(R.id.dialog_write_text);
+            _bold = (CheckBox)view.findViewById(R.id.bold_text_checkbox);
+            _italic = (CheckBox)view.findViewById(R.id.italic_text_checkbox);
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView(view)
+                    // Add action buttons
+                    .setPositiveButton("Write Text", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            if (_italic.isChecked())
+                                _DrawText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
+                            if (_bold.isChecked())
+                                _DrawText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                            if (_italic.isChecked() && _bold.isChecked())
+                                _DrawText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC));
+                            if(spinner.getSelectedItemPosition() == 0) {
+                                _DrawText.setTextSize(getResources().getDimension(R.dimen.text_little));
+                            }else if (spinner.getSelectedItemPosition() == 1) {
+                                _DrawText.setTextSize(getResources().getDimension(R.dimen.text_medium));
+                            } else {
+                                _DrawText.setTextSize(getResources().getDimension(R.dimen.text_large));
+                            }
+                            _DrawCanvas.drawText(_msg.getText().toString(), touchXStart, touchYStart, _DrawText);
+                            invalidate();
+                        }
+                    });
+            return builder.create();
+        }
+
     }
 }
