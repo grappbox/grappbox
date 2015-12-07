@@ -12,14 +12,112 @@
     </ion-content>-->
     <ion-footer-bar class="bar-stable">
         <div class="title">
-            <!--<button class="button button-icon ion-plus-round" ng-click="zoomIn()"></button>
-            <button class="button button-icon button-clear ion-minus-round" ng-click="zoomOut()"></button>-->
             <button class="button button-icon ion-arrow-move" ng-click="moveOn()"></button>
             <button class="button button-icon button-clear ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button>
             <button class="button button-icon button-clear ion-paintbrush" style="color: {{brushcolor}}" ng-click="openDrawPopover($event)"></button>
-            <button class="button button-icon button-clear" style="color: {{brushcolor}}; font-size: 25px" ng-click="openTextPopover($event)">Aa</button>
+            <button class="button button-icon button-clear" style="color: {{brushcolor}}" ng-click="addText()">Aa</button> <!--ng-click="openTextPopover($event)"-->
             <button class="button button-icon button-clear ion-android-radio-button-off" style="color: {{brushcolor}}" ng-click="openShapesPopover($event)"></button>
             <button class="button button-icon button-clear ion-ios-undo" ng-click="undoLastObject()"></button>
         </div>
     </ion-footer-bar>
 </ion-view>
+
+<!-- Whiteboard text (when adding a text) -->
+<script id="addTextToWhiteboard.html" type="text/ng-template">
+    <form>
+        <input type="text" ng-model="textAdd.input">
+        <label class="item item-input item-select">
+            Size
+            <select ng-init="textAdd.textSize='30'" ng-model="textAdd.textSize">
+                <option ng-value='20'>20</option>
+                <option ng-value='30' ng-selected="true">30</option>
+                <option ng-value='40'>40</option>
+            </select>
+        </label>
+        <button class="button button-icon" style="font-size: 25px" ng-value="'normal'" ng-click="textAdd.fontStyle='normal'">Text</button>
+        <button class="button button-icon" style="font-size: 25px; font-style: italic" ng-click="textAdd.fontStyle='italic'">Italic</button>
+        <button class="button button-icon" style="font-size: 25px" ng-click="textAdd.fontStyle='bold'"><b>Bold</b></button>
+    </form>
+</script>
+
+<!--Colors options in the popover-->
+<script id="colorsPopup.html" type="text/ng-template">
+    <ion-popover-view style="height: 250px; width: 265px">
+        <ion-content>
+            <!-- "ion-record" is the round ionic font for colors -->
+            <!-- "ng-repeat" goes in controller and picks in colorsTab list the good color to display -->
+            <!-- "style" creates a "color" CSS element and assigns it the "colorDisplayed" found in previous ng-repeat "colorDisplayed" -->
+            <!-- "changeBrushColor" allows to send the good color to be picked after the previous assigned color -->
+            <button class="button button-icon ion-record"
+                    ng-repeat="colorDisplayed in colorTab"
+                    style="color: {{colorDisplayed.colorHex}}; font-size: 36.5px"
+                    ng-click="changeBrushColor(colorDisplayed.colorHex)"></button>
+        </ion-content>
+    </ion-popover-view>
+</script>
+
+<!-- Shapes options in the popover -->
+<script id="shapesPopup.html" type="text/ng-template">
+    <ion-popover-view style="height:110px">
+        <ion-content>
+            <!-- Rectangle Filled -->
+            <button class="button button-icon ion-stop"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawRect()"></button>
+
+            <!-- Rectangle empty -->
+            <button class="button button-icon ion-android-checkbox-outline-blank"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawRect(true)"></button>
+
+            <!-- Ellipse filled -->
+            <button class="button button-icon ion-record"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawEllipse()"></button>
+
+            <!-- Ellipse empty-->
+            <button class="button button-icon ion-ios-circle-outline"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawEllipse(true)"></button>
+
+            <!-- Diamond filled -->
+            <!--<button class="button button-icon ion-ios-play"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawDiamond()"></button>-->
+
+            <!-- Diamond empty -->
+            <!--<button class="button button-icon ion-ios-play-outline"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawDiamond(true)"></button>-->
+
+            <!-- Triangle filled -->
+            <button class="button button-icon ion-arrow-up-b"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawTriangle()"></button>
+
+            <!-- Triangle empty -->
+            <button class="button button-icon ion-ios-arrow-up"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawTriangle(true)"></button>
+
+            <!-- Line -->
+            <button class="button button-icon ion-minus-round"
+                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    ng-click="drawLine()"></button>
+        </ion-content>
+    </ion-popover-view>
+</script>
+
+<!-- Draws options in the popover -->
+<script id="drawPopup.html" type="text/ng-template">
+    <ion-popover-view style="height:110px;">
+        <ion-content>
+            <button class="button button-icon"
+                    style="font-size: 25px"
+                    ng-repeat="brushsize in brushSizeTab"
+                    ng-click="changeBrushSize(brushsize.brushSize)">
+                {{brushsize.brushSize}}
+            </button>
+        </ion-content>
+    </ion-popover-view>
+</script>
