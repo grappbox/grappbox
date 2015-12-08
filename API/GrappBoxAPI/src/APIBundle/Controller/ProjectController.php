@@ -48,7 +48,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
-	*		"token": "1dq354c3q4",
 	*		"name": "Grappbox",
 	*		"description": "grappbox est un projet de gestion de projets",
 	*		"logo": "10001111001100110010101010"
@@ -100,7 +99,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
-	*		"token": "1dq354c3q4",
 	*		"name": "Grappbox",
 	*		"description": "grappbox est un projet de gestion de projets",
 	*		"logo": "10001111001100110010101010"
