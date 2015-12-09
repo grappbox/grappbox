@@ -288,7 +288,7 @@ class CloudController extends Controller
 		$stream->setCreatorId($userId)
 					 ->setFilename($receivedData["filename"])
 					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
-					 ->setPassword($receivedData["password"])
+					 ->setPassword(isset($receivedData["password"]) ? $receivedData["password"] : null);
 					 ->setCreationDate(new DateTime("now"))
 					 ->setDeletionDate(null);
 		$em->persist($stream);
