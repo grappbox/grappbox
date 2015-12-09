@@ -99,37 +99,14 @@ public class TeamOccupationFragment extends Fragment {
         @Override
         protected List<ContentValues> doInBackground(String ... param)
         {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
             String resultAPI;
             List<ContentValues> listResult = null;
 
             try {
-                String urlPath = "http://api.grappbox.com/app_dev.php/V0.8/dashboard/getteamoccupation/" + SessionAdapter.getInstance().getToken();
-                URL url = new URL(urlPath);
-                connection = (HttpURLConnection)url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
+                APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().setRequestConnection("GET");
 
-                InputStream inputStream = connection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                String nLine;
-                while ((line = reader.readLine()) != null) {
-                    nLine = line + "\n";
-                    buffer.append(nLine);
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-
-                resultAPI = buffer.toString();
+                resultAPI = APIConnectAdapter.getInstance().getInputSream();
                 listResult =  getTeamOccupation(resultAPI);
 
             } catch (IOException e){
@@ -139,16 +116,7 @@ public class TeamOccupationFragment extends Fragment {
                 Log.e("APIConnection", "Error ", j);
                 return null;
             } finally {
-                if (connection != null){
-                    connection.disconnect();
-                }
-                if (reader != null){
-                    try {
-                        reader.close();
-                    } catch (final IOException e){
-                        Log.e("APIConnection", "Error ", e);
-                    }
-                }
+                APIConnectAdapter.getInstance().closeConnection();
             }
             return listResult;
         }

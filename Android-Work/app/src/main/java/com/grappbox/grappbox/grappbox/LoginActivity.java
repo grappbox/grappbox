@@ -1,10 +1,7 @@
 package com.grappbox.grappbox.grappbox;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.os.AsyncTask;
@@ -14,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.TimeoutException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -62,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public class APIRequestLogin extends AsyncTask<String, Void, ContentValues> {
 
-        private static final String _API_URL_BASE = "http://api.grappbox.com/app_dev.php/";
+
 
         private ContentValues  getLoginDataFromJSON(String resultJSON) throws JSONException
         {
@@ -103,47 +98,19 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected ContentValues doInBackground(String ... param)
         {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
             ContentValues contentAPI = null;
             String resultAPI;
 
             try {
-                URL url = new URL("http://api.grappbox.com/app_dev.php/V0.8/accountadministration/login");
-                connection = (HttpURLConnection)url.openConnection();
-                connection.setRequestMethod("POST");
-
-                connection.setReadTimeout(10000 /* milliseconds */);
-                connection.setConnectTimeout(15000 /* milliseconds */);
-                DataOutputStream dataOutputStream;
+                APIConnectAdapter.getInstance().startConnection("accountadministration/login");
+                APIConnectAdapter.getInstance().setRequestConnection("POST");
 
                 JSONObject JSONParam = new JSONObject();
                 JSONParam.put("login", param[0]);
                 JSONParam.put("password", param[1]);
-                dataOutputStream = new DataOutputStream(connection.getOutputStream());
-                dataOutputStream.write(JSONParam.toString().getBytes("UTF-8"));
-                dataOutputStream.flush();
-                dataOutputStream.close();
-                connection.connect();
-                InputStream inputStream = connection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
+                APIConnectAdapter.getInstance().sendJSON(JSONParam);
 
-                String line;
-                String nLine;
-                while ((line = reader.readLine()) != null) {
-                    nLine = line + "\n";
-                    buffer.append(nLine);
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-
-                resultAPI = buffer.toString();
+                resultAPI = APIConnectAdapter.getInstance().getInputSream();
                 if ((contentAPI = getLoginDataFromJSON(resultAPI)) == null)
                     return null;
 
@@ -154,16 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e("APIConnection", "Error ", j);
                 return null;
             } finally {
-                if (connection != null){
-                    connection.disconnect();
-                }
-                if (reader != null){
-                    try {
-                        reader.close();
-                    } catch (final IOException e){
-                        Log.e("APIConnection", "Error ", e);
-                    }
-                }
+                APIConnectAdapter.getInstance().closeConnection();
             }
             return contentAPI;
         }

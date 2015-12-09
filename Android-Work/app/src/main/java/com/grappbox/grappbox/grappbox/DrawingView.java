@@ -2,7 +2,6 @@ package com.grappbox.grappbox.grappbox;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -10,7 +9,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,17 +16,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.lang.reflect.Type;
 
 public class DrawingView extends View {
 
@@ -38,6 +33,7 @@ public class DrawingView extends View {
     private Paint _CanvasPaint;
     private Paint _DrawText;
     private int _PaintColor = 0xFF333333;
+    private int _SecondColor = 0xFF333333;
     private Canvas _DrawCanvas;
     private Bitmap _CanvasBitmap;
     private Bitmap _WhiteboardBitmap;
@@ -69,7 +65,7 @@ public class DrawingView extends View {
 
         _DrawText = new Paint();
         _DrawText.setColor(_PaintColor);
-        _DrawText.setTextSize(50);
+        _DrawText.setTextSize(getResources().getDimension(R.dimen.text_little));
 
         _CanvasPaint = new Paint(Paint.DITHER_FLAG);
     }
@@ -90,9 +86,19 @@ public class DrawingView extends View {
             _CanvasBitmap = _WhiteboardBitmap;
         }
         canvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
-        canvas.drawPath(_DrawPath, _DrawPaint);
-        if(_ShapeType != 2)
+        if (_ShapeType == 2) {
+            _DrawPaint.setStyle(Paint.Style.STROKE);
+            _DrawPaint.setColor(_PaintColor);
+            canvas.drawPath(_DrawPath, _DrawPaint);
+        } else {
+            _DrawPaint.setStyle(Paint.Style.FILL);
+            _DrawPaint.setColor(_PaintColor);
+            canvas.drawPath(_DrawPath, _DrawPaint);
+            _DrawPaint.setStyle(Paint.Style.STROKE);
+            _DrawPaint.setColor(_SecondColor);
+            canvas.drawPath(_DrawPath, _DrawPaint);
             _DrawPath.reset();
+        }
     }
 
     @Override
@@ -111,10 +117,9 @@ public class DrawingView extends View {
                 touchYStart = event.getY();
                 _DrawPath.moveTo(touchX, touchY);
                 if (_ShapeType == 3) {
-                    ColorSelectionDIalogFragment color = new ColorSelectionDIalogFragment();
+                    TextEditDialogFragment textEditDIalogFragment = new TextEditDialogFragment();
                     FragmentManager fm = ((FragmentActivity) _context).getSupportFragmentManager();
-                    color.show(fm, "color selection");
-//                    _DrawCanvas.drawText("TOTO", touchXStart, touchYStart, _DrawText);
+                    textEditDIalogFragment.show(fm, "color selection");
                 }
 
                 break;
@@ -126,11 +131,24 @@ public class DrawingView extends View {
 
             case MotionEvent.ACTION_UP:
                 _OnDraw = false;
-                if (_ShapeType != 2)
+
+                if (_ShapeType == 2) {
+                    drawShape(touchX, touchY);
+                    _DrawPaint.setStyle(Paint.Style.STROKE);
+                    _DrawPaint.setColor(_PaintColor);
+                    _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
+                } else {
                     _DrawPath.reset();
-                drawShape(touchX, touchY);
-                _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
+                    drawShape(touchX, touchY);
+                    _DrawPaint.setStyle(Paint.Style.FILL);
+                    _DrawPaint.setColor(_PaintColor);
+                    _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
+                    _DrawPaint.setStyle(Paint.Style.STROKE);
+                    _DrawPaint.setColor(_SecondColor);
+                    _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
+                }
                 _DrawPath.reset();
+
                 break;
 
             default:
@@ -168,6 +186,21 @@ public class DrawingView extends View {
         invalidate();
         _PaintColor = Color.parseColor(newColor);
         _DrawPaint.setColor(_PaintColor);
+        _DrawText.setColor(_PaintColor);
+    }
+
+    public void setColor(int newColor)
+    {
+        invalidate();
+        _PaintColor = newColor;
+        _DrawPaint.setColor(_PaintColor);
+        _DrawText.setColor(_PaintColor);
+    }
+
+    public void setSecondColor(int newColor)
+    {
+        invalidate();
+        _SecondColor = newColor;
     }
 
     public void setFormShape(int shapeType)
@@ -195,7 +228,7 @@ public class DrawingView extends View {
     }
 
 
-    public class ColorSelectionDIalogFragment extends DialogFragment {
+    public class TextEditDialogFragment extends DialogFragment {
 
         EditText _msg;
         CheckBox _italic;
@@ -204,7 +237,6 @@ public class DrawingView extends View {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // Get the layout inflater
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View view = inflater.inflate(R.layout.dialog_write_text, null);
             final Spinner spinner = (Spinner) view.findViewById(R.id.text_size_spinner);
@@ -213,10 +245,7 @@ public class DrawingView extends View {
             _msg = (EditText)view.findViewById(R.id.dialog_write_text);
             _bold = (CheckBox)view.findViewById(R.id.bold_text_checkbox);
             _italic = (CheckBox)view.findViewById(R.id.italic_text_checkbox);
-            // Inflate and set the layout for the dialog
-            // Pass null as the parent view because its going in the dialog layout
             builder.setView(view)
-                    // Add action buttons
                     .setPositiveButton("Write Text", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {

@@ -138,37 +138,14 @@ public class GlobalProgressFragment extends Fragment {
         @Override
         protected List<ContentValues> doInBackground(String ... param)
         {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
             List<ContentValues> contentAPI = null;
             String resultAPI;
 
             try {
-                String urlPath = "http://api.grappbox.com/app_dev.php/V0.8/dashboard/getprojectsglobalprogress/" + SessionAdapter.getInstance().getToken();
-                URL url = new URL(urlPath);
-                connection = (HttpURLConnection)url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
+                APIConnectAdapter.getInstance().startConnection("dashboard/getprojectsglobalprogress/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().setRequestConnection("GET");
 
-                InputStream inputStream = connection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                String nLine;
-                while ((line = reader.readLine()) != null) {
-                    nLine = line + "\n";
-                    buffer.append(nLine);
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-
-                resultAPI = buffer.toString();
+                resultAPI = APIConnectAdapter.getInstance().getInputSream();
                 contentAPI = getTeamOccupation(resultAPI);
 
             } catch (IOException e){
@@ -178,16 +155,7 @@ public class GlobalProgressFragment extends Fragment {
                 Log.e("APIConnection", "Error ", j);
                 return null;
             }finally {
-                if (connection != null){
-                    connection.disconnect();
-                }
-                if (reader != null){
-                    try {
-                        reader.close();
-                    } catch (final IOException e){
-                        Log.e("APIConnection", "Error ", e);
-                    }
-                }
+                APIConnectAdapter.getInstance().closeConnection();
             }
             return contentAPI;
         }
