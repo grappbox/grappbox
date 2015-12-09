@@ -137,7 +137,7 @@ class CloudController extends Controller
 		$role = $db->getRepository("APIBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
 		if (is_null($role))
 			return (-1);
-		$roleTable = $db->getRepository("APIBundle:Role")->findOneById($role->getId());
+		$roleTable = $db->getRepository("APIBundle:Role")->findOneById($role->getRoleId());
 		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
 	}
 
