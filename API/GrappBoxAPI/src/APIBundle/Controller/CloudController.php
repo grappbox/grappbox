@@ -743,7 +743,7 @@ class CloudController extends Controller
 			$passwordEncrypted = $password; // TODO : SHA-1 Hashing
 		}
 		else {
-			$project == NULL;
+			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
 		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
