@@ -339,7 +339,7 @@ angular.module('GrappBox.controllers')
         var line;
 
         $ionicScrollDelegate.freezeAllScrolls(true);
-        //canvas.off('mouse:down');
+        canvas.off('mouse:down');
         canvas.isDrawingMode = false;
 
         canvas.on('mouse:down', function (option) {
