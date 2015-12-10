@@ -29,9 +29,12 @@ angular.module('GrappBox.controllers')
                 console.log('Get next meetings list successful !');
                 console.log(data);
                 $scope.nextMeetingsTab = data;
+                if (data.length == 0)
+                    $scope.noMeeting = "You have no meeting right now.";
             })
             .catch(function (error) {
                 console.error('Get next meetings list failed ! Reason: ' + error);
+                $scope.noMeeting = "You have no meeting right now.";
             })
     }
     $scope.GetNextMeetings();

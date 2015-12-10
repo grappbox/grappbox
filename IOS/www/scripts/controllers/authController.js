@@ -30,14 +30,4 @@ angular.module('GrappBox.controllers')
                 console.error('Connexion failed ! Reason: ' + error);
             })
     }
-
-    $scope.logout = function () {
-        Logout.get({ token: $rootScope.userDatas.token }).$promise
-            .then(function (data) {
-                console.log('Deconnexion successful !');
-            })
-            .catch(function (error) {
-                console.error('Deconnexion failed ! Reason: ' + error);
-            })
-    }
 })
