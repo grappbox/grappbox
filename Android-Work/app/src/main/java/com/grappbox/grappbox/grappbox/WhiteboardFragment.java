@@ -1,36 +1,26 @@
 package com.grappbox.grappbox.grappbox;
 
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Toast;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class WhiteboardFragment extends Fragment implements View.OnClickListener {
 
     private DrawingView _DrawView;
     private ImageButton _ColorBorderBtn;
     private ImageButton _ColorBtn;
     private ImageButton _DrawBtn;
+    private ImageButton _EraseButton;
     private View        _view;
 
     public WhiteboardFragment() {
@@ -48,6 +38,8 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         _ColorBtn.setOnClickListener(this);
         _ColorBorderBtn = (ImageButton)_view.findViewById(R.id.color_border_btn);
         _ColorBorderBtn.setOnClickListener(this);
+        _EraseButton = (ImageButton)_view.findViewById(R.id.erase_btn);
+        _EraseButton.setOnClickListener(this);
 
         return _view;
     }
@@ -70,6 +62,10 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
                 }
             });
             colorBorderDialog.show();
+        }
+
+        if (view.getId() == R.id.erase_btn){
+            _DrawView.setFormShape(5);
         }
 
         if (view.getId() == R.id.color_btn) {
@@ -120,15 +116,6 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
                 }
             });
 
-            ImageButton triangleButton = (ImageButton)formDialog.findViewById(R.id.triangle_shape);
-            triangleButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    _DrawView.setFormShape(4);
-                    formDialog.dismiss();
-                }
-            });
-
             ImageButton textButton = (ImageButton)formDialog.findViewById(R.id.text_selection);
             textButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -138,11 +125,19 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
                 }
             });
 
+            ImageButton triangleButton = (ImageButton)formDialog.findViewById(R.id.triangle_shape);
+            triangleButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    _DrawView.setFormShape(4);
+                    formDialog.dismiss();
+                }
+            });
+
+
+
             formDialog.show();
         }
-
-
-        Log.v("ID = ", String.valueOf(view.getId()));
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -183,20 +178,5 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
             return imageView;
         }
 
-        // references to our images
-        /*
-        private Integer[] mThumbIds = {
-                R.drawable.sample_2, R.drawable.sample_3,
-                R.drawable.sample_4, R.drawable.sample_5,
-                R.drawable.sample_6, R.drawable.sample_7,
-                R.drawable.sample_0, R.drawable.sample_1,
-                R.drawable.sample_2, R.drawable.sample_3,
-                R.drawable.sample_4, R.drawable.sample_5,
-                R.drawable.sample_6, R.drawable.sample_7,
-                R.drawable.sample_0, R.drawable.sample_1,
-                R.drawable.sample_2, R.drawable.sample_3,
-                R.drawable.sample_4, R.drawable.sample_5,
-                R.drawable.sample_6, R.drawable.sample_7
-        };*/
     }
 }

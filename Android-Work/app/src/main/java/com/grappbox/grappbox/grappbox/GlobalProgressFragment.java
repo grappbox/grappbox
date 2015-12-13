@@ -32,7 +32,6 @@ public class GlobalProgressFragment extends Fragment {
     ListView _projectList;
 
     public GlobalProgressFragment() {
-        // Required empty public constructor
     }
 
     @Override

@@ -50,7 +50,7 @@ public class DashboardFragment extends Fragment {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         private List<Fragment>  _fragments = null;
-        private String tabTitle[] = {"Dashboard", "Next Meeting", "Timeline"};
+        private String tabTitle[] = getResources().getStringArray(R.array.dashboard_tab_bar_title);
 
         public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
             super(fm);

@@ -38,4 +38,10 @@
         <item>18</item>
         <item>22</item>
     </string-array>
+
+    <string-array name="dashboard_tab_bar_title">
+        <item>Team Occupation</item>
+        <item>Next Meeting</item>
+        <item>Global Progress</item>
+    </string-array>
 </resources>

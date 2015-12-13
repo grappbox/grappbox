@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Toolbar _toolbar;
-    private Fragment _activeFrag;
     private FragmentManager _fragmentManager;
     private ActionBarDrawerToggle _actionBarDrawerToggle;
 
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity
 
         _toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(_toolbar);
-        changeToolbarTitle("Dashboard");
+        changeToolbarTitle("Grappbox");
 
         _Drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         _actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -60,9 +59,8 @@ public class MainActivity extends AppCompatActivity
         TextView text = (TextView)headerView.findViewById(R.id.nav_head_name_user);
         String name = SessionAdapter.getInstance().getFisrname() + " " + SessionAdapter.getInstance().getLastname();
         text.setText(name);
-        _activeFrag = new DashboardFragment();
         _fragmentManager = getSupportFragmentManager();
-        _fragmentManager.beginTransaction().add(R.id.content_frame, _activeFrag, DashboardFragment.TAG).commit();
+        _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
     }
 
     @Override
@@ -89,7 +87,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -97,8 +94,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
+        
         if (id == R.id.action_settings) {
             return true;
         }
@@ -112,33 +108,31 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        FragmentTransaction transaction;
-        if (id == R.id.nav_dashboard) {
-            transaction = _fragmentManager.beginTransaction();
-            transaction.remove(_activeFrag);
-            changeToolbarTitle("Dashboard");
-            _activeFrag = new DashboardFragment();
-            transaction.add(R.id.content_frame, _activeFrag, _activeFrag.getTag());
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } else if (id == R.id.nav_whiteboard) {
-            transaction = _fragmentManager.beginTransaction();
-            transaction.remove(_activeFrag);
-            changeToolbarTitle("Whiteboard");
-            _activeFrag = new WhiteboardListFragment();
-            transaction.add(R.id.content_frame, _activeFrag, _activeFrag.getTag());
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } else if (id == R.id.nav_Timeline) {
+        Fragment fragment = null;
+        switch (id){
 
+            case R.id.nav_dashboard:
+                fragment = new DashboardFragment();
+                changeToolbarTitle("Dashboard");
+                break;
+
+            case R.id.nav_whiteboard:
+                fragment = new WhiteboardListFragment();
+                changeToolbarTitle("Whiteboard");
+                break;
+
+            default:
+                break;
         }
-
+        if (fragment != null)
+            _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -152,30 +146,9 @@ public class MainActivity extends AppCompatActivity
     private void changeToolbarTitle(String title)
     {
         _toolbar.setTitle(title);
-        setSupportActionBar(_toolbar);
     }
 
     public class APIRequestLogout extends AsyncTask<String, Void, Void> {
-
-        private static final String _API_URL_BASE = "http://api.grappbox.com/app_dev.php/";
-
-        private ContentValues  getLoginDataFromJSON(String resultJSON) throws JSONException
-        {
-            final String DATA_LIST = "user";
-            final String[] DATA_USER = {"id", "firstname", "lastname", "email", "token"};
-
-            ContentValues JSONContent = new ContentValues();
-            JSONObject jsonObject = new JSONObject(resultJSON);
-            JSONObject userData = jsonObject.getJSONObject(DATA_LIST);
-
-            for (String data : DATA_USER) {
-                if (userData.getString(data) == null)
-                    return null;
-                JSONContent.put(data, userData.getString(data));
-            }
-
-            return JSONContent;
-        }
 
         @Override
         protected void onPostExecute(Void result) {
@@ -186,53 +159,19 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(String ... param)
         {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            ContentValues contentAPI = null;
             String resultAPI;
-            List<ContentValues> listResult = null;
 
             try {
-                String urlPath = "http://api.grappbox.com/app_dev.php/V0.8/accountadministration/logout/" + SessionAdapter.getInstance().getToken();
-                URL url = new URL(urlPath);
-                connection = (HttpURLConnection)url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
+                APIConnectAdapter.getInstance().startConnection("accountadministration/logout/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().setRequestConnection("GET");
 
-                InputStream inputStream = connection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                String nLine;
-                while ((line = reader.readLine()) != null) {
-                    nLine = line + "\n";
-                    buffer.append(nLine);
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-
-                resultAPI = buffer.toString();
+                resultAPI = APIConnectAdapter.getInstance().getInputSream();
 
             } catch (IOException e){
                 Log.e("APIConnection", "Error ", e);
                 return null;
             } finally {
-                if (connection != null){
-                    connection.disconnect();
-                }
-                if (reader != null){
-                    try {
-                        reader.close();
-                    } catch (final IOException e){
-                        Log.e("APIConnection", "Error ", e);
-                    }
-                }
+                APIConnectAdapter.getInstance().closeConnection();
             }
             return null;
         }

@@ -13,4 +13,6 @@
     <dimen name="text_little">14dip</dimen>
     <dimen name="text_medium">18dip</dimen>
     <dimen name="text_large">22dip</dimen>
+    
+    <dimen name="brush_short">5dip</dimen>
 </resources>

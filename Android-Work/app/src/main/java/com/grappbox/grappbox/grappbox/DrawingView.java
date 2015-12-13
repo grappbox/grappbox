@@ -10,12 +10,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +25,10 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class DrawingView extends View {
@@ -41,8 +47,10 @@ public class DrawingView extends View {
     private float touchXStart = 0;
     private float touchYStart = 0;
     private int _ShapeType = 0;
+    private ArrayList<Path> __ListPaint = new ArrayList<Path>();
 
     private boolean _OnDraw = false;
+    private Region _clip;
 
     public DrawingView(Context context, AttributeSet attrs)
     {
@@ -68,6 +76,7 @@ public class DrawingView extends View {
         _DrawText.setTextSize(getResources().getDimension(R.dimen.text_little));
 
         _CanvasPaint = new Paint(Paint.DITHER_FLAG);
+        _clip = new Region(0, 0, 3840, 2160);
     }
 
     @Override
@@ -90,12 +99,15 @@ public class DrawingView extends View {
             _DrawPaint.setStyle(Paint.Style.STROKE);
             _DrawPaint.setColor(_PaintColor);
             canvas.drawPath(_DrawPath, _DrawPaint);
-        } else {
+        } else if (_ShapeType != 5) {
             _DrawPaint.setStyle(Paint.Style.FILL);
             _DrawPaint.setColor(_PaintColor);
             canvas.drawPath(_DrawPath, _DrawPaint);
             _DrawPaint.setStyle(Paint.Style.STROKE);
             _DrawPaint.setColor(_SecondColor);
+            canvas.drawPath(_DrawPath, _DrawPaint);
+            _DrawPath.reset();
+        } else {
             canvas.drawPath(_DrawPath, _DrawPaint);
             _DrawPath.reset();
         }
@@ -127,25 +139,46 @@ public class DrawingView extends View {
             case MotionEvent.ACTION_MOVE:
                 _OnDraw = true;
                 drawShape(touchX, touchY);
+                if (_ShapeType == 5) {
+                    _DrawPath.reset();
+                    drawShape(touchX, touchY);
+                    for (Iterator<Path> iterator = __ListPaint.iterator(); iterator.hasNext();) {
+                        Path path = iterator.next();
+                        Region reg1 = new Region();
+                        reg1.setPath(path, _clip);
+                        Region reg2 = new Region();
+                        reg2.setPath(_DrawPath, _clip);
+                        if (!reg1.quickReject(reg2) && reg1.op(reg2, Region.Op.INTERSECT)) {
+                            __ListPaint.remove(path);
+                        }
+
+                    }
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
                 _OnDraw = false;
 
+                if(_ShapeType != 5)
+                    __ListPaint.add(new Path(_DrawPath));
+                _CanvasBitmap = _WhiteboardBitmap;
+                _DrawCanvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
                 if (_ShapeType == 2) {
                     drawShape(touchX, touchY);
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setColor(_PaintColor);
                     _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
-                } else {
-                    _DrawPath.reset();
-                    drawShape(touchX, touchY);
+                } else if (_ShapeType != 5) {
+                        _DrawPath.reset();
+                        drawShape(touchX, touchY);
+                }
+                for (Path path : __ListPaint) {
                     _DrawPaint.setStyle(Paint.Style.FILL);
                     _DrawPaint.setColor(_PaintColor);
-                    _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
+                    _DrawCanvas.drawPath(path, _DrawPaint);
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setColor(_SecondColor);
-                    _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
+                    _DrawCanvas.drawPath(path, _DrawPaint);
                 }
                 _DrawPath.reset();
 
@@ -178,6 +211,8 @@ public class DrawingView extends View {
         }else if (_ShapeType == 4) {
             _DrawPath.setFillType(Path.FillType.EVEN_ODD);
             drawTriangle(touchX, touchY);
+        } else if (_ShapeType == 5){
+            _DrawPath.addCircle(touchX, touchY, 100, Path.Direction.CCW);
         }
     }
 
@@ -206,12 +241,24 @@ public class DrawingView extends View {
     public void setFormShape(int shapeType)
     {
         invalidate();
-        if (shapeType == 2)
+        if (shapeType == 2){
             setLineShape();
-        else
+        } else if(shapeType == 5){
+            setEraseShape();
+        } else {
             setBasicShape();
+        }
+
         _ShapeType = shapeType;
         _DrawPath.reset();
+    }
+
+    private void setEraseShape()
+    {
+        _DrawPaint.setStyle(Paint.Style.STROKE);
+        _DrawPaint.setStrokeJoin(Paint.Join.BEVEL);
+        _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
+        _DrawPaint.setColor(0xFF333333);
     }
 
     private void setBasicShape()
@@ -219,12 +266,14 @@ public class DrawingView extends View {
         _DrawPaint.setStyle(Paint.Style.FILL);
         _DrawPaint.setStrokeJoin(Paint.Join.BEVEL);
         _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
+        _DrawPaint.setColor(_PaintColor);
     }
 
     private void setLineShape() {
         _DrawPaint.setStyle(Paint.Style.STROKE);
         _DrawPaint.setStrokeJoin(Paint.Join.ROUND);
         _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
+        _DrawPaint.setColor(_PaintColor);
     }
 
 

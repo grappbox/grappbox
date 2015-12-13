@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         _login = (EditText) findViewById(R.id.loginInput);
         _passw = (EditText) findViewById(R.id.passwInput);
 
-        Log.v("Test", "Connection");
         APIRequestLogin api = new APIRequestLogin();
         api.execute(_login.getText().toString(), _passw.getText().toString());
     }
@@ -109,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                 JSONParam.put("login", param[0]);
                 JSONParam.put("password", param[1]);
                 APIConnectAdapter.getInstance().sendJSON(JSONParam);
-
+                Log.v("Test", "Connection");
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
                 if ((contentAPI = getLoginDataFromJSON(resultAPI)) == null)
                     return null;
