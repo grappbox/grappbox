@@ -9,18 +9,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 public class WhiteboardFragment extends Fragment implements View.OnClickListener {
+
+    private int _SizeSpinnerSelected = 0;
 
     private DrawingView _DrawView;
     private ImageButton _ColorBorderBtn;
     private ImageButton _ColorBtn;
     private ImageButton _DrawBtn;
     private ImageButton _EraseButton;
+    private ImageButton _ConfigButton;
     private View        _view;
 
     public WhiteboardFragment() {
@@ -89,11 +94,17 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
             formDialog.setTitle("Set form : ");
             formDialog.setContentView(R.layout.form_selection);
 
+            final Spinner sizeBrush = (Spinner)formDialog.findViewById(R.id.brush_size_spinner);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.size_brush, android.R.layout.simple_spinner_item);
+            sizeBrush.setAdapter(adapter);
+            sizeBrush.setSelection(_SizeSpinnerSelected);
             ImageButton rectButton = (ImageButton)formDialog.findViewById(R.id.rect_shape);
             rectButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     _DrawView.setFormShape(0);
+                    _SizeSpinnerSelected = sizeBrush.getSelectedItemPosition();
+                    _DrawView.setBrushSize(_SizeSpinnerSelected);
                     formDialog.dismiss();
                 }
             });
@@ -103,6 +114,8 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     _DrawView.setFormShape(1);
+                    _SizeSpinnerSelected = sizeBrush.getSelectedItemPosition();
+                    _DrawView.setBrushSize(_SizeSpinnerSelected);
                     formDialog.dismiss();
                 }
             });
@@ -112,6 +125,8 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     _DrawView.setFormShape(2);
+                    _SizeSpinnerSelected = sizeBrush.getSelectedItemPosition();
+                    _DrawView.setBrushSize(_SizeSpinnerSelected);
                     formDialog.dismiss();
                 }
             });
@@ -121,6 +136,8 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     _DrawView.setFormShape(3);
+                    _SizeSpinnerSelected = sizeBrush.getSelectedItemPosition();
+                    _DrawView.setBrushSize(_SizeSpinnerSelected);
                     formDialog.dismiss();
                 }
             });
@@ -130,11 +147,11 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     _DrawView.setFormShape(4);
+                    _SizeSpinnerSelected = sizeBrush.getSelectedItemPosition();
+                    _DrawView.setBrushSize(_SizeSpinnerSelected);
                     formDialog.dismiss();
                 }
             });
-
-
 
             formDialog.show();
         }

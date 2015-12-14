@@ -26,35 +26,41 @@
 
         <ImageButton
             android:id="@+id/color_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="match_parent"
+            android:layout_weight="0.2"
             android:contentDescription="icon_color"
             android:src="@drawable/painter"
             android:clickable="true" />
 
         <ImageButton
             android:id="@+id/color_border_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="match_parent"
+            android:layout_weight="0.2"
             android:src="@drawable/square"
             android:contentDescription="icon_color_border"
             android:clickable="true" />
 
         <ImageButton
             android:id="@+id/draw_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="match_parent"
+            android:layout_weight="0.2"
             android:contentDescription="test"
             android:src="@drawable/edit"
             android:clickable="true" />
 
         <ImageButton
             android:id="@+id/erase_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:contentDescription="test"
+            android:layout_weight="0.2"
+            android:contentDescription="Erase button"
             android:src="@drawable/eraser"
             android:clickable="true" />
+
+
 
     </LinearLayout>
 

@@ -6,41 +6,59 @@
     android:gravity="center"
     android:weightSum="1">
 
-    <ImageButton
-        android:id="@+id/rect_shape"
-        android:layout_width="100dip"
-        android:layout_height="100dip"
-        android:contentDescription="Rectange_Shape"
-        android:background="@drawable/rect"/>
+    <Spinner
+        android:id="@+id/brush_size_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
 
-    <ImageButton
-        android:id="@+id/triangle_shape"
-        android:layout_width="100dip"
-        android:layout_height="100dip"
-        android:contentDescription="Rectange_Shape"
-        android:background="@drawable/triangle" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dip">
 
-    <ImageButton
-        android:id="@+id/circle_shape"
-        android:layout_width="100dip"
-        android:layout_height="100dip"
-        android:contentDescription="Rectange_Shape"
-        android:background="@drawable/circle"/>
+        <ImageButton
+            android:id="@+id/rect_shape"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Rectange_Shape"
+            android:background="@drawable/rect"/>
+
+        <ImageButton
+            android:id="@+id/triangle_shape"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Rectange_Shape"
+            android:background="@drawable/triangle" />
+
+        <ImageButton
+            android:id="@+id/circle_shape"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Rectange_Shape"
+            android:background="@drawable/circle"/>
 
 
-    <ImageButton
-        android:id="@+id/spline_shape"
-        android:layout_width="100dip"
-        android:layout_height="100dip"
-        android:contentDescription="Rectange_Shape"
-        android:background="@drawable/spline" />
+        <ImageButton
+            android:id="@+id/spline_shape"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Rectange_Shape"
+            android:background="@drawable/spline" />
 
-    <ImageButton
-        android:id="@+id/text_selection"
-        android:layout_width="100dip"
-        android:layout_height="100dip"
-        android:contentDescription="Rectange_Shape"
-        android:background="@drawable/text_icon" />
+        <ImageButton
+            android:id="@+id/text_selection"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Rectange_Shape"
+            android:background="@drawable/text_icon" />
+
+    </LinearLayout>
+
 
 
 

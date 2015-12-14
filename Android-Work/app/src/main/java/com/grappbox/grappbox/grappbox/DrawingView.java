@@ -2,6 +2,7 @@ package com.grappbox.grappbox.grappbox;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -9,15 +10,18 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -47,8 +51,14 @@ public class DrawingView extends View {
     private float touchXStart = 0;
     private float touchYStart = 0;
     private int _ShapeType = 0;
-    private ArrayList<Path> __ListPaint = new ArrayList<Path>();
+    private ArrayList<Path> _ListPath = new ArrayList<Path>();
+    private ArrayList<Paint> _ListPaint = new ArrayList<Paint>();
+    private ArrayList<Paint> _ListPaintBorder = new ArrayList<Paint>();
 
+    private ArrayList<Path> _ListPathText = new ArrayList<Path>();
+    private ArrayList<Paint> _ListPaintText = new ArrayList<Paint>();
+    private ArrayList<String> _ListText = new ArrayList<String>();
+    private ArrayList<Rect> _ListTextCoord = new ArrayList<Rect>();
     private boolean _OnDraw = false;
     private Region _clip;
 
@@ -77,6 +87,9 @@ public class DrawingView extends View {
 
         _CanvasPaint = new Paint(Paint.DITHER_FLAG);
         _clip = new Region(0, 0, 3840, 2160);
+        _WhiteboardBitmap = Bitmap.createBitmap( 1000 /*3840*/, 1000/*2160*/, Bitmap.Config.ARGB_8888);
+        _CanvasBitmap = _WhiteboardBitmap;
+
     }
 
     @Override
@@ -94,7 +107,7 @@ public class DrawingView extends View {
         if (_OnDraw) {
             _CanvasBitmap = _WhiteboardBitmap;
         }
-        canvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
+        canvas.drawBitmap(_WhiteboardBitmap, 0, 0, _CanvasPaint);
         if (_ShapeType == 2) {
             _DrawPaint.setStyle(Paint.Style.STROKE);
             _DrawPaint.setColor(_PaintColor);
@@ -111,6 +124,14 @@ public class DrawingView extends View {
             canvas.drawPath(_DrawPath, _DrawPaint);
             _DrawPath.reset();
         }
+
+        for (int i = 0; i < _ListPath.size(); ++i){
+            canvas.drawPath(_ListPath.get(i), _ListPaint.get(i));
+            canvas.drawPath(_ListPath.get(i), _ListPaintBorder.get(i));
+        }
+        for (int i = 0; i < _ListText.size(); ++i){
+            canvas.drawText(_ListText.get(i), _ListTextCoord.get(i).left, _ListTextCoord.get(i).top, _ListPaintText.get(i));
+        }
     }
 
     @Override
@@ -124,7 +145,7 @@ public class DrawingView extends View {
         {
             case MotionEvent.ACTION_DOWN:
                 _OnDraw = true;
-                _WhiteboardBitmap = _CanvasBitmap;
+                //_WhiteboardBitmap = _CanvasBitmap;
                 touchXStart = event.getX();
                 touchYStart = event.getY();
                 _DrawPath.moveTo(touchX, touchY);
@@ -142,43 +163,58 @@ public class DrawingView extends View {
                 if (_ShapeType == 5) {
                     _DrawPath.reset();
                     drawShape(touchX, touchY);
-                    for (Iterator<Path> iterator = __ListPaint.iterator(); iterator.hasNext();) {
-                        Path path = iterator.next();
+                    int i = 0;
+                    for (Iterator<Path> it = _ListPath.iterator(); it.hasNext();) {
+                        Path path = it.next();
                         Region reg1 = new Region();
                         reg1.setPath(path, _clip);
                         Region reg2 = new Region();
                         reg2.setPath(_DrawPath, _clip);
                         if (!reg1.quickReject(reg2) && reg1.op(reg2, Region.Op.INTERSECT)) {
-                            __ListPaint.remove(path);
+                            _ListPaintBorder.remove(i);
+                            _ListPaint.remove(i);
+                            it.remove();
                         }
-
+                        ++i;
+                    }
+                    i = 0;
+                    for (Iterator<Path> it = _ListPathText.iterator(); it.hasNext();) {
+                        Path path = it.next();
+                        Region reg1 = new Region();
+                        reg1.setPath(path, _clip);
+                        Region reg2 = new Region();
+                        reg2.setPath(_DrawPath, _clip);
+                        if (!reg1.quickReject(reg2) && reg1.op(reg2, Region.Op.INTERSECT)) {
+                            _ListText.remove(i);
+                            _ListPaintText.remove(i);
+                            _ListTextCoord.remove(i);
+                            it.remove();
+                        }
+                        ++i;
                     }
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
                 _OnDraw = false;
-
-                if(_ShapeType != 5)
-                    __ListPaint.add(new Path(_DrawPath));
                 _CanvasBitmap = _WhiteboardBitmap;
                 _DrawCanvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
                 if (_ShapeType == 2) {
-                    drawShape(touchX, touchY);
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setColor(_PaintColor);
-                    _DrawCanvas.drawPath(_DrawPath, _DrawPaint);
+                    _ListPath.add(new Path(_DrawPath));
+                    _ListPaint.add(new Paint(_DrawPaint));
+                    _ListPaintBorder.add(new Paint(_DrawPaint));
                 } else if (_ShapeType != 5) {
-                        _DrawPath.reset();
-                        drawShape(touchX, touchY);
-                }
-                for (Path path : __ListPaint) {
+                    _DrawPath.reset();
+                    drawShape(touchX, touchY);
+                    _ListPath.add(new Path(_DrawPath));
                     _DrawPaint.setStyle(Paint.Style.FILL);
                     _DrawPaint.setColor(_PaintColor);
-                    _DrawCanvas.drawPath(path, _DrawPaint);
+                    _ListPaint.add(new Paint(_DrawPaint));
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setColor(_SecondColor);
-                    _DrawCanvas.drawPath(path, _DrawPaint);
+                    _ListPaintBorder.add(new Paint(_DrawPaint));
                 }
                 _DrawPath.reset();
 
@@ -189,6 +225,7 @@ public class DrawingView extends View {
         }
 
         invalidate();
+
         return true;
     }
 
@@ -253,8 +290,18 @@ public class DrawingView extends View {
         _DrawPath.reset();
     }
 
+    public void setBrushSize(int pos)
+    {
+        float sizeValue;
+        String sizeString = getResources().getStringArray(R.array.size_brush)[pos];
+        sizeValue = Float.parseFloat(sizeString);
+        sizeValue *= 10;
+        _DrawPaint.setStrokeWidth(sizeValue);
+    }
+
     private void setEraseShape()
     {
+        _DrawPaint.setStrokeWidth(10);
         _DrawPaint.setStyle(Paint.Style.STROKE);
         _DrawPaint.setStrokeJoin(Paint.Join.BEVEL);
         _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -311,7 +358,18 @@ public class DrawingView extends View {
                             } else {
                                 _DrawText.setTextSize(getResources().getDimension(R.dimen.text_large));
                             }
-                            _DrawCanvas.drawText(_msg.getText().toString(), touchXStart, touchYStart, _DrawText);
+                            String message;
+                            Rect bound = new Rect();
+                            message = _msg.getText().toString();
+                            _DrawText.getTextBounds(message, 0, message.length(), bound);
+                            Path textPath = new Path();
+                            textPath.addRect(touchXStart, touchYStart, (float) bound.width(), (float) bound.height(), Path.Direction.CCW);
+                            //_DrawCanvas.drawText(_msg.getText().toString(), touchXStart, touchYStart, _DrawText);
+
+                            _ListPathText.add(textPath);
+                            _ListPaintText.add(new Paint(_DrawText));
+                            _ListText.add(message);
+                            _ListTextCoord.add(new Rect((int)touchXStart, (int)touchYStart, bound.width(), bound.height()));
                             invalidate();
                         }
                     });
