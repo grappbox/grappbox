@@ -108,6 +108,15 @@ public class DrawingView extends View {
             _CanvasBitmap = _WhiteboardBitmap;
         }
         canvas.drawBitmap(_WhiteboardBitmap, 0, 0, _CanvasPaint);
+
+        for (int i = 0; i < _ListPath.size(); ++i){
+            canvas.drawPath(_ListPath.get(i), _ListPaint.get(i));
+            canvas.drawPath(_ListPath.get(i), _ListPaintBorder.get(i));
+        }
+        for (int i = 0; i < _ListText.size(); ++i){
+            canvas.drawText(_ListText.get(i), _ListTextCoord.get(i).left, _ListTextCoord.get(i).top, _ListPaintText.get(i));
+        }
+
         if (_ShapeType == 2) {
             _DrawPaint.setStyle(Paint.Style.STROKE);
             _DrawPaint.setColor(_PaintColor);
@@ -125,13 +134,7 @@ public class DrawingView extends View {
             _DrawPath.reset();
         }
 
-        for (int i = 0; i < _ListPath.size(); ++i){
-            canvas.drawPath(_ListPath.get(i), _ListPaint.get(i));
-            canvas.drawPath(_ListPath.get(i), _ListPaintBorder.get(i));
-        }
-        for (int i = 0; i < _ListText.size(); ++i){
-            canvas.drawText(_ListText.get(i), _ListTextCoord.get(i).left, _ListTextCoord.get(i).top, _ListPaintText.get(i));
-        }
+
     }
 
     @Override
@@ -240,9 +243,35 @@ public class DrawingView extends View {
     private void drawShape(float touchX, float touchY)
     {
         if (_ShapeType == 0) {
-            _DrawPath.addRect(touchXStart, touchYStart, touchX, touchY, Path.Direction.CCW);
+            float rectXStart = touchXStart;
+            float rectYStart = touchYStart;
+            float rectXEnd = touchX;
+            float rectYEnd = touchY;
+
+            if (touchXStart > touchX) {
+                rectXStart = touchX;
+                rectXEnd = touchXStart;
+            }
+            if (touchYStart > touchY) {
+                rectYStart = touchY;
+                rectYEnd = touchYStart;
+            }
+            _DrawPath.addRect(rectXStart, rectYStart, rectXEnd, rectYEnd, Path.Direction.CCW);
         } else if (_ShapeType == 1){
-            _DrawPath.addOval(new RectF(touchXStart, touchYStart, touchX, touchY), Path.Direction.CCW);
+            float ovalXStart = touchXStart;
+            float ovalYStart = touchYStart;
+            float ovalXEnd = touchX;
+            float ovalYEnd = touchY;
+
+            if (touchXStart > touchX) {
+                ovalXStart = touchX;
+                ovalXEnd = touchXStart;
+            }
+            if (touchYStart > touchY) {
+                ovalYStart = touchY;
+                ovalYEnd = touchYStart;
+            }
+            _DrawPath.addOval(new RectF(ovalXStart, ovalYStart, ovalXEnd, ovalYEnd), Path.Direction.CCW);
         } else if (_ShapeType == 2) {
             _DrawPath.lineTo(touchX, touchY);
         }else if (_ShapeType == 4) {
@@ -364,8 +393,6 @@ public class DrawingView extends View {
                             _DrawText.getTextBounds(message, 0, message.length(), bound);
                             Path textPath = new Path();
                             textPath.addRect(touchXStart, touchYStart, (float) bound.width(), (float) bound.height(), Path.Direction.CCW);
-                            //_DrawCanvas.drawText(_msg.getText().toString(), touchXStart, touchYStart, _DrawText);
-
                             _ListPathText.add(textPath);
                             _ListPaintText.add(new Paint(_DrawText));
                             _ListText.add(message);

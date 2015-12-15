@@ -30,6 +30,7 @@ public class NextMeetingFragment extends Fragment {
 
     ListView _TeamList;
     View _view;
+    List<ContentValues> _value = null;
 
     public NextMeetingFragment() {
         // Required empty public constructor
@@ -45,8 +46,12 @@ public class NextMeetingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_next_meeting, container, false);
-        APIRequestLogin api = new APIRequestLogin();
-        api.execute();
+        if (_value == null) {
+            APIRequestLogin api = new APIRequestLogin();
+            api.execute();
+        } else {
+            createContentView(_value);
+        }
         return _view;
     }
 
@@ -55,6 +60,7 @@ public class NextMeetingFragment extends Fragment {
         _TeamList = (ListView)_view.findViewById(R.id.list_next_meeting);
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
 
+        _value = contentValues;
         for (ContentValues item : contentValues){
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("meeting_title", item.get("project_name").toString() + " " + item.get("event_title").toString());

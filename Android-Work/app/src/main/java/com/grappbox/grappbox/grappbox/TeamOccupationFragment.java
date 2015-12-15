@@ -26,6 +26,7 @@ import java.util.Vector;
 public class TeamOccupationFragment extends Fragment {
 
     private ListView _TeamList;
+    private List<ContentValues> _value = null;
     private View    _view;
 
     @Override
@@ -38,13 +39,18 @@ public class TeamOccupationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_team_occupation, container, false);
-        APIRequestLogin api = new APIRequestLogin();
-        api.execute();
+        if (_value != null) {
+            createContentView(_value);
+        } else {
+            APIRequestTeamOccupation api = new APIRequestTeamOccupation();
+            api.execute();
+        }
         return _view;
     }
 
     public void createContentView(List<ContentValues> contentValues)
     {
+        _value = contentValues;
         _TeamList = (ListView)_view.findViewById(R.id.list_team_occupation);
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
 
@@ -62,7 +68,7 @@ public class TeamOccupationFragment extends Fragment {
         _TeamList.setAdapter(teamAdapter);
     }
 
-    public class APIRequestLogin extends AsyncTask<String, Void, List<ContentValues>> {
+    public class APIRequestTeamOccupation extends AsyncTask<String, Void, List<ContentValues>> {
 
         private static final String _API_URL_BASE = "http://api.grappbox.com/app_dev.php/";
 

@@ -30,6 +30,7 @@ public class GlobalProgressFragment extends Fragment {
 
     View _view;
     ListView _projectList;
+    List<ContentValues> _value;
 
     public GlobalProgressFragment() {
     }
@@ -44,8 +45,12 @@ public class GlobalProgressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_global_progress, container, false);
-        APIRequestTeamOccupation api = new APIRequestTeamOccupation();
-        api.execute();
+        if (_value == null) {
+            APIRequestTeamOccupation api = new APIRequestTeamOccupation();
+            api.execute();
+        } else {
+            createContentView(_value);
+        }
         return _view;
     }
 
@@ -64,6 +69,7 @@ public class GlobalProgressFragment extends Fragment {
         _projectList = (ListView)_view.findViewById(R.id.list_global_progress);
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
 
+        _value = values;
         for (ContentValues item : values){
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("project_name", getValueContennt(item.get("project_name").toString()));
