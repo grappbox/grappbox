@@ -47,7 +47,10 @@ SOURCES += main.cpp \
     Body/Settings/InfoPushButton.cpp \
     Body/Settings/InviteUserWindow.cpp \
     Body/Settings/CustomerAccessSettings.cpp \
-    Body/Settings/CreateNewCustomerAccessWindow.cpp
+    Body/Settings/CreateNewCustomerAccessWindow.cpp \
+    Body/BodyBugList.cpp \
+    Body/BugTracker/BugListTitleWidget.cpp \
+    Body/BugTracker/BugListElement.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -79,7 +82,10 @@ HEADERS  += MainWindow.h \
     Body/Settings/InfoPushButton.h \
     Body/Settings/InviteUserWindow.h \
     Body/Settings/CustomerAccessSettings.h \
-    Body/Settings/CreateNewCustomerAccessWindow.h
+    Body/Settings/CreateNewCustomerAccessWindow.h \
+    Body/BodyBugList.h \
+    Body/BugTracker/BugListTitleWidget.h \
+    Body/BugTracker/BugListElement.h
 
 RESOURCES += \
     temporaryressources.qrc \
