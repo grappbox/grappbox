@@ -27,14 +27,14 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
         // authentification view
         .state('auth', {
             url: "/auth", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
-            templateUrl: "templates/auth.html", //'templateUrl' is where app will search for the "physical" page
+            templateUrl: "views/auth.html", //'templateUrl' is where app will search for the "physical" page
             controller: 'AuthCtrl' //link to controller
         })
 
         // signup view
         .state('signup', {
             url: "/signup",
-            templateUrl: "templates/signup.html",
+            templateUrl: "views/signup.html",
             controller: 'SignupCtrl'
         })
 
@@ -42,7 +42,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
         .state('app', {
             url: "/app",
             abstract: true, //'abstract' means this state will be an abstract, so will never render, but pages can inherit of it
-            templateUrl: "templates/menu.html",
+            templateUrl: "views/menu.html",
             controller: 'MenuCtrl'
         })
 
@@ -51,7 +51,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/dashboard",
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
-                    templateUrl: "templates/dashboard.html",
+                    templateUrl: "views/dashboard.html",
                     controller: 'DashboardCtrl'
                 }
             } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
@@ -62,7 +62,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/projects",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/projects.html",
+                    templateUrl: "views/projects.html",
                     controller: 'ProjectsCtrl'
                 }
             }
@@ -73,7 +73,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/projects/:projectId",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/project.html",
+                    templateUrl: "views/project.html",
                     controller: 'ProjectCtrl'
                 }
             }
@@ -84,7 +84,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/projects/:nextMeetingId",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/nextMeeting.html",
+                    templateUrl: "views/nextMeeting.html",
                     controller: 'NextMeetingCtrl'
                 }
             }
@@ -95,7 +95,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/timelines",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/timelines.html",
+                    templateUrl: "views/timelines.html",
                     controller: 'TimelinesCtrl'
                 }
             }
@@ -106,7 +106,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/whiteboards",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/whiteboards.html",
+                    templateUrl: "views/whiteboards.html",
                     controller: 'WhiteboardsCtrl'
                 }
             }
@@ -117,7 +117,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/whiteboards/:whiteboardId",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/whiteboard.html",
+                    templateUrl: "views/whiteboard.html",
                     controller: 'WhiteboardCtrl'
                 }
             }
@@ -128,7 +128,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/user/:userId",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/user.html",
+                    templateUrl: "views/user.html",
                     controller: 'UserCtrl'
                 }
             }
@@ -139,13 +139,13 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             url: "/userSettings",
             views: {
                 'menuContent': {
-                    templateUrl: "templates/userSettings.html",
+                    templateUrl: "views/userSettings.html",
                     controller: 'UserSettingsCtrl'
                 }
             }
         })
 
     // if no state are found, here is the fallback url - It's also the default page when starting application
-    $urlRouterProvider.otherwise('/auth');
-    //$urlRouterProvider.otherwise('/app/whiteboards/1');
+    //$urlRouterProvider.otherwise('/auth');
+    $urlRouterProvider.otherwise('/app/whiteboards/1');
 });

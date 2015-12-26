@@ -18,8 +18,8 @@
     </ion-content>
     <ion-footer-bar class="bar-stable">
         <div class="title">
-            <!--<button class="button button-icon ion-minus-round" ng-click="minusButton.showDelete = !minusButton.showDelete"></button>
-            <button class="button button-icon ion-plus-round" ng-click="openAddProjectModal()"></button>-->
+            <button class="button button-icon ion-minus-round" ng-click="minusButton.showDelete = !minusButton.showDelete"></button>
+            <button class="button button-icon ion-plus-round" ng-click="openAddProjectModal()"></button>
         </div>
     </ion-footer-bar>
 </ion-view>
@@ -33,9 +33,9 @@
         <ion-content>
             <form ng-submit="addProject(elem)">
                 <ion-list class="list-inset">
-                    <label class="item item-input">
-                        <input type="text" placeholder="Project's name" ng-model="elem.title">
-                    </label>
+                    <ion-input class="item item-input">
+                        <input type="text" placeholder="Project's name" ng-model="elem.title" required />
+                    </ion-input>
                     <div class="padding">
                         <button class="button button-full button-assertive" type="submit">
                             Add Project

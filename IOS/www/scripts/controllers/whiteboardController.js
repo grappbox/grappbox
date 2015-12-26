@@ -167,7 +167,7 @@ angular.module('GrappBox.controllers')
         canvas.freeDrawingBrush.width = brushSize;
         canvas.off('mouse:down');
         canvas.isDrawingMode = true;
-        $ionicScrollDelegate.freezeAllScrolls(true);
+        $ionicScrollDelegate.freezeScroll(true);
         $scope.popoverDraw.hide();
     }
 
@@ -177,7 +177,7 @@ angular.module('GrappBox.controllers')
         var rect;
         var mouse_pos_init;
 
-        $ionicScrollDelegate.freezeAllScrolls(true);
+        $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
 
@@ -199,7 +199,7 @@ angular.module('GrappBox.controllers')
         canvas.on('mouse:move', function (option) {
             if (!started) return;
             var mouse_pos = canvas.getPointer(option.e);
-            rect.set({'width': mouse_pos.x - mouse_pos_init.x, 'height': mouse_pos.y - mouse_pos_init.y });
+            rect.set({ 'width': mouse_pos.x - mouse_pos_init.x, 'height': mouse_pos.y - mouse_pos_init.y });
             canvas.renderAll();
         });
 
@@ -215,7 +215,7 @@ angular.module('GrappBox.controllers')
         var ellipse;
         var mouse_pos_init;
 
-        $ionicScrollDelegate.freezeAllScrolls(true);
+        $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
 
@@ -252,7 +252,7 @@ angular.module('GrappBox.controllers')
         var triangle;
         var mouse_pos_init;
 
-        $ionicScrollDelegate.freezeAllScrolls(true);
+        $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
 
@@ -289,7 +289,7 @@ angular.module('GrappBox.controllers')
         var diamond;
         var mouse_pos_init;
 
-        $ionicScrollDelegate.freezeAllScrolls(true);
+        $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
 
@@ -298,47 +298,47 @@ angular.module('GrappBox.controllers')
             mouse_pos_init = canvas.getPointer(option.e);
             diamond = new fabric.Polygon(
                 [*/
-                    /*{ x: 25, y: 0 },
-                    { x: 50, y: 50 },
-                    { x: 25, y: 100 },
-                    { x: 0, y: 50 }*/
-                    /*{ x: 0, y: 0 },
-                    { x: 0, y: 0 },
-                    { x: 0, y: 0 },
-                    { x: 0, y: 0 }
-                ],
-                {
-                    top: mouse_pos_init.y,
-                    left: mouse_pos_init.x,
-                    fill: isTransparent ? 'transparent' : $scope.brushcolor,
-                    /*hasBorders: false,
-                    hasControls: false,
-                    hasRotatingPoint: false,
-                    lockMovementX: true,
-                    lockMovementY: true,
-                });
-            canvas.add(diamond);
-        });
+    /*{ x: 25, y: 0 },
+    { x: 50, y: 50 },
+    { x: 25, y: 100 },
+    { x: 0, y: 50 }*/
+    /*{ x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 },
+    { x: 0, y: 0 }
+],
+{
+    top: mouse_pos_init.y,
+    left: mouse_pos_init.x,
+    fill: isTransparent ? 'transparent' : $scope.brushcolor,
+    /*hasBorders: false,
+    hasControls: false,
+    hasRotatingPoint: false,
+    lockMovementX: true,
+    lockMovementY: true,
+});
+canvas.add(diamond);
+});
 
-        canvas.on('mouse:move', function (option) {
-            if (!started) return;
-            var mouse_pos = canvas.getPointer(option.e);
-            diamond.set({ 'x': mouse_pos.x - mouse_pos_init.x, 'y': mouse_pos.y - mouse_pos_init.y });
-            canvas.renderAll();
-        });
+canvas.on('mouse:move', function (option) {
+if (!started) return;
+var mouse_pos = canvas.getPointer(option.e);
+diamond.set({ 'x': mouse_pos.x - mouse_pos_init.x, 'y': mouse_pos.y - mouse_pos_init.y });
+canvas.renderAll();
+});
 
-        canvas.on('mouse:up', function (option) {
-            started = false;
-        });
-        $scope.popoverShapes.hide();
-    }*/
+canvas.on('mouse:up', function (option) {
+started = false;
+});
+$scope.popoverShapes.hide();
+}*/
 
     //Draw Line
     $scope.drawLine = function () {
         var started = false;
         var line;
 
-        $ionicScrollDelegate.freezeAllScrolls(true);
+        $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
 
@@ -377,7 +377,7 @@ angular.module('GrappBox.controllers')
     $scope.addText = function () {
         //Prevent user from being in drawing mode while adding text
         canvas.isDrawingMode = false;
-        $ionicScrollDelegate.freezeAllScrolls(true);
+        $ionicScrollDelegate.freezeScroll(true);
 
         $scope.textAdd = {};
 
@@ -396,8 +396,7 @@ angular.module('GrappBox.controllers')
                 onTap: function (e) {
                     if (!$scope.textAdd.input)
                         e.preventDefault();
-                    else
-                        return $scope.textAdd.input;
+                    return $scope.textAdd.input;
                 }
             }]
         });
@@ -411,8 +410,16 @@ angular.module('GrappBox.controllers')
                     top: mouse_pos.y - 15,
                     left: mouse_pos.x - 15,
                     fontFamily: 'Roboto',
-                    fontStyle: $scope.textAdd.fontStyle,
-                    fontSize: $scope.textAdd.textSize,
+                    fontStyle: function () {
+                        if (!$scope.textAdd.fontStyle)
+                            return 'normal'; //Default style
+                        return $scope.textAdd.fontStyle;
+                    },
+                    fontSize: function () {
+                        if (!$scope.textAdd.fontSize)
+                            return 30; //Default size
+                        return $scope.textAdd.fontSize;
+                    },
                     fill: $scope.brushcolor, //Use the current selected color
                     selectable: true, //Make the text draggable
                     evented: false
@@ -425,6 +432,6 @@ angular.module('GrappBox.controllers')
     $scope.moveOn = function (moveOn) {
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
-        $ionicScrollDelegate.freezeAllScrolls(false);
+        $ionicScrollDelegate.freezeScroll(false);
     }
 })

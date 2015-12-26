@@ -4,20 +4,17 @@
 
 <ion-view>
     <ion-nav-title>Whiteboard</ion-nav-title>
-    <ion-scroll zooming="true" direction="xy" style="width: 100%; height: 100%">
+    <ion-scroll zooming="true" direction="xy" locking="false" style="width: 100%; height: 100%" overflow-scroll="false">
         <canvas id="canvasWhiteboard"></canvas>
     </ion-scroll>
-    <!--<ion-content>
-        <canvas id="canvasWhiteboard"></canvas>
-    </ion-content>-->
     <ion-footer-bar class="bar-stable">
         <div class="title">
             <button class="button button-icon ion-arrow-move" ng-click="moveOn()"></button>
-            <button class="button button-icon button-clear ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button>
-            <button class="button button-icon button-clear ion-paintbrush" style="color: {{brushcolor}}" ng-click="openDrawPopover($event)"></button>
-            <button class="button button-icon button-clear" style="color: {{brushcolor}}" ng-click="addText()">Aa</button> <!--ng-click="openTextPopover($event)"-->
-            <button class="button button-icon button-clear ion-android-radio-button-off" style="color: {{brushcolor}}" ng-click="openShapesPopover($event)"></button>
-            <button class="button button-icon button-clear ion-ios-undo" ng-click="undoLastObject()"></button>
+            <button class="button button-icon ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button>
+            <button class="button button-icon ion-paintbrush" style="color: {{brushcolor}}" ng-click="openDrawPopover($event)"></button>
+            <button class="button button-icon" style="color: {{brushcolor}}" ng-click="addText()">Aa</button>
+            <button class="button button-icon ion-android-radio-button-off" style="color: {{brushcolor}}" ng-click="openShapesPopover($event)"></button>
+            <button class="button button-icon ion-ios-undo" ng-click="undoLastObject()"></button>
         </div>
     </ion-footer-bar>
 </ion-view>
@@ -25,18 +22,17 @@
 <!-- Whiteboard text (when adding a text) -->
 <script id="addTextToWhiteboard.html" type="text/ng-template">
     <form>
-        <input type="text" ng-model="textAdd.input">
-        <label class="item item-input item-select">
-            Size
-            <select ng-init="textAdd.textSize='30'" ng-model="textAdd.textSize">
-                <option ng-value='20'>20</option>
-                <option ng-value='30' ng-selected="true">30</option>
-                <option ng-value='40'>40</option>
-            </select>
-        </label>
-        <button class="button button-icon" style="font-size: 25px" ng-value="'normal'" ng-click="textAdd.fontStyle='normal'">Text</button>
-        <button class="button button-icon" style="font-size: 25px; font-style: italic" ng-click="textAdd.fontStyle='italic'">Italic</button>
-        <button class="button button-icon" style="font-size: 25px" ng-click="textAdd.fontStyle='bold'"><b>Bold</b></button>
+        <ion-input class="item item-input">
+            <ion-label>Text</ion-label>
+            <input type="text" placeholder="Your text" ng-model="textAdd.input" />
+        </ion-input>
+        <ion-list>
+            <ion-radio ng-model="textAdd.fontSize" ng-value="'20'">20</ion-radio>
+            <ion-radio ng-model="textAdd.fontSize" ng-value="'30'">30</ion-radio>
+            <ion-radio ng-model="textAdd.fontSize" ng-value="'40'">40</ion-radio>
+            <ion-checkbox ng-click="textAdd.fontStyle='italic'">Italic</ion-checkbox>
+            <ion-checkbox ng-click="textAdd.fontStyle='bold'">Bold</ion-checkbox>
+        </ion-list>
     </form>
 </script>
 
@@ -84,12 +80,10 @@
             <!--<button class="button button-icon ion-ios-play"
                     style="color: {{brushcolor}}; font-size: 36.5px"
                     ng-click="drawDiamond()"></button>-->
-
             <!-- Diamond empty -->
             <!--<button class="button button-icon ion-ios-play-outline"
                     style="color: {{brushcolor}}; font-size: 36.5px"
                     ng-click="drawDiamond(true)"></button>-->
-
             <!-- Triangle filled -->
             <button class="button button-icon ion-arrow-up-b"
                     style="color: {{brushcolor}}; font-size: 36.5px"
