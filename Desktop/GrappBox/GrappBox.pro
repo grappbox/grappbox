@@ -50,7 +50,10 @@ SOURCES += main.cpp \
     Body/Settings/CreateNewCustomerAccessWindow.cpp \
     Body/BodyBugList.cpp \
     Body/BugTracker/BugListTitleWidget.cpp \
-    Body/BugTracker/BugListElement.cpp
+    Body/BugTracker/BugListElement.cpp \
+    Body/BugTracker/BugViewTitleWidget.cpp \
+    Body/BugTracker/BugViewStatusBar.cpp \
+    Body/BugTracker/BugViewPreviewWidget.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -85,7 +88,10 @@ HEADERS  += MainWindow.h \
     Body/Settings/CreateNewCustomerAccessWindow.h \
     Body/BodyBugList.h \
     Body/BugTracker/BugListTitleWidget.h \
-    Body/BugTracker/BugListElement.h
+    Body/BugTracker/BugListElement.h \
+    Body/BugTracker/BugViewTitleWidget.h \
+    Body/BugTracker/BugViewStatusBar.h \
+    Body/BugTracker/BugViewPreviewWidget.h
 
 RESOURCES += \
     temporaryressources.qrc \
