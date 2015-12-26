@@ -146,6 +146,6 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
         })
 
     // if no state are found, here is the fallback url - It's also the default page when starting application
-    //$urlRouterProvider.otherwise('/auth');
-    $urlRouterProvider.otherwise('/app/whiteboards/1');
+    $urlRouterProvider.otherwise('/auth');
+    //$urlRouterProvider.otherwise('/app/whiteboards/1');
 });
