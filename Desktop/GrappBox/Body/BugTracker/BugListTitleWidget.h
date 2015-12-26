@@ -6,16 +6,18 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
-enum BugState
-{
-    NONE = 0,
-    OPEN,
-    CLOSED
-};
+
 
 class BugListTitleWidget : public QWidget
 {
     Q_OBJECT
+public:
+    enum BugState
+    {
+        NONE = 0,
+        OPEN,
+        CLOSED
+    };
 public:
     explicit BugListTitleWidget(QWidget *parent = 0);
 

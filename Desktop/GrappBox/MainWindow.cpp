@@ -7,6 +7,7 @@
 #include "BodyWhiteboard.h"
 #include "Body/BodyUserSettings.h"
 #include "Body/BodyProjectSettings.h"
+#include "Body/BodyBugList.h"
 
 #include "MainWindow.h"
 
@@ -64,6 +65,10 @@ MainWindow::MainWindow(QWidget *parent)
     BodyWhiteboard *whiteboard = new BodyWhiteboard();
     connect(whiteboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
+
+    BodyBugList *bugTracker = new BodyBugList();
+    connect(bugTracker, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
+    _MenuWidget->AddMenuItem("BugTracker", _StackedLayout->addWidget(bugTracker));
 
     // Here change the body for settings
     _UserSettingsId = _StackedLayout->addWidget(userSettings);
