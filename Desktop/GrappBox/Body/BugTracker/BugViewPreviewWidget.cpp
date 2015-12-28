@@ -5,12 +5,11 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     _mainLayout = new QVBoxLayout();
     _titleBar = new QHBoxLayout();
     _statusBar = new QHBoxLayout();
-    _avatar = new QPixmap();
+    _avatar = new QLabel();
     _lblName = new QLabel("");
     _lblDate = new QLabel(PH_BUGPREVIEWDATE + " " + FormatDateTime(QDateTime::currentDateTime()));
     _comment = new QTextEdit(isCreation ? tr("Enter the comment here") : "");
 
-    //_titleBar->addWidget(_avatar);
     _titleBar->addWidget(_lblName);
 
     _statusBar->addWidget(_lblDate);
@@ -29,7 +28,7 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
         QObject::connect(_btnComment, SIGNAL(released()), this, SLOT(TriggerCommentBtnReleased()));
     }
 
-    //_mainLayout->addLayout(_titlebar);
+    _mainLayout->addLayout(_titleBar);
     _mainLayout->addWidget(_comment);
     _mainLayout->addLayout(_statusBar);
     this->setLayout(_mainLayout);
@@ -48,6 +47,11 @@ void BugViewPreviewWidget::SetCommentor(const QString &name)
 void BugViewPreviewWidget::SetID(const int id)
 {
     _bugID = id;
+}
+
+void BugViewPreviewWidget::SetAvatar(const QPixmap &avatar)
+{
+    _avatar->setPixmap(avatar);
 }
 
 QString BugViewPreviewWidget::FormatDateTime(const QDateTime &datetime)

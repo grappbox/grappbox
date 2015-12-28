@@ -22,6 +22,7 @@ public:
     void SetDate(const QDateTime &date);
     void SetCommentor(const QString &name);
     void SetID(const int id);
+    void SetAvatar(const QPixmap &avatar);
 
 signals:
     void        OnEdit(int);
@@ -40,7 +41,7 @@ private:
     QVBoxLayout *_mainLayout;
     QHBoxLayout *_titleBar;
     QHBoxLayout *_statusBar;
-    QPixmap     *_avatar;
+    QLabel      *_avatar;
     QPushButton *_btnEdit;
     QPushButton *_btnComment;
     QLabel      *_lblName;

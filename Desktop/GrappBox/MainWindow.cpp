@@ -7,8 +7,8 @@
 #include "BodyWhiteboard.h"
 #include "Body/BodyUserSettings.h"
 #include "Body/BodyProjectSettings.h"
+#include "Body/BodyBugTracker.h"
 #include "Body/BodyTimeline.h"
-#include "Body/BodyBugList.h"
 
 #include "MainWindow.h"
 
@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
     _MenuWidget->AddMenuItem("Timeline", _StackedLayout->addWidget(timeline));
 
-    BodyBugList *bugTracker = new BodyBugList();
+    BodyBugTracker *bugTracker = new BodyBugTracker();
     connect(bugTracker, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("BugTracker", _StackedLayout->addWidget(bugTracker));
 
