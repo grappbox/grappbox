@@ -1,7 +1,7 @@
 #ifndef BODYBUGLIST_H
 #define BODYBUGLIST_H
 
-#include "ibodycontener.h"
+#include "BugTracker/IBugPage.h"
 #include "BugTracker/BugListElement.h"
 #include "BugTracker/BugListTitleWidget.h"
 #include <QWidget>
@@ -17,12 +17,12 @@
 #define LIST_ELEM_HEIGHT    50
 #define LIST_TITLE_HEIGHT   50
 
-class BodyBugList : public QWidget, public IBodyContener
+class BodyBugList : public QWidget, public IBugPage
 {
     Q_OBJECT
 public:
     explicit            BodyBugList(QWidget *parent = 0);
-    virtual void        Show(int ID, MainWindow *mainApp);
+    virtual void        Show(BodyBugTracker *pageManager, QJsonObject *data);
     virtual void        Hide();
 
 private:
@@ -30,7 +30,7 @@ private:
     void                CreateList(QList<QPair<int, QString> > &elemList);
 
 signals:
-    void                OnLoadingDone(int);
+    void                OnLoadingDone(BodyBugTracker::BugTrackerPage page);
 
 public slots:
 
@@ -40,7 +40,7 @@ private:
     QVBoxLayout         *_listAdapter;
     BugListTitleWidget  *_title;
     QScrollArea         *_listScrollView;
-    MainWindow          *_mainApp;
+    BodyBugTracker      *_mainApp;
 };
 
 #endif // BODYBUGLIST_H

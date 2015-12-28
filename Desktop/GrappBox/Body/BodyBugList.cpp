@@ -17,43 +17,28 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
     this->setLayout(_mainLayout);
 }
 
-void BodyBugList::Show(int ID, MainWindow *mainApp)
+void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)
 {
-    _bodyID = ID;
-    _mainApp = mainApp;
+    _mainApp = pageManager;
     //TODO : Link API
     //Start Fake data
-    QList<QPair<int, QString> > data;
-    data.append(QPair<int, QString>(1, "L'api marche pas"));
-    data.append(QPair<int, QString>(1, "L'api marche toujours pas"));
-    data.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
-    data.append(QPair<int, QString>(1, "L'api marche paaaaas"));
-    data.append(QPair<int, QString>(1, "L'api marche pas"));
-    data.append(QPair<int, QString>(1, "L'api marche toujours pas"));
-    data.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
-    data.append(QPair<int, QString>(1, "L'api marche paaaaas"));
-    data.append(QPair<int, QString>(1, "L'api marche pas"));
-    data.append(QPair<int, QString>(1, "L'api marche toujours pas"));
-    data.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
-    data.append(QPair<int, QString>(1, "L'api marche paaaaas"));
-    data.append(QPair<int, QString>(1, "L'api marche pas"));
-    data.append(QPair<int, QString>(1, "L'api marche toujours pas"));
-    data.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
-    data.append(QPair<int, QString>(1, "L'api marche paaaaas"));
-    data.append(QPair<int, QString>(1, "L'api marche pas"));
-    data.append(QPair<int, QString>(1, "L'api marche toujours pas"));
-    data.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
-    data.append(QPair<int, QString>(1, "L'api marche paaaaas"));
-    this->CreateList(data);
+    QList<QPair<int, QString> > dataf;
+    dataf.append(QPair<int, QString>(1, "L'api marche pas"));
+    dataf.append(QPair<int, QString>(1, "L'api marche toujours pas"));
+    dataf.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
+    dataf.append(QPair<int, QString>(1, "L'api marche paaaaas"));
+    dataf.append(QPair<int, QString>(1, "L'api marche pas"));
+    dataf.append(QPair<int, QString>(1, "L'api marche toujours pas"));
+    dataf.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
+    dataf.append(QPair<int, QString>(1, "L'api marche paaaaas"));
     //End Fake data
-
-    emit OnLoadingDone(_bodyID);
+    this->CreateList(dataf);
+    emit OnLoadingDone(BodyBugTracker::BUGLIST);
 }
 
 void BodyBugList::Hide()
 {
     this->DeleteListElements();
-    hide();
 }
 
 void BodyBugList::DeleteListElements()
@@ -62,12 +47,9 @@ void BodyBugList::DeleteListElements()
 
     while ((currentItem = _listAdapter->itemAt(0)) != NULL)
     {
-        if (currentItem->widget() != NULL)
-        {
-            _listAdapter->widget()->setParent(NULL);
-            delete _listAdapter->widget();
-        }
-        delete _listAdapter;
+        if (currentItem->widget())
+            currentItem->widget()->setParent(NULL);
+        _listAdapter->removeItem(currentItem);
     }
 }
 

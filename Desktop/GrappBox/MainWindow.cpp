@@ -7,7 +7,7 @@
 #include "BodyWhiteboard.h"
 #include "Body/BodyUserSettings.h"
 #include "Body/BodyProjectSettings.h"
-#include "Body/BodyBugList.h"
+#include "Body/BodyBugTracker.h"
 
 #include "MainWindow.h"
 
@@ -66,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(whiteboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
 
-    BodyBugList *bugTracker = new BodyBugList();
+    BodyBugTracker *bugTracker = new BodyBugTracker();
     connect(bugTracker, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("BugTracker", _StackedLayout->addWidget(bugTracker));
 

@@ -1,17 +1,19 @@
 #include "BugViewTitleWidget.h"
 
-BugViewTitleWidget::BugViewTitleWidget(int bugId, QString title, QWidget *parent) : QWidget(parent)
+BugViewTitleWidget::BugViewTitleWidget(QString title, QWidget *parent) : QWidget(parent)
 {
-    QLabel *lblTitle = new QLabel(tr("View Issue : ") + title);
-    _bugID = bugId;
+    _title = new QLineEdit(tr("View Issue : ") + title);
+    _bugID = -1;
     _mainLayout = new QHBoxLayout();
     _btnEdit = new QPushButton(tr("Edit"));
     _btnClose = new QPushButton(tr("Close"));
 
-    QObject::connect(_btnClose, SIGNAL(released()), this, SLOT(TriggerCloseIssue()));
-    QObject::connect(_btnEdit, QPushButton::released, [=] { emit OnIssueEdit(_bugID); });
+    _title->setEnabled(false);
 
-    _mainLayout->addWidget(lblTitle);
+    QObject::connect(_btnClose, SIGNAL(released()), this, SLOT(TriggerCloseIssue()));
+    QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
+
+    _mainLayout->addWidget(_title);
     _mainLayout->addWidget(_btnEdit);
     _mainLayout->addWidget(_btnClose);
     this->setLayout(_mainLayout);
@@ -21,4 +23,32 @@ void BugViewTitleWidget::TriggerCloseIssue()
 {
     //TODO : Link API
     emit OnIssueClosed(_bugID);
+}
+
+void BugViewTitleWidget::SetTitle(const QString &title)
+{
+    _title->setText(title);
+}
+
+void BugViewTitleWidget::SetBugID(const int bugId)
+{
+    _bugID = bugId;
+}
+
+void BugViewTitleWidget::TriggerEditTitle()
+{
+    _title->setEnabled(true);
+    _btnEdit->setText(tr("Save"));
+    QObject::disconnect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
+    QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerSaveTitle()));
+}
+
+void BugViewTitleWidget::TriggerSaveTitle()
+{
+    _title->setEnabled(false);
+    _btnEdit->setText(tr("Edit"));
+    QObject::disconnect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerSaveTitle()));
+    QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
+    //TODO : Link API
+    emit OnTitleEdit(_bugID);
 }
