@@ -7,6 +7,7 @@
 #include "BodyWhiteboard.h"
 #include "Body/BodyUserSettings.h"
 #include "Body/BodyProjectSettings.h"
+#include "Body/BodyTimeline.h"
 #include "Body/BodyBugList.h"
 
 #include "MainWindow.h"
@@ -16,8 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     // Basic MainWindow Configuration
-
-    setStyleSheet("QMainWindow {background-color: #ffffff;}");
+    QFile file(":/Configuration/Ressources/ConfigurationFiles/Base.qss");
+    file.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(file.readAll());
+    setStyleSheet(styleSheet);
     this->layout()->setSpacing(0);
     this->layout()->setMargin(0);
     this->setWindowTitle("Grappbox");
@@ -55,16 +58,19 @@ MainWindow::MainWindow(QWidget *parent)
     BodyDashboard *dashboard = new BodyDashboard();
     BodyUserSettings *userSettings = new BodyUserSettings();
     BodyProjectSettings *projectSettings = new BodyProjectSettings();
+    BodyTimeline *timeline = new BodyTimeline();
 
     connect(dashboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     connect(userSettings, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     connect(projectSettings, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
+    connect(timeline, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
 
     _CurrentCanvas = _StackedLayout->addWidget(dashboard);
     _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas);
     BodyWhiteboard *whiteboard = new BodyWhiteboard();
     connect(whiteboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
+    _MenuWidget->AddMenuItem("Timeline", _StackedLayout->addWidget(timeline));
 
     BodyBugList *bugTracker = new BodyBugList();
     connect(bugTracker, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));

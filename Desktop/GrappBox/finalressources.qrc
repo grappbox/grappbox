@@ -22,6 +22,11 @@
         <file>Ressources/Icon/Notification.png</file>
         <file>Ressources/Icon/Settings.png</file>
         <file>Ressources/Icon/Loading.gif</file>
+        <file>Ressources/Icon/Accept.png</file>
+        <file>Ressources/Icon/Delete.png</file>
+        <file>Ressources/Icon/Edit.png</file>
+        <file>Ressources/Icon/Return.png</file>
+        <file>Ressources/Icon/DropDown.png</file>
     </qresource>
     <qresource prefix="/Image">
         <file>Ressources/Title.png</file>
@@ -31,5 +36,6 @@
     </qresource>
     <qresource prefix="/Configuration">
         <file>Ressources/ConfigurationFiles/WhiteboardColors.xml</file>
+        <file>Ressources/ConfigurationFiles/Base.qss</file>
     </qresource>
 </RCC>

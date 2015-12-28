@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtWidgets/QMainWindow>
+#include <QMainWindow>
 #include "ProfilMainInformation.h"
 
 class IBodyContener;
@@ -10,13 +10,13 @@ class IBodyContener;
 
 // Widget include
 
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QStackedLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
+#include <QWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QStackedLayout>
+#include <QLabel>
+#include <QPushButton>
 #include "SliderMenu.h"
 #include "LoginWindow.h"
 

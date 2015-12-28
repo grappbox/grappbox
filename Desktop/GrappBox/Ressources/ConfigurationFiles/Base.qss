@@ -1,0 +1,30 @@
+QMainWindow
+{
+    background-color: #ffffff;
+}
+
+QLineEdit
+{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #7f8c8d;
+    border-radius: 5px;
+}
+
+QLineEdit:focus
+{
+    border-color: #2980b9;
+}
+
+QTextEdit
+{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #7f8c8d;
+    border-radius: 5px;
+}
+
+QTextEdit:focus
+{
+    border-color: #2980b9;
+}

@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "PushButtonImage.h"
 #include <QtWidgets/QApplication>
 
 int main(int argc, char *argv[])
