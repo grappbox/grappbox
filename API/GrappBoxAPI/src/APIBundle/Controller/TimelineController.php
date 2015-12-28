@@ -393,6 +393,47 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} /V0.8/timeline/getmessages/:token/:id Get all messages from a timeline
+	* @apiName getMessages
+	* @apiGroup Timeline
+	* @apiVersion 0.8.2
+	*
+	* @apiParam {int} id id of the timeline
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {Object[]} messages array of all the timeline's messages
+	* @apiSuccess {int} messages.id Message id
+	* @apiSuccess {int} messages.userId author id
+	* @apiSuccess {int} messages.timelineId timeline id
+	* @apiSuccess {String} messages.message Message content
+  	* @apiSuccess {int} messages.parentId parent message id
+	* @apiSuccess {DateTime} messages.createdAt Message creation date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
+	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": 154,
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
+	*		2 : ...
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
 	public function getMessagesAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
@@ -509,7 +550,7 @@ class TimelineController extends RolesAndTokenVerificationController
 
 			$message = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
 		}
-		
+
 		return new JsonResponse('Success');
 	}
 }
