@@ -1,8 +1,9 @@
 #include "BugListElement.h"
 
-BugListElement::BugListElement(const QString &bugTitle, const int bugId, QWidget *parent) : QWidget(parent)
+BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTitle, const int bugId, QWidget *parent) : QWidget(parent)
 {
-    QLabel *lblBugTitle = new QLabel(bugTitle);
+    _pageManager = pageManager;
+    _title = new QLabel(bugTitle);
     _mainLayout = new QHBoxLayout();
     _btnViewBug = new QPushButton(tr("View"));
     _btnCloseBug = new QPushButton(tr("Close"));
@@ -11,7 +12,7 @@ BugListElement::BugListElement(const QString &bugTitle, const int bugId, QWidget
     QObject::connect(_btnViewBug, SIGNAL(released()), this, SLOT(TriggerBtnView()));
     QObject::connect(_btnCloseBug, SIGNAL(released()), this, SLOT(TriggerBtnClose()));
 
-    _mainLayout->addWidget(lblBugTitle);
+    _mainLayout->addWidget(_title);
     _mainLayout->addWidget(_btnViewBug);
     _mainLayout->addWidget(_btnCloseBug);
     this->setLayout(_mainLayout);
@@ -19,6 +20,10 @@ BugListElement::BugListElement(const QString &bugTitle, const int bugId, QWidget
 
 void BugListElement::TriggerBtnView()
 {
+    QJsonObject *data = new QJsonObject();
+    data->insert("id", _bugID);
+    data->insert("title", _title->text());
+    _pageManager->TriggerChangePage(BodyBugTracker::BUGVIEW, data);
     emit OnViewBug(_bugID);
 }
 

@@ -1,5 +1,5 @@
-#ifndef BODYBUGVISUALIZE_H
-#define BODYBUGVISUALIZE_H
+#ifndef BODYBUGCREATION_H
+#define BODYBUGCREATION_H
 
 #include "BugTracker/IBugPage.h"
 #include "BugTracker/BugViewTitleWidget.h"
@@ -26,15 +26,14 @@
 #define JSON_COMMENT        "comment"
 #define JSON_DATE           "date"
 
-class BodyBugVisualize : public QWidget, public IBugPage
+class BodyBugCreation : public QWidget, public IBugPage
 {
     Q_OBJECT
 public:
-    explicit                BodyBugVisualize(QWidget *parent = 0);
+    explicit                BodyBugCreation(QWidget *parent = 0);
     virtual void            Show(BodyBugTracker *pageManager, QJsonObject *data);
     virtual void            Hide();
     void                    DeleteComments();
-    void                    AddCommentsAtStart(const QList<QJsonObject> &comments);
 
 signals:
     void                    OnLoadingDone(BodyBugTracker::BugTrackerPage page);
@@ -42,6 +41,7 @@ signals:
 public slots:
     void                    TriggerCategoryBtnReleased();
     void                    TriggerAssigneeBtnReleased();
+    void                    TriggerComment();
 
 private:
     int                     _bugId;
@@ -62,4 +62,4 @@ private:
     QPushButton             *_btnAssigneeAssign;
 };
 
-#endif // BODYBUGVISUALIZE_H
+#endif // BODYBUGCREATION_H

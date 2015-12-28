@@ -21,6 +21,7 @@ class BugViewCategoryWidget : public QWidget
 {
     Q_OBJECT
 
+public:
     enum BugCategoryPage
     {
         VIEW,
@@ -29,9 +30,10 @@ class BugViewCategoryWidget : public QWidget
 
 public:
     explicit        BugViewCategoryWidget(QWidget *parent = 0);
-    void            DeletePageItems(const BugCategoryPage page);
+    void            DeletePageItems(const BugViewCategoryWidget::BugCategoryPage page);
     void            CreateViewPageItems(const QList<QJsonObject> &items);
     void            CreateAssignPageItems(const QList<QJsonObject> &items);
+    BugCategoryPage GetCurrentPage();
 
 signals: //Common signals
     void            OnPageChanged(BugCategoryPage);

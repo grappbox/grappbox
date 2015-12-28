@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include <QMap>
+#include <QDebug>
 
 class BodyBugTracker : public QWidget, public IBodyContener
 {

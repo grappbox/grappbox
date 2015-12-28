@@ -10,6 +10,8 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     _lblDate = new QLabel(PH_BUGPREVIEWDATE + " " + FormatDateTime(QDateTime::currentDateTime()));
     _comment = new QTextEdit(isCreation ? tr("Enter the comment here") : "");
 
+    _comment->setEnabled(isCreation);
+
     _titleBar->addWidget(_avatar);
     _titleBar->addWidget(_lblName);
 
@@ -53,6 +55,11 @@ void BugViewPreviewWidget::SetID(const int id)
 void BugViewPreviewWidget::SetAvatar(const QPixmap &avatar)
 {
     _avatar->setPixmap(avatar);
+}
+
+void BugViewPreviewWidget::SetComment(const QString &comment)
+{
+    _comment->setText(comment);
 }
 
 QString BugViewPreviewWidget::FormatDateTime(const QDateTime &datetime)

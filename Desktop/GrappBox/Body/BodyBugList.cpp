@@ -12,6 +12,8 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
     _listScrollView->setWidget(new QWidget());
     _listScrollView->widget()->setLayout(_listAdapter);
 
+    QObject::connect(_title, SIGNAL(OnNewIssue()), this, SLOT(TriggerNewIssue()));
+
     _mainLayout->addWidget(_title);
     _mainLayout->addWidget(_listScrollView);
     this->setLayout(_mainLayout);
@@ -19,7 +21,7 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
 
 void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)
 {
-    _mainApp = pageManager;
+    _pageManager = pageManager;
     //TODO : Link API
     //Start Fake data
     QList<QPair<int, QString> > dataf;
@@ -39,6 +41,7 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)
 void BodyBugList::Hide()
 {
     this->DeleteListElements();
+    hide();
 }
 
 void BodyBugList::DeleteListElements()
@@ -59,10 +62,15 @@ void BodyBugList::CreateList(QList<QPair<int, QString> > &elemList)
 
     for (listIt = elemList.begin(); listIt != elemList.end(); ++listIt)
     {
-        BugListElement  *newElem = new BugListElement((*listIt).second, (*listIt).first);
+        BugListElement  *newElem = new BugListElement(_pageManager, (*listIt).second, (*listIt).first);
 
         //TODO : Connect elem signals to slots
         newElem->setFixedHeight(LIST_ELEM_HEIGHT);
         _listAdapter->addWidget(newElem);
     }
+}
+
+void BodyBugList::TriggerNewIssue()
+{
+    _pageManager->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGCREATE, NULL);
 }

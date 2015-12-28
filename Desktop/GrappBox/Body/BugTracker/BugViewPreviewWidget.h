@@ -23,6 +23,7 @@ public:
     void SetCommentor(const QString &name);
     void SetID(const int id);
     void SetAvatar(const QPixmap &avatar);
+    void SetComment(const QString &comment);
 
 signals:
     void        OnEdit(int);

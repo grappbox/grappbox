@@ -41,4 +41,3 @@ void BugListTitleWidget::triggerClosedStateButtonToogled(bool toogled)
         _btnOpenState->setChecked(true);
     emit OnFilterStateChanged(BugState::CLOSED);
 }
-

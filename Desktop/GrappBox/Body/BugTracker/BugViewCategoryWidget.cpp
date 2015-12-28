@@ -15,7 +15,7 @@ BugViewCategoryWidget::BugViewCategoryWidget(QWidget *parent) : QWidget(parent)
     _mainWidget->addWidget(_assignPage);
 }
 
-void BugViewCategoryWidget::DeletePageItems(const BugCategoryPage page)
+void BugViewCategoryWidget::DeletePageItems(const BugViewCategoryWidget::BugCategoryPage page)
 {
     QVBoxLayout *deletionLayout = (page == BugCategoryPage::VIEW ? _mainViewLayout : _mainAssignLayout);
     QLayoutItem *currentItem;
@@ -25,7 +25,6 @@ void BugViewCategoryWidget::DeletePageItems(const BugCategoryPage page)
         if (currentItem->widget())
             currentItem->widget()->setParent(NULL);
         deletionLayout->removeItem(currentItem);
-        delete currentItem;
     }
     emit OnPageItemsDeleted(page);
 }
@@ -92,4 +91,11 @@ void BugViewCategoryWidget::TriggerCheckChange(bool checked, int id, QString nam
         emit OnAssigned(id, name);
     else
         emit OnDelAssigned(id, name);
+}
+
+BugViewCategoryWidget::BugCategoryPage BugViewCategoryWidget::GetCurrentPage()
+{
+    if (_mainWidget->currentWidget() == _viewPage)
+        return BugCategoryPage::VIEW;
+    return BugCategoryPage::ASSIGN;
 }

@@ -1,6 +1,6 @@
-#include "BodyBugVisualize.h"
+#include "BodyBugCreation.h"
 
-BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
+BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
 {
     QWidget *widgetTitleCategory = new QWidget();
     QWidget *widgetTitleAssignee = new QWidget();
@@ -17,8 +17,7 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     _bodyLayout = new QHBoxLayout();
     _issueLayout = new QVBoxLayout();
     _sideMenuLayout = new QVBoxLayout();
-    _titleBar = new BugViewTitleWidget("");
-    _statusBar = new BugViewStatusBar();
+    _titleBar = new BugViewTitleWidget(tr("Enter the issue name here..."), true);
     _categories = new BugViewCategoryWidget();
     _assignees = new BugViewAssigneeWidget();
     _commentArea = new QScrollArea();
@@ -26,7 +25,6 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     _categoriesArea = new QScrollArea();
     _assigneesArea = new QScrollArea();
 
-    _issueLayout->addWidget(_statusBar);
     _issueLayout->addWidget(_commentArea);
 
     widgetTitleCategory->setLayout(layoutTitleCategory);
@@ -61,27 +59,16 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     this->setLayout(_mainLayout);
 }
 
-void BodyBugVisualize::Show(BodyBugTracker *pageManager, QJsonObject *data)
+void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject *data)
 {
-    _bugId = (*data)["id"].toInt();
+    _bugId = -1;
     _mainApp = pageManager;
     _titleBar->SetBugID(_bugId);
-    _titleBar->SetTitle((*data)["title"].toString());
+    _titleBar->SetTitle(tr("Enter the issue name here..."));
     this->DeleteComments();
-    //TODO: Link API
-    //Start Fake Data
+    //TODO : Link API
     QList<QJsonObject> fdataAssigneeView, fdataAssigneeAssign, fdataCategoryView, fdataCategoryAssign;
-    QJsonObject obj1, obj2, obj3, obj4, obj5, obj6, obj7, obj8;
-    QList<QJsonObject> fdataComments;
-    QJsonObject com1;
-
-    obj1.insert("id", 1);
-    obj1.insert("assigned", true);
-    obj1.insert("name", "mougen_v");
-    obj2.insert("id", 2);
-    obj2.insert("assigned", true);
-    obj2.insert("name", "launoi_a");
-
+    QJsonObject obj3, obj5, obj6, obj7;
 
     obj5.insert("id", 4);
     obj5.insert("assigned", false);
@@ -97,44 +84,19 @@ void BodyBugVisualize::Show(BodyBugTracker *pageManager, QJsonObject *data)
     obj7.insert("assigned", false);
     obj7.insert("name", "help wanted");
 
-    obj4.insert("id", 3);
-    obj4.insert("assigned", true);
-    obj4.insert("name", "bug");
-    obj8.insert("id", 4);
-    obj8.insert("assigned", true);
-    obj8.insert("name", "enhanced");
-
-    fdataAssigneeView.append(obj1);
-    fdataAssigneeView.append(obj2);
     fdataAssigneeAssign.append(obj5);
-    fdataAssigneeAssign.append(obj1);
-    fdataAssigneeAssign.append(obj2);
     fdataAssigneeAssign.append(obj6);
-
     fdataCategoryAssign.append(obj3);
     fdataCategoryAssign.append(obj7);
-    fdataCategoryAssign.append(obj4);
-    fdataCategoryAssign.append(obj8);
-    fdataCategoryView.append(obj4);
-    fdataCategoryView.append(obj8);
-
-    com1.insert(JSON_AVATAR, "");
-    com1.insert(JSON_ID, 1);
-    com1.insert(JSON_COMMENTOR, "nadeau_l");
-    com1.insert(JSON_DATE, "2015-12-28 18:15:20");
-    com1.insert(JSON_COMMENT, "THAT'S WORKING BITCH!!");
-
-    fdataComments.append(com1);
     //End Fake Data
     _assignees->CreateAssignPageItems(fdataAssigneeAssign);
     _assignees->CreateViewPageItems(fdataAssigneeView);
     _categories->CreateAssignPageItems(fdataCategoryAssign);
     _categories->CreateViewPageItems(fdataCategoryView);
-    this->AddCommentsAtStart(fdataComments);
-    emit OnLoadingDone(BodyBugTracker::BUGVIEW);
+    emit OnLoadingDone(BodyBugTracker::BUGCREATE);
 }
 
-void BodyBugVisualize::Hide()
+void BodyBugCreation::Hide()
 {
     _assignees->DeletePageItems(BugViewAssigneeWidget::BugAssigneePage::VIEW);
     _assignees->DeletePageItems(BugViewAssigneeWidget::BugAssigneePage::ASSIGN);
@@ -143,7 +105,7 @@ void BodyBugVisualize::Hide()
     hide();
 }
 
-void BodyBugVisualize::TriggerAssigneeBtnReleased()
+void BodyBugCreation::TriggerAssigneeBtnReleased()
 {
     if (_assignees->GetCurrentPage() == BugViewAssigneeWidget::BugAssigneePage::VIEW)
     {
@@ -157,7 +119,7 @@ void BodyBugVisualize::TriggerAssigneeBtnReleased()
     }
 }
 
-void BodyBugVisualize::TriggerCategoryBtnReleased()
+void BodyBugCreation::TriggerCategoryBtnReleased()
 {
     if (_categories->GetCurrentPage() == BugViewCategoryWidget::BugCategoryPage::VIEW)
     {
@@ -171,7 +133,7 @@ void BodyBugVisualize::TriggerCategoryBtnReleased()
     }
 }
 
-void BodyBugVisualize::DeleteComments()
+void BodyBugCreation::DeleteComments()
 {
     QLayoutItem *currentItem;
     BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(true);
@@ -186,24 +148,12 @@ void BodyBugVisualize::DeleteComments()
     _commentLayout->addWidget(commentWidget);
 }
 
-void BodyBugVisualize::AddCommentsAtStart(const QList<QJsonObject> &comments)
+void BodyBugCreation::TriggerComment()
 {
-    QList<QJsonObject>::const_iterator it;
+    //TODO : Link API save new issue
+    QJsonObject *data = new QJsonObject();
 
-    for (it = comments.begin(); it != comments.end(); ++it)
-    {
-        QJsonObject json = *it;
-        BugViewPreviewWidget *newComment = new BugViewPreviewWidget();
-        QImage img(QByteArray::fromBase64(json[JSON_AVATAR].toString().toStdString().c_str()), "PNG");
-        QPixmap pix = QPixmap::fromImage(img);
-
-        newComment->setFixedHeight(COMMENTBOX_HEIGHT);
-        newComment->SetAvatar(pix);
-        newComment->SetID(json[JSON_ID].toInt());
-        newComment->SetDate(QDateTime::fromString(json[JSON_DATE].toString(), "yyyy-MM-dd hh:mm:ss"));
-        newComment->SetCommentor(json[JSON_COMMENTOR].toString());
-        newComment->SetComment(json[JSON_COMMENT].toString());
-        _commentLayout->insertWidget(0, newComment);
-    }
-
+    data->insert("id", -1);
+    data->insert("title", this->_titleBar->GetTitle());
+    _mainApp->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGVIEW, data);
 }

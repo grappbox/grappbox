@@ -1,6 +1,7 @@
 #include "BodyBugTracker.h"
 #include "BodyBugList.h"
 #include "BodyBugVisualize.h"
+#include "BodyBugCreation.h"
 
 BodyBugTracker::BodyBugTracker(QWidget *parent) : QWidget(parent)
 {
@@ -18,6 +19,11 @@ BodyBugTracker::BodyBugTracker(QWidget *parent) : QWidget(parent)
     _pageManager->addWidget(bugView);
     _pages[BugTrackerPage::BUGVIEW] = bugView;
     QObject::connect(bugView, SIGNAL(OnLoadingDone(BodyBugTracker::BugTrackerPage)), this, SLOT(TriggerPageLoaded(BodyBugTracker::BugTrackerPage)));
+
+    BodyBugCreation *bugCreate = new BodyBugCreation();
+    _pageManager->addWidget(bugCreate);
+    _pages[BugTrackerPage::BUGCREATE] = bugCreate;
+    QObject::connect(bugCreate, SIGNAL(OnLoadingDone(BodyBugTracker::BugTrackerPage)), this, SLOT(TriggerPageLoaded(BodyBugTracker::BugTrackerPage)));
 
     _currentPage = BugTrackerPage::BUGLIST;
     mainLayout->addWidget(_pageManager);
@@ -48,6 +54,14 @@ void BodyBugTracker::TriggerChangePage(BodyBugTracker::BugTrackerPage newPage, Q
 
 void BodyBugTracker::TriggerPageLoaded(BodyBugTracker::BugTrackerPage page)
 {
-    _pageManager->setCurrentWidget(dynamic_cast<QWidget *>(_pages[page]));
+    QWidget *widget = dynamic_cast<QWidget *>(_pages[page]);
+    if (!widget)
+    {
+        QMessageBox::critical(this, tr("Unexpected error"), tr("An unexpected error occured on the bugtracker, please contact us at bug@grappbox.com with the message : 'triggerPageLoaded(Page is not a widget)'"));
+        return;
+    }
+    qDebug() << "Trigger page loaded";
+    widget->show();
+    _pageManager->setCurrentWidget(widget);
     emit OnPageChanged(page);
 }

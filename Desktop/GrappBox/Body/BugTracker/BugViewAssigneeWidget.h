@@ -21,6 +21,7 @@ class BugViewAssigneeWidget : public QWidget
 {
     Q_OBJECT
 
+public:
     enum BugAssigneePage
     {
         VIEW,
@@ -29,9 +30,10 @@ class BugViewAssigneeWidget : public QWidget
 
 public:
     explicit        BugViewAssigneeWidget(QWidget *parent = 0);
-    void            DeletePageItems(const BugAssigneePage page);
+    void            DeletePageItems(const BugViewAssigneeWidget::BugAssigneePage page);
     void            CreateViewPageItems(const QList<QJsonObject> &items);
     void            CreateAssignPageItems(const QList<QJsonObject> &items);
+    BugAssigneePage GetCurrentPage();
 
 signals: //Common signals
     void            OnPageChanged(BugAssigneePage);

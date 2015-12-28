@@ -64,7 +64,8 @@ SOURCES += main.cpp \
     Body/BugTracker/BugCheckableLabel.cpp \
     Body/BugTracker/BugViewAssigneeWidget.cpp \
     Body/BodyBugVisualize.cpp \
-    Body/BodyBugTracker.cpp
+    Body/BodyBugTracker.cpp \
+    Body/BodyBugCreation.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -113,7 +114,8 @@ HEADERS  += MainWindow.h \
     Body/BugTracker/BugViewAssigneeWidget.h \
     Body/BodyBugVisualize.h \
     Body/BodyBugTracker.h \
-    Body/BugTracker/IBugPage.h
+    Body/BugTracker/IBugPage.h \
+    Body/BodyBugCreation.h
 
 RESOURCES += \
     temporaryressources.qrc \

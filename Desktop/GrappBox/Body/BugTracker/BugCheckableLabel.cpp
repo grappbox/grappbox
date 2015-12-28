@@ -3,19 +3,18 @@
 BugCheckableLabel::BugCheckableLabel(const int id, const QString &name, const bool checked, QWidget *parent) : QWidget(parent)
 {
     _mainLayout = new QHBoxLayout();
-    _checked = new QCheckBox();
-    _name = new QLabel(name);
+    _checked = new QCheckBox(name);
     _id = id;
 
+    QObject::connect(_checked, SIGNAL(clicked(bool)), this, SLOT(TriggerCheckChange(bool)));
     _checked->setChecked(checked);
     _mainLayout->addWidget(_checked);
-    _mainLayout->addWidget(_name);
     this->setLayout(_mainLayout);
 }
 
 void BugCheckableLabel::TriggerCheckChange(bool checked)
 {
-    emit OnCheckChanged(checked, _id, _name->text());
+    emit OnCheckChanged(checked, _id, _checked->text());
 }
 
 const int BugCheckableLabel::GetId() const
@@ -25,7 +24,7 @@ const int BugCheckableLabel::GetId() const
 
 const QString &BugCheckableLabel::GetName() const
 {
-    return _name->text();
+    return _checked->text();
 }
 
 const bool BugCheckableLabel::IsChecked() const

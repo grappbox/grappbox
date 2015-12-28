@@ -33,14 +33,15 @@ signals:
     void                OnLoadingDone(BodyBugTracker::BugTrackerPage page);
 
 public slots:
+    void                TriggerNewIssue();
 
 private:
+    BodyBugTracker      *_pageManager;
     int                 _bodyID;
     QVBoxLayout         *_mainLayout;
     QVBoxLayout         *_listAdapter;
     BugListTitleWidget  *_title;
     QScrollArea         *_listScrollView;
-    BodyBugTracker      *_mainApp;
 };
 
 #endif // BODYBUGLIST_H

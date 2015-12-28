@@ -10,9 +10,10 @@ class BugViewTitleWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BugViewTitleWidget(QString title, QWidget *parent = 0);
+    explicit BugViewTitleWidget(QString title, bool creation = false, QWidget *parent = 0);
     void    SetTitle(const QString &title);
     void    SetBugID(const int bugId);
+    QString GetTitle();
 
 signals:
     void    OnIssueClosed(int);
@@ -24,6 +25,7 @@ public slots:
     void    TriggerSaveTitle();
 
 private:
+    bool            _creation;
     int             _bugID;
     QHBoxLayout     *_mainLayout;
     QPushButton     *_btnEdit;

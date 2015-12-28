@@ -15,7 +15,7 @@ BugViewAssigneeWidget::BugViewAssigneeWidget(QWidget *parent) : QWidget(parent)
     _mainWidget->addWidget(_assignPage);
 }
 
-void BugViewAssigneeWidget::DeletePageItems(const BugAssigneePage page)
+void BugViewAssigneeWidget::DeletePageItems(const BugViewAssigneeWidget::BugAssigneePage page)
 {
     QVBoxLayout *deletionLayout = (page == BugAssigneePage::VIEW ? _mainViewLayout : _mainAssignLayout);
     QLayoutItem *currentItem;
@@ -25,7 +25,6 @@ void BugViewAssigneeWidget::DeletePageItems(const BugAssigneePage page)
         if (currentItem->widget())
             currentItem->widget()->setParent(NULL);
         deletionLayout->removeItem(currentItem);
-        delete currentItem;
     }
     emit OnPageItemsDeleted(page);
 }
@@ -92,4 +91,11 @@ void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString nam
         emit OnAssigned(id, name);
     else
         emit OnDelAssigned(id, name);
+}
+
+BugViewAssigneeWidget::BugAssigneePage BugViewAssigneeWidget::GetCurrentPage()
+{
+    if (_mainWidget->currentWidget() == _viewPage)
+        return BugAssigneePage::VIEW;
+    return BugAssigneePage::ASSIGN;
 }
