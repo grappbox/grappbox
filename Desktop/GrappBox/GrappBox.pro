@@ -59,7 +59,8 @@ SOURCES += main.cpp \
     Body/BugTracker/BugListElement.cpp \
     Body/BugTracker/BugViewTitleWidget.cpp \
     Body/BugTracker/BugViewStatusBar.cpp \
-    Body/BugTracker/BugViewPreviewWidget.cpp
+    Body/BugTracker/BugViewPreviewWidget.cpp \
+    Body/Timeline/CanvasTimeline.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -102,7 +103,8 @@ HEADERS  += MainWindow.h \
     Body/BugTracker/BugListElement.h \
     Body/BugTracker/BugViewTitleWidget.h \
     Body/BugTracker/BugViewStatusBar.h \
-    Body/BugTracker/BugViewPreviewWidget.h
+    Body/BugTracker/BugViewPreviewWidget.h \
+    Body/Timeline/CanvasTimeline.h
 
 RESOURCES += \
     temporaryressources.qrc \

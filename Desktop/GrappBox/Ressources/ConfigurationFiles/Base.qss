@@ -3,6 +3,11 @@ QMainWindow
     background-color: #ffffff;
 }
 
+QMainWindow#Login
+{
+    background-color: #424242;
+}
+
 QLineEdit
 {
     border-style: solid;

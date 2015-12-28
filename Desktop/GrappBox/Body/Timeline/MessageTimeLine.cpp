@@ -49,6 +49,8 @@ MessageTimeLine::MessageTimeLine(int idTimeline, QWidget *parent) : QWidget(pare
     _CancelButton->setFixedSize(24, 24);
 
     _ButtonLayout->addWidget(_ValidateButton);
+    if (_IDTimeline == -1)
+        _CancelButton->hide();
     _ButtonLayout->addWidget(_CancelButton);
     _MainLayoutEdit->addWidget(_TitleEdit);
     if (_IDTimeline != 1) // Remplacer par : Si ce n'est pas un commentaire
@@ -71,6 +73,8 @@ MessageTimeLine::MessageTimeLine(int idTimeline, QWidget *parent) : QWidget(pare
 
     _IDLayoutNormal = _MainLayout->addWidget(normalModeWidget);
     _IDLayoutEdit = _MainLayout->addWidget(editModeWidget);
+    if (_IDTimeline == -1)
+        _MainLayout->setCurrentIndex(_IDLayoutEdit);
 
     setLayout(_MainLayout);
     setStyleSheet("background-color: #FFFFFF;");
@@ -92,8 +96,6 @@ void MessageTimeLine::OnEdit()
 void MessageTimeLine::OnRemove()
 {
     // Here remove the message
-    qDebug() << _EditButton->size();
-    qDebug() << _RemoveButton->size();
     emit TimelineDeleted(_IDTimeline);
 }
 
@@ -106,5 +108,6 @@ void MessageTimeLine::OnConfirmEdit()
 {
     // Here do the edit
     emit TimelineEdited(_IDTimeline);
-    _MainLayout->setCurrentIndex(_IDLayoutNormal);
+    if (_IDTimeline != -1)
+        _MainLayout->setCurrentIndex(_IDLayoutNormal);
 }

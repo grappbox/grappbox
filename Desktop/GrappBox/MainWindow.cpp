@@ -38,6 +38,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     _StackedLayout = new QStackedLayout();
 
+    _MainLayout->setContentsMargins(0, 0, 0, 0);
+    _SliderLayout->setContentsMargins(0, 0, 0, 0);
+    _HeaderLayout->setContentsMargins(0, 0, 0, 0);
+    _ContainLayout->setContentsMargins(0, 0, 0, 0);
     _MainLayout->setSpacing(0);
     _SliderLayout->setSpacing(0);
     _HeaderLayout->setSpacing(0);

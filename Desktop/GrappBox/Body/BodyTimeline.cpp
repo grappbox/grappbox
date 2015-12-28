@@ -1,34 +1,66 @@
-#include "Timeline/LineTimeline.h"
+#include <QTabBar>
 #include "BodyTimeline.h"
 
 BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
 {
-    _MainLayout = new QStackedLayout();
-    _MainTimelineLayout = new QGridLayout();
-    _SliderTimeline = new QScrollArea();
-    _TimelineContener = new QWidget();
+    _MainLayout = new QVBoxLayout();
+    _MainLayout->setSpacing(0);
+    _MainLayout->setContentsMargins(0, 0, 0, 0);
+    _MainLayoutTimeline = new QStackedLayout();
+    _MainLayoutTimeline->setSpacing(0);
+    _MainLayoutTimeline->setContentsMargins(0, 0, 0, 0);
+    _MainLayoutButton = new QHBoxLayout();
+    _MainLayoutButton->setSpacing(0);
+    _MainLayoutButton->setContentsMargins(0, 0, 0, 0);
 
-    _MainTimelineLayout->setSpacing(0);
-    _MainTimelineLayout->setContentsMargins(5, 5, 0, 0);
+    _ButtonToClient = new QPushButton("Client");
+    _ButtonToTeam = new QPushButton("Team");
 
-    for (int i = 0; i < 5; ++i)
-    {
-        ConversationTimeline *c = new ConversationTimeline(i, this);
-        _Conversation.append(c);
-        _MainTimelineLayout->addWidget(c, i, (i % 2) * 2, 1, 1);
-        _MainTimelineLayout->addWidget(new LineTimeline(), i, 1, 1, 1);
-        QObject::connect(c, SIGNAL(AnimOpenComment(int)), this, SLOT(UpdateTimelineAnim(int)));
-    }
-    _TimelineContener->setLayout(_MainTimelineLayout);
-    _SliderTimeline->setWidget(_TimelineContener);
-    _SliderTimeline->setWidgetResizable(true);
-    _SliderTimeline->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    _SliderTimeline->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    QString styleSheetButton = "QPushButton {"
+                               "height: 32px;"
+                               "border-style:none;"
+                               "border-bottom-style:solid;"
+                               "border-width: 4px;"
+                               "border-color: #f0f3f7;"
+                               "background: #FFFFFF;}"
+                               "QPushButton:disabled {"
+                               "border-color: #af2d2e;}"
+                               ;
 
-    _MainLayout->addWidget(_SliderTimeline);
+    _ButtonToClient->setStyleSheet(styleSheetButton);
+    _ButtonToTeam->setStyleSheet(styleSheetButton);
+    _MainLayoutButton->addWidget(_ButtonToTeam);
+    _MainLayoutButton->addWidget(_ButtonToClient);
+
+    _ClientSA = new QScrollArea();
+    _TeamSA = new QScrollArea();
+
+    _ClientTimeline = new CanvasTimeline(1);
+    _TeamTimeline = new CanvasTimeline(2);
+
+    _ClientSA->setWidget(_ClientTimeline);
+    _ClientSA->setWidgetResizable(true);
+    _ClientSA->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    _ClientSA->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+    _TeamSA->setWidget(_TeamTimeline);
+    _TeamSA->setWidgetResizable(true);
+    _TeamSA->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    _TeamSA->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+    _IDButtonTeam = _MainLayoutTimeline->addWidget(_TeamSA);
+    _IDButtonClient = _MainLayoutTimeline->addWidget(_ClientSA);
+
+    _MainLayout->addLayout(_MainLayoutButton);
+    _MainLayout->addLayout(_MainLayoutTimeline);
+
+    _ButtonToTeam->setDisabled(true);
 
     setLayout(_MainLayout);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    QObject::connect(_ButtonToClient, SIGNAL(clicked(bool)), this, SLOT(OnChange()));
+    QObject::connect(_ButtonToTeam, SIGNAL(clicked(bool)), this, SLOT(OnChange()));
 }
 
 void BodyTimeline::Show(int ID, MainWindow *mainApp)
@@ -40,13 +72,21 @@ void BodyTimeline::Hide()
 {
 
 }
-#include <QDebug>
-void  BodyTimeline::UpdateTimelineAnim(int Id)
+
+void BodyTimeline::OnChange()
 {
-    for (ConversationTimeline *item : _Conversation)
+    if (_MainLayoutTimeline->currentIndex() == _IDButtonClient)
     {
-        if (item->GetID() != Id)
-            item->ForceCloseComment();
+        _ButtonToClient->setDisabled(false);
+        _ButtonToTeam->setDisabled(true);
+        _MainLayoutTimeline->setCurrentIndex(_IDButtonTeam);
+    }
+    else
+    {
+        _ButtonToClient->setDisabled(true);
+        _ButtonToTeam->setDisabled(false);
+        _MainLayoutTimeline->setCurrentIndex(_IDButtonClient);
     }
 }
+
 
