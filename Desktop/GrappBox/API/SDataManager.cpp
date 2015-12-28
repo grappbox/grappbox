@@ -45,7 +45,6 @@ void                       SDataManager::RegisterUserConnected(int id, QString u
 
 void                       SDataManager::LogoutUser()
 {
-    qDebug() << "Logout !";
     _UserId = -1;
 }
 
@@ -71,6 +70,6 @@ QString                    SDataManager::GetUserLastName()
 QString                    SDataManager::GetToken()
 {
     if (_UserId == -1)
-        return "Ceci n'est pas un token !";
+        return "";
     return _Token;
 }

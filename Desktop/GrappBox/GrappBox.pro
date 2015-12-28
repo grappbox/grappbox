@@ -16,7 +16,8 @@ CONFIG += c++11
 
 INCLUDEPATH += Body \
     Body/Dashboard \
-    API
+    API \
+    WidgetCommon
 
 SOURCES += main.cpp \
     MainWindow.cpp \
@@ -48,6 +49,11 @@ SOURCES += main.cpp \
     Body/Settings/InviteUserWindow.cpp \
     Body/Settings/CustomerAccessSettings.cpp \
     Body/Settings/CreateNewCustomerAccessWindow.cpp \
+    Body/BodyTimeline.cpp \
+    Body/Timeline/MessageTimeLine.cpp \
+    Body/Timeline/ConversationTimeline.cpp \
+    Body/Timeline/LineTimeline.cpp \
+    WidgetCommon/PushButtonImage.cpp \
     Body/BodyBugList.cpp \
     Body/BugTracker/BugListTitleWidget.cpp \
     Body/BugTracker/BugListElement.cpp \
@@ -91,6 +97,11 @@ HEADERS  += MainWindow.h \
     Body/Settings/InviteUserWindow.h \
     Body/Settings/CustomerAccessSettings.h \
     Body/Settings/CreateNewCustomerAccessWindow.h \
+    Body/BodyTimeline.h \
+    Body/Timeline/MessageTimeLine.h \
+    Body/Timeline/ConversationTimeline.h \
+    Body/Timeline/LineTimeline.h \
+    WidgetCommon/PushButtonImage.h \
     Body/BodyBugList.h \
     Body/BugTracker/BugListTitleWidget.h \
     Body/BugTracker/BugListElement.h \
@@ -108,4 +119,6 @@ RESOURCES += \
     temporaryressources.qrc \
     finalressources.qrc
 
-DISTFILES +=
+DISTFILES += \
+    BaseStyle.css
+
