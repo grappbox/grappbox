@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <com.grappbox.grappbox.grappbox.DrawingView
+    <com.grappbox.grappbox.grappbox.Whiteboard.DrawingView
         android:id="@+id/drawing"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

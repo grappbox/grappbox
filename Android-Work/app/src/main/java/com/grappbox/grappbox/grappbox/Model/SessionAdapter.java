@@ -1,6 +1,4 @@
-package com.grappbox.grappbox.grappbox;
-
-import android.content.Intent;
+package com.grappbox.grappbox.grappbox.Model;
 
 /**
  * Created by Arkanice on 02/12/2015.

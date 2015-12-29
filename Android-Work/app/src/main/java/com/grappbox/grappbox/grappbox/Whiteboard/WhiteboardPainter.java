@@ -1,7 +1,9 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Whiteboard;
 
 import android.content.Context;
 import android.graphics.Paint;
+
+import com.grappbox.grappbox.grappbox.R;
 
 /**
  * Created by Arkanice on 08/12/2015.

@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Whiteboard;
 
 import android.graphics.Paint;
 import android.graphics.Path;

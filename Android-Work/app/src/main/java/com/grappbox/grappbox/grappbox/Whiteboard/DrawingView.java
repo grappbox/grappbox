@@ -1,8 +1,7 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Whiteboard;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -15,13 +14,10 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,9 +26,12 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.grappbox.grappbox.grappbox.R;
+import com.grappbox.grappbox.grappbox.Whiteboard.DrawingShape;
+import com.grappbox.grappbox.grappbox.Whiteboard.DrawingText;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 
 public class DrawingView extends View {

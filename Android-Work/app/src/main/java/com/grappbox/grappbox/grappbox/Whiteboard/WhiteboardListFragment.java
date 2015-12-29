@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Whiteboard;
 
 
 import android.support.v4.app.FragmentTransaction;
@@ -11,9 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.grappbox.grappbox.grappbox.R;
+import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardFragment;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Login;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -10,6 +10,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
+import com.grappbox.grappbox.grappbox.MainActivity;
+import com.grappbox.grappbox.grappbox.R;
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;

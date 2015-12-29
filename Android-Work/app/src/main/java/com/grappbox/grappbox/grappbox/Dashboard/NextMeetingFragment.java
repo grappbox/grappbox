@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Dashboard;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
@@ -11,19 +11,16 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
+import com.grappbox.grappbox.grappbox.R;
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
-import java.io.BufferedReader;
+import org.json.JSONException;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
 
 public class NextMeetingFragment extends Fragment {

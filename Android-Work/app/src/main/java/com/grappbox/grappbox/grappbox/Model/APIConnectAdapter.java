@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Model;
 
 import android.content.ContentValues;
 import android.util.Log;

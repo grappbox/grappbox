@@ -1,13 +1,10 @@
 package com.grappbox.grappbox.grappbox;
 
-import android.support.v4.app.FragmentTransaction;
-import android.content.ContentValues;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,15 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.io.BufferedReader;
+
+import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
+import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
+import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

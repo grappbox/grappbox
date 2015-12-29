@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Whiteboard;
 
 
 import android.app.Dialog;
@@ -15,6 +15,9 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+
+import com.grappbox.grappbox.grappbox.R;
+import com.grappbox.grappbox.grappbox.Whiteboard.DrawingView;
 
 public class WhiteboardFragment extends Fragment implements View.OnClickListener {
 
