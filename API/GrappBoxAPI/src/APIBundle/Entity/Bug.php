@@ -27,6 +27,11 @@ class Bug
     /**
      * @var integer
      */
+    private $parentId;
+
+    /**
+     * @var integer
+     */
     private $projectId;
 
     /**
@@ -52,6 +57,11 @@ class Bug
     /**
      * @var \DateTime
      */
+    private $editedAt;
+
+    /**
+     * @var \DateTime
+     */
     private $deletedAt;
 
     /**
@@ -63,7 +73,7 @@ class Bug
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -86,7 +96,7 @@ class Bug
     /**
      * Get creatorId
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {
@@ -107,11 +117,34 @@ class Bug
     }
 
     /**
-     * Get userId
+     * Get parentId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set parentId
+     *
+     * @param integer $parentId
+     * @return Bug
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+
+        return $this;
+    }
+
+    /**
+     * Get userId
+     *
+     * @return integer
+     */
+    public function getParentId()
     {
         return $this->userId;
     }
@@ -132,7 +165,7 @@ class Bug
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -155,7 +188,7 @@ class Bug
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -178,7 +211,7 @@ class Bug
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -201,7 +234,7 @@ class Bug
     /**
      * Get stateId
      *
-     * @return integer 
+     * @return integer
      */
     public function getStateId()
     {
@@ -224,11 +257,34 @@ class Bug
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Set editedAt
+     *
+     * @param \DateTime $editedAt
+     * @return Bug
+     */
+    public function setEditedAt($editedAt)
+    {
+        $this->editedAt = $editedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get  editedAt
+     *
+     * @return \DateTime
+     */
+    public function getEditedAt()
+    {
+        return $this->editedAt;
     }
 
     /**
@@ -247,7 +303,7 @@ class Bug
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -270,10 +326,31 @@ class Bug
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \APIBundle\Entity\Project
      */
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "creatorId" => $this->creatorId,
+        "userId" => $this->userId,
+        "projectId" => $this->projectId,
+        "title" => $this->title,
+        "description" => $this->description,
+        "parentId" => $this->parentId,
+        "createdAt" => $this->createdAt,
+        "editedAt" => $this->editedAt,
+        "deletedAt" => $this->deletedAt
+      );
     }
 }

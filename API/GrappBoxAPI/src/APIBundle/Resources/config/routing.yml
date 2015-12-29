@@ -70,6 +70,7 @@ project_getUserToProject:
 
 
 
+
 role_addProjectRoles:
     path:       roles/addprojectroles
     defaults:   { _controller: APIBundle:RolesAndTokenVerification:addProjectRoles }
@@ -121,6 +122,8 @@ role_getRoleByProjectAndUser:
     methods: [GET]
 
 
+
+
 user_basicInformations:
     path:       user/basicinformations/{token}
     defaults:   { _controller: APIBundle:User:basicInformations }
@@ -150,6 +153,7 @@ user_getCurrentAndNextTasks:
     path:       user/getcurrentandnexttasks/{token}
     defaults:   { _controller: APIBundle:User:getCurrentAndNextTasks }
     methods: [GET]
+
 
 
 
@@ -198,6 +202,7 @@ whiteboard_delete:
     requirements:
         id: \d+
     methods: [DELETE]
+
 
 
 
@@ -286,6 +291,7 @@ dashboard_getNumberBugs:
 
 
 
+
 accountAdministration_login:
     path:       accountadministration/login
     defaults:   { _controller: APIBundle:AccountAdministration:login }
@@ -305,6 +311,7 @@ accountAdministration_register:
     path:       accountadministration/register
     defaults:   { _controller: APIBundle:AccountAdministration:register }
     methods:    [POST]
+
 
 
 
@@ -350,6 +357,7 @@ cloud_createCloud: #TODO : Delete this route, it's a test route
 
 
 
+
 timeline_getTimelineType:
     path:       /timeline/gettimelinetype/{token}/{id}
     defaults:   { _controller: APIBundle:Timeline:getTimelineType }
@@ -386,39 +394,48 @@ timeline_archiveMessage:
     methods: [GET]
 
 
+
+
 bugtracker_postTicket:
-    path:       /Bugtracker/postTicket
+    path:       /bugtracker/postticket/{id}
     defaults:   { _controller: APIBundle:Bugtracker:postTicket }
-
-bugtracker_modifyTicket:
-    path:       /Bugtracker/modifyTicket/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:modifyTicket }
     requirements:
         id: \d+
+    methods:  [POST]
 
-bugtracker_getTicketList:
-    path:       /Bugtracker/getTicketList/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:getTicketList }
+bugtracker_editTicket:
+    path:       /bugtracker/editticket/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:editTicket }
     requirements:
         id: \d+
+    methods:  [POST]
 
-bugtracker_commentTicket:
-    path:       /Bugtracker/commentTicket/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:commentTicket }
+bugtracker_getTickets:
+    path:       /bugtracker/gettickets/{token}/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:getTickets }
     requirements:
         id: \d+
+    methods:  [GET]
+
+bugtracker_getTicketsByUser:
+    path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
+    defaults:   { _controller: APIBundle:Bugtracker:getTicketsByUser }
+    requirements:
+        id: \d+
+    methods:  [GET]
 
 bugtracker_closeTicket:
-    path:       /Bugtracker/closeTicket/{id}
+    path:       /bugtracker/closeticket/{token}/{id}
     defaults:   { _controller: APIBundle:Bugtracker:closeTicket }
     requirements:
         id: \d+
+    methods:  [GET]
 
-bugtracker_getTicketDetails:
-    path:       /Bugtracker/getTicketDetails/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:getTicketDetails }
-    requirements:
-        id: \d+
+bugtracker_getStates:
+    path:       /bugtracker/getstates/{token}
+    defaults:   { _controller: APIBundle:Bugtracker:getStates }
+    methods:  [GET]
+
 
 
 
@@ -485,6 +502,7 @@ visualisingProject_invitePerson:
 
 
 
+
 meeting_editMeeting:
     path:       /Meeting/editMeeting/{id}
     defaults:   { _controller: APIBundle:Meeting:editMeeting }
@@ -508,6 +526,7 @@ meeting_addAlert:
     defaults:   { _controller: APIBundle:Meeting:addAlert }
     requirements:
         id: \d+
+
 
 
 
@@ -540,6 +559,7 @@ personnalSettings_getRole:
     defaults:   { _controller: APIBundle:PersonnalSettings:getRole }
     requirements:
         id: \d+
+
 
 
 

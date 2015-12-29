@@ -23,7 +23,7 @@ class BugState
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -46,10 +46,23 @@ class BugState
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name,
+      );
     }
 }

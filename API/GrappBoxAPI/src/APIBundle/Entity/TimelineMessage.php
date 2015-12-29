@@ -250,6 +250,11 @@ class TimelineMessage
         return $this->timelines;
     }
 
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
     public function objectToArray()
     {
       return array(

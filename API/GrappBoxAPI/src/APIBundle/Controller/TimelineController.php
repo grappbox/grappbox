@@ -408,17 +408,21 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} messages.userId author id
 	* @apiSuccess {int} messages.timelineId timeline id
 	* @apiSuccess {String} messages.message Message content
-  	* @apiSuccess {int} messages.parentId parent message id
+  * @apiSuccess {int} messages.parentId parent message id
 	* @apiSuccess {DateTime} messages.createdAt Message creation date
+	* @apiSuccess {DateTime} messages.editedAt Message edition date
+	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null},
 	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": 154,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null},
 	*		2 : ...
 	* 	}
 	*
