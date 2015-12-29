@@ -28,9 +28,8 @@ import java.util.Vector;
 
 public class GlobalProgressFragment extends Fragment {
 
-    View _view;
-    ListView _projectList;
-    List<ContentValues> _value;
+    private View _view;
+    private List<ContentValues> _value;
 
     public GlobalProgressFragment() {
     }
@@ -46,7 +45,7 @@ public class GlobalProgressFragment extends Fragment {
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_global_progress, container, false);
         if (_value == null) {
-            APIRequestTeamOccupation api = new APIRequestTeamOccupation();
+            APIRequestGlobalProgress api = new APIRequestGlobalProgress();
             api.execute();
         } else {
             createContentView(_value);
@@ -54,7 +53,7 @@ public class GlobalProgressFragment extends Fragment {
         return _view;
     }
 
-    private String getValueContennt(String item)
+    private String getValueContent(String item)
     {
         final String notSpecified = getResources().getString(R.string.data_not_specified);
         if (item.equals("null") || item.length() == 0)
@@ -66,19 +65,19 @@ public class GlobalProgressFragment extends Fragment {
 
     private void createContentView(List<ContentValues> values)
     {
-        _projectList = (ListView)_view.findViewById(R.id.list_global_progress);
+        ListView projectList = (ListView)_view.findViewById(R.id.list_global_progress);
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
 
         _value = values;
         for (ContentValues item : values){
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put("project_name", getValueContennt(item.get("project_name").toString()));
-            map.put("project_description", "Description : " + getValueContennt(item.get("project_description").toString()));
-            map.put("client_telephone_contact", "Contact Phone : " + getValueContennt(item.get("project_phone").toString()));
-            map.put("client_company", getValueContennt(item.get("project_company").toString()));
-            map.put("client_contact_mail", "Mail : " + getValueContennt(item.get("contact_mail").toString()));
-            map.put("client_contact_facebook", "Facebook : " + getValueContennt(item.get("facebook").toString()));
-            map.put("client_contact_twitter", "Twitter : " + getValueContennt(item.get("twitter").toString()));
+            map.put("project_name", getValueContent(item.get("project_name").toString()));
+            map.put("project_description", "Description : " + getValueContent(item.get("project_description").toString()));
+            map.put("client_telephone_contact", "Contact Phone : " + getValueContent(item.get("project_phone").toString()));
+            map.put("client_company", getValueContent(item.get("project_company").toString()));
+            map.put("client_contact_mail", "Mail : " + getValueContent(item.get("contact_mail").toString()));
+            map.put("client_contact_facebook", "Facebook : " + getValueContent(item.get("facebook").toString()));
+            map.put("client_contact_twitter", "Twitter : " + getValueContent(item.get("twitter").toString()));
             map.put("project_image", String.valueOf(R.mipmap.icon_launcher));
             listMemberTeam.add(map);
         }
@@ -86,52 +85,10 @@ public class GlobalProgressFragment extends Fragment {
         SimpleAdapter teamAdapter = new SimpleAdapter(_view.getContext(), listMemberTeam, R.layout.item_global_progress,
                 new String[] {"project_image", "project_name", "project_description", "client_telephone_contact", "client_company", "client_contact_mail", "client_contact_facebook", "client_contact_twitter"},
                 new int[] {R.id.project_image, R.id.project_name, R.id.project_description, R.id.client_telephone_contact, R.id.client_company, R.id.client_contact_mail, R.id.client_contact_facebook, R.id.client_contact_twitter});
-        _projectList.setAdapter(teamAdapter);
+        projectList.setAdapter(teamAdapter);
     }
 
-    public class APIRequestTeamOccupation extends AsyncTask<String, Void, List<ContentValues>> {
-
-        private static final String _API_URL_BASE = "http://api.grappbox.com/app_dev.php/";
-
-        private List<ContentValues> getTeamOccupation(String result) throws JSONException
-        {
-            final String[] DATA_PROGRESS = {
-                    "project_id",
-                    "project_name",
-                    "project_description",
-                    "project_phone",
-                    "project_company",
-                    "project_logo",
-                    "contact_mail",
-                    "facebook",
-                    "twitter",
-                    "number_finished_tasks",
-                    "number_ongoing_tasks",
-                    "number_tasks",
-                    "number_bugs",
-                    "number_messages"};
-
-            if (result.length() == 0 || result.equals("[]"))
-                return null;
-            JSONObject forecastJSON = new JSONObject(result);
-            List<ContentValues> list = new Vector<ContentValues>();
-            int i = 0;
-            while (1 == 1) {
-                String project = "Project " + String.valueOf(i);
-                if (!forecastJSON.has(project) || forecastJSON.getString(project).length() == 0)
-                    break;
-                ContentValues values = new ContentValues();
-                for (int data = 0; data < DATA_PROGRESS.length; ++data){
-                    if (forecastJSON.getJSONObject(project).getString(DATA_PROGRESS[data]) == null)
-                        values.put(DATA_PROGRESS[data], "");
-                    else
-                        values.put(DATA_PROGRESS[data], forecastJSON.getJSONObject(project).getString(DATA_PROGRESS[data]));
-                }
-                list.add(values);
-                ++i;
-            }
-            return list;
-        }
+    public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<ContentValues>> {
 
         @Override
         protected void onPostExecute(List<ContentValues> result) {
@@ -151,7 +108,7 @@ public class GlobalProgressFragment extends Fragment {
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
 
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                contentAPI = getTeamOccupation(resultAPI);
+                contentAPI = APIConnectAdapter.getInstance().getListGlobalProgress(resultAPI);
 
             } catch (IOException e){
                 Log.e("APIConnection", "Error ", e);

@@ -28,9 +28,8 @@ import java.util.Vector;
 
 public class NextMeetingFragment extends Fragment {
 
-    ListView _TeamList;
-    View _view;
-    List<ContentValues> _value = null;
+    private View _view;
+    private List<ContentValues> _value = null;
 
     public NextMeetingFragment() {
         // Required empty public constructor
@@ -47,7 +46,7 @@ public class NextMeetingFragment extends Fragment {
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_next_meeting, container, false);
         if (_value == null) {
-            APIRequestLogin api = new APIRequestLogin();
+            APIRequestNextMeeting api = new APIRequestNextMeeting();
             api.execute();
         } else {
             createContentView(_value);
@@ -57,7 +56,7 @@ public class NextMeetingFragment extends Fragment {
 
     public void createContentView(List<ContentValues> contentValues)
     {
-        _TeamList = (ListView)_view.findViewById(R.id.list_next_meeting);
+        ListView TeamList = (ListView)_view.findViewById(R.id.list_next_meeting);
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
 
         _value = contentValues;
@@ -76,12 +75,10 @@ public class NextMeetingFragment extends Fragment {
         SimpleAdapter meetingAdapter = new SimpleAdapter(_view.getContext(), listMemberTeam, R.layout.item_next_meeting,
                 new String[] {"meeting_title", "meeting_subject", "date_meeting_start", "place_meeting_start", "date_meeting_end", "place_meeting_end", "logo_project_image_metting"},
                 new int[] {R.id.meeting_title, R.id.meeting_subject, R.id.date_meeting_start, R.id.place_meeting_start, R.id.date_meeting_end, R.id.place_meeting_end, R.id.logo_project_image_metting});
-        _TeamList.setAdapter(meetingAdapter);
+        TeamList.setAdapter(meetingAdapter);
     }
 
-    public class APIRequestLogin extends AsyncTask<String, Void, List<ContentValues>> {
-
-        private static final String _API_URL_BASE = "http://api.grappbox.com/app_dev.php/";
+    public class APIRequestNextMeeting extends AsyncTask<String, Void, List<ContentValues>> {
 
         @Override
         protected void onPostExecute(List<ContentValues> result)
@@ -89,38 +86,6 @@ public class NextMeetingFragment extends Fragment {
             super.onPostExecute(result);
             if (result != null)
                 createContentView(result);
-        }
-
-        private List<ContentValues> getNextMeeting(String result)  throws JSONException
-        {
-            final String[] DATA_MEETING = {"project_name", "project_logo", "event_type", "event_title", "event_description", "event_begin_date", "event_end_date"};
-            final String[] DATA_DATE_EVENT = {"date", "timezone"};
-            final String[] KEY_MEETING = {"project_name", "project_logo", "event_type", "event_title", "event_description", "event_begin_date", "event_begin_place", "event_end_date", "event_end_place"};
-
-
-            JSONObject forecastJSON = new JSONObject(result);
-            List<ContentValues> list = new Vector<ContentValues>();
-            int i = 0;
-            while (1 == 1) {
-                String person = "Meeting " + String.valueOf(i);
-                if (!forecastJSON.has(person) || forecastJSON.getString(person).length() == 0)
-                    break;
-                ContentValues values = new ContentValues();
-                for (int data = 0; data < 5; ++data) {
-                    if (forecastJSON.getJSONObject(person).getString(DATA_MEETING[data]) == null)
-                        values.put(KEY_MEETING[data], "");
-                    else
-                        values.put(KEY_MEETING[data], forecastJSON.getJSONObject(person).getString(DATA_MEETING[data]));
-                }
-                values.put(KEY_MEETING[5], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[5]).getString(DATA_DATE_EVENT[0]));
-                values.put(KEY_MEETING[6], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[5]).getString(DATA_DATE_EVENT[1]));
-                values.put(KEY_MEETING[7], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[6]).getString(DATA_DATE_EVENT[0]));
-                values.put(KEY_MEETING[8], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[6]).getString(DATA_DATE_EVENT[1]));
-
-                list.add(values);
-                ++i;
-            }
-            return list;
         }
 
         @Override
@@ -133,7 +98,7 @@ public class NextMeetingFragment extends Fragment {
                 APIConnectAdapter.getInstance().startConnection("dashboard/getnextmeetings/" + SessionAdapter.getInstance().getToken());
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                listResult = getNextMeeting(resultAPI);
+                listResult = APIConnectAdapter.getInstance().getListNextMeeting(resultAPI);
 
             } catch (IOException e){
                 Log.e("APIConnection", "Error ", e);

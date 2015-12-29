@@ -32,7 +32,24 @@
     <string name="italic_checkbox_label"><i>Italic</i></string>
     <string name="bold_checkbox_label"><b>Bold</b></string>
     <string name="underline_checkbox_label"><u>Underline</u></string>
-    
+
+    <string-array name="list_global_progress">
+        <item>project_id</item>
+        <item>project_name</item>
+        <item>project_description</item>
+        <item>project_phone</item>
+        <item>project_company</item>
+        <item>project_logo</item>
+        <item>contact_mail</item>
+        <item>facebook</item>
+        <item>twitter</item>
+        <item>number_finished_tasks</item>
+        <item>number_ongoing_tasks</item>
+        <item>number_tasks</item>
+        <item>number_bugs</item>
+        <item>number_messages</item>
+    </string-array>
+
     <string-array name="size_text">
         <item>14</item>
         <item>18</item>
@@ -55,4 +72,6 @@
         <item>Next Meeting</item>
         <item>Global Progress</item>
     </string-array>
+
+    <string name="user_profile_title">User Profile</string>
 </resources>

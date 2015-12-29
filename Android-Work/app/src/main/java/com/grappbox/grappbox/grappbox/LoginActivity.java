@@ -1,9 +1,9 @@
 package com.grappbox.grappbox.grappbox;
 
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageInstaller;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,13 +14,7 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,42 +32,17 @@ public class LoginActivity extends AppCompatActivity {
         _login = (EditText) findViewById(R.id.loginInput);
         _passw = (EditText) findViewById(R.id.passwInput);
 
-        APIRequestLogin api = new APIRequestLogin();
+        APIRequestLogin api = new APIRequestLogin(this);
         api.execute(_login.getText().toString(), _passw.getText().toString());
     }
 
-    private void LoginError()
-    {
-        DialogFragment loginError = new LoginErrorAlertFragment();
-        loginError.show(getFragmentManager(), "LoginError");
-    }
+    private class APIRequestLogin extends AsyncTask<String, Void, ContentValues> {
 
-    private void AccesUser()
-    {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
+        private Activity _login;
 
-    public class APIRequestLogin extends AsyncTask<String, Void, ContentValues> {
-
-
-
-        private ContentValues  getLoginDataFromJSON(String resultJSON) throws JSONException
+        public APIRequestLogin(Activity activity)
         {
-            final String DATA_LIST = "user";
-            final String[] DATA_USER = {"id", "firstname", "lastname", "email", "token"};
-
-            ContentValues JSONContent = new ContentValues();
-            JSONObject jsonObject = new JSONObject(resultJSON);
-            JSONObject userData = jsonObject.getJSONObject(DATA_LIST);
-
-            for (String data : DATA_USER) {
-                if (userData.getString(data) == null)
-                    return null;
-                JSONContent.put(data, userData.getString(data));
-            }
-
-            return JSONContent;
+            _login = activity;
         }
 
         @Override
@@ -84,13 +53,15 @@ public class LoginActivity extends AppCompatActivity {
                     || !result.containsKey("firstname")
                     || !result.containsKey("lastname")
                     || !result.containsKey("token")) {
-                LoginError();
+                DialogFragment loginError = new LoginErrorAlertFragment();
+                loginError.show(_login.getFragmentManager(), "LoginError");
             } else {
                 SessionAdapter.getInstance().LogInUser(Float.parseFloat(result.get("id").toString()),
                         result.get("firstname").toString(),
                         result.get("lastname").toString(),
                         result.get("token").toString());
-                AccesUser();
+                Intent intent = new Intent(_login, MainActivity.class);
+                _login.startActivity(intent);
             }
         }
 
@@ -110,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                 APIConnectAdapter.getInstance().sendJSON(JSONParam);
                 Log.v("Test", "Connection");
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                if ((contentAPI = getLoginDataFromJSON(resultAPI)) == null)
+                if ((contentAPI = APIConnectAdapter.getInstance().getLoginData(resultAPI)) == null)
                     return null;
 
             } catch (IOException e){
@@ -124,6 +95,5 @@ public class LoginActivity extends AppCompatActivity {
             }
             return contentAPI;
         }
-
     }
 }

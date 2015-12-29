@@ -51,16 +51,12 @@ public class DrawingView extends View {
     private float touchXStart = 0;
     private float touchYStart = 0;
     private int _ShapeType = 0;
-    private ArrayList<Path> _ListPath = new ArrayList<Path>();
-    private ArrayList<Paint> _ListPaint = new ArrayList<Paint>();
-    private ArrayList<Paint> _ListPaintBorder = new ArrayList<Paint>();
 
-    private ArrayList<Path> _ListPathText = new ArrayList<Path>();
-    private ArrayList<Paint> _ListPaintText = new ArrayList<Paint>();
-    private ArrayList<String> _ListText = new ArrayList<String>();
-    private ArrayList<Rect> _ListTextCoord = new ArrayList<Rect>();
     private boolean _OnDraw = false;
     private Region _clip;
+
+    private ArrayList<DrawingShape> _ListShape = new ArrayList<DrawingShape>();
+    private ArrayList<DrawingText> _ListText = new ArrayList<DrawingText>();
 
     public DrawingView(Context context, AttributeSet attrs)
     {
@@ -109,12 +105,12 @@ public class DrawingView extends View {
         }
         canvas.drawBitmap(_WhiteboardBitmap, 0, 0, _CanvasPaint);
 
-        for (int i = 0; i < _ListPath.size(); ++i){
-            canvas.drawPath(_ListPath.get(i), _ListPaint.get(i));
-            canvas.drawPath(_ListPath.get(i), _ListPaintBorder.get(i));
+        for (DrawingShape shape : _ListShape) {
+            canvas.drawPath(shape.getPath(), shape.getInPaint());
+            canvas.drawPath(shape.getPath(), shape.getOutPaint());
         }
-        for (int i = 0; i < _ListText.size(); ++i){
-            canvas.drawText(_ListText.get(i), _ListTextCoord.get(i).left, _ListTextCoord.get(i).top, _ListPaintText.get(i));
+        for (DrawingText text : _ListText){
+            canvas.drawText(text.getText(), text.getSizeText().left, text.getSizeText().top, text.getPaintText());
         }
 
         if (_ShapeType == 2) {
@@ -135,6 +131,17 @@ public class DrawingView extends View {
         }
 
 
+    }
+
+    private boolean intersect(Path shape)
+    {
+        Region reg1 = new Region();
+        reg1.setPath(shape, _clip);
+        Region reg2 = new Region();
+        reg2.setPath(_DrawPath, _clip);
+        if (!reg1.quickReject(reg2) && reg1.op(reg2, Region.Op.INTERSECT))
+            return true;
+        return false;
     }
 
     @Override
@@ -166,34 +173,18 @@ public class DrawingView extends View {
                 if (_ShapeType == 5) {
                     _DrawPath.reset();
                     drawShape(touchX, touchY);
-                    int i = 0;
-                    for (Iterator<Path> it = _ListPath.iterator(); it.hasNext();) {
-                        Path path = it.next();
-                        Region reg1 = new Region();
-                        reg1.setPath(path, _clip);
-                        Region reg2 = new Region();
-                        reg2.setPath(_DrawPath, _clip);
-                        if (!reg1.quickReject(reg2) && reg1.op(reg2, Region.Op.INTERSECT)) {
-                            _ListPaintBorder.remove(i);
-                            _ListPaint.remove(i);
+                    for (Iterator<DrawingShape> it = _ListShape.iterator(); it.hasNext();) {
+                        DrawingShape shape = it.next();
+                        if (intersect(shape.getPath())) {
                             it.remove();
                         }
-                        ++i;
                     }
-                    i = 0;
-                    for (Iterator<Path> it = _ListPathText.iterator(); it.hasNext();) {
-                        Path path = it.next();
-                        Region reg1 = new Region();
-                        reg1.setPath(path, _clip);
-                        Region reg2 = new Region();
-                        reg2.setPath(_DrawPath, _clip);
-                        if (!reg1.quickReject(reg2) && reg1.op(reg2, Region.Op.INTERSECT)) {
-                            _ListText.remove(i);
-                            _ListPaintText.remove(i);
-                            _ListTextCoord.remove(i);
+                    for (Iterator<DrawingText> it = _ListText.iterator(); it.hasNext();) {
+                        DrawingText text = it.next();
+                        if (intersect(text.getPathText())) {
                             it.remove();
                         }
-                        ++i;
+
                     }
                 }
                 break;
@@ -205,19 +196,19 @@ public class DrawingView extends View {
                 if (_ShapeType == 2) {
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setColor(_PaintColor);
-                    _ListPath.add(new Path(_DrawPath));
-                    _ListPaint.add(new Paint(_DrawPaint));
-                    _ListPaintBorder.add(new Paint(_DrawPaint));
+                    Paint inPaint = new Paint(_DrawPaint);
+                    Paint outPaint = new Paint(_DrawPaint);
+                    _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint));
                 } else if (_ShapeType != 5) {
                     _DrawPath.reset();
                     drawShape(touchX, touchY);
-                    _ListPath.add(new Path(_DrawPath));
                     _DrawPaint.setStyle(Paint.Style.FILL);
                     _DrawPaint.setColor(_PaintColor);
-                    _ListPaint.add(new Paint(_DrawPaint));
+                    Paint inPaint = new Paint(_DrawPaint);
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setColor(_SecondColor);
-                    _ListPaintBorder.add(new Paint(_DrawPaint));
+                    Paint outPaint = new Paint(_DrawPaint);
+                    _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint));
                 }
                 _DrawPath.reset();
 
@@ -393,10 +384,9 @@ public class DrawingView extends View {
                             _DrawText.getTextBounds(message, 0, message.length(), bound);
                             Path textPath = new Path();
                             textPath.addRect(touchXStart, touchYStart, (float) bound.width(), (float) bound.height(), Path.Direction.CCW);
-                            _ListPathText.add(textPath);
-                            _ListPaintText.add(new Paint(_DrawText));
-                            _ListText.add(message);
-                            _ListTextCoord.add(new Rect((int)touchXStart, (int)touchYStart, bound.width(), bound.height()));
+                            Paint textPaint = new Paint(_DrawText);
+                            Rect sizeText = new Rect((int)touchXStart, (int)touchYStart, bound.width(), bound.height());
+                            _ListText.add(new DrawingText(message, textPath, textPaint, sizeText));
                             invalidate();
                         }
                     });

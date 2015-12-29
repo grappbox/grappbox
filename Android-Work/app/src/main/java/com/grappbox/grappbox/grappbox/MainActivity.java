@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity
     private Toolbar _toolbar;
     private FragmentManager _fragmentManager;
     private ActionBarDrawerToggle _actionBarDrawerToggle;
+    private DrawerLayout _Drawer;
 
-    DrawerLayout _Drawer;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -96,6 +96,13 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_profile) {
+            Fragment fragment = new UserProfileFragment();
+            changeToolbarTitle("Profile");
+            _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
             return true;
         }
 

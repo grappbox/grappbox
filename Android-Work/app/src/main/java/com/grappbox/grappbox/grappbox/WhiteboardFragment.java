@@ -25,8 +25,7 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
     private ImageButton _ColorBtn;
     private ImageButton _DrawBtn;
     private ImageButton _EraseButton;
-    private ImageButton _ConfigButton;
-    private View        _view;
+
 
     public WhiteboardFragment() {
     }
@@ -34,19 +33,20 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        _view = inflater.inflate(R.layout.fragment_whiteboard, container, false);
 
-        _DrawView = (DrawingView)_view.findViewById(R.id.drawing);
-        _DrawBtn = (ImageButton)_view.findViewById(R.id.draw_btn);
+        View view = inflater.inflate(R.layout.fragment_whiteboard, container, false);
+
+        _DrawView = (DrawingView)view.findViewById(R.id.drawing);
+        _DrawBtn = (ImageButton)view.findViewById(R.id.draw_btn);
         _DrawBtn.setOnClickListener(this);
-        _ColorBtn = (ImageButton)_view.findViewById(R.id.color_btn);
+        _ColorBtn = (ImageButton)view.findViewById(R.id.color_btn);
         _ColorBtn.setOnClickListener(this);
-        _ColorBorderBtn = (ImageButton)_view.findViewById(R.id.color_border_btn);
+        _ColorBorderBtn = (ImageButton)view.findViewById(R.id.color_border_btn);
         _ColorBorderBtn.setOnClickListener(this);
-        _EraseButton = (ImageButton)_view.findViewById(R.id.erase_btn);
+        _EraseButton = (ImageButton)view.findViewById(R.id.erase_btn);
         _EraseButton.setOnClickListener(this);
 
-        return _view;
+        return view;
     }
 
     @Override

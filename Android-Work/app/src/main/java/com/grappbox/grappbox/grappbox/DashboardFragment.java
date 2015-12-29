@@ -47,29 +47,29 @@ public class DashboardFragment extends Fragment {
     }
 
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private List<Fragment>  _fragments = null;
-        private String tabTitle[] = getResources().getStringArray(R.array.dashboard_tab_bar_title);
+        private List<Fragment>  _Fragments = null;
+        private String _TabTitle[] = getResources().getStringArray(R.array.dashboard_tab_bar_title);
 
         public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
             super(fm);
-            _fragments = fragments;
+            _Fragments = fragments;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return _fragments.get(position);
+            return _Fragments.get(position);
         }
 
         @Override
         public int getCount() {
-            return _fragments.size();
+            return _Fragments.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return tabTitle[position];
+            return _TabTitle[position];
         }
     }
 }
