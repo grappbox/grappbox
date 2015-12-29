@@ -11,7 +11,6 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     _comment = new QTextEdit(isCreation ? tr("Enter the comment here") : "");
 
     _comment->setEnabled(isCreation);
-
     _titleBar->addWidget(_avatar);
     _titleBar->addWidget(_lblName);
 

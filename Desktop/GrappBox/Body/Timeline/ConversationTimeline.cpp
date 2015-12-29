@@ -18,6 +18,7 @@ ConversationTimeline::ConversationTimeline(int id, bool revert, QWidget *parent)
 
     _MainMessage = new MessageTimeLine(1);
     _CommentLayout->addWidget(_MainMessage);
+    _CommentLayout->addWidget(new MessageTimeLine(-1));
     for (int i = 0; i < 2; ++i)
     {
         _CommentMessage[i + 2] = new MessageTimeLine(i + 2);

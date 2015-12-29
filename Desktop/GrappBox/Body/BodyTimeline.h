@@ -2,12 +2,12 @@
 #define BODYTIMELINE_H
 
 #include "IBodyContener.h"
-#include "Body/Timeline/ConversationTimeline.h"
+#include "Body/Timeline/CanvasTimeline.h"
 
-#include <QGridLayout>
 #include <QStackedLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QScrollArea>
-#include <QList>
 
 #include <QWidget>
 #include <QPushButton>
@@ -24,15 +24,25 @@ signals:
     void OnLoadingDone(int);
 
 public slots:
-    void UpdateTimelineAnim(int Id);
+    void OnChange();
 
 private:
-    QStackedLayout     *_MainLayout;
+    QVBoxLayout         *_MainLayout;
+    QStackedLayout      *_MainLayoutTimeline;
+    QHBoxLayout         *_MainLayoutButton;
 
-    QScrollArea         *_SliderTimeline;
-    QWidget         *_TimelineContener;
-    QGridLayout     *_MainTimelineLayout;
-    QList<ConversationTimeline*>    _Conversation;
+    int                 _IDButtonClient;
+    int                 _IDButtonTeam;
+
+    QPushButton         *_ButtonToClient;
+    QPushButton         *_ButtonToTeam;
+
+    QScrollArea         *_ClientSA;
+    QScrollArea         *_TeamSA;
+
+    CanvasTimeline      *_ClientTimeline;
+    CanvasTimeline      *_TeamTimeline;
+
 };
 
 #endif // BODYTIMELINE_H
