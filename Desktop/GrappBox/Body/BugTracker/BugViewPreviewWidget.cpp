@@ -2,6 +2,9 @@
 
 BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : QWidget(parent)
 {
+    QString style;
+    QWidget *widTitleBar = new QWidget();
+    QWidget *widStatusBar = new QWidget();
     _mainLayout = new QVBoxLayout();
     _titleBar = new QHBoxLayout();
     _statusBar = new QHBoxLayout();
@@ -19,7 +22,7 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     if (!isCreation)
     {
         _btnEdit = new QPushButton(tr("Edit"));
-        _titleBar->addWidget(_btnEdit);
+        _statusBar->addWidget(_btnEdit);
         QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditBtnReleased()));
     }
     else
@@ -30,10 +33,42 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
         QObject::connect(_btnComment, SIGNAL(released()), this, SLOT(TriggerCommentBtnReleased()));
     }
 
-    _mainLayout->addLayout(_titleBar);
+    widTitleBar->setLayout(_titleBar);
+    widStatusBar->setLayout(_statusBar);
+    _mainLayout->addWidget(widTitleBar);
     _mainLayout->addWidget(_comment);
-    _mainLayout->addLayout(_statusBar);
+    _mainLayout->addWidget(widStatusBar);
+
     this->setLayout(_mainLayout);
+
+    //Design
+    widTitleBar->setObjectName("TitleBar");
+    widStatusBar->setObjectName("StatusBar");
+    _titleBar->setSpacing(0);
+    _statusBar->setSpacing(0);
+    _mainLayout->setMargin(0);
+    _mainLayout->setSpacing(0);
+    style = "QWidget#TitleBar{"
+            "background-color: #c0392b;"
+            "color: white;"
+            "min-height: 40px;"
+            "max-height: 40px;"
+            "}"
+            "QWidget#StatusBar{"
+            "background-color: #3c3b3b;"
+            "color: white;"
+            "min-height: 40px;"
+            "max-height: 40px;"
+            "}"
+            "QPushButton{"
+            "min-height: 20px;"
+            "max-height: 20px;"
+            "top: -5px;"
+            "}"
+            "QLabel{"
+            "color: white;"
+            "}";
+    this->setStyleSheet(style);
 }
 
 void BugViewPreviewWidget::SetDate(const QDateTime &date)

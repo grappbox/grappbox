@@ -2,7 +2,8 @@
 
 BugListTitleWidget::BugListTitleWidget(QWidget *parent) : QWidget(parent)
 {
-    QLabel *lblTitle = new QLabel(tr("Bug list"));
+    QString style;
+    QLabel *lblTitle = new QLabel("<h2>" + tr("Bug list") + "</h2>");
     _mainLayout = new QHBoxLayout();
     _btnOpenState = new QPushButton(tr("Open"));
     _btnClosedState = new QPushButton(tr("Closed"));
@@ -22,6 +23,53 @@ BugListTitleWidget::BugListTitleWidget(QWidget *parent) : QWidget(parent)
     _mainLayout->addWidget(_btnClosedState);
     _mainLayout->addWidget(_btnNewIssue);
     this->setLayout(_mainLayout);
+
+    //Design
+    _mainLayout->setMargin(0);
+    _btnOpenState->setObjectName("OpenFilter");
+    _btnClosedState->setObjectName("CloseFilter");
+    _btnNewIssue->setObjectName("New");
+    style = "QPushButton#OpenFilter{"
+            "background-color: #595959;"
+            "color : #ffffff;"
+            "border-radius: 2px;"
+            "max-width : 150px;"
+            "max-height : 75px;"
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "}"
+            "QPushButton#CloseFilter{"
+            "background-color: #c0392b;"
+            "color: #ffffff;"
+            "border-radius: 2px;"
+            "max-width : 150px;"
+            "max-height : 75px;"
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "}"
+            "QPushButton#New"
+            "{"
+            "background-color: #70ad47;"
+            "color: #ffffff;"
+            "border-radius: 2px;"
+            "max-width : 150px;"
+            "max-height : 75px;"
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "}"
+            "QPushButton#OpenFilter:checked, QPushButton#OpenFilter:hover"
+            "{"
+            "background-color: #bababa;"
+            "}"
+            "QPushButton#CloseFilter:checked, QPushButton#CloseFilter:hover"
+            "{"
+            "background-color: #d36c63;"
+            "}"
+            "QPushButton#New:hover"
+            "{"
+            "background-color: #9cbc85;"
+            "}";
+    this->setStyleSheet(style);
 }
 
 void BugListTitleWidget::triggerOpenStateButtonToogled(bool toogled)

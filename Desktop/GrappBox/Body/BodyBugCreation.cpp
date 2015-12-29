@@ -2,6 +2,7 @@
 
 BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
 {
+    QString style;
     QWidget *widgetTitleCategory = new QWidget();
     QWidget *widgetTitleAssignee = new QWidget();
     QLabel *lblTitleCategory = new QLabel(tr("Categories"));
@@ -57,6 +58,34 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
     _mainLayout->addWidget(_titleBar);
     _mainLayout->addLayout(_bodyLayout);
     this->setLayout(_mainLayout);
+
+    //Design
+    style = "QPushButton{"
+            "background-color: #595959;"
+            "color : #ffffff;"
+            "border-radius: 2px;"
+            "min-width : 80px;"
+            "min-height : 25px;"
+            "max-width : 80px;"
+            "max-height : 25px;"
+            "font-size: 12px;"
+            "font-weight: bold;"
+            "}"
+            "QPushButton:hover{"
+            "background-color: #bababa;"
+            "}"
+            "QScrollArea{"
+            "border: 0px;"
+            "background-color: #FFFFFF;"
+            "}"
+            "QWidget#Title{"
+            "border-bottom: 1px solid #000000;"
+            "}"
+            "QVBoxLayout#Issues{"
+            "alternate-background-color: #a6a6a6;"
+            "background: #d9d9d9;"
+            "}";
+    this->setStyleSheet(style);
 }
 
 void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject *data)

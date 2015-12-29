@@ -7,6 +7,8 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QJsonObject>
+#include <QFile>
+#include <QDebug>
 
 class BugListElement : public QWidget
 {
@@ -29,6 +31,7 @@ private:
     QHBoxLayout     *_mainLayout;
     QPushButton     *_btnViewBug;
     QPushButton     *_btnCloseBug;
+    static bool     _pair;
 };
 
 #endif // BUGLISTELEMENT_H

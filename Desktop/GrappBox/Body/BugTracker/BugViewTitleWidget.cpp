@@ -2,6 +2,7 @@
 
 BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *parent) : QWidget(parent)
 {
+    QString style;
     _title = new QLineEdit(tr("View Issue : ") + title);
     _bugID = -1;
     _mainLayout = new QHBoxLayout();
@@ -12,7 +13,9 @@ BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *pa
     if (!creation)
     {
         _btnClose = new QPushButton(tr("Close"));
+        _btnClose->setObjectName("Close");
         _btnEdit = new QPushButton(tr("Edit"));
+        _btnEdit->setObjectName("Edit");
         QObject::connect(_btnClose, SIGNAL(released()), this, SLOT(TriggerCloseIssue()));
         QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
         _mainLayout->addWidget(_btnEdit);
@@ -20,6 +23,40 @@ BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *pa
     }
 
     this->setLayout(_mainLayout);
+
+    //Design
+    style = "QLineEdit{"
+            "max-height: 50px;"
+            "}"
+            "QPushButton#Edit{"
+            "background-color: #595959;"
+            "color: #ffffff;"
+            "border-radius: 2px;"
+            "min-width : 75px;"
+            "min-height : 40px;"
+            "max-width : 75px;"
+            "max-height : 40px;"
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "}"
+            "QPushButton#Edit:hover{"
+            "background-color: #bababa;"
+            "}"
+            "QPushButton#Close{"
+            "background-color: #c0392b;"
+            "color: #ffffff;"
+            "border-radius: 2px;"
+            "min-width : 75px;"
+            "min-height : 40px;"
+            "max-width : 75px;"
+            "max-height : 40px;"
+            "font-size: 15px;"
+            "font-weight: bold;"
+            "}"
+            "QPushButton#Close:hover{"
+            "background-color: #d36c63;"
+            "}";
+    this->setStyleSheet(style);
 }
 
 void BugViewTitleWidget::TriggerCloseIssue()
@@ -49,8 +86,9 @@ void BugViewTitleWidget::TriggerEditTitle()
 void BugViewTitleWidget::TriggerSaveTitle()
 {
     _title->setEnabled(false);
-    if (_creation)
+    if (_creation){
         //TODO : Link API
+    }
     _btnEdit->setText(tr("Edit"));
     QObject::disconnect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerSaveTitle()));
     QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));

@@ -2,6 +2,7 @@
 
 BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
 {
+    QString style;
     _mainLayout = new QVBoxLayout();
     _listAdapter = new QVBoxLayout();
     _title = new BugListTitleWidget();
@@ -17,6 +18,23 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
     _mainLayout->addWidget(_title);
     _mainLayout->addWidget(_listScrollView);
     this->setLayout(_mainLayout);
+
+    //Design
+    _listAdapter->setMargin(0);
+    _mainLayout->setMargin(0);
+    style = "*{"
+            "border : 1px;"
+            "border-color : #3c3b3b;"
+            "}"
+            "BugListElement#Pair"
+            "{"
+            "background-color: #F6F6F6;"
+            "}"
+            "BugListElement#Odd"
+            "{"
+            "background-color: #F0F0F0;"
+            "}";
+    this->setStyleSheet(style);
 }
 
 void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)

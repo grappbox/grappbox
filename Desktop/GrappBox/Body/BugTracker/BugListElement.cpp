@@ -1,9 +1,12 @@
 #include "BugListElement.h"
 
+bool BugListElement::_pair = true;
+
 BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTitle, const int bugId, QWidget *parent) : QWidget(parent)
 {
+    QString style;
     _pageManager = pageManager;
-    _title = new QLabel(bugTitle);
+    _title = new QLabel("<h3>" + bugTitle + "</h3>");
     _mainLayout = new QHBoxLayout();
     _btnViewBug = new QPushButton(tr("View"));
     _btnCloseBug = new QPushButton(tr("Close"));
@@ -16,6 +19,49 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
     _mainLayout->addWidget(_btnViewBug);
     _mainLayout->addWidget(_btnCloseBug);
     this->setLayout(_mainLayout);
+
+
+    //Design
+    _mainLayout->setMargin(0);
+    _btnViewBug->setObjectName("Open");
+    _btnCloseBug->setObjectName("Close");
+    if (BugListElement::_pair)
+        this->setObjectName("Pair");
+    else
+        this->setObjectName("Odd");
+    style = "*{"
+            "padding : 2px;"
+            "}";
+    style += "QPushButton#Open {"
+             "background-color : #70ad47;"
+             "color : #ffffff;"
+             "border-radius: 2px;"
+             "padding : 0px;"
+             "font-size : 15px;"
+             "max-width : 150px;"
+             "max-height : 75px;"
+             "}"
+             "QPushButton#Close {"
+             "background-color : #c0392b;"
+             "color : #ffffff;"
+             "border-radius: 2px;"
+             "padding : 0px;"
+             "font-size : 15px;"
+             "max-width : 150px;"
+             "max-height : 75px;"
+             "margin-right : 10px;"
+             "}"
+             "QPushButton#Open:hover"
+             "{"
+             "background-color: #9cbc85;"
+             "}"
+             "QPushButton#Close:hover"
+             "{"
+             "background-color: #d36c63;"
+             "}";
+    this->setStyleSheet(style);
+    this->ensurePolished();
+    BugListElement::_pair = !BugListElement::_pair;
 }
 
 void BugListElement::TriggerBtnView()
