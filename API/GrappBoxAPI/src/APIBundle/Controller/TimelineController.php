@@ -580,8 +580,8 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.9.1/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from message with offset Y
-	* @apiName getComments
+	* @api {get} /V0.9.1/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
+	* @apiName getLastMessages
 	* @apiGroup Timeline
 	* @apiVersion 0.8.2
 	*
