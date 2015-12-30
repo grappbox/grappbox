@@ -358,9 +358,9 @@ cloud_createCloud: #TODO : Delete this route, it's a test route
 
 
 
-timeline_getTimelineType:
-    path:       /timeline/gettimelinetype/{token}/{id}
-    defaults:   { _controller: APIBundle:Timeline:getTimelineType }
+timeline_getTimelines:
+    path:       /timeline/gettimelines/{token}/{id}
+    defaults:   { _controller: APIBundle:Timeline:getTimelines }
     requirements:
         id: \d+
     methods: [GET]
@@ -382,6 +382,20 @@ timeline_editMessage:
 timeline_getMessages:
     path:       /timeline/getmessages/{token}/{id}
     defaults:   { _controller: APIBundle:Timeline:getMessages }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+timeline_getLastMessages:
+    path:       /timeline/getlastmessages/{token}/{id}/{offset}/{limit}
+    defaults:   { _controller: APIBundle:Timeline:getLastMessages }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+timeline_getComments:
+    path:       /timeline/getcomments/{token}/{id}/{messageId}
+    defaults:   { _controller: APIBundle:Timeline:getComments }
     requirements:
         id: \d+
     methods: [GET]

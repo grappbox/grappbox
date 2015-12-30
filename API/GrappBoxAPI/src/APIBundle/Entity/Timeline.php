@@ -50,7 +50,7 @@ class Timeline
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -73,7 +73,7 @@ class Timeline
     /**
      * Get typeId
      *
-     * @return integer 
+     * @return integer
      */
     public function getTypeId()
     {
@@ -96,7 +96,7 @@ class Timeline
     /**
      * Get projectId
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectId()
     {
@@ -119,7 +119,7 @@ class Timeline
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -152,7 +152,7 @@ class Timeline
     /**
      * Get timelineMessages
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTimelineMessages()
     {
@@ -175,10 +175,25 @@ class Timeline
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \APIBundle\Entity\Project
      */
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "typeId" => $this->typeId,
+        "projectId" => $this->projectId,
+        "name" => $this->name
+      );
     }
 }

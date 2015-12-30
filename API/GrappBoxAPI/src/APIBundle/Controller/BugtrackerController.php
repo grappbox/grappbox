@@ -406,7 +406,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"state": {"id": 1, "name": "Waiting"},
 	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}]
 	*			},
-	*		1 : {"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*		1 : {"id": "158","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
 	*			"title": "Bad menu disposition on mobile",
 	*			"description": "the menu is unsusable on mobile",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
