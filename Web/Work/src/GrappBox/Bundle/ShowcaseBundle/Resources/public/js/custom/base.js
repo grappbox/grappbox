@@ -103,6 +103,31 @@ $(document).ready(function() {
     $('#app-modal').on('shown.bs.modal', function () {
         window.location.hash = "#login";
         $('#form_email').focus();
+        getLoginState();
     });
+
+
+    /**
+    * Login modal behavior depending on server cookies
+    *
+    */
+    function getLoginState() {
+        var loginState = Cookies.get("LASTLOGINMESSAGE");
+
+        switch(loginState) {
+            case sha256("_badlogin"):
+            $('#form_alert p').text("Sorry, GrappBox didn't recognize the email you entered.");
+            $('#form_alert').addClass('show');
+            break;
+
+            case sha256("_badpassword"):
+            $('#form_alert p').text("The email and password you entered don't match.");
+            $('#form_alert').addClass('show');
+            break;
+            
+            default:
+            break;
+        }
+    }
 
 });

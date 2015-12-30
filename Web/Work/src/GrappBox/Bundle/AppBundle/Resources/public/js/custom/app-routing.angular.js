@@ -15,6 +15,11 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		controller  : 'dashboardController',
 		caseInsensitiveMatch : true
 	})
+	.when('/login', {
+		resolve: {
+			factory: redirectAfterLogin
+		}
+	})
 	.when('/notifications', {
 		templateUrl : '../resources/pages/notifications.html',
 		controller  : 'grappboxController',
@@ -50,3 +55,14 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 
 	$locationProvider.html5Mode(true);
 }]);
+
+var redirectAfterLogin = function($q, $location) {
+	var deferred = $q.defer();
+
+	$location.path("/");
+	deferred.resolve(true);
+
+	return deferred.promise;
+};
+
+redirectAfterLogin['$inject'] = ['$q', '$location'];

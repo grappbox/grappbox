@@ -257,7 +257,15 @@ footer .copyright a:hover { text-decoration: none; color: #ff5722; }
 
 #app-modal .modal-dialog { margin-top: 15%; }
 #app-modal .modal-content { border-radius: 0; }
-#app-modal .modal-body input { font-size: 16px; margin: 10px 0; padding: 20px 15px; color: #212121; border-radius: 0; }
+
+#app-modal .modal-body input,
+#app-modal .modal-body p { font-size: 16px; line-height: 28px; }
+
+#app-modal .modal-body input,
+#app-modal .modal-body .alert { border-radius: 0; }
+#app-modal .modal-body .alert { display: none; }
+
+#app-modal .modal-body input { margin: 10px 0; padding: 20px 15px; color: #212121; }
 
 #app-modal .modal-footer { border: none; }
 #app-modal .modal-footer .btn-cancel { color: #212121; border-color: #03a9f4; }
