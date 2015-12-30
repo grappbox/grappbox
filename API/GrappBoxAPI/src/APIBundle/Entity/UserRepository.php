@@ -24,7 +24,7 @@ class UserRepository extends EntityRepository
 		foreach ($users as $user) {
 			$id = $user->getId();
 
-			$arr["User ".$i] =array("id" => $id, "first_name" => $firstname, "last_name" => $lastname);
+			$arr["User ".$i] = array("id" => $id, "first_name" => $firstname, "last_name" => $lastname);
 		}
 
 		return $arr;

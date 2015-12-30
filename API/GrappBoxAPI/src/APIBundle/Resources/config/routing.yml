@@ -129,9 +129,21 @@ user_basicInformations:
     defaults:   { _controller: APIBundle:User:basicInformations }
     methods: [GET, PUT]
 
+user_getUserBasicInformations:
+    path:       user/getuserbasicinformations/{token}/{userId}
+    defaults:   { _controller: APIBundle:User:getUserBasicInformations }
+    requirements:
+        userId: \d+
+    methods: [GET]
+
 user_getIdByName:
     path:       user/getidbyname/{token}/{firstname}/{lastname}
     defaults:   { _controller: APIBundle:User:getIdByName }
+    methods: [GET]
+
+user_getIdByEmail:
+    path:       user/getidbyemail/{token}/{email}
+    defaults:   { _controller: APIBundle:User:getIdByEmail }
     methods: [GET]
 
 user_getNextMeetings:

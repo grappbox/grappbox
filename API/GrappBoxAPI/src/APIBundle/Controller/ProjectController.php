@@ -130,6 +130,57 @@ class ProjectController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {post} /V0.9/projects/projectcreation/:token Create a project for the user connected
+	* @apiName projectCreation
+	* @apiGroup Project
+	* @apiVersion 0.9.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {String} name Name of the project
+	* @apiParam {String} [description] Description of the project
+	* @apiParam {Text} [logo] Logo of the project
+	* @apiParam {String} [phone] Phone for the project
+	* @apiParam {String} [company] Company of the project
+	* @apiParam {String} [email] Email for the project
+	* @apiParam {String} [facebook] Facebook of the project
+	* @apiParam {String} [twitter] Twitter of the person
+	* @apiParam {String} [password] Safe password for the project
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"name": "Grappbox",
+	*		"description": "grappbox est un projet de gestion de projets",
+	*		"logo": "10001111001100110010101010"
+	*		"company": "L'oie oppressée"
+	* 	}
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"project_id" : 3
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	*/
 	public function projectCreationAction(Request $request, $token)
 	{
 		$content = $request->getContent();
@@ -276,6 +327,80 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiName updateInformations
 	* @apiGroup Project
 	* @apiVersion 0.8.1
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} [creatorId] Id of the new creator
+	* @apiParam {String} [name] name of the project
+	* @apiParam {String} [description] Description of the project
+	* @apiParam {Text} [logo] Logo of the project
+	* @apiParam {String} [phone] Phone for the project
+	* @apiParam {String} [company] Company of the project
+	* @apiParam {String} [email] Email for the project
+	* @apiParam {String} [facebook] Facebook of the project
+	* @apiParam {String} [twitter] Twitter of the person
+	* @apiParam {String} [password] Safe password for the project
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "nfeq34efbfkqf54",
+	*		"projetcId": 2,
+	*		"creatorId": 18,
+	*		"name": "Grappbox",
+	*		"description": "grappbox est un projet de gestion de projets",
+	*		"logo": "10001111001100110010101010"
+	*		"company": "L'oie oppressée"
+	* 	}
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"Update project informations Success."
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with id X doesn't exist"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {put} /V0.9/projects/updateinformations Update a project informations
+	* @apiName updateInformations
+	* @apiGroup Project
+	* @apiVersion 0.9.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -550,6 +675,63 @@ class ProjectController extends RolesAndTokenVerificationController
 	*     }
   	*
   	*/
+
+  	/**
+  	* @api {get} /V0.9/projects/getinformations/:token/:projectId Get a project basic informations
+  	* @apiName getInformations
+  	* @apiGroup Project
+  	* @apiVersion 0.9.0
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	* @apiParam {Number} projectId Id of the project
+  	*
+  	* @apiSuccess {String} name Name of the project
+  	* @apiSuccess {String} description Description of the project
+  	* @apiSuccess {Text} logo Logo of the project
+  	* @apiSuccess {String} phone Phone number of the project
+  	* @apiSuccess {String} company Company name
+  	* @apiSuccess {String} contact_mail for the project
+  	* @apiSuccess {String} facebook Facebook for the project
+  	* @apiSuccess {String} twitter Twitter for the project
+  	* @apiSuccess {Datetime} creation_date Date of creation of the project
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"name": "Grappbox",
+	*		"description": "Grappbox est un projet",
+	*		"logo": "10100011000011001",
+	*		"phone": "+89130 2145 8795",
+	*		"company": "L'oie Oppressée",
+	*		"contact_mail": "contact@grappbox.com",
+	*		"facebook": "https://facebook.com/Grappbox",
+	*		"twitter": "https://twitter.com/Grappbox",
+	*		"creation_date":
+	*		{
+	*			"date":"2015-10-15 11:00:00",
+	*			"timezone_type":3,
+	*			"timezone":"Europe\/Paris"
+	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+  	*
+  	*/
 	public function getInformationsAction(Request $request, $token, $projectId)
 	{
 		$user = $this->checkToken($token);
@@ -632,6 +814,55 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiName delProject
 	* @apiGroup Project
 	* @apiVersion 0.8.1
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	*   	"token": "aeqf231ced651qcd",
+	*   	"projectId": 1
+	*   }
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*	  "The project will be deleted at 2012-12-21 12:12:12"
+	*	}
+	*
+	* @apiErrorExample Missing Parameter
+	*   HTTP/1.1 400 Bad Request
+	*   {
+	*     "Missing Parameter"
+	*   }
+	* @apiErrorExample Bad Authentication Token
+	*   HTTP/1.1 400 Bad Request
+	*   {
+	*     "Bad Authentication Token"
+	*   }
+	* @apiErrorExample Insufficient User Rights
+	*   HTTP/1.1 403 Forbidden
+	*   {
+	*     "Insufficient User Rights"
+	*   }
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Project not found
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "The project with id X doesn't exist."
+	*     }
+	*
+	*/
+
+	/**
+	* @api {delete} /V0.9/projects/delproject Delete a project 7 days after the call
+	* @apiName delProject
+	* @apiGroup Project
+	* @apiVersion 0.9.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -783,6 +1014,46 @@ class ProjectController extends RolesAndTokenVerificationController
 	*   }
   	*
   	*/
+
+  	/**
+  	* @api {get} /V0.9/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
+  	* @apiName retrieveProject
+  	* @apiGroup Project
+  	* @apiVersion 0.9.0
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	* @apiParam {Number} projectId Id of the project
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"Project X retreived."
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Insufficient User Rights
+	*   HTTP/1.1 403 Forbidden
+	*   {
+	*     "Insufficient User Rights"
+	*   }
+  	*
+  	*/
 	public function retrieveProjectAction(Request $request, $token, $projectId)
 	{
 		$user = $this->checkToken($token);
@@ -862,6 +1133,61 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiName generateCustomerAccess
 	* @apiGroup Project
 	* @apiVersion 0.8.1
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {String} projectId Id of the project
+	* @apiParam {String} name Name of the customer access
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "13cqs43c54vqd3",
+	*		"projectId": 2,
+	*		"name": "access for Toyota"
+	* 	}
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"id": 3
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	* @apiErrorExample Insufficient User Rights
+	*   HTTP/1.1 403 Forbidden
+	*   {
+	*     "Insufficient User Rights"
+	*   }
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {post} /V0.9/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
+	* @apiName generateCustomerAccess
+	* @apiGroup Project
+	* @apiVersion 0.9.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} projectId Id of the project
@@ -1054,6 +1380,53 @@ class ProjectController extends RolesAndTokenVerificationController
 	*     }
   	*
   	*/
+
+  	/**
+  	* @api {get} /V0.9/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
+  	* @apiName getCustomerAccessById
+  	* @apiGroup Project
+  	* @apiVersion 0.9.0
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	* @apiParam {Number} id Id of the customer access
+  	*
+  	* @apiSuccess {String} customer_token Customer access token
+  	* @apiSuccess {Number} project_id Id of the project
+  	* @apiSuccess {String} name Name of the customer access
+  	* @apiSuccess {Datetime} creation_date Date of creation of the customer access
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"customer_token": "dizjflqfq41c645w",
+	*		"project_id": 2,
+	*		"name": "access for X company",
+	*		"creation_date":
+	*		{
+	*			"date":"2015-10-15 11:00:00",
+	*			"timezone_type":3,
+	*			"timezone":"Europe\/Paris"
+	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No custromer access found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The custromer access with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+  	*
+  	*/
 	public function getCustomerAccessByIdAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
@@ -1129,6 +1502,57 @@ class ProjectController extends RolesAndTokenVerificationController
   	* @apiName getCustomerAccessByProject
   	* @apiGroup Project
   	* @apiVersion 0.8.1
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	* @apiParam {Number} projectId Id of the project
+  	*
+  	* @apiSuccess {Object[]} CustomerAccess Array of customer access
+  	* @apiSuccess {String} CustomerAccess.name Name of the customer access
+  	* @apiSuccess {Number} CustomerAccess.id Id of the customer access
+  	* @apiSuccess {String} CustomerAccess.customer_token Customer access token
+  	* @apiSuccess {Datetime} CustomerAccess.creation_date Date of creation of the customer access
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"CustomerAccess 1": 
+  	*		{
+  	*			"name": "access for client X",
+	*			"customer_token": "dizjflqfq41c645w",
+	*			"id": 2,
+	*			"creation_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			}
+	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No custromer access found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The custromer access with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+  	*
+  	*/
+
+  	/**
+  	* @api {get} /V0.9/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
+  	* @apiName getCustomerAccessByProject
+  	* @apiGroup Project
+  	* @apiVersion 0.9.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} projectId Id of the project
@@ -1304,6 +1728,57 @@ class ProjectController extends RolesAndTokenVerificationController
 	*     }
 	*
 	*/
+
+	/**
+	* @api {delete} /V0.9/projects/delcustomeraccess Delete a customer access
+	* @apiName delCustomerAccess
+	* @apiGroup Project
+	* @apiVersion 0.9.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} customerAccessId Id of the customer access
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	*   	"token": "aeqf231ced651qcd",
+	*   	"projectId": 1,
+	*		"customerAccessId": 3
+	*   }
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*	  "Customer access successfully remove!"
+	*	}
+	*
+	* @apiErrorExample Missing Parameter
+	*   HTTP/1.1 400 Bad Request
+	*   {
+	*     "Missing Parameter"
+	*   }
+	* @apiErrorExample Bad Authentication Token
+	*   HTTP/1.1 400 Bad Request
+	*   {
+	*     "Bad Authentication Token"
+	*   }
+	* @apiErrorExample Insufficient User Rights
+	*   HTTP/1.1 403 Forbidden
+	*   {
+	*     "Insufficient User Rights"
+	*   }
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Customer access not found
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "The're no custromer access for the project with id X"
+	*     }
+	*
+	*/
 	public function delCustomerAccessAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -1396,6 +1871,81 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiName addUserToProject
 	* @apiGroup Project
 	* @apiVersion 0.8.1
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {String} userEmail Email of the user
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "nfeq34efbfkqf54",
+	*		"projetcId": 2,
+	*		"userEmail": "toto@titi.com"
+	* 	}
+	*
+	* @apiSuccess user_id Id of the user add
+	* @apiSuccess user_firstname First name of the user add
+	* @apiSuccess user_lastname Last name of the user add
+	* @apiSuccess user_avatar Avatar of the user add
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"user_id": 1,
+	*		"user_firstname": "john",
+	*		"user_lastname": "doe"
+	*		"user_avatar": "DATA"
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	* @apiErrorExample User already in project
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"The user is already in the project"
+	* 	}
+	*
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with with email X@Y.Z doesn't exist"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {put} /V0.9/projects/addusertoproject Add a user to a project
+	* @apiName addUserToProject
+	* @apiGroup Project
+	* @apiVersion 0.9.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -1618,6 +2168,63 @@ class ProjectController extends RolesAndTokenVerificationController
 	*     }
 	*
 	*/
+
+	/**
+	* @api {delete} /V0.9/projects/removeusertoproject Remove a user from the project
+	* @apiName removeUserToProject
+	* @apiGroup Project
+	* @apiVersion 0.9.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} userId Id of the user
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	*   	"token": "aeqf231ced651qcd",
+	*   	"projectId": 1,
+	*		"userId": 3
+	*   }
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*	  "User successfully removed!"
+	*	}
+	*
+	* @apiErrorExample Missing Parameter
+	*   HTTP/1.1 400 Bad Request
+	*   {
+	*     "Missing Parameter"
+	*   }
+	* @apiErrorExample Bad Authentication Token
+	*   HTTP/1.1 400 Bad Request
+	*   {
+	*     "Bad Authentication Token"
+	*   }
+	* @apiErrorExample Insufficient User Rights
+	*   HTTP/1.1 403 Forbidden
+	*   {
+	*     "Insufficient User Rights"
+	*   }
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Project not found
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "The project with id X doesn't exist."
+	*     }
+	*
+	* @apiErrorExample User not found
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "The user with id X doesn't exist."
+	*     }
+	*
+	*/
 	public function removeUserToProjectAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -1699,6 +2306,50 @@ class ProjectController extends RolesAndTokenVerificationController
   	* @apiName getUserToProject
   	* @apiGroup Project
   	* @apiVersion 0.8.1
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	* @apiParam {Number} projectId Id of the project
+  	*
+  	* @apiSuccess {Object[]} User Array of users
+  	* @apiSuccess {Number} id Id of the user
+  	* @apiSuccess {String} first_name First name of the user
+  	* @apiSuccess {String} last_name Last name of the user
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+  	*		"User 1":
+  	*		{
+	*			"id": 3,
+	*			"first_name": "John",
+	*			"last_name": "Doe"
+  	*		}
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+  	*
+  	*/
+
+  	/**
+  	* @api {get} /V0.9/projects/getusertoproject/:token/:projectId Get all the user on a project
+  	* @apiName getUserToProject
+  	* @apiGroup Project
+  	* @apiVersion 0.9.0
   	*
   	* @apiParam {String} token Token of the person connected
   	* @apiParam {Number} projectId Id of the project

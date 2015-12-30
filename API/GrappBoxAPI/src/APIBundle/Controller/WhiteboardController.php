@@ -266,6 +266,65 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} /V0.9/whiteboard/list/:token/:projectId Get the whiteboards' list of a project
+	* @apiName listWhiteboard
+	* @apiGroup Whiteboard
+	* @apiVersion 0.9.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} projectId id of the selected project
+	*
+	* @apiSuccess {Object[]} data list of whiteboards
+	* @apiSuccess {int} data.id whiteboard id
+	* @apiSuccess {int} data.userId user creator id
+	* @apiSuccess {string} data.name whiteboard name
+	* @apiSuccess {int} data.updatorId user creator id
+	* @apiSuccess {DateTime} data.updatedAt update date
+	* @apiSuccess {DateTime} data.createdAt creation date
+	* @apiSuccess {DateTime} data.deledtedAt deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		0: {
+	*			"id": 12,
+	*			"userId": 13,
+	*			"name": "Brainstorming #5",
+	*			"updatorId": 54,
+	*			"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		},
+	*		1: {
+	*			"id": "12",
+	*			"userId": 13,
+	*			"name": "Brainstorming #5",
+	*			"updatorId": 54,
+	*			"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		},
+	*		...
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	*/
 	public function listWhiteboardAction(Request $request, $token, $projectId)
 	{
 		$user = $this->checkToken($token);
@@ -460,6 +519,65 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiName createWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.8.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} projectId id of the selected project
+	* @apiParam {string} whiteboardName name of the new whiteboard
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "f1a3f1ea35fae31f",
+	*		"projectId": 2,
+	*		"whiteboardName": "Brainstorming #5"
+	* 	}
+	*
+	* @apiSuccess {Object} whiteboard the new whiteboard informations
+	* @apiSuccess {int} whiteboard.id whiteboard id
+	* @apiSuccess {int} whiteboard.userId user creator id
+	* @apiSuccess {string} whiteboard.name whiteboard name
+	* @apiSuccess {int} whiteboard.updatorId id of the whiteboard's last updator (creator)
+	* @apiSuccess {DateTime} whiteboard.updatedAt update date (creation date)
+	* @apiSuccess {DateTime} whiteboard.createdAt creation date
+	* @apiSuccess {DateTime} whiteboard.deledtedAt deletion date
+	* @apiSuccess {Object[]} content the new whiteboard content (empty)
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"whiteboard": {
+	*			"id": 12,
+	*			"userId": 13,
+	*			"name": "Brainstorming #5",
+	*			"updator_id": 54,
+	*			"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		},
+	*		"content": [ ]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {post} /V0.9/whiteboard/new Create a new Whiteboard
+	* @apiName createWhiteboard
+	* @apiGroup Whiteboard
+	* @apiVersion 0.9.0
 	*
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} projectId id of the selected project
@@ -851,6 +969,84 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} /V0.9/whiteboard/open/:token/:id Open a whiteboard
+	* @apiName openWhiteboard
+	* @apiGroup Whiteboard
+	* @apiVersion 0.9.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {Number} id Id of the whiteboard
+	*
+	* @apiSuccess {Object} whiteboard the new whiteboard informations
+	* @apiSuccess {int} whiteboard.id whiteboard id
+	* @apiSuccess {int} whiteboard.userId user creator id
+	* @apiSuccess {string} whiteboard.name whiteboard name
+	* @apiSuccess {int} whiteboard.updatorId id of the whiteboard's last updator (creator)
+	* @apiSuccess {DateTime} whiteboard.updatedAt update date (creation date)
+	* @apiSuccess {DateTime} whiteboard.createdAt creation date
+	* @apiSuccess {DateTime} whiteboard.deledtedAt deletion date
+	* @apiSuccess {Object[]} content whiteboard content objects
+	* @apiSuccess {object} content.object object whiteboard's object
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"whiteboard": {
+	*			"id": 12,
+	*			"userId": 13,
+	*			"name": "Brainstorming #5",
+	*			"updator_id": 54,
+	*			"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		},
+	*		"content": [
+	*			{
+  *				"id": 5,
+  *				"whiteboardId": "2",
+  *				"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+  *				"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+  *				"deletedAt": null
+	*			},
+	*			{
+  *				"id": 5,
+  *				"whiteboardId": "2",
+  *				"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+  *				"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+  *				"deletedAt": null
+	*			},
+	*			...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Bad Whiteboard Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Whiteboard Id"
+	* 	}
+	* @apiErrorExample Whiteboard Deleted
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Whiteboard Deleted"
+	* 	}
+	*
+	*/
 	public function openWhiteboardAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
@@ -1020,6 +1216,56 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiName pushDrawOnWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.8.0
+	*
+	* @apiParam {int} id Id of the whiteboard
+	* @apiParam {String} _token client authentification token
+	* @apiParam {String}  modification type of modification ("add" or "del")
+	* @apiParam {int}  object_id IN CASE OF DEL: object's id
+	* @apiParam {object} object IN CASE OF ADD: whiteboard's object (json array)
+	*
+	* @apiSuccess {int} id object id
+	* @apiSuccess {int} whiteboardId whiteboard id
+	* @apiSuccess {String} object the object caracterictics
+	* @apiSuccess {DateTime} createdAt object creation date
+	* @apiSuccess {DateTime} deletedAt object deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+  *		"id": 5,
+  *		"whiteboardId": "2",
+  *		"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+  *		"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+  *		"deletedAt": null
+	*		}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Bad Whiteboard Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Whiteboard Id"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {put} V0.9/whiteboard/pushdraw/:id Push a whiteboard modification
+	* @apiName pushDrawOnWhiteboard
+	* @apiGroup Whiteboard
+	* @apiVersion 0.9.0
 	*
 	* @apiParam {int} id Id of the whiteboard
 	* @apiParam {String} _token client authentification token
@@ -1374,6 +1620,75 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} /V0.9/whiteboard/pulldraw/:id Pull a whiteboard modification
+	* @apiName pullDrawOnWhiteboard
+	* @apiGroup Whiteboard
+	* @apiVersion 0.9.0
+	*
+	* @apiParam {int} id Id of the whiteboard
+	* @apiParam {String} token client authentification token
+	* @apiParam {DateTime} lastUpdate date of the last update
+	*
+	* @apiSuccess {Object[]} add array of the objects added in the whiteboard
+	* @apiSuccess {Object} data.add.object  the objects to add
+	* @apiSuccess {Object[]} delete array of the objects deleted in the whiteboard
+	* @apiSuccess {Object} data.delete.object  the objects to delete
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"add":[
+	*			{
+  *				"id": 5,
+  *				"whiteboardId": "2",
+  *				"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+  *				"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+  *				"deletedAt": null
+	*			},
+	*			{
+  *				"id": 5,
+  *				"whiteboardId": "2",
+  *				"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+  *				"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+  *				"deletedAt": null
+	*			},
+	*			...
+	*		],
+	*		"delete":[
+	*			0: {
+  *				"id": 5,
+  *				"whiteboardId": "2",
+  *				"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+  *				"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+  *				"deletedAt": null
+	*			},
+	*			...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Bad Whiteboard Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Whiteboard Id"
+	* 	}
+	*
+	*/
 	public function pullDrawAction(Request $request, $id)
 	{
 		$content = $request->getContent();
@@ -1541,6 +1856,41 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiName deleteWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.8.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} id Id of the whiteboard
+	*
+	* @apiSuccess {String} data success message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 OK
+	* 	{
+	* 		"Success"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample Bad Whiteboard Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Whiteboard Id"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {delete} /V0.9/whiteboard/delete/:token/:id Delete a Whiteboard
+	* @apiName deleteWhiteboard
+	* @apiGroup Whiteboard
+	* @apiVersion 0.9.0
 	*
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} id Id of the whiteboard
