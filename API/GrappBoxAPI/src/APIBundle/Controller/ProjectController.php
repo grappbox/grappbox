@@ -219,6 +219,8 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->persist($project);
 
+		$project->addUser($user);
+
 		$role = new Role();
 		$role->setName("Admin");
 		$role->setTeamTimeline(1);
@@ -2249,6 +2251,11 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($userToRemove === null)
 		{
 			throw new NotFoundHttpException("The user with id ".$content->userId." doesn't exist");
+		}
+
+		if ($userToRemove === $project->getCreatorUser())
+		{
+			throw new NotFoundHttpException("You can't remove the creator");
 		}
 
 		$project->removeUser($userToRemove);
