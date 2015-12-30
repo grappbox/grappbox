@@ -850,8 +850,8 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.9/user/getidbyemail/:token/:email Request the user Id with the first and last name
-	* @apiName getIdByName
+	* @api {get} /V0.9/user/getidbyemail/:token/:email Request the user Id with the email
+	* @apiName getIdByEmail
 	* @apiGroup Users
 	* @apiVersion 0.9.0
 	*

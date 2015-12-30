@@ -369,7 +369,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.9.2/bugtracker/getcomments/:token/:id/:message Get comments of a ticket
+	* @api {get} /V0.9/bugtracker/getcomments/:token/:id/:message Get comments of a ticket
 	* @apiName getComments
 	* @apiGroup Bugtracker
 	* @apiVersion 0.9.2
