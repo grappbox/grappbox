@@ -508,16 +508,16 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.9.1/timeline/getmessages/:token/:id/:message Get comments of a message
+	* @api {get} /V0.9.1/timeline/getcomments/:token/:id/:message Get comments of a message
 	* @apiName getComments
 	* @apiGroup Timeline
-	* @apiVersion 0.8.2
+	* @apiVersion 0.9.1
 	*
 	* @apiParam {int} id id of the timeline
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} message commented message id
 	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
+	* @apiSuccess {Object[]} messages array of all the message's comments
 	* @apiSuccess {int} messages.id Message id
 	* @apiSuccess {int} messages.userId author id
 	* @apiSuccess {int} messages.timelineId timeline id
@@ -583,7 +583,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @api {get} /V0.9.1/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
 	* @apiName getLastMessages
 	* @apiGroup Timeline
-	* @apiVersion 0.8.2
+	* @apiVersion 0.9.1
 	*
 	* @apiParam {int} id id of the timeline
 	* @apiParam {String} token client authentification token

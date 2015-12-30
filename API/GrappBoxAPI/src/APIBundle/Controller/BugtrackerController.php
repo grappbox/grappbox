@@ -283,7 +283,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.9/bugtracker/gettickets/:token/:id Get Tickets for a project
+	* @api {get} /V0.9/bugtracker/gettickets/:token/:id Get all tickets of a project
 	* @apiName getTickets
 	* @apiGroup Bugtracker
 	* @apiVersion 0.9.0
@@ -352,7 +352,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null ));
+		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => null));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -367,6 +367,175 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		return new JsonResponse($ticketsArray);
 	}
+
+	/**
+	* @api {get} /V0.9.2/bugtracker/getcomments/:token/:id/:message Get comments of a ticket
+	* @apiName getComments
+	* @apiGroup Bugtracker
+	* @apiVersion 0.9.2
+	*
+	* @apiParam {int} id id of the timeline
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} message commented message id
+	*
+	* @apiSuccess {Object[]} tickets array of all the ticket's comments
+	* @apiSuccess {int} tickets.id Message id
+	* @apiSuccess {int} tickets.userId author id
+	* @apiSuccess {int} tickets.timelineId timeline id
+	* @apiSuccess {String} tickets.message Message content
+  * @apiSuccess {int} tickets.parentId parent message id
+	* @apiSuccess {DateTime} tickets.createdAt Message creation date
+	* @apiSuccess {DateTime} tickets.editedAt Message edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Message deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		0 : {"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": 150,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 1, "name": "Waiting"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}]
+	*			},
+	*		1 : {"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": 150,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 2, "name": "In traitment"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}]
+	*			},
+	*		2 : ...
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getCommentsAction(Request $request, $token, $id, $ticketId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => $ticketId));
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$object = $value->objectToArray();
+			$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['tags'] = array();
+			$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
+			foreach ($tags as $key => $tag_value) {
+				$object['tags'][] = $tag_value->objectToArray();
+			}
+			$ticketsArray[] = $object;
+		}
+
+		return new JsonResponse($ticketsArray);
+	}
+
+	/**
+	* @api {get} /V0.9/bugtracker/getlasttickets/:token/:id/:offset/:limit Get X last tickets from offset Y
+	* @apiName getLastTickets
+	* @apiGroup Bugtracker
+	* @apiVersion 0.9.1
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
+	* @apiParam {int} limit number max of tickets to get
+	*
+	* @apiSuccess {int} id Message id
+	* @apiSuccess {Object[]} tickets array of all the tickets' project
+	* @apiSuccess {int} tickets.id Ticket id
+	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {int} tickets.userId assigned user id
+	* @apiSuccess {int} tickets.projectId project id
+	* @apiSuccess {String} tickets.title Ticket title
+	* @apiSuccess {String} tickets.description Ticket content
+	* @apiSuccess {int} tickets.parentId parent Ticket id
+	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
+	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
+	* @apiSuccess {Object} tickets.state Ticket state
+	* @apiSuccess {Object[]} tickets.tags Ticket tags list
+	* @apiSuccess {int} tickets.tags.id Ticket tags id
+	* @apiSuccess {String} tickets.tags.name Ticket tags name
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		0 : {"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 1, "name": "Waiting"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}]
+	*			},
+	*		1 : {"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 2, "name": "In traitment"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}]
+	*			},
+	*		2 : ...
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getLastTicketsAction(Request $request, $token, $id, $offset, $limit)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$object = $value->objectToArray();
+			$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['tags'] = array();
+			$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
+			foreach ($tags as $key => $tag_value) {
+				$object['tags'][] = $tag_value->objectToArray();
+			}
+			$ticketsArray[] = $object;
+		}
+
+		return new JsonResponse($ticketsArray);
+	}
+
 
 	/**
 	* @api {get} /V0.9/bugtracker/getticketsbyuser/:token/:id/:user Get Tickets asssigned to a user for a project

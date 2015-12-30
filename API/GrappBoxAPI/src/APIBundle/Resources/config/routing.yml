@@ -431,6 +431,21 @@ bugtracker_getTickets:
         id: \d+
     methods:  [GET]
 
+bugtracker_getLastTickets:
+    path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
+    defaults:   { _controller: APIBundle:Bugtracker:getLastTickets }
+    requirements:
+        id: \d+
+    methods:  [GET]
+
+
+bugtracker_getComments:
+    path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
+    defaults:   { _controller: APIBundle:Bugtracker:getComments }
+    requirements:
+        id: \d+
+    methods:  [GET]
+
 bugtracker_getTicketsByUser:
     path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
     defaults:   { _controller: APIBundle:Bugtracker:getTicketsByUser }
