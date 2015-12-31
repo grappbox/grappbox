@@ -30,6 +30,7 @@
 
 		{% javascripts
 		'@AppBundle/Resources/public/js/vendor/angular.js'
+		'@AppBundle/Resources/public/js/vendor/angular-cookies.js'
 		'@AppBundle/Resources/public/js/vendor/angular-panhandler.js'
 		'@AppBundle/Resources/public/js/vendor/angular-route.js'
 		'@AppBundle/Resources/public/js/vendor/angular-ui-bootstrap.js'
@@ -85,7 +86,7 @@
 								<a href="settings" title="Manage your account settings" class="btn-right-sweep ng-class:{ 'active' : isActive('/settings') };">
 								<i class="fa fa-gear fa-fw"></i>Settings</a></li>
 							<li>
-								<a href="/" title="Sign out of GrappBox" class="btn-right-sweep">
+								<a href="logout" title="Sign out of GrappBox" class="btn-right-sweep">
 								<i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
 						</ul>
 					</div>

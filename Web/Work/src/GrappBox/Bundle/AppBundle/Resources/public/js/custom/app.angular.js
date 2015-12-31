@@ -10,8 +10,13 @@
 * TWIG template conflict fix
 *
 */
-var app = angular.module('grappbox', ['ngRoute', 'ui.bootstrap', 'panhandler']).config(['$interpolateProvider', function($interpolateProvider) {
+var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'panhandler']).config(['$interpolateProvider', function($interpolateProvider) {
 	$interpolateProvider.startSymbol('{[{').endSymbol('}]}');
+}]);
+
+app.config(['$httpProvider', function($httpProvider) {
+	$httpProvider.defaults.useXDomain = true;
+	delete $httpProvider.defaults.headers.common['X-Requested-With'];
 }]);
 
 app.controller('grappboxController', function() {} );
