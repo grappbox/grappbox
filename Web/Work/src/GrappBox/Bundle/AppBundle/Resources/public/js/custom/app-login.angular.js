@@ -29,11 +29,12 @@ var redirectAfterLogout = function($q, $http, $cookies, $window) {
 	});
 */
 	var cookies = $cookies.getAll();
-	for (var i = 0; i < cookies.length; ++i) {
-		$cookies.remove(cookies[i]);
+
+	for (var key in cookies) {
+		$cookies.remove(key, { path: "/" });
 	};
 
-	$window.location.href="http://www.grappbox.com";
+	$window.location.href = "/";
 	deferred.resolve(true);
 
 	return deferred.promise;

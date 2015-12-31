@@ -27,15 +27,17 @@ app.controller('grappboxController', function() {} );
 * User authentification check
 *
 */
-app.run(['$rootScope', '$location', '$route', '$timeout', function ($rootScope, $location, $route, $timeout) {
-    $rootScope.config = {};
-    $rootScope.config.app_url = $location.url();
-    $rootScope.config.app_path = $location.path();
+app.run(['$rootScope', '$location', '$timeout', '$cookies', '$window', function ($rootScope, $location, $timeout, $cookies, $window) {
     $rootScope.layout = {};
     $rootScope.layout.loading = false;
 
     $rootScope.$on('$routeChangeStart', function () {
         $timeout(function(){ $rootScope.layout.loading = true; });
+
+        if (!$cookies.get('USERTOKEN')) {
+        	$cookies.put('LASTLOGINMESSAGE', sha256("_missing"), { path: "/" });
+        	$window.location.href="/#login";
+        }
     });
     $rootScope.$on('$routeChangeSuccess', function () {
         $timeout(function(){ $rootScope.layout.loading = false; }, 200);
@@ -44,7 +46,7 @@ app.run(['$rootScope', '$location', '$route', '$timeout', function ($rootScope, 
     	console.log("Failed to load page.").
         $rootScope.layout.loading = false;
     });
-});
+}]);
 
 
 /**

@@ -117,8 +117,6 @@ $(document).ready(function() {
     function getLoginState() {
         var loginState = Cookies.get("LASTLOGINMESSAGE");
 
-        console.log(loginState);
-
         if (loginState != undefined && loginState != sha256('_success')) {
             switch(loginState) {
                 case sha256("_badlogin"):
