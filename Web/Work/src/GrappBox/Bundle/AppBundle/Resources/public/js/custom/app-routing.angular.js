@@ -60,35 +60,3 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 
 	$locationProvider.html5Mode(true);
 }]);
-
-var redirectAfterLogin = function($q, $location) {
-	var deferred = $q.defer();
-
-	$location.path("/");
-	deferred.resolve(true);
-
-	return deferred.promise;
-};
-
-redirectAfterLogin['$inject'] = ['$q', '$location'];
-
-var redirectAfterLogout = function($q, $http, $cookies, $window) {
-	var deferred = $q.defer();
-
-/*	$http.get('http://api.grappbox.com/V0.9/accountadministration/logout/:' + $cookies.get('USERTOKEN')).success(function(data) {
-		var cookies = $cookies.getAll();
-		for (var i = 0; i < cookies.length; ++i) {
-			$cookies.remove(cookies[i]);
-		};
-
-		$location.path("http://www.grappbox.com");
-		deferred.resolve(true);
-	});
-*/
-	$window.location.href="http://www.grappbox.com";
-	deferred.resolve(true);
-
-	return deferred.promise;
-};
-
-redirectAfterLogout['$inject'] = ['$q', '$http', '$cookies', '$window'];

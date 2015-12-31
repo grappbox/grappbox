@@ -106,6 +106,9 @@ $(document).ready(function() {
         getLoginState();
     });
 
+    $('#app-modal').on('hide.bs.modal', function () {
+        $('#form_alert').removeClass('show');
+    });
 
     /**
     * Login modal behavior depending on server cookies
@@ -114,19 +117,28 @@ $(document).ready(function() {
     function getLoginState() {
         var loginState = Cookies.get("LASTLOGINMESSAGE");
 
-        switch(loginState) {
-            case sha256("_badlogin"):
-            $('#form_alert p').text("Sorry, GrappBox didn't recognize the email you entered.");
-            $('#form_alert').addClass('show');
-            break;
+        console.log(loginState);
 
-            case sha256("_badpassword"):
-            $('#form_alert p').text("The email and password you entered don't match.");
+        if (loginState != undefined && loginState != sha256('_success')) {
+            switch(loginState) {
+                case sha256("_badlogin"):
+                $('#form_alert p').text("Sorry, GrappBox didn't recognize the email you entered.");
+                break;
+
+                case sha256("_badpassword"):
+                $('#form_alert p').text("The email and password you entered don't match.");
+                break;
+
+                case sha256("_missing"):
+                $('#form_alert p').text("Sign in to continue to Grappbox.");
+                break;
+
+                default:
+                break;
+            }
+
             $('#form_alert').addClass('show');
-            break;
-            
-            default:
-            break;
+            Cookies.remove("LASTLOGINMESSAGE");                
         }
     }
 

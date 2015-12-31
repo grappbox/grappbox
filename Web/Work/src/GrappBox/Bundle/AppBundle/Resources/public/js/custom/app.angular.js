@@ -8,6 +8,7 @@
 * GRAPPBOX
 * APP and main controller definition
 * TWIG template conflict fix
+* Cross-domain calls fix
 *
 */
 var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'panhandler']).config(['$interpolateProvider', function($interpolateProvider) {
@@ -20,6 +21,30 @@ app.config(['$httpProvider', function($httpProvider) {
 }]);
 
 app.controller('grappboxController', function() {} );
+
+
+/**
+* User authentification check
+*
+*/
+app.run(['$rootScope', '$location', '$route', '$timeout', function ($rootScope, $location, $route, $timeout) {
+    $rootScope.config = {};
+    $rootScope.config.app_url = $location.url();
+    $rootScope.config.app_path = $location.path();
+    $rootScope.layout = {};
+    $rootScope.layout.loading = false;
+
+    $rootScope.$on('$routeChangeStart', function () {
+        $timeout(function(){ $rootScope.layout.loading = true; });
+    });
+    $rootScope.$on('$routeChangeSuccess', function () {
+        $timeout(function(){ $rootScope.layout.loading = false; }, 200);
+    });
+    $rootScope.$on('$routeChangeError', function () {
+    	console.log("Failed to load page.").
+        $rootScope.layout.loading = false;
+    });
+});
 
 
 /**
