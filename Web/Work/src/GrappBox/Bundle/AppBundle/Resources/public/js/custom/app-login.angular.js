@@ -19,16 +19,12 @@ var redirectAfterLogin = function($q, $location) {
 
 redirectAfterLogin['$inject'] = ['$q', '$location'];
 
-var redirectAfterLogout = function($q, $http, $cookies, $window) {
+var redirectAfterLogout = function($q, $http, $rootScope, $cookies, $window) {
 	var deferred = $q.defer();
 
-	$http.get('http://api.grappbox.com/app_dev.php/V0.9/accountadministration/logout/' + $cookies.get('USERTOKEN')).success(function(data) {
-		var cookies = $cookies.getAll();
-
-		for (var key in cookies) {
-			$cookies.remove(key, { path: "/" });
-		};
-
+	$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN')).success(function(data) {
+		cleanAllCookies($cookies);
+		
 		$window.location.href = "/";
 		deferred.resolve(true);
 	});
@@ -36,4 +32,4 @@ var redirectAfterLogout = function($q, $http, $cookies, $window) {
 	return deferred.promise;
 };
 
-redirectAfterLogout['$inject'] = ['$q', '$http', '$cookies', '$window'];
+redirectAfterLogout['$inject'] = ['$q', '$http', '$rootScope', '$cookies', '$window'];

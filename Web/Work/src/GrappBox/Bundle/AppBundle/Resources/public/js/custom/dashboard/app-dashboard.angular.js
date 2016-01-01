@@ -8,8 +8,8 @@
 * Dashboard data
 *
 */
-app.controller('dashboardController', ['$scope', '$http', function($scope, $http) {
-	$http.get('../resources/_temp/team-occupation.json').success(function(data) {
+app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookies', function($rootScope, $scope, $http, $cookies) {
+	$http.get($rootScope.apiBaseURL + '/dashboard/getteamoccupation/' + $cookies.get('USERTOKEN')).success(function(data) {
 		$scope.teamOccupationList = data;
 	});
 
