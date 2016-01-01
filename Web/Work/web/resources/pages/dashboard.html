@@ -1,6 +1,6 @@
-<!-- This file is subject to the terms and conditions defined in file 'LICENSE.txt',
-    which is part of the GRAPPBOX source code package.
-    COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
+<!-- This file is subject to the terms and conditions defined in file "LICENSE.txt",
+which is part of the GRAPPBOX source code package.
+COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div class="view view-content" id="dashboard-view" ng-controller="dashboardController">
     <section class="app-section" id="team-occupation">
@@ -10,18 +10,20 @@
                     <!-- grappbox.data : team occupation -->
                     <div class="section-heading app-section-heading">
                         <h2>Team occupation</h2>
-                        <p class="lead">Hold to navigate between your teams' members and see their availability.<br>When a team member is <strong>'Available'</strong>, you can choose tasks to assign to him. A <strong>'Busy'</strong> member cannot accept new tasks until its current task is complete.</p>
+                        <p class="lead">Hold to navigate between your teams members and see their availability.<br>When a team member is <strong>"Available"</strong>, you can choose tasks to assign to him. A <strong>"Busy"</strong> member cannot accept new tasks until its current task is complete.</p>
                     </div>
                     <div class="section-content app-section-content">
-                        <div id="team-occupation-data" panhandler>
-                            <div class="app-data" ng-repeat="member in teamOccupationList">
-                                <ul class="app-data-list each-member-data btn-float">
-                                    <li class="team-member-picture"><img data-ng-src="{[{ member.picture === undefined ? '../resources/images/default-avatar.min.png' : member.picture }]}" height="120" width="120"></li>
-                                    <li class="team-member-name">{[{ member.first_name }]} {[{ member.last_name }]}<br>({[{ member.project_name }]})</li>
-                                    <li class="team-member-status {[{ member.occupation == 'free' ? 'member-available' : 'member-busy' }]}">
-                                        <i class="fa {[{ member.occupation == 'free' ? 'fa-check' : 'fa-times' }]}"></i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}
-                                    </li>
-                                </ul>
+                        <div id="team-occupation-data">
+                            <div ng-hide="teamOccupationList === null" panhandler>
+                                <div class="app-data" ng-repeat="member in teamOccupationList">
+                                    <ul class="app-data-list each-member-data btn-float">
+                                        <li class="team-member-picture"><img data-ng-src="{[{ member.picture === undefined ? '../resources/images/default-avatar.min.png' : member.picture }]}" height="120" width="120"></li>
+                                        <li class="team-member-name">{[{ member.first_name }]} {[{ member.last_name }]}<br>({[{ member.project_name }]})</li>
+                                        <li class="team-member-status {[{ member.occupation == 'free' ? 'member-available' : 'member-busy' }]}">
+                                            <i class="fa {[{ member.occupation == 'free' ? 'fa-check' : 'fa-times' }]}"></i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -40,15 +42,16 @@
                         <p class="lead">Hold to see all future appointments.<br>This list only shows the closest meetings. When one of your appointments is over or cancelled, it'll be automatically deleted from this list.</p>
                     </div>
                     <div class="section-content app-section-content">
-                        <div id="next-meetings-data" panhandler>
-                            <div class="app-data" ng-repeat="meeting in nextMeetingsList">
-                                <ul class="app-data-list each-meeting-data btn-float">
-                                    <li class="meeting-type">{[{ meeting.type }]}</li>
-                                    <li class="meeting-schedule">
-                                        <div class="meeting-schedule-data meeting-date"><i class="fa fa-calendar"></i>{[{ meeting.date }]}</div>
-                                        <div class="meeting-schedule-data meeting-time"><i class="fa fa-clock-o"></i>{[{ meeting.time }]}</div>
-                                    </li>
-                                </ul>
+                        <div id="next-meetings-data">
+                            <div ng-hide="nextMeetingsList === null" panhandler>
+                                <div class="app-data" ng-repeat="meeting in nextMeetingsList">
+                                    <ul class="app-data-list each-meeting-data btn-float">
+                                        <li class="meeting-type">{[{ meeting.event_title }]}<br>(Type: {[{ meeting.event_type }]})</li>
+                                        <li class="meeting-schedule">
+                                        <div class="meeting-schedule-data meeting-date"><i class="fa fa-calendar"></i>From {[{ meeting.event_begin_date.date }]} to {[{ meeting.event_end_date.date }]}</div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>

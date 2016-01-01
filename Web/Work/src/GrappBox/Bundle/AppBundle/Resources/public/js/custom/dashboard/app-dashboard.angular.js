@@ -13,7 +13,7 @@ app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookie
 		$scope.teamOccupationList = data;
 	});
 
-	$http.get('../resources/_temp/next-meetings.json').success(function(data) {
+	$http.get($rootScope.apiBaseURL + '/dashboard/getnextmeetings/' + $cookies.get('USERTOKEN')).success(function(data) {
 		$scope.nextMeetingsList = data;
 	});
 
