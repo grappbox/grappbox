@@ -6,21 +6,17 @@
 
 /**
 * GRAPPBOX
-* SHOWCASE navigation scripts 
+* SHOWCASE scripts definition
 *
 */
 $(document).ready(function() {
 
-    /**
-    * Smooth scroll to anchor
-    *
-    */
+    // Smooth scroll to anchor
     $('a[href^="#"]').on('click', function(clickEvent) {
         clickEvent.preventDefault();
 
         var target = this.hash;
         var $target = $(target);
-
         if (target.length > 1)
             $('html, body').stop().animate({
                 'scrollTop': $target.offset().top - 55
@@ -30,16 +26,12 @@ $(document).ready(function() {
     });
 
 
-    /**
-    * Active links management
-    *
-    */
+    // Active links management
     var linksChildren = $("nav li").children();
     var linksArray = [];
 
     for (var i = 0; i < linksChildren.length; ++i) {
         var eachLink = $(linksChildren[i]).attr('href');
-
         if (eachLink && eachLink.length > 1 && eachLink.indexOf('#') !== -1)
             linksArray.push(eachLink);
     }
@@ -63,7 +55,6 @@ $(document).ready(function() {
         if (windowsPosition + windowsHeight == documentHeight) {
             if (!$("nav li:last-child a").hasClass("active")) {
                 var activeLink = $(".active").attr("href");
-
                 $("a[href='" + activeLink + "']").removeClass("active");
                 $("nav li:last-child a").addClass("active");
             }
@@ -71,13 +62,9 @@ $(document).ready(function() {
     });
 
 
-    /**
-    * Naviagation bar behavior on scroll
-    *
-    */
+    // Naviagation bar behavior on scroll
     $(window).bind('scroll', function() {
         var navigationBarHeight = $(window).height() - 60;
-
         if ($(window).scrollTop() > navigationBarHeight)
             $('nav').addClass('fixed');
         else
@@ -85,10 +72,7 @@ $(document).ready(function() {
     });
 
 
-    /**
-    * Login modal behavior depending on URL parameters
-    *
-    */
+    // Login modal behavior depending on URL parameters
     function matchLoginModalURL() {
         if (window.location.hash == "#login")
             $('#app-modal').modal('show');
@@ -105,15 +89,12 @@ $(document).ready(function() {
         $('#form_email').focus();
         getLoginState();
     });
-
     $('#app-modal').on('hide.bs.modal', function () {
         $('#form_alert').removeClass('show');
     });
 
-    /**
-    * Login modal behavior depending on server cookies
-    *
-    */
+
+    // Login modal behavior depending on server cookies
     function getLoginState() {
         var loginState = Cookies.get("LASTLOGINMESSAGE");
 
@@ -134,7 +115,6 @@ $(document).ready(function() {
                 default:
                 break;
             }
-
             $('#form_alert').addClass('show');
             Cookies.remove("LASTLOGINMESSAGE");                
         }
