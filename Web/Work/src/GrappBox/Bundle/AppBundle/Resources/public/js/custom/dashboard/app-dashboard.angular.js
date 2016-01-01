@@ -17,7 +17,7 @@ app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookie
 		$scope.nextMeetingsList = data;
 	});
 
-	$http.get('../resources/_temp/global-progress.json').success(function(data) {
+	$http.get($rootScope.apiBaseURL + '/dashboard/getprojectsglobalprogress/' + $cookies.get('USERTOKEN')).success(function(data) {
 		$scope.globalProgressList = data;
 	});
 }]);

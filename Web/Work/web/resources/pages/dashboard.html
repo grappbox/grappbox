@@ -48,7 +48,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                     <ul class="app-data-list each-meeting-data btn-float">
                                         <li class="meeting-type">{[{ meeting.event_title }]}<br>(Type: {[{ meeting.event_type }]})</li>
                                         <li class="meeting-schedule">
-                                        <div class="meeting-schedule-data meeting-date"><i class="fa fa-calendar"></i>From {[{ meeting.event_begin_date.date }]} to {[{ meeting.event_end_date.date }]}</div>
+                                            <div class="meeting-schedule-data meeting-date"><i class="fa fa-calendar"></i>From {[{ meeting.event_begin_date.date }]} to {[{ meeting.event_end_date.date }]}</div>
                                         </li>
                                     </ul>
                                 </div>
@@ -70,25 +70,34 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         <p class="lead">Hold to navigate between your projects and see information about them.<br>You can also check your remaining tasks for each project, all your notifications (if any), and your messages.</p>
                     </div>
                     <div class="section-content app-section-content">
-                        <div id="global-progress-data" panhandler>
-                            <div class="app-data" ng-repeat="progress in globalProgressList">
-                                <ul class="app-data-list each-progress-data btn-float">
-                                    <li class="project-picture"><img data-ng-src="{[{ progress.picture }]}" height="120²" width="120²"></li>
-                                    <li class="project-details">
-                                        <div class="project-name">{[{ progress.project }]}</div>
-                                        <div class="project-client">{[{ progress.client }]}</div>
-                                    </li>
-                                    <li class="client-details">
-                                        <div class="client-phone">{[{ progress.phone }]}</div>
-                                        <div class="client-mail">{[{ progress.email }]}</div>
-                                    </li>
-                                    <li class="clearfix"></li>
-                                    <li class="progress-details">
-                                        <div class="progress-done"><i class="fa fa-list-ol"></i>{[{ progress.done }]} / {[{ progress.remaining }]}</div>
-                                        <div class="progress-problems"><i class="fa fa-exclamation-circle"></i>{[{ progress.problems }]}</div>
-                                        <div class="unread-messages"><i class="fa fa-envelope-o"></i>{[{ progress.unread }]}</div>
-                                    </li>
-                                </ul>
+                        <div id="global-progress-data">
+                            <div ng-hide="globalProgressList === null" panhandler>
+                                <div class="app-data" ng-repeat="progress in globalProgressList">
+                                    <ul class="app-data-list each-progress-data btn-float">
+                                        <li class="project-picture" ng-show="progress.project_logo == null">
+                                            <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                                        </li>
+                                        <li class="project-picture" ng-show="progress.project_logo != null">
+                                            <img data-ng-src="data:image/png;base64,{[{ progress.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                                        </li>
+                                        <li class="project-details">
+                                            <div class="project-name">{[{ progress.project_name }]}</div>
+                                            <div class="project-client">{[{ progress.project_company }]}</div>
+                                            <div class="clearfix"></div>
+                                        </li>
+                                        <li class="client-details">
+                                            <div class="client-phone">{[{ progress.project_phone }]}</div>
+                                            <div class="client-mail">{[{ progress.contact_mail }]}</div>
+                                            <div class="clearfix"></div>
+                                        </li>
+                                        <li class="clearfix"></li>
+                                        <li class="progress-details">
+                                            <div class="progress-done"><i class="fa fa-list-ol"></i>{[{ progress.number_finished_tasks }]} / {[{ progress.number_ongoing_tasks }]}</div>
+                                            <div class="progress-problems"><i class="fa fa-exclamation-circle"></i>{[{ progress.number_bugs }]}</div>
+                                            <div class="unread-messages"><i class="fa fa-envelope-o"></i>{[{ progress.number_messages }]}</div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -135,9 +135,9 @@ footer .app-footer { margin: 0 0 0 250px; }
 #dashboard-view .each-progress-data .clearfix { background: #607d8b; }
 #dashboard-view .each-progress-data .project-picture { float: left; padding: 10px; background: #607d8b; }
 #dashboard-view .each-progress-data .project-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-#dashboard-view .each-progress-data .project-details { float: left; padding: 15px 0 0 20px; text-align: left; background: #607d8b; }
+#dashboard-view .each-progress-data .project-details { float: left; min-width: 50%; padding: 15px 0 0 10px; text-align: left; background: #607d8b; }
 #dashboard-view .each-progress-data .project-details .project-name { font-size: 20px; }
-#dashboard-view .each-progress-data .client-details { float: left; padding: 20px 0 0 20px; text-align: left; background: #607d8b; }
+#dashboard-view .each-progress-data .client-details { float: left; min-width: 50%; padding: 10px 0 0 10px; text-align: left; background: #607d8b; }
 #dashboard-view .each-progress-data .progress-details { padding: 15px 0; background: #0097a7; }
 #dashboard-view .each-progress-data .progress-details div { display: inline-block; padding: 0 40px 0 0; }
 #dashboard-view .each-progress-data .progress-details div:last-child { display: inline-block; padding: 0; }
