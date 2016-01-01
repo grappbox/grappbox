@@ -5,10 +5,10 @@
 */
 
 /**
-* Whiteboard controller: renderer factory
+* Controller definition
+* APP whiteboard data (factory)
 *
 */
-
 app.factory("whiteboardRendererFactory", function() {
   var canvasContext;
   var canvasBuffer = [];
@@ -21,7 +21,7 @@ app.factory("whiteboardRendererFactory", function() {
 
   var canvas = document.getElementById("whiteboard-canvas");
 
-  /* Free-hand drawing */
+  // Free-hand drawing
   var renderPencil = function(data) {
     if (data.drawColor != "none") {
       canvasContext.beginPath();
@@ -33,12 +33,11 @@ app.factory("whiteboardRendererFactory", function() {
       for (var i = 0; i < data.points.length; ++i) {
         canvasContext.lineTo(data.points[i].x, data.points[i].y);
       }
-
       canvasContext.stroke();
     }
   };
 
-  /* Line */
+  // Line
   var renderLine = function(data) {
     if (data.drawColor != "none") {
       canvasContext.beginPath();
@@ -51,7 +50,7 @@ app.factory("whiteboardRendererFactory", function() {
     }
   };
 
-  /* Rectangle */
+  // Rectangle
   var renderRectangle = function(data) {
     canvasContext.beginPath();
     canvasContext.rect(data.startX, data.startY, data.fillWidth, data.fillHeight);
@@ -67,7 +66,7 @@ app.factory("whiteboardRendererFactory", function() {
     }
   };
 
-  /* Circle */
+  // Circle
   var renderCircle = function(data) {
     canvasContext.beginPath();
     canvasContext.arc(data.startX, data.startY, data.fillRadius, 0, Math.PI * 2, false);
@@ -83,7 +82,7 @@ app.factory("whiteboardRendererFactory", function() {
     }
   };
 
-  /* Text */
+  // Text
   var renderText = function(data) {
     if (data.drawColor != "none") {
       canvasContext.beginPath();
@@ -100,20 +99,20 @@ app.factory("whiteboardRendererFactory", function() {
     for (var i = 0; i < canvasBuffer.length; ++i) {
       switch (canvasBuffer[i].tool) {
         case "pencil":
-          renderPencil(canvasBuffer[i]);
-          break;
+        renderPencil(canvasBuffer[i]);
+        break;
         case "rectangle":
-          renderRectangle(canvasBuffer[i]);
-          break;
+        renderRectangle(canvasBuffer[i]);
+        break;
         case "circle":
-          renderCircle(canvasBuffer[i]);
-          break;
+        renderCircle(canvasBuffer[i]);
+        break;
         case "line":
-          renderLine(canvasBuffer[i]);
-          break;
+        renderLine(canvasBuffer[i]);
+        break;
         case "text":
-          renderText(canvasBuffer[i]);
-          break;
+        renderText(canvasBuffer[i]);
+        break;
       }
     }
   };
@@ -130,20 +129,20 @@ app.factory("whiteboardRendererFactory", function() {
     render: function(data) {
       switch (data.tool) {
         case "pencil":
-          renderPencil(data);
-          break;
+        renderPencil(data);
+        break;
         case "rectangle":
-          renderRectangle(data);
-          break;
+        renderRectangle(data);
+        break;
         case "circle":
-          renderCircle(data);
-          break;
+        renderCircle(data);
+        break;
         case "line":
-          renderLine(data);
-          break;
+        renderLine(data);
+        break;
         case "text":
-          renderText(data);
-          break;
+        renderText(data);
+        break;
       }
     },
 

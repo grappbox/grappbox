@@ -30,39 +30,39 @@ app.controller('grappboxController', function() {} );
 */
 app.run(['$rootScope', '$location', '$timeout', '$cookies', '$http', '$window', function($rootScope, $location, $timeout, $cookies, $http, $window) {
 	// ROOTSCOPE variables
-    $rootScope.layout = {};
-    $rootScope.layout.loading = false;
+	$rootScope.layout = {};
+	$rootScope.layout.loading = false;
 
-    $rootScope.apiVersion = 'V0.9'
-    $rootScope.apiBaseURL = 'http://api.grappbox.com/app_dev.php/' + $rootScope.apiVersion;
+	$rootScope.apiVersion = 'V0.9'
+	$rootScope.apiBaseURL = 'http://api.grappbox.com/app_dev.php/' + $rootScope.apiVersion;
 
-    // On route change (start)
-    $rootScope.$on('$routeChangeStart', function() {
-        $timeout(function(){ $rootScope.layout.loading = true; });
+	// On route change (start)
+	$rootScope.$on('$routeChangeStart', function() {
+		$timeout(function(){ $rootScope.layout.loading = true; });
 
-        if (!$cookies.get('USERTOKEN') || !$cookies.get('LASTLOGINMESSAGE')) {
-        	if ($cookies.get('USERTOKEN'))
-        		$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN'));
-        	cleanAllCookies($cookies);
-        	$cookies.put('LASTLOGINMESSAGE', sha256('_missing'), { path: '/' });
-        	$window.location.href='/#login';
-        }
-    });
-    // On route change (success)
-    $rootScope.$on('$routeChangeSuccess', function () {
-        $timeout(function(){ $rootScope.layout.loading = false; }, 200);
-    });
-    // On route change (error)
-    $rootScope.$on('$routeChangeError', function () {
-    	console.log('Failed to load page.').
-        $rootScope.layout.loading = false;
-    });
+		if (!$cookies.get('USERTOKEN') || !$cookies.get('LASTLOGINMESSAGE')) {
+			if ($cookies.get('USERTOKEN'))
+				$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN'));
+			cleanAllCookies($cookies);
+			$cookies.put('LASTLOGINMESSAGE', sha256('_missing'), { path: '/' });
+			$window.location.href='/#login';
+		}
+	});
+	// On route change (success)
+	$rootScope.$on('$routeChangeSuccess', function () {
+		$timeout(function(){ $rootScope.layout.loading = false; }, 200);
+	});
+	// On route change (error)
+	$rootScope.$on('$routeChangeError', function () {
+		console.log('Failed to load page.').
+		$rootScope.layout.loading = false;
+	});
 }]);
 
 
 /**
 * Controller definition
-* APP Sidebar
+* APP sidebar
 *
 */
 app.controller('sidebarController', ['$scope', '$location', function($scope, $location) {

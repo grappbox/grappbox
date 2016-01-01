@@ -6,17 +6,13 @@
 
 /**
 * GRAPPBOX
-* APP navigation scripts 
-*
-*/
-
-/**
-* Auto page height (depending on current content)
+* APP scripts definition
 *
 */
 $(function() {
-	$(window).bind("load resize", function() {
 
+	// Auto page height (depending on current content)
+	$(window).bind("load resize", function() {
 		newWidth = (this.window.innernewWidth > 0) ? this.window.innernewWidth : this.screen.newWidth;
 		offsetTop = 60;
 		offsetBottom = 123;
@@ -30,10 +26,8 @@ $(function() {
 
 		newHeight = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
 		newHeight = newHeight - offsetTop - offsetBottom;
-
 		if (newHeight < 1)
 			newHeight = 1;
-
 		if (newHeight > offsetTop)
 			$("#page-wrapper").css("min-height", newHeight + "px");
 	});

@@ -5,12 +5,12 @@
 */
 
 /**
-* Redirection rules depending on cookies/authentification state
+* Routine definition
+* Redirect user after successful login
 *
 */
 var redirectAfterLogin = function($q, $location) {
 	var deferred = $q.defer();
-
 	$location.path("/");
 	deferred.resolve(true);
 
@@ -19,12 +19,17 @@ var redirectAfterLogin = function($q, $location) {
 
 redirectAfterLogin['$inject'] = ['$q', '$location'];
 
+
+/**
+* Routine definition
+* Redirect user after successful logout
+*
+*/
 var redirectAfterLogout = function($q, $http, $rootScope, $cookies, $window) {
 	var deferred = $q.defer();
 
 	$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN')).success(function(data) {
 		cleanAllCookies($cookies);
-		
 		$window.location.href = "/";
 		deferred.resolve(true);
 	});

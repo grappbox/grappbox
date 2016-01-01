@@ -5,10 +5,10 @@
 */
 
 /**
-* User profile data
+* Controller definition
+* APP user data
 *
 */
-
 app.controller('userProfileController', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
 	$scope.alertList = [];
 	$scope.alertList.push({

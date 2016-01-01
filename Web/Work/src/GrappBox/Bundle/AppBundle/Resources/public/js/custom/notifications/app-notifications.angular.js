@@ -5,10 +5,10 @@
 */
 
 /**
-* Notifications list data
+* Controller definition
+* APP notifications
 *
 */
-
 app.controller('notificationsController', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
 	$scope.alertList = [];
 	$scope.alertList.push({

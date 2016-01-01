@@ -5,7 +5,8 @@
 */
 
 /**
-* Dashboard data
+* Controller definition
+* APP dashboard
 *
 */
 app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookies', function($rootScope, $scope, $http, $cookies) {

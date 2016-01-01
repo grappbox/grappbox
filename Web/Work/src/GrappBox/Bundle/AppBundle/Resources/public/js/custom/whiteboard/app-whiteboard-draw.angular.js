@@ -5,19 +5,18 @@
 */
 
 /**
-* Whiteboard controller
+* Controller definition
+* APP whiteboard data (draw)
 *
 */
-
 app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whiteboardRendererFactory', function($scope, $http, $routeParams, whiteboardRendererFactory) {
   $scope.whiteboardID = $routeParams.id;
-
+  
   $http.get('../resources/_temp/whiteboards.json').success(function(data) {
     $scope.whiteboardsListContent = data;
   });
 
-
-  /* Scope variables default values */
+  // Scope variables default values
   $scope.whiteboardTools = "pencil";
 
   $scope.color = {
@@ -76,7 +75,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   };
 
 
-  /* Canvas-related variables */
+  // Canvas-related variables
   var canvas;
   var canvasData;
   var canvasContext;
@@ -90,7 +89,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   var renderPath;
 
 
-  /* Create/compile canvasData to render */
+  // Create/compile canvasData to render
   var createRenderObject = function() {
     canvasData = {};
 
@@ -162,7 +161,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     return canvasData;
   };
 
-  /* Render/display canvasData using whiteboardRendererFactory */
+  // Render/display canvasData using whiteboardRendererFactory
   var renderPath = function(data) {
     if ($scope.whiteboardTools === "rectangle" || $scope.whiteboardTools === "line" || $scope.whiteboardTools === "circle")
       whiteboardRendererFactory.renderAll();
@@ -170,7 +169,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
   };
 
 
-  /* Initialize whiteboard canvas and controls */
+  // Initialize whiteboard canvas and controls
   $scope.initializeWhiteboardControls = function() {
 
     canvas = document.getElementById("whiteboard-canvas");
@@ -183,7 +182,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     mouseStartPosition = { x: 0, y: 0 };
     mouseEndPosition = { x: 0, y: 0 };
 
-    /* Canvas default callback: mouse pressed */
+    // Canvas default callback: mouse pressed
     canvas.onmousedown = function(eventPosition) {
       var canvasData;
 
@@ -204,7 +203,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       renderPath(canvasData);
     };
 
-    /* Canvas default callback: mouse drag */
+    // Canvas default callback: mouse drag
     canvas.onmousemove = function(eventPosition) {
       var x;
       var y;
@@ -226,7 +225,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
       }
     };
 
-    /* Canvas default callback: mouse release */
+    // Canvas default callback: mouse release
     canvas.onmouseup = function() {
       var canvasData;
 
@@ -242,7 +241,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     };
   };
 
-  /* Handle 'Undo' button */
+  // Handle 'Undo' button
   $scope.undoLastCanvasAction = function() {
     whiteboardRendererFactory.undoLastCanvasAction();
     whiteboardRendererFactory.renderAll();
@@ -254,7 +253,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'whit
     mouseEndPosition.y = 0;
   };
 
-  /* Handle 'Expand' button */
+  // Handle 'Expand' button
   $scope.expandWhiteboard = function() {
     angular.element(document.querySelector('#app-wrapper')).toggleClass('hide-menu');
   };

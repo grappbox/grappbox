@@ -5,7 +5,8 @@
 */
 
 /**
-* Whiteboard list data
+* Controller definition
+* APP whiteboard list
 *
 */
 app.controller('whiteboardListController', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
@@ -26,6 +27,12 @@ app.controller('whiteboardListController', ['$scope', '$routeParams', '$http', f
   });
 }]);
 
+
+/**
+* Routine definition
+* Check if requested whiteboard ID is accessible
+*
+*/
 var isWhiteboardAccessible = function($http, $route, $q, $location) {
   var whiteboardsListContent = "";
   var isAccessible = false;

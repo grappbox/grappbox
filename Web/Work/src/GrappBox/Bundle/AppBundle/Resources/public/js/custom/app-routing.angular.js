@@ -5,7 +5,8 @@
 */
 
 /**
-* Global routing
+* GRAPPBOX
+* APP global routing definition
 *
 */
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
