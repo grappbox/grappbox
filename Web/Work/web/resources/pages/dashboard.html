@@ -14,7 +14,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                     <div class="section-content app-section-content">
                         <div id="team-occupation-data">
-                            <div ng-hide="teamOccupationList === null" panhandler>
+                            <div ng-show="teamOccupationList.length !== 0" panhandler>
                                 <div class="app-data" ng-repeat="member in teamOccupationList">
                                     <ul class="app-data-list each-member-data btn-float">
                                         <li class="team-member-picture"><img data-ng-src="{[{ member.picture === undefined ? '../resources/images/default-avatar.min.png' : member.picture }]}" height="120" width="120"></li>
@@ -23,6 +23,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                             <i class="fa {[{ member.occupation == 'free' ? 'fa-check' : 'fa-times' }]}"></i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}
                                         </li>
                                     </ul>
+                                </div>
+                            </div>
+
+                            <div ng-show="teamOccupationList.length === 0">
+                                <div class="app-data empty">
+                                    <p><i class="fa fa-frown-o"></i>You don't have any collaborator.</p>
                                 </div>
                             </div>
                         </div>
@@ -43,7 +49,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                     <div class="section-content app-section-content">
                         <div id="next-meetings-data">
-                            <div ng-hide="nextMeetingsList === null" panhandler>
+                            <div ng-show="nextMeetingsList.length !== 0" panhandler>
                                 <div class="app-data" ng-repeat="meeting in nextMeetingsList">
                                     <ul class="app-data-list each-meeting-data btn-float">
                                         <li class="meeting-type">{[{ meeting.event_title }]}<br>(Type: {[{ meeting.event_type }]})</li>
@@ -51,6 +57,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                             <div class="meeting-schedule-data meeting-date"><i class="fa fa-calendar"></i>From {[{ meeting.event_begin_date.date }]} to {[{ meeting.event_end_date.date }]}</div>
                                         </li>
                                     </ul>
+                                </div>
+                            </div>
+
+                            <div ng-show="nextMeetingsList.length === 0">
+                                <div class="app-data empty">
+                                    <p><i class="fa fa-frown-o"></i>You don't have any meeting.</p>
                                 </div>
                             </div>
                         </div>
@@ -71,13 +83,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                     <div class="section-content app-section-content">
                         <div id="global-progress-data">
-                            <div ng-hide="globalProgressList === null" panhandler>
+                            <div ng-show="globalProgressList.length !== 0" panhandler>
                                 <div class="app-data" ng-repeat="progress in globalProgressList">
                                     <ul class="app-data-list each-progress-data btn-float">
-                                        <li class="project-picture" ng-show="progress.project_logo == null">
+                                        <li class="project-picture" ng-show="progress.project_logo === null">
                                             <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
-                                        <li class="project-picture" ng-show="progress.project_logo != null">
+                                        <li class="project-picture" ng-show="progress.project_logo !== null">
                                             <img data-ng-src="data:image/png;base64,{[{ progress.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
                                         <li class="project-details">
@@ -97,6 +109,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                             <div class="unread-messages"><i class="fa fa-envelope-o"></i>{[{ progress.number_messages }]}</div>
                                         </li>
                                     </ul>
+                                </div>
+                            </div>
+
+                            <div ng-show="globalProgressList.length === 0">
+                                <div class="app-data empty">
+                                    <p><i class="fa fa-frown-o"></i>You don't have any project.</p>
                                 </div>
                             </div>
                         </div>
