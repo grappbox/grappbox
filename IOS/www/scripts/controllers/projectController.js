@@ -5,7 +5,7 @@
 angular.module('GrappBox.controllers')
 
 .controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $http,
-    ProjectView, AddUserToProject, UsersOnProjectList, GenCustomerAccess, GetCustomersAccessOnProject) {
+    ProjectView, AddUserToProject, UsersOnProjectList, GenCustomerAccess, GetCustomersAccessOnProject, RetreiveProject) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -308,6 +308,31 @@ angular.module('GrappBox.controllers')
             console.error('token: ' + $rootScope.userDatas.token + ', projectId: ' + $scope.projectId);
             console.error(error);
         })
+    }
+
+    /*
+    ** Get customers accesses on project
+    ** Method: GET
+    */
+    $scope.RetreiveProject = function () {
+        RetreiveProject.get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Retreive project successful !');
+                $scope.customersList = data;
+            })
+            .then(function () {
+                $scope.GetProjectInfo();
+            })
+            .then(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+            })
+            .catch(function (error) {
+                console.error('Retreive project failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
     }
 })
 
