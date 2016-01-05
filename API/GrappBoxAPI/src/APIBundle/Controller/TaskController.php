@@ -1261,7 +1261,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.11/tasks/removetagtotask/:token/:taskId/:tagId Remove a user to a task
+	* @api {delete} /V0.11/tasks/removetagtotask/:token/:taskId/:tagId Remove a tag to a task
 	* @apiName removeTagToTask
 	* @apiGroup Task
 	* @apiVersion 0.11.0
@@ -1376,16 +1376,16 @@ class TaskController extends RolesAndTokenVerificationController
   	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
   	* @apiSuccess {Datetime} Task.started_at Date of start of the task
   	* @apiSuccess {Object[]} Task.creator Creator informations
-  	* @apiSuccess {Number} creator.id Id of the creator
-  	* @apiSuccess {String} creator.first_name Frist name of the creator
-  	* @apiSuccess {String} creator.last_name Last name of the creator
+  	* @apiSuccess {Number} Task.creator.id Id of the creator
+  	* @apiSuccess {String} Task.creator.first_name Frist name of the creator
+  	* @apiSuccess {String} Task.creator.last_name Last name of the creator
   	* @apiSuccess {Object[]} Task.users_assigned Array of users assigned to the task
-  	* @apiSuccess {Number} users_assigned.id Id of the user assigned
-  	* @apiSuccess {String} users_assigned.first_name Frist name of the user assigned
-  	* @apiSuccess {String} users_assigned.last_name Last name of the user assigned
+  	* @apiSuccess {Number} Task.users_assigned.id Id of the user assigned
+  	* @apiSuccess {String} Task.users_assigned.first_name Frist name of the user assigned
+  	* @apiSuccess {String} Task.users_assigned.last_name Last name of the user assigned
 	* @apiSuccess {Object[]} Task.tags Array of tags assigned to the task
-  	* @apiSuccess {Number} tags.id Id of the tag
-  	* @apiSuccess {String} tags.name Name of the tag
+  	* @apiSuccess {Number} Task.tags.id Id of the tag
+  	* @apiSuccess {String} Task.tags.name Name of the tag
   	*
 	* @apiSuccessExample Success-Response
 	*     HTTP/1.1 200 OK
