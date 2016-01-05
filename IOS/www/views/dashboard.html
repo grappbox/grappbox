@@ -4,7 +4,12 @@
 
 <ion-view>
     <ion-nav-title>Dashboard</ion-nav-title>
-    <ion-content>
+    <ion-content overflow-scroll="false">
+        
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
 
         <!-- Team Occupation -->
         <ion-slide-box show-pager="false">
@@ -12,6 +17,7 @@
                 <div class="item item-divider">
                     Team Occupation
                 </div>
+                {{ noTeam }}
                 <div class="list">
                     <a class="item item-avatar"
                        ng-repeat="teamOccupation in teamOccupationTab"
@@ -31,7 +37,7 @@
                 <div class="item item-divider">
                     Next Meetings
                 </div>
-                <p>{{ noMeeting }}</p>
+                {{ noMeeting }}
                 <div class="list">
                     <a class="item item-thumbnail-left"
                        ng-repeat="nextMeeting in nextMeetingsTab"
@@ -50,6 +56,7 @@
                 <div class="item item-divider">
                     Global Progress
                 </div>
+                {{ noProject }}
                 <div class="list">
                     <a class="item item-thumbnail-left"
                        ng-repeat="globalProgress in globalProgressTab"
@@ -65,7 +72,6 @@
                     </a>
                 </div>
             </ion-slide>
-
         </ion-slide-box>
     </ion-content>
 </ion-view>

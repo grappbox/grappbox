@@ -3,11 +3,94 @@
 -->
 
 <ion-view>
-    <ion-nav-title class="item-text-wrap">Project</ion-nav-title>
-    <ion-content class="has-header">
-        <div class="item item-divider">
-            Project name
-        </div>
-        <p>Under construction.</p>
+    <ion-nav-title>Project</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Project information -->
+        <ion-list class="card">
+            <div class="item item-divider">Project information</div>
+            <ion-item class="item-body">
+                <img class="full-image" ng-src="#" />
+                <p><strong>Name: </strong> {{ projectInfo.name }}</p>
+                <p><strong>Description: </strong> {{ projectInfo.description }}</p>
+                <p><strong>Phone: </strong> {{ projectInfo.phone }}</p>
+                <p><strong>Company: </strong> {{ projectInfo.company }}</p>
+                <p><strong>Email: </strong> {{ projectInfo.contact_mail }}</p>
+                <p><strong>Creation date: </strong> {{ projectInfo.creation_date.date }}</p>
+                <p><strong>Facebook: </strong> {{ projectInfo.facebook }}</p>
+                <p><strong>Twitter: </strong> {{ projectInfo.twitter }}</p>
+                <p ng-show="projectInfo.deleted_at != null"><strong style="color:red">IN DELETION :(</strong></p>
+                <a class="button button-block button-dark"
+                   ui-sref="app.editProject({projectId: projectId})">
+                    Edit
+                </a>
+            </ion-item>
+        </ion-list>
+        <!-- Users on project -->
+        <div class="item item-divider">Members on project</div>
+        <ion-list>
+            <ion-item class="item-avatar"
+                      ng-repeat="userOnProject in userList"
+                      ng-click="showMemberActionSheet(userOnProject.id)"
+                      >
+                <img ng-src="userOnProject.avatar" />
+                <h2>{{ userOnProject.first_name }} {{ userOnProject.last_name }}</h2>
+            </ion-item>
+        </ion-list>
+
+        <!-- Add a user -->
+        <div class="item item-divider">Add member to project</div>
+        <form>
+            <ion-input class="item item-input">
+                <ion-label>Email</ion-label>
+                <input type="email" placeholder="User email"
+                       name="userToAdd_email" ng-model="userToAdd.userEmail" required />
+            </ion-input>
+            <a class="button button-block button-dark"
+               ng-click="AddUserToProject()">
+                Add user to project
+            </a>
+        </form>
+
+        <!-- Customers accesses on project -->
+        <div class="item item-divider">Customers Accesses</div>
+        <ion-list>
+            <ion-item class="item-avatar"
+                      ng-repeat="customerOnProject in customersList"
+                      ng-click="showCustomerActionSheet(customerOnProject.id)">
+                <img ng-src="" />
+                <h2>{{ customerOnProject.name }}</h2>
+                <p><strong>Created: </strong>{{ customerOnProject.creation_date.date }}</p>
+                <p><strong>Token: </strong>{{ customerOnProject.customer_token }}</p>
+            </ion-item>
+        </ion-list>
+
+        <!-- Generate a link for customer -->
+        <form>
+            <ion-input class="item item-input">
+                <ion-label>Access name</ion-label>
+                <input type="text" placeholder="Customer access name"
+                       name="customerAccessToAdd_email" ng-model="customerAccessToAdd.accessName" required />
+            </ion-input>
+            <a class="button button-block button-dark"
+               ng-click="GenerateAccess()">
+                Generate
+            </a>
+        </form>
+
+        <!-- Danger zone -->
+        <div class="item item-divider bar bar-assertive">Danger zone</div>
+        <a ng-show="projectInfo.deleted_at == null" class="button button-block button-dark"
+           ng-click="PopupDeleteProject()">
+            Delete this project
+        </a>
+        <a ng-show="projectInfo.deleted_at != null" class="button button-block button-dark"
+           ng-click="RetreiveProject()">
+            Retreive this project
+        </a>        
     </ion-content>
 </ion-view>

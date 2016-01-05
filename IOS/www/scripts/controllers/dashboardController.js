@@ -6,6 +6,13 @@ angular.module('GrappBox.controllers')
 
 .controller('DashboardCtrl', function ($scope, $rootScope, $state, TeamOccupation, NextMeetings, GlobalProgress) {
 
+    $scope.doRefresh = function () {
+        $scope.GetTeamOccupation();
+        $scope.GetNextMeetings();
+        $scope.GetGlobalProgress();
+        console.log("View refreshed !");
+    }
+
     //Get Team Occupation
     $scope.teamOccupationTab = {};
     $scope.GetTeamOccupation = function () {
@@ -14,9 +21,14 @@ angular.module('GrappBox.controllers')
                 console.log('Get team occupation list successful !');
                 console.log(data);
                 $scope.teamOccupationTab = data;
+                if (data.length == 0)
+                    $scope.noTeam = "You don't have team right now.";
+            })
+            .then(function () {
+                $scope.$broadcast('scroll.refreshComplete');
             })
             .catch(function (error) {
-                console.error('Get team occupation list failed ! Reason: ' + error);
+                console.error('Get team occupation list failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
     }
     $scope.GetTeamOccupation();
@@ -29,12 +41,14 @@ angular.module('GrappBox.controllers')
                 console.log('Get next meetings list successful !');
                 console.log(data);
                 $scope.nextMeetingsTab = data;
-                if (data.length == 0)
-                    $scope.noMeeting = "You have no meeting right now.";
+            })
+            .then(function () {
+                $scope.$broadcast('scroll.refreshComplete');
             })
             .catch(function (error) {
-                console.error('Get next meetings list failed ! Reason: ' + error);
-                $scope.noMeeting = "You have no meeting right now.";
+                console.error('Get next meetings list failed ! Reason: ' + error.status + ' ' + error.statusText);
+                if ($scope.nextMeetingsTab == 0)
+                    $scope.noMeeting = "You have no meeting right now.";
             })
     }
     $scope.GetNextMeetings();
@@ -47,9 +61,14 @@ angular.module('GrappBox.controllers')
                 console.log('Get global progress list successful !');
                 console.log(data);
                 $scope.globalProgressTab = data;
+                if (data.length == 0)
+                    $scope.noProject = "You don't have project now.";
+            })
+            .then(function () {
+                $scope.$broadcast('scroll.refreshComplete');
             })
             .catch(function (error) {
-                console.error('Get global progress list failed ! Reason: ' + error);
+                console.error('Get global progress list failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
     }
     $scope.GetGlobalProgress();

@@ -4,45 +4,24 @@
 
 <ion-view>
     <ion-nav-title>Projects</ion-nav-title>
-    <ion-content>
-        <ion-list show-delete="minusButton.showDelete">
-            <ion-item ng-repeat="project in projectsTab"
-                      class="item-remove-animate item-icon-right"
+    <ion-content overflow-scroll="false">
+
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Projects list -->
+        <div class="item item-divider">My projects list</div>
+        <ion-list>
+            <ion-item class="item-icon-right"
+                      ng-repeat="project in projectsTab"
                       ui-sref="app.project({projectId: project.project_id})">
-                {{project.name}}
-                <ion-delete-button class="ion-minus-circled"
-                                   ng-click="onProjectDelete(project)">
-                </ion-delete-button>
+                <h2>{{ project.name }}</h2>
             </ion-item>
         </ion-list>
+        <a class="button button-block button-dark" ui-sref="app.createProject">
+            Create project
+        </a>
     </ion-content>
-    <ion-footer-bar class="bar-stable">
-        <div class="title">
-            <button class="button button-icon ion-minus-round" ng-click="minusButton.showDelete = !minusButton.showDelete"></button>
-            <button class="button button-icon ion-plus-round" ng-click="openAddProjectModal()"></button>
-        </div>
-    </ion-footer-bar>
 </ion-view>
-
-<!-- Whiteboard modal (when adding a whiteboard) -->
-<script id="addProjectModal.html" type="text/ng-template">
-    <ion-modal-view>
-        <ion-header-bar class="bar-dark">
-            <h1 class="title">Add Project</h1>
-        </ion-header-bar>
-        <ion-content>
-            <form ng-submit="addProject(elem)">
-                <ion-list class="list-inset">
-                    <ion-input class="item item-input">
-                        <input type="text" placeholder="Project's name" ng-model="elem.title" required />
-                    </ion-input>
-                    <div class="padding">
-                        <button class="button button-full button-assertive" type="submit">
-                            Add Project
-                        </button>
-                    </div>
-                </ion-list>
-            </form>
-        </ion-content>
-    </ion-modal-view>
-</script>

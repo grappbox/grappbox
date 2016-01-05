@@ -8,22 +8,32 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
 // on starting
 .run(function ($ionicPlatform, $rootScope) {
     $ionicPlatform.ready(function () {
+        // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+        // for form inputs)
+        /*if (window.cordova && window.cordova.plugins.Keyboard) {
+            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        }*/
         if (window.StatusBar) {
             StatusBar.styleDefault();
         }
     });
-    $rootScope.API_VERSION = '0.8'; //actual API's version
+    $rootScope.API_VERSION = '0.9'; //actual API's version
     $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
 })
 
-.config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider) {
+.config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
 
     $ionicConfigProvider.views.transition('platform');          // transition between views
     $ionicConfigProvider.backButton.icon('ion-ios-arrow-back'); // iOS back icon
     $ionicConfigProvider.backButton.text('');                   // default is 'Back'
     $ionicConfigProvider.backButton.previousTitleText(false);   // hides the 'Back' text
+    $httpProvider.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
 
     $stateProvider
+
+        /*
+        ** AUTHENTIFICATION
+        */
         // authentification view
         .state('auth', {
             url: "/auth", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
@@ -38,6 +48,9 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             controller: 'SignupCtrl'
         })
 
+        /*
+        ** ABSTRACT
+        */
         // entering application
         .state('app', {
             url: "/app",
@@ -46,24 +59,30 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             controller: 'MenuCtrl'
         })
 
+        /*
+        ** DASHBOARD
+        */
         // dashboard with Team Occupation, Next Meetings and Global Progress
         .state('app.dashboard', {
             url: "/dashboard",
             views: { //here we define the views inheritance
                 'menuContent': { //inherites from 'menuContent' in menu.html (<ion-nav-view name="menuContent" [...]</ion-nav-view>)
                     templateUrl: "views/dashboard.html",
-                    controller: 'DashboardCtrl'
+                    controller: 'DashboardCtrl',
                 }
             } // because 'app.dashboard' inherits from 'app', urls are concatenated : '/app/dashboard'
         })
 
+        /*
+        ** PROJECTS
+        */
         // projects list view
         .state('app.projects', {
             url: "/projects",
             views: {
                 'menuContent': {
                     templateUrl: "views/projects.html",
-                    controller: 'ProjectsCtrl'
+                    controller: 'ProjectsListCtrl'
                 }
             }
         })
@@ -79,6 +98,31 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        // create project view
+        .state('app.createProject', {
+            url: "/projects/createProject",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/createProject.html",
+                    controller: 'CreateProjectCtrl'
+                }
+            }
+        })
+
+        // edit project view
+        .state('app.editProject', {
+            url: "/projects/:projectId/edit",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/editProject.html",
+                    controller: 'EditProjectCtrl'
+                }
+            }
+        })
+
+        /*
+        ** NEXT MEETING
+        */
         // next meeting view
         .state('app.nextMeeting', {
             url: "/projects/:nextMeetingId",
@@ -90,6 +134,9 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        /*
+        ** TIMELINE
+        */
         // timeline view
         .state('app.timelines', {
             url: "/timelines",
@@ -100,6 +147,10 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
                 }
             }
         })
+
+        /*
+        ** WHITEBOARD
+        */
 
         // whiteboards list view
         .state('app.whiteboards', {
@@ -123,6 +174,9 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        /*
+        ** USER
+        */
         // user view
         .state('app.user', {
             url: "/user/:userId",

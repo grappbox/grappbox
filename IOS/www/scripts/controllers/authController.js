@@ -11,11 +11,12 @@ angular.module('GrappBox.controllers')
         Login.save({ login: $scope.user.email, password: $scope.user.password }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
+                console.log(data);
                 $rootScope.userDatas = data.user;
                 $state.go('app.dashboard');
             })
             .catch(function (error) {
-                console.error('Connexion failed ! Reason: ' + error);
+                console.error('Connexion failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
     }
 
@@ -24,7 +25,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Connexion successful !');
                 $rootScope.userDatas = data.user;
-                $state.go('app.projects');
+                $state.go('app.dashboard');
             })
             .catch(function (error) {
                 console.error('Connexion failed ! Reason: ' + error);

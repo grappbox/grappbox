@@ -1,0 +1,81 @@
+﻿<ion-view>
+    <ion-nav-title>Edit Project</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Project information -->
+        <div class="item item-divider"></div>
+        <p>Type your project informations</p>
+        <form>
+            <ion-input class="item item-input">
+                <ion-label>Name</ion-label>
+                <input type="text"
+                       placeholder="My Project name"
+                       name="project_name"
+                       ng-model="project.name" required />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Description</ion-label>
+                <input type="text"
+                       placeholder="My Project's description'"
+                       name="project_description"
+                       ng-model="project.description" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>logo</ion-label>
+                <input type="text"
+                       placeholder="My Project's logo'"
+                       name="project_logo"
+                       ng-model="project.logo" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Phone</ion-label>
+                <input type="tel"
+                       placeholder="My Project's phone'"
+                       name="project_phone"
+                       ng-model="project.phone" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Company name</ion-label>
+                <input type="text"
+                       placeholder="My Project's company name'"
+                       name="project_company"
+                       ng-model="project.company" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Email</ion-label>
+                <input type="text"
+                       placeholder="My Project's email'"
+                       name="project_email"
+                       ng-model="project.email" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Facebook</ion-label>
+                <input type="text"
+                       placeholder="My Project's Facebook'"
+                       name="project_facebook"
+                       ng-model="project.facebook" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Twitter</ion-label>
+                <input type="text"
+                       placeholder="My Project's Twitter'"
+                       name="project_twitter"
+                       ng-model="project.twitter" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Password</ion-label>
+                <input type="password"
+                       placeholder="My Project's password'"
+                       name="project_password"
+                       ng-model="project.password" />
+            </ion-input>
+            <a class="button button-block button-dark" ng-click="EditProject()">
+                Save
+            </a>
+        </form>
+    </ion-content>
+</ion-view>
