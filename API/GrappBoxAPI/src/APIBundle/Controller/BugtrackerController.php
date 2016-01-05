@@ -626,7 +626,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /V0.9/bugtracker/closeticket/:token/:id Close ticket
-	* @apiName postTicket
+	* @apiName closeTicket
 	* @apiGroup Bugtracker
 	* @apiVersion 0.9.0
 	*
@@ -671,7 +671,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.9/bugtracker/getStates/:token Get Tickets Status
+	* @api {get} /V0.9/bugtracker/getStates/:token Get Tickets Status
 	* @apiName getStates
 	* @apiGroup Bugtracker
 	* @apiVersion 0.9.0

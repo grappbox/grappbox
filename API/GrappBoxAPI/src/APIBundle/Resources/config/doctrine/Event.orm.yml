@@ -24,6 +24,10 @@ APIBundle\Entity\Event:
         createdAt:
             type: datetime
             column: created_at
+        editedAt:
+            type: datetime
+            column: edited_at
+            nullable: TRUE
         deletedAt:
             type: datetime
             column: deleted_at

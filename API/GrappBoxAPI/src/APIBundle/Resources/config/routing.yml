@@ -480,6 +480,46 @@ bugtracker_getStates:
 
 
 
+event_getTypes:
+    path:       /event/gettypes/{token}
+    defaults:   { _controller: APIBundle:Event:getTypes }
+    methods: [GET]
+
+event_setParticipants:
+    path:       /event/setparticipants/{id}
+    defaults:   { _controller: APIBundle:Event:setParticipants }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+event_postEvent:
+    path:       /event/postevent
+    defaults:   { _controller: APIBundle:Event:postEvent }
+    methods: [POST]
+
+event_editEvent:
+    path:       /event/editevent/{id}
+    defaults:   { _controller: APIBundle:Event:editEvent }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+event_delEvent:
+    path:       /event/delevent/{token}/{id}
+    defaults:   { _controller: APIBundle:Event:delEvent }
+    requirements:
+        id: \d+
+    methods: [DELETE]
+
+# meeting_addAlert:
+#     path:       /Meeting/addAlert/{id}
+#     defaults:   { _controller: APIBundle:Meeting:addAlert }
+#     requirements:
+#         id: \d+
+
+
+
+
 planning_getDayPlanning:
     path:       /Planning/getDayPlanning
     defaults:   { _controller: APIBundle:Planning:getDayPlanning }
@@ -492,16 +532,9 @@ planning_getMonthPlanning:
     path:       /Planning/getMonthPlanning
     defaults:   { _controller: APIBundle:Planning:getMonthPlanning }
 
-planning_modifyEvent:
-    path:       /Planning/modifyEvent
-    defaults:   { _controller: APIBundle:Planning:modifyEvent }
-
-planning_getEventDetails:
-    path:       /Planning/getEventDetails/{id}
-    defaults:   { _controller: APIBundle:Planning:getEventDetails }
-    requirements:
-        id: \d+
-
+planning_getCurrentEvents:
+    path:       /Planning/getcurrentevents
+    defaults:   { _controller: APIBundle:Planning:getCurrentEvents }
 
 
 
@@ -538,33 +571,6 @@ visualisingProject_openDiagram:
 visualisingProject_invitePerson:
     path:       /VisualisingProject/invitePerson/{id}
     defaults:   { _controller: APIBundle:VisualisingProject:invitePerson }
-    requirements:
-        id: \d+
-
-
-
-
-meeting_editMeeting:
-    path:       /Meeting/editMeeting/{id}
-    defaults:   { _controller: APIBundle:Meeting:editMeeting }
-    requirements:
-        id: \d+
-
-meeting_delMeeting:
-    path:       /Meeting/delMeeting/{id}
-    defaults:   { _controller: APIBundle:Meeting:delMeeting }
-    requirements:
-        id: \d+
-
-meeting_invitePersonToMeeting:
-    path:       /Meeting/invitePersonToMeeting/{id}
-    defaults:   { _controller: APIBundle:Meeting:invitePersonToMeeting }
-    requirements:
-        id: \d+
-
-meeting_addAlert:
-    path:       /Meeting/addAlert/{id}
-    defaults:   { _controller: APIBundle:Meeting:addAlert }
     requirements:
         id: \d+
 

@@ -74,7 +74,7 @@ class User implements UserInterface
     /**
      * @var boolean
      */
-    private $isActive;
+    //private $isActive;
 
     /**
      * @var string
@@ -646,7 +646,7 @@ class User implements UserInterface
     /**
      * Get project_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProjectCreator()
     {
@@ -689,7 +689,7 @@ class User implements UserInterface
     /**
      * Get gantt_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGanttCreator()
     {
@@ -722,7 +722,7 @@ class User implements UserInterface
     /**
      * Get gantt_updator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGanttUpdator()
     {

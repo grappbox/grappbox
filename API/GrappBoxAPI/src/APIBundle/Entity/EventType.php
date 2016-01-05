@@ -35,7 +35,7 @@ class EventType
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -58,7 +58,7 @@ class EventType
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -91,10 +91,18 @@ class EventType
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {
         return $this->events;
+    }
+
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name
+        );
     }
 }

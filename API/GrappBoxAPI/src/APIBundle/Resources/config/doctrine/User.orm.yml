@@ -48,8 +48,8 @@ APIBundle\Entity\User:
             type: string
             length: 255
             nullable: TRUE
-        isActive:
-          type: boolean
+        #isActive:
+        #  type: boolean
         token:
           type: string
           length: 255
