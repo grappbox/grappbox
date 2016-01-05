@@ -54,6 +54,33 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} /V0.11/event/getTypes/:token Get event types
+	* @apiName getTypes
+	* @apiGroup Event
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {string} token user authentication token
+	*
+	* @apiSuccess {Object[]} types types list
+	* @apiSuccess {int} types.id type id
+	* @apiSuccess {string} types.name type name
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		0:{"id": 1, "name": "Event"},
+	*		1:{"id": 2, "name": "Meeting"},
+	*		2:{"id": 3, "name": "Private"}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	*/
 	public function getTypesAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
@@ -76,6 +103,65 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiName getEvent
 	* @apiGroup Event
 	* @apiVersion 0.10.0
+	*
+	* @apiParam {int} id event id
+	* @apiParam {string} token user authentication token
+	*
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"event": {
+	*			"id": 12, "creatorId":95, "projectId": 21,
+	*			"eventTypeId": 1, "eventType": "Event",
+	*			"title": "Brainstorming", "description": "blablabla",
+	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null,
+	*			"deletedAt": null
+	*		},
+	*		"users": [
+	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {get} /V0.11/event/getevent/:token/:id get event
+	* @apiName getEvent
+	* @apiGroup Event
+	* @apiVersion 0.11.0
 	*
 	* @apiParam {int} id event id
 	* @apiParam {string} token user authentication token
@@ -172,6 +258,67 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiName setParticipants
 	* @apiGroup Event
 	* @apiVersion 0.10.0
+	*
+	* @apiParam {int} id event id
+	* @apiParam {string} token user authentication token
+	* @apiParam {string[]} toAdd list of users' email to add
+	* @apiParam {int[]} toRemove list of users' id to remove
+	*
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"event": {
+	*			"id": 12, "creatorId":95, "projectId": 21,
+	*			"eventTypeId": 1, "eventType": "Event",
+	*			"title": "Brainstorming", "description": "blablabla",
+	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null,
+	*			"deletedAt": null
+	*		},
+	*		"users": [
+	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {post} /V0.11/event/setparticipants/:id Add/remove users to the event
+	* @apiName setParticipants
+	* @apiGroup Event
+	* @apiVersion 0.11.0
 	*
 	* @apiParam {int} id event id
 	* @apiParam {string} token user authentication token
@@ -362,6 +509,70 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {post} /V0.11/event/postevent/:id Post an event/meeting
+	* @apiName postEvent
+	* @apiGroup Event
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {string} token user authentication token
+	* @apiParam {int}	[projectId] project's id (if related to a project)
+	*	@apiParam {string} title event title
+	*	@apiParam {string} description event description
+	*	@apiParam {int} typeId event type id
+	*	@apiParam {DateTime} begin beginning date & hour of the event
+	*	@apiParam {DateTime} end ending date & hour of the event
+	*
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"event": {
+	*			"id": 12, "creatorId":95, "projectId": 21,
+	*			"eventTypeId": 1, "eventType": "Event",
+	*			"title": "Brainstorming", "description": "blablabla",
+	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null,
+	*			"deletedAt": null
+	*		},
+	*		"users": [
+	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
 	public function postEventAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -415,6 +626,71 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiName editEvent
 	* @apiGroup Event
 	* @apiVersion 0.10.0
+	*
+	* @apiParam {int} id event id
+	* @apiParam {string} token user authentication token
+	* @apiParam {int}	[projectId] project's id (if related to a project)
+	*	@apiParam {string} title event title
+	*	@apiParam {string} description event description
+	*	@apiParam {int} typeId event type id
+	*	@apiParam {DateTime} begin beginning date & hour of the event
+	*	@apiParam {DateTime} end ending date & hour of the event
+	*
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"event": {
+	*			"id": 12, "creatorId":95, "projectId": 21,
+	*			"eventTypeId": 1, "eventType": "Event",
+	*			"title": "Brainstorming", "description": "blablabla",
+	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null,
+	*			"deletedAt": null
+	*		},
+	*		"users": [
+	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {post} /V0.11/event/editevent/:id Edit an event/meeting
+	* @apiName editEvent
+	* @apiGroup Event
+	* @apiVersion 0.11.0
 	*
 	* @apiParam {int} id event id
 	* @apiParam {string} token user authentication token
@@ -537,6 +813,35 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiName delEvent
 	* @apiGroup Event
 	* @apiVersion 0.10.0
+	*
+	* @apiParam {int} id event id
+	* @apiParam {string} token user authentication token
+	*
+	* @apiSuccess {string} message succes message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"Success"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {delete} /V0.11/event/delevent/:token/:id Delete an event/meeting
+	* @apiName delEvent
+	* @apiGroup Event
+	* @apiVersion 0.11.0
 	*
 	* @apiParam {int} id event id
 	* @apiParam {string} token user authentication token

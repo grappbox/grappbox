@@ -1,6 +1,6 @@
 api:
     resource: "@APIBundle/Resources/config/routing.yml"
-    prefix:   /V0.10/
+    prefix:   /V0.11/
 
 # app:
 #     resource: "@AppBundle/Controller/"

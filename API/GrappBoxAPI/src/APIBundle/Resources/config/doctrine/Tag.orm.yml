@@ -15,4 +15,11 @@ APIBundle\Entity\Tag:
         tasks:
           targetEntity: Task
           mappedBy: tags
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: tags
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
     lifecycleCallbacks: {  }

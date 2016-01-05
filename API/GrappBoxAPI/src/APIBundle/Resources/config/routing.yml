@@ -1,69 +1,157 @@
+task_taskCreation:
+    path:       tasks/taskcreation
+    defaults:   { _controller: APIBundle:Task:createTask, _format: json }
+    methods: [POST]
+
+task_taskUpdate:
+    path:       tasks/taskupdate
+    defaults:   { _controller: APIBundle:Task:updateTask, _format: json }
+    methods: [PUT]
+
+task_getTaskInfos:
+    path:       tasks/taskinformations/{token}/{taskId}
+    defaults:   { _controller: 'APIBundle:Task:getTaskInfos', _format: json }
+    requirements:
+        taskId: \d+
+    methods: [GET]
+
+task_archiveTask:
+    path:       tasks/archivetask
+    defaults:   { _controller: 'APIBundle:Task:archiveTask', _format: json }
+    methods: [PUT]
+
+task_taskDelete:
+    path:       tasks/taskdelete/{token}/{taskId}
+    defaults:   { _controller: APIBundle:Task:deleteTask, _format: json }
+    requirements:
+        taskId: \d+
+    methods: [DELETE]
+
+task_assignUserToTask:
+    path:       tasks/assignusertotask
+    defaults: { _controller: APIBundle:Task:assignUserToTask, _format: json }
+    methods: [PUT]
+
+task_removeUserToTask:
+    path:       tasks/removeusertotask/{token}/{taskId}/{userId}
+    defaults:   { _controller: 'APIBundle:Task:removeUserToTask', _format: json }
+    requirements:
+        taskId: \d+
+        userId: \d+
+    methods: [DELETE]
+
+task_tagCreation:
+    path:       tasks/tagcreation
+    defaults:   { _controller: 'APIBundle:Task:tagCreation', _format: json }
+    methods: [POST]
+
+task_tagUpdate:
+    path:       tasks/tagupdate
+    defaults:   { _controller: 'APIBundle:Task:tagUpdate', _format: json }
+    methods: [PUT]
+
+task_deleteTag:
+    path:       tasks/deletetag/{token}/{tagId}
+    defaults:   { _controller: 'APIBundle:Task:deleteTag', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [DELETE]
+
+task_assignTagToTask:
+    path:       tasks/assigntagtotask
+    defaults: { _controller: APIBundle:Task:assignTagToTask, _format: json }
+    methods: [PUT]
+
+task_removeTagToTask:
+    path:       tasks/removetagtotask/{token}/{taskId}/{tagId}
+    defaults:   { _controller: 'APIBundle:Task:removeTagToTask', _format: json }
+    requirements:
+        taskId: \d+
+        tagId: \d+
+    methods: [DELETE]
+
+task_getProjectTasks:
+    path:       tasks/getprojecttasks/{token}/{projectId}
+    defaults:   { _controller: APIBundle:Task:getProjectTasks, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+task_getProjectTags:
+    path:       tasks/getprojecttags/{token}/{projectId}
+    defaults:   { _controller: 'APIBundle:Task:getProjectTags', _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+
+
 project_projectCreation:
     path:       projects/projectcreation/{token}
-    defaults:   { _controller: APIBundle:Project:projectCreation }
+    defaults:   { _controller: APIBundle:Project:projectCreation, _format: json }
     methods: [POST]
 
 project_updateInformations:
     path:       projects/updateinformations
-    defaults:   { _controller: APIBundle:Project:updateInformations }
+    defaults:   { _controller: APIBundle:Project:updateInformations, _format: json }
     methods: [PUT]
 
 project_getInformations:
     path:       projects/getinformations/{token}/{projectId}
-    defaults:   { _controller: APIBundle:Project:getInformations }
+    defaults:   { _controller: APIBundle:Project:getInformations, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
 
 project_delProject:
     path:       projects/delproject
-    defaults:   { _controller: APIBundle:Project:delProject }
+    defaults:   { _controller: APIBundle:Project:delProject, _format: json }
     methods: [DELETE]
 
 project_retrieveProject:
     path:       projects/retrieveproject/{token}/{projectId}
-    defaults:   { _controller: APIBundle:Project:retrieveProject }
+    defaults:   { _controller: APIBundle:Project:retrieveProject, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
 
 project_generateCustomerAccess:
     path:       projects/generatecustomeraccess
-    defaults:   { _controller: APIBundle:Project:generateCustomerAccess }
+    defaults:   { _controller: APIBundle:Project:generateCustomerAccess, _format: json }
     methods: [POST]
 
 project_getCustomerAccessById:
     path:       projects/getcustomeraccessbyid/{token}/{id}
-    defaults:   { _controller: APIBundle:Project:getCustomerAccessById }
+    defaults:   { _controller: APIBundle:Project:getCustomerAccessById, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 project_getCustomerAccessByProject:
     path:       projects/getcustomeraccessbyproject/{token}/{projectId}
-    defaults:   { _controller: APIBundle:Project:getCustomerAccessByProject }
+    defaults:   { _controller: APIBundle:Project:getCustomerAccessByProject, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
 
 project_delCustomerAccess:
     path:       projects/delcustomeraccess
-    defaults:   { _controller: APIBundle:Project:delCustomerAccess }
+    defaults:   { _controller: APIBundle:Project:delCustomerAccess, _format: json }
     methods: [DELETE]
 
 project_addUserToProject:
     path:       projects/addusertoproject
-    defaults:   { _controller: APIBundle:Project:addUserToProject }
+    defaults:   { _controller: APIBundle:Project:addUserToProject, _format: json }
     methods: [PUT]
 
 project_removeUserToProject:
     path:       projects/removeusertoproject
-    defaults:   { _controller: APIBundle:Project:removeUserToProject }
+    defaults:   { _controller: APIBundle:Project:removeUserToProject, _format: json }
     methods: [DELETE]
 
 project_getUserToProject:
     path:       projects/getusertoproject/{token}/{projectId}
-    defaults:   { _controller: APIBundle:Project:getUserToProject }
+    defaults:   { _controller: APIBundle:Project:getUserToProject, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
@@ -73,49 +161,49 @@ project_getUserToProject:
 
 role_addProjectRoles:
     path:       roles/addprojectroles
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:addProjectRoles }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:addProjectRoles, _format: json }
     methods: [POST]
 
 role_delProjectRoles:
     path:       roles/delprojectroles
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:delProjectRoles }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:delProjectRoles, _format: json }
     methods: [DELETE]
 
 role_putProjectRoles:
     path:       roles/putprojectroles
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:updateProjectRoles }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:updateProjectRoles, _format: json }
     methods: [PUT]
 
 role_getProjectRoles:
     path:       roles/getprojectroles/{token}/{projectId}
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getProjectRoles }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getProjectRoles, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
 
 role_assignPersonToRole:
     path:       roles/assignpersontorole
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:assignPersonToRole }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:assignPersonToRole, _format: json }
     methods: [POST]
 
 role_updatePersonRole:
     path:       roles/putpersonrole
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:updatePersonRole }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:updatePersonRole, _format: json }
     methods: [PUT]
 
 role_getUserRoles:
     path:       roles/getuserroles/{token}
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUserRoles }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUserRoles, _format: json }
     methods: [GET]
 
 role_delPersonRole:
     path:       roles/delpersonrole
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:delPersonRole }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:delPersonRole, _format: json }
     methods: [DELETE]
 
 role_getRoleByProjectAndUser:
     path:       roles/getrolebyprojectanduser/{token}/{projectId}/{userId}
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getRoleByProjectAndUser }
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getRoleByProjectAndUser, _format: json }
     requirements:
         projectId: \d+
         userId: \d+
@@ -126,44 +214,44 @@ role_getRoleByProjectAndUser:
 
 user_basicInformations:
     path:       user/basicinformations/{token}
-    defaults:   { _controller: APIBundle:User:basicInformations }
+    defaults:   { _controller: APIBundle:User:basicInformations, _format: json }
     methods: [GET, PUT]
 
 user_getUserBasicInformations:
     path:       user/getuserbasicinformations/{token}/{userId}
-    defaults:   { _controller: APIBundle:User:getUserBasicInformations }
+    defaults:   { _controller: APIBundle:User:getUserBasicInformations, _format: json }
     requirements:
         userId: \d+
     methods: [GET]
 
 user_getIdByName:
     path:       user/getidbyname/{token}/{firstname}/{lastname}
-    defaults:   { _controller: APIBundle:User:getIdByName }
+    defaults:   { _controller: APIBundle:User:getIdByName, _format: json }
     methods: [GET]
 
 user_getIdByEmail:
     path:       user/getidbyemail/{token}/{email}
-    defaults:   { _controller: APIBundle:User:getIdByEmail }
+    defaults:   { _controller: APIBundle:User:getIdByEmail, _format: json }
     methods: [GET]
 
 user_getNextMeetings:
     path:       user/getnextmeetings/{token}
-    defaults:   { _controller: APIBundle:User:getNextMeetings }
+    defaults:   { _controller: APIBundle:User:getNextMeetings, _format: json }
     methods: [GET]
 
 user_getProjects:
     path:       user/getprojects/{token}
-    defaults:   { _controller: APIBundle:User:getProjects }
+    defaults:   { _controller: APIBundle:User:getProjects, _format: json }
     methods: [GET]
 
 user_getAllTasks:
     path:       user/getalltasks/{token}
-    defaults:   { _controller: APIBundle:User:getAllTasks }
+    defaults:   { _controller: APIBundle:User:getAllTasks, _format: json }
     methods: [GET]
 
 user_getCurrentAndNextTasks:
     path:       user/getcurrentandnexttasks/{token}
-    defaults:   { _controller: APIBundle:User:getCurrentAndNextTasks }
+    defaults:   { _controller: APIBundle:User:getCurrentAndNextTasks, _format: json }
     methods: [GET]
 
 
@@ -171,33 +259,33 @@ user_getCurrentAndNextTasks:
 
 whiteboard_list:
     path:		whiteboard/list/{token}/{projectId}
-    defaults:	{ _controller: APIBundle:Whiteboard:listWhiteboard }
+    defaults:	{ _controller: APIBundle:Whiteboard:listWhiteboard, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
 
 whiteboard_new:
     path:		whiteboard/new
-    defaults:	{ _controller: APIBundle:Whiteboard:newWhiteboard }
+    defaults:	{ _controller: APIBundle:Whiteboard:newWhiteboard, _format: json }
     methods: [POST]
 
 whiteboard_open:
     path:		whiteboard/open/{token}/{id}
-    defaults:	{ _controller: APIBundle:Whiteboard:openWhiteboard }
+    defaults:	{ _controller: APIBundle:Whiteboard:openWhiteboard, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 whiteboard_pushDraw:
     path:		whiteboard/pushdraw/{id}
-    defaults:	{ _controller: APIBundle:Whiteboard:pushDraw }
+    defaults:	{ _controller: APIBundle:Whiteboard:pushDraw, _format: json }
     requirements:
         id: \d+
     methods: [POST]
 
 whiteboard_pullDraw:
     path:		whiteboard/pulldraw/{id}
-    defaults:	{ _controller: APIBundle:Whiteboard:pullDraw }
+    defaults:	{ _controller: APIBundle:Whiteboard:pullDraw, _format: json }
     requirements:
         id: \d+
     methods: [POST]
@@ -210,7 +298,7 @@ whiteboard_pullDraw:
 
 whiteboard_delete:
     path:		whiteboard/delete/{token}/{id}
-    defaults:	{ _controller: APIBundle:Whiteboard:delWhiteboard }
+    defaults:	{ _controller: APIBundle:Whiteboard:delWhiteboard, _format: json }
     requirements:
         id: \d+
     methods: [DELETE]
@@ -220,83 +308,83 @@ whiteboard_delete:
 
 dashboard_getTeamOccupation:
     path:       dashboard/getteamoccupation/{token}
-    defaults:   { _controller: APIBundle:Dashboard:getTeamOccupation }
+    defaults:   { _controller: APIBundle:Dashboard:getTeamOccupation, _format: json }
     methods: [GET]
 
 dashboard_getNextMeetings:
     path:       dashboard/getnextmeetings/{token}
-    defaults:   { _controller: APIBundle:Dashboard:getNextMeetings }
+    defaults:   { _controller: APIBundle:Dashboard:getNextMeetings, _format: json }
     methods: [GET]
 
 dashboard_getProjectsGlobalProgress:
     path:       dashboard/getprojectsglobalprogress/{token}
-    defaults:   { _controller: APIBundle:Dashboard:getProjectsGlobalProgress }
+    defaults:   { _controller: APIBundle:Dashboard:getProjectsGlobalProgress, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectCreator:
     path:       dashboard/getprojectcreator/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getProjectCreator }
+    defaults:   { _controller: APIBundle:Dashboard:getProjectCreator, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectBasicInformations:
     path:       dashboard/getprojectbasicinformations/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getProjectBasicInformations }
+    defaults:   { _controller: APIBundle:Dashboard:getProjectBasicInformations, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectTasks:
     path:       dashboard/getprojecttasks/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getProjectTasks }
+    defaults:   { _controller: APIBundle:Dashboard:getProjectTasks, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getUserBasicInformations:
     path:       dashboard/getuserbasicinformations/{token}
-    defaults:   { _controller: APIBundle:Dashboard:getUserBasicInformations }
+    defaults:   { _controller: APIBundle:Dashboard:getUserBasicInformations, _format: json }
     methods: [GET]
 
 dashboard_getProjectPersons:
     path:       dashboard/getprojectpersons/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getProjectPersons }
+    defaults:   { _controller: APIBundle:Dashboard:getProjectPersons, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getMeetingBasicInformations:
     path:       dashboard/getmeetingbasicinformations/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getMeetingBasicInformations }
+    defaults:   { _controller: APIBundle:Dashboard:getMeetingBasicInformations, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getProjectList:
     path:       dashboard/getprojectlist/{token}
-    defaults:   { _controller: APIBundle:Dashboard:getProjectList }
+    defaults:   { _controller: APIBundle:Dashboard:getProjectList, _format: json }
     methods: [GET]
 
 dashboard_getProjectTasksStatus:
     path:       dashboard/getprojecttasksstatus/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getProjectTasksStatus }
+    defaults:   { _controller: APIBundle:Dashboard:getProjectTasksStatus, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getNumberTimelineMessages:
     path:       dashboard/getnumbertimelinemessages/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getNumberTimelineMessages }
+    defaults:   { _controller: APIBundle:Dashboard:getNumberTimelineMessages, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 dashboard_getNumberBugs:
     path:       dashboard/getnumberbugs/{token}/{id}
-    defaults:   { _controller: APIBundle:Dashboard:getNumberBugs }
+    defaults:   { _controller: APIBundle:Dashboard:getNumberBugs, _format: json }
     requirements:
         id: \d+
     methods: [GET]
@@ -306,22 +394,22 @@ dashboard_getNumberBugs:
 
 accountAdministration_login:
     path:       accountadministration/login
-    defaults:   { _controller: APIBundle:AccountAdministration:login }
+    defaults:   { _controller: APIBundle:AccountAdministration:login, _format: json }
     methods:    [POST]
 
 accountAdministration_clientLogin:
     path:       accountadministration/login/{token}
-    defaults:   { _controller: APIBundle:AccountAdministration:clientLogin }
+    defaults:   { _controller: APIBundle:AccountAdministration:clientLogin, _format: json }
     methods:    [GET]
 
 accountAdministration_logout:
     path:       accountadministration/logout/{token}
-    defaults:   { _controller:APIBundle:AccountAdministration:logout}
+    defaults:   { _controller:APIBundle:AccountAdministration:logout, _format: json }
     methods:    [GET]
 
 accountAdministration_register:
     path:       accountadministration/register
-    defaults:   { _controller: APIBundle:AccountAdministration:register }
+    defaults:   { _controller: APIBundle:AccountAdministration:register, _format: json }
     methods:    [POST]
 
 
@@ -372,49 +460,49 @@ cloud_createCloud: #TODO : Delete this route, it's a test route
 
 timeline_getTimelines:
     path:       /timeline/gettimelines/{token}/{id}
-    defaults:   { _controller: APIBundle:Timeline:getTimelines }
+    defaults:   { _controller: APIBundle:Timeline:getTimelines, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 timeline_postMessage:
     path:       /timeline/postmessage/{id}
-    defaults:   { _controller: APIBundle:Timeline:postMessage }
+    defaults:   { _controller: APIBundle:Timeline:postMessage, _format: json }
     requirements:
         id: \d+
     methods: [POST]
 
 timeline_editMessage:
     path:       /timeline/editmessage/{id}
-    defaults:   { _controller: APIBundle:Timeline:editMessage }
+    defaults:   { _controller: APIBundle:Timeline:editMessage, _format: json }
     requirements:
         id: \d+
     methods: [POST]
 
 timeline_getMessages:
     path:       /timeline/getmessages/{token}/{id}
-    defaults:   { _controller: APIBundle:Timeline:getMessages }
+    defaults:   { _controller: APIBundle:Timeline:getMessages, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 timeline_getLastMessages:
     path:       /timeline/getlastmessages/{token}/{id}/{offset}/{limit}
-    defaults:   { _controller: APIBundle:Timeline:getLastMessages }
+    defaults:   { _controller: APIBundle:Timeline:getLastMessages, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 timeline_getComments:
     path:       /timeline/getcomments/{token}/{id}/{messageId}
-    defaults:   { _controller: APIBundle:Timeline:getComments }
+    defaults:   { _controller: APIBundle:Timeline:getComments, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 timeline_archiveMessage:
     path:       /timeline/archivemessage/{token}/{id}/{messageId}
-    defaults:   { _controller: APIBundle:Timeline:archiveMessage }
+    defaults:   { _controller: APIBundle:Timeline:archiveMessage, _format: json }
     requirements:
         id: \d+
     methods: [GET]
@@ -424,28 +512,28 @@ timeline_archiveMessage:
 
 bugtracker_postTicket:
     path:       /bugtracker/postticket/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:postTicket }
+    defaults:   { _controller: APIBundle:Bugtracker:postTicket, _format: json }
     requirements:
         id: \d+
     methods:  [POST]
 
 bugtracker_editTicket:
     path:       /bugtracker/editticket/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:editTicket }
+    defaults:   { _controller: APIBundle:Bugtracker:editTicket, _format: json }
     requirements:
         id: \d+
     methods:  [POST]
 
 bugtracker_getTickets:
     path:       /bugtracker/gettickets/{token}/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:getTickets }
+    defaults:   { _controller: APIBundle:Bugtracker:getTickets, _format: json }
     requirements:
         id: \d+
     methods:  [GET]
 
 bugtracker_getLastTickets:
     path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
-    defaults:   { _controller: APIBundle:Bugtracker:getLastTickets }
+    defaults:   { _controller: APIBundle:Bugtracker:getLastTickets, _format: json }
     requirements:
         id: \d+
     methods:  [GET]
@@ -453,28 +541,28 @@ bugtracker_getLastTickets:
 
 bugtracker_getComments:
     path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
-    defaults:   { _controller: APIBundle:Bugtracker:getComments }
+    defaults:   { _controller: APIBundle:Bugtracker:getComments, _format: json }
     requirements:
         id: \d+
     methods:  [GET]
 
 bugtracker_getTicketsByUser:
     path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
-    defaults:   { _controller: APIBundle:Bugtracker:getTicketsByUser }
+    defaults:   { _controller: APIBundle:Bugtracker:getTicketsByUser, _format: json }
     requirements:
         id: \d+
     methods:  [GET]
 
 bugtracker_closeTicket:
     path:       /bugtracker/closeticket/{token}/{id}
-    defaults:   { _controller: APIBundle:Bugtracker:closeTicket }
+    defaults:   { _controller: APIBundle:Bugtracker:closeTicket, _format: json }
     requirements:
         id: \d+
     methods:  [DELETE]
 
 bugtracker_getStates:
     path:       /bugtracker/getstates/{token}
-    defaults:   { _controller: APIBundle:Bugtracker:getStates }
+    defaults:   { _controller: APIBundle:Bugtracker:getStates, _format: json }
     methods:  [GET]
 
 
@@ -482,38 +570,38 @@ bugtracker_getStates:
 
 event_getTypes:
     path:       /event/gettypes/{token}
-    defaults:   { _controller: APIBundle:Event:getTypes }
+    defaults:   { _controller: APIBundle:Event:getTypes, _format: json }
     methods: [GET]
 
 event_getEvent:
     path:       /event/getevent/{token}/{id}
-    defaults:   { _controller: APIBundle:Event:getEvent }
+    defaults:   { _controller: APIBundle:Event:getEvent, _format: json }
     requirements:
         id: \d+
     methods: [GET]
 
 event_setParticipants:
     path:       /event/setparticipants/{id}
-    defaults:   { _controller: APIBundle:Event:setParticipants }
+    defaults:   { _controller: APIBundle:Event:setParticipants, _format: json }
     requirements:
         id: \d+
     methods: [POST]
 
 event_postEvent:
     path:       /event/postevent
-    defaults:   { _controller: APIBundle:Event:postEvent }
+    defaults:   { _controller: APIBundle:Event:postEvent, _format: json }
     methods: [POST]
 
 event_editEvent:
     path:       /event/editevent/{id}
-    defaults:   { _controller: APIBundle:Event:editEvent }
+    defaults:   { _controller: APIBundle:Event:editEvent, _format: json }
     requirements:
         id: \d+
     methods: [POST]
 
 event_delEvent:
     path:       /event/delevent/{token}/{id}
-    defaults:   { _controller: APIBundle:Event:delEvent }
+    defaults:   { _controller: APIBundle:Event:delEvent, _format: json }
     requirements:
         id: \d+
     methods: [DELETE]

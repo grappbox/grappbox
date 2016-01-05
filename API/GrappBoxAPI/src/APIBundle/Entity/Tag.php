@@ -97,4 +97,32 @@ class Tag
     {
         return $this->tasks;
     }
+    /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $project;
+
+
+    /**
+     * Set project
+     *
+     * @param \APIBundle\Entity\Project $project
+     * @return Tag
+     */
+    public function setProject(\APIBundle\Entity\Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \APIBundle\Entity\Project 
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
 }

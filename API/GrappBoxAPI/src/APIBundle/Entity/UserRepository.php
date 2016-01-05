@@ -17,7 +17,7 @@ class UserRepository extends EntityRepository
 		$qb = $this->createQueryBuilder('u')->where('u.firstname = :firstname', 'u.lastname = :lastname')->setParameter('firstname', $firstname)->setParameter('lastname', $lastname);
 
 		$users = $qb->getQuery()->getResult();
-
+		
 		$arr = array();
 		$i = 1;
 
