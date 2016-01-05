@@ -613,7 +613,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.11/tasks/taskdelete/:token/:taskId Archive a task
+	* @api {delete} /V0.11/tasks/taskdelete/:token/:taskId Delete a task
 	* @apiName taskDelete
 	* @apiGroup Task
 	* @apiVersion 0.11.0
@@ -1029,8 +1029,76 @@ class TaskController extends RolesAndTokenVerificationController
 		return new JsonResponse(array("tag_id" => $id, "tag_name" => $name));
 	}
 
+		/**
+	* @api {get} /V0.11/tasks/taginformations/:token/:tagId Get a tag informations
+	* @apiName tagInformations
+	* @apiGroup Task
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} tagId Id of the tag
+	*
+  	* @apiSuccess {Number} id Id of the tag
+  	* @apiSuccess {String} name Name of the tag
+  	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"id": 1,
+	*		"name": "To Do"
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag with id X doesn't exist"
+	* 	}
+	*/
+	public function getTagInfosAction(Request $request, $token, $tagId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		$em = $this->getDoctrine()->getManager();
+		$tag = $em->getRepository('APIBundle:Tag')->find($tagId);
+
+		if ($tag === null)
+		{
+			throw new NotFoundHttpException("The tag with id ".$tagId." doesn't exist");
+		}
+
+		$projectId = $tag->getProject()->getId();
+		if (!$this->checkRoles($user, $projectId, "task"))
+			return ($this->setNoRightsError());
+
+		$id = $t->getId();
+		$name = $t->getName();
+
+		return new JsonResponse(array("id" => $id, "name" => $name));
+	}
+
 	/**
-	* @api {delete} /V0.11/tasks/deletetag/:token/:tagId Remove a tag
+	* @api {delete} /V0.11/tasks/deletetag/:token/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Task
 	* @apiVersion 0.11.0
@@ -1290,7 +1358,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/tasks/getprojecttasks/:token/:projectId Get all tasks informations for a project
+	* @api {get} /V0.11/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
 	* @apiName getProjectTasks
 	* @apiGroup Task
 	* @apiVersion 0.11.0
@@ -1466,8 +1534,8 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/tasks/getprojecttasks/:token/:projectId Get all tasks informations for a project
-	* @apiName getProjectTasks
+	* @api {get} /V0.11/tasks/getprojecttags/:token/:projectId Get all the tags for a project
+	* @apiName getProjectTags
 	* @apiGroup Task
 	* @apiVersion 0.11.0
 	*
@@ -1507,10 +1575,10 @@ class TaskController extends RolesAndTokenVerificationController
 	* 	{
 	* 		"Insufficient User Rights"
 	* 	}
-	* @apiErrorExample No task found
+	* @apiErrorExample No tags found
 	* 	HTTP/1.1 404 Not found
 	* 	{
-	* 		"There are no tasks for the project with id X"
+	* 		"There are no tags for the project with id X"
 	* 	}
 	*/
 	public function getProjectTagsAction(Request $request, $token, $projectId)
