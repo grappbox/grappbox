@@ -27,6 +27,11 @@ class TimelineMessage
     /**
      * @var string
      */
+    private $title;
+
+    /**
+     * @var string
+     */
     private $message;
 
     /**
@@ -110,6 +115,29 @@ class TimelineMessage
     public function getTimelineId()
     {
         return $this->timelineId;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return TimelineMessage
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     /**
@@ -261,6 +289,7 @@ class TimelineMessage
         "id" => $this->id,
         "userId" => $this->userId,
         "timelineId" => $this->timelineId,
+        "title" => $this->title,
         "message" => $this->message,
         "parentId" => $this->parentId,
         "createdAt" => $this->createdAt,

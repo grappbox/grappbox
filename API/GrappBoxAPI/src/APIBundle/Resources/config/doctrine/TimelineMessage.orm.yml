@@ -14,6 +14,9 @@ APIBundle\Entity\TimelineMessage:
         timelineId:
             type: integer
             column: timeline_id
+        title:
+            type: string
+            length: 255
         message:
             type: text
         parentId:
