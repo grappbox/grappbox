@@ -50,6 +50,13 @@ task_tagUpdate:
     defaults:   { _controller: 'APIBundle:Task:tagUpdate', _format: json }
     methods: [PUT]
 
+task_getTagInfos:
+    path:       tasks/taginformations/{token}/{tagId}
+    defaults:   { _controller: 'APIBundle:Task:getTagInfos', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [GET]
+
 task_deleteTag:
     path:       tasks/deletetag/{token}/{tagId}
     defaults:   { _controller: 'APIBundle:Task:deleteTag', _format: json }

@@ -1091,8 +1091,8 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError());
 
-		$id = $t->getId();
-		$name = $t->getName();
+		$id = $tag->getId();
+		$name = $tag->getName();
 
 		return new JsonResponse(array("id" => $id, "name" => $name));
 	}
