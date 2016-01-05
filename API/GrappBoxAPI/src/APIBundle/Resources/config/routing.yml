@@ -470,7 +470,7 @@ bugtracker_closeTicket:
     defaults:   { _controller: APIBundle:Bugtracker:closeTicket }
     requirements:
         id: \d+
-    methods:  [GET]
+    methods:  [DELETE]
 
 bugtracker_getStates:
     path:       /bugtracker/getstates/{token}
@@ -483,6 +483,13 @@ bugtracker_getStates:
 event_getTypes:
     path:       /event/gettypes/{token}
     defaults:   { _controller: APIBundle:Event:getTypes }
+    methods: [GET]
+
+event_getEvent:
+    path:       /event/getevent/{token}/{id}
+    defaults:   { _controller: APIBundle:Event:getEvent }
+    requirements:
+        id: \d+
     methods: [GET]
 
 event_setParticipants:
@@ -521,19 +528,19 @@ event_delEvent:
 
 
 planning_getDayPlanning:
-    path:       /Planning/getDayPlanning
+    path:       /planning/getday
     defaults:   { _controller: APIBundle:Planning:getDayPlanning }
 
 planning_getWeekPlanning:
-    path:       /Planning/getWeekPlanning
+    path:       /planning/getweek
     defaults:   { _controller: APIBundle:Planning:getWeekPlanning }
 
 planning_getMonthPlanning:
-    path:       /Planning/getMonthPlanning
+    path:       /planning/getmonth
     defaults:   { _controller: APIBundle:Planning:getMonthPlanning }
 
 planning_getCurrentEvents:
-    path:       /Planning/getcurrentevents
+    path:       /planning/getcurrentevents
     defaults:   { _controller: APIBundle:Planning:getCurrentEvents }
 
 

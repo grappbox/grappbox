@@ -72,6 +72,102 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {get} /V0.10/event/getevent/:token/:id get event
+	* @apiName getEvent
+	* @apiGroup Event
+	* @apiVersion 0.10.0
+	*
+	* @apiParam {int} id event id
+	* @apiParam {string} token user authentication token
+	*
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"event": {
+	*			"id": 12, "creatorId":95, "projectId": 21,
+	*			"eventTypeId": 1, "eventType": "Event",
+	*			"title": "Brainstorming", "description": "blablabla",
+	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null,
+	*			"deletedAt": null
+	*		},
+	*		"users": [
+	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getEventAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		$em = $this->getDoctrine()->getManager();
+		$event = $em->getRepository("APIBundle:Event")->find($id);
+		if ($event->getProjects() instanceof Project)
+			{
+				$project = $event->getProjects();
+				if (!$this->checkRoles($user, $project->getId(), "event"))
+					return ($this->setNoRightsError());
+			}
+		else
+			{
+				$check = false;
+				foreach ($event->getUsers() as $key => $value) {
+					 if ($user->getId() == $value->getId())
+					 		$check = true;
+				}
+				if (!$check)
+					return ($this->setNoRightsError());
+			}
+
+		$participants = array();
+		foreach ($event->getUsers() as $key => $value) {
+			$participants[] = array(
+				"id" => $value->getId(),
+				"name" => $value->getFirstname()." ".$value->getLastName(),
+				"email" => $value->getEmail(),
+				"avatar" => $value->getAvatar()
+			);
+		}
+
+		return new JsonResponse(array("event" => $event->objectToArray(), "users" => $participants));
+	}
+
+	/**
 	* @api {post} /V0.10/event/setparticipants/:id Add/remove users to the event
 	* @apiName setParticipants
 	* @apiGroup Event
@@ -82,18 +178,24 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {string[]} toAdd list of users' email to add
 	* @apiParam {int[]} toRemove list of users' id to remove
 	*
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} creatorId creator user id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {string} description event description
-	*	@apiParam {DateTime} beginDate beginning date of the event
-	*	@apiParam {DateTime} endDate ending date of the event
-	*	@apiParam {DateTime} createAt event creation date
-	*	@apiParam {DateTime} editedAt event edition date
-	*	@apiParam {DateTime} deletedAt event delete date
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -139,6 +241,15 @@ class EventController extends RolesAndTokenVerificationController
 		if ($event->getProjects() instanceof Project)
 		{
 			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
+				return ($this->setNoRightsError());
+		}
+		else {
+			$check = false;
+			foreach ($event->getUsers() as $key => $value) {
+				 if ($user->getId() == $value->getId())
+						$check = true;
+			}
+			if (!$check)
 				return ($this->setNoRightsError());
 		}
 		if (array_key_exists("projectId", $content))
@@ -202,18 +313,24 @@ class EventController extends RolesAndTokenVerificationController
 	*	@apiParam {DateTime} begin beginning date & hour of the event
 	*	@apiParam {DateTime} end ending date & hour of the event
 	*
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} creatorId creator user id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {string} description event description
-	*	@apiParam {DateTime} beginDate beginning date of the event
-	*	@apiParam {DateTime} endDate ending date of the event
-	*	@apiParam {DateTime} createAt event creation date
-	*	@apiParam {DateTime} editedAt event edition date
-	*	@apiParam {DateTime} deletedAt event delete date
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -308,18 +425,24 @@ class EventController extends RolesAndTokenVerificationController
 	*	@apiParam {DateTime} begin beginning date & hour of the event
 	*	@apiParam {DateTime} end ending date & hour of the event
 	*
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} creatorId creator user id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {string} description event description
-	*	@apiParam {DateTime} beginDate beginning date of the event
-	*	@apiParam {DateTime} endDate ending date of the event
-	*	@apiParam {DateTime} createAt event creation date
-	*	@apiParam {DateTime} editedAt event edition date
-	*	@apiParam {DateTime} deletedAt event delete date
+	* @apiSuccess {Object} event event info
+	* @apiSuccess {int} event.id Event id
+	* @apiSuccess {int} event.creatorId creator user id
+	* @apiSuccess {int} event.projectId project id
+	* @apiSuccess {int} event.eventTypeId Event type id
+	* @apiSuccess {string} event.eventType Event type name
+	*	@apiSuccess {string} event.title event title
+	*	@apiSuccess {string} event.description event description
+	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} event.endDate ending date of the event
+	*	@apiSuccess {DateTime} event.createAt event creation date
+	*	@apiSuccess {DateTime} event.editedAt event edition date
+	*	@apiSuccess {DateTime} event.deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -365,6 +488,15 @@ class EventController extends RolesAndTokenVerificationController
 		if ($event->getProjects() instanceof Project)
 		{
 			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
+				return ($this->setNoRightsError());
+		}
+		else {
+			$check = false;
+			foreach ($event->getUsers() as $key => $value) {
+				 if ($user->getId() == $value->getId())
+						$check = true;
+			}
+			if (!$check)
 				return ($this->setNoRightsError());
 		}
 		if (array_key_exists("projectId", $content))
