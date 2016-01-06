@@ -133,8 +133,10 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*			0: {"id": 2, "projectId": 12, "typeId": 1, "typeName": "customerTimeline", "name": "Customer timeline project XYZ"},
-	*			1: {"id": 3, "projectId": 12, "typeId": 2, "typeName": "teamTimeline", "name": "Team timeline project XYZ"}
+	*		[
+	*			{"id": 2, "typeId": 1, "projectId": 12, "name": "Customer timeline project XYZ", "typeName": "customerTimeline"},
+	*			{"id": 3, "typeId": 2, "projectId": 12, "name": "Team timeline project XYZ", "typeName": "teamTimeline"}
+	*		]
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
