@@ -364,6 +364,9 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->flush();
 		$id = $project->getId();
 
+		$cloudClass = new CloudController();
+		$cloudClass->createCloudAction($request, $id);
+
 		return new JsonResponse(array("project_id" => $id));
 	}
 
