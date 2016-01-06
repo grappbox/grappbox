@@ -848,7 +848,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
 	*
-	* @apiParam {int} id id of the timeline
+	* @apiParam {int} id project id
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} ticketId commented ticket id
 	*
