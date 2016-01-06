@@ -61,10 +61,12 @@ public class LoginActivity extends AppCompatActivity {
                 DialogFragment loginError = new LoginErrorAlertFragment();
                 loginError.show(_login.getFragmentManager(), "LoginError");
             } else {
-                SessionAdapter.getInstance().LogInUser(Float.parseFloat(result.get("id").toString()),
+                SessionAdapter.getInstance().LogInUser(result.get("id").toString(),
                         result.get("firstname").toString(),
                         result.get("lastname").toString(),
-                        result.get("token").toString());
+                        result.get("token").toString(),
+                        result.get("login").toString(),
+                        result.get("password").toString());
                 Intent intent = new Intent(_login, MainActivity.class);
                 _login.startActivity(intent);
             }
@@ -84,10 +86,11 @@ public class LoginActivity extends AppCompatActivity {
                 JSONParam.put("login", param[0]);
                 JSONParam.put("password", param[1]);
                 APIConnectAdapter.getInstance().sendJSON(JSONParam);
-                Log.v("Test", "Connection");
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
                 if ((contentAPI = APIConnectAdapter.getInstance().getLoginData(resultAPI)) == null)
                     return null;
+                contentAPI.put("login", param[0]);
+                contentAPI.put("password", param[1]);
 
             } catch (IOException e){
                 Log.e("APIConnection", "Error ", e);

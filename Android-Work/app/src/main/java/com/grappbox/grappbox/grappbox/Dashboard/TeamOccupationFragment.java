@@ -48,17 +48,31 @@ public class TeamOccupationFragment extends Fragment {
 
     public void createContentView(List<ContentValues> contentValues)
     {
+        boolean alreadyHere;
         _value = contentValues;
         ListView TeamList = (ListView)_view.findViewById(R.id.list_team_occupation);
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
+        ArrayList<String> nameList = new ArrayList<String>();
 
         for (ContentValues item : contentValues){
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put("name_member", item.get("first_name").toString() + " " + item.get("last_name").toString());
-            map.put("occupation_state", item.get("occupation").toString());
-            map.put("occupation_project_name", item.get("project_name").toString());
-            map.put("profil_image", String.valueOf(R.mipmap.icon_launcher));
-            listMemberTeam.add(map);
+            alreadyHere = false;
+            String nameMember = item.get("first_name").toString() + " " + item.get("last_name").toString();
+            for (String name : nameList)
+            {
+                if (name.equals(nameMember))
+                {
+                    alreadyHere = true;
+                }
+            }
+            if (!alreadyHere) {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("name_member", nameMember);
+                map.put("occupation_state", item.get("occupation").toString());
+                map.put("occupation_project_name", item.get("project_name").toString());
+                map.put("profil_image", String.valueOf(R.mipmap.icon_launcher));
+                listMemberTeam.add(map);
+                nameList.add(nameMember);
+            }
         }
 
         SimpleAdapter teamAdapter = new SimpleAdapter(_view.getContext(), listMemberTeam, R.layout.item_team_occupation,

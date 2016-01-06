@@ -27,8 +27,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.grappbox.grappbox.grappbox.R;
-import com.grappbox.grappbox.grappbox.Whiteboard.DrawingShape;
-import com.grappbox.grappbox.grappbox.Whiteboard.DrawingText;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -10,7 +10,9 @@ public class SessionAdapter {
     private String _fisrname = null;
     private String _lastname = null;
     private String _userToken = null;
-    private float _userID;
+    private String _userID;
+    private String _login;
+    private String _password;
     private boolean _isLogged = false;
 
     private SessionAdapter()
@@ -46,12 +48,29 @@ public class SessionAdapter {
         return _userToken;
     }
 
-    public void LogInUser(float id, String firstname, String lastname, String token)
+    public String getUserID()
+    {
+        return _userID;
+    }
+
+    public String getPassword()
+    {
+        return _password;
+    }
+
+    public String getLogin()
+    {
+        return _login;
+    }
+
+    public void LogInUser(String id, String firstname, String lastname, String token, String login, String password)
     {
         _userID = id;
         _fisrname = firstname;
         _lastname = lastname;
         _userToken = token;
         _isLogged = true;
+        _login = login;
+        _password = password;
     }
 }

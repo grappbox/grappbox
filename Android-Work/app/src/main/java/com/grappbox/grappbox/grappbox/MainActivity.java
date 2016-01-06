@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.grappbox;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -54,8 +56,10 @@ public class MainActivity extends AppCompatActivity
         TextView text = (TextView)headerView.findViewById(R.id.nav_head_name_user);
         String name = SessionAdapter.getInstance().getFisrname() + " " + SessionAdapter.getInstance().getLastname();
         text.setText(name);
-        _fragmentManager = getSupportFragmentManager();
-        _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
+        if (savedInstanceState == null) {
+            _fragmentManager = getSupportFragmentManager();
+            _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
+        }
     }
 
     @Override
@@ -96,8 +100,9 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_profile) {
             Fragment fragment = new UserProfileFragment();
-            changeToolbarTitle("Profile");
+            changeToolbarTitle("UserProfile");
             _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            //startActivity(new Intent(this, UserProfileActivity.class));
             return true;
         }
 
@@ -123,6 +128,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_dashboard:
                 fragment = new DashboardFragment();
                 changeToolbarTitle("Dashboard");
+                break;
+
+            case R.id.nav_project:
+                fragment = new ProjectListFragment();
+                changeToolbarTitle("Project list");
                 break;
 
             case R.id.nav_whiteboard:

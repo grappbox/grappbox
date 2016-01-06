@@ -4,6 +4,8 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_dashboard" android:icon="@android:drawable/ic_menu_camera"
             android:title="Dashboard" />
+        <item android:id="@+id/nav_project" android:icon="@android:drawable/ic_menu_gallery"
+            android:title="Projects" />
         <item android:id="@+id/nav_whiteboard" android:icon="@android:drawable/ic_menu_gallery"
             android:title="Whiteboard" />
         <item android:id="@+id/nav_Timeline" android:icon="@android:drawable/ic_menu_slideshow"

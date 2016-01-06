@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.grappbox.Model;
 
 import android.content.ContentValues;
+import android.os.Debug;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -14,7 +15,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -25,12 +29,13 @@ public class APIConnectAdapter  {
     private static APIConnectAdapter _instance = null;
 
     private static final String _APIUrlBase = "http://api.grappbox.com/app_dev.php/";
-    private static final String _APIVersion = "V0.8";
+    private static final String _APIVersion = "V0.11";
     HttpURLConnection _connection = null;
     BufferedReader reader = null;
     String resultAPI;
     URL _url;
     DataOutputStream _dataOutputStream;
+    String _TypeRequest = "GET";
 
     private APIConnectAdapter() {
 
@@ -47,6 +52,7 @@ public class APIConnectAdapter  {
     public void startConnection(String url) throws IOException
     {
         String connectURL = _APIUrlBase + _APIVersion + "/" + url;
+        Log.v("URL", connectURL);
         _url = new URL(connectURL);
         _connection = (HttpURLConnection) _url.openConnection();
         _connection.setReadTimeout(10000);
@@ -55,7 +61,8 @@ public class APIConnectAdapter  {
 
     public void setRequestConnection(String typeRequest) throws ProtocolException
     {
-        _connection.setRequestMethod(typeRequest);
+        _TypeRequest = typeRequest;
+        _connection.setRequestMethod(_TypeRequest);
     }
 
     public void sendJSON(JSONObject JSONParam) throws IOException
@@ -67,8 +74,16 @@ public class APIConnectAdapter  {
         _connection.connect();
     }
 
+    public int getResponseCode() throws IOException
+    {
+        int status = _connection.getResponseCode();
+        Log.v("status:", String.valueOf(status));
+        return status;
+    }
+
     public String getInputSream() throws IOException
     {
+
         InputStream inputStream = _connection.getInputStream();
         StringBuffer buffer = new StringBuffer();
         if (inputStream == null) {
@@ -110,6 +125,8 @@ public class APIConnectAdapter  {
         final String DATA_LIST = "user";
         final String[] DATA_USER = {"id", "firstname", "lastname", "email", "token"};
 
+        if (resultJSON.length() == 0 || resultJSON.length() == 3)
+            return null;
         ContentValues JSONContent = new ContentValues();
         JSONObject jsonObject = new JSONObject(resultJSON);
         JSONObject userData = jsonObject.getJSONObject(DATA_LIST);
@@ -127,7 +144,7 @@ public class APIConnectAdapter  {
     {
         final String[] DATA_TEAM = {"project_name", "user_id", "first_name", "last_name", "occupation", "number_of_tasks_begun", "number_of_ongoing_tasks"};
 
-        if (result.length() == 0 || result.equals("[]"))
+        if (result.length() == 0 || result.length() == 3)
             return null;
         JSONObject forecastJSON = new JSONObject(result);
         List<ContentValues> list = new Vector<ContentValues>();
@@ -164,7 +181,7 @@ public class APIConnectAdapter  {
                 "number_bugs",
                 "number_messages"};
 
-        if (result.length() == 0 || result.equals("[]"))
+        if (result.length() == 0 || result.length() == 3)
             return null;
         JSONObject forecastJSON = new JSONObject(result);
         List<ContentValues> list = new Vector<ContentValues>();
@@ -216,5 +233,36 @@ public class APIConnectAdapter  {
             ++i;
         }
         return list;
+    }
+
+    public ContentValues getUserInformation(String result)  throws JSONException {
+        final String[] userInfo = {"first_name", "last_name", "birthday", "avatar", "email", "phone", "country", "linkedin", "viadeo", "twitter"};
+
+        JSONObject forecastJSON = new JSONObject(result);
+        ContentValues values = new ContentValues();
+        for (int data = 0; data < userInfo.length; ++data) {
+            if (forecastJSON.getString(userInfo[data]) == null)
+                values.put(userInfo[data], "");
+            else
+                values.put(userInfo[data], forecastJSON.getString(userInfo[data]));
+        }
+        return values;
+    }
+
+    public void printContentValues(ContentValues values)
+    {
+        Set<Map.Entry<String, Object>> s= values.valueSet();
+        Iterator itr = s.iterator();
+
+        Log.d("DatabaseSync", "ContentValue Length :: " + values.size());
+
+        while(itr.hasNext())
+        {
+            Map.Entry me = (Map.Entry)itr.next();
+            String key = me.getKey().toString();
+            Object value =  me.getValue();
+
+            Log.d("DatabaseSync", "Key:"+key+", values:"+(String)(value == null?null:value.toString()));
+        }
     }
 }

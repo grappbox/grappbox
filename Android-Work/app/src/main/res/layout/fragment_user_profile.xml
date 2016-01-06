@@ -179,6 +179,7 @@
             android:layout_height="wrap_content"/>
 
         <Button
+            android:id="@+id/change_password_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -186,6 +187,7 @@
             android:text="Change password" />
 
         <Button
+            android:id="@+id/send_modification_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

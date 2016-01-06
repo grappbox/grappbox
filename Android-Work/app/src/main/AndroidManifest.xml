@@ -23,8 +23,10 @@
             android:label="@string/title_activity_main"
             android:parentActivityName=".Login.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" >
-
-
+        </activity>
+        <activity
+            android:name=".UserProfileActivity"
+            android:label="@string/title_activity_user_profile" >
         </activity>
     </application>
 
