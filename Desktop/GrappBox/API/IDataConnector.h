@@ -43,7 +43,11 @@ namespace API
         GR_PROJECT_CANCEL_DELETE,
         GR_PROJECT_USER_ROLE,
         GR_CUSTOMER_ACCESSES,
-        GR_CUSTOMER_ACCESS_BY_ID
+        GR_CUSTOMER_ACCESS_BY_ID,
+        GR_USERPROJECT_BUG,
+        GR_XLAST_BUG_OFFSET,
+        GR_PROJECTBUG_ALL,
+        GR_BUGCOMMENT
     };
 
     enum PostRequest
@@ -51,7 +55,8 @@ namespace API
         PR_LOGIN,
         PR_ROLE_ADD,
         PR_ROLE_ASSIGN,
-        PR_CUSTOMER_GENERATE_ACCESS
+        PR_CUSTOMER_GENERATE_ACCESS,
+        PR_EDIT_BUG
     };
 
     enum DeleteRequest

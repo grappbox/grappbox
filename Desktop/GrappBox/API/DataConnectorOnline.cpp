@@ -150,6 +150,18 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
     case GR_CUSTOMER_ACCESS_BY_ID:
         reply = GetAction("projects/getcustomeraccessbyid", data);
         break;
+    case GR_USERPROJECT_BUG:
+        reply = GetAction("bugtracker/getticketsbyuser", data);
+        break;
+    case GR_XLAST_BUG_OFFSET:
+        reply = GetAction("bugtracker/getlasttickets", data);
+        break;
+    case GR_PROJECTBUG_ALL:
+        reply = GetAction("bugtracker/gettickets", data);
+        break;
+    case GR_BUGCOMMENT:
+        reply = GetAction("bugtracker/getcomments", data);
+        break;
     }
     if (reply == NULL)
         throw QException();
@@ -484,6 +496,38 @@ QNetworkReply *DataConnectorOnline::DeleteProject(QVector<QString> &data)
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
     QNetworkReply *request = _Manager->sendCustomRequest(requestSend, QByteArray("DELETE"), new QBuffer(jsonba));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::EditBug(QVector<QString> &data)
+{
+    QJsonObject json;
+    QJsonArray  tags;
+
+    //data[0] = id dans l'URL
+    json["token"] = data[1];
+    json["title"] = data[2];
+    json["description"] = data[3];
+    json["userId"] = data[4];
+    json["stateId"] = data[5];
+    json["stateName"] = data[6];
+    for (int i = 7; i < data.length() - 1; ++i)
+    {
+        QJsonObject newTag;
+
+        newTag["id"] = data[i++];
+        newTag["name"] = data[i];
+        tags.append(newTag);
+    }
+    json["parentId"] = data[data.length() - 1];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/editticket/") + data[0]));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
 }

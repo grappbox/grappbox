@@ -93,7 +93,7 @@ void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString nam
         emit OnDelAssigned(id, name);
 }
 
-BugViewAssigneeWidget::BugAssigneePage BugViewAssigneeWidget::GetCurrentPage()
+BugViewAssigneeWidget::BugAssigneePage BugViewAssigneeWidget::GetCurrentPage() const
 {
     if (_mainWidget->currentWidget() == _viewPage)
         return BugAssigneePage::VIEW;

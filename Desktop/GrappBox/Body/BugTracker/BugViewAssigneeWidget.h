@@ -33,7 +33,7 @@ public:
     void            DeletePageItems(const BugViewAssigneeWidget::BugAssigneePage page);
     void            CreateViewPageItems(const QList<QJsonObject> &items);
     void            CreateAssignPageItems(const QList<QJsonObject> &items);
-    BugAssigneePage GetCurrentPage();
+    BugAssigneePage GetCurrentPage() const;
 
 signals: //Common signals
     void            OnPageChanged(BugAssigneePage);

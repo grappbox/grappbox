@@ -5,6 +5,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QJSONObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 #include <QMap>
 #include <QTimeZone>
 #include <QBuffer>
@@ -57,6 +58,8 @@ namespace API
         QNetworkReply *AttachRole(QVector<QString> &data);
         QNetworkReply *ProjectInvite(QVector<QString> &data);
         QNetworkReply *CustomerGenerateAccess(QVector<QString> &data);
+        QNetworkReply *CloseBug(QVector<QString> &data);
+        QNetworkReply *EditBug(QVector<QString> &data);
 
         // Delete
     private:
