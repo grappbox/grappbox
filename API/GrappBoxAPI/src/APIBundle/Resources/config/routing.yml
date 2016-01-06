@@ -517,6 +517,13 @@ timeline_archiveMessage:
 
 
 
+bugtracker_getTicket:
+    path:       /bugtracker/getticket/{token}/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:getTicket, _format: json }
+    requirements:
+        id: \d+
+    methods:  [GET]
+
 bugtracker_postTicket:
     path:       /bugtracker/postticket/{id}
     defaults:   { _controller: APIBundle:Bugtracker:postTicket, _format: json }

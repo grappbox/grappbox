@@ -26,6 +26,80 @@ use DateTime;
  */
 class BugtrackerController extends RolesAndTokenVerificationController
 {
+
+	/**
+	* @api {get} /V0.11/bugtracker/getticket/:token/:id Get a ticket
+	* @apiName getTicket
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {int} id id of the ticket
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {int} creatorId author id
+	* @apiSuccess {int} userId assigned user id
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*		"title": "function getUser not working",
+	*		"description": "the function does not answer the right way, fix it ASAP !",
+	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*		"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*		"deletedAt": null,
+	*		"state": {"id": 1, "name": "Waiting"},
+	*		"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}]
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getTicketAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		$em = $this->getDoctrine()->getManager();
+		$ticket = $em->getRepository("APIBundle:Bug")->find($id);
+		if (!$this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$object = $ticket->objectToArray();
+		$object['state'] = $em->getRepository("APIBundle:BugState")->find($ticket->getStateId())->objectToArray();
+		$object['tags'] = array();
+		$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $ticket->getId()));
+		foreach ($tags as $key => $tag_value) {
+			$object['tags'][] = $tag_value->objectToArray();
+		}
+
+		return new JsonResponse($object);
+	}
+
 	/**
 	* @api {post} /V0.9/bugtracker/postticket/:id Post bug ticket
 	* @apiName postTicket
