@@ -100,4 +100,8 @@ APIBundle\Entity\Project:
           targetEntity: CustomerAccess
           mappedBy: projects
           cascade: [remove]
+        tags:
+          targetEntity: Tag
+          mappedBy: project
+          cascade: [remove]
     lifecycleCallbacks: {  }

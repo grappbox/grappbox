@@ -716,4 +716,42 @@ class Project
     {
         return $this->customers_access;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tags;
+
+
+    /**
+     * Add tags
+     *
+     * @param \APIBundle\Entity\Tag $tags
+     * @return Project
+     */
+    public function addTag(\APIBundle\Entity\Tag $tags)
+    {
+        $this->tags[] = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param \APIBundle\Entity\Tag $tags
+     */
+    public function removeTag(\APIBundle\Entity\Tag $tags)
+    {
+        $this->tags->removeElement($tags);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
 }
