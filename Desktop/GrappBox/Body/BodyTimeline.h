@@ -9,6 +9,9 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 
+#include <QList>
+#include <QVector>
+
 #include <QWidget>
 #include <QPushButton>
 
@@ -25,6 +28,9 @@ signals:
 
 public slots:
     void OnChange();
+    void OnTimelineGet(int ID, QByteArray data);
+    void OnTimelineFailGet(int ID, QByteArray array);
+    void OnTimelineSuccessLoad(int ID);
 
 private:
     QVBoxLayout         *_MainLayout;
@@ -43,6 +49,10 @@ private:
     CanvasTimeline      *_ClientTimeline;
     CanvasTimeline      *_TeamTimeline;
 
+    MainWindow          *_MainApp;
+    int                 _IdWidget;
+
+    QList<int>          _TimelineLoading;
 };
 
 #endif // BODYTIMELINE_H

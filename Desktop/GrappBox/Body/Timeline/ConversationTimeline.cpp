@@ -16,12 +16,12 @@ ConversationTimeline::ConversationTimeline(int id, bool revert, QWidget *parent)
     _ScrollAnim->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     _ScrollAnim->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
-    _MainMessage = new MessageTimeLine(1);
+    _MainMessage = new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(1, false, "Main message", "This is a message", QDateTime::fromString("15/11/2015 14:56", "dd/mm/yyyy hh:mm"), 1, NULL, "Nadeau", "Leo"));
     _CommentLayout->addWidget(_MainMessage);
-    _CommentLayout->addWidget(new MessageTimeLine(-1));
+    _CommentLayout->addWidget(new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(-1, false, "Main message", "This is a message", QDateTime::fromString("15/11/2015 14:56", "dd/mm/yyyy hh:mm"), 1, NULL, "Nadeau", "Leo")));
     for (int i = 0; i < 2; ++i)
     {
-        _CommentMessage[i + 2] = new MessageTimeLine(i + 2);
+        _CommentMessage[i + 2] = new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(1, false, "Main message", "This is a message", QDateTime::fromString("15/11/2015 14:56", "dd/mm/yyyy hh:mm"), 1, NULL, "Nadeau", "Leo"));
         _CommentLayout->addWidget(_CommentMessage[i + 2]);
     }
 

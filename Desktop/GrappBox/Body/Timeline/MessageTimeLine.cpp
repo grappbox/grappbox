@@ -2,10 +2,10 @@
 #include "SFontLoader.h"
 #include "MessageTimeLine.h"
 
-MessageTimeLine::MessageTimeLine(int idTimeline, QWidget *parent) : QWidget(parent)
+MessageTimeLine::MessageTimeLine(MessageTimeLineInfo data, QWidget *parent) : QWidget(parent)
 {
-    _IDTimeline = idTimeline;
-    _IDUserCreator = API::SDataManager::GetDataManager()->GetUserId();
+    _IDTimeline = data.IdTimeline;
+    _IDUserCreator = data.IdUser;
 
     bool canEdit = _IDUserCreator == API::SDataManager::GetDataManager()->GetUserId();
 
@@ -18,17 +18,20 @@ MessageTimeLine::MessageTimeLine(int idTimeline, QWidget *parent) : QWidget(pare
     _ButtonLayout = new QHBoxLayout();
 
     _Avatar = new QLabel();
-    _Avatar->setPixmap(QPixmap(":/Image/Ressources/Icon/UserDefault.png").scaled(QSize(64, 64)));
+    if (data.Avatar != NULL)
+        _Avatar->setPixmap(QPixmap::fromImage(*data.Avatar).scaled(QSize(64, 64)));
+    else
+        _Avatar->setText("Cannot retrieve avatar");
     _Avatar->setFixedSize(64, 64);
-    _Title = new QLabel("Titre");
+    _Title = new QLabel(data.Title);
     _Title->setFixedHeight(30);
     _Title->setStyleSheet("background: #2abb67; color: #FFFFFF; border-style:none; border-bottom-style: solid; border-width: 1px; border-color: #FFFFFF; ");
     QFont font = SFontLoader::GetFont(SFontLoader::OPEN_SANS_BOLD);
     font.setPixelSize(20);
     _Title->setFont(font);
-    _Message = new QLabel("Ceci est un message.");
+    _Message = new QLabel(data.Message);
     _Message->setStyleSheet("QLabel {border-style:none; border-bottom-style: solid; border-width: 1px; border-color: #5a5a5a; }");
-    _Date = new QLabel("Last modified : 09/04/2013 05:24PM by Leo Nadeau");
+    _Date = new QLabel("Last modified : " + data.DateLastModification.toString("") + " by " + data.LastName + ' ' + data.Name);
     _Date->setFixedHeight(24);
     _EditButton = new PushButtonImage();
     _EditButton->SetImage(QPixmap(":/icon/Ressources/Icon/Edit.png"));
@@ -49,17 +52,17 @@ MessageTimeLine::MessageTimeLine(int idTimeline, QWidget *parent) : QWidget(pare
     _CancelButton->setFixedSize(24, 24);
 
     _ButtonLayout->addWidget(_ValidateButton);
-    if (_IDTimeline == -1)
+    if (data.IsComment)
         _CancelButton->hide();
     _ButtonLayout->addWidget(_CancelButton);
     _MainLayoutEdit->addWidget(_TitleEdit);
-    if (_IDTimeline != 1) // Remplacer par : Si ce n'est pas un commentaire
+    if (data.IsComment) // Remplacer par : Si ce n'est pas un commentaire
         _TitleEdit->hide();
     _MainLayoutEdit->addWidget(_EditMessageArea);
     _MainLayoutEdit->addLayout(_ButtonLayout);
 
     editModeWidget->setLayout(_MainLayoutEdit);
-    if (_IDTimeline == 1) // Remplacer par : Si ce n'est pas un commentaire
+    if (data.IsComment) // Remplacer par : Si ce n'est pas un commentaire
         _MainLayoutNormal->addWidget(_Title, 0, 0, 1, 6);
     _MainLayoutNormal->addWidget(_Avatar, 1, 0, 3, 1);
     _MainLayoutNormal->addWidget(_Message, 1, 1, 2, 5);

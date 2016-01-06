@@ -70,7 +70,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(timeline, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
 
     _CurrentCanvas = _StackedLayout->addWidget(dashboard);
-    _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas);
+    _MainPageId = _CurrentCanvas;
+    _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas, false, false);
     BodyWhiteboard *whiteboard = new BodyWhiteboard();
     connect(whiteboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
@@ -153,6 +154,7 @@ MainWindow::MainWindow(QWidget *parent)
     _Login = new LoginWindow(this);
 
     QObject::connect(_MenuWidget, SIGNAL(MenuChanged(int)), this, SLOT(OnMenuChange(int)));
+    QObject::connect(_MenuWidget, SIGNAL(ProjectChange()), this, SLOT(OnProjectChange()));
 
     _Login->show();
     this->hide();
@@ -172,6 +174,7 @@ void MainWindow::OnLogin()
     this->show();
     qDebug() << "On Login !";
     _MenuWidget->ForceChangeMenu(_CurrentCanvas);
+    _MenuWidget->UpdateProject();
     OnMenuChange(_CurrentCanvas);
 }
 
@@ -183,6 +186,20 @@ void MainWindow::OnLogout()
     API::SDataManager::GetDataManager()->LogoutUser();
     _Login->show();
     hide();
+}
+
+void MainWindow::OnProjectChange()
+{
+    int currentProject = API::SDataManager::GetDataManager()->GetCurrentProject();
+    if (currentProject == -1)
+    {
+        OnMenuChange(_MainPageId);
+        return;
+    }
+    QWidget *currentWidget = _StackedLayout->itemAt(_CurrentCanvas)->widget();
+    (dynamic_cast<IBodyContener*>(currentWidget))->Hide();
+    _StackedLayout->setCurrentIndex(0);
+    (dynamic_cast<IBodyContener*>(currentWidget))->Show(_CurrentCanvas, this);
 }
 
 void MainWindow::OnSettings()

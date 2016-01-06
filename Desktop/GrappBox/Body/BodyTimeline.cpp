@@ -1,4 +1,8 @@
 #include <QTabBar>
+#include <QMessageBox>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValueRef>
 #include "BodyTimeline.h"
 
 BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
@@ -35,8 +39,8 @@ BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
     _ClientSA = new QScrollArea();
     _TeamSA = new QScrollArea();
 
-    _ClientTimeline = new CanvasTimeline(1);
-    _TeamTimeline = new CanvasTimeline(2);
+    _ClientTimeline = new CanvasTimeline();
+    _TeamTimeline = new CanvasTimeline();
 
     _ClientSA->setWidget(_ClientTimeline);
     _ClientSA->setWidgetResizable(true);
@@ -63,8 +67,39 @@ BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
     QObject::connect(_ButtonToTeam, SIGNAL(clicked(bool)), this, SLOT(OnChange()));
 }
 
+void BodyTimeline::OnTimelineGet(int ID, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject objMain = doc.object();
+    for (QJsonValueRef ref : objMain)
+    {
+        QJsonObject obj = ref.toObject();
+        //if (obj["type_id"].toInt() == 1)
+
+    }
+}
+
+void BodyTimeline::OnTimelineFailGet(int ID, QByteArray array)
+{
+    QMessageBox::critical(this, "Timeline", "Impossible to retrieve timeline from projects. Please contact an administrator.");
+}
+
+void BodyTimeline::OnTimelineSuccessLoad(int ID)
+{
+    _TimelineLoading.removeAll(ID);
+    if (_TimelineLoading.size() == 0)
+        emit OnLoadingDone(_IdWidget);
+}
+
 void BodyTimeline::Show(int ID, MainWindow *mainApp)
 {
+    /*_IdWidget = ID;
+    _MainApp = mainApp;
+    QVector<QString> data;
+    data.push_back(API::SDataManager::GetDataManager()->GetToken());
+    data.push_back(QVariant(API::SDataManager::GetDataManager()->GetCurrentProject()).toString());
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_LIST_TIMELINE, data, this, "OnTimelineGet", "OnTimelineFailGet");
+*/
     emit OnLoadingDone(ID);
 }
 

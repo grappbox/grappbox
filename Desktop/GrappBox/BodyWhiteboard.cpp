@@ -183,8 +183,8 @@ void BodyWhiteboard::Show(int ID, MainWindow *mainApp)
 {
     _WhiteboardId = ID;
     _MainApplication = mainApp;
-    show();
-    emit OnLoadingDone();
+    //show();
+    emit OnLoadingDone(ID);
 }
 
 void BodyWhiteboard::Hide()

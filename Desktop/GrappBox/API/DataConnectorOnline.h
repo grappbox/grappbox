@@ -11,7 +11,7 @@
 
 #include "IDataConnector.h"
 
-#define URL_API QString("http://api.grappbox.com/app_dev.php/V0.8/")
+#define URL_API QString("http://api.grappbox.com/app_dev.php/V0.9/")
 
 namespace API
 {
@@ -57,6 +57,8 @@ namespace API
         QNetworkReply *AttachRole(QVector<QString> &data);
         QNetworkReply *ProjectInvite(QVector<QString> &data);
         QNetworkReply *CustomerGenerateAccess(QVector<QString> &data);
+        QNetworkReply *EditMessageTimeline(QVector<QString> &data);
+        QNetworkReply *PostMessageTimeline(QVector<QString> &data);
 
         // Delete
     private:
