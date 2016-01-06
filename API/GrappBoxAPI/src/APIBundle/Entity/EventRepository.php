@@ -21,9 +21,13 @@ class EventRepository extends EntityRepository
 		$i = 0;
 		$defaultDate = new \DateTime;
 
-		if ($meetings === null || count($meetings) == 0)
+		if ($meetings === null)
 		{
 			throw new NotFoundHttpException("No events for the id ".$id);
+		}
+		if (count($meetings) == 0)
+		{
+			return (Object)$arr;
 		}
 
 		foreach ($meetings as $meeting) {

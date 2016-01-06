@@ -2006,13 +2006,18 @@ class RolesAndTokenVerificationController extends Controller
 
   	$roles = $em->getRepository('APIBundle:Role')->findByprojects($projectId);
 
-  	if ($roles === null || count($roles) == 0)
+  	if ($roles === null)
   	{
   		throw new NotFoundHttpException("The're no roles for the project with id ".$projectId);
   	}
 
   	$arr =array();
   	$i = 1;
+
+    if (count($roles) == 0)
+    {
+      return new JsonResponse((Object)$arr);
+    }
 
   	foreach ($roles as $role) {
   		$roleId = $role->getId();
@@ -3040,13 +3045,18 @@ class RolesAndTokenVerificationController extends Controller
   	$em = $this->getDoctrine()->getManager();
 	$userRoles = $em->getRepository('APIBundle:ProjectUserRole')->findByuserId($user->getId());
 
-	if ($userRoles === null || count($userRoles) == 0)
+	if ($userRoles === null)
 	{
 		throw new NotFoundHttpException("The user ".$user->getId()." don't have roles.");
 	}
 
 	$arr = array();
 	$i = 1;
+
+  if (count($userRoles) == 0)
+  {
+    return new JsonResponse((Object)$arr);
+  }
 
 	foreach ($userRoles as $role) {
 		$purId = $role->getId();
@@ -3749,13 +3759,18 @@ class RolesAndTokenVerificationController extends Controller
     $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
     $purs = $qb->getResult();
 
-    if ($purs === null || count($purs) == 0)
+    if ($purs === null)
     {
       throw new NotFoundHttpException("The're no roles for the user ".$userId." for the project ".$projectId);
     }
 
     $arr = array();
     $i = 1;
+
+    if (count($purs) == 0)
+    {
+      return new JsonResponse((Object)$arr);
+    }
 
     foreach ($purs as $role) {
       $roleId = $role->getRoleId();

@@ -2535,13 +2535,18 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$customerAccess = $em->getRepository('APIBundle:CustomerAccess')->findByprojects($projectId);
 
-		if ($customerAccess === null || count($customerAccess) == 0)
+		if ($customerAccess === null)
 		{
 			throw new NotFoundHttpException("The're no custromer access for the project with id ".$projectId);
 		}
 
 		$arr = array();
 		$i = 1;
+
+		if (count($customerAccess) == 0)
+		{
+			return new JsonResponse((Object)$arr);
+		}
 
 		foreach ($customerAccess as $ca) {
 			$id = $ca->getId();

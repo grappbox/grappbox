@@ -1479,9 +1479,13 @@ class TaskController extends RolesAndTokenVerificationController
 		$qb = $repository->createQueryBuilder('t')->join('t.projects', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tasks = $qb->getResult();
 
-		if ($tasks === null || count($tasks) == 0)
+		if ($tasks === null)
 		{
 			throw new NotFoundHttpException("There are no tasks for the project with id ".$projectId);
+		}
+		if (count($tasks) == 0)
+		{
+			return new JsonResponse((Object)$arr);
 		}
 
 		$arr = array();
@@ -1594,9 +1598,13 @@ class TaskController extends RolesAndTokenVerificationController
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();
 
-		if ($tags === null || count($tags) == 0)
+		if ($tags === null)
 		{
 			throw new NotFoundHttpException("There are no tags for the project with id ".$projectId);
+		}
+		if (count($tags) == 0)
+		{
+			return new JsonResponse((Object)$arr);
 		}
 
 		$arr = array();

@@ -18,13 +18,18 @@ class TaskRepository extends EntityRepository
 		
 		$tasks = $qb->getQuery()->getResult();
 
-		if ($tasks === null || count($tasks) == 0)
+		if ($tasks === null)
 		{
 			throw new NotFoundHttpException("No tasks for the user with id ".$id);
 		}
 
 		$arr = array();
 		$i = 1;
+
+		if (count($tasks) == 0)
+		{
+			return (Object)$arr;
+		}
 
 		foreach ($tasks as $task) {
 			$project = $task->getProjects();
@@ -53,7 +58,7 @@ class TaskRepository extends EntityRepository
 		
 		$tasks = $qb->getQuery()->getResult();
 
-		if ($tasks === null || count($tasks) == 0)
+		if ($tasks === null)
 		{
 			throw new NotFoundHttpException("No tasks for the user with id ".$id);
 		}
@@ -61,6 +66,11 @@ class TaskRepository extends EntityRepository
 		$arr = array();
 		$i = 1;
 		$defaultDate = date_create("0000-00-00 00:00:00");
+
+		if (count($tasks) == 0)
+		{
+			return (Object)$arr;
+		}
 
 		foreach ($tasks as $task) {
 			$finishedAt = $task->getFinishedAt();

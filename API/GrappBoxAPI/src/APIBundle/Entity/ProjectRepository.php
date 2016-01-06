@@ -22,9 +22,14 @@ class ProjectRepository extends EntityRepository
 		$i = 0;
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
-		if ($projects === null || count($projects) == 0)
+		if ($projects === null)
 		{
 			throw new NotFoundHttpException("No projects for the id ".$id);
+		}
+
+		if (count($projects) == 0)
+		{
+			return (Object)$arr;
 		}
 
 		foreach ($projects as $project)
@@ -78,9 +83,13 @@ class ProjectRepository extends EntityRepository
 		$i = 0;
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
-		if ($projects === null || count($projects) == 0)
+		if ($projects === null)
 		{
 			throw new NotFoundHttpException("No projects for the id ".$id);
+		}
+		if (count($projects) == 0)
+		{
+			return (Object)$arr;
 		}
 
 
@@ -143,7 +152,7 @@ class ProjectRepository extends EntityRepository
 		
 		$projects = $qb->getQuery()->getResult();
 
-		if ($projects === null || count($projects) == 0)
+		if ($projects === null)
 		{
 			throw new NotFoundHttpException("No projects for the user with id ".$id);
 		}
@@ -195,9 +204,9 @@ class ProjectRepository extends EntityRepository
 			}
 		}
 
-		if (count($arr) == 0)
+		if (count($arr) == 0 || count($projects))
 		{
-			throw new NotFoundHttpException("No projects for the user with id ".$id);
+			return (Object)$arr;
 		}
 
 		return $arr;

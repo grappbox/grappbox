@@ -2919,13 +2919,18 @@ class DashboardController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojects($id);
 
-		if ($tasks === null || count($tasks) == 0)
+		if ($tasks === null)
 		{
 			throw new NotFoundHttpException("The're no tasks for the project ".$id);
 		}
 
 		$arr = array();
 		$i = 1;
+
+    if (count($tasks) == 0)
+    {
+      return new JsonResponse((Object)$arr);
+    }
 
 		foreach ($tasks as $task) {
 			$creatorId = $task->getCreatorId();
@@ -3650,13 +3655,18 @@ class DashboardController extends RolesAndTokenVerificationController
 		$qb = $repository->createQueryBuilder('u')->join('u.projects', 'p')->where('p.id = :id')->setParameter('id', $id)->getQuery();
 		$users = $qb->getResult();
 
-		if ($users === null || count($users) == 0)
+		if ($users === null)
 		{
 			throw new NotFoundHttpException("There're no users for the project with id ".$id);
 		}
 
 		$arr = array();
 		$i = 0;
+
+    if (count($users) == 0)
+    {
+      return new JsonResponse((Object)$arr);
+    }
 
 		foreach ($users as $us) {
 			$userId = $us->getId();
@@ -4672,13 +4682,18 @@ class DashboardController extends RolesAndTokenVerificationController
 		$qb = $repository->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $user->getId())->getQuery();
 		$projects = $qb->getResult();
 
-		if ($projects === null || count($projects) == 0)
+		if ($projects === null)
 		{
 			throw new NotFoundHttpException("There're no projects for the user with id ".$user->getId());
 		}
 
 		$arr = array();
 		$i = 0;
+
+    if (count($projects) == 0)
+    {
+      return new JsonResponse((Object)$arr);
+    }
 
 		foreach ($projects as $project) {
 			$projectId = $project->getId();
@@ -5034,13 +5049,18 @@ class DashboardController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$tasks = $em->getRepository('APIBundle:Task')->findByprojects($id);
 
-		if ($tasks === null || count($tasks) == 0)
+		if ($tasks === null)
 		{
 			throw new NotFoundHttpException("The're no tasks for the project with id ".$id);
 		}
 
 		$arr = array();
 		$i = 1;
+
+    if (count($tasks) == 0)
+    {
+      return new JsonResponse((Object)$arr);
+    }
 
 		foreach ($tasks as $task) {
 			$taskId = $task->getId();
@@ -5311,7 +5331,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$timelineMessages = $em->getRepository('APIBundle:TimelineMessage')->findBytimelineId($id);
 
-		if ($timelineMessages === null || count($timelineMessages) == 0)
+		if ($timelineMessages === null)
 		{
 			throw new NotFoundHttpException("The're no messages for the timeline with id ".$id);
 		}
