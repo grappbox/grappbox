@@ -15,6 +15,7 @@ use APIBundle\Entity\CustomerAccess;
 use APIBundle\Entity\Role;
 use APIBundle\Entity\ProjectUserRole;
 use APIBundle\Entity\Tag;
+use APIBundle\Entity\Timeline;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -366,6 +367,22 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$cloudClass = new CloudController();
 		$cloudClass->createCloudAction($request, $id);
+
+		$teamTimeline = new Timeline();
+		$teamTimeline->setTypeId(2);
+		$teamTimeline->setProjects($project);
+		//$teamTimeline->setProjectId($project->getId());
+		$teamTimeline->setName("TeamTimeline - ".$project->getName());
+
+		$customerTimeline = new Timeline();
+		$customerTimeline->setTypeId(1);
+		$customerTimeline->setProjects($project);
+		//$customerTimeline->setProjectId($project->getId());
+		$customerTimeline->setName("CustomerTimeline - ".$project->getName());
+
+		$em->persist($teamTimeline);
+		$em->persist($customerTimeline);
+		$em->flush();
 
 		return new JsonResponse(array("project_id" => $id));
 	}
@@ -766,7 +783,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			if ($creatorUser === null)
 			{
 				throw new NotFoundHttpException("The user with id ".$content->creatorId." doesn't exist");
-				
+
 			}
 
 			$repository = $em->getRepository('APIBundle:Role');
@@ -1473,7 +1490,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		}
 
 		$delDate = new \DateTime;
-		$delDate->add(new \DateInterval('P7D')); 
+		$delDate->add(new \DateInterval('P7D'));
 		$project->setDeletedAt($delDate);
 
 		$em->flush();
@@ -2294,7 +2311,7 @@ class ProjectController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccessExample Success-Response:
   	* 	{
-  	*		"CustomerAccess 1": 
+  	*		"CustomerAccess 1":
   	*		{
 	*			"customer_token": "dizjflqfq41c645w",
 	*			"id": 2,
@@ -2344,7 +2361,7 @@ class ProjectController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccessExample Success-Response:
   	* 	{
-  	*		"CustomerAccess 1": 
+  	*		"CustomerAccess 1":
   	*		{
   	*			"name": "access for client X",
 	*			"customer_token": "dizjflqfq41c645w",
@@ -2395,7 +2412,7 @@ class ProjectController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccessExample Success-Response:
   	* 	{
-  	*		"CustomerAccess 1": 
+  	*		"CustomerAccess 1":
   	*		{
   	*			"name": "access for client X",
 	*			"customer_token": "dizjflqfq41c645w",
@@ -2446,7 +2463,7 @@ class ProjectController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccessExample Success-Response:
   	* 	{
-  	*		"CustomerAccess 1": 
+  	*		"CustomerAccess 1":
   	*		{
   	*			"name": "access for client X",
 	*			"customer_token": "dizjflqfq41c645w",
@@ -2497,7 +2514,7 @@ class ProjectController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccessExample Success-Response:
   	* 	{
-  	*		"CustomerAccess 1": 
+  	*		"CustomerAccess 1":
   	*		{
   	*			"name": "access for client X",
 	*			"customer_token": "dizjflqfq41c645w",

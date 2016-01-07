@@ -973,7 +973,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {Object[]} tags Ticket tags list
 	* @apiParam {int} tags.id tag id (0 if new)
 	* @apiParam {String} tags.name tag name
-	* @apiParam {int} parentId (required only for comments) ticket commented id
 	*
 	* @apiSuccess {int} id Message id
 	* @apiSuccess {Object} ticket ticket object
@@ -1038,8 +1037,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $bug->getProjectId(), "bugtracker"))
 			return ($this->setNoRightsError());
 
-		if (array_key_exists("commentedId", $content))
-			$bug->setParentId($content->parentId);
 		$bug->setTitle($content->title);
 		$bug->setDescription($content->description);
 		$bug->setEditedAt(new DateTime('now'));
