@@ -560,6 +560,13 @@ bugtracker_getComments:
         id: \d+
     methods:  [GET]
 
+bugtracker_postComment:
+    path:       /bugtracker/postcomment/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:postComment, _format: json }
+    requirements:
+        id: \d+
+    methods:  [POST]
+
 bugtracker_getTicketsByUser:
     path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
     defaults:   { _controller: APIBundle:Bugtracker:getTicketsByUser, _format: json }
@@ -581,7 +588,7 @@ bugtracker_getStates:
 
 bugtracker_setParticipants:
     path:       /bugtracker/setparticipants/{id}
-    defaults:   { _controller: APIBundle:Butracker:setParticipants, _format: json }
+    defaults:   { _controller: APIBundle:Bugtracker:setParticipants, _format: json }
     requirements:
         id: \d+
     methods: [POST]

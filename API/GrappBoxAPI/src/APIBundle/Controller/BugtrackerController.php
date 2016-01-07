@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use APIBundle\Controller\RolesAndTokenVerificationController;
 
+use APIBundle\Entity\User;
 use APIBundle\Entity\Bug;
 use APIBundle\Entity\BugState;
 use APIBundle\Entity\BugTag;
@@ -366,7 +367,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} id id of the project
 	* @apiParam {String} token client authentification token
 	*
-	* @apiSuccess {int} id Message id
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
 	* @apiSuccess {int} tickets.creatorId author id
@@ -390,7 +390,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*			"tickets" : [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*		{"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -403,7 +403,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
 	*			]
 	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*		{"id": "158","creatorId": 12, "projectId": 14, "parentId": null,
 	*			"title": "Bad menu disposition on mobile",
 	*			"description": "the menu is unsusable on mobile",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -656,7 +656,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
 	* @apiParam {String[]} tags Ticket tags list
-	* @apiParam {int} parentId (required only for comments) ticket commented id
 	*
 	* @apiSuccess {int} id Message id
 	* @apiSuccess {Object} ticket ticket object
@@ -681,7 +680,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": 150,
+	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -725,8 +724,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setProjects($em->getRepository("APIBundle:Project")->find($id));
 		$bug->setProjectId($id);
 		$bug->setCreatorId($user->getId());
-		if (array_key_exists("commentedId", $content))
-			$bug->setParentId($content->parentId);
 		$bug->setTitle($content->title);
 		$bug->setDescription($content->description);
 		$bug->setCreatedAt(new DateTime('now'));
@@ -1001,7 +998,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -1108,6 +1105,80 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$ticket["users"] = $participants;
 
 		return new JsonResponse(array("ticket"=>$ticket));
+	}
+
+	/**
+	* @api {post} /V0.11/bugtracker/postcomment/:id Post a comment
+	* @apiName postComment
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {String} title Comment title
+	* @apiParam {String} description Comment content
+	* @apiParam {int} parentId commented ticket id
+	*
+	* @apiSuccess {int} id Comment id
+	* @apiSuccess {Object} Comment Comment object
+	* @apiSuccess {int} Comment.id Comment id
+	* @apiSuccess {int} Comment.creatorId author id
+	* @apiSuccess {int} Comment.projectId project id
+	* @apiSuccess {String} Comment.title Comment title
+	* @apiSuccess {String} Comment.description Comment content
+	* @apiSuccess {int} Comment.parentId parent Ticket id
+	* @apiSuccess {DateTime} Comment.createdAt Comment creation date
+	* @apiSuccess {DateTime} Comment.editedAt Comment edition date
+	* @apiSuccess {DateTime} Comment.deletedAt Comment deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function postCommentAction(Request $request, $id)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$em = $this->getDoctrine()->getManager();
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$bug = new Bug();
+		$bug->setProjects($em->getRepository("APIBundle:Project")->find($id));
+		$bug->setProjectId($id);
+		$bug->setCreatorId($user->getId());
+		$bug->setParentId($content->parentId);
+		$bug->setTitle($content->title);
+		$bug->setDescription($content->description);
+		$bug->setCreatedAt(new DateTime('now'));
+
+		$ticket = $bug->objectToArray();
+
+		return new JsonResponse(array("comment"=>$ticket));
 	}
 
 	/**
@@ -1551,7 +1622,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
 	* @apiParam {int} limit number max of tickets to get
 	*
-	* @apiSuccess {int} id Message id
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
 	* @apiSuccess {int} tickets.creatorId author id
@@ -1854,7 +1924,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} user id of the user
 	* @apiParam {String} token client authentification token
 	*
-	* @apiSuccess {int} id Message id
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
 	* @apiSuccess {int} tickets.creatorId author id
@@ -2017,7 +2086,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {delete} /V0.11/bugtracker/closeticket/:token/:id Close ticket
+	* @api {delete} /V0.11/bugtracker/closeticket/:token/:id Close ticket or delete comment
 	* @apiName closeTicket
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -2243,7 +2312,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				foreach ($bug->getUsers() as $key => $value) {
 					if ($user->getId() == $value->getId())
 						return $this->setBadRequest("User already in the list");
-				}
+					}
 
 				$bug->addUser($user);
 			}
