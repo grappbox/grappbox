@@ -167,7 +167,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			}
 		}
 
-		return new JsonResponse($timeline_array);
+		return new JsonResponse(array("timelines" => $timeline_array));
 	}
 
 	/**
