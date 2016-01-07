@@ -11,10 +11,10 @@ APIBundle\Entity\Bug:
         creatorId:
             type: integer
             column: creator_id
-        userId:
-            type: integer
-            column: user_id
-            nullable: TRUE
+        # userId:
+        #     type: integer
+        #     column: user_id
+        #     nullable: TRUE
         parentId:
             type: integer
             column: parent_id
@@ -49,4 +49,16 @@ APIBundle\Entity\Bug:
           joinColumn:
             name: project_id
             referencedColumnName: id
+    manyToMany:
+        users:
+          targetEntity: User
+          inversedBy: bugs
+          joinTable:
+            name: bugs_user
+            joinColumns:
+              bug_id:
+                referencedColumnName: id
+            inverseJoinColumns:
+              user_id:
+                referencedColumnName: id
     lifecycleCallbacks: {  }

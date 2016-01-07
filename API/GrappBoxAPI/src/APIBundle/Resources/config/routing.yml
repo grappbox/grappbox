@@ -579,6 +579,12 @@ bugtracker_getStates:
     defaults:   { _controller: APIBundle:Bugtracker:getStates, _format: json }
     methods:  [GET]
 
+bugtracker_setParticipants:
+    path:       /bugtracker/setparticipants/{id}
+    defaults:   { _controller: APIBundle:Butracker:setParticipants, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
 
 
 

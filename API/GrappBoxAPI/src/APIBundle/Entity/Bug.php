@@ -19,10 +19,10 @@ class Bug
      */
     private $creatorId;
 
-    /**
-     * @var integer
-     */
-    private $userId;
+    // /**
+    //  * @var integer
+    //  */
+    // private $userId;
 
     /**
      * @var integer
@@ -69,6 +69,10 @@ class Bug
      */
     private $projects;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $users;
 
     /**
      * Get id
@@ -333,6 +337,40 @@ class Bug
         return $this->projects;
     }
 
+
+    /**
+     * Add users
+     *
+     * @param \APIBundle\Entity\User $users
+     * @return Bug
+     */
+    public function addUser(\APIBundle\Entity\User $users)
+    {
+        $this->users[] = $users;
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \APIBundle\Entity\User $users
+     */
+    public function removeUser(\APIBundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
     /**
      * Get object content into array
      *
@@ -343,7 +381,6 @@ class Bug
       return array(
         "id" => $this->id,
         "creatorId" => $this->creatorId,
-        "userId" => $this->userId,
         "projectId" => $this->projectId,
         "title" => $this->title,
         "description" => $this->description,

@@ -908,8 +908,11 @@ class UserController extends RolesAndTokenVerificationController
 		{
 			if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
 				return $this->setBadRequest("Email already in DB");
+			else if ($content->email != "")
+				return $this->setBadRequest("Email invalid");
 			else
 				$user->setEmail($content->email);
+
 		}
 		if (array_key_exists('phone', $content))
 			$user->setPhone($content->phone);
