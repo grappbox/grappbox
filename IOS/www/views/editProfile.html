@@ -1,0 +1,81 @@
+﻿<ion-view>
+    <ion-nav-title>Edit Profile</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Project information -->
+        <div class="item item-divider"></div>
+        <p>Type your personal informations</p>
+        <form>
+            <ion-input class="item item-input">
+                <ion-label>First Name</ion-label>
+                <input type="text"
+                       placeholder="My first name"
+                       name="profile_firstName"
+                       ng-model="profileInfo.first_name"/>
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Last Name</ion-label>
+                <input type="text"
+                       placeholder="My last name"
+                       name="profile_lastName"
+                       ng-model="profileInfo.last_name" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Birthday</ion-label>
+                <input type="date"
+                       placeholder="My birthday'"
+                       name="profile_birthday"
+                       ng-model="profileInfo.birthday.date" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Phone</ion-label>
+                <input type="tel"
+                       placeholder="My phone'"
+                       name="profile_phone"
+                       ng-model="profileInfo.phone" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Country</ion-label>
+                <input type="text"
+                       placeholder="My country name"
+                       name="profile_country"
+                       ng-model="profileInfo.country" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Email</ion-label>
+                <input type="text"
+                       placeholder="My email'"
+                       name="profile_email"
+                       ng-model="profileInfo.email" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>LinkedIn</ion-label>
+                <input type="text"
+                       placeholder="My LinkedIn"
+                       name="profile_facebook"
+                       ng-model="profileInfo.linkedIn" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Twitter</ion-label>
+                <input type="text"
+                       placeholder="My Twitter"
+                       name="profile_twitter"
+                       ng-model="profileInfo.twitter" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Password</ion-label>
+                <input type="password"
+                       placeholder="My password'"
+                       name="project_password"
+                       ng-model="profileInfo.password" />
+            </ion-input>
+            <a class="button button-block button-dark" ng-click="EditProfile()">
+                Save
+            </a>
+        </form>
+    </ion-content>
+</ion-view>

@@ -68,3 +68,28 @@ angular.module('GrappBox.api', ['ngResource'])
 .factory('GenCustomerAccess', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'projects/generatecustomeraccess');
 })
+
+// USERS
+.factory('GetProfileInfo', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'user/basicinformations/:token', { token: "@token" });
+})
+
+.factory('GetUserInfo', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'user/getuserbasicinformations/:token/:userId', { token: "@token", userId: "@userId" });
+})
+
+.factory('EditProfile', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'user/basicinformations/:token',
+        { token: "@token" },
+        { 'update': { method: 'PUT' } }
+        );
+})
+
+.factory('GetCurrentTasks', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'user/getalltasks/:token', { token: "@token" });
+})
+
+// GANTT
+.factory('GetCurrentAndNextTasks', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'user/getcurrentandnexttasks/:token', { token: "@token" });
+})

@@ -35,20 +35,21 @@ angular.module('GrappBox.controllers')
 
     //Get Next Meetings
     $scope.nextMeetingsTab = {};
+    $scope.nextMeetingsError = "";
     $scope.GetNextMeetings = function () {
         NextMeetings.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
                 console.log(data);
                 $scope.nextMeetingsTab = data;
+                if (Object.keys(data.toJSON()).length < 1)
+                    $scope.nextMeetingsError = "You don't have meeting.";
             })
             .then(function () {
                 $scope.$broadcast('scroll.refreshComplete');
             })
             .catch(function (error) {
                 console.error('Get next meetings list failed ! Reason: ' + error.status + ' ' + error.statusText);
-                if ($scope.nextMeetingsTab == 0)
-                    $scope.noMeeting = "You have no meeting right now.";
             })
     }
     $scope.GetNextMeetings();

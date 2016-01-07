@@ -5,9 +5,28 @@
 <ion-view>
     <ion-nav-title class="item-text-wrap">User</ion-nav-title>
     <ion-content class="has-header">
+
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
         <div class="item item-divider">
-            User name
+            Information
         </div>
-        <p>Under construction.</p>
+        <ion-list class="card">
+            <ion-item class="item-body">
+                <img class="full-image" ng-src="#" />
+                <p><strong>First Name: </strong> {{ userInfo.first_name }}</p>
+                <p><strong>Last Name: </strong> {{ userInfo.last_name }}</p>
+                <p><strong>birthday: </strong> {{ userInfo.birthday.date }}</p>
+                <p><strong>Phone: </strong> {{ userInfo.phone }}</p>
+                <p><strong>Email: </strong> {{ userInfo.email }}</p>
+                <p><strong>Country: </strong> {{ userInfo.country }}</p>
+                <p><strong>LinkedIn: </strong> {{ userInfo.linkedIn }}</p>
+                <p><strong>Twitter: </strong> {{ userInfo.twitter }}</p>
+                <p><strong>Viadeo: </strong> {{ userInfo.viadeo }}</p>
+            </ion-item>
+        </ion-list>
     </ion-content>
 </ion-view>

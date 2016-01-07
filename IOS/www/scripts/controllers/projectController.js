@@ -157,6 +157,7 @@ angular.module('GrappBox.controllers')
     ** Method: GET
     */
     $scope.customersList = {};
+    $scope.customersError = "";
     $scope.GetCustomersOnProject = function () {
         GetCustomersAccessOnProject.get({
             token: $rootScope.userDatas.token,
@@ -165,6 +166,8 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get customers on project list successful !');
                 $scope.customersList = data;
+                if (Object.keys(data.toJSON()).length < 1)
+                    $scope.customersError = "You don't have customers.";
             })
             .then(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -311,7 +314,7 @@ angular.module('GrappBox.controllers')
     }
 
     /*
-    ** Get customers accesses on project
+    ** Retreive Project
     ** Method: GET
     */
     $scope.RetreiveProject = function () {
@@ -321,7 +324,8 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Retreive project successful !');
-                $scope.customersList = data;
+                $scope.retreiveProject = data;
+                console.log(data);
             })
             .then(function () {
                 $scope.GetProjectInfo();

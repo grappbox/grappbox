@@ -4,8 +4,12 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('AuthCtrl', function ($scope, $rootScope, $state, Login, Logout) {
+.controller('AuthCtrl', function ($scope, $rootScope, $state, Login, $ionicHistory) {
     $scope.user = {};
+
+    $scope.$on('$ionicView.enter', function () {
+        $ionicHistory.clearCache();
+    });
 
     $scope.login = function () {
         Login.save({ login: $scope.user.email, password: $scope.user.password }).$promise

@@ -18,7 +18,7 @@
     <ion-side-menu side="left">
         <ion-content>
             <ion-list> <!-- Display user picture & name -->
-                <ion-item class="item item-thumbnail-left">
+                <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
                     <img src="{{ userDatas.avatar }}" />
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>

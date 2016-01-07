@@ -5,7 +5,7 @@
 <ion-view>
     <ion-nav-title>Dashboard</ion-nav-title>
     <ion-content overflow-scroll="false">
-        
+
         <!-- Refresher -->
         <ion-refresher pulling-text="Pull to refresh..."
                        on-refresh="doRefresh()">
@@ -34,21 +34,22 @@
 
             <!-- Next Meeting -->
             <ion-slide>
-                <div class="item item-divider">
-                    Next Meetings
-                </div>
-                {{ noMeeting }}
-                <div class="list">
-                    <a class="item item-thumbnail-left"
-                       ng-repeat="nextMeeting in nextMeetingsTab"
-                       ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
-                        <img ng-src="{{ nextMeeting.project_logo }}" />
-                        <h2>{{ nextMeeting.event_type }}: {{ nextMeeting.event_title }}</h2>
-                        <h4>"{{ nextMeeting.event_description }}"</h4>
-                        <h4 class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.event_begin_date.date }}</h4>
-                        <h4 class="icon-left ion-ios-clock-outline"> {{ nextMeeting.event_end_date.date }}</h4>
-                    </a>
-                </div>
+                <div class="item item-divider">Next Meetings</div>
+                <ion-list>
+                    <ion-item class="item-body">
+                        {{ nextMeetingsError }}
+                        <a class="item item-thumbnail-left"
+                           ng-repeat="nextMeeting in nextMeetingsTab"
+                           ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
+                            <img ng-src="{{ nextMeeting.project_logo }}" />
+                            <h2>{{ nextMeeting.event_type }}: {{ nextMeeting.event_title }}</h2>
+                            <p><strong>Project: </strong> {{ nextMeeting.project_name }}</p>
+                            <p>"{{ nextMeeting.event_description }}"</p>
+                            <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.event_begin_date.date }}</p>
+                            <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.event_end_date.date }}</p>
+                        </a>
+                    </ion-item>
+                </ion-list>
             </ion-slide>
 
             <!-- Global Progress -->

@@ -17,7 +17,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             StatusBar.styleDefault();
         }
     });
-    $rootScope.API_VERSION = '0.9'; //actual API's version
+    $rootScope.API_VERSION = '0.11'; //actual API's version
     $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
 })
 
@@ -177,6 +177,29 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
         /*
         ** USER
         */
+
+        // profile view
+        .state('app.profile', {
+            url: "/profile",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/profile.html",
+                    controller: 'ProfileCtrl'
+                }
+            }
+        })
+
+        // edit profile view
+        .state('app.editProfile', {
+            url: "/profile/edit",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/editProfile.html",
+                    controller: 'EditProfileCtrl'
+                }
+            }
+        })
+
         // user view
         .state('app.user', {
             url: "/user/:userId",
@@ -199,6 +222,20 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
             }
         })
 
+        /*
+        ** GANTT
+        */
+
+        // user settings view
+        .state('app.gantt', {
+            url: "/gantt/:projectId/:taskId",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/gantt.html",
+                    controller: 'GanttCtrl'
+                }
+            }
+        })
     // if no state are found, here is the fallback url - It's also the default page when starting application
     $urlRouterProvider.otherwise('/auth');
     //$urlRouterProvider.otherwise('/app/whiteboards/1');
