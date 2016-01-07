@@ -904,7 +904,7 @@ class UserController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists('avatar', $content))
 			$user->setAvatar($content->avatar);
-		if (array_key_exists('email', $content))
+		if (array_key_exists('email', $content) && $user->getEmail() != $content->email)
 		{
 			if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
 				return $this->setBadRequest("Email already in DB");
@@ -927,7 +927,7 @@ class UserController extends RolesAndTokenVerificationController
    			$encoded = $encoder->encodePassword($user, $content->password);
 			$user->setPassword($encoded);
 		}
-		
+
 		$em->flush();
 		return new JsonResponse("User Basic Informations changed.");
 	}
