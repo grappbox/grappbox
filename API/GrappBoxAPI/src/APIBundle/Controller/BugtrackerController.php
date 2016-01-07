@@ -1133,7 +1133,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
+	*		"comment": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
