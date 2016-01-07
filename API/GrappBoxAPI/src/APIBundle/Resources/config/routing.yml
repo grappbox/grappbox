@@ -567,6 +567,13 @@ bugtracker_postComment:
         id: \d+
     methods:  [POST]
 
+bugtracker_editComment:
+    path:       /bugtracker/editcomment/{id}
+    defaults:   { _controller: APIBundle:Bugtracker:editComment, _format: json }
+    requirements:
+        id: \d+
+    methods:  [POST]
+
 bugtracker_getTicketsByUser:
     path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
     defaults:   { _controller: APIBundle:Bugtracker:getTicketsByUser, _format: json }

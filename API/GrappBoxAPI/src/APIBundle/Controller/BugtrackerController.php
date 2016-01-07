@@ -1176,6 +1176,79 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setDescription($content->description);
 		$bug->setCreatedAt(new DateTime('now'));
 
+		$em->persist($bug);
+		$em->flush();
+
+		$ticket = $bug->objectToArray();
+
+		return new JsonResponse(array("comment"=>$ticket));
+	}
+
+	/**
+	* @api {post} /V0.11/bugtracker/editcomment/:id Edit a comment
+	* @apiName EditComment
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	*	@apiParam {int} commentId comment id to edit
+	* @apiParam {String} title Comment title
+	* @apiParam {String} description Comment content
+	*
+	* @apiSuccess {int} id Comment id
+	* @apiSuccess {Object} Comment Comment object
+	* @apiSuccess {int} Comment.id Comment id
+	* @apiSuccess {int} Comment.creatorId author id
+	* @apiSuccess {int} Comment.projectId project id
+	* @apiSuccess {String} Comment.title Comment title
+	* @apiSuccess {String} Comment.description Comment content
+	* @apiSuccess {int} Comment.parentId parent Ticket id
+	* @apiSuccess {DateTime} Comment.createdAt Comment creation date
+	* @apiSuccess {DateTime} Comment.editedAt Comment edition date
+	* @apiSuccess {DateTime} Comment.deletedAt Comment deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"comment": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function EditCommentAction(Request $request, $id)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$em = $this->getDoctrine()->getManager();
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$bug = $em->getRepository("APIBundle:Bug")->find($content->commentId);
+		$bug->setTitle($content->title);
+		$bug->setDescription($content->description);
+		$bug->setEditedAt(new DateTime('now'));
+
 		$ticket = $bug->objectToArray();
 
 		return new JsonResponse(array("comment"=>$ticket));
