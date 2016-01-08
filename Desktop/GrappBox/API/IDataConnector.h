@@ -34,6 +34,8 @@ namespace API
         GR_LIST_TIMELINE,
         GR_TASK,
         GR_TIMELINE,
+        GR_COMMENT_TIMELINE,
+        GR_ARCHIVE_MESSAGE_TIMELINE,
         GR_USER_DATA,
         GR_WHITEBOARD,
         GR_LOGOUT,
@@ -58,7 +60,9 @@ namespace API
         PR_ROLE_ADD,
         PR_ROLE_ASSIGN,
         PR_CUSTOMER_GENERATE_ACCESS,
-        PR_EDIT_BUG
+        PR_EDIT_BUG,
+        PR_MESSAGE_TIMELINE,
+        PR_EDIT_MESSAGE_TIMELINE,
     };
 
     enum DeleteRequest

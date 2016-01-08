@@ -39,6 +39,7 @@ public slots:
     void OnSettings();
     void OnUserSettings();
     void OnLoadingFinished(int);
+    void OnProjectChange();
 
 private:
     LoginWindow         *_Login;
@@ -65,6 +66,7 @@ private:
     ProfilMainInformation       *_ProfilWidget;
     int                         _UserSettingsId;
     int                         _SettingsId;
+    int                         _MainPageId;
 
     // Menu
     SliderMenu          *_MenuWidget;

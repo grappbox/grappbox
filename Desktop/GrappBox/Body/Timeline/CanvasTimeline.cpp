@@ -1,9 +1,13 @@
+#include <QMessageBox>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValueRef>
+#include "SDataManager.h"
 #include "SFontLoader.h"
 #include "CanvasTimeline.h"
 
-CanvasTimeline::CanvasTimeline(int idTimeline, QWidget *parent) : QWidget(parent)
+CanvasTimeline::CanvasTimeline(QWidget *parent) : QWidget(parent)
 {
-    _IDTimeline = idTimeline;
     _MainTimelineLayout = new QGridLayout();
 
     _MainTimelineLayout->setSpacing(0);
@@ -68,6 +72,27 @@ CanvasTimeline::CanvasTimeline(int idTimeline, QWidget *parent) : QWidget(parent
     setLayout(_MainTimelineLayout);
 
     QObject::connect(_ConfirmAddingMessage, SIGNAL(clicked(bool)), this, SLOT(AddingTimeline()));
+}
+
+void CanvasTimeline::TimelineGetDone(int id, QByteArray array)
+{
+
+}
+
+void CanvasTimeline::TimelineGetFailed(int id, QByteArray array)
+{
+
+}
+
+void CanvasTimeline::LoadData(int id)
+{
+    _IDTimeline = id;
+    QVector<QString> data;
+    data.push_back(API::SDataManager::GetDataManager()->GetToken());
+    data.push_back(QVariant(id).toString());
+    data.push_back(QVariant(0).toString());
+    data.push_back(QVariant(10).toString());
+    //API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_TIMELINE, )
 }
 
 void  CanvasTimeline::UpdateTimelineAnim(int Id)

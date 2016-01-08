@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
+#include <QDateTime>
 #include <QLabel>
 #include <QTextEdit>
 #include <QLineEdit>
@@ -17,9 +18,38 @@
 
 class MessageTimeLine : public QWidget
 {
+public:
+    struct MessageTimeLineInfo
+    {
+    public:
+        MessageTimeLineInfo(int idTimeline, bool isComment, QString title, QString message, QDateTime lastModification, int idUser, QImage *avatar, QString name, QString lastName)
+        {
+            IdTimeline = idTimeline;
+            IsComment = isComment;
+            Title = title;
+            Message = message;
+            DateLastModification = lastModification;
+            IdUser = idUser;
+            Avatar = avatar;
+            Name = name;
+            LastName = lastName;
+        }
+
+        int IdTimeline;
+        bool IsComment;
+        QString Title;
+        QString Message;
+        QDateTime DateLastModification;
+        int IdUser;
+        QImage *Avatar;
+        QString Name;
+        QString LastName;
+    };
+
+private:
     Q_OBJECT
 public:
-    MessageTimeLine(int idTimeline, QWidget *parent = 0);
+    MessageTimeLine(MessageTimeLineInfo data, QWidget *parent = 0);
 
 signals:
     void OnLoadingDone(int);

@@ -164,6 +164,14 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
         break;
     case GR_GETBUGS_STATUS:
         reply = GetAction("bugtracker/getStates", data);
+    case GR_LIST_TIMELINE:
+        reply = GetAction("timeline/gettimelines", data);
+        break;
+    case GR_TIMELINE:
+        reply = GetAction("timeline/getlastmessages", data);
+        break;
+    case GR_COMMENT_TIMELINE:
+        reply = GetAction("timeline/getcomments", data);
         break;
     }
     if (reply == NULL)
@@ -551,4 +559,14 @@ QNetworkReply *DataConnectorOnline::CustomerGenerateAccess(QVector<QString> &dat
     QNetworkReply *request = _Manager->post(requestSend, *jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
+}
+
+QNetworkReply *DataConnectorOnline::EditMessageTimeline(QVector<QString> &data)
+{
+
+}
+
+QNetworkReply *DataConnectorOnline::PostMessageTimeline(QVector<QString> &data)
+{
+
 }

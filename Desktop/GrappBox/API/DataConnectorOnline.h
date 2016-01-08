@@ -58,8 +58,12 @@ namespace API
         QNetworkReply *AttachRole(QVector<QString> &data);
         QNetworkReply *ProjectInvite(QVector<QString> &data);
         QNetworkReply *CustomerGenerateAccess(QVector<QString> &data);
+
         QNetworkReply *CloseBug(QVector<QString> &data);
         QNetworkReply *EditBug(QVector<QString> &data);
+
+        QNetworkReply *EditMessageTimeline(QVector<QString> &data);
+        QNetworkReply *PostMessageTimeline(QVector<QString> &data);
 
         // Delete
     private:

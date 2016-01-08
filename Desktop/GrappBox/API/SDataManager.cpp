@@ -11,6 +11,7 @@ SDataManager::SDataManager()
 {
     _OnlineDataConnector = new DataConnectorOnline;
     _UserId = -1;
+    _CurrentProject = -1;
 }
 
 SDataManager::~SDataManager()
@@ -48,28 +49,40 @@ void                       SDataManager::LogoutUser()
     _UserId = -1;
 }
 
-int                        SDataManager::GetUserId()
+int                        SDataManager::GetUserId() const
 {
     return _UserId;
 }
 
-QString                    SDataManager::GetUserName()
+QString                    SDataManager::GetUserName() const
 {
     if (_UserId == -1)
         return "";
     return _UserName;
 }
 
-QString                    SDataManager::GetUserLastName()
+QString                    SDataManager::GetUserLastName() const
 {
     if (_UserId == -1)
         return "";
     return _UserLastName;
 }
 
-QString                    SDataManager::GetToken()
+QString                    SDataManager::GetToken() const
 {
     if (_UserId == -1)
         return "";
     return _Token;
+}
+
+int                        SDataManager::GetCurrentProject() const
+{
+    return _CurrentProject;
+}
+
+void                       SDataManager::SetCurrentProjectId(int id)
+{
+    _CurrentProject = id;
+    if (_CurrentProject < 0)
+        _CurrentProject = -1;
 }

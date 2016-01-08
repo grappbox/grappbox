@@ -18,13 +18,18 @@ class CanvasTimeline : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CanvasTimeline(int idTimeline, QWidget *parent = 0);
+    explicit CanvasTimeline(QWidget *parent = 0);
+    void LoadData(int id);
 
 signals:
+    void OnFinishedLoading(int id);
 
 public slots:
     void UpdateTimelineAnim(int Id);
     void AddingTimeline();
+
+    void TimelineGetDone(int id, QByteArray array);
+    void TimelineGetFailed(int id, QByteArray array);
 
 private:
     int             _IDTimeline;

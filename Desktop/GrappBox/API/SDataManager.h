@@ -16,10 +16,13 @@ namespace API
         void                       LogoutUser();
         static void                Destroy();
 
-        int                        GetUserId();
-        QString                    GetUserName();
-        QString                    GetUserLastName();
-        QString                    GetToken();
+        int                        GetUserId() const;
+        QString                    GetUserName() const;
+        QString                    GetUserLastName() const;
+        QString                    GetToken() const;
+        int                        GetCurrentProject() const;
+
+        void                       SetCurrentProjectId(int id);
 
     private:
         SDataManager();
@@ -32,6 +35,7 @@ namespace API
         QString             _UserName;
         QString             _UserLastName;
         QString             _Token;
+        int                 _CurrentProject;
 
     };
 
