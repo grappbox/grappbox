@@ -2583,7 +2583,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => null, "stateId" => $stateId), array(), $limit, $offset);
+		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
