@@ -1028,6 +1028,55 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	  * 	}
 		*
 		*/
+
+	/**
+	* @api {post} V0.11/accountadministration/register Request user creation and login
+	* @apiName register
+	* @apiGroup AccountAdministration
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {string} firstname user's firstname
+	* @apiParam {string} lastname user's lastname
+	* @apiParam {Date} [birthday] user's birthday
+	* @apiParam {file} [avatar] user's avatar
+	* @apiParam {string} password user's password
+	* @apiParam {email} email user's email
+	* @apiParam {string} [phone] user's phone
+	* @apiParam {string} [country] user's country
+	* @apiParam {url} [linkedin] user's linkedin
+	* @apiParam {url} [viadeo] user's viadeo
+	* @apiParam {url} [twitter] user's twitter
+	*
+	* @apiSuccess {Object} user user's informations
+	* @apiSuccess {int} user.id whiteboard id
+	* @apiSuccess {string} user.firstname user's firstname
+	* @apiSuccess {string} user.lastname user's lastname
+	* @apiSuccess {string} user.email user's email
+	* @apiSuccess {string} user.token user's authentication token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"user": {
+	*			"id": 12,
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"email": "john.doe@gmail.com",
+	*			"token": "fkE35dcDneOjF...."
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Missing Parameter
+ 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Missing Parameter"
+	  * 	}
+		* @apiErrorExample Email Already Used
+	 	* 	HTTP/1.1 400 Bad Request
+	  * 	{
+	  * 		"Email already in DB"
+	  * 	}
+		*
+		*/
 	public function registerAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -1043,7 +1092,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
     $user->setLastname($content->lastname);
 
 		if (array_key_exists('birthday', $content))
-			$user->setBirthday(new Datetime($content->birthday));
+			$user->setBirthday(date_create($content->birthday));
 
 		if ($request->files->get('avatar'))
 		{

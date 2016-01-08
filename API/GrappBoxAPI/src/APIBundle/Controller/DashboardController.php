@@ -2960,7 +2960,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3006,7 +3006,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3052,7 +3052,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3098,7 +3098,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3144,7 +3144,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3190,7 +3190,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3236,7 +3236,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3282,7 +3282,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*
   	* @apiSuccess {String} first_name First name of the user
   	* @apiSuccess {String} last_name Last name of the user
-  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {DateTime} birthday birthday date of the user
   	* @apiSuccess {String} avatar avatar of the user
   	* @apiSuccess {String} email Email of the user
   	* @apiSuccess {Number} phone Phone number of the user
@@ -3317,6 +3317,47 @@ class DashboardController extends RolesAndTokenVerificationController
 	* 	}
   	*
   	*/
+
+  	/**
+  	* @api {get} /V0.11/dashboard/getuserbasicinformations/:token Get the connected user basic informations
+  	* @apiName getUserBasicInformations
+  	* @apiGroup Dashboard
+  	* @apiVersion 0.11.1
+  	*
+  	* @apiParam {String} token Token of the person connected
+  	*
+  	* @apiSuccess {String} first_name First name of the user
+  	* @apiSuccess {String} last_name Last name of the user
+  	* @apiSuccess {Date} birthday birthday date of the user
+  	* @apiSuccess {String} avatar avatar of the user
+  	* @apiSuccess {String} email Email of the user
+  	* @apiSuccess {Number} phone Phone number of the user
+  	* @apiSuccess {String} country Country of the user
+  	* @apiSuccess {String} linkedin Linkedin of the user
+  	* @apiSuccess {String} viadeo Viadeo of the user
+  	* @apiSuccess {String} twitter Twitter of the user
+  	*
+  	* @apiSuccessExample Success-Response:
+  	* 	{
+	*		"first_name": "John",
+	*		"last_name": "Doe",
+	*		"birthday": "2015-10-15",
+	*		"avatar": "avatar data ...",
+	*		"email": "john.doe@gmail.com",
+	*		"phone": +33631245478,
+	*		"country": "France",
+	*		"linkedin": "http://linkedin.com/John.Doe",
+	*		"viadeo": "http://viadeo.com/John.Doe",
+	*		"twitter": "http://twitter.com/John.Doe"
+  	* 	}
+  	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+  	*
+  	*/
 	public function getUserBasicInformationsAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
@@ -3327,7 +3368,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$firstName = $user->getFirstname();
 		$lastName = $user->getLastname();
-		$birthday = $user->getBirthday();
+		$birthday = $user->getBirthday()->format('Y-m-d');
 		$avatar = $user->getAvatar();
 		$mail = $user->getEmail();
 		$phone = $user->getPhone();

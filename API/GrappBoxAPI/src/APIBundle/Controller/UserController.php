@@ -328,11 +328,52 @@ class UserController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} /V0.11/user/basicinformations/:token Request the basic informations of the connected user
+	* @apiName getBasicInformations
+	* @apiGroup Users
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {String} token token of the person connected
+	*
+	* @apiSuccess {String} first_name First name of the person
+	* @apiSuccess {String} last_name Last name of the person
+	* @apiSuccess {Date} birthday Birthday of the person
+	* @apiSuccess {Text} avatar Avatr of the person
+	* @apiSuccess {String} email Email of the person
+	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} country Country the person in living in
+	* @apiSuccess {String} linkedin Linkedin of the person
+	* @apiSuccess {String} viadeo Viadeo of the person
+	* @apiSuccess {String} twitter Twitter of the person
+	*
+	* @apiSuccessExample Success-Response:
+	* 	{
+	*		"first_name": "John",
+	*		"last_name": "Doe",
+	*		"birthday": "1945-06-18",
+	*		"avatar": "10001111001100110010101010",
+	*		"email": "john.doe@gmail.com"
+	*		"phone": "+33984231475",
+	*		"country": "France",
+	*		"linkedin": "linkedin.com/john.doe",
+	*		"viadeo": "viadeo.com/john.doe",
+	*		"twitter": "twitter.com/john.doe"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	*/
 	private function getBasicInformations($user)
 	{
 		$firstName = $user->getFirstname();
 		$lastName = $user->getLastname();
-		$birthday = $user->getBirthday();
+		$birthday = $user->getBirthday()->format('Y-m-d');
 		$avatar = $user->getAvatar();
 		$email = $user->getEmail();
 		$phone = $user->getPhone();
@@ -488,6 +529,54 @@ class UserController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {get} /V0.11/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
+	* @apiName getUserBasicInformations
+	* @apiGroup Users
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {String} token token of the person connected
+	* @apiParam {Number} userId id of the user you want some informations
+	*
+	* @apiSuccess {String} first_name First name of the person
+	* @apiSuccess {String} last_name Last name of the person
+	* @apiSuccess {Date} birthday Birthday of the person
+	* @apiSuccess {Text} avatar Avatr of the person
+	* @apiSuccess {String} email Email of the person
+	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} country Country the person in living in
+	* @apiSuccess {String} linkedin Linkedin of the person
+	* @apiSuccess {String} viadeo Viadeo of the person
+	* @apiSuccess {String} twitter Twitter of the person
+	*
+	* @apiSuccessExample Success-Response:
+	* 	{
+	*		"first_name": "John",
+	*		"last_name": "Doe",
+	*		"birthday": "1945-06-18"
+	*		"avatar": "10001111001100110010101010",
+	*		"email": "john.doe@gmail.com"
+	*		"phone": "+33984231475",
+	*		"country": "France",
+	*		"linkedin": "linkedin.com/john.doe",
+	*		"viadeo": "viadeo.com/john.doe",
+	*		"twitter": "twitter.com/john.doe"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with id X doesn't exist"
+	* 	}
+	*
+	*/
 	public function getUserBasicInformationsAction(Request $request, $token, $userId)
 	{
 		$user = $this->checkToken($token);
@@ -502,7 +591,7 @@ class UserController extends RolesAndTokenVerificationController
 
 		$firstName = $userInfos->getFirstname();
 		$lastName = $userInfos->getLastname();
-		$birthday = $userInfos->getBirthday();
+		$birthday = $userInfos->getBirthday()->format('Y-m-d');
 		$avatar = $userInfos->getAvatar();
 		$email = $userInfos->getEmail();
 		$phone = $userInfos->getPhone();
@@ -888,6 +977,60 @@ class UserController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {put} /V0.11/user/basicinformations/:token Update the basic informations of the user connected
+	* @apiName putBasicInformations
+	* @apiGroup Users
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {String} [first_name] First name of the person
+	* @apiParam {String} [last_name] Last name of the person
+	* @apiParam {Date} [birthday] Birthday of the person
+	* @apiParam {Text} [avatar] Avatar of the person
+	* @apiParam {String} [email] Email of the person
+	* @apiParam {String} [password] Password of the person
+	* @apiParam {Number} [phone] Phone number of the person
+	* @apiParam {String} [country] Country the person in living in
+	* @apiParam {String} [linkedin] Linkedin of the person
+	* @apiParam {String} [viadeo] Viadeo of the person
+	* @apiParam {String} [twitter] Twitter of the person
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"first_name": "John",
+	*		"last_name": "Doe",
+	*		"birthday": "1945-06-18"
+	*		"avatar": "10001111001100110010101010",
+	*		"email": "john.doe@gmail.com",
+	*		"password": "azertyuiop",
+	*		"phone": +33984231475,
+	*		"country": "France",
+	*		"linkedin": "linkedin.com/john.doe",
+	*		"viadeo": "viadeo.com/john.doe",
+	*		"twitter": "twitter.com/john.doe"
+	* 	}
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"message" : "User Basic Informations changed."
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	*/
 	private function putBasicInformations($content, $user, $em)
 	{
 		if (array_key_exists('first_name', $content))
@@ -896,10 +1039,7 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setLastname($content->last_name);
 		if (array_key_exists('birthday', $content))
 		{
-			if (array_key_exists('timezone', $content->birthday) && $content->birthday->timezone != "")
-				$birthday = new \Datetime($content->birthday->date, new \DatetimeZone($content->birthday->timezone));
-			else
-				$birthday = new \Datetime($content->birthday->date);
+			$birthday = date_create($content->birthday);
 			$user->setBirthday($birthday);
 		}
 		if (array_key_exists('avatar', $content))

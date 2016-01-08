@@ -4,10 +4,12 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * User
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var integer
@@ -132,6 +134,34 @@ class User
         $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    
+    public function getUsername()
+    {
+        return $this->email;
+    }
+    public function getSalt()
+    {
+       return null;
+    }
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+    public function eraseCredentials()
+    {
+    }
+    public function objectToArray()
+    {
+      return array(
+          'id' => $this->id,
+          'firstname' => $this->firstname,
+          'lastname' => $this->lastname,
+          'email' => $this->email,
+          'token' => $this->token,
+          'avatar' => $this->avatar
+      );
     }
 
     /**
