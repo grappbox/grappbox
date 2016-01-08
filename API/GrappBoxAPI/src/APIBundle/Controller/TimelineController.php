@@ -1658,6 +1658,11 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	{
 	* 		"Insufficient User Rights"
 	* 	}
+	* @apiErrorExample Bad Timeline Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Timeline Id"
+	* 	}
 	*
 	*/
 	public function getLastMessagesAction(Request $request, $token, $id, $offset, $limit)
@@ -1667,6 +1672,8 @@ class TimelineController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		if (!($timeline instanceof Timeline))
+			return $this->setBadRequest("Bad Timeline Id");
 
 		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
@@ -1834,6 +1841,11 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	{
 	* 		"Insufficient User Rights"
 	* 	}
+	* @apiErrorExample Bad Timeline Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Timeline Id"
+	* 	}
 	*
 	*/
 	public function archiveMessageAction(Request $request, $token, $id, $messageId)
@@ -1844,6 +1856,8 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		if (!($timeline instanceof Timeline))
+			return $this->setBadRequest("Bad Timeline Id");
 
 		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
