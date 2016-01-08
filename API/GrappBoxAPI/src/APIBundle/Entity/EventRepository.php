@@ -25,10 +25,6 @@ class EventRepository extends EntityRepository
 		{
 			throw new NotFoundHttpException("No events for the id ".$id);
 		}
-		if (count($meetings) == 0)
-		{
-			return (Object)$arr;
-		}
 
 		foreach ($meetings as $meeting) {
 			$endDate = $meeting->getEndDate();
@@ -86,6 +82,12 @@ class EventRepository extends EntityRepository
 				}
 			}
 		}
+
+		if (count($meetings) == 0)
+		{
+			return (Object)$arr;
+		}
+
 		return ($arr);
 	}
 }
