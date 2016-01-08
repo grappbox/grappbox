@@ -8,15 +8,20 @@ APIBundle\Entity\Notification:
             generator:
                 strategy: AUTO
     fields:
-        typeId:
+        type:
+            type: string
+            length: 255
+            column: type
+        targetId:
             type: integer
-            column: type_id
-        linkId:
-            type: integer
-            column: link_id
-        userId:
-            type: integer
-            column: user_id
-        text:
+            column: target_id
+        message:
             type: text
+    manyToOne:
+            user:
+              targetEntity: User
+              inversedBy: notifications
+              joinColumn:
+                name: user_id
+                referencedColumnName: id
     lifecycleCallbacks: {  }

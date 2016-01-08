@@ -15,24 +15,24 @@ class Notification
     private $id;
 
     /**
-     * @var integer
+     * @var string
      */
-    private $typeId;
+    private $type;
 
     /**
      * @var integer
      */
-    private $linkId;
-
-    /**
-     * @var integer
-     */
-    private $userId;
+    private $targetId;
 
     /**
      * @var string
      */
-    private $text;
+    private $message;
+
+    /**
+     * @var \APIBundle\Entity\User
+     */
+    private $user;
 
 
     /**
@@ -46,94 +46,94 @@ class Notification
     }
 
     /**
-     * Set typeId
+     * Set type
      *
-     * @param integer $typeId
+     * @param string $type
      * @return Notification
      */
-    public function setTypeId($typeId)
+    public function setType($type)
     {
-        $this->typeId = $typeId;
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Get typeId
-     *
-     * @return integer 
-     */
-    public function getTypeId()
-    {
-        return $this->typeId;
-    }
-
-    /**
-     * Set linkId
-     *
-     * @param integer $linkId
-     * @return Notification
-     */
-    public function setLinkId($linkId)
-    {
-        $this->linkId = $linkId;
-
-        return $this;
-    }
-
-    /**
-     * Get linkId
-     *
-     * @return integer 
-     */
-    public function getLinkId()
-    {
-        return $this->linkId;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
-     * @return Notification
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return integer 
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * Set text
-     *
-     * @param string $text
-     * @return Notification
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-
-        return $this;
-    }
-
-    /**
-     * Get text
+     * Get type
      *
      * @return string 
      */
-    public function getText()
+    public function getType()
     {
-        return $this->text;
+        return $this->type;
+    }
+
+    /**
+     * Set targetId
+     *
+     * @param integer $targetId
+     * @return Notification
+     */
+    public function setTargetId($targetId)
+    {
+        $this->targetId = $targetId;
+
+        return $this;
+    }
+
+    /**
+     * Get targetId
+     *
+     * @return integer 
+     */
+    public function getTargetId()
+    {
+        return $this->targetId;
+    }
+
+    /**
+     * Set message
+     *
+     * @param string $message
+     * @return Notification
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * Get message
+     *
+     * @return string 
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \APIBundle\Entity\User $user
+     * @return Notification
+     */
+    public function setUser(\APIBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \APIBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

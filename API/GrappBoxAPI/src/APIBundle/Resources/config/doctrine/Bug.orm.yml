@@ -11,10 +11,6 @@ APIBundle\Entity\Bug:
         creatorId:
             type: integer
             column: creator_id
-        # userId:
-        #     type: integer
-        #     column: user_id
-        #     nullable: TRUE
         parentId:
             type: integer
             column: parent_id

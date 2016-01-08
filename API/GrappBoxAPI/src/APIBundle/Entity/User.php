@@ -728,4 +728,42 @@ class User implements UserInterface
     {
         return $this->gantt_updator;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $notifications;
+
+
+    /**
+     * Add notifications
+     *
+     * @param \APIBundle\Entity\Notification $notifications
+     * @return User
+     */
+    public function addNotification(\APIBundle\Entity\Notification $notifications)
+    {
+        $this->notifications[] = $notifications;
+
+        return $this;
+    }
+
+    /**
+     * Remove notifications
+     *
+     * @param \APIBundle\Entity\Notification $notifications
+     */
+    public function removeNotification(\APIBundle\Entity\Notification $notifications)
+    {
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
 }

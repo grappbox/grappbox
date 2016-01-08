@@ -80,6 +80,9 @@ APIBundle\Entity\User:
         gantt_updator:
           targetEntity: Gantt
           mappedBy: updator_id
+        notifications:
+          targetEntity: Notification
+          mappedBy: user
         # whiteboards:
         #   targetEntity: Whiteboard
         #   mappedBy: updators
