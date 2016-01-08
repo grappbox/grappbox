@@ -83,7 +83,7 @@ class EventRepository extends EntityRepository
 			}
 		}
 
-		if (count($meetings) == 0)
+		if (count($meetings) == 0 || count($arr) == 0)
 		{
 			return (Object)$arr;
 		}
