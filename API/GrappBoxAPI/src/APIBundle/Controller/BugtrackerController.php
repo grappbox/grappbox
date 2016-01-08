@@ -2258,7 +2258,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /V0.11/bugtracker/getStates/:token Get Tickets Status
+	* @api {get} /V0.11/bugtracker/getstates/:token Get Tickets Status
 	* @apiName getStates
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -2424,6 +2424,84 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiName getTicketsByStatus
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.2
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} state status id
+	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
+	* @apiParam {int} limit number max of tickets to get
+	*
+	* @apiSuccess {Object[]} tickets array of all the tickets' project
+	* @apiSuccess {int} tickets.id Ticket id
+	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {int} tickets.projectId project id
+	* @apiSuccess {String} tickets.title Ticket title
+	* @apiSuccess {String} tickets.description Ticket content
+	* @apiSuccess {int} tickets.parentId parent Ticket id
+	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
+	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
+	* @apiSuccess {Object} tickets.state Ticket state
+	* @apiSuccess {Object[]} tickets.tags Ticket tags list
+	* @apiSuccess {int} tickets.tags.id Ticket tags id
+	* @apiSuccess {String} tickets.tags.name Ticket tags name
+	* @apiSuccess {Object[]} tickets.users assigned user list
+	*	@apiSuccess {int} tickets.users.id user id
+	*	@apiSuccess {string} tickets.users.name user full name
+	*	@apiSuccess {string} tickets.users.email user email
+	*	@apiSuccess {string} tickets.users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"tickets": [
+	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 1, "name": "Waiting"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 2, "name": "In traitment"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+
+	/**
+	* @api {get} /V0.11/bugtracker/getlasttickets/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
+	* @apiName getTicketsByStatus
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
 	*
 	* @apiParam {int} id id of the project
 	* @apiParam {String} token client authentification token

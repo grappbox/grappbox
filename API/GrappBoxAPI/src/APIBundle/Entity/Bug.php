@@ -78,6 +78,26 @@ class Bug
     }
 
     /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "creatorId" => $this->creatorId,
+        "projectId" => $this->projectId,
+        "title" => $this->title,
+        "description" => $this->description,
+        "parentId" => $this->parentId,
+        "createdAt" => $this->createdAt,
+        "editedAt" => $this->editedAt,
+        "deletedAt" => $this->deletedAt
+      );
+    }
+
+    /**
      * Get id
      *
      * @return integer 
