@@ -6,6 +6,11 @@ BugTagEntity::BugTagEntity(int id, QString name)
     _name = name;
 }
 
+bool BugTagEntity::operator==(const BugTagEntity &tag)
+{
+    return _id = tag._id;
+}
+
 const int BugTagEntity::GetID() const
 {
     return _id;

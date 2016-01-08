@@ -9,20 +9,21 @@
 #include <QJsonArray>
 #include <QMessageBox>
 
+typedef struct SBugState
+{
+    SBugState();
+    ~SBugState();
+    explicit SBugState(const int id, const QString &name);
+
+    int _id;
+    QString _name;
+} SBugState;
+
 class BugEntity {
-
-public:
-    typedef struct SBugState
-    {
-        explicit SBugState(const int id, const QString &name);
-
-        int _id;
-        QString _name;
-    } SBugState;
 
 public: // System
     BugEntity();
-    explicit BugEntity(QJsonObject &obj);
+    explicit BugEntity(QJsonObject obj);
 
 public: // Getters
     const int                   GetID() const;
@@ -35,7 +36,7 @@ public: // Getters
     const QDateTime             &GetCreatedAt() const;
     const QDateTime             &GetEditedAt() const;
     const QDateTime             &GetDeletedAt() const;
-    const BugEntity::SBugState  &GetState() const;
+    const SBugState             &GetState() const;
     const QList<BugTagEntity>   &GetTags() const;
     const bool                  IsValid() const;
 
@@ -46,7 +47,7 @@ public: // Setters
     void                        SetTitle(const QString &title);
     void                        SetDescription(const QString &desc);
     void                        SetParentID(const int id);
-    void                        SetState(const BugEntity::SBugState &state);
+    void                        SetState(const SBugState &state);
     void                        SetTags(const QList<BugTagEntity> &tags);
     void                        AddTag(const BugTagEntity &tag);
     void                        DelTag(QList<BugTagEntity>::const_iterator tagIt);
@@ -62,7 +63,7 @@ private:
     QDateTime                   _createdAt;
     QDateTime                   _editedAt;
     QDateTime                   _deletedAt;
-    BugEntity::SBugState        _state;
+    SBugState                   _state;
     QList<BugTagEntity>         _tags;
 };
 

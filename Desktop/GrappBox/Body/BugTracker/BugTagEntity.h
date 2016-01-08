@@ -7,6 +7,7 @@ class BugTagEntity
 {
 public:
     explicit        BugTagEntity(int id, QString name);
+    bool            operator==(const BugTagEntity &);
 
 public: //Getters
     const int       GetID() const;

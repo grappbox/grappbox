@@ -37,16 +37,16 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
     this->setStyleSheet(style);
 }
 
-void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)
+void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *dataPage)
 {
     QVector<QString> data;
 
     _pageManager = pageManager;
     //TODO : Link API
     data.append(API::SDataManager::GetDataManager()->GetToken());
-    data.append(-1); // TODO : Put current project id
-    data.append(0);
-    data.append(20);
+    data.append(QString::number(-1)); // TODO : Put current project id
+    data.append(QString::number(0));
+    data.append(QString::number(20));
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET, data, this, "OnGetBugListSuccess", "OnRequestFailure");
 }
 
@@ -90,11 +90,11 @@ void BodyBugList::TriggerNewIssue()
 void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
 {
     QList<QPair<int, QString> > dataf;
-    QJsonDocument doc = QJsonDocument::fromRawData(data);
+    QJsonDocument doc = QJsonDocument::fromBinaryData(data);
     QJsonObject json = doc.object();
 
-    for (int i = 0; !json[i].isNull(); ++i)
-        _bugList.append(BugEntity(json[i].toObject()));
+    for (int i = 0; !json[QString::number(i)].isNull(); ++i)
+        _bugList.append(BugEntity(json[QString::number(i)].toObject()));
 
     this->CreateList();
     emit OnLoadingDone(BodyBugTracker::BUGLIST);

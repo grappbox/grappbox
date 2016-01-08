@@ -25,7 +25,7 @@ class BodyBugList : public QWidget, public IBugPage
     Q_OBJECT
 public:
     explicit            BodyBugList(QWidget *parent = 0);
-    virtual void        Show(BodyBugTracker *pageManager, QJsonObject *data);
+    virtual void        Show(BodyBugTracker *pageManager, QJsonObject *dataPage);
     virtual void        Hide();
 
 private:
