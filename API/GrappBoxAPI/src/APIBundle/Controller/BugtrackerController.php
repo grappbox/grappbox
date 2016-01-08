@@ -2419,4 +2419,118 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return new JsonResponse(array("ticket"=>$object));
 	}
 
+	/**
+	* @api {get} /V0.11/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
+	* @apiName getTicketsByStatus
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.2
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} state status id
+	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
+	* @apiParam {int} limit number max of tickets to get
+	*
+	* @apiSuccess {Object[]} tickets array of all the tickets' project
+	* @apiSuccess {int} tickets.id Ticket id
+	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {int} tickets.projectId project id
+	* @apiSuccess {String} tickets.title Ticket title
+	* @apiSuccess {String} tickets.description Ticket content
+	* @apiSuccess {int} tickets.parentId parent Ticket id
+	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
+	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
+	* @apiSuccess {Object} tickets.state Ticket state
+	* @apiSuccess {Object[]} tickets.tags Ticket tags list
+	* @apiSuccess {int} tickets.tags.id Ticket tags id
+	* @apiSuccess {String} tickets.tags.name Ticket tags name
+	* @apiSuccess {Object[]} tickets.users assigned user list
+	*	@apiSuccess {int} tickets.users.id user id
+	*	@apiSuccess {string} tickets.users.name user full name
+	*	@apiSuccess {string} tickets.users.email user email
+	*	@apiSuccess {string} tickets.users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"tickets": [
+	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 1, "name": "Waiting"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 2, "name": "In traitment"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getTicketsByStateAction(Request $request, $token, $id, $state, $offset, $limit)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => null, "stateId" => $stateId), array(), $limit, $offset);
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$object = $value->objectToArray();
+			$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['tags'] = array();
+			$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
+			foreach ($tags as $key => $tag_value) {
+				$object['tags'][] = $tag_value->objectToArray();
+			}
+
+			$participants = array();
+			foreach ($value->getUsers() as $key => $user_value) {
+				$participants[] = array(
+					"id" => $user_value->getId(),
+					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"email" => $user_value->getEmail(),
+					"avatar" => $user_value->getAvatar()
+				);
+			}
+			$object["users"] = $participants;
+
+			$ticketsArray[] = $object;
+		}
+
+		return new JsonResponse(array("tickets" => $ticketsArray));
+	}
+
 }

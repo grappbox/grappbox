@@ -550,7 +550,19 @@ bugtracker_getLastTickets:
     defaults:   { _controller: APIBundle:Bugtracker:getLastTickets, _format: json }
     requirements:
         id: \d+
+        offset: \d+
+        limit: \d+
     methods:  [GET]
+
+  bugtracker_getTicketByState:
+      path:       /bugtracker/getlasttickets/{token}/{id}/{state}/{offset}/{limit}
+      defaults:   { _controller: APIBundle:Bugtracker:getTicketsByState, _format: json }
+      requirements:
+          id: \d+
+          state: \d+
+          offset: \d+
+          limit: \d+
+      methods:  [GET]
 
 
 bugtracker_getComments:
