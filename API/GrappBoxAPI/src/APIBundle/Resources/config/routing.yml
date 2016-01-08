@@ -149,7 +149,7 @@ project_delCustomerAccess:
 project_addUserToProject:
     path:       projects/addusertoproject
     defaults:   { _controller: APIBundle:Project:addUserToProject, _format: json }
-    methods: [PUT]
+    methods: [POST]
 
 project_removeUserToProject:
     path:       projects/removeusertoproject
@@ -554,15 +554,15 @@ bugtracker_getLastTickets:
         limit: \d+
     methods:  [GET]
 
-  bugtracker_getTicketByState:
-      path:       /bugtracker/getlasttickets/{token}/{id}/{state}/{offset}/{limit}
-      defaults:   { _controller: APIBundle:Bugtracker:getTicketsByState, _format: json }
-      requirements:
-          id: \d+
-          state: \d+
-          offset: \d+
-          limit: \d+
-      methods:  [GET]
+bugtracker_getTicketByState:
+    path:       /bugtracker/getlasttickets/{token}/{id}/{state}/{offset}/{limit}
+    defaults:   { _controller: APIBundle:Bugtracker:getTicketsByState, _format: json }
+    requirements:
+        id: \d+
+        state: \d+
+        offset: \d+
+        limit: \d+
+    methods:  [GET]
 
 
 bugtracker_getComments:

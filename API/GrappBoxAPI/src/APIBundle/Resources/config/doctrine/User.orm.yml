@@ -16,7 +16,7 @@ APIBundle\Entity\User:
             type: string
             length: 255
         birthday:
-            type: datetime
+            type: date
             nullable: TRUE
         avatar:
             type: text

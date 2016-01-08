@@ -3221,6 +3221,81 @@ class ProjectController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {post} /V0.11/projects/addusertoproject Add a user to a project
+	* @apiName addUserToProject
+	* @apiGroup Project
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {String} userEmail Email of the user
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "nfeq34efbfkqf54",
+	*		"projetcId": 2,
+	*		"userEmail": "toto@titi.com"
+	* 	}
+	*
+	* @apiSuccess user_id Id of the user add
+	* @apiSuccess user_firstname First name of the user add
+	* @apiSuccess user_lastname Last name of the user add
+	* @apiSuccess user_avatar Avatar of the user add
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"user_id": 1,
+	*		"user_firstname": "john",
+	*		"user_lastname": "doe"
+	*		"user_avatar": "DATA"
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	*
+	* @apiErrorExample User already in project
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"The user is already in the project"
+	* 	}
+	*
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*
+	* @apiErrorExample No user found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The user with with email X@Y.Z doesn't exist"
+	* 	}
+	*
+	*/
 	public function addUserToProjectAction(Request $request)
 	{
 		$content = $request->getContent();

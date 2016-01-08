@@ -4,12 +4,10 @@ namespace APIBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-
 /**
  * User
  */
-class User implements UserInterface
+class User
 {
     /**
      * @var integer
@@ -72,17 +70,12 @@ class User implements UserInterface
     private $twitter;
 
     /**
-     * @var boolean
-     */
-    //private $isActive;
-
-    /**
      * @var string
      */
     private $token;
 
     /**
-     * @var DateTime
+     * @var \DateTime
      */
     private $tokenValidity;
 
@@ -90,6 +83,26 @@ class User implements UserInterface
      * @var \Doctrine\Common\Collections\Collection
      */
     private $event_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $project_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $gantt_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $gantt_updator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $notifications;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -112,49 +125,19 @@ class User implements UserInterface
     public function __construct()
     {
         $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->project_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->gantt_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->gantt_updator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
         $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
-
-        $this->isActive = true;
-    }
-
-    public function getUsername()
-    {
-        return $this->email;
-    }
-
-    public function getSalt()
-    {
-       return null;
-    }
-
-    public function getRoles()
-    {
-        return array('ROLE_USER');
-    }
-
-    public function eraseCredentials()
-    {
-    }
-
-    public function objectToArray()
-    {
-
-      return array(
-          'id' => $this->id,
-          'firstname' => $this->firstname,
-          'lastname' => $this->lastname,
-          'email' => $this->email,
-          'token' => $this->token,
-          'avatar' => $this->avatar
-      );
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -177,7 +160,7 @@ class User implements UserInterface
     /**
      * Get firstname
      *
-     * @return string
+     * @return string 
      */
     public function getFirstname()
     {
@@ -200,7 +183,7 @@ class User implements UserInterface
     /**
      * Get lastname
      *
-     * @return string
+     * @return string 
      */
     public function getLastname()
     {
@@ -223,7 +206,7 @@ class User implements UserInterface
     /**
      * Get birthday
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getBirthday()
     {
@@ -246,7 +229,7 @@ class User implements UserInterface
     /**
      * Get avatar
      *
-     * @return string
+     * @return string 
      */
     public function getAvatar()
     {
@@ -269,7 +252,7 @@ class User implements UserInterface
     /**
      * Get password
      *
-     * @return string
+     * @return string 
      */
     public function getPassword()
     {
@@ -292,7 +275,7 @@ class User implements UserInterface
     /**
      * Get email
      *
-     * @return string
+     * @return string 
      */
     public function getEmail()
     {
@@ -315,7 +298,7 @@ class User implements UserInterface
     /**
      * Get phone
      *
-     * @return string
+     * @return string 
      */
     public function getPhone()
     {
@@ -338,7 +321,7 @@ class User implements UserInterface
     /**
      * Get country
      *
-     * @return string
+     * @return string 
      */
     public function getCountry()
     {
@@ -361,7 +344,7 @@ class User implements UserInterface
     /**
      * Get linkedin
      *
-     * @return string
+     * @return string 
      */
     public function getLinkedin()
     {
@@ -384,7 +367,7 @@ class User implements UserInterface
     /**
      * Get viadeo
      *
-     * @return string
+     * @return string 
      */
     public function getViadeo()
     {
@@ -407,34 +390,11 @@ class User implements UserInterface
     /**
      * Get twitter
      *
-     * @return string
+     * @return string 
      */
     public function getTwitter()
     {
         return $this->twitter;
-    }
-
-    /**
-     * Set isActive
-     *
-     * @param boolean $isActive
-     * @return User
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * Get isActive
-     *
-     * @return boolean
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
     }
 
     /**
@@ -453,7 +413,7 @@ class User implements UserInterface
     /**
      * Get token
      *
-     * @return string
+     * @return string 
      */
     public function getToken()
     {
@@ -461,22 +421,22 @@ class User implements UserInterface
     }
 
     /**
-     * Set token validity date
+     * Set tokenValidity
      *
-     * @param string $tokenValidity
+     * @param \DateTime $tokenValidity
      * @return User
      */
-    public function setTokenValidity($date)
+    public function setTokenValidity($tokenValidity)
     {
-        $this->tokenValidity = $date;
+        $this->tokenValidity = $tokenValidity;
 
         return $this;
     }
 
     /**
-     * Get token validity date
+     * Get tokenValidity
      *
-     * @return string
+     * @return \DateTime 
      */
     public function getTokenValidity()
     {
@@ -509,116 +469,12 @@ class User implements UserInterface
     /**
      * Get event_creator
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getEventCreator()
     {
         return $this->event_creator;
     }
-
-    /**
-     * Add projects
-     *
-     * @param \APIBundle\Entity\Project $projects
-     * @return User
-     */
-    public function addProject(\APIBundle\Entity\Project $projects)
-    {
-        $this->projects[] = $projects;
-
-        return $this;
-    }
-
-    /**
-     * Remove projects
-     *
-     * @param \APIBundle\Entity\Project $projects
-     */
-    public function removeProject(\APIBundle\Entity\Project $projects)
-    {
-        $this->projects->removeElement($projects);
-    }
-
-    /**
-     * Get projects
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getProjects()
-    {
-        return $this->projects;
-    }
-
-    /**
-     * Add events
-     *
-     * @param \APIBundle\Entity\Event $events
-     * @return User
-     */
-    public function addEvent(\APIBundle\Entity\Event $events)
-    {
-        $this->events[] = $events;
-
-        return $this;
-    }
-
-    /**
-     * Remove events
-     *
-     * @param \APIBundle\Entity\Event $events
-     */
-    public function removeEvent(\APIBundle\Entity\Event $events)
-    {
-        $this->events->removeElement($events);
-    }
-
-    /**
-     * Get events
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEvents()
-    {
-        return $this->events;
-    }
-
-    /**
-     * Add tasks
-     *
-     * @param \APIBundle\Entity\Task $tasks
-     * @return User
-     */
-    public function addTask(\APIBundle\Entity\Task $tasks)
-    {
-        $this->tasks[] = $tasks;
-
-        return $this;
-    }
-
-    /**
-     * Remove tasks
-     *
-     * @param \APIBundle\Entity\Task $tasks
-     */
-    public function removeTask(\APIBundle\Entity\Task $tasks)
-    {
-        $this->tasks->removeElement($tasks);
-    }
-
-    /**
-     * Get tasks
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTasks()
-    {
-        return $this->tasks;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $project_creator;
-
 
     /**
      * Add project_creator
@@ -646,22 +502,12 @@ class User implements UserInterface
     /**
      * Get project_creator
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getProjectCreator()
     {
         return $this->project_creator;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $gantt_creator;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $gantt_updator;
-
 
     /**
      * Add gantt_creator
@@ -689,7 +535,7 @@ class User implements UserInterface
     /**
      * Get gantt_creator
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getGanttCreator()
     {
@@ -722,17 +568,12 @@ class User implements UserInterface
     /**
      * Get gantt_updator
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getGanttUpdator()
     {
         return $this->gantt_updator;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $notifications;
-
 
     /**
      * Add notifications
@@ -765,5 +606,104 @@ class User implements UserInterface
     public function getNotifications()
     {
         return $this->notifications;
+    }
+
+    /**
+     * Add projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     * @return User
+     */
+    public function addProject(\APIBundle\Entity\Project $projects)
+    {
+        $this->projects[] = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Remove projects
+     *
+     * @param \APIBundle\Entity\Project $projects
+     */
+    public function removeProject(\APIBundle\Entity\Project $projects)
+    {
+        $this->projects->removeElement($projects);
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Add events
+     *
+     * @param \APIBundle\Entity\Event $events
+     * @return User
+     */
+    public function addEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events[] = $events;
+
+        return $this;
+    }
+
+    /**
+     * Remove events
+     *
+     * @param \APIBundle\Entity\Event $events
+     */
+    public function removeEvent(\APIBundle\Entity\Event $events)
+    {
+        $this->events->removeElement($events);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
+     * Add tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     * @return User
+     */
+    public function addTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks[] = $tasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove tasks
+     *
+     * @param \APIBundle\Entity\Task $tasks
+     */
+    public function removeTask(\APIBundle\Entity\Task $tasks)
+    {
+        $this->tasks->removeElement($tasks);
+    }
+
+    /**
+     * Get tasks
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTasks()
+    {
+        return $this->tasks;
     }
 }
