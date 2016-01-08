@@ -39,21 +39,15 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
 
 void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)
 {
+    QVector<QString> data;
+
     _pageManager = pageManager;
     //TODO : Link API
-    //Start Fake data
-    QList<QPair<int, QString> > dataf;
-    dataf.append(QPair<int, QString>(1, "L'api marche pas"));
-    dataf.append(QPair<int, QString>(1, "L'api marche toujours pas"));
-    dataf.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
-    dataf.append(QPair<int, QString>(1, "L'api marche paaaaas"));
-    dataf.append(QPair<int, QString>(1, "L'api marche pas"));
-    dataf.append(QPair<int, QString>(1, "L'api marche toujours pas"));
-    dataf.append(QPair<int, QString>(1, "L'api marche définitivement pas"));
-    dataf.append(QPair<int, QString>(1, "L'api marche paaaaas"));
-    //End Fake data
-    this->CreateList(dataf);
-    emit OnLoadingDone(BodyBugTracker::BUGLIST);
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(-1); // TODO : Put current project id
+    data.append(0);
+    data.append(20);
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET, data, this, "OnGetBugListSuccess", "OnRequestFailure");
 }
 
 void BodyBugList::Hide()
@@ -74,15 +68,14 @@ void BodyBugList::DeleteListElements()
     }
 }
 
-void BodyBugList::CreateList(QList<QPair<int, QString> > &elemList)
+void BodyBugList::CreateList()
 {
-    QList<QPair<int, QString> >::iterator listIt;
+    QList<BugEntity>::iterator listIt;
 
-    for (listIt = elemList.begin(); listIt != elemList.end(); ++listIt)
+    for (listIt = _bugList.begin(); listIt != _bugList.end(); ++listIt)
     {
-        BugListElement  *newElem = new BugListElement(_pageManager, (*listIt).second, (*listIt).first);
+        BugListElement  *newElem = new BugListElement(_pageManager, (*listIt).GetTitle(), (*listIt).GetID());
 
-        //TODO : Connect elem signals to slots
         newElem->setFixedHeight(LIST_ELEM_HEIGHT);
         _listAdapter->addWidget(newElem);
     }
@@ -91,4 +84,23 @@ void BodyBugList::CreateList(QList<QPair<int, QString> > &elemList)
 void BodyBugList::TriggerNewIssue()
 {
     _pageManager->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGCREATE, NULL);
+}
+
+//API Slots
+void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
+{
+    QList<QPair<int, QString> > dataf;
+    QJsonDocument doc = QJsonDocument::fromRawData(data);
+    QJsonObject json = doc.object();
+
+    for (int i = 0; !json[i].isNull(); ++i)
+        _bugList.append(BugEntity(json[i].toObject()));
+
+    this->CreateList();
+    emit OnLoadingDone(BodyBugTracker::BUGLIST);
+}
+
+void BodyBugList::OnRequestFailure(int UNUSED id, QByteArray UNUSED data)
+{
+    QMessageBox::critical(this, "Connexion to Grappbox server failed", "We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com");
 }

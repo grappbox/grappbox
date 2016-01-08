@@ -16,7 +16,8 @@ namespace API
         DP_TASK,
         DP_TIMELINE,
         DP_USER_DATA,
-        DP_CALENDAR
+        DP_CALENDAR,
+        DP_BUGTRACKER
     };
 
     enum GetRequest
@@ -47,7 +48,8 @@ namespace API
         GR_USERPROJECT_BUG,
         GR_XLAST_BUG_OFFSET,
         GR_PROJECTBUG_ALL,
-        GR_BUGCOMMENT
+        GR_BUGCOMMENT,
+        GR_GETBUGS_STATUS
     };
 
     enum PostRequest

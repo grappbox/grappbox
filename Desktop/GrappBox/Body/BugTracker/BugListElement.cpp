@@ -6,7 +6,7 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
 {
     QString style;
     _pageManager = pageManager;
-    _title = new QLabel("<h3>" + bugTitle + "</h3>");
+    _title = new QLabel(bugTitle);
     _mainLayout = new QHBoxLayout();
     _btnViewBug = new QPushButton(tr("View"));
     _btnCloseBug = new QPushButton(tr("Close"));
@@ -58,6 +58,11 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
              "QPushButton#Close:hover"
              "{"
              "background-color: #d36c63;"
+             "}"
+             "QLabel"
+             "{"
+             "font-weight: bold;"
+             "font-size: 15px;"
              "}";
     this->setStyleSheet(style);
     this->ensurePolished();

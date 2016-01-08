@@ -162,6 +162,9 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
     case GR_BUGCOMMENT:
         reply = GetAction("bugtracker/getcomments", data);
         break;
+    case GR_GETBUGS_STATUS:
+        reply = GetAction("bugtracker/getStates", data);
+        break;
     }
     if (reply == NULL)
         throw QException();

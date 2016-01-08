@@ -4,6 +4,9 @@
 #include "BugTracker/IBugPage.h"
 #include "BugTracker/BugListElement.h"
 #include "BugTracker/BugListTitleWidget.h"
+#include "BugTracker/BugEntity.h"
+#include "SDataManager.h"
+#include "IDataConnector.h"
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
@@ -27,13 +30,17 @@ public:
 
 private:
     void                DeleteListElements();
-    void                CreateList(QList<QPair<int, QString> > &elemList);
+    void                CreateList();
 
 signals:
     void                OnLoadingDone(BodyBugTracker::BugTrackerPage page);
 
-public slots:
+public slots: //Widget Slots
     void                TriggerNewIssue();
+
+public slots: //API Slots
+    void                OnGetBugListSuccess(int id, QByteArray data);
+    void                OnRequestFailure(int id, QByteArray data);
 
 private:
     BodyBugTracker      *_pageManager;
@@ -42,6 +49,7 @@ private:
     QVBoxLayout         *_listAdapter;
     BugListTitleWidget  *_title;
     QScrollArea         *_listScrollView;
+    QList<BugEntity>    _bugList;
 };
 
 #endif // BODYBUGLIST_H
