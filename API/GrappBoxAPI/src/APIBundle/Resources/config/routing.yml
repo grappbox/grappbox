@@ -611,6 +611,51 @@ bugtracker_setParticipants:
         id: \d+
     methods: [POST]
 
+bugtracker_tagCreation:
+    path:       /bugtracker/tagcreation
+    defaults:   { _controller: 'APIBundle:Bugtracker:tagCreation', _format: json }
+    methods: [POST]
+
+bugtracker_tagUpdate:
+    path:       /bugtracker/tagupdate
+    defaults:   { _controller: 'APIBundle:Bugtracker:tagUpdate', _format: json }
+    methods: [PUT]
+
+bugtracker_getTagInfos:
+    path:       /bugtracker/taginformations/{token}/{tagId}
+    defaults:   { _controller: 'APIBundle:Bugtracker:getTagInfos', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [GET]
+
+bugtracker_deleteTag:
+    path:       /bugtracker/deletetag/{token}/{tagId}
+    defaults:   { _controller: 'APIBundle:Bugtracker:deleteTag', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [DELETE]
+
+bugtracker_assignTag:
+    path:       /bugtracker/assigntag
+    defaults: { _controller: APIBundle:Bugtracker:assignTag, _format: json }
+    methods: [PUT]
+
+bugtracker_removeTag:
+    path:       /bugtracker/removetag/{token}/{bugId}/{tagId}
+    defaults:   { _controller: 'APIBundle:Bugtracker:removeTag', _format: json }
+    requirements:
+        taskId: \d+
+        tagId: \d+
+    methods: [DELETE]
+
+bugtracker_getProjectTags:
+    path:       /bugtracker/getprojecttags/{token}/{projectId}
+    defaults:   { _controller: 'APIBundle:Bugtracker:getProjectTags', _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+  
+
 
 
 event_getTypes:

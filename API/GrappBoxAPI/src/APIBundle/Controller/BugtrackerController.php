@@ -11,7 +11,7 @@ use APIBundle\Controller\RolesAndTokenVerificationController;
 use APIBundle\Entity\User;
 use APIBundle\Entity\Bug;
 use APIBundle\Entity\BugState;
-use APIBundle\Entity\BugTag;
+//use APIBundle\Entity\BugTag;
 use DateTime;
 
 /**
@@ -153,8 +153,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$object = $ticket->objectToArray();
 		$object['state'] = $em->getRepository("APIBundle:BugState")->find($ticket->getStateId())->objectToArray();
 		$object['tags'] = array();
-		$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $ticket->getId()));
-		foreach ($tags as $key => $tag_value) {
+		foreach ($ticket->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
 		}
 
@@ -447,8 +446,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$object = $value->objectToArray();
 			$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
-			$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
-			foreach ($tags as $key => $tag_value) {
+			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
 			}
 
@@ -707,6 +705,70 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {post} /V0.11/bugtracker/postticket/:id Post bug ticket
+	* @apiName postTicket
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {String} title Ticket title
+	* @apiParam {String} description Ticket content
+	* @apiParam {int} stateId Ticket state (0 if new)
+	* @apiParam {String} stateName Ticket state
+	*
+	* @apiSuccess {int} id Message id
+	* @apiSuccess {Object} ticket ticket object
+	* @apiSuccess {int} ticket.id Ticket id
+	* @apiSuccess {int} ticket.creatorId author id
+	* @apiSuccess {int} ticket.projectId project id
+	* @apiSuccess {String} ticket.title Ticket title
+	* @apiSuccess {String} ticket.description Ticket content
+	* @apiSuccess {int} ticket.parentId parent Ticket id
+	* @apiSuccess {DateTime} ticket.createdAt Ticket creation date
+	* @apiSuccess {DateTime} ticket.editedAt Ticket edition date
+	* @apiSuccess {DateTime} ticket.deletedAt Ticket deletion date
+	* @apiSuccess {String} ticket.state Ticket state
+	* @apiSuccess {Object[]} ticket.tags Ticket tags list
+	* @apiSuccess {int} ticket.tags.id Ticket tags id
+	* @apiSuccess {String} ticket.tags.name Ticket tags name
+	* @apiSuccess {Object[]} ticket.users assigned user list
+	*	@apiSuccess {int} ticket.users.id user id
+	*	@apiSuccess {string} ticket.users.name user full name
+	*	@apiSuccess {string} ticket.users.email user email
+	*	@apiSuccess {string} ticket.users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": "Wainting",
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
 	public function postTicketAction(Request $request, $id)
 	{
 		$content = $request->getContent();
@@ -745,19 +807,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
-		foreach ($content->tags as $key => $value) {
-			$tag = new BugTag();
-			$tag->setBugId($bug->getId());
-			$tag->setName($value);
-
-			$em->persist($tag);
-			$em->flush();
-		}
-
 		$ticket = $bug->objectToArray();
 		$ticket['state'] = $state->getName();
-		$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $bug->getId()));
-		foreach ($tags as $key => $tag_value) {
+		foreach ($bug->getTags() as $key => $tag_value) {
 			$ticket['tags'][] = $tag_value->objectToArray();
 		}
 
@@ -1024,6 +1076,70 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {post} /V0.11/bugtracker/editticket/:id Edit a bug ticket
+	* @apiName editTicket
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
+	*
+	* @apiParam {int} id id of the ticket
+	* @apiParam {String} token client authentification token
+	* @apiParam {String} title Ticket title
+	* @apiParam {String} description Ticket content
+	* @apiParam {int} stateId Ticket state (0 if new)
+	* @apiParam {String} stateName Ticket state
+	*
+	* @apiSuccess {int} id Message id
+	* @apiSuccess {Object} ticket ticket object
+	* @apiSuccess {int} ticket.id Ticket id
+	* @apiSuccess {int} ticket.creatorId author id
+	* @apiSuccess {int} ticket.projectId project id
+	* @apiSuccess {String} ticket.title Ticket title
+	* @apiSuccess {String} ticket.description Ticket content
+	* @apiSuccess {int} ticket.parentId parent Ticket id
+	* @apiSuccess {DateTime} ticket.createdAt Ticket creation date
+	* @apiSuccess {DateTime} ticket.editedAt Ticket edition date
+	* @apiSuccess {DateTime} ticket.deletedAt Ticket deletion date
+	* @apiSuccess {String} ticket.state Ticket state
+	* @apiSuccess {Object[]} ticket.tags Ticket tags list
+	* @apiSuccess {int} ticket.tags.id Ticket tags id
+	* @apiSuccess {String} ticket.tags.name Ticket tags name
+	* @apiSuccess {Object[]} ticket.users assigned user list
+	*	@apiSuccess {int} ticket.users.id user id
+	*	@apiSuccess {string} ticket.users.name user full name
+	*	@apiSuccess {string} ticket.users.email user email
+	*	@apiSuccess {string} ticket.users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": "Wainting",
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
 	public function editTicketAction(Request $request, $id)
 	{
 		$content = $request->getContent();
@@ -1058,35 +1174,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
-		$tags = $em->getRepository('APIBundle:BugTag')->findBy(array("bugId" => $id));
-		foreach ($tags as $key => $value) {
-			$remove = true;
-			foreach ($content->tags as $tag_key => $tag_value) {
-				if ($value->getId() == $tag_value->id)
-					$remove = false;
-			}
-			if ($remove)
-			{
-				$em->remove($value);
-				$em->flush();
-			}
-		}
-		foreach ($content->tags as $key => $value) {
-			if ($value->id == 0)
-				{
-					$tag = new BugTag();
-					$tag->setBugId($bug->getId());
-					$tag->setName($value->name);
-
-					$em->persist($tag);
-					$em->flush();
-				}
-		}
-
 		$ticket = $bug->objectToArray();
 		$ticket['state'] = $state->getName();
-		$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $bug->getId()));
-		foreach ($tags as $key => $tag_value) {
+		foreach ($bug->getTags() as $key => $tag_value) {
 			$ticket['tags'][] = $tag_value->objectToArray();
 		}
 
@@ -1772,8 +1862,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$object = $value->objectToArray();
 			$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
-			$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
-			foreach ($tags as $key => $tag_value) {
+			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
 			}
 
@@ -2075,8 +2164,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$object = $value->objectToArray();
 			$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
-			$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
-			foreach ($tags as $key => $tag_value) {
+			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
 			}
 
@@ -2400,8 +2488,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$object = $bug->objectToArray();
 		$object['state'] = $em->getRepository("APIBundle:BugState")->find($bug->getStateId())->objectToArray();
 		$object['tags'] = array();
-		$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $bug->getId()));
-		foreach ($tags as $key => $tag_value) {
+		foreach ($bug->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
 		}
 
@@ -2589,8 +2676,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$object = $value->objectToArray();
 			$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
-			$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
-			foreach ($tags as $key => $tag_value) {
+			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
 			}
 
@@ -2704,8 +2790,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				$object = $value->objectToArray();
 				$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
 				$object['tags'] = array();
-				$tags = $em->getRepository("APIBundle:BugTag")->findBy(array("bugId"=> $value->getId()));
-				foreach ($tags as $key => $tag_value) {
+				foreach ($value->getTags() as $key => $tag_value) {
 					$object['tags'][] = $tag_value->objectToArray();
 				}
 
@@ -2727,4 +2812,581 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return new JsonResponse(array("tickets" => $ticketsArray));
 	}
 
+
+
+	/**
+	* @api {post} /V0.11/bugtracker/tagcreation Create a tag
+	* @apiName tagCreation
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {String} name Name of the tag
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "1fez4c5ze31e5f14cze31fc",
+	*		"projectId": 2,
+	*		"name": "Urgent"
+	* 	}
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"tag_id" : 1
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No project found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The project with id X doesn't exist"
+	* 	}
+	*/
+	public function tagCreationAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		if ($content === null || (!array_key_exists('name', $content) && !array_key_exists('token', $content) && !array_key_exists('projectId', $content)))
+			return $this->setBadRequest("Missing Parameter");
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
+			return ($this->setNoRightsError());
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+
+		if ($project === null)
+		{
+			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
+		}
+
+		$tag = new Tag();
+		$tag->setName($content->name);
+		$tag->setProject($project);
+
+		$em->persist($tag);
+		$em->flush();
+
+		$id = $tag->getId();
+
+		return new JsonResponse(array("tag_id" => $id));
+	}
+
+	/**
+	* @api {put} /V0.11/bugtracker/tagupdate Update a tag
+	* @apiName tagUpdate
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} tagId Id of the tag
+	* @apiParam {String} name Name of the tag
+	*
+	* @apiParamExample {json} Request-Example:
+	* 	{
+	*		"token": "1fez4c5ze31e5f14cze31fc",
+	*		"tagId": 1,
+	*		"name": "ASAP"
+	* 	}
+	*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"tag_id" : 1,
+	*		"tag_name": "ASAP"
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag with id X doesn't exist"
+	* 	}
+	*/
+	public function tagUpdateAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		if ($content === null || (!array_key_exists('name', $content) && !array_key_exists('token', $content) && !array_key_exists('tagId', $content)))
+			return $this->setBadRequest("Missing Parameter");
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		$em = $this->getDoctrine()->getManager();
+		$tag = $em->getRepository('APIBundle:Tag')->find($content->tagId);
+
+		if ($tag === null)
+		{
+			throw new NotFoundHttpException("The tag with id ".$content->tagId." doesn't exist");
+		}
+
+		$projectId = $tag->getProject()->getId();
+		if (!$this->checkRoles($user, $projectId, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$tag->setName($content->name);
+		$em->flush();
+
+		$id = $tag->getId();
+		$name = $tag->getName();
+
+		return new JsonResponse(array("tag_id" => $id, "tag_name" => $name));
+	}
+
+		/**
+	* @api {get} /V0.11/bugtracker/taginformations/:token/:tagId Get a tag informations
+	* @apiName tagInformations
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} tagId Id of the tag
+	*
+		* @apiSuccess {Number} id Id of the tag
+		* @apiSuccess {String} name Name of the tag
+		*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"id": 1,
+	*		"name": "To Do"
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag with id X doesn't exist"
+	* 	}
+	*/
+	public function getTagInfosAction(Request $request, $token, $tagId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		$em = $this->getDoctrine()->getManager();
+		$tag = $em->getRepository('APIBundle:Tag')->find($tagId);
+
+		if ($tag === null)
+		{
+			throw new NotFoundHttpException("The tag with id ".$tagId." doesn't exist");
+		}
+
+		$projectId = $tag->getProject()->getId();
+		if (!$this->checkRoles($user, $projectId, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$id = $tag->getId();
+		$name = $tag->getName();
+
+		return new JsonResponse(array("id" => $id, "name" => $name));
+	}
+
+	/**
+	* @api {delete} /V0.11/bugtracker/deletetag/:token/:tagId Delete a tag
+	* @apiName deleteTag
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} tagId Id of the tag
+		*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"Tag deleted."
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag with id X doesn't exist"
+	* 	}
+	*/
+	public function deleteTagAction(Request $request, $token, $tagId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		$em = $this->getDoctrine()->getManager();
+		$tag = $em->getRepository('APIBundle:Tag')->find($tagId);
+
+		if ($tag === null)
+		{
+			throw new NotFoundHttpException("The tag with id ".$tagId." doesn't exist");
+		}
+
+		$project = $tag->getProject();
+		if ($project === null)
+			return ($this->setNoRightsError());
+		$projectId = $project->getId();
+		if (!$this->checkRoles($user, $projectId, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em->remove($tag);
+		$em->flush();
+
+		return new JsonResponse("Tag deleted.");
+	}
+
+	/**
+	* @api {put} /V0.11/bugtracker/assigntag Assign a tag to a bug
+	* @apiName assignTag
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} bugId Id of the bug ticket
+	* @apiParam {Number} tagId Id of the tag
+		*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"Tag assigned to bug successfull!"
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No bug found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The bug with id X doesn't exist"
+	* 	}
+	* @apiErrorExample Tag already assigned
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"The tag is already assign to the bug"
+	* 	}
+	* @apiErrorExample No tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag with id X doesn't exist"
+	* 	}
+	*/
+	public function assignTagAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+
+		if ($content === null || (!array_key_exists('tagId', $content) && !array_key_exists('token', $content) && !array_key_exists('bugId', $content)))
+			return $this->setBadRequest("Missing Parameter");
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		$em = $this->getDoctrine()->getManager();
+		$bug = $em->getRepository('APIBundle:Bug')->find($content->bugId);
+
+		if ($bug === null)
+		{
+			throw new NotFoundHttpException("The bug with id ".$content->bugId." doesn't exist");
+		}
+
+		$projectId = $bug->getProjects()->getId();
+		if (!$this->checkRoles($user, $projectId, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$tagToAdd = $em->getRepository('APIBundle:Tag')->find($content->tagId);
+
+		if ($tagToAdd === null)
+		{
+			throw new NotFoundHttpException("The tag with id ".$content->tagId." doesn't exist");
+		}
+
+		$tags = $bug->getTags();
+		foreach ($tags as $tag) {
+			if ($tag === $tagToAdd)
+			{
+				return new JsonResponse('The tag is already assign to the bug', JsonResponse::HTTP_BAD_REQUEST);
+			}
+		}
+
+		$bug->addTag($tagToAdd);
+
+		$em->flush();
+		return new JsonResponse("Tag assigned to bug successfull!");
+	}
+
+	/**
+	* @api {delete} /V0.11/bugtracker/removetag/:token/:bugId/:tagId Remove a tag to a bug
+	* @apiName removeTag
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} bugId Id of the bug
+	* @apiParam {Number} tagId Id of the tag
+		*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"Tag removed from the bug."
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No bug found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The bug with id X doesn't exist"
+	* 	}
+	* @apiErrorExample No tag found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag with id X doesn't exist"
+	* 	}
+	* @apiErrorExample No tag found on the bug
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"The tag with id X is not assigned to the bug"
+	* 	}
+	*/
+	public function removeTagAction(Request $request, $token, $bugId, $tagId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+
+		$em = $this->getDoctrine()->getManager();
+		$bug = $em->getRepository('APIBundle:Bug')->find($bugId);
+
+		if ($bug === null)
+		{
+			throw new NotFoundHttpException("The bug with id ".$bugId." doesn't exist");
+		}
+
+		$projectId = $bug->getProjects()->getId();
+		if (!$this->checkRoles($user, $projectId, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$tagToRemove = $em->getRepository('APIBundle:Tag')->find($tagId);
+
+		if ($tagToRemove === null)
+		{
+			throw new NotFoundHttpException("The tag with id ".$tagId." doesn't exist");
+		}
+
+		$tags = $bug->getTags();
+		$isAssign = false;
+		foreach ($tags as $tag) {
+			if ($tag === $userToRemove)
+			{
+				$isAssign = true;
+			}
+		}
+
+		if ($isAssign === false)
+		{
+			throw new NotFoundHttpException("The tag with id ".$tagId." is not assigned to the bug");
+		}
+
+		$bug->removeTag($tagToRemove);
+
+		$em->flush();
+		return new JsonResponse("Tag removed from the bug.");
+	}
+
+	/**
+	* @api {get} /V0.11/bugtracker/getprojecttags/:token/:projectId Get all the tags for a project
+	* @apiName getProjectTags
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Object[]} Tag Array of tag
+		* @apiSuccess {Number} Tag.id Id of the tag
+		* @apiSuccess {String} Tag.name Name of the tag
+		*
+	* @apiSuccessExample Success-Response
+	*     HTTP/1.1 200 OK
+	*	  {
+	*		"Tag 1": {
+	*			"id": 1,
+	*			"name": "To Do"
+	*		}
+	*	  }
+	*
+	* @apiErrorExample Invalid Method Value
+	*     HTTP/1.1 404 Not Found
+	*     {
+	*       "message": "404 not found."
+	*     }
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Missing Parameter"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 400 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	* @apiErrorExample No tags found
+	* 	HTTP/1.1 404 Not found
+	* 	{
+	* 		"There are no tags for the project with id X"
+	* 	}
+	*/
+	public function getProjectTagsAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $projectId, "bugtracker"))
+			return ($this->setNoRightsError());
+		$em = $this->getDoctrine()->getManager();
+		$repository = $em->getRepository('APIBundle:Tag');
+
+		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
+		$tags = $qb->getResult();
+
+		if ($tags === null)
+		{
+			throw new NotFoundHttpException("There are no tags for the project with id ".$projectId);
+		}
+		if (count($tags) == 0)
+		{
+			return new JsonResponse((Object)array());
+		}
+
+		$arr = array();
+		$i = 1;
+
+		foreach ($tags as $t) {
+			$id = $t->getId();
+			$name = $t->getName();
+
+			$arr["Tag ".$i] = array("id" => $id, "name" => $name);
+			$i++;
+		}
+
+		return new JsonResponse($arr);
+	}
+
+	//public function getBugsByTags()
 }

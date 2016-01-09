@@ -15,6 +15,9 @@ APIBundle\Entity\Tag:
         tasks:
           targetEntity: Task
           mappedBy: tags
+        bugs:
+          targetEntity: Bug
+          mappedBy: bugs
     manyToOne:
         project:
           targetEntity: Project

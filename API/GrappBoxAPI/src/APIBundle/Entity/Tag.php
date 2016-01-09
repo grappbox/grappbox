@@ -20,9 +20,19 @@ class Tag
     private $name;
 
     /**
+     * @var \APIBundle\Entity\Project
+     */
+    private $project;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tasks;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $bugs;
 
     /**
      * Constructor
@@ -30,12 +40,13 @@ class Tag
     public function __construct()
     {
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -58,7 +69,7 @@ class Tag
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -91,17 +102,12 @@ class Tag
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasks()
     {
         return $this->tasks;
     }
-    /**
-     * @var \APIBundle\Entity\Project
-     */
-    private $project;
-
 
     /**
      * Set project
@@ -119,10 +125,52 @@ class Tag
     /**
      * Get project
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \APIBundle\Entity\Project
      */
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Add bugs
+     *
+     * @param \APIBundle\Entity\Bug $bugs
+     * @return Tag
+     */
+    public function addBug(\APIBundle\Entity\Bug $bugs)
+    {
+        $this->bugs[] = $bugs;
+
+        return $this;
+    }
+
+    /**
+     * Remove bugs
+     *
+     * @param \APIBundle\Entity\Bug $bugs
+     */
+    public function removeBug(\APIBundle\Entity\Bug $bugs)
+    {
+        $this->bugs->removeElement($bugs);
+    }
+
+    /**
+     * Get bugs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugs()
+    {
+        return $this->bugs;
+    }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name,
+        "projectId" => $this->project->getId()
+      );
     }
 }
