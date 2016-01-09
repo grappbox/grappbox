@@ -414,14 +414,16 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"title": "hello",
-	*		"message": "What about a meeting tomorrow morning ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": NULL
+	*		"message": {
+	*			"id": "154",
+	*			"userId": "25",
+	*			"timelineId": 14,
+	*			"title": "hello",
+	*			"message": "What about a meeting tomorrow morning ?",
+	*			"parentId": 12,
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": NULL
+	*			}
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -471,7 +473,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
-		return new JsonResponse($message->objectToArray());
+		return new JsonResponse(array("message" => $message->objectToArray()));
 	}
 
 	/**
@@ -718,14 +720,16 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"title": "hello",
-	*		"message": "What about a meeting tomorrow morning or next monday ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		"message": {
+	*			"id": "154",
+	*			"userId": "25",
+	*			"timelineId": 14,
+	*			"title": "hello",
+	*			"message": "What about a meeting tomorrow morning or next monday ?",
+	*			"parentId": 12,
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			}
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -770,7 +774,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
-		return new JsonResponse($message->objectToArray());
+		return new JsonResponse(array("message" => $message->objectToArray()));
 	}
 
 	/**
@@ -1100,17 +1104,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
+	*		"messages": [
+	*		{"id": "154","userId": "25", "timelineId": 14,
 	*			"title": "hello", message": "What about a meeting tomorrow morning ?", "parentId": NULL,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
+	*		{"id": "158","userId": "21", "timelineId": 14,
 	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"deletedAt": null},
-	*		2 : ...
+	*		...
+	*		]
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -1149,7 +1155,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$timelineMessages[] = $value->objectToArray();
 		}
 
-		return new JsonResponse($timelineMessages);
+		return new JsonResponse(array("messages" => $timelineMessages));
 	}
 
 	/**
@@ -1365,17 +1371,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
+	*		"comments": [
+	*		{"id": "154","userId": "25", "timelineId": 14,
 	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": 150,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
+	*		{"id": "158","userId": "21", "timelineId": 14,
 	*			"title": "hello", "message": "Ok, let's do this !", "parentId": 150,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"deletedAt": null},
-	*		2 : ...
+	*		 ...
+	*		]
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -1414,7 +1422,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$timelineMessages[] = $value->objectToArray();
 		}
 
-		return new JsonResponse($timelineMessages);
+		return new JsonResponse(array("comments" => $timelineMessages));
 	}
 
 	/**
@@ -1635,17 +1643,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
+	*		"messages": [
+	*		{"id": "154","userId": "25", "timelineId": 14,
 	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
 	*			createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
+	*		{"id": "158","userId": "21", "timelineId": 14,
 	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"deletedAt": null},
-	*		2 : ...
+	*		...
+	*		]
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -1691,7 +1701,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$timelineMessages[] = $value->objectToArray();
 		}
 
-		return new JsonResponse($timelineMessages);
+		return new JsonResponse(array("messages" => $timelineMessages));
 	}
 
 	/**

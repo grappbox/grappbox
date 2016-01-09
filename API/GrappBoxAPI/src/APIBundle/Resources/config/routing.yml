@@ -564,7 +564,6 @@ bugtracker_getTicketByState:
         limit: \d+
     methods:  [GET]
 
-
 bugtracker_getComments:
     path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
     defaults:   { _controller: APIBundle:Bugtracker:getComments, _format: json }
