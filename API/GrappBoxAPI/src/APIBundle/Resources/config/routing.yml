@@ -563,8 +563,8 @@ bugtracker_getLastClosedTickets:
         limit: \d+
     methods:  [GET]
 
-bugtracker_getTicketByState:
-    path:       /bugtracker/getticketsByState/{token}/{id}/{state}/{offset}/{limit}
+bugtracker_getTicketsByState:
+    path:       /bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
     defaults:   { _controller: APIBundle:Bugtracker:getTicketsByState, _format: json }
     requirements:
         id: \d+
