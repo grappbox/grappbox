@@ -2585,7 +2585,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /V0.11/bugtracker/getticketbystate/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
+	* @api {get} /V0.11/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
 	* @apiName getTicketsByStatus
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
