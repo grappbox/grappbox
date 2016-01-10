@@ -173,12 +173,26 @@ void BodyProjectSettings::Failure(int UNUSED id , QByteArray data)
     qDebug() << data;
 }
 
-
 void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonObject json = doc.object()["Project 1"].toObject();
+    QJsonObject json = doc.object();
     QVector<QString> dataRole;
+    int currentProject = API::SDataManager::GetDataManager()->GetCurrentProject();
+
+    for (int i = 1; json.contains("Project " + QString::number(i)); ++i)
+    {
+        if (json["Project " + QString::number(i)].toObject()["id"].toInt() == currentProject)
+        {
+            json = json["Project " + QString::number(i)].toObject();
+            break;
+        }
+    }
+    if (!json.contains("id"))
+    {
+        QMessageBox::critical(this, "Project not found", "We can't locate your project, please contact your project leader. If the problem persist, contact us at : contact@grappbox.com");
+        return;
+    }
 
     while (QLayoutItem *item = _customerAccess->takeAt(0))
     {

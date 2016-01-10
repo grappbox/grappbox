@@ -44,7 +44,7 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *dataPage
     _pageManager = pageManager;
     //TODO : Link API
     data.append(API::SDataManager::GetDataManager()->GetToken());
-    data.append(QString::number(-1)); // TODO : Put current project id
+    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject())); // TODO : Put current project id
     data.append(QString::number(0));
     data.append(QString::number(20));
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET, data, this, "OnGetBugListSuccess", "OnRequestFailure");
@@ -89,7 +89,6 @@ void BodyBugList::TriggerNewIssue()
 //API Slots
 void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
 {
-    QList<QPair<int, QString> > dataf;
     QJsonDocument doc = QJsonDocument::fromBinaryData(data);
     QJsonObject json = doc.object();
 

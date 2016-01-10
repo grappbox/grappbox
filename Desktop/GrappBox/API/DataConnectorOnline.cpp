@@ -453,7 +453,7 @@ QNetworkReply *DataConnectorOnline::ProjectInvite(QVector<QString> &data)
     QNetworkRequest requestSend(QUrl(URL_API + QString("projects/addusertoproject")));
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
-    QNetworkReply *request = _Manager->put(requestSend, jsonba);
+    QNetworkReply *request = _Manager->post(requestSend, jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
 }
