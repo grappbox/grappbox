@@ -554,8 +554,17 @@ bugtracker_getLastTickets:
         limit: \d+
     methods:  [GET]
 
+bugtracker_getLastClosedTickets:
+    path:       /bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
+    defaults:   { _controller: APIBundle:Bugtracker:getLastClosedTickets, _format: json }
+    requirements:
+        id: \d+
+        offset: \d+
+        limit: \d+
+    methods:  [GET]
+
 bugtracker_getTicketByState:
-    path:       /bugtracker/getlasttickets/{token}/{id}/{state}/{offset}/{limit}
+    path:       /bugtracker/getticketsByState/{token}/{id}/{state}/{offset}/{limit}
     defaults:   { _controller: APIBundle:Bugtracker:getTicketsByState, _format: json }
     requirements:
         id: \d+
@@ -654,7 +663,7 @@ bugtracker_getProjectTags:
     requirements:
         projectId: \d+
     methods: [GET]
-  
+
 
 
 

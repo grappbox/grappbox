@@ -2585,7 +2585,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /V0.11/bugtracker/getlasttickets/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
+	* @api {get} /V0.11/bugtracker/getticketbystate/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
 	* @apiName getTicketsByStatus
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
@@ -2785,7 +2785,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tickets = $em->getRepository("APIBundle:Bug")->findBy(array("projectId" => $id, "parentId" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
-			if ($value->getDeletedAt != null)
+			if ($value->getDeletedAt() != null)
 			{
 				$object = $value->objectToArray();
 				$object['state'] = $em->getRepository("APIBundle:BugState")->find($value->getStateId())->objectToArray();
@@ -3388,5 +3388,4 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return new JsonResponse($arr);
 	}
 
-	//public function getBugsByTags()
 }
