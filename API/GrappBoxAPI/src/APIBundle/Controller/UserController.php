@@ -591,7 +591,10 @@ class UserController extends RolesAndTokenVerificationController
 
 		$firstName = $userInfos->getFirstname();
 		$lastName = $userInfos->getLastname();
-		$birthday = $userInfos->getBirthday()->format('Y-m-d');
+		if ($userInfos->getBirthday() instanceof DateTime)
+			$birthday = $userInfos->getBirthday()->format('Y-m-d');
+		else
+			$birthday = null;
 		$avatar = $userInfos->getAvatar();
 		$email = $userInfos->getEmail();
 		$phone = $userInfos->getPhone();
