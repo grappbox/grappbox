@@ -44,10 +44,11 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *dataPage
     _pageManager = pageManager;
     //TODO : Link API
     data.append(API::SDataManager::GetDataManager()->GetToken());
-    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject())); // TODO : Put current project id
-    data.append(QString::number(0));
+    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
+    data.append(QString::number(1));
+    data.append(QString::number(1));
     data.append(QString::number(20));
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET, data, this, "OnGetBugListSuccess", "OnRequestFailure");
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_BY_STATE, data, this, "OnGetBugListSuccess", "OnRequestFailure");
 }
 
 void BodyBugList::Hide()
@@ -91,9 +92,16 @@ void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromBinaryData(data);
     QJsonObject json = doc.object();
+    QJsonArray tickets = json["tickets"].toArray();
+    QJsonArray::iterator ticketIt;
 
-    for (int i = 0; !json[QString::number(i)].isNull(); ++i)
-        _bugList.append(BugEntity(json[QString::number(i)].toObject()));
+    qDebug() << "Start tickets : " << tickets.count();
+    for (ticketIt = tickets.begin(); ticketIt != tickets.end(); ++ticketIt)
+    {
+        qDebug() << "PASS HERE";
+        QJsonObject current = (*ticketIt).toObject();
+        _bugList.append(BugEntity(current));
+    }
 
     this->CreateList();
     emit OnLoadingDone(BodyBugTracker::BUGLIST);
@@ -102,4 +110,5 @@ void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
 void BodyBugList::OnRequestFailure(int UNUSED id, QByteArray UNUSED data)
 {
     QMessageBox::critical(this, "Connexion to Grappbox server failed", "We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com");
+    emit OnLoadingDone(BodyBugTracker::BUGLIST);
 }

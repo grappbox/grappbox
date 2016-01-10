@@ -7,12 +7,18 @@ BugViewAssigneeWidget::BugViewAssigneeWidget(QWidget *parent) : QWidget(parent)
     _mainWidget = new QStackedWidget(this);
     _mainViewLayout = new QVBoxLayout();
     _mainAssignLayout = new QVBoxLayout();
+    _isAPIAssignActivated = true;
 
     _viewPage->setLayout(_mainViewLayout);
     _assignPage->setLayout(_mainAssignLayout);
 
     _mainWidget->addWidget(_viewPage);
     _mainWidget->addWidget(_assignPage);
+}
+
+void BugViewAssigneeWidget::DisableAPIAssignation(const bool disable)
+{
+    _isAPIAssignActivated = !disable;
 }
 
 void BugViewAssigneeWidget::DeletePageItems(const BugViewAssigneeWidget::BugAssigneePage page)
@@ -86,7 +92,10 @@ void BugViewAssigneeWidget::TriggerCreateReleased()
 
 void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString name)
 {
-    //TODO : Link API
+    if (_isAPIAssignActivated)
+    {
+        //TODO : Link API
+    }
     if (checked)
         emit OnAssigned(id, name);
     else

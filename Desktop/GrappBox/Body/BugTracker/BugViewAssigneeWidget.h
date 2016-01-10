@@ -34,6 +34,7 @@ public:
     void            CreateViewPageItems(const QList<QJsonObject> &items);
     void            CreateAssignPageItems(const QList<QJsonObject> &items);
     BugAssigneePage GetCurrentPage() const;
+    void            DisableAPIAssignation(const bool disable);
 
 signals: //Common signals
     void            OnPageChanged(BugAssigneePage);
@@ -64,6 +65,7 @@ private:
     QStackedWidget  *_mainWidget;
     QLineEdit       *_creationCategory;
     QPushButton     *_creationBtn;
+     bool            _isAPIAssignActivated;
 };
 
 #endif // BUGVIEWASSIGNEEWIDGET_H

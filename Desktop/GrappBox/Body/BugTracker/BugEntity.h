@@ -2,6 +2,7 @@
 #define BUGENTITY_H
 
 #include "BugTagEntity.h"
+#include "BugUser.h"
 #include <QString>
 #include <QList>
 #include <QDateTime>
@@ -28,7 +29,6 @@ public: // System
 public: // Getters
     const int                   GetID() const;
     const int                   GetAuthorId() const;
-    const int                   GetUserId() const;
     const int                   GetProjectId() const;
     const QString               &GetTitle() const;
     const QString               &GetDescription() const;
@@ -38,6 +38,7 @@ public: // Getters
     const QDateTime             &GetDeletedAt() const;
     const SBugState             &GetState() const;
     const QList<BugTagEntity>   &GetTags() const;
+    const QList<BugUser>        &GetUsers() const;
     const bool                  IsValid() const;
 
 public: // Setters
@@ -51,11 +52,13 @@ public: // Setters
     void                        SetTags(const QList<BugTagEntity> &tags);
     void                        AddTag(const BugTagEntity &tag);
     void                        DelTag(QList<BugTagEntity>::const_iterator tagIt);
+    void                        SetUsers(const QList<BugUser> &users);
+    void                        AddUser(const BugUser &user);
+    void                        DelUser(QList<BugUser>::const_iterator userIt);
 
 private:
     int                         _id;
     int                         _authorId;
-    int                         _userId;
     int                         _projectId;
     QString                     _title;
     QString                     _description;
@@ -65,6 +68,7 @@ private:
     QDateTime                   _deletedAt;
     SBugState                   _state;
     QList<BugTagEntity>         _tags;
+    QList<BugUser>              _users;
 };
 
 #endif // BUGENTITY_H

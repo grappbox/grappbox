@@ -7,6 +7,7 @@
 #include "BugTracker/BugViewPreviewWidget.h"
 #include "BugTracker/BugViewCategoryWidget.h"
 #include "BugTracker/BugViewAssigneeWidget.h"
+#include "SDataManager.h"
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -26,6 +27,8 @@
 #define JSON_COMMENT        "comment"
 #define JSON_DATE           "date"
 
+#define BUGSTATE_OPEN       1
+
 class BodyBugCreation : public QWidget, public IBugPage
 {
     Q_OBJECT
@@ -42,6 +45,9 @@ public slots:
     void                    TriggerCategoryBtnReleased();
     void                    TriggerAssigneeBtnReleased();
     void                    TriggerComment();
+    void                    TriggerBugCreated(int id, QByteArray data);
+    void                    TriggerBugCommented(int id, QByteArray data);
+    void                    TriggerAPIFailure(int id, QByteArray data);
 
 private:
     int                     _bugId;
@@ -60,6 +66,7 @@ private:
     QScrollArea             *_assigneesArea;
     QPushButton             *_btnCategoriesAssign;
     QPushButton             *_btnAssigneeAssign;
+    BugViewPreviewWidget    *_commentWidget;
 };
 
 #endif // BODYBUGCREATION_H

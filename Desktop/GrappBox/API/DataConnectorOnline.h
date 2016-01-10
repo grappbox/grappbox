@@ -61,6 +61,8 @@ namespace API
 
         QNetworkReply *CloseBug(QVector<QString> &data);
         QNetworkReply *EditBug(QVector<QString> &data);
+        QNetworkReply *OpenBug(QVector<QString> &data);
+        QNetworkReply *CommentBug(QVector<QString> &data);
 
         QNetworkReply *EditMessageTimeline(QVector<QString> &data);
         QNetworkReply *PostMessageTimeline(QVector<QString> &data);

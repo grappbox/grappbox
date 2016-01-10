@@ -1,6 +1,6 @@
 #include "BugViewPreviewWidget.h"
 
-BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : QWidget(parent)
+BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, bool createPage, QWidget *parent) : QWidget(parent)
 {
     QString style;
     QWidget *widTitleBar = new QWidget();
@@ -9,13 +9,14 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     _titleBar = new QHBoxLayout();
     _statusBar = new QHBoxLayout();
     _avatar = new QLabel();
-    _lblName = new QLabel("");
-    _lblDate = new QLabel(PH_BUGPREVIEWDATE + " " + FormatDateTime(QDateTime::currentDateTime()));
+    _lblName = new QLabel(API::SDataManager::GetDataManager()->GetUserName() + " " + API::SDataManager::GetDataManager()->GetUserLastName());
+    _lblDate = new QLabel(PH_BUGPREVIEWDATE + " " + FormatDateTime(QDateTime::currentDateTime()) + " by " + _lblName->text());
     _comment = new QTextEdit(isCreation ? tr("Enter the comment here") : "");
+    _commentTitle = new QLineEdit(isCreation ? tr("Enter the comment title here") : "");
 
     _comment->setEnabled(isCreation);
     _titleBar->addWidget(_avatar);
-    _titleBar->addWidget(_lblName);
+    _titleBar->addWidget(_commentTitle);
 
     _statusBar->addWidget(_lblDate);
 
@@ -27,7 +28,10 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     }
     else
     {
-        _btnComment = new QPushButton(tr("Comment"));
+        if (createPage)
+            _btnComment = new QPushButton(tr("Comment and open"));
+        else
+            _btnComment = new QPushButton(tr("Comment"));
         _statusBar->addWidget(_btnComment);
         _bugID = -1;
         QObject::connect(_btnComment, SIGNAL(released()), this, SLOT(TriggerCommentBtnReleased()));
@@ -63,12 +67,24 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
             "QPushButton{"
             "min-height: 20px;"
             "max-height: 20px;"
+            "min-width: 100px;"
+            "max-width: 150px;"
             "top: -5px;"
             "}"
             "QLabel{"
             "color: white;"
             "}";
     this->setStyleSheet(style);
+}
+
+const QString &BugViewPreviewWidget::GetComment() const
+{
+    return _comment->toPlainText();
+}
+
+const QString &BugViewPreviewWidget::GetCommentTitle() const
+{
+    return _commentTitle->text();
 }
 
 void BugViewPreviewWidget::SetDate(const QDateTime &date)
@@ -96,6 +112,11 @@ void BugViewPreviewWidget::SetComment(const QString &comment)
     _comment->setText(comment);
 }
 
+void BugViewPreviewWidget::SetCommentTitle(const QString &title)
+{
+    _commentTitle->setText(title);
+}
+
 QString BugViewPreviewWidget::FormatDateTime(const QDateTime &datetime)
 {
     return datetime.toString("yyyy/MM/dd " + tr("at") + " hh:mm:ss");
@@ -112,13 +133,11 @@ void BugViewPreviewWidget::TriggerEditBtnReleased()
     else
     {
         _btnEdit->setText(tr("Edit"));
-        //TODO: Link API
         emit OnSaved(_bugID);
     }
 }
 
 void BugViewPreviewWidget::TriggerCommentBtnReleased()
 {
-    //TODO : LinkAPI
     emit OnCommented();
 }

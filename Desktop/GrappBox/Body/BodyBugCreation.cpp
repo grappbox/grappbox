@@ -38,10 +38,13 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
 
     _categoriesArea->setMaximumWidth(250);
     _assigneesArea->setMaximumWidth(250);
+
     layoutAssigneeArea->addWidget(_assignees);
     layoutCategoryArea->addWidget(_categories);
+
     _categoriesArea->setLayout(layoutCategoryArea);
     _assigneesArea->setLayout(layoutAssigneeArea);
+
     _sideMenuLayout->addWidget(widgetTitleCategory);
     _sideMenuLayout->addWidget(_categoriesArea);
     _sideMenuLayout->addWidget(widgetTitleAssignee);
@@ -55,9 +58,19 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
     QObject::connect(_btnAssigneeAssign, SIGNAL(released()), this, SLOT(TriggerAssigneeBtnReleased()));
     QObject::connect(_btnCategoriesAssign, SIGNAL(released()), this, SLOT(TriggerCategoryBtnReleased()));
 
+
     _mainLayout->addWidget(_titleBar);
     _mainLayout->addLayout(_bodyLayout);
     this->setLayout(_mainLayout);
+
+    _btnCategoriesAssign->hide();
+    _btnAssigneeAssign->hide();
+    _btnCategoriesAssign->setEnabled(false);
+    _btnAssigneeAssign->setEnabled(false);
+    _categories->TriggerOpenPage(BugViewCategoryWidget::BugCategoryPage::ASSIGN);
+    _assignees->TriggerOpenPage(BugViewAssigneeWidget::BugAssigneePage::ASSIGN);
+    _categories->DisableAPIAssignation(true);
+    _assignees->DisableAPIAssignation(true);
 
     //Design
     style = "QPushButton{"
@@ -165,7 +178,7 @@ void BodyBugCreation::TriggerCategoryBtnReleased()
 void BodyBugCreation::DeleteComments()
 {
     QLayoutItem *currentItem;
-    BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(true);
+    BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(true, true);
 
     while ((currentItem = _commentLayout->itemAt(0)) != NULL)
     {
@@ -175,14 +188,51 @@ void BodyBugCreation::DeleteComments()
     }
     commentWidget->setFixedHeight(COMMENTBOX_HEIGHT);
     _commentLayout->addWidget(commentWidget);
+    _commentLayout->setAlignment(commentWidget, Qt::AlignTop);
+    _commentWidget = commentWidget;
+    QObject::connect(_commentWidget, SIGNAL(OnCommented()), this, SLOT(TriggerComment()));
 }
 
 void BodyBugCreation::TriggerComment()
 {
     //TODO : Link API save new issue
-    QJsonObject *data = new QJsonObject();
+    QVector<QString> data;
+    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(_titleBar->GetTitle());
+    data.append(_commentWidget->GetComment());
+    data.append(QString::number(BUGSTATE_OPEN));
+    data.append("");
 
-    data->insert("id", -1);
-    data->insert("title", this->_titleBar->GetTitle());
-    _mainApp->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGVIEW, data);
+    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_CREATE_BUG, data, this, "TriggerBugCreated", "TriggerAPIFailure");
+}
+
+void BodyBugCreation::TriggerBugCreated(int UNUSED id, QByteArray data)
+{
+     //TODO: post comment and assignee and categories
+    QVector<QString> commentData;
+    QJsonObject json = QJsonDocument::fromBinaryData(data).object();
+
+    commentData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
+    commentData.append(API::SDataManager::GetDataManager()->GetToken());
+    commentData.append(_commentWidget->GetCommentTitle());
+    commentData.append(_commentWidget->GetComment());
+    commentData.append(QString::number(json["ticket"].toObject()["id"].toInt()));
+
+    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_COMMENT_BUG, commentData, this, "TriggerBugCommented", "TriggerAPIFailure");
+    QJsonObject *intent = new QJsonObject();
+
+    intent->insert("id", -1); //TODO : put bug API ID
+    intent->insert("title", this->_titleBar->GetTitle());
+    _mainApp->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGVIEW, intent);
+}
+
+void BodyBugCreation::TriggerBugCommented(int UNUSED id, QByteArray data)
+{
+
+}
+
+void BodyBugCreation::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
+{
+    QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
 }

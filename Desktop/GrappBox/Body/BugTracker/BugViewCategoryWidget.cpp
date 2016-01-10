@@ -7,12 +7,18 @@ BugViewCategoryWidget::BugViewCategoryWidget(QWidget *parent) : QWidget(parent)
     _mainWidget = new QStackedWidget(this);
     _mainViewLayout = new QVBoxLayout();
     _mainAssignLayout = new QVBoxLayout();
+    _isAPIAssignActivated = true;
 
     _viewPage->setLayout(_mainViewLayout);
     _assignPage->setLayout(_mainAssignLayout);
 
     _mainWidget->addWidget(_viewPage);
     _mainWidget->addWidget(_assignPage);
+}
+
+void BugViewCategoryWidget::DisableAPIAssignation(const bool disable)
+{
+    _isAPIAssignActivated = !disable;
 }
 
 void BugViewCategoryWidget::DeletePageItems(const BugViewCategoryWidget::BugCategoryPage page)
@@ -86,7 +92,10 @@ void BugViewCategoryWidget::TriggerCreateReleased()
 
 void BugViewCategoryWidget::TriggerCheckChange(bool checked, int id, QString name)
 {
-    //TODO : Link API
+    if (_isAPIAssignActivated)
+    {
+        //TODO : Link API
+    }
     if (checked)
         emit OnAssigned(id, name);
     else

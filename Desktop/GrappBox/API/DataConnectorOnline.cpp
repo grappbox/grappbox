@@ -46,6 +46,12 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
     case PR_CUSTOMER_GENERATE_ACCESS:
         reply = CustomerGenerateAccess(data);
         break;
+    case PR_CREATE_BUG:
+        reply = OpenBug(data);
+        break;
+    case PR_COMMENT_BUG:
+        reply = CommentBug(data);
+        break;
     }
     if (reply == NULL)
         throw QException();
@@ -155,6 +161,12 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
         break;
     case GR_XLAST_BUG_OFFSET:
         reply = GetAction("bugtracker/getlasttickets", data);
+        break;
+    case GR_XLAST_BUG_OFFSET_BY_STATE:
+        reply = GetAction("bugtracker/getticketsbystate", data);
+        break;
+    case GR_XLAST_BUG_OFFSET_CLOSED:
+        reply = GetAction("bugtracker/getlastclosedtickets", data);
         break;
     case GR_PROJECTBUG_ALL:
         reply = GetAction("bugtracker/gettickets", data);
@@ -536,6 +548,47 @@ QNetworkReply *DataConnectorOnline::EditBug(QVector<QString> &data)
     QJsonDocument doc(json);
     QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
     QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/editticket/") + data[0]));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::OpenBug(QVector<QString> &data)
+{
+    QJsonObject json;
+    QString idProject = data[0];
+
+    json["token"] = data[1];
+    json["title"] = data[2];
+    json["description"] = data[3];
+    json["stateId"] = data[4];
+    json["stateName"] = data[5];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/postticket/") + idProject));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::CommentBug(QVector<QString> &data)
+{
+    QJsonObject json;
+    QString idProject = data[0];
+
+    json["token"] = data[1];
+    json["title"] = data[2];
+    json["description"] = data[3];
+    json["parentId"] = data[4];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/postticket/") + idProject));
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
     QNetworkReply *request = _Manager->post(requestSend, *jsonba);
