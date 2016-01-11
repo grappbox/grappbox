@@ -1,0 +1,21 @@
+APIBundle\Entity\CloudSecuredFileMetadata:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        filename:
+            type: string
+            length: 255
+        password:
+            type: text
+        creationDate:
+            type: datetime
+            column: creation_date
+        cloudPath:
+            type: text
+    lifecycleCallbacks: {  }

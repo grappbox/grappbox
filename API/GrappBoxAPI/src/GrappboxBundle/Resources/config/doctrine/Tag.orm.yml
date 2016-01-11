@@ -1,0 +1,28 @@
+APIBundle\Entity\Tag:
+    type: entity
+    table: tags
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+    manyToMany:
+        tasks:
+          targetEntity: Task
+          mappedBy: tags
+        bugs:
+          targetEntity: Bug
+          mappedBy: bugs
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: tags
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

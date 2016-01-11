@@ -1,0 +1,886 @@
+
+# -----------------------------------------------------------------------
+#                     ACCOUNT ADMINISTRATION CONTROLLER
+# -----------------------------------------------------------------------
+accountAdministration_login:
+    path:       accountadministration/login
+    defaults:   { _controller: GrappboxBundle:AccountAdministration:login, _format: json }
+    methods:    [POST]
+
+accountAdministration_clientLogin:
+    path:       accountadministration/login/{token}
+    defaults:   { _controller: GrappboxBundle:AccountAdministration:clientLogin, _format: json }
+    methods:    [GET]
+
+accountAdministration_logout:
+    path:       accountadministration/logout/{token}
+    defaults:   { _controller:GrappboxBundle:AccountAdministration:logout, _format: json }
+    methods:    [GET]
+
+accountAdministration_register:
+    path:       accountadministration/register
+    defaults:   { _controller: GrappboxBundle:AccountAdministration:register, _format: json }
+    methods:    [POST]
+
+
+
+
+# -----------------------------------------------------------------------
+#                           BUGTRACKER CONTROLLER
+# -----------------------------------------------------------------------
+bugtracker_getTicket:
+    path:       /bugtracker/getticket/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getTicket, _format: json }
+    requirements:
+        id: \d+
+    methods:  [GET]
+
+bugtracker_postTicket:
+    path:       /bugtracker/postticket/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:postTicket, _format: json }
+    requirements:
+        id: \d+
+    methods:  [POST]
+
+bugtracker_editTicket:
+    path:       /bugtracker/editticket/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:editTicket, _format: json }
+    requirements:
+        id: \d+
+    methods:  [POST]
+
+bugtracker_getTickets:
+    path:       /bugtracker/gettickets/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getTickets, _format: json }
+    requirements:
+        id: \d+
+    methods:  [GET]
+
+bugtracker_getLastTickets:
+    path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getLastTickets, _format: json }
+    requirements:
+        id: \d+
+        offset: \d+
+        limit: \d+
+    methods:  [GET]
+
+bugtracker_getLastClosedTickets:
+    path:       /bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getLastClosedTickets, _format: json }
+    requirements:
+        id: \d+
+        offset: \d+
+        limit: \d+
+    methods:  [GET]
+
+bugtracker_getTicketsByState:
+    path:       /bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getTicketsByState, _format: json }
+    requirements:
+        id: \d+
+        state: \d+
+        offset: \d+
+        limit: \d+
+    methods:  [GET]
+
+bugtracker_getComments:
+    path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getComments, _format: json }
+    requirements:
+        id: \d+
+    methods:  [GET]
+
+bugtracker_postComment:
+    path:       /bugtracker/postcomment/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:postComment, _format: json }
+    requirements:
+        id: \d+
+    methods:  [POST]
+
+bugtracker_editComment:
+    path:       /bugtracker/editcomment/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:editComment, _format: json }
+    requirements:
+        id: \d+
+    methods:  [POST]
+
+bugtracker_getTicketsByUser:
+    path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getTicketsByUser, _format: json }
+    requirements:
+        id: \d+
+    methods:  [GET]
+
+bugtracker_closeTicket:
+    path:       /bugtracker/closeticket/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:closeTicket, _format: json }
+    requirements:
+        id: \d+
+    methods:  [DELETE]
+
+bugtracker_getStates:
+    path:       /bugtracker/getstates/{token}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getStates, _format: json }
+    methods:  [GET]
+
+bugtracker_setParticipants:
+    path:       /bugtracker/setparticipants/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:setParticipants, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+bugtracker_tagCreation:
+    path:       /bugtracker/tagcreation
+    defaults:   { _controller: 'GrappboxBundle:Bugtracker:tagCreation', _format: json }
+    methods: [POST]
+
+bugtracker_tagUpdate:
+    path:       /bugtracker/tagupdate
+    defaults:   { _controller: 'GrappboxBundle:Bugtracker:tagUpdate', _format: json }
+    methods: [PUT]
+
+bugtracker_getTagInfos:
+    path:       /bugtracker/taginformations/{token}/{tagId}
+    defaults:   { _controller: 'GrappboxBundle:Bugtracker:getTagInfos', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [GET]
+
+bugtracker_deleteTag:
+    path:       /bugtracker/deletetag/{token}/{tagId}
+    defaults:   { _controller: 'GrappboxBundle:Bugtracker:deleteTag', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [DELETE]
+
+bugtracker_assignTag:
+    path:       /bugtracker/assigntag
+    defaults: { _controller: GrappboxBundle:Bugtracker:assignTag, _format: json }
+    methods: [PUT]
+
+bugtracker_removeTag:
+    path:       /bugtracker/removetag/{token}/{bugId}/{tagId}
+    defaults:   { _controller: 'GrappboxBundle:Bugtracker:removeTag', _format: json }
+    requirements:
+        taskId: \d+
+        tagId: \d+
+    methods: [DELETE]
+
+bugtracker_getProjectTags:
+    path:       /bugtracker/getprojecttags/{token}/{projectId}
+    defaults:   { _controller: 'GrappboxBundle:Bugtracker:getProjectTags', _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+
+
+
+# -----------------------------------------------------------------------
+#                           CLOUD CONTROLLER
+# -----------------------------------------------------------------------
+cloud_streamActions:
+  path:     cloud/stream
+  defaults:   { _controller: GrappboxBundle:Cloud:stream, _format: json}
+  methods: [POST, DELETE]
+
+cloud_sendFile:
+  path:     cloud/sendfile
+  defaults:   { _controller: GrappboxBundle:Cloud:sendFile , _format: json}
+  methods: [PUT]
+
+cloud_getList:
+    path:       cloud/getlist/{token}/{idProject}/{path}/{password}
+    defaults:   { _controller: GrappboxBundle:Cloud:getList,  password: null, _format: json}
+    methods: [GET]
+
+cloud_getFile:
+    path:       cloud/getfile/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
+    defaults:   { _controller: GrappboxBundle:Cloud:getFile, password: null, passwordSafe: null }
+    methods: [GET]
+
+cloud_setSafePass:
+    path:       cloud/setsafepass
+    defaults:   { _controller: GrappboxBundle:Cloud:setSafePass }
+    methods: [POST]
+
+cloud_delete:
+    path:       cloud/del
+    defaults:   { _controller: GrappboxBundle:Cloud:del , _format: json}
+    methods: [DELETE]
+
+cloud_createDir:
+    path:       cloud/createdir
+    defaults:   { _controller: GrappboxBundle:Cloud:createDir, _format: json }
+    methods: [POST]
+
+cloud_createCloud: #TODO : Delete this route, it's a test route
+    path:       cloud/createcloud/{projectId}
+    defaults:   { _controller: GrappboxBundle:Cloud:createCloud }
+    methods: [GET]
+
+
+
+
+# -----------------------------------------------------------------------
+#                           DASHBOARD CONTROLLER
+# -----------------------------------------------------------------------
+dashboard_getTeamOccupation:
+    path:       dashboard/getteamoccupation/{token}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getTeamOccupation, _format: json }
+    methods: [GET]
+
+dashboard_getNextMeetings:
+    path:       dashboard/getnextmeetings/{token}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getNextMeetings, _format: json }
+    methods: [GET]
+
+dashboard_getProjectsGlobalProgress:
+    path:       dashboard/getprojectsglobalprogress/{token}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getProjectsGlobalProgress, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getProjectCreator:
+    path:       dashboard/getprojectcreator/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getProjectCreator, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getProjectBasicInformations:
+    path:       dashboard/getprojectbasicinformations/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getProjectBasicInformations, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getProjectTasks:
+    path:       dashboard/getprojecttasks/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getProjectTasks, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getUserBasicInformations:
+    path:       dashboard/getuserbasicinformations/{token}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getUserBasicInformations, _format: json }
+    methods: [GET]
+
+dashboard_getProjectPersons:
+    path:       dashboard/getprojectpersons/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getProjectPersons, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getMeetingBasicInformations:
+    path:       dashboard/getmeetingbasicinformations/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getMeetingBasicInformations, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getProjectList:
+    path:       dashboard/getprojectlist/{token}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getProjectList, _format: json }
+    methods: [GET]
+
+dashboard_getProjectTasksStatus:
+    path:       dashboard/getprojecttasksstatus/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getProjectTasksStatus, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getNumberTimelineMessages:
+    path:       dashboard/getnumbertimelinemessages/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getNumberTimelineMessages, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+dashboard_getNumberBugs:
+    path:       dashboard/getnumberbugs/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Dashboard:getNumberBugs, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+
+
+
+
+# -----------------------------------------------------------------------
+#                           EVENT CONTROLLER
+# -----------------------------------------------------------------------
+event_getTypes:
+    path:       /event/gettypes/{token}
+    defaults:   { _controller: GrappboxBundle:Event:getTypes, _format: json }
+    methods: [GET]
+
+event_getEvent:
+    path:       /event/getevent/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Event:getEvent, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+event_setParticipants:
+    path:       /event/setparticipants/{id}
+    defaults:   { _controller: GrappboxBundle:Event:setParticipants, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+event_postEvent:
+    path:       /event/postevent
+    defaults:   { _controller: GrappboxBundle:Event:postEvent, _format: json }
+    methods: [POST]
+
+event_editEvent:
+    path:       /event/editevent/{id}
+    defaults:   { _controller: GrappboxBundle:Event:editEvent, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+event_delEvent:
+    path:       /event/delevent/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Event:delEvent, _format: json }
+    requirements:
+        id: \d+
+    methods: [DELETE]
+
+# meeting_addAlert:
+#     path:       /Meeting/addAlert/{id}
+#     defaults:   { _controller: GrappboxBundle:Meeting:addAlert }
+#     requirements:
+#         id: \d+
+
+
+
+
+# -----------------------------------------------------------------------
+#                           GANTT CONTROLLER
+# -----------------------------------------------------------------------
+gantt_addTask:
+    path:       /Gantt/addTask/{id}
+    defaults:   { _controller: GrappboxBundle:Gantt:addTask }
+    requirements:
+        id: \d+
+
+gantt_assignTask:
+    path:       /Gantt/assignTask/{id}
+    defaults:   { _controller: GrappboxBundle:Gantt:assignTask }
+    requirements:
+        id: \d+
+
+gantt_editTask:
+    path:       /Gantt/editTask/{id}
+    defaults:   { _controller: GrappboxBundle:Gantt:editTask }
+    requirements:
+        id: \d+
+
+gantt_delTask:
+    path:       /Gantt/delTask/{id}
+    defaults:   { _controller: GrappboxBundle:Gantt:delTask }
+    requirements:
+        id: \d+
+
+gantt_setTaskProperties:
+    path:       /Gantt/setTaskProperties/{id}
+    defaults:   { _controller: GrappboxBundle:Gantt:setTaskProperties }
+    requirements:
+        id: \d+
+
+
+
+
+# -----------------------------------------------------------------------
+#                           PLANNING CONTROLLER
+# -----------------------------------------------------------------------
+planning_getDayPlanning:
+    path:       /planning/getday
+    defaults:   { _controller: GrappboxBundle:Planning:getDayPlanning }
+
+planning_getWeekPlanning:
+    path:       /planning/getweek
+    defaults:   { _controller: GrappboxBundle:Planning:getWeekPlanning }
+
+planning_getMonthPlanning:
+    path:       /planning/getmonth
+    defaults:   { _controller: GrappboxBundle:Planning:getMonthPlanning }
+
+planning_getCurrentEvents:
+    path:       /planning/getcurrentevents
+    defaults:   { _controller: GrappboxBundle:Planning:getCurrentEvents }
+
+
+
+
+# -----------------------------------------------------------------------
+#                           PROJECT CONTROLLER
+# -----------------------------------------------------------------------
+project_projectCreation:
+    path:       projects/projectcreation/{token}
+    defaults:   { _controller: GrappboxBundle:Project:projectCreation, _format: json }
+    methods: [POST]
+
+project_updateInformations:
+    path:       projects/updateinformations
+    defaults:   { _controller: GrappboxBundle:Project:updateInformations, _format: json }
+    methods: [PUT]
+
+project_getInformations:
+    path:       projects/getinformations/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:Project:getInformations, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+project_delProject:
+    path:       projects/delproject
+    defaults:   { _controller: GrappboxBundle:Project:delProject, _format: json }
+    methods: [DELETE]
+
+project_retrieveProject:
+    path:       projects/retrieveproject/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:Project:retrieveProject, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+project_generateCustomerAccess:
+    path:       projects/generatecustomeraccess
+    defaults:   { _controller: GrappboxBundle:Project:generateCustomerAccess, _format: json }
+    methods: [POST]
+
+project_getCustomerAccessById:
+    path:       projects/getcustomeraccessbyid/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Project:getCustomerAccessById, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+project_getCustomerAccessByProject:
+    path:       projects/getcustomeraccessbyproject/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:Project:getCustomerAccessByProject, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+project_delCustomerAccess:
+    path:       projects/delcustomeraccess
+    defaults:   { _controller: GrappboxBundle:Project:delCustomerAccess, _format: json }
+    methods: [DELETE]
+
+project_addUserToProject:
+    path:       projects/addusertoproject
+    defaults:   { _controller: GrappboxBundle:Project:addUserToProject, _format: json }
+    methods: [POST]
+
+project_removeUserToProject:
+    path:       projects/removeusertoproject
+    defaults:   { _controller: GrappboxBundle:Project:removeUserToProject, _format: json }
+    methods: [DELETE]
+
+project_getUserToProject:
+    path:       projects/getusertoproject/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:Project:getUserToProject, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+
+
+
+# -----------------------------------------------------------------------
+#                           ROLE CONTROLLER
+# -----------------------------------------------------------------------
+role_addProjectRoles:
+    path:       roles/addprojectroles
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:addProjectRoles, _format: json }
+    methods: [POST]
+
+role_delProjectRoles:
+    path:       roles/delprojectroles
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:delProjectRoles, _format: json }
+    methods: [DELETE]
+
+role_putProjectRoles:
+    path:       roles/putprojectroles
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:updateProjectRoles, _format: json }
+    methods: [PUT]
+
+role_getProjectRoles:
+    path:       roles/getprojectroles/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:getProjectRoles, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+role_assignPersonToRole:
+    path:       roles/assignpersontorole
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:assignPersonToRole, _format: json }
+    methods: [POST]
+
+role_updatePersonRole:
+    path:       roles/putpersonrole
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:updatePersonRole, _format: json }
+    methods: [PUT]
+
+role_getUserRoles:
+    path:       roles/getuserroles/{token}
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:getUserRoles, _format: json }
+    methods: [GET]
+
+role_delPersonRole:
+    path:       roles/delpersonrole
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:delPersonRole, _format: json }
+    methods: [DELETE]
+
+role_getRoleByProjectAndUser:
+    path:       roles/getrolebyprojectanduser/{token}/{projectId}/{userId}
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:getRoleByProjectAndUser, _format: json }
+    requirements:
+        projectId: \d+
+        userId: \d+
+    methods: [GET]
+
+
+
+
+
+# -----------------------------------------------------------------------
+#                           TASK CONTROLLER
+# -----------------------------------------------------------------------
+
+task_taskCreation:
+    path:       tasks/taskcreation
+    defaults:   { _controller: GrappboxBundle:Task:createTask, _format: json }
+    methods: [POST]
+
+task_taskUpdate:
+    path:       tasks/taskupdate
+    defaults:   { _controller: GrappboxBundle:Task:updateTask, _format: json }
+    methods: [PUT]
+
+task_getTaskInfos:
+    path:       tasks/taskinformations/{token}/{taskId}
+    defaults:   { _controller: 'GrappboxBundle:Task:getTaskInfos', _format: json }
+    requirements:
+        taskId: \d+
+    methods: [GET]
+
+task_archiveTask:
+    path:       tasks/archivetask
+    defaults:   { _controller: 'GrappboxBundle:Task:archiveTask', _format: json }
+    methods: [PUT]
+
+task_taskDelete:
+    path:       tasks/taskdelete/{token}/{taskId}
+    defaults:   { _controller: GrappboxBundle:Task:deleteTask, _format: json }
+    requirements:
+        taskId: \d+
+    methods: [DELETE]
+
+task_assignUserToTask:
+    path:       tasks/assignusertotask
+    defaults: { _controller: GrappboxBundle:Task:assignUserToTask, _format: json }
+    methods: [PUT]
+
+task_removeUserToTask:
+    path:       tasks/removeusertotask/{token}/{taskId}/{userId}
+    defaults:   { _controller: 'GrappboxBundle:Task:removeUserToTask', _format: json }
+    requirements:
+        taskId: \d+
+        userId: \d+
+    methods: [DELETE]
+
+task_tagCreation:
+    path:       tasks/tagcreation
+    defaults:   { _controller: 'GrappboxBundle:Task:tagCreation', _format: json }
+    methods: [POST]
+
+task_tagUpdate:
+    path:       tasks/tagupdate
+    defaults:   { _controller: 'GrappboxBundle:Task:tagUpdate', _format: json }
+    methods: [PUT]
+
+task_getTagInfos:
+    path:       tasks/taginformations/{token}/{tagId}
+    defaults:   { _controller: 'GrappboxBundle:Task:getTagInfos', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [GET]
+
+task_deleteTag:
+    path:       tasks/deletetag/{token}/{tagId}
+    defaults:   { _controller: 'GrappboxBundle:Task:deleteTag', _format: json }
+    requirements:
+        tagId: \d+
+    methods: [DELETE]
+
+task_assignTagToTask:
+    path:       tasks/assigntagtotask
+    defaults: { _controller: GrappboxBundle:Task:assignTagToTask, _format: json }
+    methods: [PUT]
+
+task_removeTagToTask:
+    path:       tasks/removetagtotask/{token}/{taskId}/{tagId}
+    defaults:   { _controller: 'GrappboxBundle:Task:removeTagToTask', _format: json }
+    requirements:
+        taskId: \d+
+        tagId: \d+
+    methods: [DELETE]
+
+task_getProjectTasks:
+    path:       tasks/getprojecttasks/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:Task:getProjectTasks, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+task_getProjectTags:
+    path:       tasks/getprojecttags/{token}/{projectId}
+    defaults:   { _controller: 'GrappboxBundle:Task:getProjectTags', _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+
+
+
+
+# -----------------------------------------------------------------------
+#                           TIMELINE CONTROLLER
+# -----------------------------------------------------------------------
+timeline_getTimelines:
+    path:       /timeline/gettimelines/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Timeline:getTimelines, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+timeline_postMessage:
+    path:       /timeline/postmessage/{id}
+    defaults:   { _controller: GrappboxBundle:Timeline:postMessage, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+timeline_editMessage:
+    path:       /timeline/editmessage/{id}
+    defaults:   { _controller: GrappboxBundle:Timeline:editMessage, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+timeline_getMessages:
+    path:       /timeline/getmessages/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Timeline:getMessages, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+timeline_getLastMessages:
+    path:       /timeline/getlastmessages/{token}/{id}/{offset}/{limit}
+    defaults:   { _controller: GrappboxBundle:Timeline:getLastMessages, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+timeline_getComments:
+    path:       /timeline/getcomments/{token}/{id}/{messageId}
+    defaults:   { _controller: GrappboxBundle:Timeline:getComments, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+timeline_archiveMessage:
+    path:       /timeline/archivemessage/{token}/{id}/{messageId}
+    defaults:   { _controller: GrappboxBundle:Timeline:archiveMessage, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+
+
+
+
+# -----------------------------------------------------------------------
+#                           USER CONTROLLER
+# -----------------------------------------------------------------------
+user_basicInformations:
+    path:       user/basicinformations/{token}
+    defaults:   { _controller: GrappboxBundle:User:basicInformations, _format: json }
+    methods: [GET, PUT]
+
+user_getUserBasicInformations:
+    path:       user/getuserbasicinformations/{token}/{userId}
+    defaults:   { _controller: GrappboxBundle:User:getUserBasicInformations, _format: json }
+    requirements:
+        userId: \d+
+    methods: [GET]
+
+user_getIdByName:
+    path:       user/getidbyname/{token}/{firstname}/{lastname}
+    defaults:   { _controller: GrappboxBundle:User:getIdByName, _format: json }
+    methods: [GET]
+
+user_getIdByEmail:
+    path:       user/getidbyemail/{token}/{email}
+    defaults:   { _controller: GrappboxBundle:User:getIdByEmail, _format: json }
+    methods: [GET]
+
+user_getNextMeetings:
+    path:       user/getnextmeetings/{token}
+    defaults:   { _controller: GrappboxBundle:User:getNextMeetings, _format: json }
+    methods: [GET]
+
+user_getProjects:
+    path:       user/getprojects/{token}
+    defaults:   { _controller: GrappboxBundle:User:getProjects, _format: json }
+    methods: [GET]
+
+user_getAllTasks:
+    path:       user/getalltasks/{token}
+    defaults:   { _controller: GrappboxBundle:User:getAllTasks, _format: json }
+    methods: [GET]
+
+user_getCurrentAndNextTasks:
+    path:       user/getcurrentandnexttasks/{token}
+    defaults:   { _controller: GrappboxBundle:User:getCurrentAndNextTasks, _format: json }
+    methods: [GET]
+
+
+
+
+
+# -----------------------------------------------------------------------
+#                      VISUALISING PROJECT CONTROLLER
+# -----------------------------------------------------------------------
+# visualisingProject_addAction:
+#     path:       /VisualisingProject/addAction/{id}
+#     defaults:   { _controller: GrappboxBundle:VisualisingProject:addAction }
+#     requirements:
+#         id: \d+
+#
+# visualisingProject_addActor:
+#     path:       /VisualisingProject/addActor/{id}
+#     defaults:   { _controller: GrappboxBundle:VisualisingProject:addActor }
+#     requirements:
+#         id: \d+
+#
+# visualisingProject_addLink:
+#     path:       /VisualisingProject/addLink/{id}
+#     defaults:   { _controller: GrappboxBundle:VisualisingProject:addLink }
+#     requirements:
+#         id: \d+
+#
+# visualisingProject_newDiagram:
+#     path:       /VisualisingProject/newDiagram/{id}
+#     defaults:   { _controller: GrappboxBundle:VisualisingProject:newDiagram }
+#     requirements:
+#         id: \d+
+#
+# visualisingProject_openDiagram:
+#     path:       /VisualisingProject/openDiagram/{id}
+#     defaults:   { _controller: GrappboxBundle:VisualisingProject:openDiagram }
+#     requirements:
+#         id: \d+
+#
+# visualisingProject_invitePerson:
+#     path:       /VisualisingProject/invitePerson/{id}
+#     defaults:   { _controller: GrappboxBundle:VisualisingProject:invitePerson }
+#     requirements:
+#         id: \d+
+
+
+
+
+
+# -----------------------------------------------------------------------
+#                           WHITEBOARD CONTROLLER
+# -----------------------------------------------------------------------
+whiteboard_list:
+    path:		whiteboard/list/{token}/{projectId}
+    defaults:	{ _controller: GrappboxBundle:Whiteboard:listWhiteboard, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [GET]
+
+whiteboard_new:
+    path:		whiteboard/new
+    defaults:	{ _controller: GrappboxBundle:Whiteboard:newWhiteboard, _format: json }
+    methods: [POST]
+
+whiteboard_open:
+    path:		whiteboard/open/{token}/{id}
+    defaults:	{ _controller: GrappboxBundle:Whiteboard:openWhiteboard, _format: json }
+    requirements:
+        id: \d+
+    methods: [GET]
+
+whiteboard_pushDraw:
+    path:		whiteboard/pushdraw/{id}
+    defaults:	{ _controller: GrappboxBundle:Whiteboard:pushDraw, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+whiteboard_pullDraw:
+    path:		whiteboard/pulldraw/{id}
+    defaults:	{ _controller: GrappboxBundle:Whiteboard:pullDraw, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
+
+whiteboard_delete:
+    path:		whiteboard/delete/{token}/{id}
+    defaults:	{ _controller: GrappboxBundle:Whiteboard:delWhiteboard, _format: json }
+    requirements:
+        id: \d+
+    methods: [DELETE]
+
+
+
+
+
+
+# -----------------------------------------------------------------------
+#                       PERSONAL SETTINGS CONTROLLER
+# -----------------------------------------------------------------------
+# personnalSettings_editPhoto:
+#     path:       /PersonnalSettings/editPhoto/{id}
+#     defaults:   { _controller: GrappboxBundle:PersonnalSettings:editPhoto }
+#     requirements:
+#         id: \d+
+#
+# personnalSettings_editPersonalInfos:
+#     path:       /PersonnalSettings/editPersonalInfos/{id}
+#     defaults:   { _controller: GrappboxBundle:PersonnalSettings:editPersonalInfos }
+#     requirements:
+#         id: \d+
+#
+# personnalSettings_changePassword:
+#     path:       /PersonnalSettings/changePassword/{id}
+#     defaults:   { _controller: GrappboxBundle:PersonnalSettings:changePassword }
+#     requirements:
+#         id: \d+
+#
+# personnalSettings_editPreferences:
+#     path:       /PersonnalSettings/editPreferences/{id}
+#     defaults:   { _controller: GrappboxBundle:PersonnalSettings:editPreferences }
+#     requirements:
+#         id: \d+
+#
+# personnalSettings_getRole:
+#     path:       /PersonnalSettings/getRole/{id}
+#     defaults:   { _controller: GrappboxBundle:PersonnalSettings:getRole }
+#     requirements:
+#         id: \d+
