@@ -64,12 +64,12 @@ class NotificationController extends RolesAndTokenVerificationController
 
     	if ($read == "true")
 			$read_value = true;
-		else if
+		else if ($read == "false")
 			$read_value = false;
 
 
 		$em = $this->getDoctrine()->getManager();
-    	$notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user" => $user, "read" => $read), array(), $limit, $offset);
+    	$notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user" => $user, "isRead" => $read), array(), $limit, $offset);
 
     	$notif_array = array();
     	foreach ($notification as $key => $value) {
@@ -94,7 +94,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		if (!($notification instanceof Notification))
 		  return ($this->setBadRequest("15.5.3", "Notification", "setNotificationToRead", "Bad ID"));
 
-		$notification->setRead(true):
+		$notification->setRead(true);
 		$em->flush();
 
 		return ($this->setSuccess("1.15.1", "Notification", "setNotificationRead", "Complete Success", $notification->objectToArray()));
