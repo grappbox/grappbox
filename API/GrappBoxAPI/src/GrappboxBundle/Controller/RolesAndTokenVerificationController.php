@@ -70,23 +70,29 @@ class RolesAndTokenVerificationController extends Controller
     return $result[$role];
   }
 
-  protected function setBadTokenError()
+  protected function setBadTokenError($code, $part, $function)
   {
-    $response = new JsonResponse('Bad Authentication Token', JsonResponse::HTTP_BAD_REQUEST);
+    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Bad ID");
+    $response = new JsonResponse($ret);
+    $response->setStatusCode(JsonResponse::HTTP_UNAUTHORIZED);
 
     return $response;
   }
 
-  protected function setNoRightsError()
+  protected function setNoRightsError($code, $part, $function)
   {
-    $response = new JsonResponse('Insufficient User Rights', JsonResponse::HTTP_FORBIDDEN);
+    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Insufficient Rights");
+    $response = new JsonResponse($ret);
+    $response->setStatusCode(JsonResponse::HTTP_FORBIDDEN);
 
     return $response;
   }
 
-  protected function setBadRequest($message)
+  protected function setBadRequest($code, $part, $function, $message)
   {
-    $response = new JsonResponse($message, JsonResponse::HTTP_BAD_REQUEST);
+  	$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
+    $response = new JsonResponse($ret);
+    $response->setStatusCode(JsonResponse::HTTP_BAD_REQUEST);
 
     return $response;
   }
@@ -601,7 +607,7 @@ class RolesAndTokenVerificationController extends Controller
     if ($project === null)
     {
       throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
-
+      
     }
 
   	$role->setProjects($project);
@@ -2826,7 +2832,7 @@ class RolesAndTokenVerificationController extends Controller
   foreach ($ProjectUserRoles as $pur) {
     $pur->setRoleId($content->roleId);
   }
-
+	
 	$em->flush();
 
 	return new JsonResponse("Update of the project user role success.");
