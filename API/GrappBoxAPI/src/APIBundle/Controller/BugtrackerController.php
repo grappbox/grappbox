@@ -2449,6 +2449,68 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	/**
+	* @api {post} /V0.11/bugtracker/setparticipants/:id Add/remove users to the ticket
+	* @apiName setParticipants
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.2
+	*
+	* @apiParam {int} id bug id
+	* @apiParam {string} token user authentication token
+	* @apiParam {int[]} toAdd list of users' id to add
+	* @apiParam {int[]} toRemove list of users' id to remove
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {int} creatorId author id
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
+	*		"title": "function getUser not working",
+	*		"description": "the function does not answer the right way, fix it ASAP !",
+	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*		"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*		"deletedAt": null,
+	*		"state": {"id": 1, "name": "Waiting"},
+	*		"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*		"users": [
+	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*		]
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
 	public function setParticipantsAction(Request $request, $id)
 	{
 		$content = $request->getContent();
@@ -2464,7 +2526,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		foreach ($content->toAdd as $key => $value) {
-			$user = $em->getRepository("GrappboxBundle:User")->findOneByEmail($value);
+			$user = $em->getRepository("GrappboxBundle:User")->find($value);
 			if ($user instanceof User)
 			{
 				foreach ($bug->getUsers() as $key => $value) {
