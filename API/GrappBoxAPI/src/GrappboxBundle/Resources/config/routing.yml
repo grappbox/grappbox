@@ -367,37 +367,67 @@ v2_event_delEvent:
 # -----------------------------------------------------------------------
 #                           GANTT CONTROLLER
 # -----------------------------------------------------------------------
-v2_gantt_addTask:
-    path:       /Gantt/addTask/{id}
-    defaults:   { _controller: GrappboxBundle:Gantt:addTask }
+# v2_gantt_addTask:
+#     path:       /Gantt/addTask/{id}
+#     defaults:   { _controller: GrappboxBundle:Gantt:addTask }
+#     requirements:
+#         id: \d+
+#
+# v2_gantt_assignTask:
+#     path:       /Gantt/assignTask/{id}
+#     defaults:   { _controller: GrappboxBundle:Gantt:assignTask }
+#     requirements:
+#         id: \d+
+#
+# v2_gantt_editTask:
+#     path:       /Gantt/editTask/{id}
+#     defaults:   { _controller: GrappboxBundle:Gantt:editTask }
+#     requirements:
+#         id: \d+
+#
+# v2_gantt_delTask:
+#     path:       /Gantt/delTask/{id}
+#     defaults:   { _controller: GrappboxBundle:Gantt:delTask }
+#     requirements:
+#         id: \d+
+#
+# v2_gantt_setTaskProperties:
+#     path:       /Gantt/setTaskProperties/{id}
+#     defaults:   { _controller: GrappboxBundle:Gantt:setTaskProperties }
+#     requirements:
+#         id: \d+
+
+
+
+
+# -----------------------------------------------------------------------
+#                        NOTIFICATION CONTROLLER
+# -----------------------------------------------------------------------
+v2_notification_registerDevice:
+    path:       /notification/registerdevice/
+    defaults:   { _controller: GrappboxBundle:Notification:registerDevice }
+    methods: [POST]
+
+v2_notification_unregisterDevice:
+    path:       /notification/unregisterdevice/{id}
+    defaults:   { _controller: GrappboxBundle:Notification:unregisterDevice }
     requirements:
-        id: \d+
+         id: \d+
+    methods: [DELETE]
 
-v2_gantt_assignTask:
-    path:       /Gantt/assignTask/{id}
-    defaults:   { _controller: GrappboxBundle:Gantt:assignTask }
-    requirements:
-        id: \d+
+  v2_notification_getUserDevice:
+      path:       /notification/getuserdevice/{id}
+      defaults:   { _controller: GrappboxBundle:Notification:getUserDevice }
+      requirements:
+           id: \d+
+      methods: [GET]
 
-v2_gantt_editTask:
-    path:       /Gantt/editTask/{id}
-    defaults:   { _controller: GrappboxBundle:Gantt:editTask }
-    requirements:
-        id: \d+
-
-v2_gantt_delTask:
-    path:       /Gantt/delTask/{id}
-    defaults:   { _controller: GrappboxBundle:Gantt:delTask }
-    requirements:
-        id: \d+
-
-v2_gantt_setTaskProperties:
-    path:       /Gantt/setTaskProperties/{id}
-    defaults:   { _controller: GrappboxBundle:Gantt:setTaskProperties }
-    requirements:
-        id: \d+
-
-
+  v2_notification_getNotification:
+      path:       /notification/getnotification/{token}
+      defaults:   { _controller: GrappboxBundle:Notification:getNotification }
+      requirements:
+          token: "[a-zA-Z]+" 
+      methods: [GET]
 
 
 # -----------------------------------------------------------------------
