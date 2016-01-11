@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -38,7 +38,7 @@ class WhiteboardModif
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,7 +61,7 @@ class WhiteboardModif
     /**
      * Get whiteboardId
      *
-     * @return integer 
+     * @return integer
      */
     public function getWhiteboardId()
     {
@@ -84,7 +84,7 @@ class WhiteboardModif
     /**
      * Get drawType
      *
-     * @return integer 
+     * @return integer
      */
     public function getDrawType()
     {
@@ -107,7 +107,7 @@ class WhiteboardModif
     /**
      * Get path
      *
-     * @return string 
+     * @return string
      */
     public function getPath()
     {
@@ -130,7 +130,7 @@ class WhiteboardModif
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {

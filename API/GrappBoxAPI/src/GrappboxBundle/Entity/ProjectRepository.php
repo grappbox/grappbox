@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -15,7 +15,7 @@ class ProjectRepository extends EntityRepository
 	public function findTeamOccupation($id)
 	{
 		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
-		
+
 		$projects = $qb->getQuery()->getResult();
 
 		$arr = array();
@@ -61,7 +61,7 @@ class ProjectRepository extends EntityRepository
 				if ($busy == true)
 				{
 					$arr["Person ".$i] = array("project_name" => $projectName, "user_id" => $id, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
-				}				
+				}
 				else
 				{
 					$arr["Person ".$i] = array("project_name" => $projectName, "user_id" => $id, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
@@ -76,7 +76,7 @@ class ProjectRepository extends EntityRepository
 	public function findProjectGlobalProgress($id)
 	{
 		$qb = $this->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $id);
-		
+
 		$projects = $qb->getQuery()->getResult();
 
 		$arr = array();
@@ -149,7 +149,7 @@ class ProjectRepository extends EntityRepository
 	public function findUserProjects($id)
 	{
 		$qb = $this->createQueryBuilder('p');
-		
+
 		$projects = $qb->getQuery()->getResult();
 
 		if ($projects === null)
@@ -181,7 +181,7 @@ class ProjectRepository extends EntityRepository
 			else
 			{
 				$projectUsers = $project->getUsers();
-				
+
 				foreach ($projectUsers as $projectUser) {
 					$userId = $projectUser->getId();
 

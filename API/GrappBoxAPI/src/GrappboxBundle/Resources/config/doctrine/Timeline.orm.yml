@@ -1,4 +1,4 @@
-APIBundle\Entity\Timeline:
+GrappboxBundle\Entity\Timeline:
     type: entity
     table: timeline
     id:

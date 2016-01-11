@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,7 +20,7 @@ class Tag
     private $name;
 
     /**
-     * @var \APIBundle\Entity\Project
+     * @var \GrappboxBundle\Entity\Project
      */
     private $project;
 
@@ -79,10 +79,10 @@ class Tag
     /**
      * Add tasks
      *
-     * @param \APIBundle\Entity\Task $tasks
+     * @param \GrappboxBundle\Entity\Task $tasks
      * @return Tag
      */
-    public function addTask(\APIBundle\Entity\Task $tasks)
+    public function addTask(\GrappboxBundle\Entity\Task $tasks)
     {
         $this->tasks[] = $tasks;
 
@@ -92,9 +92,9 @@ class Tag
     /**
      * Remove tasks
      *
-     * @param \APIBundle\Entity\Task $tasks
+     * @param \GrappboxBundle\Entity\Task $tasks
      */
-    public function removeTask(\APIBundle\Entity\Task $tasks)
+    public function removeTask(\GrappboxBundle\Entity\Task $tasks)
     {
         $this->tasks->removeElement($tasks);
     }
@@ -112,10 +112,10 @@ class Tag
     /**
      * Set project
      *
-     * @param \APIBundle\Entity\Project $project
+     * @param \GrappboxBundle\Entity\Project $project
      * @return Tag
      */
-    public function setProject(\APIBundle\Entity\Project $project = null)
+    public function setProject(\GrappboxBundle\Entity\Project $project = null)
     {
         $this->project = $project;
 
@@ -125,7 +125,7 @@ class Tag
     /**
      * Get project
      *
-     * @return \APIBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProject()
     {
@@ -135,10 +135,10 @@ class Tag
     /**
      * Add bugs
      *
-     * @param \APIBundle\Entity\Bug $bugs
+     * @param \GrappboxBundle\Entity\Bug $bugs
      * @return Tag
      */
-    public function addBug(\APIBundle\Entity\Bug $bugs)
+    public function addBug(\GrappboxBundle\Entity\Bug $bugs)
     {
         $this->bugs[] = $bugs;
 
@@ -148,9 +148,9 @@ class Tag
     /**
      * Remove bugs
      *
-     * @param \APIBundle\Entity\Bug $bugs
+     * @param \GrappboxBundle\Entity\Bug $bugs
      */
-    public function removeBug(\APIBundle\Entity\Bug $bugs)
+    public function removeBug(\GrappboxBundle\Entity\Bug $bugs)
     {
         $this->bugs->removeElement($bugs);
     }

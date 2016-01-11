@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,7 +35,7 @@ class Timeline
     private $timelineMessages;
 
     /**
-     * @var \APIBundle\Entity\Project
+     * @var \GrappboxBundle\Entity\Project
      */
     private $projects;
 
@@ -129,10 +129,10 @@ class Timeline
     /**
      * Add timelineMessages
      *
-     * @param \APIBundle\Entity\TimelineMessage $timelineMessages
+     * @param \GrappboxBundle\Entity\TimelineMessage $timelineMessages
      * @return Timeline
      */
-    public function addTimelineMessage(\APIBundle\Entity\TimelineMessage $timelineMessages)
+    public function addTimelineMessage(\GrappboxBundle\Entity\TimelineMessage $timelineMessages)
     {
         $this->timelineMessages[] = $timelineMessages;
 
@@ -142,9 +142,9 @@ class Timeline
     /**
      * Remove timelineMessages
      *
-     * @param \APIBundle\Entity\TimelineMessage $timelineMessages
+     * @param \GrappboxBundle\Entity\TimelineMessage $timelineMessages
      */
-    public function removeTimelineMessage(\APIBundle\Entity\TimelineMessage $timelineMessages)
+    public function removeTimelineMessage(\GrappboxBundle\Entity\TimelineMessage $timelineMessages)
     {
         $this->timelineMessages->removeElement($timelineMessages);
     }
@@ -162,10 +162,10 @@ class Timeline
     /**
      * Set projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      * @return Timeline
      */
-    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
     {
         $this->projects = $projects;
 
@@ -175,7 +175,7 @@ class Timeline
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {

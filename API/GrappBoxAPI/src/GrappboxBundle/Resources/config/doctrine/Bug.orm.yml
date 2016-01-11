@@ -1,4 +1,4 @@
-APIBundle\Entity\Bug:
+GrappboxBundle\Entity\Bug:
     type: entity
     table: bugs
     id:

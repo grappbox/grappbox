@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -65,7 +65,7 @@ class Role
     private $cloud;
 
     /**
-     * @var \APIBundle\Entity\Project
+     * @var \GrappboxBundle\Entity\Project
      */
     private $projects;
 
@@ -73,7 +73,7 @@ class Role
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -96,7 +96,7 @@ class Role
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -119,7 +119,7 @@ class Role
     /**
      * Get teamTimeline
      *
-     * @return integer 
+     * @return integer
      */
     public function getTeamTimeline()
     {
@@ -142,7 +142,7 @@ class Role
     /**
      * Get customerTimeline
      *
-     * @return integer 
+     * @return integer
      */
     public function getCustomerTimeline()
     {
@@ -165,7 +165,7 @@ class Role
     /**
      * Get gantt
      *
-     * @return integer 
+     * @return integer
      */
     public function getGantt()
     {
@@ -188,7 +188,7 @@ class Role
     /**
      * Get whiteboard
      *
-     * @return integer 
+     * @return integer
      */
     public function getWhiteboard()
     {
@@ -211,7 +211,7 @@ class Role
     /**
      * Get bugtracker
      *
-     * @return integer 
+     * @return integer
      */
     public function getBugtracker()
     {
@@ -234,7 +234,7 @@ class Role
     /**
      * Get event
      *
-     * @return integer 
+     * @return integer
      */
     public function getEvent()
     {
@@ -257,7 +257,7 @@ class Role
     /**
      * Get task
      *
-     * @return integer 
+     * @return integer
      */
     public function getTask()
     {
@@ -280,7 +280,7 @@ class Role
     /**
      * Get projectSettings
      *
-     * @return integer 
+     * @return integer
      */
     public function getProjectSettings()
     {
@@ -303,7 +303,7 @@ class Role
     /**
      * Get cloud
      *
-     * @return integer 
+     * @return integer
      */
     public function getCloud()
     {
@@ -313,10 +313,10 @@ class Role
     /**
      * Set projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      * @return Role
      */
-    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
     {
         $this->projects = $projects;
 
@@ -326,7 +326,7 @@ class Role
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {

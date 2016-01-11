@@ -1,6 +1,6 @@
-APIBundle\Entity\Project:
+GrappboxBundle\Entity\Project:
     type: entity
-    repositoryClass: APIBundle\Entity\ProjectRepository
+    repositoryClass: GrappboxBundle\Entity\ProjectRepository
     table: projects
     id:
         id:

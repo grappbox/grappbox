@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -136,7 +136,7 @@ class User implements UserInterface
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    
+
     public function getUsername()
     {
         return $this->email;
@@ -167,7 +167,7 @@ class User implements UserInterface
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -190,7 +190,7 @@ class User implements UserInterface
     /**
      * Get firstname
      *
-     * @return string 
+     * @return string
      */
     public function getFirstname()
     {
@@ -213,7 +213,7 @@ class User implements UserInterface
     /**
      * Get lastname
      *
-     * @return string 
+     * @return string
      */
     public function getLastname()
     {
@@ -236,7 +236,7 @@ class User implements UserInterface
     /**
      * Get birthday
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getBirthday()
     {
@@ -259,7 +259,7 @@ class User implements UserInterface
     /**
      * Get avatar
      *
-     * @return string 
+     * @return string
      */
     public function getAvatar()
     {
@@ -282,7 +282,7 @@ class User implements UserInterface
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -305,7 +305,7 @@ class User implements UserInterface
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -328,7 +328,7 @@ class User implements UserInterface
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -351,7 +351,7 @@ class User implements UserInterface
     /**
      * Get country
      *
-     * @return string 
+     * @return string
      */
     public function getCountry()
     {
@@ -374,7 +374,7 @@ class User implements UserInterface
     /**
      * Get linkedin
      *
-     * @return string 
+     * @return string
      */
     public function getLinkedin()
     {
@@ -397,7 +397,7 @@ class User implements UserInterface
     /**
      * Get viadeo
      *
-     * @return string 
+     * @return string
      */
     public function getViadeo()
     {
@@ -420,7 +420,7 @@ class User implements UserInterface
     /**
      * Get twitter
      *
-     * @return string 
+     * @return string
      */
     public function getTwitter()
     {
@@ -443,7 +443,7 @@ class User implements UserInterface
     /**
      * Get token
      *
-     * @return string 
+     * @return string
      */
     public function getToken()
     {
@@ -466,7 +466,7 @@ class User implements UserInterface
     /**
      * Get tokenValidity
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getTokenValidity()
     {
@@ -476,10 +476,10 @@ class User implements UserInterface
     /**
      * Add event_creator
      *
-     * @param \APIBundle\Entity\Event $eventCreator
+     * @param \GrappboxBundle\Entity\Event $eventCreator
      * @return User
      */
-    public function addEventCreator(\APIBundle\Entity\Event $eventCreator)
+    public function addEventCreator(\GrappboxBundle\Entity\Event $eventCreator)
     {
         $this->event_creator[] = $eventCreator;
 
@@ -489,9 +489,9 @@ class User implements UserInterface
     /**
      * Remove event_creator
      *
-     * @param \APIBundle\Entity\Event $eventCreator
+     * @param \GrappboxBundle\Entity\Event $eventCreator
      */
-    public function removeEventCreator(\APIBundle\Entity\Event $eventCreator)
+    public function removeEventCreator(\GrappboxBundle\Entity\Event $eventCreator)
     {
         $this->event_creator->removeElement($eventCreator);
     }
@@ -499,7 +499,7 @@ class User implements UserInterface
     /**
      * Get event_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEventCreator()
     {
@@ -509,10 +509,10 @@ class User implements UserInterface
     /**
      * Add project_creator
      *
-     * @param \APIBundle\Entity\Project $projectCreator
+     * @param \GrappboxBundle\Entity\Project $projectCreator
      * @return User
      */
-    public function addProjectCreator(\APIBundle\Entity\Project $projectCreator)
+    public function addProjectCreator(\GrappboxBundle\Entity\Project $projectCreator)
     {
         $this->project_creator[] = $projectCreator;
 
@@ -522,9 +522,9 @@ class User implements UserInterface
     /**
      * Remove project_creator
      *
-     * @param \APIBundle\Entity\Project $projectCreator
+     * @param \GrappboxBundle\Entity\Project $projectCreator
      */
-    public function removeProjectCreator(\APIBundle\Entity\Project $projectCreator)
+    public function removeProjectCreator(\GrappboxBundle\Entity\Project $projectCreator)
     {
         $this->project_creator->removeElement($projectCreator);
     }
@@ -532,7 +532,7 @@ class User implements UserInterface
     /**
      * Get project_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProjectCreator()
     {
@@ -542,10 +542,10 @@ class User implements UserInterface
     /**
      * Add gantt_creator
      *
-     * @param \APIBundle\Entity\Gantt $ganttCreator
+     * @param \GrappboxBundle\Entity\Gantt $ganttCreator
      * @return User
      */
-    public function addGanttCreator(\APIBundle\Entity\Gantt $ganttCreator)
+    public function addGanttCreator(\GrappboxBundle\Entity\Gantt $ganttCreator)
     {
         $this->gantt_creator[] = $ganttCreator;
 
@@ -555,9 +555,9 @@ class User implements UserInterface
     /**
      * Remove gantt_creator
      *
-     * @param \APIBundle\Entity\Gantt $ganttCreator
+     * @param \GrappboxBundle\Entity\Gantt $ganttCreator
      */
-    public function removeGanttCreator(\APIBundle\Entity\Gantt $ganttCreator)
+    public function removeGanttCreator(\GrappboxBundle\Entity\Gantt $ganttCreator)
     {
         $this->gantt_creator->removeElement($ganttCreator);
     }
@@ -565,7 +565,7 @@ class User implements UserInterface
     /**
      * Get gantt_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGanttCreator()
     {
@@ -575,10 +575,10 @@ class User implements UserInterface
     /**
      * Add gantt_updator
      *
-     * @param \APIBundle\Entity\Gantt $ganttUpdator
+     * @param \GrappboxBundle\Entity\Gantt $ganttUpdator
      * @return User
      */
-    public function addGanttUpdator(\APIBundle\Entity\Gantt $ganttUpdator)
+    public function addGanttUpdator(\GrappboxBundle\Entity\Gantt $ganttUpdator)
     {
         $this->gantt_updator[] = $ganttUpdator;
 
@@ -588,9 +588,9 @@ class User implements UserInterface
     /**
      * Remove gantt_updator
      *
-     * @param \APIBundle\Entity\Gantt $ganttUpdator
+     * @param \GrappboxBundle\Entity\Gantt $ganttUpdator
      */
-    public function removeGanttUpdator(\APIBundle\Entity\Gantt $ganttUpdator)
+    public function removeGanttUpdator(\GrappboxBundle\Entity\Gantt $ganttUpdator)
     {
         $this->gantt_updator->removeElement($ganttUpdator);
     }
@@ -598,7 +598,7 @@ class User implements UserInterface
     /**
      * Get gantt_updator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGanttUpdator()
     {
@@ -608,10 +608,10 @@ class User implements UserInterface
     /**
      * Add notifications
      *
-     * @param \APIBundle\Entity\Notification $notifications
+     * @param \GrappboxBundle\Entity\Notification $notifications
      * @return User
      */
-    public function addNotification(\APIBundle\Entity\Notification $notifications)
+    public function addNotification(\GrappboxBundle\Entity\Notification $notifications)
     {
         $this->notifications[] = $notifications;
 
@@ -621,9 +621,9 @@ class User implements UserInterface
     /**
      * Remove notifications
      *
-     * @param \APIBundle\Entity\Notification $notifications
+     * @param \GrappboxBundle\Entity\Notification $notifications
      */
-    public function removeNotification(\APIBundle\Entity\Notification $notifications)
+    public function removeNotification(\GrappboxBundle\Entity\Notification $notifications)
     {
         $this->notifications->removeElement($notifications);
     }
@@ -631,7 +631,7 @@ class User implements UserInterface
     /**
      * Get notifications
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getNotifications()
     {
@@ -641,10 +641,10 @@ class User implements UserInterface
     /**
      * Add projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      * @return User
      */
-    public function addProject(\APIBundle\Entity\Project $projects)
+    public function addProject(\GrappboxBundle\Entity\Project $projects)
     {
         $this->projects[] = $projects;
 
@@ -654,9 +654,9 @@ class User implements UserInterface
     /**
      * Remove projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      */
-    public function removeProject(\APIBundle\Entity\Project $projects)
+    public function removeProject(\GrappboxBundle\Entity\Project $projects)
     {
         $this->projects->removeElement($projects);
     }
@@ -664,7 +664,7 @@ class User implements UserInterface
     /**
      * Get projects
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProjects()
     {
@@ -674,10 +674,10 @@ class User implements UserInterface
     /**
      * Add events
      *
-     * @param \APIBundle\Entity\Event $events
+     * @param \GrappboxBundle\Entity\Event $events
      * @return User
      */
-    public function addEvent(\APIBundle\Entity\Event $events)
+    public function addEvent(\GrappboxBundle\Entity\Event $events)
     {
         $this->events[] = $events;
 
@@ -687,9 +687,9 @@ class User implements UserInterface
     /**
      * Remove events
      *
-     * @param \APIBundle\Entity\Event $events
+     * @param \GrappboxBundle\Entity\Event $events
      */
-    public function removeEvent(\APIBundle\Entity\Event $events)
+    public function removeEvent(\GrappboxBundle\Entity\Event $events)
     {
         $this->events->removeElement($events);
     }
@@ -697,7 +697,7 @@ class User implements UserInterface
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {
@@ -707,10 +707,10 @@ class User implements UserInterface
     /**
      * Add tasks
      *
-     * @param \APIBundle\Entity\Task $tasks
+     * @param \GrappboxBundle\Entity\Task $tasks
      * @return User
      */
-    public function addTask(\APIBundle\Entity\Task $tasks)
+    public function addTask(\GrappboxBundle\Entity\Task $tasks)
     {
         $this->tasks[] = $tasks;
 
@@ -720,9 +720,9 @@ class User implements UserInterface
     /**
      * Remove tasks
      *
-     * @param \APIBundle\Entity\Task $tasks
+     * @param \GrappboxBundle\Entity\Task $tasks
      */
-    public function removeTask(\APIBundle\Entity\Task $tasks)
+    public function removeTask(\GrappboxBundle\Entity\Task $tasks)
     {
         $this->tasks->removeElement($tasks);
     }
@@ -730,7 +730,7 @@ class User implements UserInterface
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasks()
     {

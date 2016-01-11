@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -38,7 +38,7 @@ class CloudSecuredFileMetadata
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,7 +61,7 @@ class CloudSecuredFileMetadata
     /**
      * Get filename
      *
-     * @return string 
+     * @return string
      */
     public function getFilename()
     {
@@ -84,7 +84,7 @@ class CloudSecuredFileMetadata
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -107,7 +107,7 @@ class CloudSecuredFileMetadata
     /**
      * Get creationDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreationDate()
     {
@@ -130,7 +130,7 @@ class CloudSecuredFileMetadata
     /**
      * Get cloudPath
      *
-     * @return string 
+     * @return string
      */
     public function getCloudPath()
     {

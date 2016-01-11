@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,17 +25,17 @@ class Gantt
     private $createdAt;
 
     /**
-     * @var \APIBundle\Entity\Project
+     * @var \GrappboxBundle\Entity\Project
      */
     private $projects;
 
     /**
-     * @var \APIBundle\Entity\User
+     * @var \GrappboxBundle\Entity\User
      */
     private $creator_user;
 
     /**
-     * @var \APIBundle\Entity\User
+     * @var \GrappboxBundle\Entity\User
      */
     private $updator_user;
 
@@ -54,7 +54,7 @@ class Gantt
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -77,7 +77,7 @@ class Gantt
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -100,7 +100,7 @@ class Gantt
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -110,10 +110,10 @@ class Gantt
     /**
      * Set projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      * @return Gantt
      */
-    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
     {
         $this->projects = $projects;
 
@@ -123,7 +123,7 @@ class Gantt
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project 
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -133,10 +133,10 @@ class Gantt
     /**
      * Set creator_user
      *
-     * @param \APIBundle\Entity\User $creatorUser
+     * @param \GrappboxBundle\Entity\User $creatorUser
      * @return Gantt
      */
-    public function setCreatorUser(\APIBundle\Entity\User $creatorUser = null)
+    public function setCreatorUser(\GrappboxBundle\Entity\User $creatorUser = null)
     {
         $this->creator_user = $creatorUser;
 
@@ -146,7 +146,7 @@ class Gantt
     /**
      * Get creator_user
      *
-     * @return \APIBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getCreatorUser()
     {
@@ -156,10 +156,10 @@ class Gantt
     /**
      * Set updator_user
      *
-     * @param \APIBundle\Entity\User $updatorUser
+     * @param \GrappboxBundle\Entity\User $updatorUser
      * @return Gantt
      */
-    public function setUpdatorUser(\APIBundle\Entity\User $updatorUser = null)
+    public function setUpdatorUser(\GrappboxBundle\Entity\User $updatorUser = null)
     {
         $this->updator_user = $updatorUser;
 
@@ -169,7 +169,7 @@ class Gantt
     /**
      * Get updator_user
      *
-     * @return \APIBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getUpdatorUser()
     {

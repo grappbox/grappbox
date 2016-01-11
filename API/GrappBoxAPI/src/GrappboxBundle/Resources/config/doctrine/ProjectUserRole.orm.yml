@@ -1,4 +1,4 @@
-APIBundle\Entity\ProjectUserRole:
+GrappboxBundle\Entity\ProjectUserRole:
     type: entity
     table: project_user_role
     id:

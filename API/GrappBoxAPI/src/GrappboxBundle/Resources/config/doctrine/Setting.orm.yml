@@ -1,4 +1,4 @@
-APIBundle\Entity\Setting:
+GrappboxBundle\Entity\Setting:
     type: entity
     table: settings
     id:

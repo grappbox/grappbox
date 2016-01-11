@@ -1,6 +1,6 @@
-APIBundle\Entity\Task:
+GrappboxBundle\Entity\Task:
     type: entity
-    repositoryClass: APIBundle\Entity\TaskRepository
+    repositoryClass: GrappboxBundle\Entity\TaskRepository
     table: tasks
     id:
         id:

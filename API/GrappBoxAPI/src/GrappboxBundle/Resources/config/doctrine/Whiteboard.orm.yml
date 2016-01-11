@@ -1,4 +1,4 @@
-APIBundle\Entity\Whiteboard:
+GrappboxBundle\Entity\Whiteboard:
     type: entity
     table: whiteboards
     id:

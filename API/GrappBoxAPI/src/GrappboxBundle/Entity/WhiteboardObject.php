@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,7 +35,7 @@ class WhiteboardObject
     private $deletedAt;
 
     /**
-     * @var \APIBundle\Entity\Whiteboard
+     * @var \GrappboxBundle\Entity\Whiteboard
      */
     private $whiteboard;
 
@@ -155,10 +155,10 @@ class WhiteboardObject
     /**
      * Set whiteboard
      *
-     * @param \APIBundle\Entity\Whiteboard $whiteboard
+     * @param \GrappboxBundle\Entity\Whiteboard $whiteboard
      * @return WhiteboardObject
      */
-    public function setWhiteboard(\APIBundle\Entity\Whiteboard $whiteboard = null)
+    public function setWhiteboard(\GrappboxBundle\Entity\Whiteboard $whiteboard = null)
     {
         $this->whiteboard = $whiteboard;
 
@@ -168,7 +168,7 @@ class WhiteboardObject
     /**
      * Get whiteboard
      *
-     * @return \APIBundle\Entity\Whiteboard
+     * @return \GrappboxBundle\Entity\Whiteboard
      */
     public function getWhiteboard()
     {

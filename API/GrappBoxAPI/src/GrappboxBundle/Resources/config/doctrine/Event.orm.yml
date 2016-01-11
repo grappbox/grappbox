@@ -1,6 +1,6 @@
-APIBundle\Entity\Event:
+GrappboxBundle\Entity\Event:
     type: entity
-    repositoryClass: APIBundle\Entity\EventRepository
+    repositoryClass: GrappboxBundle\Entity\EventRepository
     table: events
     id:
         id:

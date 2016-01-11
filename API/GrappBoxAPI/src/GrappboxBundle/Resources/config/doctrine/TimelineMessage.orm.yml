@@ -1,4 +1,4 @@
-APIBundle\Entity\TimelineMessage:
+GrappboxBundle\Entity\TimelineMessage:
     type: entity
     table: timeline_messages
     id:

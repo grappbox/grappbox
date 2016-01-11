@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -60,7 +60,7 @@ class Bug
     private $deletedAt;
 
     /**
-     * @var \APIBundle\Entity\Project
+     * @var \GrappboxBundle\Entity\Project
      */
     private $projects;
 
@@ -323,10 +323,10 @@ class Bug
     /**
      * Set projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      * @return Bug
      */
-    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
     {
         $this->projects = $projects;
 
@@ -336,7 +336,7 @@ class Bug
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -346,10 +346,10 @@ class Bug
     /**
      * Add users
      *
-     * @param \APIBundle\Entity\User $users
+     * @param \GrappboxBundle\Entity\User $users
      * @return Bug
      */
-    public function addUser(\APIBundle\Entity\User $users)
+    public function addUser(\GrappboxBundle\Entity\User $users)
     {
         $this->users[] = $users;
 
@@ -359,9 +359,9 @@ class Bug
     /**
      * Remove users
      *
-     * @param \APIBundle\Entity\User $users
+     * @param \GrappboxBundle\Entity\User $users
      */
-    public function removeUser(\APIBundle\Entity\User $users)
+    public function removeUser(\GrappboxBundle\Entity\User $users)
     {
         $this->users->removeElement($users);
     }
@@ -379,10 +379,10 @@ class Bug
     /**
      * Add tags
      *
-     * @param \APIBundle\Entity\Tag $tags
+     * @param \GrappboxBundle\Entity\Tag $tags
      * @return Bug
      */
-    public function addTag(\APIBundle\Entity\Tag $tags)
+    public function addTag(\GrappboxBundle\Entity\Tag $tags)
     {
         $this->tags[] = $tags;
 
@@ -392,9 +392,9 @@ class Bug
     /**
      * Remove tags
      *
-     * @param \APIBundle\Entity\Tag $tags
+     * @param \GrappboxBundle\Entity\Tag $tags
      */
-    public function removeTag(\APIBundle\Entity\Tag $tags)
+    public function removeTag(\GrappboxBundle\Entity\Tag $tags)
     {
         $this->tags->removeElement($tags);
     }

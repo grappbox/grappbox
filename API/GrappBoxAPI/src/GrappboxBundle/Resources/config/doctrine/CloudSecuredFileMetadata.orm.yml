@@ -1,4 +1,4 @@
-APIBundle\Entity\CloudSecuredFileMetadata:
+GrappboxBundle\Entity\CloudSecuredFileMetadata:
     type: entity
     table: null
     id:

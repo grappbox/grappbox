@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -105,7 +105,7 @@ class Project
     private $gantts;
 
     /**
-     * @var \APIBundle\Entity\User
+     * @var \GrappboxBundle\Entity\User
      */
     private $creator_user;
 
@@ -137,7 +137,7 @@ class Project
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -160,7 +160,7 @@ class Project
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -183,7 +183,7 @@ class Project
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -206,7 +206,7 @@ class Project
     /**
      * Get logo
      *
-     * @return string 
+     * @return string
      */
     public function getLogo()
     {
@@ -229,7 +229,7 @@ class Project
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -252,7 +252,7 @@ class Project
     /**
      * Get company
      *
-     * @return string 
+     * @return string
      */
     public function getCompany()
     {
@@ -275,7 +275,7 @@ class Project
     /**
      * Get contactEmail
      *
-     * @return string 
+     * @return string
      */
     public function getContactEmail()
     {
@@ -298,7 +298,7 @@ class Project
     /**
      * Get facebook
      *
-     * @return string 
+     * @return string
      */
     public function getFacebook()
     {
@@ -321,7 +321,7 @@ class Project
     /**
      * Get twitter
      *
-     * @return string 
+     * @return string
      */
     public function getTwitter()
     {
@@ -344,7 +344,7 @@ class Project
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -367,7 +367,7 @@ class Project
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -390,7 +390,7 @@ class Project
     /**
      * Get safePassword
      *
-     * @return string 
+     * @return string
      */
     public function getSafePassword()
     {
@@ -400,10 +400,10 @@ class Project
     /**
      * Add tasks
      *
-     * @param \APIBundle\Entity\Task $tasks
+     * @param \GrappboxBundle\Entity\Task $tasks
      * @return Project
      */
-    public function addTask(\APIBundle\Entity\Task $tasks)
+    public function addTask(\GrappboxBundle\Entity\Task $tasks)
     {
         $this->tasks[] = $tasks;
 
@@ -413,9 +413,9 @@ class Project
     /**
      * Remove tasks
      *
-     * @param \APIBundle\Entity\Task $tasks
+     * @param \GrappboxBundle\Entity\Task $tasks
      */
-    public function removeTask(\APIBundle\Entity\Task $tasks)
+    public function removeTask(\GrappboxBundle\Entity\Task $tasks)
     {
         $this->tasks->removeElement($tasks);
     }
@@ -423,7 +423,7 @@ class Project
     /**
      * Get tasks
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasks()
     {
@@ -433,10 +433,10 @@ class Project
     /**
      * Add bugs
      *
-     * @param \APIBundle\Entity\Bug $bugs
+     * @param \GrappboxBundle\Entity\Bug $bugs
      * @return Project
      */
-    public function addBug(\APIBundle\Entity\Bug $bugs)
+    public function addBug(\GrappboxBundle\Entity\Bug $bugs)
     {
         $this->bugs[] = $bugs;
 
@@ -446,9 +446,9 @@ class Project
     /**
      * Remove bugs
      *
-     * @param \APIBundle\Entity\Bug $bugs
+     * @param \GrappboxBundle\Entity\Bug $bugs
      */
-    public function removeBug(\APIBundle\Entity\Bug $bugs)
+    public function removeBug(\GrappboxBundle\Entity\Bug $bugs)
     {
         $this->bugs->removeElement($bugs);
     }
@@ -456,7 +456,7 @@ class Project
     /**
      * Get bugs
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBugs()
     {
@@ -466,10 +466,10 @@ class Project
     /**
      * Add timelines
      *
-     * @param \APIBundle\Entity\Timeline $timelines
+     * @param \GrappboxBundle\Entity\Timeline $timelines
      * @return Project
      */
-    public function addTimeline(\APIBundle\Entity\Timeline $timelines)
+    public function addTimeline(\GrappboxBundle\Entity\Timeline $timelines)
     {
         $this->timelines[] = $timelines;
 
@@ -479,9 +479,9 @@ class Project
     /**
      * Remove timelines
      *
-     * @param \APIBundle\Entity\Timeline $timelines
+     * @param \GrappboxBundle\Entity\Timeline $timelines
      */
-    public function removeTimeline(\APIBundle\Entity\Timeline $timelines)
+    public function removeTimeline(\GrappboxBundle\Entity\Timeline $timelines)
     {
         $this->timelines->removeElement($timelines);
     }
@@ -489,7 +489,7 @@ class Project
     /**
      * Get timelines
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTimelines()
     {
@@ -499,10 +499,10 @@ class Project
     /**
      * Add events
      *
-     * @param \APIBundle\Entity\Event $events
+     * @param \GrappboxBundle\Entity\Event $events
      * @return Project
      */
-    public function addEvent(\APIBundle\Entity\Event $events)
+    public function addEvent(\GrappboxBundle\Entity\Event $events)
     {
         $this->events[] = $events;
 
@@ -512,9 +512,9 @@ class Project
     /**
      * Remove events
      *
-     * @param \APIBundle\Entity\Event $events
+     * @param \GrappboxBundle\Entity\Event $events
      */
-    public function removeEvent(\APIBundle\Entity\Event $events)
+    public function removeEvent(\GrappboxBundle\Entity\Event $events)
     {
         $this->events->removeElement($events);
     }
@@ -522,7 +522,7 @@ class Project
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {
@@ -532,10 +532,10 @@ class Project
     /**
      * Add whiteboards
      *
-     * @param \APIBundle\Entity\Whiteboard $whiteboards
+     * @param \GrappboxBundle\Entity\Whiteboard $whiteboards
      * @return Project
      */
-    public function addWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
+    public function addWhiteboard(\GrappboxBundle\Entity\Whiteboard $whiteboards)
     {
         $this->whiteboards[] = $whiteboards;
 
@@ -545,9 +545,9 @@ class Project
     /**
      * Remove whiteboards
      *
-     * @param \APIBundle\Entity\Whiteboard $whiteboards
+     * @param \GrappboxBundle\Entity\Whiteboard $whiteboards
      */
-    public function removeWhiteboard(\APIBundle\Entity\Whiteboard $whiteboards)
+    public function removeWhiteboard(\GrappboxBundle\Entity\Whiteboard $whiteboards)
     {
         $this->whiteboards->removeElement($whiteboards);
     }
@@ -555,7 +555,7 @@ class Project
     /**
      * Get whiteboards
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getWhiteboards()
     {
@@ -565,10 +565,10 @@ class Project
     /**
      * Add roles
      *
-     * @param \APIBundle\Entity\Role $roles
+     * @param \GrappboxBundle\Entity\Role $roles
      * @return Project
      */
-    public function addRole(\APIBundle\Entity\Role $roles)
+    public function addRole(\GrappboxBundle\Entity\Role $roles)
     {
         $this->roles[] = $roles;
 
@@ -578,9 +578,9 @@ class Project
     /**
      * Remove roles
      *
-     * @param \APIBundle\Entity\Role $roles
+     * @param \GrappboxBundle\Entity\Role $roles
      */
-    public function removeRole(\APIBundle\Entity\Role $roles)
+    public function removeRole(\GrappboxBundle\Entity\Role $roles)
     {
         $this->roles->removeElement($roles);
     }
@@ -588,7 +588,7 @@ class Project
     /**
      * Get roles
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRoles()
     {
@@ -598,10 +598,10 @@ class Project
     /**
      * Add gantts
      *
-     * @param \APIBundle\Entity\Gantt $gantts
+     * @param \GrappboxBundle\Entity\Gantt $gantts
      * @return Project
      */
-    public function addGantt(\APIBundle\Entity\Gantt $gantts)
+    public function addGantt(\GrappboxBundle\Entity\Gantt $gantts)
     {
         $this->gantts[] = $gantts;
 
@@ -611,9 +611,9 @@ class Project
     /**
      * Remove gantts
      *
-     * @param \APIBundle\Entity\Gantt $gantts
+     * @param \GrappboxBundle\Entity\Gantt $gantts
      */
-    public function removeGantt(\APIBundle\Entity\Gantt $gantts)
+    public function removeGantt(\GrappboxBundle\Entity\Gantt $gantts)
     {
         $this->gantts->removeElement($gantts);
     }
@@ -621,7 +621,7 @@ class Project
     /**
      * Get gantts
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGantts()
     {
@@ -631,10 +631,10 @@ class Project
     /**
      * Set creator_user
      *
-     * @param \APIBundle\Entity\User $creatorUser
+     * @param \GrappboxBundle\Entity\User $creatorUser
      * @return Project
      */
-    public function setCreatorUser(\APIBundle\Entity\User $creatorUser = null)
+    public function setCreatorUser(\GrappboxBundle\Entity\User $creatorUser = null)
     {
         $this->creator_user = $creatorUser;
 
@@ -644,7 +644,7 @@ class Project
     /**
      * Get creator_user
      *
-     * @return \APIBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getCreatorUser()
     {
@@ -654,10 +654,10 @@ class Project
     /**
      * Add users
      *
-     * @param \APIBundle\Entity\User $users
+     * @param \GrappboxBundle\Entity\User $users
      * @return Project
      */
-    public function addUser(\APIBundle\Entity\User $users)
+    public function addUser(\GrappboxBundle\Entity\User $users)
     {
         $this->users[] = $users;
 
@@ -667,9 +667,9 @@ class Project
     /**
      * Remove users
      *
-     * @param \APIBundle\Entity\User $users
+     * @param \GrappboxBundle\Entity\User $users
      */
-    public function removeUser(\APIBundle\Entity\User $users)
+    public function removeUser(\GrappboxBundle\Entity\User $users)
     {
         $this->users->removeElement($users);
     }
@@ -677,7 +677,7 @@ class Project
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -687,10 +687,10 @@ class Project
     /**
      * Add customers_access
      *
-     * @param \APIBundle\Entity\CustomerAccess $customersAccess
+     * @param \GrappboxBundle\Entity\CustomerAccess $customersAccess
      * @return Project
      */
-    public function addCustomersAccess(\APIBundle\Entity\CustomerAccess $customersAccess)
+    public function addCustomersAccess(\GrappboxBundle\Entity\CustomerAccess $customersAccess)
     {
         $this->customers_access[] = $customersAccess;
 
@@ -700,9 +700,9 @@ class Project
     /**
      * Remove customers_access
      *
-     * @param \APIBundle\Entity\CustomerAccess $customersAccess
+     * @param \GrappboxBundle\Entity\CustomerAccess $customersAccess
      */
-    public function removeCustomersAccess(\APIBundle\Entity\CustomerAccess $customersAccess)
+    public function removeCustomersAccess(\GrappboxBundle\Entity\CustomerAccess $customersAccess)
     {
         $this->customers_access->removeElement($customersAccess);
     }
@@ -710,7 +710,7 @@ class Project
     /**
      * Get customers_access
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCustomersAccess()
     {
@@ -725,10 +725,10 @@ class Project
     /**
      * Add tags
      *
-     * @param \APIBundle\Entity\Tag $tags
+     * @param \GrappboxBundle\Entity\Tag $tags
      * @return Project
      */
-    public function addTag(\APIBundle\Entity\Tag $tags)
+    public function addTag(\GrappboxBundle\Entity\Tag $tags)
     {
         $this->tags[] = $tags;
 
@@ -738,9 +738,9 @@ class Project
     /**
      * Remove tags
      *
-     * @param \APIBundle\Entity\Tag $tags
+     * @param \GrappboxBundle\Entity\Tag $tags
      */
-    public function removeTag(\APIBundle\Entity\Tag $tags)
+    public function removeTag(\GrappboxBundle\Entity\Tag $tags)
     {
         $this->tags->removeElement($tags);
     }
@@ -748,7 +748,7 @@ class Project
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTags()
     {

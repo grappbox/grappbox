@@ -1,4 +1,4 @@
-APIBundle\Entity\BugState:
+GrappboxBundle\Entity\BugState:
     type: entity
     table: bug_states
     id:

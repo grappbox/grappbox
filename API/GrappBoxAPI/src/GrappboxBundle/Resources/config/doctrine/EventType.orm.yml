@@ -1,4 +1,4 @@
-APIBundle\Entity\EventType:
+GrappboxBundle\Entity\EventType:
     type: entity
     table: event_types
     id:

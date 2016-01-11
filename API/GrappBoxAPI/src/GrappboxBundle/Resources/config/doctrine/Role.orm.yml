@@ -1,4 +1,4 @@
-APIBundle\Entity\Role:
+GrappboxBundle\Entity\Role:
     type: entity
     table: roles
     id:

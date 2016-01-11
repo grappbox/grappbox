@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,7 +48,7 @@ class CloudTransfer
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -71,7 +71,7 @@ class CloudTransfer
     /**
      * Get filename
      *
-     * @return string 
+     * @return string
      */
     public function getFilename()
     {
@@ -94,7 +94,7 @@ class CloudTransfer
     /**
      * Get path
      *
-     * @return string 
+     * @return string
      */
     public function getPath()
     {
@@ -117,7 +117,7 @@ class CloudTransfer
     /**
      * Get creationDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreationDate()
     {
@@ -140,7 +140,7 @@ class CloudTransfer
     /**
      * Get deletionDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletionDate()
     {
@@ -163,7 +163,7 @@ class CloudTransfer
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -186,7 +186,7 @@ class CloudTransfer
     /**
      * Get creator_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCreatorId()
     {

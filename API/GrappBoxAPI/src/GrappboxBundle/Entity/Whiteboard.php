@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -50,7 +50,7 @@ class Whiteboard
     private $objects;
 
     /**
-     * @var \APIBundle\Entity\Project
+     * @var \GrappboxBundle\Entity\Project
      */
     private $projects;
 
@@ -227,10 +227,10 @@ class Whiteboard
     /**
      * Add objects
      *
-     * @param \APIBundle\Entity\WhiteboardObject $objects
+     * @param \GrappboxBundle\Entity\WhiteboardObject $objects
      * @return Whiteboard
      */
-    public function addObject(\APIBundle\Entity\WhiteboardObject $objects)
+    public function addObject(\GrappboxBundle\Entity\WhiteboardObject $objects)
     {
         $this->objects[] = $objects;
 
@@ -240,9 +240,9 @@ class Whiteboard
     /**
      * Remove objects
      *
-     * @param \APIBundle\Entity\WhiteboardObject $objects
+     * @param \GrappboxBundle\Entity\WhiteboardObject $objects
      */
-    public function removeObject(\APIBundle\Entity\WhiteboardObject $objects)
+    public function removeObject(\GrappboxBundle\Entity\WhiteboardObject $objects)
     {
         $this->objects->removeElement($objects);
     }
@@ -260,10 +260,10 @@ class Whiteboard
     /**
      * Set projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      * @return Whiteboard
      */
-    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
     {
         $this->projects = $projects;
 
@@ -273,7 +273,7 @@ class Whiteboard
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {

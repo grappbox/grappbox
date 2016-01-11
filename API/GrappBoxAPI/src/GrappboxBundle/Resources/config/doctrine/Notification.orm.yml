@@ -1,4 +1,4 @@
-APIBundle\Entity\Notification:
+GrappboxBundle\Entity\Notification:
     type: entity
     table: notifications
     id:

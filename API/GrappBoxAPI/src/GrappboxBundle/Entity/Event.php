@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -50,17 +50,17 @@ class Event
     private $deletedAt;
 
     /**
-     * @var \APIBundle\Entity\Project
+     * @var \GrappboxBundle\Entity\Project
      */
     private $projects;
 
     /**
-     * @var \APIBundle\Entity\EventType
+     * @var \GrappboxBundle\Entity\EventType
      */
     private $eventtypes;
 
     /**
-     * @var \APIBundle\Entity\User
+     * @var \GrappboxBundle\Entity\User
      */
     private $creator_user;
 
@@ -272,10 +272,10 @@ class Event
     /**
      * Set projects
      *
-     * @param \APIBundle\Entity\Project $projects
+     * @param \GrappboxBundle\Entity\Project $projects
      * @return Event
      */
-    public function setProjects(\APIBundle\Entity\Project $projects = null)
+    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
     {
         $this->projects = $projects;
 
@@ -285,7 +285,7 @@ class Event
     /**
      * Get projects
      *
-     * @return \APIBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -295,10 +295,10 @@ class Event
     /**
      * Set eventtypes
      *
-     * @param \APIBundle\Entity\EventType $eventtypes
+     * @param \GrappboxBundle\Entity\EventType $eventtypes
      * @return Event
      */
-    public function setEventtypes(\APIBundle\Entity\EventType $eventtypes = null)
+    public function setEventtypes(\GrappboxBundle\Entity\EventType $eventtypes = null)
     {
         $this->eventtypes = $eventtypes;
 
@@ -308,7 +308,7 @@ class Event
     /**
      * Get eventtypes
      *
-     * @return \APIBundle\Entity\EventType
+     * @return \GrappboxBundle\Entity\EventType
      */
     public function getEventtypes()
     {
@@ -318,10 +318,10 @@ class Event
     /**
      * Set creator_user
      *
-     * @param \APIBundle\Entity\User $creatorUser
+     * @param \GrappboxBundle\Entity\User $creatorUser
      * @return Event
      */
-    public function setCreatorUser(\APIBundle\Entity\User $creatorUser = null)
+    public function setCreatorUser(\GrappboxBundle\Entity\User $creatorUser = null)
     {
         $this->creator_user = $creatorUser;
 
@@ -331,7 +331,7 @@ class Event
     /**
      * Get creator_user
      *
-     * @return \APIBundle\Entity\User
+     * @return \GrappboxBundle\Entity\User
      */
     public function getCreatorUser()
     {
@@ -341,10 +341,10 @@ class Event
     /**
      * Add users
      *
-     * @param \APIBundle\Entity\User $users
+     * @param \GrappboxBundle\Entity\User $users
      * @return Event
      */
-    public function addUser(\APIBundle\Entity\User $users)
+    public function addUser(\GrappboxBundle\Entity\User $users)
     {
         $this->users[] = $users;
 
@@ -354,9 +354,9 @@ class Event
     /**
      * Remove users
      *
-     * @param \APIBundle\Entity\User $users
+     * @param \GrappboxBundle\Entity\User $users
      */
-    public function removeUser(\APIBundle\Entity\User $users)
+    public function removeUser(\GrappboxBundle\Entity\User $users)
     {
         $this->users->removeElement($users);
     }

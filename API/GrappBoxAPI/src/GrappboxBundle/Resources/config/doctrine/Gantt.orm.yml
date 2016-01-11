@@ -1,4 +1,4 @@
-APIBundle\Entity\Gantt:
+GrappboxBundle\Entity\Gantt:
     type: entity
     table: gantts
     id:

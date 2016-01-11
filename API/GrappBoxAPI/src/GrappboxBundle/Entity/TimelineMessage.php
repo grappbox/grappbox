@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,7 +41,7 @@ class TimelineMessage
 
 
     /**
-     * @var \APIBundle\Entity\Timeline
+     * @var \GrappboxBundle\Entity\Timeline
      */
     private $timelines;
 
@@ -258,10 +258,10 @@ class TimelineMessage
     /**
      * Set timelines
      *
-     * @param \APIBundle\Entity\Timeline $timelines
+     * @param \GrappboxBundle\Entity\Timeline $timelines
      * @return TimelineMessage
      */
-    public function setTimelines(\APIBundle\Entity\Timeline $timelines = null)
+    public function setTimelines(\GrappboxBundle\Entity\Timeline $timelines = null)
     {
         $this->timelines = $timelines;
 
@@ -271,7 +271,7 @@ class TimelineMessage
     /**
      * Get timelines
      *
-     * @return \APIBundle\Entity\Timeline
+     * @return \GrappboxBundle\Entity\Timeline
      */
     public function getTimelines()
     {

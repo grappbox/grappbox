@@ -1,4 +1,4 @@
-APIBundle\Entity\CloudTransfer:
+GrappboxBundle\Entity\CloudTransfer:
     type: entity
     table: null
     id:

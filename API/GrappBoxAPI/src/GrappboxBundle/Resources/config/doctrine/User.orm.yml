@@ -1,6 +1,6 @@
-APIBundle\Entity\User:
+GrappboxBundle\Entity\User:
     type: entity
-    repositoryClass: APIBundle\Entity\UserRepository
+    repositoryClass: GrappboxBundle\Entity\UserRepository
     table: users
     id:
         id:

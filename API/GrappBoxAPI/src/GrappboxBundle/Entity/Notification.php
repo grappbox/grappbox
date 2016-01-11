@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,7 +30,7 @@ class Notification
     private $message;
 
     /**
-     * @var \APIBundle\Entity\User
+     * @var \GrappboxBundle\Entity\User
      */
     private $user;
 
@@ -38,7 +38,7 @@ class Notification
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,7 +61,7 @@ class Notification
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -84,7 +84,7 @@ class Notification
     /**
      * Get targetId
      *
-     * @return integer 
+     * @return integer
      */
     public function getTargetId()
     {
@@ -107,7 +107,7 @@ class Notification
     /**
      * Get message
      *
-     * @return string 
+     * @return string
      */
     public function getMessage()
     {
@@ -117,10 +117,10 @@ class Notification
     /**
      * Set user
      *
-     * @param \APIBundle\Entity\User $user
+     * @param \GrappboxBundle\Entity\User $user
      * @return Notification
      */
-    public function setUser(\APIBundle\Entity\User $user = null)
+    public function setUser(\GrappboxBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -130,7 +130,7 @@ class Notification
     /**
      * Get user
      *
-     * @return \APIBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getUser()
     {

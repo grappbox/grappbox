@@ -1,4 +1,4 @@
-APIBundle\Entity\WhiteboardModif:
+GrappboxBundle\Entity\WhiteboardModif:
     type: entity
     table: whiteboard_modifs
     id:

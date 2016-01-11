@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,7 +48,7 @@ class Setting
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -71,7 +71,7 @@ class Setting
     /**
      * Get userId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUserId()
     {
@@ -94,7 +94,7 @@ class Setting
     /**
      * Get bugAlert
      *
-     * @return integer 
+     * @return integer
      */
     public function getBugAlert()
     {
@@ -117,7 +117,7 @@ class Setting
     /**
      * Get eventAlert
      *
-     * @return integer 
+     * @return integer
      */
     public function getEventAlert()
     {
@@ -140,7 +140,7 @@ class Setting
     /**
      * Get assignAlert
      *
-     * @return integer 
+     * @return integer
      */
     public function getAssignAlert()
     {
@@ -163,7 +163,7 @@ class Setting
     /**
      * Get lateAlert
      *
-     * @return integer 
+     * @return integer
      */
     public function getLateAlert()
     {
@@ -186,7 +186,7 @@ class Setting
     /**
      * Get alertFrequency
      *
-     * @return integer 
+     * @return integer
      */
     public function getAlertFrequency()
     {

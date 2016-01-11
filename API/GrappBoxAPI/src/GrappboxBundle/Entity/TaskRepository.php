@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -15,7 +15,7 @@ class TaskRepository extends EntityRepository
 	public function findUserAllTasks($id)
 	{
 		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
-		
+
 		$tasks = $qb->getQuery()->getResult();
 
 		if ($tasks === null)
@@ -55,7 +55,7 @@ class TaskRepository extends EntityRepository
 	public function findUserCurrentAndNextTasks($id)
 	{
 		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
-		
+
 		$tasks = $qb->getQuery()->getResult();
 
 		if ($tasks === null)

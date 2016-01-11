@@ -1,6 +1,6 @@
 <?php
 
-namespace APIBundle\Entity;
+namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -68,10 +68,10 @@ class EventType
     /**
      * Add events
      *
-     * @param \APIBundle\Entity\Event $events
+     * @param \GrappboxBundle\Entity\Event $events
      * @return EventType
      */
-    public function addEvent(\APIBundle\Entity\Event $events)
+    public function addEvent(\GrappboxBundle\Entity\Event $events)
     {
         $this->events[] = $events;
 
@@ -81,9 +81,9 @@ class EventType
     /**
      * Remove events
      *
-     * @param \APIBundle\Entity\Event $events
+     * @param \GrappboxBundle\Entity\Event $events
      */
-    public function removeEvent(\APIBundle\Entity\Event $events)
+    public function removeEvent(\GrappboxBundle\Entity\Event $events)
     {
         $this->events->removeElement($events);
     }

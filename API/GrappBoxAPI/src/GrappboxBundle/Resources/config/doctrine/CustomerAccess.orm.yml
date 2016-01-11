@@ -1,4 +1,4 @@
-APIBundle\Entity\CustomerAccess:
+GrappboxBundle\Entity\CustomerAccess:
     type: entity
     table: customers_access
     id:
