@@ -79,8 +79,6 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
-nelmio_api_doc: ~
-
 nelmio_cors:
     defaults:
         allow_credentials: false
