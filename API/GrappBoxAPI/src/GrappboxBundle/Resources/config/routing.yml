@@ -426,8 +426,16 @@ v2_notification_getNotification:
     path:       /notification/getnotification/{token}
     defaults:   { _controller: GrappboxBundle:Notification:getNotification }
     requirements:
-        token: "[a-zA-Z]+" 
+        token: "[a-zA-Z]+"
     methods: [GET]
+
+v2_notification_setNotificationToRead:
+    path:       /notification/setnotificationtoread/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Notification:setNotificationToRead }
+    requirements:
+        token:  "[a-zA-Z]+"
+        id:     \d+
+    methods: [PUT]
 
 
 # -----------------------------------------------------------------------

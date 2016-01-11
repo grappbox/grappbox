@@ -11,6 +11,9 @@ use Symfony\Component\Security\Core\Util\SecureRandom;
 
 use GrappboxBundle\Controller\RolesAndTokenVerificationController;
 
+use GrappboxBundle\Entity\Notification;
+//use GrappboxBundle\Entity\Device;
+use DateTime;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -27,7 +30,7 @@ class NotificationController extends RolesAndTokenVerificationController
 {
   public function registerDeviceAction()
   {
-    // renvois l'object device avec id , user_id , device token, device_type
+    // renvois l'objet device avec id , user_id , device token, device_type
     // si user_id existe et que device_token && device_type n'ont pas changé ne fait rien et renvois le device Object
 
   }
@@ -57,10 +60,40 @@ class NotificationController extends RolesAndTokenVerificationController
 
   public function getNotificationsAction(Request $request, $token)
   {
-      // pour Desktop et Web
+    // pour Desktop et Web
 
-      // get toutes les notif indépendamment des projets
+    $user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
 
+		$em = $this->getDoctrine()->getManager();
+    $notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user_id" => $user->getId()/*, "read" => false*/));
+
+    $notif_array = array();
+    foreach ($notification as $key => $value) {
+      $notif_array[] = $vlaue->objectToArray();
+    }
+
+    //if (count(notif_array) <= 0)
+      // return "no data to return"
+    return new JsonResponse(array("array" => $notif_array));
+  }
+
+  public function setNotificationToReadAction(Request $request, $token, $id)
+  {
+    // set notif->read as true
+    $user = $this->checkToken($token);
+    if (!$user)
+      return ($this->setBadTokenError());
+    $em = $this->getDoctrine()->getManager();
+    $notification = $em->getRepository("GrappboxBundle:Notification")->find($id);
+
+    //if (!($notification instanceof Notification))
+      // return error "no data"/"bad id"
+    // $notification->setDeletedAt(new DateTime('now')):
+    // $em->flush();
+
+    //return "success"
   }
 
   // (Android)API access key from Google API's Console.
