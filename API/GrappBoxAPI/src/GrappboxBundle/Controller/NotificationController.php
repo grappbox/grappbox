@@ -47,42 +47,49 @@ class NotificationController extends RolesAndTokenVerificationController
     // return array of device object
   }
 
-  public function getNotificationsAction(Request $request, $token)
-  {
-    // pour Desktop et Web
 
+
+  public function getNotificationsAction(Request $request, $token, $read, $offset, $limit)
+  {
     $user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("15.4.3", "Notification", "getNotification"));
+
+    if ($read == "true")
+      $read_value = true;
+    else if
+      $read_value = false;
 
 		$em = $this->getDoctrine()->getManager();
-    $notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user_id" => $user->getId()/*, "read" => false*/));
+    $notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user" => $user, "read" => $read), array(), $limit, $offset);
 
     $notif_array = array();
     foreach ($notification as $key => $value) {
       $notif_array[] = $value->objectToArray();
     }
 
-    //if (count(notif_array) <= 0)
-      // return "no data to return"
-    return new JsonResponse(array("array" => $notif_array));
+    if (count(notif_array) <= 0)
+      return ($this->setNoDataSuccess("1.15.3", "Notification", "getNotification"));
+
+    return ($this->setSuccess("1.15.1", "Notification", "getNotifications", "Complete Success", array("array" => $notif_array)));
   }
 
   public function setNotificationToReadAction(Request $request, $token, $id)
   {
-    // set notif->read as true
     $user = $this->checkToken($token);
     if (!$user)
-      return ($this->setBadTokenError());
+      return ($this->setBadTokenError("15.5.3", "Notification", "setNotificationToRead"));
+
     $em = $this->getDoctrine()->getManager();
     $notification = $em->getRepository("GrappboxBundle:Notification")->find($id);
 
-    //if (!($notification instanceof Notification))
-      // return error "no data"/"bad id"
-    //$notification->setDeletedAt(new DateTime('now')):
-    //$em->flush();
+    if (!($notification instanceof Notification))
+      return ($this->setBadRequest("15.5.3", "Notification", "setNotificationToRead", "Bad ID"));
 
-    //return "success"
+    $notification->setRead(true):
+    $em->flush();
+
+    return ($this->setSuccess("1.15.1", "Notification", "setNotificationRead", "Complete Success", $notification->objectToArray()));
   }
 
   public function pushNotification()
