@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.os.Debug;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -209,7 +210,8 @@ public class APIConnectAdapter  {
         final String[] DATA_DATE_EVENT = {"date", "timezone"};
         final String[] KEY_MEETING = {"project_name", "project_logo", "event_type", "event_title", "event_description", "event_begin_date", "event_begin_place", "event_end_date", "event_end_place"};
 
-
+        if (result.length() == 0 || result.length() == 3)
+            return null;
         JSONObject forecastJSON = new JSONObject(result);
         List<ContentValues> list = new Vector<ContentValues>();
         int i = 0;
@@ -239,6 +241,7 @@ public class APIConnectAdapter  {
         final String[] userInfo = {"first_name", "last_name", "birthday", "avatar", "email", "phone", "country", "linkedin", "viadeo", "twitter"};
 
         JSONObject forecastJSON = new JSONObject(result);
+        Log.v("JSON", forecastJSON.toString());
         ContentValues values = new ContentValues();
         for (int data = 0; data < userInfo.length; ++data) {
             if (forecastJSON.getString(userInfo[data]) == null)
@@ -246,6 +249,7 @@ public class APIConnectAdapter  {
             else
                 values.put(userInfo[data], forecastJSON.getString(userInfo[data]));
         }
+        Log.v("JSON", forecastJSON.getString(userInfo[2]));
         return values;
     }
 

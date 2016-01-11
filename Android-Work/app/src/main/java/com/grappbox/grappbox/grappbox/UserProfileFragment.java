@@ -23,6 +23,7 @@ import com.google.android.gms.fitness.data.SessionDataSet;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserProfileFragment extends Fragment {
 
@@ -195,6 +199,20 @@ public class UserProfileFragment extends Fragment {
         Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
     }
 
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
+    }
+
     public class APIRequestChangePassword extends AsyncTask<String, Void, Integer> {
 
         @Override
@@ -251,6 +269,8 @@ public class UserProfileFragment extends Fragment {
             else
                 answer = "Error in update";
             Log.v("result API", "DONE");
+            APIRequestUserProfile getProfile = new APIRequestUserProfile();
+            getProfile.execute();
             UpdateResponse(answer);
         }
 
@@ -264,14 +284,21 @@ public class UserProfileFragment extends Fragment {
                 APIConnectAdapter.getInstance().setRequestConnection("PUT");
 
                 JSONObject JSONParam = new JSONObject();
+                JSONArray JSONArrayBirthdayParam = new JSONArray();
+
                 JSONParam.put("token", SessionAdapter.getInstance().getToken());
                 JSONParam.put("first_name", param[0]);
                 JSONParam.put("last_name", param[1]);
+                if (!SessionAdapter.getInstance().getLogin().equals(param[2]) && isEmailValid(param[2]))
+                    JSONParam.put("email", param[2]);
                 JSONParam.put("phone", param[3]);
                 JSONParam.put("country", param[7]);
                 JSONParam.put("linkedin", param[4]);
                 JSONParam.put("viadeo", param[5]);
                 JSONParam.put("twitter", param[6]);
+
+                JSONParam.put("birthday", JSONArrayBirthdayParam);
+
                 Log.v("JSON", JSONParam.toString());
 
                 APIConnectAdapter.getInstance().sendJSON(JSONParam);
