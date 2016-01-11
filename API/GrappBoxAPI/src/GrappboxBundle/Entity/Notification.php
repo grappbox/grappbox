@@ -37,7 +37,7 @@ class Notification
     /**
      * @var boolean
      */
-    private $read;
+    private $isRead;
 
     /**
      * @var \GrappboxBundle\Entity\User
@@ -170,30 +170,6 @@ class Notification
         return $this->createdAt;
     }
 
-    /**
-     * Get read
-     *
-     * @return boolean
-     */
-    public function getRead()
-    {
-        return $this->read;
-    }
-
-    /**
-     * Set read
-     *
-     * @param boolean $read
-     * @return Notification
-     */
-    public function setRead($read)
-    {
-        $this->read = $read;
-
-        return $this;
-    }
-
-
     public function objectToArray()
     {
       $projectId = null;
@@ -206,5 +182,28 @@ class Notification
             'createdAt' => $this->createdAt,
             'read' => $this->read
         );
+    }
+
+    /**
+     * Set isRead
+     *
+     * @param boolean $isRead
+     * @return Notification
+     */
+    public function setIsRead($isRead)
+    {
+        $this->isRead = $isRead;
+
+        return $this;
+    }
+
+    /**
+     * Get isRead
+     *
+     * @return boolean 
+     */
+    public function getIsRead()
+    {
+        return $this->isRead;
     }
 }

@@ -20,9 +20,9 @@ GrappboxBundle\Entity\Notification:
         createdAt:
             type: datetime
             column: created_at
-        read:
+        isRead:
             type: boolean
-            column: read
+            column: isRead
     manyToOne:
             user:
               targetEntity: User
