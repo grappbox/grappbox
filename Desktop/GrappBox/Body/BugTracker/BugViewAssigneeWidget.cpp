@@ -46,7 +46,7 @@ void BugViewAssigneeWidget::CreateAssignPageItems(const QList<QJsonObject> &item
     for (it = items.begin(); it != items.end(); ++it)
     {
         QJsonObject obj = *it;
-        BugCheckableLabel *widCheckable = new BugCheckableLabel(obj[ITEM_ID].toInt(), obj[ITEM_NAME].toString(), obj[ITEM_ASSIGNED].toBool());
+        BugCheckableLabel *widCheckable = new BugCheckableLabel(obj[ITEM_ID].toInt(), obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString(), obj[ITEM_ASSIGNED].toBool());
 
         QObject::connect(widCheckable, SIGNAL(OnCheckChanged(bool,int,QString)), this, SLOT(TriggerCheckChange(bool,int, QString)));
         _mainAssignLayout->addWidget(widCheckable);
@@ -68,7 +68,7 @@ void BugViewAssigneeWidget::CreateViewPageItems(const QList<QJsonObject> &items)
 
         if (!obj[ITEM_ASSIGNED].toBool())
             continue;
-        _mainViewLayout->addWidget(new QLabel(obj[ITEM_NAME].toString()));
+        _mainViewLayout->addWidget(new QLabel(obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString()));
     }
     emit OnPageItemsCreated(BugAssigneePage::VIEW);
 }
@@ -107,4 +107,22 @@ BugViewAssigneeWidget::BugAssigneePage BugViewAssigneeWidget::GetCurrentPage() c
     if (_mainWidget->currentWidget() == _viewPage)
         return BugAssigneePage::VIEW;
     return BugAssigneePage::ASSIGN;
+}
+
+const QList<int> BugViewAssigneeWidget::GetAllAssignee() const
+{
+    QLayoutItem *item;
+    QList<int> idAssigned;
+
+    while ((item = _mainAssignLayout->takeAt(0)) != 0)
+    {
+        BugCheckableLabel *checkableLabel;
+
+        if (!item->widget())
+            continue;
+        checkableLabel = static_cast<BugCheckableLabel *>(item->widget());
+        if (checkableLabel->IsChecked())
+            idAssigned.append(checkableLabel->GetId());
+    }
+    return idAssigned;
 }

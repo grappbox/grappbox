@@ -75,17 +75,29 @@ BugListTitleWidget::BugListTitleWidget(QWidget *parent) : QWidget(parent)
 void BugListTitleWidget::triggerOpenStateButtonToogled(bool toogled)
 {
     if (toogled)
+    {
         _btnClosedState->setChecked(false);
+        _filterState = BugState::OPEN;
+        emit OnFilterStateChanged(BugState::OPEN);
+    }
     else
         _btnClosedState->setChecked(true);
-    emit OnFilterStateChanged(BugState::OPEN);
 }
 
 void BugListTitleWidget::triggerClosedStateButtonToogled(bool toogled)
 {
     if (toogled)
+    {
         _btnOpenState->setChecked(false);
+        _filterState = BugState::CLOSED;
+        emit OnFilterStateChanged(BugState::CLOSED);
+    }
     else
         _btnOpenState->setChecked(true);
-    emit OnFilterStateChanged(BugState::CLOSED);
+
+}
+
+const BugListTitleWidget::BugState BugListTitleWidget::GetState() const
+{
+    return _filterState;
 }

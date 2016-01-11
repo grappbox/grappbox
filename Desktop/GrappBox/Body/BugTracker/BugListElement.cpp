@@ -37,6 +37,8 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
              "color : #ffffff;"
              "border-radius: 2px;"
              "padding : 0px;"
+             "padding-top: 5px;"
+             "padding-bottom: 5px;"
              "font-size : 15px;"
              "max-width : 150px;"
              "max-height : 75px;"
@@ -46,6 +48,8 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
              "color : #ffffff;"
              "border-radius: 2px;"
              "padding : 0px;"
+             "padding-top: 5px;"
+             "padding-bottom: 5px;"
              "font-size : 15px;"
              "max-width : 150px;"
              "max-height : 75px;"
@@ -63,6 +67,8 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
              "{"
              "font-weight: bold;"
              "font-size: 15px;"
+             "padding-top: 5px;"
+             "padding-bottom: 5px;"
              "}";
     this->setStyleSheet(style);
     this->ensurePolished();

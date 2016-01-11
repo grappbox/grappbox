@@ -45,6 +45,7 @@ void BugViewCategoryWidget::CreateAssignPageItems(const QList<QJsonObject> &item
 
     for (it = items.begin(); it != items.end(); ++it)
     {
+        qDebug() << "Item found";
         QJsonObject obj = *it;
         BugCheckableLabel *widCheckable = new BugCheckableLabel(obj[ITEM_ID].toInt(), obj[ITEM_NAME].toString(), obj[ITEM_ASSIGNED].toBool());
 
@@ -107,4 +108,22 @@ BugViewCategoryWidget::BugCategoryPage BugViewCategoryWidget::GetCurrentPage()
     if (_mainWidget->currentWidget() == _viewPage)
         return BugCategoryPage::VIEW;
     return BugCategoryPage::ASSIGN;
+}
+
+const QList<int> BugViewCategoryWidget::GetAllAssignee() const
+{
+    QLayoutItem *item;
+    QList<int> idAssigned;
+
+    while ((item = _mainAssignLayout->takeAt(0)) != 0)
+    {
+        BugCheckableLabel *checkableLabel;
+
+        if (!item->widget())
+            continue;
+        checkableLabel = static_cast<BugCheckableLabel *>(item->widget());
+        if (checkableLabel->IsChecked())
+            idAssigned.append(checkableLabel->GetId());
+    }
+    return idAssigned;
 }

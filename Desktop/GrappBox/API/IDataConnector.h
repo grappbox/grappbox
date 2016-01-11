@@ -53,7 +53,9 @@ namespace API
         GR_XLAST_BUG_OFFSET_CLOSED,
         GR_PROJECTBUG_ALL,
         GR_BUGCOMMENT,
-        GR_GETBUGS_STATUS
+        GR_GETBUGS_STATUS,
+        GR_PROJECTBUGTAG_ALL,
+        GR_PROJECT_USERS_ALL
     };
 
     enum PostRequest
@@ -82,7 +84,8 @@ namespace API
     {
         PUTR_UserSettings,
         PUTR_ProjectSettings,
-        PUTR_INVITE_USER
+        PUTR_INVITE_USER,
+        PUTR_ASSIGNTAG
     };
 
     class IDataConnector

@@ -20,10 +20,11 @@ public:
     };
 public:
     explicit BugListTitleWidget(QWidget *parent = 0);
+    const BugListTitleWidget::BugState GetState() const;
 
 signals:
     void            OnNewIssue();
-    void            OnFilterStateChanged(BugState);
+    void            OnFilterStateChanged(BugListTitleWidget::BugState);
 
 public slots:
     void            triggerOpenStateButtonToogled(bool);

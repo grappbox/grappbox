@@ -25,6 +25,7 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
     _commentLayout = new QVBoxLayout();
     _categoriesArea = new QScrollArea();
     _assigneesArea = new QScrollArea();
+    _waitingPageCreated = 0;
 
     _issueLayout->addWidget(_commentArea);
 
@@ -57,7 +58,8 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
 
     QObject::connect(_btnAssigneeAssign, SIGNAL(released()), this, SLOT(TriggerAssigneeBtnReleased()));
     QObject::connect(_btnCategoriesAssign, SIGNAL(released()), this, SLOT(TriggerCategoryBtnReleased()));
-
+    QObject::connect(_assignees, SIGNAL(OnPageItemsCreated(BugViewAssigneeWidget::BugAssigneePage)), this, SLOT(TriggerAssigneePageCreated(BugViewAssigneeWidget::BugAssigneePage)));
+    QObject::connect(_categories, SIGNAL(OnPageItemsCreated(BugViewCategoryWidget::BugCategoryPage)), this, SLOT(TriggerCategoryPageCreated(BugViewCategoryWidget::BugCategoryPage)));
 
     _mainLayout->addWidget(_titleBar);
     _mainLayout->addLayout(_bodyLayout);
@@ -101,49 +103,32 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
     this->setStyleSheet(style);
 }
 
-void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject *data)
+void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)
 {
+    QVector<QString> tagsAndUsersData;
+    QString token;
+    int currentProject;
+
     _bugId = -1;
     _mainApp = pageManager;
     _titleBar->SetBugID(_bugId);
     _titleBar->SetTitle(tr("Enter the issue name here..."));
     this->DeleteComments();
-    //TODO : Link API
-    QList<QJsonObject> fdataAssigneeView, fdataAssigneeAssign, fdataCategoryView, fdataCategoryAssign;
-    QJsonObject obj3, obj5, obj6, obj7;
 
-    obj5.insert("id", 4);
-    obj5.insert("assigned", false);
-    obj5.insert("name", "hemmer_r");
-    obj6.insert("id", 3);
-    obj6.insert("assigned", false);
-    obj6.insert("name", "feytou_p");
+    token = API::SDataManager::GetDataManager()->GetToken();
+    currentProject = API::SDataManager::GetDataManager()->GetCurrentProject();
+    tagsAndUsersData.append(token);
+    tagsAndUsersData.append(QString::number(currentProject));
+    _waitingPageCreated = 2;
 
-    obj3.insert("id", 1);
-    obj3.insert("assigned", false);
-    obj3.insert("name", "question");
-    obj7.insert("id", 2);
-    obj7.insert("assigned", false);
-    obj7.insert("name", "help wanted");
-
-    fdataAssigneeAssign.append(obj5);
-    fdataAssigneeAssign.append(obj6);
-    fdataCategoryAssign.append(obj3);
-    fdataCategoryAssign.append(obj7);
-    //End Fake Data
-    _assignees->CreateAssignPageItems(fdataAssigneeAssign);
-    _assignees->CreateViewPageItems(fdataAssigneeView);
-    _categories->CreateAssignPageItems(fdataCategoryAssign);
-    _categories->CreateViewPageItems(fdataCategoryView);
-    emit OnLoadingDone(BodyBugTracker::BUGCREATE);
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL, tagsAndUsersData, this, "TriggerGotProjectUsers", "TriggerAPIFailure");
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL, tagsAndUsersData, this, "TriggerGotProjectTags", "TriggerAPIFailure");
 }
 
 void BodyBugCreation::Hide()
 {
-    _assignees->DeletePageItems(BugViewAssigneeWidget::BugAssigneePage::VIEW);
     _assignees->DeletePageItems(BugViewAssigneeWidget::BugAssigneePage::ASSIGN);
-    _categories->DeletePageItems(BugViewCategoryWidget::BugCategoryPage::VIEW);
-    _categories->DeletePageItems(BugViewCategoryWidget::BugCategoryPage::VIEW);
+    _categories->DeletePageItems(BugViewCategoryWidget::BugCategoryPage::ASSIGN);
     hide();
 }
 
@@ -195,7 +180,6 @@ void BodyBugCreation::DeleteComments()
 
 void BodyBugCreation::TriggerComment()
 {
-    //TODO : Link API save new issue
     QVector<QString> data;
     data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     data.append(API::SDataManager::GetDataManager()->GetToken());
@@ -209,7 +193,6 @@ void BodyBugCreation::TriggerComment()
 
 void BodyBugCreation::TriggerBugCreated(int UNUSED id, QByteArray data)
 {
-     //TODO: post comment and assignee and categories
     QVector<QString> commentData;
     QJsonObject json = QJsonDocument::fromBinaryData(data).object();
 
@@ -220,19 +203,90 @@ void BodyBugCreation::TriggerBugCreated(int UNUSED id, QByteArray data)
     commentData.append(QString::number(json["ticket"].toObject()["id"].toInt()));
 
     API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_COMMENT_BUG, commentData, this, "TriggerBugCommented", "TriggerAPIFailure");
-    QJsonObject *intent = new QJsonObject();
+}
 
-    intent->insert("id", -1); //TODO : put bug API ID
-    intent->insert("title", this->_titleBar->GetTitle());
-    _mainApp->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGVIEW, intent);
+void BodyBugCreation::TriggerGotProjectTags(int UNUSED id, QByteArray data)
+{
+    QList<QJsonObject> categoriesObjects;
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+
+    for (int i = 1; json.contains("Tag " + QString::number(i)); ++i)
+    {
+        QJsonObject current = json["Tag " + QString::number(i)].toObject();
+
+        current.insert("assigned", false);
+        categoriesObjects.append(current);
+    }
+    _categories->CreateAssignPageItems(categoriesObjects);
+}
+
+void BodyBugCreation::TriggerGotProjectUsers(int UNUSED id, QByteArray data)
+{
+    QList<QJsonObject> usersObjects;
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+
+    for (int i = 1; json.contains("User " + QString::number(i)); ++i)
+    {
+        QJsonObject current = json["User " + QString::number(i)].toObject();
+
+        current.insert("assigned", false);
+        usersObjects.append(current);
+    }
+    _assignees->CreateAssignPageItems(usersObjects);
 }
 
 void BodyBugCreation::TriggerBugCommented(int UNUSED id, QByteArray data)
 {
+    QList<int> assignedUser = _assignees->GetAllAssignee();
+    QList<int> assignedCategories = _categories->GetAllAssignee();
+    QList<int>::iterator it;
+    QVector<QString> tagData;
+    QJsonObject *intent = new QJsonObject();
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+    int bugID = json["ticket"].toObject()["id"].toInt();
+    _waitingPageCreated = -1;
 
+    for (it = assignedCategories.begin(); it != assignedCategories.end(); ++it)
+    {
+        tagData.clear();
+        tagData.append(API::SDataManager::GetDataManager()->GetToken());
+        tagData.append(QString::number(bugID));
+        tagData.append(QString::number(*it));
+        API::SDataManager::GetCurrentDataConnector()->Put(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG, tagData, this, "DoNothing", "TriggerAPIFailure");
+    }
+    //TODO : Assign users with bug id
+
+    intent->insert("id", bugID);
+    intent->insert("title", this->_titleBar->GetTitle());
+    _mainApp->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGVIEW, intent);
 }
 
 void BodyBugCreation::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
 {
+    --_waitingPageCreated;
+    if (_waitingPageCreated == 0)
+        emit OnLoadingDone(BodyBugTracker::BUGCREATE);
     QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
 }
+
+void BodyBugCreation::TriggerAssigneePageCreated(BugViewAssigneeWidget::BugAssigneePage page)
+{
+    --_waitingPageCreated;
+    if (_waitingPageCreated <= 0)
+    {
+        _waitingPageCreated = 0;
+        emit OnLoadingDone(BodyBugTracker::BUGCREATE);
+    }
+}
+
+void BodyBugCreation::TriggerCategoryPageCreated(BugViewCategoryWidget::BugCategoryPage page)
+{
+    --_waitingPageCreated;
+    if (_waitingPageCreated <= 0)
+    {
+        _waitingPageCreated = 0;
+        emit OnLoadingDone(BodyBugTracker::BUGCREATE);
+    }
+}
+
+void BodyBugCreation::DoNothing(int UNUSED id, QByteArray UNUSED data){}

@@ -50,6 +50,7 @@ namespace API
     private:
         QNetworkReply *PutUserSettings(QVector<QString> &data);
         QNetworkReply *PutProjectSettings(QVector<QString> &data);
+        QNetworkReply *AssignTagToBug(QVector<QString> &data);
 
         // Post
     private:

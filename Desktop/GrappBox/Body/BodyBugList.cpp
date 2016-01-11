@@ -14,6 +14,7 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
     _listScrollView->widget()->setLayout(_listAdapter);
 
     QObject::connect(_title, SIGNAL(OnNewIssue()), this, SLOT(TriggerNewIssue()));
+    QObject::connect(_title, SIGNAL(OnFilterStateChanged(BugListTitleWidget::BugState)), this, SLOT(TriggerFilterChange(BugListTitleWidget::BugState)));
 
     _mainLayout->addWidget(_title);
     _mainLayout->addWidget(_listScrollView);
@@ -42,13 +43,20 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *dataPage
     QVector<QString> data;
 
     _pageManager = pageManager;
+
     //TODO : Link API
     data.append(API::SDataManager::GetDataManager()->GetToken());
     data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     data.append(QString::number(1));
-    data.append(QString::number(1));
+    data.append(QString::number(0));
     data.append(QString::number(20));
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_BY_STATE, data, this, "OnGetBugListSuccess", "OnRequestFailure");
+    data.clear();
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
+    data.append(QString::number(0));
+    data.append(QString::number(20));
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_CLOSED, data, this, "OnGetBugListClosedSuccess", "OnRequestFailure");
 }
 
 void BodyBugList::Hide()
@@ -57,29 +65,45 @@ void BodyBugList::Hide()
     hide();
 }
 
+void BodyBugList::ClearLayout(QLayout *layout)
+{
+    QLayoutItem *item;
+
+    while ((item = layout->takeAt(0)) != 0)
+    {
+        if (item->layout())
+            ClearLayout(item->layout());
+        else if (item->widget())
+            delete item->widget();
+        delete item;
+    }
+}
+
 void BodyBugList::DeleteListElements()
 {
-    QLayoutItem *currentItem;
+    QWidget *newScrollArea = new QWidget();
 
-    while ((currentItem = _listAdapter->itemAt(0)) != NULL)
-    {
-        if (currentItem->widget())
-            currentItem->widget()->setParent(NULL);
-        _listAdapter->removeItem(currentItem);
-    }
+    _listAdapter->destroyed();
+    _listAdapter = new QVBoxLayout();
+    newScrollArea->setLayout(_listAdapter);
+    _listScrollView->setWidget(newScrollArea);
 }
 
 void BodyBugList::CreateList()
 {
     QList<BugEntity>::iterator listIt;
+    QList<BugEntity>::iterator begin = (_title->GetState() == BugListTitleWidget::OPEN ? _bugListOpen.begin() : _bugListClosed.begin());
+    QList<BugEntity>::iterator end = (_title->GetState() == BugListTitleWidget::OPEN ? _bugListOpen.end() : _bugListClosed.end());
 
-    for (listIt = _bugList.begin(); listIt != _bugList.end(); ++listIt)
+    for (listIt = begin; listIt != end; ++listIt)
     {
         BugListElement  *newElem = new BugListElement(_pageManager, (*listIt).GetTitle(), (*listIt).GetID());
 
         newElem->setFixedHeight(LIST_ELEM_HEIGHT);
         _listAdapter->addWidget(newElem);
+        _listAdapter->setAlignment(newElem, Qt::AlignTop);
     }
+    _listScrollView->repaint();
 }
 
 void BodyBugList::TriggerNewIssue()
@@ -88,22 +112,45 @@ void BodyBugList::TriggerNewIssue()
 }
 
 //API Slots
-void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
+void BodyBugList::OnGetBugListClosedSuccess(int UNUSED id, QByteArray data)
 {
-    QJsonDocument doc = QJsonDocument::fromBinaryData(data);
+    QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
     QJsonArray tickets = json["tickets"].toArray();
-    QJsonArray::iterator ticketIt;
+    QJsonArray::iterator ticketIt = tickets.begin();
 
-    qDebug() << "Start tickets : " << tickets.count();
-    for (ticketIt = tickets.begin(); ticketIt != tickets.end(); ++ticketIt)
+    for (ticketIt = tickets.begin(); ticketIt != tickets.end(); ticketIt++)
     {
-        qDebug() << "PASS HERE";
         QJsonObject current = (*ticketIt).toObject();
-        _bugList.append(BugEntity(current));
-    }
 
-    this->CreateList();
+        _bugListClosed.append(BugEntity(current));
+    }
+    if (_title->GetState() == BugListTitleWidget::CLOSED)
+    {
+        this->DeleteListElements();
+        this->CreateList();
+    }
+    emit OnLoadingDone(BodyBugTracker::BUGLIST);
+}
+
+void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonObject json = doc.object();
+    QJsonArray tickets = json["tickets"].toArray();
+    QJsonArray::iterator ticketIt = tickets.begin();
+
+    for (ticketIt = tickets.begin(); ticketIt != tickets.end(); ticketIt++)
+    {
+        QJsonObject current = (*ticketIt).toObject();
+
+        _bugListOpen.append(BugEntity(current));
+    }
+    if (_title->GetState() == BugListTitleWidget::OPEN)
+    {
+        this->DeleteListElements();
+        this->CreateList();
+    }
     emit OnLoadingDone(BodyBugTracker::BUGLIST);
 }
 
@@ -111,4 +158,10 @@ void BodyBugList::OnRequestFailure(int UNUSED id, QByteArray UNUSED data)
 {
     QMessageBox::critical(this, "Connexion to Grappbox server failed", "We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com");
     emit OnLoadingDone(BodyBugTracker::BUGLIST);
+}
+
+void BodyBugList::TriggerFilterChange(BugListTitleWidget::BugState UNUSED state)
+{
+    this->DeleteListElements();
+    this->CreateList();
 }

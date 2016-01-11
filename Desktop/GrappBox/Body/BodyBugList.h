@@ -31,15 +31,18 @@ public:
 private:
     void                DeleteListElements();
     void                CreateList();
+    void                ClearLayout(QLayout *layout);
 
 signals:
     void                OnLoadingDone(BodyBugTracker::BugTrackerPage page);
 
 public slots: //Widget Slots
     void                TriggerNewIssue();
+    void                TriggerFilterChange(BugListTitleWidget::BugState state);
 
 public slots: //API Slots
     void                OnGetBugListSuccess(int id, QByteArray data);
+    void                OnGetBugListClosedSuccess(int id, QByteArray data);
     void                OnRequestFailure(int id, QByteArray data);
 
 private:
@@ -49,7 +52,8 @@ private:
     QVBoxLayout         *_listAdapter;
     BugListTitleWidget  *_title;
     QScrollArea         *_listScrollView;
-    QList<BugEntity>    _bugList;
+    QList<BugEntity>    _bugListOpen;
+    QList<BugEntity>    _bugListClosed;
 };
 
 #endif // BODYBUGLIST_H

@@ -14,6 +14,7 @@ DataConnectorOnline::DataConnectorOnline()
 void DataConnectorOnline::OnResponseAPI()
 {
     QNetworkReply *request = dynamic_cast<QNetworkReply*>(QObject::sender());
+    qDebug() << request->request().url().toString();
     if (request == NULL || !_Request.contains(request))
     {
         QMessageBox::critical(NULL, "Critical error", "Unable to cast the reply of the API response.", QMessageBox::Ok);
@@ -84,6 +85,9 @@ int DataConnectorOnline::Put(DataPart part, int request, QVector<QString> &data,
         break;
     case PUTR_INVITE_USER:
         reply = ProjectInvite(data);
+        break;
+    case PUTR_ASSIGNTAG:
+        reply = AssignTagToBug(data);
         break;
     }
     if (reply == NULL)
@@ -184,6 +188,12 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
         break;
     case GR_COMMENT_TIMELINE:
         reply = GetAction("timeline/getcomments", data);
+        break;
+    case GR_PROJECTBUGTAG_ALL:
+        reply = GetAction("bugtracker/getprojecttags", data);
+        break;
+    case GR_PROJECT_USERS_ALL:
+        reply = GetAction("projects/getusertoproject", data);
         break;
     }
     if (reply == NULL)
@@ -622,4 +632,22 @@ QNetworkReply *DataConnectorOnline::EditMessageTimeline(QVector<QString> &data)
 QNetworkReply *DataConnectorOnline::PostMessageTimeline(QVector<QString> &data)
 {
 
+}
+
+QNetworkReply *DataConnectorOnline::AssignTagToBug(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["token"] = data[0];
+    json["bugId"] = data[1];
+    json["tagId"] = data[2];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/assigntag")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->put(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
 }

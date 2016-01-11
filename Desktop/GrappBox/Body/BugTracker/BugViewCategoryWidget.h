@@ -12,6 +12,7 @@
 #include <QJsonObject>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QDebug>
 
 #define ITEM_ID         "id"
 #define ITEM_ASSIGNED   "assigned"
@@ -29,16 +30,17 @@ public:
     };
 
 public:
-    explicit        BugViewCategoryWidget(QWidget *parent = 0);
-    void            DeletePageItems(const BugViewCategoryWidget::BugCategoryPage page);
-    void            CreateViewPageItems(const QList<QJsonObject> &items);
-    void            CreateAssignPageItems(const QList<QJsonObject> &items);
-    BugCategoryPage GetCurrentPage();
-    void            DisableAPIAssignation(const bool disable);
+    explicit            BugViewCategoryWidget(QWidget *parent = 0);
+    void                DeletePageItems(const BugViewCategoryWidget::BugCategoryPage page);
+    void                CreateViewPageItems(const QList<QJsonObject> &items);
+    void                CreateAssignPageItems(const QList<QJsonObject> &items);
+    BugCategoryPage     GetCurrentPage();
+    void                DisableAPIAssignation(const bool disable);
+    const QList<int>    GetAllAssignee() const;
 
 signals: //Common signals
     void            OnPageChanged(BugCategoryPage);
-    void            OnPageItemsCreated(BugCategoryPage);
+    void            OnPageItemsCreated(BugViewCategoryWidget::BugCategoryPage);
     void            OnPageItemsDeleted(BugCategoryPage);
 
 signals: //Assign page slots

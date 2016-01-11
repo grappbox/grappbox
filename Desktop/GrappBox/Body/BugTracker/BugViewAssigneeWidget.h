@@ -15,7 +15,8 @@
 
 #define ITEM_ID         "id"
 #define ITEM_ASSIGNED   "assigned"
-#define ITEM_NAME       "name"
+#define ITEM_FIRSTNAME  "first_name"
+#define ITEM_LASTNAME   "last_name"
 
 class BugViewAssigneeWidget : public QWidget
 {
@@ -29,16 +30,17 @@ public:
     };
 
 public:
-    explicit        BugViewAssigneeWidget(QWidget *parent = 0);
-    void            DeletePageItems(const BugViewAssigneeWidget::BugAssigneePage page);
-    void            CreateViewPageItems(const QList<QJsonObject> &items);
-    void            CreateAssignPageItems(const QList<QJsonObject> &items);
-    BugAssigneePage GetCurrentPage() const;
-    void            DisableAPIAssignation(const bool disable);
+    explicit            BugViewAssigneeWidget(QWidget *parent = 0);
+    void                DeletePageItems(const BugViewAssigneeWidget::BugAssigneePage page);
+    void                CreateViewPageItems(const QList<QJsonObject> &items);
+    void                CreateAssignPageItems(const QList<QJsonObject> &items);
+    BugAssigneePage     GetCurrentPage() const;
+    void                DisableAPIAssignation(const bool disable);
+    const QList<int>    GetAllAssignee() const;
 
 signals: //Common signals
     void            OnPageChanged(BugAssigneePage);
-    void            OnPageItemsCreated(BugAssigneePage);
+    void            OnPageItemsCreated(BugViewAssigneeWidget::BugAssigneePage);
     void            OnPageItemsDeleted(BugAssigneePage);
 
 signals: //Assign page slots

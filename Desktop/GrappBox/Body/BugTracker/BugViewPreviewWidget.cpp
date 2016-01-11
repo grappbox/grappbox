@@ -15,6 +15,7 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, bool createPage, QWi
     _commentTitle = new QLineEdit(isCreation ? tr("Enter the comment title here") : "");
 
     _comment->setEnabled(isCreation);
+    _commentTitle->setEnabled(isCreation);
     _titleBar->addWidget(_avatar);
     _titleBar->addWidget(_commentTitle);
 
@@ -125,6 +126,7 @@ QString BugViewPreviewWidget::FormatDateTime(const QDateTime &datetime)
 void BugViewPreviewWidget::TriggerEditBtnReleased()
 {
     _comment->setEnabled(!_comment->isEnabled());
+    _commentTitle->setEnabled(!_commentTitle->isEnabled());
     if (_comment->isEnabled())
     {
         _btnEdit->setText(tr("Save"));

@@ -45,9 +45,14 @@ public slots:
     void                    TriggerCategoryBtnReleased();
     void                    TriggerAssigneeBtnReleased();
     void                    TriggerComment();
+    void                    TriggerGotProjectUsers(int id, QByteArray data);
+    void                    TriggerGotProjectTags(int id, QByteArray data);
     void                    TriggerBugCreated(int id, QByteArray data);
     void                    TriggerBugCommented(int id, QByteArray data);
     void                    TriggerAPIFailure(int id, QByteArray data);
+    void                    TriggerAssigneePageCreated(BugViewAssigneeWidget::BugAssigneePage page);
+    void                    TriggerCategoryPageCreated(BugViewCategoryWidget::BugCategoryPage page);
+    void                    DoNothing(int id, QByteArray data);
 
 private:
     int                     _bugId;
@@ -67,6 +72,7 @@ private:
     QPushButton             *_btnCategoriesAssign;
     QPushButton             *_btnAssigneeAssign;
     BugViewPreviewWidget    *_commentWidget;
+    int                     _waitingPageCreated;
 };
 
 #endif // BODYBUGCREATION_H
