@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use APIBundle\Controller\RolesAndTokenVerificationController;
-use APIBundle\Entity\User;
+use GrappboxBundle\Entity\User;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -583,7 +583,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$userInfos = $this->getDoctrine()->getManager()->getRepository('APIBundle:User')->find($userId);
+		$userInfos = $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:User')->find($userId);
 		if ($userInfos === null)
 		{
 			throw new NotFoundHttpException("The user with id ".$userId." doesn't exist");
@@ -1049,7 +1049,7 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setAvatar($content->avatar);
 		if (array_key_exists('email', $content) && $user->getEmail() != $content->email)
 		{
-			if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
+			if ($em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->email)))
 				return $this->setBadRequest("Email already in DB");
 			else if ($content->email != "")
 				return $this->setBadRequest("Email invalid");
@@ -1356,7 +1356,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:User')->findUserByName($firstname, $lastname));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:User')->findUserByName($firstname, $lastname));
 	}
 
 	/**
@@ -1484,7 +1484,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$userEmail = $this->getDoctrine()->getManager()->getRepository('APIBundle:User')->findOneByEmail($email);
+		$userEmail = $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:User')->findOneByEmail($email);
 
 		if ($userEmail === null)
 		{
@@ -1888,7 +1888,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Event')->findNextMeetings($user->getId()));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetings($user->getId()));
 	}
 
 	/**
@@ -2237,7 +2237,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Project')->findUserProjects($user->getId()));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findUserProjects($user->getId()));
 	}
 
 	/**
@@ -2588,7 +2588,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserAllTasks($user->getId()));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserAllTasks($user->getId()));
 	}
 
 	/**
@@ -2939,6 +2939,6 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('APIBundle:Task')->findUserCurrentAndNextTasks($user->getId()));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserCurrentAndNextTasks($user->getId()));
 	}
 }

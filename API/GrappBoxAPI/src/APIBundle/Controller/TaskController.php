@@ -8,8 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use APIBundle\Entity\Task;
-use APIBundle\Entity\Tag;
+use GrappboxBundle\Entity\Task;
+use GrappboxBundle\Entity\Tag;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -104,7 +104,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "task"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
@@ -291,7 +291,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
 
-		$task = $em->getRepository('APIBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
 
 		if ($task === null)
 		{
@@ -488,7 +488,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('APIBundle:Task')->find($taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
 
 		if ($task === null)
 		{
@@ -595,7 +595,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
 
-		$task = $em->getRepository('APIBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
 
 		if ($task === null)
 		{
@@ -659,7 +659,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('APIBundle:Task')->find($taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
 
 		if ($task === null)
 		{
@@ -739,7 +739,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('APIBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
 
 		if ($task === null)
 		{
@@ -750,7 +750,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError());
 
-		$userToAdd = $em->getRepository('APIBundle:User')->find($content->userId);
+		$userToAdd = $em->getRepository('GrappboxBundle:User')->find($content->userId);
 
 		if ($userToAdd === null)
 		{
@@ -830,7 +830,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('APIBundle:Task')->find($taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
 
 		if ($task === null)
 		{
@@ -841,7 +841,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError());
 
-		$userToRemove = $em->getRepository('APIBundle:User')->find($userId);
+		$userToRemove = $em->getRepository('GrappboxBundle:User')->find($userId);
 
 		if ($userToRemove === null)
 		{
@@ -929,7 +929,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "task"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
@@ -1009,7 +1009,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('APIBundle:Tag')->find($content->tagId);
+		$tag = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
 
 		if ($tag === null)
 		{
@@ -1080,7 +1080,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('APIBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
 
 		if ($tag === null)
 		{
@@ -1144,7 +1144,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('APIBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
 
 		if ($tag === null)
 		{
@@ -1228,7 +1228,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('APIBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
 
 		if ($task === null)
 		{
@@ -1239,7 +1239,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError());
 
-		$tagToAdd = $em->getRepository('APIBundle:Tag')->find($content->tagId);
+		$tagToAdd = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
 
 		if ($tagToAdd === null)
 		{
@@ -1319,7 +1319,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('APIBundle:Task')->find($taskId);
+		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
 
 		if ($task === null)
 		{
@@ -1330,7 +1330,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError());
 
-		$tagToRemove = $em->getRepository('APIBundle:Tag')->find($tagId);
+		$tagToRemove = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
 
 		if ($tagToRemove === null)
 		{
@@ -1474,7 +1474,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('APIBundle:Task');
+		$repository = $em->getRepository('GrappboxBundle:Task');
 
 		$qb = $repository->createQueryBuilder('t')->join('t.projects', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tasks = $qb->getResult();
@@ -1593,7 +1593,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('APIBundle:Tag');
+		$repository = $em->getRepository('GrappboxBundle:Tag');
 
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();

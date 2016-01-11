@@ -12,7 +12,7 @@ security:
         #     property: email
 
     encoders:
-      APIBundle\Entity\User:
+      GrappboxBundle\Entity\User:
         algorithm: bcrypt
 
     firewalls:

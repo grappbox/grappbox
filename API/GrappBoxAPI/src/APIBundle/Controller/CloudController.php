@@ -8,8 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use \DateTime;
 
-use APIBundle\Entity\CloudTransfer;
-use APIBundle\Entity\CloudSecuredFileMetadata;
+use GrappboxBundle\Entity\CloudTransfer;
+use GrappboxBundle\Entity\CloudSecuredFileMetadata;
 
 use Sabre\DAV\Client;
 use League\Flysystem\WebDAV\WebDAVAdapter;
@@ -126,7 +126,7 @@ class CloudController extends Controller
 
 	private function getUserId($token)
 	{
-		$userRepository = $this->getDoctrine()->getRepository("APIBundle:User");
+		$userRepository = $this->getDoctrine()->getRepository("GrappboxBundle:User");
 		$user = $userRepository->findOneByToken($token);
 		return (is_null($user) ? -1 : $user->getId());
 	}
@@ -134,10 +134,10 @@ class CloudController extends Controller
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
 		$db = $this->getDoctrine();
-		$role = $db->getRepository("APIBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
+		$role = $db->getRepository("GrappboxBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
 		if (is_null($role))
 			return (-1);
-		$roleTable = $db->getRepository("APIBundle:Role")->findOneById($role->getRoleId());
+		$roleTable = $db->getRepository("GrappboxBundle:Role")->findOneById($role->getRoleId());
 		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
 	}
 
@@ -150,7 +150,7 @@ class CloudController extends Controller
 		$receivedData = $json["stream_infos"];
 		$isSafe = ($method == "DELETE" ? false : preg_match("/Safe/", $receivedData["path"]));
 		if ($isSafe){
-			$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = (isset($json["session_infos"]["safe_password"]) ? $json["session_infos"]["safe_password"] : NULL); // TODO : SHA-1 512 Hashing when algo created!
 		}
 		else{
@@ -605,7 +605,7 @@ class CloudController extends Controller
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
 	*/
 	private function closeStream($receivedData, $token){
-		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
+		$cloudTransferRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudTransfer");
 		$em = $this->getDoctrine()->getManager();
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		$user_id = $this->getUserId($token);
@@ -860,7 +860,7 @@ class CloudController extends Controller
 	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
 	*/
 	public function sendFileAction(Request $request){
-		$cloudTransferRepository = $this->getDoctrine()->getRepository("APIBundle:CloudTransfer");
+		$cloudTransferRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudTransfer");
 		$json = json_decode($request->getContent(), true);
 		$token = $json["session_infos"]["token"];
 		$receivedData = $json["stream_infos"];
@@ -992,7 +992,7 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe){
-			$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $password; // TODO : SHA-1 512 Hashing when algo created!
 		}
 		else{
@@ -1007,7 +1007,7 @@ class CloudController extends Controller
 		$flysystem = new Filesystem($adapter);
 		$prepath = str_replace(" ", "|", str_replace(",", "/", $path));
 		$rpath = "/GrappBox|Projects/".(string)($idProject).$prepath;
-		$securedFileRepository = $this->getDoctrine()->getRepository("APIBundle:CloudSecuredFileMetadata");
+		$securedFileRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata");
 
 		$content = str_replace("|", " ", $adapter->listContents($rpath));
 		foreach ($content as $i => $row)
@@ -1145,12 +1145,12 @@ class CloudController extends Controller
 		$cloudBasePath = implode('/', $cloudPathArray);
 		if ($cloudBasePath == "")
 			$cloudBasePath = "/";
-		$filePassword = $this->getDoctrine()->getRepository("APIBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+		$filePassword = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
 
 		$isSafe = preg_match("/Safe/", $cloudPath);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $password; // TODO : SHA-1 Hashing
 		}
 		else {
@@ -1363,7 +1363,7 @@ class CloudController extends Controller
 		$token = $json["session_infos"]["token"];
 		$userId = $this->getUserId($token);
 		$idProject = (int)$json["safe_infos"]["project_id"];
-		$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+		$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
 			throw $this->createAccessDeniedException();
 
@@ -1699,7 +1699,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $json["deletion_infos"]["path"]);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $json["deletion_infos"]["password"]; // TODO : SHA-1 Hashing
 		}
 		else {
@@ -1931,7 +1931,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $json["creation_infos"]["path"]);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("APIBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $json["creation_infos"]["password"]; // TODO : SHA-1 Hashing
 		}
 		else {

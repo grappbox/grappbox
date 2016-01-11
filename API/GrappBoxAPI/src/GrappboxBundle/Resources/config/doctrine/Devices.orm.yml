@@ -1,6 +1,6 @@
-APIBundle\Entity\Tag:
+GrappboxBundle\Entity\Devices:
     type: entity
-    table: tags
+    table: null
     id:
         id:
             type: integer
@@ -11,18 +11,17 @@ APIBundle\Entity\Tag:
         name:
             type: string
             length: 255
-    manyToMany:
-        tasks:
-          targetEntity: Task
-          mappedBy: tags
-        bugs:
-          targetEntity: Bug
-          mappedBy: bugs
+        type:
+            type: string
+            length: 255
+        token:
+            type: string
+            length: 255
     manyToOne:
-        project:
-          targetEntity: Project
-          inversedBy: tags
+        user:
+          targetEntity: User
+          inversedBy: devices
           joinColumn:
-            name: project_id
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }

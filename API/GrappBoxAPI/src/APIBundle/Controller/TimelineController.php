@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use APIBundle\Entity\Timeline;
-use APIBundle\Entity\TimelineType;
-use APIBundle\Entity\TimelineMessage;
+use GrappboxBundle\Entity\Timeline;
+use GrappboxBundle\Entity\TimelineType;
+use GrappboxBundle\Entity\TimelineMessage;
 use DateTime;
 
 /**
@@ -153,11 +153,11 @@ class TimelineController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$timelines = $em->getRepository('APIBundle:Timeline')->findBy(array("projectId" => $id));
+		$timelines = $em->getRepository('GrappboxBundle:Timeline')->findBy(array("projectId" => $id));
 
 		$timeline_array = array();
 		foreach ($timelines as $key => $value) {
-			$type = $em->getRepository('APIBundle:TimelineType')->find($value->getTypeId());
+			$type = $em->getRepository('GrappboxBundle:TimelineType')->find($value->getTypeId());
 			if (($this->checkRoles($user, $id, "customerTimeline") && strcmp($type->getName(), "customerTimeline") == 0)
 					|| ($this->checkRoles($user, $id, "teamTimeline") && strcmp($type->getName(), "teamTimeline") == 0))
 			{
@@ -448,9 +448,9 @@ class TimelineController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 
-		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
@@ -754,9 +754,9 @@ class TimelineController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 
-		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
@@ -766,7 +766,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$message = $em->getRepository('APIBundle:TimelineMessage')->find($content->messageId);
+		$message = $em->getRepository('GrappboxBundle:TimelineMessage')->find($content->messageId);
 		$message->setTitle($content->title);
 		$message->setMessage($content->message);
 		$message->setEditedAt(new DateTime('now'));
@@ -1137,9 +1137,9 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 
-		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
@@ -1149,7 +1149,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$messages = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null));
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
@@ -1404,9 +1404,9 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 
-		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
@@ -1416,7 +1416,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$messages = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId));
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
@@ -1681,11 +1681,11 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("Bad Timeline Id");
 
-		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
@@ -1695,7 +1695,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$messages = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
@@ -1865,11 +1865,11 @@ class TimelineController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('APIBundle:Timeline')->find($id);
+		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("Bad Timeline Id");
 
-		$type = $em->getRepository('APIBundle:TimelineType')->find($timeline->getTypeId());
+		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
@@ -1879,7 +1879,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$message = $em->getRepository('APIBundle:TimelineMessage')->find($messageId);
+		$message = $em->getRepository('GrappboxBundle:TimelineMessage')->find($messageId);
 		while($message instanceof TimelineMessage)
 		{
 			$parentMsg = $message->getId();
@@ -1888,7 +1888,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$em->persist($message);
 			$em->flush();
 
-			$message = $em->getRepository('APIBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
+			$message = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
 		}
 
 		return new JsonResponse('Success');

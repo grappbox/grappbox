@@ -147,7 +147,7 @@ class PlanningController extends RolesAndTokenVerificationController
 		$date_end->add(new DateInterval('P1D'));
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('APIBundle:Event');
+		$repository = $em->getRepository('GrappboxBundle:Event');
 		$query = $repository->createQueryBuilder('e')
     	->innerJoin('e.users', 'u')
     	->where('u.id = :user_id')
@@ -293,7 +293,7 @@ class PlanningController extends RolesAndTokenVerificationController
 		$date_end->add(new DateInterval('P7D'));
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('APIBundle:Event');
+		$repository = $em->getRepository('GrappboxBundle:Event');
 		$query = $repository->createQueryBuilder('e')
 			->innerJoin('e.users', 'u')
 			->where('u.id = :user_id')
@@ -439,7 +439,7 @@ class PlanningController extends RolesAndTokenVerificationController
 		$date_end->add(new DateInterval('P1M'));
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('APIBundle:Event');
+		$repository = $em->getRepository('GrappboxBundle:Event');
 		$query = $repository->createQueryBuilder('e')
 			->innerJoin('e.users', 'u')
 			->where('u.id = :user_id')

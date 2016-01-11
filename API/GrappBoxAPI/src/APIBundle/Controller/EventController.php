@@ -7,10 +7,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use APIBundle\Entity\Event;
-use APIBundle\Entity\EventType;
-use APIBundle\Entity\User;
-use APIBundle\Entity\Project;
+use GrappboxBundle\Entity\Event;
+use GrappboxBundle\Entity\EventType;
+use GrappboxBundle\Entity\User;
+use GrappboxBundle\Entity\Project;
 use DateTime;
 
 /**
@@ -88,7 +88,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$types = $em->getRepository("APIBundle:EventType")->findAll();
+		$types = $em->getRepository("GrappboxBundle:EventType")->findAll();
 
 		$types_array = array();
 		foreach ($types as $key => $value) {
@@ -222,7 +222,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("APIBundle:Event")->find($id);
+		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();
@@ -384,7 +384,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("APIBundle:Event")->find($id);
+		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
 			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
@@ -401,13 +401,13 @@ class EventController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists("projectId", $content))
 		{
-			$project = $em->getRepository("APIBundle:Project")->find($content->projectId);
+			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
 			if (!$this->checkRoles($user, $content->projectId, "event"))
 				return ($this->setNoRightsError());
 		}
 
 		foreach ($content->toAdd as $key => $value) {
-			$user = $em->getRepository("APIBundle:User")->findOneByEmail($value);
+			$user = $em->getRepository("GrappboxBundle:User")->findOneByEmail($value);
 			if ($user instanceof User)
 			{
 				foreach ($event->getUsers() as $key => $value) {
@@ -419,7 +419,7 @@ class EventController extends RolesAndTokenVerificationController
 			}
 		}
 		foreach ($content->toRemove as $key => $value) {
-			$user = $em->getRepository("APIBundle:User")->find($value);
+			$user = $em->getRepository("GrappboxBundle:User")->find($value);
 
 			if ($user instanceof User)
 			{
@@ -585,7 +585,7 @@ class EventController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		if (array_key_exists("projectId", $content))
 		{
-			$project = $em->getRepository("APIBundle:Project")->find($content->projectId);
+			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
 			if (!$this->checkRoles($user, $content->projectId, "event"))
 				return ($this->setNoRightsError());
 		}
@@ -594,7 +594,7 @@ class EventController extends RolesAndTokenVerificationController
 		$event->setCreatorUser($user);
 		if (array_key_exists("projectId", $content))
 			$event->setProjects($project);
-		$type = $em->getRepository("APIBundle:EventType")->find($content->typeId);
+		$type = $em->getRepository("GrappboxBundle:EventType")->find($content->typeId);
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
@@ -760,7 +760,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("APIBundle:Event")->find($id);
+		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
 			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
@@ -777,14 +777,14 @@ class EventController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists("projectId", $content))
 		{
-			$project = $em->getRepository("APIBundle:Project")->find($content->projectId);
+			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
 			if (!$this->checkRoles($user, $content->projectId, "event"))
 				return ($this->setNoRightsError());
 		}
 
 		if (array_key_exists("projectId", $content))
 			$event->setProjects($project);
-		$type = $em->getRepository("APIBundle:EventType")->find($content->typeId);
+		$type = $em->getRepository("GrappboxBundle:EventType")->find($content->typeId);
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
@@ -872,7 +872,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("APIBundle:Event")->find($id);
+		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();

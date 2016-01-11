@@ -8,8 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use APIBundle\Controller\RolesAndTokenVerificationController;
-use APIBundle\Entity\Whiteboard;
-use APIBundle\Entity\WhiteboardObject;
+use GrappboxBundle\Entity\Whiteboard;
+use GrappboxBundle\Entity\WhiteboardObject;
 use DateTime;
 
 // use Symfony\Component\Serializer\Serializer;
@@ -454,7 +454,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 		$whiteboards = $project->getWhiteboards();
 
 		$response = new JsonResponse();
@@ -881,7 +881,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			 return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("APIBundle:Project")->find($content->projectId);
+		$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
 
 		$whiteboard = new Whiteboard();
 		$whiteboard->setProjects($project);
@@ -1446,7 +1446,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			 return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
+		$whiteboard =  $em->getRepository('GrappboxBundle:Whiteboard')->find($id);
 		if (!$whiteboard)
  			 return $this->setBadRequest("Bad Whiteboard Id");
 
@@ -1812,7 +1812,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
+		$whiteboard =  $em->getRepository('GrappboxBundle:Whiteboard')->find($id);
 		if (!$whiteboard)
  			return $this->setBadRequest("Bad Whiteboard Id");
 
@@ -1834,7 +1834,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		else {
 			if (!array_key_exists('objectId', $content))
 	 			return $this->setBadRequest("Missing Parameter");
-			$object = $em->getRepository('APIBundle:WhiteboardObject')->find($content->objectId);
+			$object = $em->getRepository('GrappboxBundle:WhiteboardObject')->find($content->objectId);
 			$object->setDeletedAt(new DateTime('now'));
 		}
 
@@ -2329,7 +2329,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			 return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
+		$whiteboard =  $em->getRepository('GrappboxBundle:Whiteboard')->find($id);
 		if (!$whiteboard)
  			 return $this->setBadRequest("Bad Whiteboard Id");
 
@@ -2342,7 +2342,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		$toAddQuery = $em->createQuery(
 									    'SELECT objects
-									    FROM APIBundle\Entity\WhiteboardObject objects
+									    FROM GrappboxBundle\Entity\WhiteboardObject objects
 									    WHERE objects.whiteboardId = :id AND objects.createdAt > :date AND objects.deletedAt IS NULL')
 											->setParameters(array('date' => $date, 'id' => $id));
 		$to_add = $toAddQuery->getResult();
@@ -2352,7 +2352,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		}
 		$toDelQuery = $em->createQuery(
 									    'SELECT objects
-									    FROM APIBundle\Entity\WhiteboardObject objects
+									    FROM GrappboxBundle\Entity\WhiteboardObject objects
 									    WHERE objects.whiteboardId = :id AND objects.deletedAt > :date AND objects.deletedAt IS NOT NULL')
 											->setParameters(array('date' => $date, 'id' => $id));
 		$to_del = $toDelQuery->getResult();
@@ -2627,7 +2627,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			 return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$whiteboard =  $em->getRepository('APIBundle:Whiteboard')->find($id);
+		$whiteboard =  $em->getRepository('GrappboxBundle:Whiteboard')->find($id);
 		if (!$whiteboard)
  			 return $this->setBadRequest("Bad Whiteboard Id");
 

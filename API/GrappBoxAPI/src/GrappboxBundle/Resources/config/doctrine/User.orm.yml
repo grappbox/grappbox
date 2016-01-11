@@ -83,6 +83,9 @@ GrappboxBundle\Entity\User:
         notifications:
           targetEntity: Notification
           mappedBy: user
+        devices:
+          targetEntity: Devices
+          mappedBy: user
         # whiteboards:
         #   targetEntity: Whiteboard
         #   mappedBy: updators

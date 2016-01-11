@@ -736,4 +736,42 @@ class User implements UserInterface
     {
         return $this->tasks;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $devices;
+
+
+    /**
+     * Add devices
+     *
+     * @param \GrappboxBundle\Entity\Devices $devices
+     * @return User
+     */
+    public function addDevice(\GrappboxBundle\Entity\Devices $devices)
+    {
+        $this->devices[] = $devices;
+
+        return $this;
+    }
+
+    /**
+     * Remove devices
+     *
+     * @param \GrappboxBundle\Entity\Devices $devices
+     */
+    public function removeDevice(\GrappboxBundle\Entity\Devices $devices)
+    {
+        $this->devices->removeElement($devices);
+    }
+
+    /**
+     * Get devices
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDevices()
+    {
+        return $this->devices;
+    }
 }

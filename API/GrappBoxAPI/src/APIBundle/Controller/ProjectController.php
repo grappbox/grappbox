@@ -10,12 +10,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
-use APIBundle\Entity\Project;
-use APIBundle\Entity\CustomerAccess;
-use APIBundle\Entity\Role;
-use APIBundle\Entity\ProjectUserRole;
-use APIBundle\Entity\Tag;
-use APIBundle\Entity\Timeline;
+use GrappboxBundle\Entity\Project;
+use GrappboxBundle\Entity\CustomerAccess;
+use GrappboxBundle\Entity\Role;
+use GrappboxBundle\Entity\ProjectUserRole;
+use GrappboxBundle\Entity\Tag;
+use GrappboxBundle\Entity\Timeline;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -348,7 +348,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->persist($pur);
 
-		$qb = $em->getRepository('APIBundle:Tag')->createQueryBuilder('t')->getQuery();
+		$qb = $em->getRepository('GrappboxBundle:Tag')->createQueryBuilder('t')->getQuery();
 		$tags = $qb->getResult();
 
 		foreach ($tags as $t) {
@@ -769,7 +769,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
@@ -778,7 +778,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		if (array_key_exists('creatorId', $content))
 		{
-			$creatorUser = $em->getRepository('APIBundle:User')->find($content->creatorId);
+			$creatorUser = $em->getRepository('GrappboxBundle:User')->find($content->creatorId);
 
 			if ($creatorUser === null)
 			{
@@ -786,7 +786,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 			}
 
-			$repository = $em->getRepository('APIBundle:Role');
+			$repository = $em->getRepository('GrappboxBundle:Role');
 
 			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $content->projectId)->getQuery();
 			$role = $qb->getResult();
@@ -800,7 +800,7 @@ class ProjectController extends RolesAndTokenVerificationController
 				$role = $role[0];
 			}
 
-			$repository = $em->getRepository('APIBundle:ProjectUserRole');
+			$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
 			$creatorUserId = $project->getCreatorUser()->getId();
 			$roleId = $role->getId();
 
@@ -1203,7 +1203,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
 		if ($project === null)
 		{
@@ -1482,7 +1482,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
@@ -1705,7 +1705,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
 		if ($project === null)
 		{
@@ -2003,14 +2003,14 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
 			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
 		}
 
-		$repository = $em->getRepository('APIBundle:CustomerAccess');
+		$repository = $em->getRepository('GrappboxBundle:CustomerAccess');
 
 		$qb = $repository->createQueryBuilder('ca')->join('ca.projects', 'p')->where('ca.name = :name', 'p.id = :id')->setParameter('name', $content->name)->setParameter('id', $content->projectId)->getQuery();
 		$customerAccess = $qb->getResult();
@@ -2280,7 +2280,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('APIBundle:CustomerAccess')->find($id);
+		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->find($id);
 
 		if ($customerAccess === null)
 		{
@@ -2553,7 +2553,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('APIBundle:CustomerAccess')->findByprojects($projectId);
+		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->findByprojects($projectId);
 
 		if ($customerAccess === null)
 		{
@@ -2848,7 +2848,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('APIBundle:CustomerAccess')->find($content->customerAccessId);
+		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->find($content->customerAccessId);
 
 		if ($customerAccess === null)
 		{
@@ -3309,14 +3309,14 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
 			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
 		}
 
-		$userToAdd = $em->getRepository('APIBundle:User')->findOneByemail($content->userEmail);
+		$userToAdd = $em->getRepository('GrappboxBundle:User')->findOneByemail($content->userEmail);
 		if ($userToAdd === null)
 		{
 			throw new NotFoundHttpException("The user with email ".$content->userEmail." doesn't exist");
@@ -3633,14 +3633,14 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
 			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
 		}
 
-		$userToRemove = $em->getRepository('APIBundle:User')->find($content->userId);
+		$userToRemove = $em->getRepository('GrappboxBundle:User')->find($content->userId);
 		if ($userToRemove === null)
 		{
 			throw new NotFoundHttpException("The user with id ".$content->userId." doesn't exist");
@@ -3883,7 +3883,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('APIBundle:Project')->find($projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
 		if ($project === null)
 		{

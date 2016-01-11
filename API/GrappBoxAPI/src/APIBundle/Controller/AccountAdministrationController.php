@@ -10,8 +10,8 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
 use APIBundle\Controller\RolesAndTokenVerificationController;
-use APIBundle\Entity\Project;
-use APIBundle\Entity\User;
+use GrappboxBundle\Entity\Project;
+use GrappboxBundle\Entity\User;
 use DateTime;
 use DateInterval;
 
@@ -236,7 +236,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	public function clientLoginAction(Request $request, $token)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $token));
+		$user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('token' => $token));
 		if (!$user || $user->getTokenValidity())
 			return $this->setBadTokenError();
 
@@ -490,7 +490,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			$content = json_decode($content);
 
 		  $em = $this->getDoctrine()->getManager();
-		  $user = $em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->login));
+		  $user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->login));
 			if (!$user)
 			{
 				$response = new JsonResponse('Bad Login', JsonResponse::HTTP_BAD_REQUEST);
@@ -526,7 +526,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	private function checkProjectsDeletedTime($user)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('APIBundle:Project');
+		$repository = $em->getRepository('GrappboxBundle:Project');
 
 		$qb = $repository->createQueryBuilder('p');
 
@@ -1085,7 +1085,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content) || !array_key_exists('password', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$em = $this->getDoctrine()->getManager();
-		if ($em->getRepository('APIBundle:User')->findOneBy(array('email' => $content->email)))
+		if ($em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->email)))
 			return $this->setBadRequest("Email already in DB");
 		$user = new User();
     $user->setFirstname($content->firstname);

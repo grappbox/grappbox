@@ -8,8 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use APIBundle\Entity\Role;
-use APIBundle\Entity\ProjectUserRole;
+use GrappboxBundle\Entity\Role;
+use GrappboxBundle\Entity\ProjectUserRole;
 use DateTime;
 use DateInterval;
 
@@ -33,7 +33,7 @@ class RolesAndTokenVerificationController extends Controller
     if (!$token)
       return NULL;
     $em = $this->getDoctrine()->getManager();
-    $user = $em->getRepository('APIBundle:User')->findOneBy(array('token' => $token));
+    $user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('token' => $token));
 
     if (!$user)
       return $user;
@@ -63,8 +63,8 @@ class RolesAndTokenVerificationController extends Controller
     $em = $this->getDoctrine()->getManager();
     $query = $em->createQuery(
                       'SELECT roles.'.$role.'
-                      FROM APIBundle:Role roles
-                      JOIN APIBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
+                      FROM GrappboxBundle:Role roles
+                      JOIN GrappboxBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
                       WHERE projectUser.projectId = '.$projectId.' AND projectUser.userId = '.$user->getId());
     $result = $query->setMaxResults(1)->getOneOrNullResult();
     return $result[$role];
@@ -597,7 +597,7 @@ class RolesAndTokenVerificationController extends Controller
   	$em = $this->getDoctrine()->getManager();
   	$role = new Role();
 
-    $project = $em->getRepository('APIBundle:Project')->find($content->projectId);
+    $project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
     if ($project === null)
     {
       throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
@@ -1024,7 +1024,7 @@ class RolesAndTokenVerificationController extends Controller
 
     $em = $this->getDoctrine()->getManager();
 
-    $role = $em->getRepository('APIBundle:Role')->find($content->roleId);
+    $role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
 
     if ($role === null)
     {
@@ -1518,7 +1518,7 @@ class RolesAndTokenVerificationController extends Controller
 
     $em = $this->getDoctrine()->getManager();
 
-    $role = $em->getRepository('APIBundle:Role')->find($content->roleId);
+    $role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
 
     if ($role === null)
     {
@@ -2004,7 +2004,7 @@ class RolesAndTokenVerificationController extends Controller
 
   	$em = $this->getDoctrine()->getManager();
 
-  	$roles = $em->getRepository('APIBundle:Role')->findByprojects($projectId);
+  	$roles = $em->getRepository('GrappboxBundle:Role')->findByprojects($projectId);
 
   	if ($roles === null)
   	{
@@ -2812,7 +2812,7 @@ class RolesAndTokenVerificationController extends Controller
 
 	$em = $this->getDoctrine()->getManager();
 
-    $repository = $em->getRepository('APIBundle:ProjectUserRole');
+    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
 
     $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
     ->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->old_roleId)->getQuery();
@@ -3043,7 +3043,7 @@ class RolesAndTokenVerificationController extends Controller
 		return ($this->setBadTokenError());
 
   	$em = $this->getDoctrine()->getManager();
-	$userRoles = $em->getRepository('APIBundle:ProjectUserRole')->findByuserId($user->getId());
+	$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
 
 	if ($userRoles === null)
 	{
@@ -3494,8 +3494,8 @@ class RolesAndTokenVerificationController extends Controller
 
     $em = $this->getDoctrine()->getManager();
 
-    $project = $em->getRepository('APIBundle:Project')->find($content->projectId);
-    $role = $em->getRepository('APIBundle:Role')->find($content->roleId);
+    $project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+    $role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
 
     if ($project === null || $role === null)
     {
@@ -3507,7 +3507,7 @@ class RolesAndTokenVerificationController extends Controller
       return new JsonResponse('You can\'t remove the creator from Admin role', JsonResponse::HTTP_FORBIDDEN);
     }
 
-    $repository = $em->getRepository('APIBundle:ProjectUserRole');
+    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
 
     $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
     ->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->roleId)->getQuery();
@@ -3754,7 +3754,7 @@ class RolesAndTokenVerificationController extends Controller
     if (!$this->checkRoles($user, $projectId, "projectSettings"))
       return $this->setNoRightsError();
     $em = $this->getDoctrine()->getManager();
-    $repository = $em->getRepository('APIBundle:ProjectUserRole');
+    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
 
     $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
     $purs = $qb->getResult();
