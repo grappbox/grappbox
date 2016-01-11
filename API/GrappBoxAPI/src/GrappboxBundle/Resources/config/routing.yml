@@ -503,7 +503,7 @@ v2_planning_getCurrentEvents:
 #                           PROJECT CONTROLLER
 # -----------------------------------------------------------------------
 v2_project_projectCreation:
-    path:       projects/projectcreation/{token}
+    path:       projects/projectcreation
     defaults:   { _controller: GrappboxBundle:Project:projectCreation, _format: json }
     methods: [POST]
 

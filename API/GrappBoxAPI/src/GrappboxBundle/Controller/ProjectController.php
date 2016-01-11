@@ -28,14 +28,16 @@ use GrappboxBundle\Entity\Timeline;
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
  *	@IgnoreAnnotation("apiIgnore")
+ *	@IgnoreAnnotation("apiDescription")
  */
 class ProjectController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /V0.8/projects/projectcreation/:token Create a project for the user connected
+	* @api {post} /V0.2/projects/projectcreation Create a project for the user connected
 	* @apiName projectCreation
 	* @apiGroup Project
-	* @apiVersion 0.8.0
+	* @apiDescription Create a project for the user connected
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} name Name of the project
@@ -48,254 +50,92 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParam {String} [twitter] Twitter of the person
 	* @apiParam {String} [password] Safe password for the project
 	*
-	* @apiParamExample {json} Request-Example:
+	* @apiParamExample {json} Request-Full-Example:
 	* 	{
-	*		"name": "Grappbox",
-	*		"description": "grappbox est un projet de gestion de projets",
-	*		"logo": "10001111001100110010101010"
-	*		"company": "L'oie oppressée"
+	*		"data": {
+	*			"token": "13135",
+	*			"name": "Grappbox",
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"logo": "10001111001100110010101010",
+	*			"phone": "+335 65 23 45 94",
+	*			"company": "L'oie oppressée",
+	*			"email": "contact@oieoppresee.com",
+	*			"facebook": "www.facebook.com/OieOpp",
+	*			"twitter": "www.twitter.com/OieOpp",
+	*			"password": "yolo42"
+	*		}
 	* 	}
 	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"project_id" : 3
-	*	  }
+	* @apiParamExample {json} Request-Minimum-Example:
+	* 	{
+	*		"data": {
+	*			"token": "13135",
+	*			"name": "Grappbox"
+	*		}
+	* 	}
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiParamExample {json} Request-Partial-Example:
+	* 	{
+	*		"data": {
+	*			"token": "13135",
+	*			"name": "Grappbox",
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"phone": "+335 65 23 45 94",
+	*			"company": "L'oie oppressée",
+	*			"email": "contact@oieoppresee.com",
+	*			"password": "yolo42"
+	*		}
+	* 	}
+	*
+	* @apiSuccess {Number} id Id of the project created
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - projectcreation - Complete Success"
+  	*		},
+  	*		"data":
+  	*		{
+  	*			"id": 1
+  	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
+	* 	HTTP/1.1 401 Unauthorized
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "6.1.3",
+	*			"return_message": "Project - projectcreation - Bad ID"
+  	*		}
 	* 	}
 	*
 	* @apiErrorExample Missing Parameters
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Missing Parameter"
+	*		"info": {
+	*			"return_code": "6.1.6",
+	*			"return_message": "Project - projectcreation - Missing Parameter"
+  	*		}
 	* 	}
 	*
 	*/
-
-	/**
-	* @api {post} /V0.8/projects/projectcreation/:token Create a project for the user connected
-	* @apiName projectCreation
-	* @apiGroup Project
-	* @apiVersion 0.8.1
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} name Name of the project
-	* @apiParam {String} [description] Description of the project
-	* @apiParam {Text} [logo] Logo of the project
-	* @apiParam {String} [phone] Phone for the project
-	* @apiParam {String} [company] Company of the project
-	* @apiParam {String} [email] Email for the project
-	* @apiParam {String} [facebook] Facebook of the project
-	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"name": "Grappbox",
-	*		"description": "grappbox est un projet de gestion de projets",
-	*		"logo": "10001111001100110010101010"
-	*		"company": "L'oie oppressée"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"project_id" : 3
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.9/projects/projectcreation/:token Create a project for the user connected
-	* @apiName projectCreation
-	* @apiGroup Project
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} name Name of the project
-	* @apiParam {String} [description] Description of the project
-	* @apiParam {Text} [logo] Logo of the project
-	* @apiParam {String} [phone] Phone for the project
-	* @apiParam {String} [company] Company of the project
-	* @apiParam {String} [email] Email for the project
-	* @apiParam {String} [facebook] Facebook of the project
-	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"name": "Grappbox",
-	*		"description": "grappbox est un projet de gestion de projets",
-	*		"logo": "10001111001100110010101010"
-	*		"company": "L'oie oppressée"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"project_id" : 3
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.10/projects/projectcreation/:token Create a project for the user connected
-	* @apiName projectCreation
-	* @apiGroup Project
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} name Name of the project
-	* @apiParam {String} [description] Description of the project
-	* @apiParam {Text} [logo] Logo of the project
-	* @apiParam {String} [phone] Phone for the project
-	* @apiParam {String} [company] Company of the project
-	* @apiParam {String} [email] Email for the project
-	* @apiParam {String} [facebook] Facebook of the project
-	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"name": "Grappbox",
-	*		"description": "grappbox est un projet de gestion de projets",
-	*		"logo": "10001111001100110010101010"
-	*		"company": "L'oie oppressée"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"project_id" : 3
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.11/projects/projectcreation/:token Create a project for the user connected
-	* @apiName projectCreation
-	* @apiGroup Project
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} name Name of the project
-	* @apiParam {String} [description] Description of the project
-	* @apiParam {Text} [logo] Logo of the project
-	* @apiParam {String} [phone] Phone for the project
-	* @apiParam {String} [company] Company of the project
-	* @apiParam {String} [email] Email for the project
-	* @apiParam {String} [facebook] Facebook of the project
-	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"name": "Grappbox",
-	*		"description": "grappbox est un projet de gestion de projets",
-	*		"logo": "10001111001100110010101010"
-	*		"company": "L'oie oppressée"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"project_id" : 3
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	*/
-	public function projectCreationAction(Request $request, $token)
+	public function projectCreationAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
-		$user = $this->checkToken($token);
+		if (!array_key_exists('name', $content) || !array_key_exists('token', $content))
+			return $this->setBadRequest("6.1.6", "Project", "projectcreation", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
-		if (!array_key_exists('name', $content))
-			return $this->setBadRequest("Missing Parameter");
+			return $this->setBadTokenError("6.1.3", "Project", "projectcreation");
+
 		$em = $this->getDoctrine()->getManager();
+
 		$project = new Project();
 		$project->setName($content->name);
 		$project->setCreatedAt(new \DateTime);
@@ -371,20 +211,18 @@ class ProjectController extends RolesAndTokenVerificationController
 		$teamTimeline = new Timeline();
 		$teamTimeline->setTypeId(2);
 		$teamTimeline->setProjects($project);
-		//$teamTimeline->setProjectId($project->getId());
 		$teamTimeline->setName("TeamTimeline - ".$project->getName());
 
 		$customerTimeline = new Timeline();
 		$customerTimeline->setTypeId(1);
 		$customerTimeline->setProjects($project);
-		//$customerTimeline->setProjectId($project->getId());
 		$customerTimeline->setName("CustomerTimeline - ".$project->getName());
 
 		$em->persist($teamTimeline);
 		$em->persist($customerTimeline);
 		$em->flush();
-
-		return new JsonResponse(array("project_id" => $id));
+		
+		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id));
 	}
 
 	/**
@@ -2862,485 +2700,155 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.8/projects/addusertoproject Add a user to a project
+	* @api {post} /V0.2/projects/addusertoproject Add a user to a project
 	* @apiName addUserToProject
 	* @apiGroup Project
-	* @apiVersion 0.8.0
+	* @apiDescription Add a given user to the project wanted
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} userEmail Email of the user
+	* @apiParam {Number} id Id of the project
+	* @apiParam {String} email Email of the user
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
-	*		"token": "nfeq34efbfkqf54",
-	*		"projetcId": 2,
-	*		"userEmail": "toto@titi.com"
+	*		"data": {
+	*			"token": "nfeq34efbfkqf54",
+	*			"id": 2,
+	*			"email": "toto@titi.com"
+	*		}
 	* 	}
+	*
+	* @apiSuccess id Id of the user add
+	* @apiSuccess firstname First name of the user add
+	* @apiSuccess lastname Last name of the user add
+	* @apiSuccess avatar Avatar of the user add
 	*
 	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"User successfully add!"
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.10",
+	*			"return_message": "Project - addusertoproject - Complete Success"
+  	*		},
+  	*		"data":
+  	*		{
+  	*			"id": 1
+  	*			"firstname": "john",
+  	*			"lastname": "doe",
+  	*			"avatar": "DATA"
+  	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
+	* 	HTTP/1.1 401 Unauthorized
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "6.10.3",
+	*			"return_message": "Project - addusertoproject - Bad ID"
+  	*		}
 	* 	}
-	*
 	* @apiErrorExample Missing Parameters
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Missing Parameter"
+	*		"info": {
+	*			"return_code": "6.10.6",
+	*			"return_message": "Project - addusertoproject - Missing Parameter"
+  	*		}
 	* 	}
-	*
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 403 Forbidden
 	* 	{
-	* 		"Insufficient User Rights"
+	*		"info": {
+	*			"return_code": "6.10.9",
+	*			"return_message": "Project - addusertoproject - Insufficient Rights"
+  	*		}
 	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The project with id X doesn't exist"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with with email X@Y.Z doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.8/projects/addusertoproject Add a user to a project
-	* @apiName addUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.8.1
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} userEmail Email of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"token": "nfeq34efbfkqf54",
-	*		"projetcId": 2,
-	*		"userEmail": "toto@titi.com"
-	* 	}
-	*
-	* @apiSuccess user_id Id of the user add
-	* @apiSuccess user_firstname First name of the user add
-	* @apiSuccess user_lastname Last name of the user add
-	* @apiSuccess user_avatar Avatar of the user add
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"user_id": 1,
-	*		"user_firstname": "john",
-	*		"user_lastname": "doe"
-	*		"user_avatar": "DATA"
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Parameter: id
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "6.10.4",
+	*			"return_message": "Project - addusertoproject - Bad Parameter: id"
+  	*		}
 	* 	}
-	*
-	* @apiErrorExample Missing Parameters
+	* @apiErrorExample Bad Parameter: email
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Missing Parameter"
+	*		"info": {
+	*			"return_code": "6.10.4",
+	*			"return_message": "Project - addusertoproject - Bad Parameter: email"
+  	*		}
 	* 	}
-	*
-	* @apiErrorExample User already in project
+	* @apiErrorExample Already In Database
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"The user is already in the project"
+	*		"info": {
+	*			"return_code": "6.10.7",
+	*			"return_message": "Project - addusertoproject - Already In Database"
+  	*		}
 	* 	}
-	*
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The project with id X doesn't exist"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with with email X@Y.Z doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.9/projects/addusertoproject Add a user to a project
-	* @apiName addUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} userEmail Email of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"token": "nfeq34efbfkqf54",
-	*		"projetcId": 2,
-	*		"userEmail": "toto@titi.com"
-	* 	}
-	*
-	* @apiSuccess user_id Id of the user add
-	* @apiSuccess user_firstname First name of the user add
-	* @apiSuccess user_lastname Last name of the user add
-	* @apiSuccess user_avatar Avatar of the user add
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"user_id": 1,
-	*		"user_firstname": "john",
-	*		"user_lastname": "doe"
-	*		"user_avatar": "DATA"
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	* @apiErrorExample User already in project
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"The user is already in the project"
-	* 	}
-	*
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The project with id X doesn't exist"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with with email X@Y.Z doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.10/projects/addusertoproject Add a user to a project
-	* @apiName addUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} userEmail Email of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"token": "nfeq34efbfkqf54",
-	*		"projetcId": 2,
-	*		"userEmail": "toto@titi.com"
-	* 	}
-	*
-	* @apiSuccess user_id Id of the user add
-	* @apiSuccess user_firstname First name of the user add
-	* @apiSuccess user_lastname Last name of the user add
-	* @apiSuccess user_avatar Avatar of the user add
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"user_id": 1,
-	*		"user_firstname": "john",
-	*		"user_lastname": "doe"
-	*		"user_avatar": "DATA"
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	* @apiErrorExample User already in project
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"The user is already in the project"
-	* 	}
-	*
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The project with id X doesn't exist"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with with email X@Y.Z doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.11/projects/addusertoproject Add a user to a project
-	* @apiName addUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} userEmail Email of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"token": "nfeq34efbfkqf54",
-	*		"projetcId": 2,
-	*		"userEmail": "toto@titi.com"
-	* 	}
-	*
-	* @apiSuccess user_id Id of the user add
-	* @apiSuccess user_firstname First name of the user add
-	* @apiSuccess user_lastname Last name of the user add
-	* @apiSuccess user_avatar Avatar of the user add
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"user_id": 1,
-	*		"user_firstname": "john",
-	*		"user_lastname": "doe"
-	*		"user_avatar": "DATA"
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	* @apiErrorExample User already in project
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"The user is already in the project"
-	* 	}
-	*
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The project with id X doesn't exist"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with with email X@Y.Z doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.11/projects/addusertoproject Add a user to a project
-	* @apiName addUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} userEmail Email of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"token": "nfeq34efbfkqf54",
-	*		"projetcId": 2,
-	*		"userEmail": "toto@titi.com"
-	* 	}
-	*
-	* @apiSuccess user_id Id of the user add
-	* @apiSuccess user_firstname First name of the user add
-	* @apiSuccess user_lastname Last name of the user add
-	* @apiSuccess user_avatar Avatar of the user add
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"user_id": 1,
-	*		"user_firstname": "john",
-	*		"user_lastname": "doe"
-	*		"user_avatar": "DATA"
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	*
-	* @apiErrorExample User already in project
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"The user is already in the project"
-	* 	}
-	*
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The project with id X doesn't exist"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with with email X@Y.Z doesn't exist"
-	* 	}
-	*
 	*/
 	public function addUserToProjectAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
-		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content) && !array_key_exists('userEmail', $content))
-			return $this->setBadRequest("Missing Parameter");
+		if (!array_key_exists('id', $content) && !array_key_exists('token', $content) && !array_key_exists('email', $content))
+			return $this->setBadRequest("6.10.6", "Project", "addusertoproject", "Missing Parameter");
+
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-			return ($this->setNoRightsError());
+			return ($this->setBadTokenError("6.10.3", "Project", "addusertoproject"));
+
+		if (!$this->checkRoles($user, $content->id, "projectSettings"))
+			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
+
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->id);
 
 		if ($project === null)
-		{
-			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
-		}
+			return $this->setBadRequest("6.10.4", "Project", "addusertoproject", "Bad Parameter: id");
 
-		$userToAdd = $em->getRepository('GrappboxBundle:User')->findOneByemail($content->userEmail);
+		$userToAdd = $em->getRepository('GrappboxBundle:User')->findOneByemail($content->email);
 		if ($userToAdd === null)
-		{
-			throw new NotFoundHttpException("The user with email ".$content->userEmail." doesn't exist");
-		}
+			return $this->setBadRequest("6.10.4", "Project", "addusertoproject", "Bad Parameter: email");
 
 		$users = $project->getUsers();
 		foreach ($users as $user) {
 			if ($user === $userToAdd)
-			{
-				return new JsonResponse('The user is already in the project', JsonResponse::HTTP_BAD_REQUEST);
-			}
+				return $this->setBadRequest("6.10.7", "Project", "addusertoproject", "Already In Database");
 		}
 
 		$project->addUser($userToAdd);
 		$em->flush();
 
-		return new JsonResponse(array("user_id" => $userToAdd->getId(), "user_firstname" => $userToAdd->getFirstname(), "user_lastname" => $userToAdd->getLastname(), "user_avatar" => $userToAdd->getAvatar()));
+
+		// Notifications
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Project - Add";
+		$mdata['mdesc'] = "You have been added on the project ".$project->getName();
+
+		$wdata['type'] = "Project";
+		$wdata['targetId'] = $project->getId();
+		$wdata['message'] = "You have been added on the project ".$project->getName();
+
+		$userNotif[] = $userToAdd->getId();
+
+		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		return $this->setSuccess("1.6.10", "Project", "addusertoproject", "Complete Success",
+			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatar()));
 	}
 
 	/**
-	* @api {delete} /V0.8/projects/removeusertoproject Remove a user from the project
+	* @api {delete} /V0.2/projects/removeusertoproject Remove a user from the project
 	* @apiName removeUserToProject
 	* @apiGroup Project
-	* @apiVersion 0.8.0
+	* @apiDescription Remove a given user to the project wanted
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -3348,313 +2856,119 @@ class ProjectController extends RolesAndTokenVerificationController
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
-	*   	"token": "aeqf231ced651qcd",
-	*   	"projectId": 1,
-	*		"userId": 3
+	*		"data": {
+	*   		"token": "aeqf231ced651qcd",
+	*   		"projectId": 1,
+	*			"userId": 3
+	*		}
 	*   }
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
-	*	  "User successfully removed!"
+	*		"info": {
+	*			"return_code": "1.6.11",
+	*			"return_message": "Project - removeusertoproject - Complete Success"
+  	*		},
+  	*		"data": null
 	*	}
 	*
-	* @apiErrorExample Missing Parameter
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Missing Parameter"
-	*   }
 	* @apiErrorExample Bad Authentication Token
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Bad Authentication Token"
-	*   }
-	* @apiErrorExample Insufficient User Rights
-	*   HTTP/1.1 403 Forbidden
-	*   {
-	*     "Insufficient User Rights"
-	*   }
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	* @apiErrorExample Project not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The project with id X doesn't exist."
-	*     }
-	*
-	* @apiErrorExample User not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The user with id X doesn't exist."
-	*     }
-	*
-	*/
-
-	/**
-	* @api {delete} /V0.8/projects/removeusertoproject Remove a user from the project
-	* @apiName removeUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.8.1
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} userId Id of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	*   	"token": "aeqf231ced651qcd",
-	*   	"projectId": 1,
-	*		"userId": 3
-	*   }
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*	  "User successfully removed!"
-	*	}
-	*
-	* @apiErrorExample Missing Parameter
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Missing Parameter"
-	*   }
-	* @apiErrorExample Bad Authentication Token
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Bad Authentication Token"
-	*   }
-	* @apiErrorExample Insufficient User Rights
-	*   HTTP/1.1 403 Forbidden
-	*   {
-	*     "Insufficient User Rights"
-	*   }
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	* @apiErrorExample Project not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The project with id X doesn't exist."
-	*     }
-	*
-	* @apiErrorExample User not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The user with id X doesn't exist."
-	*     }
-	*
-	*/
-
-	/**
-	* @api {delete} /V0.9/projects/removeusertoproject Remove a user from the project
-	* @apiName removeUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} userId Id of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	*   	"token": "aeqf231ced651qcd",
-	*   	"projectId": 1,
-	*		"userId": 3
-	*   }
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*	  "User successfully removed!"
-	*	}
-	*
-	* @apiErrorExample Missing Parameter
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Missing Parameter"
-	*   }
-	* @apiErrorExample Bad Authentication Token
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Bad Authentication Token"
-	*   }
-	* @apiErrorExample Insufficient User Rights
-	*   HTTP/1.1 403 Forbidden
-	*   {
-	*     "Insufficient User Rights"
-	*   }
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	* @apiErrorExample Project not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The project with id X doesn't exist."
-	*     }
-	*
-	* @apiErrorExample User not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The user with id X doesn't exist."
-	*     }
-	*
-	*/
-
-	/**
-	* @api {delete} /V0.10/projects/removeusertoproject Remove a user from the project
-	* @apiName removeUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} userId Id of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	*   	"token": "aeqf231ced651qcd",
-	*   	"projectId": 1,
-	*		"userId": 3
-	*   }
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*	  "User successfully removed!"
-	*	}
-	*
-	* @apiErrorExample Missing Parameter
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Missing Parameter"
-	*   }
-	* @apiErrorExample Bad Authentication Token
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Bad Authentication Token"
-	*   }
-	* @apiErrorExample Insufficient User Rights
-	*   HTTP/1.1 403 Forbidden
-	*   {
-	*     "Insufficient User Rights"
-	*   }
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	* @apiErrorExample Project not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The project with id X doesn't exist."
-	*     }
-	*
-	* @apiErrorExample User not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The user with id X doesn't exist."
-	*     }
-	*
-	*/
-
-	/**
-	* @api {delete} /V0.11/projects/removeusertoproject Remove a user from the project
-	* @apiName removeUserToProject
-	* @apiGroup Project
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} userId Id of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	*   	"token": "aeqf231ced651qcd",
-	*   	"projectId": 1,
-	*		"userId": 3
-	*   }
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*	  "User successfully removed!"
-	*	}
-	*
-	* @apiErrorExample Missing Parameter
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Missing Parameter"
-	*   }
-	* @apiErrorExample Bad Authentication Token
-	*   HTTP/1.1 400 Bad Request
-	*   {
-	*     "Bad Authentication Token"
-	*   }
-	* @apiErrorExample Insufficient User Rights
-	*   HTTP/1.1 403 Forbidden
-	*   {
-	*     "Insufficient User Rights"
-	*   }
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	* @apiErrorExample Project not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The project with id X doesn't exist."
-	*     }
-	*
-	* @apiErrorExample User not found
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "The user with id X doesn't exist."
-	*     }
-	*
+	* 	HTTP/1.1 401 Unauthorized
+	* 	{
+	*		"info": {
+	*			"return_code": "6.11.3",
+	*			"return_message": "Project - removeusertoproject - Bad ID"
+  	*		}
+	* 	}
+	* @apiErrorExample Missing Parameters
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "6.11.6",
+	*			"return_message": "Project - removeusertoproject - Missing Parameter"
+  	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	*		"info": {
+	*			"return_code": "6.11.9",
+	*			"return_message": "Project - removeusertoproject - Insufficient Rights"
+  	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "6.11.4",
+	*			"return_message": "Project - removeusertoproject - Bad Parameter: id"
+  	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: email
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "6.11.4",
+	*			"return_message": "Project - removeusertoproject - Bad Parameter: email"
+  	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: You can't remove the project creator
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "6.11.4",
+	*			"return_message": "Project - removeusertoproject - Bad Parameter: You can't remove the project creator"
+  	*		}
+	* 	}
 	*/
 	public function removeUserToProjectAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
 		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content) && !array_key_exists('userId', $content))
-			return $this->setBadRequest("Missing Parameter");
+			return $this->setBadRequest("6.11.6", "Project", "removeusertoproject", "Missing Parameter");
+
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("6.11.3", "Project", "removeusertoproject"));
+
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
+
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
 
 		if ($project === null)
-		{
-			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
-		}
+			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: projectId");
 
 		$userToRemove = $em->getRepository('GrappboxBundle:User')->find($content->userId);
 		if ($userToRemove === null)
-		{
-			throw new NotFoundHttpException("The user with id ".$content->userId." doesn't exist");
-		}
+			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: userId");
 
 		if ($userToRemove === $project->getCreatorUser())
-		{
-			throw new NotFoundHttpException("You can't remove the creator");
-		}
+			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: You can't remove the project creator");
 
 		$project->removeUser($userToRemove);
 		$em->flush();
 
-		return new JsonResponse("User successfully removed!");
+		// Notifications
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Project - Remove";
+		$mdata['mdesc'] = "You have been removed from the project ".$project->getName();
+
+		$wdata['type'] = "Project";
+		$wdata['targetId'] = $project->getId();
+		$wdata['message'] = "You have been removed from the project ".$project->getName();
+
+		$userNotif[] = $userToRemove->getId();
+
+		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		return $this->setSuccess("1.6.11", "Project", "removeusertoproject", "Complete Success", null);
 	}
 
 	/**

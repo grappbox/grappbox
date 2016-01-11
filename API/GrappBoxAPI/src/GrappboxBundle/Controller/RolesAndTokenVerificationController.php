@@ -110,9 +110,19 @@ class RolesAndTokenVerificationController extends Controller
   protected function setSuccess($code, $part, $function, $message, $data)
   {
     $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
-    $ret["data"] = array("array" => $data);
+    $ret["data"] = $data;
     $response = new JsonResponse($ret);
-    $resp->setStatusCode(JsonResponse::HTTP_OK);
+    $response->setStatusCode(JsonResponse::HTTP_OK);
+
+    return $response;
+  }
+
+  protected function setCreated($code, $part, $function, $message, $data)
+  {
+    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
+    $ret["data"] = $data;
+    $response = new JsonResponse($ret);
+    $response->setStatusCode(JsonResponse::HTTP_CREATED);
 
     return $response;
   }

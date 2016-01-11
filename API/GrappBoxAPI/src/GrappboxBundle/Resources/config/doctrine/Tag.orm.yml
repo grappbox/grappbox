@@ -17,7 +17,7 @@ GrappboxBundle\Entity\Tag:
           mappedBy: tags
         bugs:
           targetEntity: Bug
-          mappedBy: bugs
+          mappedBy: tags
     manyToOne:
         project:
           targetEntity: Project

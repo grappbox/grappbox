@@ -109,7 +109,9 @@ class NotificationController extends RolesAndTokenVerificationController
 		$wdata['targetId'] = 2;
 		$wdata['message'] = "You have been added on the project Grappbox";
 
-		return new JsonResponse($this->pushNotification([1, 2], $data, $wdata));
+		$em = $this->getDoctrine()->getManager();
+
+		return new JsonResponse($this->pushNotificationAction([1, 2], $mdata, $wdata, $em));
 	}
 
 	/*
@@ -130,10 +132,8 @@ class NotificationController extends RolesAndTokenVerificationController
 	**			$wdata['targetId']: 3
 	**			$wdata['message']: "You've been added on the project X" (with X being the name of the project)
 	*/
-	public function pushNotification($usersIds, $mdata, $wdata)
+	public function pushNotification($usersIds, $mdata, $wdata, $em)
 	{
-		// get Devices
-		$em = $this->getDoctrine()->getManager();
 
 		foreach ($usersIds as $userId) {
 			$user = $em->getRepository("GrappboxBundle:User")->find($userId);
