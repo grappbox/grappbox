@@ -17,6 +17,12 @@ GrappboxBundle\Entity\Notification:
             column: target_id
         message:
             type: text
+        createdAt:
+            type: datetime
+            column: created_at
+        read:
+            type: boolean
+            column: read
     manyToOne:
             user:
               targetEntity: User

@@ -30,6 +30,16 @@ class Notification
     private $message;
 
     /**
+     * @var \DateTime
+     */
+    private $createdAt;
+
+    /**
+     * @var boolean
+     */
+    private $read;
+
+    /**
      * @var \GrappboxBundle\Entity\User
      */
     private $user;
@@ -135,5 +145,66 @@ class Notification
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     * @return Notification
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Get read
+     *
+     * @return boolean
+     */
+    public function getRead()
+    {
+        return $this->read;
+    }
+
+    /**
+     * Set read
+     *
+     * @param boolean $read
+     * @return Notification
+     */
+    public function setRead($read)
+    {
+        $this->read = $read;
+
+        return $this;
+    }
+
+
+    public function objectToArray()
+    {
+      $projectId = null;
+      if ($this->projects)
+        $projectId = $this->projects->getId();
+        return array(
+            'id' => $this->id,
+            //'title' => $this->title,
+            //'description' => $this->description,
+            'createdAt' => $this->createdAt,
+            'read' => $this->read
+        );
     }
 }

@@ -47,17 +47,6 @@ class NotificationController extends RolesAndTokenVerificationController
     // return array of device object
   }
 
-  public function pushNotification()
-  {
-    // get Devices
-
-    // push on Android
-
-    // push on Windwos Phone
-
-    // push on iOS
-  }
-
   public function getNotificationsAction(Request $request, $token)
   {
     // pour Desktop et Web
@@ -71,7 +60,7 @@ class NotificationController extends RolesAndTokenVerificationController
 
     $notif_array = array();
     foreach ($notification as $key => $value) {
-      $notif_array[] = $vlaue->objectToArray();
+      $notif_array[] = $value->objectToArray();
     }
 
     //if (count(notif_array) <= 0)
@@ -90,10 +79,21 @@ class NotificationController extends RolesAndTokenVerificationController
 
     //if (!($notification instanceof Notification))
       // return error "no data"/"bad id"
-    // $notification->setDeletedAt(new DateTime('now')):
-    // $em->flush();
+    //$notification->setDeletedAt(new DateTime('now')):
+    //$em->flush();
 
     //return "success"
+  }
+
+  public function pushNotification()
+  {
+    // get Devices
+
+    // push on Android
+
+    // push on Windwos Phone
+
+    // push on iOS
   }
 
   // (Android)API access key from Google API's Console.
