@@ -26,11 +26,6 @@ public class WhiteboardListFragment extends Fragment {
     private View _view;
     private ListView _ListWhiteboard;
 
-    public WhiteboardListFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

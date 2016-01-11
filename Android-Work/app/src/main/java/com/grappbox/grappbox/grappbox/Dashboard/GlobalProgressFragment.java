@@ -28,9 +28,6 @@ public class GlobalProgressFragment extends Fragment {
     private View _view;
     private List<ContentValues> _value;
 
-    public GlobalProgressFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceBundle)
     {

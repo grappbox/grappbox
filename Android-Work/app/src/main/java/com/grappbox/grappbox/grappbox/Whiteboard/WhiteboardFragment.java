@@ -29,10 +29,6 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
     private ImageButton _DrawBtn;
     private ImageButton _EraseButton;
 
-
-    public WhiteboardFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

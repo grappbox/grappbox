@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="22.2.0"><source path="C:\Users\tan_f\Downloads\Caldroid-master\Caldroid-master\caldroid\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\assets"/></dataSet><dataSet config="debug"><source path="C:\Users\tan_f\Downloads\Caldroid-master\Caldroid-master\caldroid\build\intermediates\bundles\debug\assets"/></dataSet><dataSet config="main"><source path="C:\Users\tan_f\Downloads\Caldroid-master\Caldroid-master\caldroid\src\androidTest\assets"/></dataSet></merger>

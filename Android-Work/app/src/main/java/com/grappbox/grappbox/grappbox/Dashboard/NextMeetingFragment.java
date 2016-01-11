@@ -28,10 +28,6 @@ public class NextMeetingFragment extends Fragment {
     private View _view;
     private List<ContentValues> _value = null;
 
-    public NextMeetingFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceBundle)
     {
