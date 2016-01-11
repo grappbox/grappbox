@@ -102,6 +102,7 @@ class RolesAndTokenVerificationController extends Controller
     $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."Success but no data");
     $ret["data"] = array("array" => array());
     $response = new JsonResponse($ret);
+    $response->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
 
     return $response;
   }
@@ -109,8 +110,9 @@ class RolesAndTokenVerificationController extends Controller
   protected function setSuccess($code, $part, $function, $message, $data)
   {
     $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
-    $ret["data"] = array("array" => array());
+    $ret["data"] = array("array" => $data);
     $response = new JsonResponse($ret);
+    $resp->setStatusCode(JsonResponse::HTTP_OK);
 
     return $response;
   }

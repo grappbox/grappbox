@@ -22,1054 +22,197 @@ use GrappboxBundle\Entity\User;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
+ *	@IgnoreAnnotation("apiDescription")
  */
 class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
-  	* @api {get} /V0.6/dashboard/getteamoccupation/:token Get a team occupation
+  	* @api {get} /V0.2/dashboard/getteamoccupation/:token Get a team occupation
   	* @apiName getTeamOccupation
   	* @apiGroup Dashboard
-  	* @apiVersion 0.6.0
+  	* @apiDescription This method is for getting a team occupation for all the projects the user connected is the creator
+  	* @apiVersion 0.2.0
   	*
   	* @apiParam {String} token Token of the person connected
   	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
+  	* @apiSuccess {Object[]} array Array of user occupation
+  	* @apiSuccess {String} array.name Name of the project
+  	* @apiSuccess {Object[]} array.users User in the team informations
+  	* @apiSuccess {Number} array.users.id Id of the user
+  	* @apiSuccess {String} array.users.firstname First name of the user
+  	* @apiSuccess {String} array.users.lastname Last name of the user
+  	* @apiSuccess {String} array.occupation Occupation of the user
+  	* @apiSuccess {Number} array.number_of_tasks_begun Number of tasks begun
+  	* @apiSuccess {Number} array.number_of_ongoing_tasks Number of ongoing tasks
   	*
-  	* @apiSuccessExample Success-Response:
+  	* @apiSuccessExample Complete Success:
   	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
+  	*		"info": {
+	*			"return_code": "1.2.1",
+	*			"return_message": "Dashboard - getteamoccupation - Complete success"
   	*		},
-  	*		"Person 2":
+  	*		"data":
   	*		{
-	*			"project_name": "Grappbox",
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
+  	*			"array": [
+  	*				{
+	*					"name": "Grappbox",
+	*					"users": {
+	*						"id": 1,
+	*						"firstname": "John",
+	*						"lastname": "Doe"
+	*					},
+	*					"occupation": "free",
+	*					"number_of_tasks_begun": 0,
+	*					"number_of_ongoing_tasks": 0
+  	*				},
+  	*				{
+	*					"name": "Grappbox",
+	*					"users": {
+	*						"id": 3,
+	*						"firstname": "James",
+	*						"lastname": "Bond"
+	*					},
+	*					"occupation": "busy",
+	*					"number_of_tasks_begun": 2,
+	*					"number_of_ongoing_tasks": 5
+  	*				}
+  	*			]
   	*		}
   	* 	}
   	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
-  	*
-  	*/
-
-	/**
-  	* @api {get} /V0.6/dashboard/getteamoccupation/:token Get a team occupation
-  	* @apiName getTeamOccupation
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.6.1
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
-  	*
-  	* @apiSuccessExample Success-Response:
+  	* @apiSuccessExample Success But No Data:
   	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
+  	*		"info": {
+	*			"return_code": "1.2.3",
+	*			"return_message": "Dashboard - getteamoccupation - Success but no data"
   	*		},
-  	*		"Person 2":
+  	*		"data":
   	*		{
-	*			"project_name": "Grappbox",
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
+  	*			"array": []
   	*		}
   	* 	}
   	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.7/dashboard/getteamoccupation/:token Get a team occupation
-  	* @apiName getTeamOccupation
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.7.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
-  	*		},
-  	*		"Person 2":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.7/dashboard/getteamoccupation/:token Get a team occupation
-  	* @apiName getTeamOccupation
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.7.1
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {Number} Person.user_id Id of the person
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
-  	*		},
-  	*		"Person 2":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 6,
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.8/dashboard/getteamoccupation/:token Get a team occupation
-  	* @apiName getTeamOccupation
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.8.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {Number} Person.user_id Id of the person
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
-  	*		},
-  	*		"Person 2":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 6,
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.9/dashboard/getteamoccupation/:token Get a team occupation
-  	* @apiName getTeamOccupation
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.9.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {Number} Person.user_id Id of the person
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
-  	*		},
-  	*		"Person 2":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 6,
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.10/dashboard/getteamoccupation/:token Get a team occupation
-  	* @apiName getTeamOccupation
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.10.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {Number} Person.user_id Id of the person
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
-  	*		},
-  	*		"Person 2":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 6,
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.11/dashboard/getteamoccupation/:token Get a team occupation
-  	* @apiName getTeamOccupation
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.11.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Person Array of persons
-  	* @apiSuccess {String} Person.project_name Name of the project
-  	* @apiSuccess {Number} Person.user_id Id of the person
-  	* @apiSuccess {String} Person.first_name First name of the person
-  	* @apiSuccess {String} Person.last_name Last name of the person
-  	* @apiSuccess {String} Person.occupation Occupation of the person
-  	* @apiSuccess {Number} Person.number_of_tasks_begun Number of tasks begun
-  	* @apiSuccess {Number} Person.number_of_ongoing_tasks Number of ongoing tasks
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Person 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe",
-	*			"occupation": "Busy",
-	*			"number_of_tasks_begun": 2,
-	*			"number_of_ongoing_tasks": 3
-  	*		},
-  	*		"Person 2":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"user_id": 6,
-	*			"first_name": "Thierry",
-	*			"last_name": "Doe",
-	*			"occupation": "Free",
-	*			"number_of_tasks_begun": 0,
-	*			"number_of_ongoing_tasks": 0
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No project found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No projects for the id X"
-	* 	}
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "2.1.3",
+	*	    "return_message": "Dashboard - getteamoccupation - Bad ID"
+	*	  }
+	*	}
   	*
   	*/
 	public function getTeamOccupationAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("2.1.3", "Dashboard", "getteamoccupation"));
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findTeamOccupation($user->getId()));
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findTeamOccupationV2($user->getId());
 	}
 
 	/**
-  	* @api {get} /V0.6/dashboard/getnextmeetings/:token Get the person connected next meetings
+  	* @api {get} /V0.2/dashboard/getnextmeetings/:token Get the person connected next meetings
   	* @apiName getNextMeetings
   	* @apiGroup Dashboard
-  	* @apiVersion 0.6.0
+  	* @apiDescription Get all the user connected next meetings
+  	* @apiVersion 0.2.0
   	*
   	* @apiParam {String} token Token of the person connected
   	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
+  	* @apiSuccess {Object[]} array Array of events
+  	* @apiSuccess {Object[]} array.projects Informations of the project of the event
+  	* @apiSuccess {String} array.projects.name Name of the project
+  	* @apiSuccess {String} array.projects.logo Logo of the project
+  	* @apiSuccess {String} array.type Type of the event
+  	* @apiSuccess {String} array.title Title of the event
+  	* @apiSuccess {String} array.description Description of the event
+  	* @apiSuccess {Date} array.begin_date Begin date of the event
+  	* @apiSuccess {Date} array.end_date End date of the event
   	*
-  	* @apiSuccessExample Success-Response:
+  	* @apiSuccessExample Complete Success:
   	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
+	*		"info": {
+	*			"return_code": "1.2.1",
+	*			"return_message": "Dashboard - getteamoccupation - Complete success"
   	*		},
-  	*		"Event 2":
+  	*		"data":
   	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
+  	*			"array": [
+  	*				{
+	*					"projects": {
+	*						"name": "Grappbox",
+	*						"logo": "data"
+	*					},
+	*					"type": "Customer",
+	*					"title": "Project presentation",
+	*					"description": "Project presentation to the customer",
+	*					"begin_date":
+	*					{
+	*						"date":"2015-10-15 11:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					},
+	*					"end_date":
+	*					{
+	*						"date":"2015-10-15 16:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					}
+  	*				},
+  	*				{
+	*					"projects": {
+	*						"name": "",
+	*						"logo": ""
+	*					},
+	*					"type": "Personnal",
+	*					"title": "Doctor",
+	*					"description": "Meeting with the doctor for annual full checkup",
+	*					"begin_date":
+	*					{
+	*						"date":"2015-10-17 11:30:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					},
+	*					"end_date":
+	*					{
+	*						"date":"2015-10-17 12:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					}
+  	*				}
+  	*			]
+  	*		}
+  	*	}
+  	*
+  	* @apiSuccessExample Success But No Data:
+  	* 	{
+  	*		"info": {
+	*			"return_code": "1.2.3",
+	*			"return_message": "Dashboard - getnextmeetings - Success but no data"
+  	*		},
+  	*		"data":
+  	*		{
+  	*			"array": []
   	*		}
   	* 	}
   	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
-  	*/
-
-	/**
-  	* @api {get} /V0.6/dashboard/getnextmeetings/:token Get the person connected next meetings
-  	* @apiName getNextMeetings
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.6.1
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		},
-  	*		"Event 2":
-  	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.7/dashboard/getnextmeetings/:token Get the person connected next meetings
-  	* @apiName getNextMeetings
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.7.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		},
-  	*		"Event 2":
-  	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.7/dashboard/getnextmeetings/:token Get the person connected next meetings
-  	* @apiName getNextMeetings
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.7.1
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		},
-  	*		"Event 2":
-  	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.8/dashboard/getnextmeetings/:token Get the person connected next meetings
-  	* @apiName getNextMeetings
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.8.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		},
-  	*		"Event 2":
-  	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.9/dashboard/getnextmeetings/:token Get the person connected next meetings
-  	* @apiName getNextMeetings
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.9.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		},
-  	*		"Event 2":
-  	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.10/dashboard/getnextmeetings/:token Get the person connected next meetings
-  	* @apiName getNextMeetings
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.10.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		},
-  	*		"Event 2":
-  	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
-  	*/
-
-  	/**
-  	* @api {get} /V0.11/dashboard/getnextmeetings/:token Get the person connected next meetings
-  	* @apiName getNextMeetings
-  	* @apiGroup Dashboard
-  	* @apiVersion 0.11.0
-  	*
-  	* @apiParam {String} token Token of the person connected
-  	*
-  	* @apiSuccess {Object[]} Event Array of events
-  	* @apiSuccess {String} Event.project_name Name of the project
-  	* @apiSuccess {String} Event.project_logo Logo of the project
-  	* @apiSuccess {String} Event.event_type Type of the event
-  	* @apiSuccess {String} Event.event_title Title of the event
-  	* @apiSuccess {String} Event.event_description Description of the event
-  	* @apiSuccess {Date} Event.event_begin_date Begin date of the event
-  	* @apiSuccess {Date} Event.event_end_date End date of the event
-  	*
-  	* @apiSuccessExample Success-Response:
-  	* 	{
-  	*		"Event 1":
-  	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "data logo...",
-	*			"event_type": "Client",
-	*			"event_title": "Présentation du projet",
-	*			"event_description": "Présentation du projet grappbox au client",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-15 16:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		},
-  	*		"Event 2":
-  	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "RDV dentiste",
-	*			"event_description": "Rendez-vous avec le dentiste pour changer la couronne",
-	*			"event_begin_date":
-	*			{
-	*				"date":"2015-10-17 11:30:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"event_end_date":
-	*			{
-	*				"date":"2015-10-17 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-  	*		}
-  	* 	}
-  	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No event found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"No events for the id  X"
-	* 	}
-  	*
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "2.2.3",
+	*	    "return_message": "Dashboard - getnextmeetings - Bad ID"
+	*	  }
+	*	}
   	*/
 	public function getNextMeetingsAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("2.2.3", "Dashboard", "getnextmeetings"));
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetings($user->getId()));
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetingsV2($user->getId());
 	}
 
 	/**

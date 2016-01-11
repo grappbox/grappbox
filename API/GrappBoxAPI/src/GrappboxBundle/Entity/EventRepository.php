@@ -4,6 +4,8 @@ namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 /**
  * EventRepository
  *
@@ -16,21 +18,94 @@ class EventRepository extends EntityRepository
 	{
 		$qb = $this->createQueryBuilder('e');
 		$meetings = $qb->getQuery()->getResult();
-
 		$arr = array();
 		$i = 0;
 		$defaultDate = new \DateTime;
-
 		if ($meetings === null)
 		{
 			throw new NotFoundHttpException("No events for the id ".$id);
+		}
+		foreach ($meetings as $meeting) {
+			$endDate = $meeting->getEndDate();
+			$creatorId = $meeting->getCreatorUser()->getId();
+			if ($endDate > $defaultDate && $creatorId == $id)
+			{
+				$project = $meeting->getProjects();
+				$eventType = $meeting->getEventtypes();
+				$projectName = null;
+				$projectLogo = null;
+			 	$typeName = $eventType->getName();
+			 	if ($project)
+			 	{
+					$projectName = $project->getName();
+					$projectLogo = $project->getLogo();
+				}
+					$eventTitle = $meeting->getTitle();
+					$eventDescription = $meeting->getDescription();
+					$beginDate = $meeting->getBeginDate();
+					$arr["Meeting ".$i] = array("project_name" => $projectName, "project_logo" => $projectLogo, "event_type" => $typeName, "event_title" => $eventTitle,
+						"event_description" => $eventDescription, "event_begin_date" => $beginDate, "event_end_date" => $endDate);
+				$i++;
+			}
+			else if ($endDate > $defaultDate)
+			{
+				$users = $meeting->getUsers();
+				foreach ($users as $user) {
+					$userId = $user->getId();
+					if ($userId == $id)
+					{
+						$project = $meeting->getProjects();
+						$eventType = $meeting->getEventtypes();
+						$projectName = null;
+						$projectLogo = null;
+					 	$typeName = $eventType->getName();
+					 	if ($project)
+					 	{
+							$projectName = $project->getName();
+							$projectLogo = $project->getLogo();
+						}
+							$eventTitle = $meeting->getTitle();
+							$eventDescription = $meeting->getDescription();
+							$beginDate = $meeting->getBeginDate();
+							$arr["Meeting ".$i] = array("project_name" => $projectName, "project_logo" => $projectLogo, "event_type" => $typeName, "event_title" => $eventTitle,
+								"event_description" => $eventDescription, "event_begin_date" => $beginDate, "event_end_date" => $endDate);
+						$i++;
+					}
+				}
+			}
+		}
+		if (count($meetings) == 0 || count($arr) == 0)
+		{
+			return (Object)$arr;
+		}
+		return ($arr);
+	}
+
+	public function findNextMeetingsV2($id)
+	{
+		$defaultDate = new \DateTime;
+		$qb = $this->createQueryBuilder('e')->where('e.endDate > :defaultDate')->setParameter('defaultDate', $defaultDate);
+		$meetings = $qb->getQuery()->getResult();
+
+		$resp = new JsonResponse();
+		$ret = array();
+		$arr = array();
+
+		if ($meetings === null || count($meetings) == 0)
+		{
+			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getnextmeetings - Success but no data");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_OK);
+			$resp->setData($ret);
+
+			return $resp;
 		}
 
 		foreach ($meetings as $meeting) {
 			$endDate = $meeting->getEndDate();
 			$creatorId = $meeting->getCreatorUser()->getId();
 
-			if ($endDate > $defaultDate && $creatorId == $id)
+			if ($creatorId == $id)
 			{
 				$project = $meeting->getProjects();
 				$eventType = $meeting->getEventtypes();
@@ -43,15 +118,14 @@ class EventRepository extends EntityRepository
 					$projectName = $project->getName();
 					$projectLogo = $project->getLogo();
 				}
-					$eventTitle = $meeting->getTitle();
-					$eventDescription = $meeting->getDescription();
-					$beginDate = $meeting->getBeginDate();
+				$eventTitle = $meeting->getTitle();
+				$eventDescription = $meeting->getDescription();
+				$beginDate = $meeting->getBeginDate();
 
-					$arr["Meeting ".$i] = array("project_name" => $projectName, "project_logo" => $projectLogo, "event_type" => $typeName, "event_title" => $eventTitle,
-						"event_description" => $eventDescription, "event_begin_date" => $beginDate, "event_end_date" => $endDate);
-				$i++;
+				$arr[] = array("projects" => array("name" => $projectName, "logo" => $projectLogo), "type" => $typeName, "title" => $eventTitle,
+					"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 			}
-			else if ($endDate > $defaultDate)
+			else
 			{
 				$users = $meeting->getUsers();
 
@@ -71,23 +145,32 @@ class EventRepository extends EntityRepository
 							$projectName = $project->getName();
 							$projectLogo = $project->getLogo();
 						}
-							$eventTitle = $meeting->getTitle();
-							$eventDescription = $meeting->getDescription();
-							$beginDate = $meeting->getBeginDate();
+						$eventTitle = $meeting->getTitle();
+						$eventDescription = $meeting->getDescription();
+						$beginDate = $meeting->getBeginDate();
 
-							$arr["Meeting ".$i] = array("project_name" => $projectName, "project_logo" => $projectLogo, "event_type" => $typeName, "event_title" => $eventTitle,
-								"event_description" => $eventDescription, "event_begin_date" => $beginDate, "event_end_date" => $endDate);
-						$i++;
+						$arr[] = array("projects" => array("name" => $projectName, "logo" => $projectLogo), "type" => $typeName, "title" => $eventTitle,
+							"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 					}
 				}
 			}
 		}
 
-		if (count($meetings) == 0 || count($arr) == 0)
+		if (count($arr) == 0)
 		{
-			return (Object)$arr;
+			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getnextmeetings - Success but no data");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
+			$resp->setData($ret);
+
+			return $resp;
 		}
 
-		return ($arr);
+		$ret["info"] = array("return_code" => "1.2.1", "return_message" => "Dashboard - getnextmeetings - Complete success");
+		$ret["data"] = array("array" => $arr);
+		$resp->setStatusCode(JsonResponse::HTTP_OK);
+		$resp->setData($ret);
+
+		return ($resp);
 	}
 }

@@ -4,6 +4,8 @@ namespace GrappboxBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 /**
  * ProjectRepository
  *
@@ -71,6 +73,73 @@ class ProjectRepository extends EntityRepository
 		}
 
 		return $arr;
+	}
+
+	public function findTeamOccupationV2($id)
+	{
+		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
+		
+		$projects = $qb->getQuery()->getResult();
+
+		$defaultDate = date_create("0000-00-00 00:00:00");
+
+		$resp = new JsonResponse();
+		$ret = array();
+		$arr = array();
+
+		if ($projects === null || count($projects) == 0)
+		{
+			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getteamoccupation - Success but no data");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_OK);
+			$resp->setData($ret);
+
+			return $resp;
+		}
+
+		foreach ($projects as $project)
+		{
+			$projectName = $project->getName();
+			$projectUsers = $project->getUsers();
+			$projectId = $project->getId();
+			foreach ($projectUsers as $user) {
+				$id = $user->getId();
+				$firstName = $user->getFirstname();
+				$lastName = $user->getLastname();
+				$tasks = $user->getTasks();
+				$nbOfOngoingTasks = 0;
+				$nbOfTasksBegun = 0;
+				$busy = false;
+
+				foreach ($tasks as $task) {
+					if ($task->getProjects()->getId() == $projectId)
+					{
+						if ($task->getFinishedAt() == $defaultDate)
+						{
+							$busy = true;
+							$nbOfOngoingTasks++;
+						}
+						if ($task->getStartedAt() != $defaultDate)
+							$nbOfTasksBegun++;
+					}
+				}
+				if ($busy == true)
+				{
+					$arr[] = array("name" => $projectName, "users" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+				}				
+				else
+				{
+					$arr[] = array("name" => $projectName, "users" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+				}
+			}
+		}
+
+		$ret["info"] = array("return_code" => "1.2.1", "return_message" => "Dashboard - getteamoccupation - Complete success");
+		$ret["data"] = array("array" => $arr);
+		$resp->setStatusCode(JsonResponse::HTTP_OK);
+		$resp->setData($ret);
+
+		return $resp;
 	}
 
 	public function findProjectGlobalProgress($id)
