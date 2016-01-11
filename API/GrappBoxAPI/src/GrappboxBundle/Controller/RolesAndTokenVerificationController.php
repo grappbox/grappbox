@@ -97,6 +97,24 @@ class RolesAndTokenVerificationController extends Controller
     return $response;
   }
 
+  protected function setNoDataSuccess($code, $part, $function)
+  {
+    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."Success but no data");
+    $ret["data"] = array("array" => array());
+    $response = new JsonResponse($ret);
+
+    return $response;
+  }
+
+  protected function setSuccess($code, $part, $function, $message, $data)
+  {
+    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
+    $ret["data"] = array("array" => array());
+    $response = new JsonResponse($ret);
+
+    return $response;
+  }
+
   /**
   * @api {post} /V0.6/roles/addprojectroles Add a project role
   * @apiName addProjectRoles
@@ -607,7 +625,7 @@ class RolesAndTokenVerificationController extends Controller
     if ($project === null)
     {
       throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
-      
+
     }
 
   	$role->setProjects($project);
@@ -2832,7 +2850,7 @@ class RolesAndTokenVerificationController extends Controller
   foreach ($ProjectUserRoles as $pur) {
     $pur->setRoleId($content->roleId);
   }
-	
+
 	$em->flush();
 
 	return new JsonResponse("Update of the project user role success.");

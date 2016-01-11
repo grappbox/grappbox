@@ -423,10 +423,13 @@ v2_notification_getUserDevice:
     methods: [GET]
 
 v2_notification_getNotification:
-    path:       /notification/getnotification/{token}
+    path:		/notification/getnotification/{token}/{read}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Notification:getNotification }
     requirements:
-        token: "[a-zA-Z]+"
+        token:	"[a-zA-Z]+"
+        read:   "[a-zA-Z]+"
+        offset: \d+
+        limit:  \d+
     methods: [GET]
 
 v2_notification_setNotificationToRead:

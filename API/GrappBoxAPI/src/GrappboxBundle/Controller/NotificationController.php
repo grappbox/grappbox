@@ -56,51 +56,58 @@ class NotificationController extends RolesAndTokenVerificationController
 	// return array of device object
 	}
 
-	public function getNotificationsAction(Request $request, $token)
+	public function getNotificationsAction(Request $request, $token, $read, $offset, $limit)
 	{
-	// pour Desktop et Web
-
-	$user = $this->checkToken($token);
+		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("15.4.3", "Notification", "getNotification"));
 
-	$em = $this->getDoctrine()->getManager();
-	$notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user_id" => $user->getId()/*, "read" => false*/));
+    	if ($read == "true")
+			$read_value = true;
+		else if
+			$read_value = false;
 
-	$notif_array = array();
-	foreach ($notification as $key => $value) {
-	  $notif_array[] = $value->objectToArray();
-	}
 
-	//if (count(notif_array) <= 0)
-	  // return "no data to return"
-	return new JsonResponse(array("array" => $notif_array));
-	}
+		$em = $this->getDoctrine()->getManager();
+    	$notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user" => $user, "read" => $read), array(), $limit, $offset);
+
+    	$notif_array = array();
+    	foreach ($notification as $key => $value) {
+      		$notif_array[] = $value->objectToArray();
+	    }
+
+    	if (count(notif_array) <= 0)
+      		return ($this->setNoDataSuccess("1.15.3", "Notification", "getNotification"));
+
+	    return ($this->setSuccess("1.15.1", "Notification", "getNotifications", "Complete Success", array("array" => $notif_array)));
+  	}
 
 	public function setNotificationToReadAction(Request $request, $token, $id)
 	{
-	// set notif->read as true
-	$user = $this->checkToken($token);
-	if (!$user)
-	  return ($this->setBadTokenError());
-	$em = $this->getDoctrine()->getManager();
-	$notification = $em->getRepository("GrappboxBundle:Notification")->find($id);
+		$user = $this->checkToken($token);
+		if (!$user)
+		  return ($this->setBadTokenError("15.5.3", "Notification", "setNotificationToRead"));
 
-	//if (!($notification instanceof Notification))
-	  // return error "no data"/"bad id"
-	//$notification->setDeletedAt(new DateTime('now')):
-	//$em->flush();
+		$em = $this->getDoctrine()->getManager();
+		$notification = $em->getRepository("GrappboxBundle:Notification")->find($id);
 
-	//return "success"
+		if (!($notification instanceof Notification))
+		  return ($this->setBadRequest("15.5.3", "Notification", "setNotificationToRead", "Bad ID"));
+
+		$notification->setRead(true):
+		$em->flush();
+
+		return ($this->setSuccess("1.15.1", "Notification", "setNotificationRead", "Complete Success", $notification->objectToArray()));
 	}
 
-	public function testPushAction()
+	public function pushTestAction()
 	{
-		$data['mtitle'] = "Test push";
-		$data['mdesc'] = "Modification";
+		$mdata['mtitle'] = "Timeline - New message";
+		$mdata['mdesc'] = "There is a new message on the timeline";
+
 		$wdata['type'] = "Project";
-		$wdata['targetId'] = 3;
-		$wdata['message'] = "You have been add on the project ufakueaof";
+		$wdata['targetId'] = 2;
+		$wdata['message'] = "You have been added on the project Grappbox";
 
 		return new JsonResponse($this->pushNotification([1, 2], $data, $wdata));
 	}
@@ -121,7 +128,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	** $message: message for the user
 	** exemple: $wdata['type']: "Project"
 	**			$wdata['targetId']: 3
-	**			$wdata['message']: "You've been add on the project X" (with X being the name of the project)
+	**			$wdata['message']: "You've been added on the project X" (with X being the name of the project)
 	*/
 	public function pushNotification($usersIds, $mdata, $wdata)
 	{
