@@ -18,7 +18,7 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
     _bodyLayout = new QHBoxLayout();
     _issueLayout = new QVBoxLayout();
     _sideMenuLayout = new QVBoxLayout();
-    _titleBar = new BugViewTitleWidget(tr("Enter the issue name here..."), true);
+    _titleBar = new BugViewTitleWidget("", true);
     _categories = new BugViewCategoryWidget();
     _assignees = new BugViewAssigneeWidget();
     _commentArea = new QScrollArea();
@@ -112,7 +112,6 @@ void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data
     _bugId = -1;
     _mainApp = pageManager;
     _titleBar->SetBugID(_bugId);
-    _titleBar->SetTitle(tr("Enter the issue name here..."));
     this->DeleteComments();
 
     token = API::SDataManager::GetDataManager()->GetToken();
@@ -163,7 +162,7 @@ void BodyBugCreation::TriggerCategoryBtnReleased()
 void BodyBugCreation::DeleteComments()
 {
     QLayoutItem *currentItem;
-    BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(true, true);
+    BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(API::SDataManager::GetDataManager()->GetUserId(), true, true);
 
     while ((currentItem = _commentLayout->itemAt(0)) != nullptr)
     {
@@ -175,10 +174,10 @@ void BodyBugCreation::DeleteComments()
     _commentLayout->addWidget(commentWidget);
     _commentLayout->setAlignment(commentWidget, Qt::AlignTop);
     _commentWidget = commentWidget;
-    QObject::connect(_commentWidget, SIGNAL(OnCommented()), this, SLOT(TriggerComment()));
+    QObject::connect(_commentWidget, SIGNAL(OnCommented(BugViewPreviewWidget*)), this, SLOT(TriggerComment(BugViewPreviewWidget*)));
 }
 
-void BodyBugCreation::TriggerComment()
+void BodyBugCreation::TriggerComment(BugViewPreviewWidget* previewWid)
 {
     QVector<QString> data;
     QString comment = _commentWidget->GetComment();
@@ -226,8 +225,8 @@ void BodyBugCreation::TriggerBugCreated(int UNUSED id, QByteArray data)
 
     commentData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     commentData.append(API::SDataManager::GetDataManager()->GetToken());
-    commentData.append(comment);
     commentData.append(commentTitle);
+    commentData.append(comment);
     commentData.append(QString::number(json["ticket"].toObject()["id"].toInt()));
 
     API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_COMMENT_BUG, commentData, this, "TriggerBugCommented", "TriggerAPIFailure");

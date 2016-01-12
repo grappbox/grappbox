@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QMessageBox>
 
 #define UNUSED __attribute__((unused))
 

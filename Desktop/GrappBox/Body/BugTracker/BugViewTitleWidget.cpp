@@ -25,6 +25,7 @@ BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *pa
     this->setLayout(_mainLayout);
 
     //Design
+    _title->setPlaceholderText(tr("Enter the issue name here..."));
     style = "QLineEdit{"
             "max-height: 50px;"
             "}"
@@ -105,4 +106,9 @@ QString BugViewTitleWidget::GetTitle()
 void BugViewTitleWidget::TriggerCloseSuccess(int UNUSED id, QByteArray data)
 {
     emit OnIssueClosed(_bugID);
+}
+
+void BugViewTitleWidget::TriggerAPIFailure(int id, QByteArray data)
+{
+    QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
 }

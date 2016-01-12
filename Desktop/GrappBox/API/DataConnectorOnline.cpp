@@ -207,6 +207,8 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
     case GR_PROJECT_USERS_ALL:
         reply = GetAction("projects/getusertoproject", data);
         break;
+    case GR_BUG:
+        reply = GetAction("bugtracker/getticket", data);
     }
     if (reply == nullptr)
         throw QException();

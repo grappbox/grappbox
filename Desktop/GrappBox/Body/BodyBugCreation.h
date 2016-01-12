@@ -44,7 +44,7 @@ signals:
 public slots:
     void                    TriggerCategoryBtnReleased();
     void                    TriggerAssigneeBtnReleased();
-    void                    TriggerComment();
+    void                    TriggerComment(BugViewPreviewWidget *previewWid);
     void                    TriggerGotProjectUsers(int id, QByteArray data);
     void                    TriggerGotProjectTags(int id, QByteArray data);
     void                    TriggerBugCreated(int id, QByteArray data);

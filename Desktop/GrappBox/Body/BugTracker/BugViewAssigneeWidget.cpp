@@ -12,6 +12,8 @@ BugViewAssigneeWidget::BugViewAssigneeWidget(QWidget *parent) : QWidget(parent)
     _viewPage->setLayout(_mainViewLayout);
     _assignPage->setLayout(_mainAssignLayout);
 
+    this->setMinimumHeight(450);
+
     _mainWidget->addWidget(_viewPage);
     _mainWidget->addWidget(_assignPage);
 }

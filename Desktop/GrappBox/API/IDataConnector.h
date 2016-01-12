@@ -55,7 +55,8 @@ namespace API
         GR_BUGCOMMENT,
         GR_GETBUGS_STATUS,
         GR_PROJECTBUGTAG_ALL,
-        GR_PROJECT_USERS_ALL
+        GR_PROJECT_USERS_ALL,
+        GR_BUG,
     };
 
     enum PostRequest

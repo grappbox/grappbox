@@ -5,6 +5,7 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     QString style;
     QWidget *widgetTitleCategory = new QWidget();
     QWidget *widgetTitleAssignee = new QWidget();
+    QWidget *commentWidget = new QWidget();
     QLabel *lblTitleCategory = new QLabel("<h3>" + tr("Categories") + "</h3>");
     QLabel *lblTitleAssignee = new QLabel("<h3>" + tr("Assignee") + "</h3>");
     QHBoxLayout *layoutTitleCategory = new QHBoxLayout();
@@ -49,13 +50,16 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     _sideMenuLayout->addWidget(widgetTitleAssignee);
     _sideMenuLayout->addWidget(_assigneesArea);
 
-    _commentArea->setLayout(_commentLayout);
+    _commentArea->setWidgetResizable(true);
+    _commentArea->setWidget(new QWidget());
+    _commentArea->widget()->setLayout(_commentLayout);
 
     _bodyLayout->addLayout(_issueLayout);
     _bodyLayout->addLayout(_sideMenuLayout);
 
     QObject::connect(_btnAssigneeAssign, SIGNAL(released()), this, SLOT(TriggerAssigneeBtnReleased()));
     QObject::connect(_btnCategoriesAssign, SIGNAL(released()), this, SLOT(TriggerCategoryBtnReleased()));
+    QObject::connect(_titleBar, SIGNAL(OnIssueClosed(int)), this, SLOT(TriggerIssueClosed(int)));
 
     _mainLayout->addWidget(_titleBar);
     _mainLayout->addLayout(_bodyLayout);
@@ -95,17 +99,28 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
 
 void BodyBugVisualize::Show(BodyBugTracker *pageManager, QJsonObject *data)
 {
+    QVector<QString> commentData, bugData;
     _bugId = (*data)["id"].toInt();
     _mainApp = pageManager;
     _titleBar->SetBugID(_bugId);
     _titleBar->SetTitle((*data)["title"].toString());
     this->DeleteComments();
-    //TODO: Link API
+
+    commentData.append(API::SDataManager::GetDataManager()->GetToken());
+    commentData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
+    commentData.append(QString::number(_bugId));
+
+    bugData.append(API::SDataManager::GetDataManager()->GetToken());
+    bugData.append(QString::number(_bugId));
+
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_BUGCOMMENT, commentData, this, "TriggerGotComments", "TriggerAPIFailure");
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_BUG, bugData, this, "TriggerGotBug", "TriggerAPIFailure");
+
+
+
     //Start Fake Data
     QList<QJsonObject> fdataAssigneeView, fdataAssigneeAssign, fdataCategoryView, fdataCategoryAssign;
     QJsonObject obj1, obj2, obj3, obj4, obj5, obj6, obj7, obj8;
-    QList<QJsonObject> fdataComments;
-    QJsonObject com1;
 
     obj1.insert("id", 1);
     obj1.insert("assigned", true);
@@ -149,20 +164,10 @@ void BodyBugVisualize::Show(BodyBugTracker *pageManager, QJsonObject *data)
     fdataCategoryAssign.append(obj8);
     fdataCategoryView.append(obj4);
     fdataCategoryView.append(obj8);
-
-    com1.insert(JSON_AVATAR, "");
-    com1.insert(JSON_ID, 1);
-    com1.insert(JSON_COMMENTOR, "nadeau_l");
-    com1.insert(JSON_DATE, "2015-12-28 18:15:20");
-    com1.insert(JSON_COMMENT, "THAT'S WORKING BITCH!!");
-
-    fdataComments.append(com1);
     //End Fake Data
-    _assignees->CreateAssignPageItems(fdataAssigneeAssign);
-    _assignees->CreateViewPageItems(fdataAssigneeView);
     _categories->CreateAssignPageItems(fdataCategoryAssign);
     _categories->CreateViewPageItems(fdataCategoryView);
-    this->AddCommentsAtStart(fdataComments);
+
     emit OnLoadingDone(BodyBugTracker::BUGVIEW);
 }
 
@@ -206,7 +211,7 @@ void BodyBugVisualize::TriggerCategoryBtnReleased()
 void BodyBugVisualize::DeleteComments()
 {
     QLayoutItem *currentItem;
-    BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(true);
+    BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(API::SDataManager::GetDataManager()->GetUserId(), true);
 
     while ((currentItem = _commentLayout->itemAt(0)) != nullptr)
     {
@@ -214,6 +219,7 @@ void BodyBugVisualize::DeleteComments()
             currentItem->widget()->setParent(nullptr);
         _commentLayout->removeItem(currentItem);
     }
+    QObject::connect(commentWidget, SIGNAL(OnCommented(BugViewPreviewWidget*)), this, SLOT(TriggerCommentButtonReleased(BugViewPreviewWidget*)));
     commentWidget->setFixedHeight(COMMENTBOX_HEIGHT);
     _commentLayout->addWidget(commentWidget);
 }
@@ -225,7 +231,7 @@ void BodyBugVisualize::AddCommentsAtStart(const QList<QJsonObject> &comments)
     for (it = comments.begin(); it != comments.end(); ++it)
     {
         QJsonObject json = *it;
-        BugViewPreviewWidget *newComment = new BugViewPreviewWidget();
+        BugViewPreviewWidget *newComment = new BugViewPreviewWidget(json[JSON_USERID].toInt());
         QImage img(QByteArray::fromBase64(json[JSON_AVATAR].toString().toStdString().c_str()), "PNG");
         QPixmap pix = QPixmap::fromImage(img);
 
@@ -235,7 +241,8 @@ void BodyBugVisualize::AddCommentsAtStart(const QList<QJsonObject> &comments)
         newComment->SetDate(QDateTime::fromString(json[JSON_DATE].toString(), "yyyy-MM-dd hh:mm:ss"));
         newComment->SetCommentor(json[JSON_COMMENTOR].toString());
         newComment->SetComment(json[JSON_COMMENT].toString());
-        _commentLayout->insertWidget(0, newComment);
+        newComment->SetCommentTitle(json[JSON_TITLE].toString());
+        _commentLayout->insertWidget(_commentLayout->count() - 1, newComment);
     }
 
 }
@@ -243,4 +250,119 @@ void BodyBugVisualize::AddCommentsAtStart(const QList<QJsonObject> &comments)
 void BodyBugVisualize::TriggerIssueClosed(int UNUSED bugId)
 {
     _mainApp->TriggerChangePage(BodyBugTracker::BUGLIST, nullptr);
+}
+
+void BodyBugVisualize::TriggerGotComments(int UNUSED id, QByteArray data)
+{
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+    QJsonArray comments = json["comments"].toArray();
+    QJsonArray::iterator it;
+    QList<QJsonObject> commentList;
+
+    for (it = comments.begin(); it != comments.end(); ++it)
+    {
+        QJsonObject com = (*it).toObject();
+        QDateTime editedAt = QDateTime::fromString(com["editedAt"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+        QString date = editedAt.toString("yyyy-MM-dd hh:mm:ss");
+
+        if (date == "")
+        {
+            editedAt = QDateTime::fromString(com["createdAt"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+            date = editedAt.toString("yyyy-MM-dd HH:mm:ss");
+        }
+        com.insert(JSON_AVATAR, "");
+        com.insert(JSON_COMMENTOR, QString::number(com["userId"].toInt()));
+        com.insert(JSON_DATE, date);
+        commentList.append(com);
+    }
+    this->AddCommentsAtStart(commentList);
+}
+
+void BodyBugVisualize::TriggerCommentButtonReleased(BugViewPreviewWidget *previewWidget)
+{
+    QVector<QString> commentData;
+    QString comment = previewWidget->GetComment();
+    QString commentTitle = previewWidget->GetCommentTitle();
+
+    commentData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
+    commentData.append(API::SDataManager::GetDataManager()->GetToken());
+    commentData.append(commentTitle);
+    commentData.append(comment);
+    commentData.append(QString::number(_bugId));
+
+    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_COMMENT_BUG, commentData, this, "TriggerPushCommentSuccess", "TriggerAPIFailure");
+    previewWidget->SetComment("");
+    previewWidget->SetCommentTitle("");
+}
+
+void BodyBugVisualize::TriggerPushCommentSuccess(int UNUSED id, QByteArray data)
+{
+    QJsonObject com = QJsonDocument::fromJson(data).object()["comment"].toObject();
+    QDateTime editedAt = QDateTime::fromString(com["editedAt"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+    QString date = editedAt.toString("yyyy-MM-dd hh:mm:ss");
+    QList<QJsonObject> comList;
+
+    if (date == "")
+    {
+        editedAt = QDateTime::fromString(com["createdAt"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+        date = editedAt.toString("yyyy-MM-dd HH:mm:ss");
+    }
+    com.insert(JSON_COMMENTOR, API::SDataManager::GetDataManager()->GetUserName() + " " + API::SDataManager::GetDataManager()->GetUserLastName());
+    com.insert(JSON_DATE, date);
+    comList.append(com);
+    this->AddCommentsAtStart(comList);
+}
+
+void BodyBugVisualize::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
+{
+    QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
+}
+
+void BodyBugVisualize::TriggerGotBug(int UNUSED id, QByteArray data)
+{
+    QVector<QString> userProjectData;
+
+    _bugData = QJsonDocument::fromJson(data).object()["ticket"].toObject();
+    userProjectData.append(API::SDataManager::GetDataManager()->GetToken());
+    userProjectData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL, userProjectData, this, "TriggerGotUserProject", "TriggerAPIFailure");
+}
+
+void BodyBugVisualize::TriggerGotUserProject(int UNUSED id, QByteArray data)
+{
+
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+    QJsonArray users = _bugData["users"].toArray();
+    QList<QJsonObject> usersProjects;
+    QList<QJsonObject> usersAssigned;
+
+
+    for (QJsonArray::iterator it = users.begin(); it != users.end(); ++it)
+    {
+        QJsonObject currentBugUser = (*it).toObject();
+
+        currentBugUser.insert("assigned", true);
+        usersAssigned.append(currentBugUser);
+    }
+    for (int i = 1; json.contains("User " + QString::number(i)); ++i)
+    {
+        QJsonObject current = json["User " + QString::number(i)].toObject();
+        bool assigned = false;
+
+        for (QJsonArray::iterator it = users.begin(); it != users.end(); ++it)
+        {
+            QJsonObject currentBugUser = (*it).toObject();
+
+            if (currentBugUser["id"].toInt() == current["id"].toInt())
+            {
+                assigned = true;
+                break;
+            }
+        }
+        current.insert("assigned", assigned);
+        usersProjects.append(current);
+    }
+    _assignees->CreateViewPageItems(usersAssigned);
+    _assignees->CreateAssignPageItems(usersProjects);
+    emit OnLoadingDone(BodyBugTracker::BUGVIEW);
 }
