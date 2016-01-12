@@ -2307,7 +2307,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
 		$bug = $em->getRepository("GrappboxBundle:Bug")->find($id);
-		if (!$this->checkRoles($user, $bug->getProjectId(), "bugtracker"))
+		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker"))
 			return ($this->setNoRightsError());
 
 		$bug->setDeletedAt(new DateTime('now'));
@@ -2767,6 +2767,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
+
 		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
 		//TODO check project id
 		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("project" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
@@ -2883,6 +2884,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
+
 		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
 		//TODO check project id
 		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("project" => $project, "parentId" => null), array(), $limit, $offset);
