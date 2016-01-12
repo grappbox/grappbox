@@ -90,7 +90,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccess {int} id Ticket id
-	* @apiSuccess {int} creatorId author id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id creator id
+	* @apiSuccess {String} creator.fullname creator first and lastname
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
@@ -369,7 +371,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {Object} ticket.creator author
+	* @apiSuccess {int} ticket.creator.id creator id
+	* @apiSuccess {String} ticket.creator.fullname creator first and lastname
 	* @apiSuccess {int} tickets.projectId project id
 	* @apiSuccess {String} tickets.title Ticket title
 	* @apiSuccess {String} tickets.description Ticket content
@@ -725,7 +729,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} id Message id
 	* @apiSuccess {Object} ticket ticket object
 	* @apiSuccess {int} ticket.id Ticket id
-	* @apiSuccess {int} ticket.creatorId author id
+	* @apiSuccess {Object} ticket.creator author
+	* @apiSuccess {int} ticket.creator.id creator id
+	* @apiSuccess {String} ticket.creator.fullname creator first and lastname
 	* @apiSuccess {int} ticket.projectId project id
 	* @apiSuccess {String} ticket.title Ticket title
 	* @apiSuccess {String} ticket.description Ticket content
@@ -1098,7 +1104,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} id Message id
 	* @apiSuccess {Object} ticket ticket object
 	* @apiSuccess {int} ticket.id Ticket id
-	* @apiSuccess {int} ticket.creatorId author id
+	* @apiSuccess {Object} ticket.creator author
+	* @apiSuccess {int} ticket.creator.id creator id
+	* @apiSuccess {String} ticket.creator.fullname creator first and lastname
 	* @apiSuccess {int} ticket.projectId project id
 	* @apiSuccess {String} ticket.title Ticket title
 	* @apiSuccess {String} ticket.description Ticket content
@@ -1214,7 +1222,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} id Comment id
 	* @apiSuccess {Object} Comment Comment object
 	* @apiSuccess {int} Comment.id Comment id
-	* @apiSuccess {int} Comment.creatorId author id
+	* @apiSuccess {Object} Comment.creator author
+	* @apiSuccess {int} Comment.creator.id creator id
+	* @apiSuccess {String} Comment.creator.fullname creator first and lastname
 	* @apiSuccess {int} Comment.projectId project id
 	* @apiSuccess {String} Comment.title Comment title
 	* @apiSuccess {String} Comment.description Comment content
@@ -1292,7 +1302,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} id Comment id
 	* @apiSuccess {Object} Comment Comment object
 	* @apiSuccess {int} Comment.id Comment id
-	* @apiSuccess {int} Comment.creatorId author id
+	* @apiSuccess {Object} Comment.creator author
+	* @apiSuccess {int} Comment.creator.id creator id
+	* @apiSuccess {String} Comment.creator.fullname creator first and lastname
 	* @apiSuccess {int} Comment.projectId project id
 	* @apiSuccess {String} Comment.title Comment title
 	* @apiSuccess {String} Comment.description Comment content
@@ -1525,7 +1537,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} tickets array of all the ticket's comments
 	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {Object} tickets.creator author
+	* @apiSuccess {int} tickets.creator.id creator id
+	* @apiSuccess {String} tickets.creator.fullname creator first and lastname
 	* @apiSuccess {int} tickets.projectId project id
   * @apiSuccess {int} tickets.parentId parent message id
 	* @apiSuccess {int} tickets.title comment title
@@ -1792,7 +1806,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {Object} tickets.creator author
+	* @apiSuccess {int} tickets.creator.id creator id
+	* @apiSuccess {String} tickets.creator.fullname creator first and lastname
 	* @apiSuccess {int} tickets.projectId project id
 	* @apiSuccess {String} tickets.title Ticket title
 	* @apiSuccess {String} tickets.description Ticket content
@@ -2095,8 +2111,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
-	* @apiSuccess {int} tickets.userId assigned user id
+	* @apiSuccess {Object} tickets.creator author
+	* @apiSuccess {int} tickets.creator.id creator id
+	* @apiSuccess {String} tickets.creator.fullname creator first and lastname
 	* @apiSuccess {int} tickets.projectId project id
 	* @apiSuccess {String} tickets.title Ticket title
 	* @apiSuccess {String} tickets.description Ticket content
@@ -2474,7 +2491,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int[]} toRemove list of users' id to remove
 	*
 	* @apiSuccess {int} id Ticket id
-	* @apiSuccess {int} creatorId author id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id creator id
+	* @apiSuccess {String} creator.fullname creator first and lastname
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
@@ -2594,7 +2613,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {Object} tickets.creator author
+	* @apiSuccess {int} tickets.creator.id creator id
+	* @apiSuccess {String} tickets.creator.fullname creator first and lastname
 	* @apiSuccess {int} tickets.projectId project id
 	* @apiSuccess {String} tickets.title Ticket title
 	* @apiSuccess {String} tickets.description Ticket content
@@ -2672,7 +2693,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {Object} tickets.creator author
+	* @apiSuccess {int} tickets.creator.id creator id
+	* @apiSuccess {String} tickets.creator.fullname creator first and lastname
 	* @apiSuccess {int} tickets.projectId project id
 	* @apiSuccess {String} tickets.title Ticket title
 	* @apiSuccess {String} tickets.description Ticket content
@@ -2786,7 +2809,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} tickets array of all the tickets' project
 	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {Object} tickets.creator author
+	* @apiSuccess {int} tickets.creator.id creator id
+	* @apiSuccess {String} tickets.creator.fullname creator first and lastname
 	* @apiSuccess {int} tickets.projectId project id
 	* @apiSuccess {String} tickets.title Ticket title
 	* @apiSuccess {String} tickets.description Ticket content
