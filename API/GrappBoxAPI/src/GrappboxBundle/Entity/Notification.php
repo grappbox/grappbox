@@ -172,15 +172,17 @@ class Notification
 
     public function objectToArray()
     {
-      $projectId = null;
-      if ($this->projects)
-        $projectId = $this->projects->getId();
+      // $projectId = null;
+      // if ($this->projects)
+      //   $projectId = $this->projects->getId();
         return array(
             'id' => $this->id,
-            //'title' => $this->title,
-            //'description' => $this->description,
+            // TODO user ??
+            "type" => $this->type,
+            "targetId" => $this->targetId,
+            "message" => $this->message,
             'createdAt' => $this->createdAt,
-            'read' => $this->read
+            'isRead' => $this->isRead
         );
     }
 
@@ -200,7 +202,7 @@ class Notification
     /**
      * Get isRead
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsRead()
     {

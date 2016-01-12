@@ -404,27 +404,28 @@ v2_event_delEvent:
 #                        NOTIFICATION CONTROLLER
 # -----------------------------------------------------------------------
 v2_notification_registerDevice:
-    path:       /notification/registerdevice/
+    path:       /notification/registerdevice
     defaults:   { _controller: GrappboxBundle:Notification:registerDevice }
     methods: [POST]
 
 v2_notification_unregisterDevice:
-    path:       /notification/unregisterdevice/{id}
+    path:       /notification/unregisterdevice/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Notification:unregisterDevice }
     requirements:
-         id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
     methods: [DELETE]
 
-v2_notification_getUserDevice:
-    path:       /notification/getuserdevice/{id}
-    defaults:   { _controller: GrappboxBundle:Notification:getUserDevice }
+v2_notification_getUserDevices:
+    path:       /notification/getuserdevices/{token}
+    defaults:   { _controller: GrappboxBundle:Notification:getUserDevices }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
-v2_notification_getNotification:
-    path:		/notification/getnotification/{token}/{read}/{offset}/{limit}
-    defaults:   { _controller: GrappboxBundle:Notification:getNotification }
+v2_notification_getNotifications:
+    path:		    /notification/getnotifications/{token}/{read}/{offset}/{limit}
+    defaults:   { _controller: GrappboxBundle:Notification:getNotifications }
     requirements:
         token:	"[a-zA-Z]+"
         read:   "[a-zA-Z]+"

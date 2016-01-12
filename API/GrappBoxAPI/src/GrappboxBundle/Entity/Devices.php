@@ -33,7 +33,7 @@ class Devices
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -56,7 +56,7 @@ class Devices
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -79,7 +79,7 @@ class Devices
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -102,7 +102,7 @@ class Devices
     /**
      * Get token
      *
-     * @return string 
+     * @return string
      */
     public function getToken()
     {
@@ -130,10 +130,22 @@ class Devices
     /**
      * Get user
      *
-     * @return \GrappboxBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getUser()
     {
         return $this->user;
+    }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "user" => array("id" => $this->user->getId(), "firstname" => $this->user->getFirstname(), "lastname" => $this->user->getLastName()),
+        "name" => $this->name,
+        "token" => $this->token,
+        "type" => $this->type
+      );
+
     }
 }
