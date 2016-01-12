@@ -2747,7 +2747,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
 		//TODO check project id
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("project" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -2862,7 +2862,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
 		//TODO check project id
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("project" => $project, "parentId" => null), array(), $limit, $offset);
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "parentId" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			if ($value->getDeletedAt() != null)
