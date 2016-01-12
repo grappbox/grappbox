@@ -208,10 +208,10 @@ void BodyBugVisualize::DeleteComments()
     QLayoutItem *currentItem;
     BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(true);
 
-    while ((currentItem = _commentLayout->itemAt(0)) != NULL)
+    while ((currentItem = _commentLayout->itemAt(0)) != nullptr)
     {
         if (currentItem->widget())
-            currentItem->widget()->setParent(NULL);
+            currentItem->widget()->setParent(nullptr);
         _commentLayout->removeItem(currentItem);
     }
     commentWidget->setFixedHeight(COMMENTBOX_HEIGHT);
@@ -238,4 +238,9 @@ void BodyBugVisualize::AddCommentsAtStart(const QList<QJsonObject> &comments)
         _commentLayout->insertWidget(0, newComment);
     }
 
+}
+
+void BodyBugVisualize::TriggerIssueClosed(int UNUSED bugId)
+{
+    _mainApp->TriggerChangePage(BodyBugTracker::BUGLIST, nullptr);
 }

@@ -15,9 +15,9 @@ void DataConnectorOnline::OnResponseAPI()
 {
     QNetworkReply *request = dynamic_cast<QNetworkReply*>(QObject::sender());
     qDebug() << request->request().url().toString();
-    if (request == NULL || !_Request.contains(request))
+    if (request == nullptr || !_Request.contains(request))
     {
-        QMessageBox::critical(NULL, "Critical error", "Unable to cast the reply of the API response.", QMessageBox::Ok);
+        QMessageBox::critical(nullptr, "Critical error", "Unable to cast the reply of the API response.", QMessageBox::Ok);
     }
     QByteArray req = request->readAll();
     if (request->error())
@@ -32,7 +32,7 @@ void DataConnectorOnline::OnResponseAPI()
 
 int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
-    QNetworkReply *reply = NULL;
+    QNetworkReply *reply = nullptr;
     switch (request)
     {
     case PR_LOGIN:
@@ -66,7 +66,7 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
         reply = EditCommentBug(data);
         break;
     }
-    if (reply == NULL)
+    if (reply == nullptr)
         throw QException();
     _CallBack[reply] = DataConnectorCallback();
     _CallBack[reply]._Request = requestResponseObject;
@@ -86,7 +86,7 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 
 int DataConnectorOnline::Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure)
 {
-    QNetworkReply *reply = NULL;
+    QNetworkReply *reply = nullptr;
     switch (request)
     {
     case PUTR_UserSettings:
@@ -102,7 +102,7 @@ int DataConnectorOnline::Put(DataPart part, int request, QVector<QString> &data,
         reply = AssignTagToBug(data);
         break;
     }
-    if (reply == NULL)
+    if (reply == nullptr)
         throw QException();
     _CallBack[reply] = DataConnectorCallback();
     _CallBack[reply]._Request = requestResponseObject;
@@ -122,7 +122,7 @@ int DataConnectorOnline::Put(DataPart part, int request, QVector<QString> &data,
 
 int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
-    QNetworkReply *reply = NULL;
+    QNetworkReply *reply = nullptr;
     switch (request)
     {
     case GR_LOGOUT:
@@ -208,7 +208,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
         reply = GetAction("projects/getusertoproject", data);
         break;
     }
-    if (reply == NULL)
+    if (reply == nullptr)
         throw QException();
     _CallBack[reply] = DataConnectorCallback();
     _CallBack[reply]._Request = requestResponseObject;
@@ -228,7 +228,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 
 int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
-    QNetworkReply *reply = NULL;
+    QNetworkReply *reply = nullptr;
     switch (request)
     {
     case DR_PROJECT_ROLE:
@@ -250,7 +250,7 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
         reply = RESTDelete(data, "bugtracker/closeticket");
         break;
     }
-    if (reply == NULL)
+    if (reply == nullptr)
         throw QException();
     _CallBack[reply] = DataConnectorCallback();
     _CallBack[reply]._Request = requestResponseObject;

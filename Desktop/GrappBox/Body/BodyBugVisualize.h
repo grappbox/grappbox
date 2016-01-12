@@ -42,6 +42,7 @@ signals:
 public slots:
     void                    TriggerCategoryBtnReleased();
     void                    TriggerAssigneeBtnReleased();
+    void                    TriggerIssueClosed(int);
 
 private:
     int                     _bugId;

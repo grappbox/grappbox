@@ -165,10 +165,10 @@ void BodyBugCreation::DeleteComments()
     QLayoutItem *currentItem;
     BugViewPreviewWidget *commentWidget = new BugViewPreviewWidget(true, true);
 
-    while ((currentItem = _commentLayout->itemAt(0)) != NULL)
+    while ((currentItem = _commentLayout->itemAt(0)) != nullptr)
     {
         if (currentItem->widget())
-            currentItem->widget()->setParent(NULL);
+            currentItem->widget()->setParent(nullptr);
         _commentLayout->removeItem(currentItem);
     }
     commentWidget->setFixedHeight(COMMENTBOX_HEIGHT);

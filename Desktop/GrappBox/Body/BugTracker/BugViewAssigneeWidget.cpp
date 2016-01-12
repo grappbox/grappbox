@@ -26,10 +26,10 @@ void BugViewAssigneeWidget::DeletePageItems(const BugViewAssigneeWidget::BugAssi
     QVBoxLayout *deletionLayout = (page == BugAssigneePage::VIEW ? _mainViewLayout : _mainAssignLayout);
     QLayoutItem *currentItem;
 
-    while ((currentItem = deletionLayout->itemAt(0)) != NULL)
+    while ((currentItem = deletionLayout->itemAt(0)) != nullptr)
     {
         if (currentItem->widget())
-            currentItem->widget()->setParent(NULL);
+            currentItem->widget()->setParent(nullptr);
         deletionLayout->removeItem(currentItem);
     }
     emit OnPageItemsDeleted(page);

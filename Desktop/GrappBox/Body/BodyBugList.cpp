@@ -116,7 +116,7 @@ void BodyBugList::CreateList()
 
 void BodyBugList::TriggerNewIssue()
 {
-    _pageManager->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGCREATE, NULL);
+    _pageManager->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGCREATE, nullptr);
 }
 
 //API Slots

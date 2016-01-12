@@ -1,10 +1,14 @@
 #ifndef BUGVIEWTITLEWIDGET_H
 #define BUGVIEWTITLEWIDGET_H
 
+#include "SDataManager.h"
+#include "BodyBugTracker.h"
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QHBoxLayout>
+
+#define UNUSED __attribute__((unused))
 
 class BugViewTitleWidget : public QWidget
 {
@@ -23,6 +27,8 @@ public slots:
     void    TriggerCloseIssue();
     void    TriggerEditTitle();
     void    TriggerSaveTitle();
+    void    TriggerCloseSuccess(int id, QByteArray data);
+    void    TriggerAPIFailure(int id, QByteArray data);
 
 private:
     bool            _creation;

@@ -35,7 +35,7 @@ void BodyBugTracker::Show(int ID, MainWindow *mainApp)
     _id = ID;
     _mainApp = mainApp;
     _currentPage = BugTrackerPage::BUGLIST;
-    _pages[_currentPage]->Show(this, NULL);
+    _pages[_currentPage]->Show(this, nullptr);
     emit OnLoadingDone(ID);
 }
 

@@ -197,7 +197,7 @@ void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
     while (QLayoutItem *item = _customerAccess->takeAt(0))
     {
         if (item->widget())
-            item->widget()->setParent(NULL);
+            item->widget()->setParent(nullptr);
         delete item;
     }
 
