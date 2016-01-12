@@ -15,11 +15,6 @@ class Task
     private $id;
 
     /**
-     * @var integer
-     */
-    private $creatorId;
-
-    /**
      * @var string
      */
     private $title;
@@ -60,6 +55,11 @@ class Task
     private $projects;
 
     /**
+     * @var \GrappboxBundle\Entity\User
+     */
+    private $creator_user;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $users;
@@ -96,34 +96,11 @@ class Task
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set creatorId
-     *
-     * @param integer $creatorId
-     * @return Task
-     */
-    public function setCreatorId($creatorId)
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get creatorId
-     *
-     * @return integer
-     */
-    public function getCreatorId()
-    {
-        return $this->creatorId;
     }
 
     /**
@@ -142,7 +119,7 @@ class Task
     /**
      * Get title
      *
-     * @return string
+     * @return string 
      */
     public function getTitle()
     {
@@ -165,7 +142,7 @@ class Task
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -188,7 +165,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDueDate()
     {
@@ -211,7 +188,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getStartedAt()
     {
@@ -234,7 +211,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getFinishedAt()
     {
@@ -257,7 +234,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -280,7 +257,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
@@ -303,11 +280,34 @@ class Task
     /**
      * Get projects
      *
-     * @return \GrappboxBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project 
      */
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * Set creator_user
+     *
+     * @param \GrappboxBundle\Entity\User $creatorUser
+     * @return Task
+     */
+    public function setCreatorUser(\GrappboxBundle\Entity\User $creatorUser = null)
+    {
+        $this->creator_user = $creatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_user
+     *
+     * @return \GrappboxBundle\Entity\User 
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
     }
 
     /**
@@ -336,7 +336,7 @@ class Task
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getUsers()
     {
@@ -369,7 +369,7 @@ class Task
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTags()
     {

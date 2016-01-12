@@ -22,6 +22,7 @@ use DateTime;
 *  @IgnoreAnnotation("apiErrorExample")
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiDescription")
 */
 class TimelineController extends RolesAndTokenVerificationController
 {
@@ -171,281 +172,110 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.7/timeline/postmessage/:id Post a new message or comment
+	* @api {post} /V0.2/timeline/postmessage/:id Post a new message or comment
 	* @apiName postMessage/Comment
 	* @apiGroup Timeline
-	* @apiVersion 0.7.0
+	* @apiDescription Post a new message or a comment for the given timeline
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {String} message message to post
-	* @apiParam {int} commentedId (required only for comments) message commented id
+	* @apiParam {int} id Id of the timeline
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {String} title Title of the message
+	* @apiParam {String} message Message to post on the timeline
+	* @apiParam {int} [commentedId] (required only for comments) Id of the message you want to comment
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	* 	{
+	*		"data": {
+	*			"token": "13135",
+	*			"title": "Project delayed",
+	*			"message": "Hi, i think we should delay the delivery date of the project, what do you think about it?"
+	*		}
+	* 	}
+	*
+	* @apiParamExample {json} Request-Full-Example:
+	* 	{
+	*		"data": {
+	*			"token": "13135",
+	*			"title": "RE: Project delayed",
+	*			"message": "Like you said previously, I agree that the delivery date should be later, because of the customer wishes we have a lot more to do and the same deadline.",
+	*			"commentedId": 1
+	*		}
+	* 	}
 	*
 	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"message": "What about a meeting tomorrow morning ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": NULL
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.8/timeline/postmessage/:id Post a new message or comment
-	* @apiName postMessage/Comment
-	* @apiGroup Timeline
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {String} message message to post
-	* @apiParam {int} commentedId (required only for comments) message commented id
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"message": "What about a meeting tomorrow morning ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": NULL
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.9/timeline/postmessage/:id Post a new message or comment
-	* @apiName postMessage/Comment
-	* @apiGroup Timeline
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {String} message message to post
-	* @apiParam {int} commentedId (required only for comments) message commented id
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"message": "What about a meeting tomorrow morning ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": NULL
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.9/timeline/postmessage/:id Post a new message or comment
-	* @apiName postMessage/Comment
-	* @apiGroup Timeline
-	* @apiVersion 0.9.3
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {String} title message title
-	* @apiParam {String} message message to post
-	* @apiParam {int} [commentedId] (required only for comments) message commented id
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
+	* @apiSuccess {int} userId Id of the user
+	* @apiSuccess {int} timelineId Id of the timeline
 	* @apiSuccess {String} title Message title
 	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
+	* @apiSuccess {int} parentId Id of the parent message
 	* @apiSuccess {DateTime} createdAt Message creation date
 	* @apiSuccess {DateTime} editedAt Message last modification date
 	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"title": "hello",
-	*		"message": "What about a meeting tomorrow morning ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": NULL
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.10/timeline/postmessage/:id Post a new message or comment
-	* @apiName postMessage/Comment
-	* @apiGroup Timeline
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {String} title message title
-	* @apiParam {String} message message to post
-	* @apiParam {int} [commentedId] (required only for comments) message commented id
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} title Message title
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"title": "hello",
-	*		"message": "What about a meeting tomorrow morning ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": NULL
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.11/timeline/postmessage/:id Post a new message or comment
-	* @apiName postMessage/Comment
-	* @apiGroup Timeline
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {String} title message title
-	* @apiParam {String} message message to post
-	* @apiParam {int} [commentedId] (required only for comments) message commented id
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} title Message title
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"message": {
+	* @apiSuccessExample {json} Message-Success-Response:
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.2",
+	*			"return_message": "Timeline - postmessage - Complete Success"
+  	*		},
+	*		"data": {
 	*			"id": "154",
 	*			"userId": "25",
 	*			"timelineId": 14,
 	*			"title": "hello",
 	*			"message": "What about a meeting tomorrow morning ?",
-	*			"parentId": 12,
+	*			"parentId": null,
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": NULL
-	*			}
+	*			"editedAt": null
+	*		}
+	* 	}
+	*
+	* @apiSuccessExample {json} Comment-Success-Response:
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.2",
+	*			"return_message": "Timeline - postmessage - Complete Success"
+  	*		},
+	*		"data": {
+	*			"id": "169",
+	*			"userId": "33",
+	*			"timelineId": 14,
+	*			"title": "RE: hello",
+	*			"message": "Why not, i'am completly free tomorrow",
+	*			"parentId": 154,
+	*			"createdAt": {"date": "1945-06-18 10:53:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null
+	*		}
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
+	* 	HTTP/1.1 401 Unauthorized
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "11.2.3",
+	*			"return_message": "Timeline - postmessage - Bad ID"
+  	*		}
 	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 403 Forbidden
 	* 	{
-	* 		"Insufficient User Rights"
+	*		"info": {
+	*			"return_code": "11.2.9",
+	*			"return_message": "Timeline - postmessage - Insufficient Rights"
+  	*		}
 	* 	}
-	*
 	*/
 	public function postMessageAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.2.3", "Timeline", "postmessage"));
 
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
@@ -454,10 +284,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		} else {
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		}
 
 		$message = new TimelineMessage();
@@ -473,7 +303,24 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
-		return new JsonResponse(array("message" => $message->objectToArray()));
+		// Notifications
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Timeline - New message";
+		$mdata['mdesc'] = "There is a new message on the timeline ".$timeline->getName();
+
+		$wdata['type'] = "Timeline";
+		$wdata['targetId'] = $message->getId();
+		$wdata['message'] = "There is a new message on the timeline ".$timeline->getName();
+
+		$projectUsers = $timeline->getProjects()->getUsers();
+		foreach ($projectUsers as $u) {
+			$userNotif[] = $u->getId();
+		}
+
+		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		return $this->setSuccess("1.11.2", "Timeline", "postmessage", "Complete Success", $message->objectToArray());
 	}
 
 	/**

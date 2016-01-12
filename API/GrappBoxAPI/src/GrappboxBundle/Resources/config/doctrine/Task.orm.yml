@@ -9,9 +9,6 @@ GrappboxBundle\Entity\Task:
             generator:
                 strategy: AUTO
     fields:
-        creatorId:
-            type: integer
-            column: creator_id
         title:
             type: string
             length: 255
@@ -42,6 +39,12 @@ GrappboxBundle\Entity\Task:
           inversedBy: tasks
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        creator_user:
+          targetEntity: User
+          inveredBy: task_creator
+          joinColumn:
+            name: creator_id
             referencedColumnName: id
     manyToMany:
         users:

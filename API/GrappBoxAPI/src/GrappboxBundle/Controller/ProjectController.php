@@ -211,14 +211,15 @@ class ProjectController extends RolesAndTokenVerificationController
 		$teamTimeline = new Timeline();
 		$teamTimeline->setTypeId(2);
 		$teamTimeline->setProjects($project);
+		$teamTimeline->setProjectId($project->getId());
 		$teamTimeline->setName("TeamTimeline - ".$project->getName());
+		$em->persist($teamTimeline);
 
 		$customerTimeline = new Timeline();
 		$customerTimeline->setTypeId(1);
 		$customerTimeline->setProjects($project);
+		$customerTimeline->setProjectId($project->getId());
 		$customerTimeline->setName("CustomerTimeline - ".$project->getName());
-
-		$em->persist($teamTimeline);
 		$em->persist($customerTimeline);
 		$em->flush();
 		
@@ -599,7 +600,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$user = $this->checkToken($content->token);
 		if (!$user)
@@ -1312,7 +1313,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$user = $this->checkToken($content->token);
 		if (!$user)
@@ -1833,7 +1834,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content) && !array_key_exists('name', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('name', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$user = $this->checkToken($content->token);
 		if (!$user)
@@ -2678,7 +2679,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content) && !array_key_exists('customerAccessId', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('customerAccessId', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$user = $this->checkToken($content->token);
 		if (!$user)
@@ -2795,7 +2796,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('id', $content) && !array_key_exists('token', $content) && !array_key_exists('email', $content))
+		if (!array_key_exists('id', $content) || !array_key_exists('token', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("6.10.6", "Project", "addusertoproject", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -2863,6 +2864,8 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*   }
 	*
+	* @apiSuccess {Number} id Id of the user removed
+	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
@@ -2870,7 +2873,9 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_code": "1.6.11",
 	*			"return_message": "Project - removeusertoproject - Complete Success"
   	*		},
-  	*		"data": null
+  	*		"data": {
+	*			"id": 18
+  	*		}
 	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -2928,7 +2933,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('projectId', $content) && !array_key_exists('token', $content) && !array_key_exists('userId', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('userId', $content))
 			return $this->setBadRequest("6.11.6", "Project", "removeusertoproject", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -2968,7 +2973,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setSuccess("1.6.11", "Project", "removeusertoproject", "Complete Success", null);
+		return $this->setSuccess("1.6.11", "Project", "removeusertoproject", "Complete Success", array("id" => $userToRemove->getId()));
 	}
 
 	/**

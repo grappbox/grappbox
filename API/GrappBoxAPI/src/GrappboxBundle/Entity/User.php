@@ -813,4 +813,42 @@ class User implements UserInterface
     {
         return $this->devices;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $task_creator;
+
+
+    /**
+     * Add task_creator
+     *
+     * @param \GrappboxBundle\Entity\Task $taskCreator
+     * @return User
+     */
+    public function addTaskCreator(\GrappboxBundle\Entity\Task $taskCreator)
+    {
+        $this->task_creator[] = $taskCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove task_creator
+     *
+     * @param \GrappboxBundle\Entity\Task $taskCreator
+     */
+    public function removeTaskCreator(\GrappboxBundle\Entity\Task $taskCreator)
+    {
+        $this->task_creator->removeElement($taskCreator);
+    }
+
+    /**
+     * Get task_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTaskCreator()
+    {
+        return $this->task_creator;
+    }
 }

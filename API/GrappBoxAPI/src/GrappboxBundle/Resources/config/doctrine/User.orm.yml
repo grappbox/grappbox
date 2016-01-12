@@ -90,6 +90,9 @@ GrappboxBundle\Entity\User:
         devices:
           targetEntity: Devices
           mappedBy: user
+        task_creator:
+          targetEntity: Task
+          mappedBy: creator_user
         # whiteboards:
         #   targetEntity: Whiteboard
         #   mappedBy: updators
