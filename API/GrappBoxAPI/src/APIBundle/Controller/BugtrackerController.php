@@ -11,7 +11,7 @@ use APIBundle\Controller\RolesAndTokenVerificationController;
 use GrappboxBundle\Entity\User;
 use GrappboxBundle\Entity\Bug;
 use GrappboxBundle\Entity\BugState;
-//use GrappboxBundle\Entity\BugTag;
+use GrappboxBundle\Entity\Tag;
 use DateTime;
 
 /**
@@ -2930,7 +2930,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		if ($content === null || (!array_key_exists('name', $content) && !array_key_exists('token', $content) && !array_key_exists('projectId', $content)))
+		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content))
 			return $this->setBadRequest("Missing Parameter");
 		$user = $this->checkToken($content->token);
 		if (!$user)
