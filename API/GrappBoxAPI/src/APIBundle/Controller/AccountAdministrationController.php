@@ -468,7 +468,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"firstname": "John",
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
+	*				"token": "fkE35dcDneOjF....",
+	*				"avatar" : "XXXXXXXXXXXXXXXXX"
 	*			}
  	* 	}
  	*
