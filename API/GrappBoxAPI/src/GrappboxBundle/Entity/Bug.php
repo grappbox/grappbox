@@ -17,17 +17,7 @@ class Bug
     /**
      * @var integer
      */
-    private $creatorId;
-
-    /**
-     * @var integer
-     */
     private $parentId;
-
-    /**
-     * @var integer
-     */
-    private $projectId;
 
     /**
      * @var string
@@ -65,6 +55,11 @@ class Bug
     private $projects;
 
     /**
+     * @var \GrappboxBundle\Entity\User
+     */
+    private $creator;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $users;
@@ -92,8 +87,8 @@ class Bug
     {
       return array(
         "id" => $this->id,
-        "creatorId" => $this->creatorId,
-        "projectId" => $this->projectId,
+        "creator" => array("id" => $this->creator->getID(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastName()),
+        "projectId" => $this->projects->getId(),
         "title" => $this->title,
         "description" => $this->description,
         "parentId" => $this->parentId,
@@ -111,29 +106,6 @@ class Bug
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set creatorId
-     *
-     * @param integer $creatorId
-     * @return Bug
-     */
-    public function setCreatorId($creatorId)
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get creatorId
-     *
-     * @return integer
-     */
-    public function getCreatorId()
-    {
-        return $this->creatorId;
     }
 
     /**
@@ -157,29 +129,6 @@ class Bug
     public function getParentId()
     {
         return $this->parentId;
-    }
-
-    /**
-     * Set projectId
-     *
-     * @param integer $projectId
-     * @return Bug
-     */
-    public function setProjectId($projectId)
-    {
-        $this->projectId = $projectId;
-
-        return $this;
-    }
-
-    /**
-     * Get projectId
-     *
-     * @return integer
-     */
-    public function getProjectId()
-    {
-        return $this->projectId;
     }
 
     /**
@@ -341,6 +290,29 @@ class Bug
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * Set creator
+     *
+     * @param \GrappboxBundle\Entity\User $creator
+     * @return Bug
+     */
+    public function setCreator(\GrappboxBundle\Entity\User $creator = null)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \GrappboxBundle\Entity\User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
     }
 
     /**

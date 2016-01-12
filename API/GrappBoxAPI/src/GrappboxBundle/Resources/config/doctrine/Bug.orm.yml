@@ -8,16 +8,10 @@ GrappboxBundle\Entity\Bug:
             generator:
                 strategy: AUTO
     fields:
-        creatorId:
-            type: integer
-            column: creator_id
         parentId:
             type: integer
             column: parent_id
             nullable: TRUE
-        projectId:
-            type: integer
-            column: project_id
         title:
             type: string
             length: 255
@@ -45,6 +39,12 @@ GrappboxBundle\Entity\Bug:
           inversedBy: bugs
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        creator:
+          targetEntity: User
+          inverserdBy: bug_creator
+          joinColumn:
+            name: creator_id
             referencedColumnName: id
     manyToMany:
         users:

@@ -84,6 +84,11 @@ class User implements UserInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $bug_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $event_creator;
 
     /**
@@ -126,6 +131,7 @@ class User implements UserInterface
      */
     public function __construct()
     {
+        $this->bug_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->project_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->gantt_creator = new \Doctrine\Common\Collections\ArrayCollection();
@@ -507,6 +513,39 @@ class User implements UserInterface
     }
 
     /**
+     * Add bug_creator
+     *
+     * @param \GrappboxBundle\Entity\Bug $bugCreator
+     * @return User
+     */
+    public function addBugCreator(\GrappboxBundle\Entity\Bug $bugCreator)
+    {
+        $this->bug_creator[] = $bugCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove bug_creator
+     *
+     * @param \GrappboxBundle\Entity\Bug $bugCreator
+     */
+    public function removeBugCreator(\GrappboxBundle\Entity\Bug $bugCreator)
+    {
+        $this->bug_creator->removeElement($bugCreator);
+    }
+
+    /**
+     * Get bug_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugCreator()
+    {
+        return $this->bug_creator;
+    }
+
+    /**
      * Add project_creator
      *
      * @param \GrappboxBundle\Entity\Project $projectCreator
@@ -768,7 +807,7 @@ class User implements UserInterface
     /**
      * Get devices
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDevices()
     {

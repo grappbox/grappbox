@@ -112,7 +112,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
+	*		"ticket": {"id": "154","creator": { "id": 13, "fullname": "John Doe" },
+	*		"projectId": 14, "parentId": null,
 	*		"title": "function getUser not working",
 	*		"description": "the function does not answer the right way, fix it ASAP !",
 	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -389,7 +390,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*			"tickets" : [
-	*		{"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
+	*		{"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -402,7 +403,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
 	*			]
 	*			},
-	*		{"id": "158","creatorId": 12, "projectId": 14, "parentId": null,
+	*		{"id": "158","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "Bad menu disposition on mobile",
 	*			"description": "the menu is unsusable on mobile",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -440,7 +441,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => null));
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check bad project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -742,7 +745,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
+	*		"ticket": {"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": 150,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -782,10 +785,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $id, "bugtracker"))
 			return ($this->setNoRightsError());
 
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check bad project id
+
 		$bug = new Bug();
-		$bug->setProjects($em->getRepository("GrappboxBundle:Project")->find($id));
-		$bug->setProjectId($id);
-		$bug->setCreatorId($user->getId());
+		$bug->setProjects($project);
+		$bug->setCreator($user);
 		$bug->setTitle($content->title);
 		$bug->setDescription($content->description);
 		$bug->setCreatedAt(new DateTime('now'));
@@ -1113,7 +1118,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
+	*		"ticket": {"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -1150,7 +1155,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
 		$bug = $em->getRepository('GrappboxBundle:Bug')->find($id);
-		if (!$this->checkRoles($user, $bug->getProjectId(), "bugtracker"))
+		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker"))
 			return ($this->setNoRightsError());
 
 		$bug->setTitle($content->title);
@@ -1220,7 +1225,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"comment": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
+	*		"comment": {"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": 150,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -1254,10 +1259,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $id, "bugtracker"))
 			return ($this->setNoRightsError());
 
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+
 		$bug = new Bug();
-		$bug->setProjects($em->getRepository("GrappboxBundle:Project")->find($id));
-		$bug->setProjectId($id);
-		$bug->setCreatorId($user->getId());
+		$bug->setProjects($project);
+		$bug->setCreator($user);
 		$bug->setParentId($content->parentId);
 		$bug->setTitle($content->title);
 		$bug->setDescription($content->description);
@@ -1297,7 +1303,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"comment": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
+	*		"comment": {"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": 150,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -1318,7 +1324,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function EditCommentAction(Request $request, $id)
+	public function editCommentAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -1531,7 +1537,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*		"comments": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": 150,
+	*		{"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "userId": 25, "projectId": 14, "parentId": 150,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -1570,7 +1576,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => $ticketId));
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => $ticketId));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$ticketsArray[] = $value->objectToArray();
@@ -1805,7 +1813,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*		"tickets": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*		{"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -1818,7 +1826,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
 	*			]
 	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*		{"id": "158","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "Bad menu disposition on mobile",
 	*			"description": "the menu is unsusable on mobile",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -1856,7 +1864,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -2107,7 +2117,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*		"tickets": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*		{"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -2120,7 +2130,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
 	*			]
 	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*		{"id": "158","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "Bad menu disposition on mobile",
 	*			"description": "the menu is unsusable on mobile",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -2158,7 +2168,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projectId" => $id, "deletedAt" => null, "userId" => $userId ));
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user ));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -2484,7 +2496,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
+	*		"ticket": {"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*		"title": "function getUser not working",
 	*		"description": "the function does not answer the right way, fix it ASAP !",
 	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -2681,7 +2693,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*		"tickets": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*		{"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -2694,7 +2706,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
 	*			]
 	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*		{"id": "158","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "Bad menu disposition on mobile",
 	*			"description": "the menu is unsusable on mobile",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -2793,7 +2805,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*		"tickets": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*		{"id": "154","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "function getUser not working",
 	*			"description": "the function does not answer the right way, fix it ASAP !",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -2806,7 +2818,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
 	*			]
 	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*		{"id": "158","creator": { "id": 13, "fullname": "John Doe" }, "projectId": 14, "parentId": null,
 	*			"title": "Bad menu disposition on mobile",
 	*			"description": "the menu is unsusable on mobile",
 	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
