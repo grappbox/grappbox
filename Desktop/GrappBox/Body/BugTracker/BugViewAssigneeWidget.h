@@ -54,7 +54,6 @@ public slots: //Common slots
     void            TriggerOpenPage(const BugAssigneePage page);
 
 public slots: //Assign page slots
-    void            TriggerCreateReleased();
     void            TriggerCheckChange(bool checked, int id, QString name);
 
 public slots: //View page slots
@@ -65,8 +64,6 @@ private:
     QWidget         *_assignPage;
     QVBoxLayout     *_mainAssignLayout;
     QStackedWidget  *_mainWidget;
-    QLineEdit       *_creationCategory;
-    QPushButton     *_creationBtn;
      bool            _isAPIAssignActivated;
 };
 

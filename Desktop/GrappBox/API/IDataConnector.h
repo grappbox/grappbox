@@ -67,8 +67,12 @@ namespace API
         PR_EDIT_BUG,
         PR_CREATE_BUG,
         PR_COMMENT_BUG,
+        PR_ASSIGNUSER_BUG,
+        PR_DELETEUSER_BUG,
+        PR_CREATETAG,
         PR_MESSAGE_TIMELINE,
         PR_EDIT_MESSAGE_TIMELINE,
+        PR_EDIT_COMMENTBUG,
     };
 
     enum DeleteRequest
@@ -77,7 +81,8 @@ namespace API
         DR_ROLE_DETACH,
         DR_PROJECT_USER,
         DR_PROJECT,
-        DR_CUSTOMER_ACCESS
+        DR_CUSTOMER_ACCESS,
+        DR_CLOSE_TICKET_OR_COMMENT,
     };
 
     enum PutRequest

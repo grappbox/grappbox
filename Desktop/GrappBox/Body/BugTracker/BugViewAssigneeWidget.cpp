@@ -38,10 +38,6 @@ void BugViewAssigneeWidget::DeletePageItems(const BugViewAssigneeWidget::BugAssi
 void BugViewAssigneeWidget::CreateAssignPageItems(const QList<QJsonObject> &items)
 {
     QList<QJsonObject>::const_iterator  it;
-    QHBoxLayout *layCreation = new QHBoxLayout();
-    _creationBtn = new QPushButton(tr("Create"));
-    _creationCategory = new QLineEdit(tr("Enter the category name here..."));
-
 
     for (it = items.begin(); it != items.end(); ++it)
     {
@@ -51,10 +47,6 @@ void BugViewAssigneeWidget::CreateAssignPageItems(const QList<QJsonObject> &item
         QObject::connect(widCheckable, SIGNAL(OnCheckChanged(bool,int,QString)), this, SLOT(TriggerCheckChange(bool,int, QString)));
         _mainAssignLayout->addWidget(widCheckable);
     }
-    QObject::connect(_creationBtn, SIGNAL(released()), this, SLOT(TriggerCreateReleased()));
-    layCreation->addWidget(_creationCategory);
-    layCreation->addWidget(_creationBtn);
-    _mainAssignLayout->addLayout(layCreation);
     emit OnPageItemsCreated(BugAssigneePage::ASSIGN);
 }
 
@@ -77,17 +69,6 @@ void BugViewAssigneeWidget::TriggerOpenPage(const BugAssigneePage page)
 {
     _mainWidget->setCurrentWidget(page == BugAssigneePage::ASSIGN ? _assignPage : _viewPage);
     emit OnPageChanged(page);
-}
-
-void BugViewAssigneeWidget::TriggerCreateReleased()
-{
-    _creationCategory->setEnabled(false);
-    _creationBtn->setEnabled(false);
-    //TODO : Link API
-    emit OnCreated(-1); //After creation link API
-    emit OnAssigned(-1, _creationCategory->text()); //After assignation link API
-    _creationCategory->setEnabled(true);
-    _creationBtn->setEnabled(true);
 }
 
 void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString name)

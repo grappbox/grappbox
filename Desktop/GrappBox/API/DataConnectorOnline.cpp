@@ -53,6 +53,18 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
     case PR_COMMENT_BUG:
         reply = CommentBug(data);
         break;
+    case PR_ASSIGNUSER_BUG:
+        reply = AssignUserToTicket(data);
+        break;
+    case PR_DELETEUSER_BUG:
+        reply = DeleteUserToTicket(data);
+        break;
+    case PR_CREATETAG:
+        reply = CreateTag(data);
+        break;
+    case PR_EDIT_COMMENTBUG:
+        reply = EditCommentBug(data);
+        break;
     }
     if (reply == NULL)
         throw QException();
@@ -233,6 +245,9 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
         break;
     case DR_CUSTOMER_ACCESS:
         reply = DeleteCustomerAccess(data);
+        break;
+    case DR_CLOSE_TICKET_OR_COMMENT:
+        reply = RESTDelete(data, "bugtracker/closeticket");
         break;
     }
     if (reply == NULL)
@@ -598,7 +613,7 @@ QNetworkReply *DataConnectorOnline::CommentBug(QVector<QString> &data)
 
     QJsonDocument doc(json);
     QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
-    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/postticket/") + idProject));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/postcomment/") + idProject));
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
     QNetworkReply *request = _Manager->post(requestSend, *jsonba);
@@ -648,6 +663,104 @@ QNetworkReply *DataConnectorOnline::AssignTagToBug(QVector<QString> &data)
     requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
     QNetworkReply *request = _Manager->put(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::AssignUserToTicket(QVector<QString> &data)
+{
+    QJsonObject json;
+    QJsonArray toAdd;
+    QString bugId = data[0];
+
+    for (int i = 2; i < data.length(); ++i)
+        toAdd.append(data[i]);
+
+    json["token"] = data[1];
+    json["toRemove"] = QJsonArray();
+    json["toAdd"] = toAdd;
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/setparticipants/") + bugId));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::DeleteUserToTicket(QVector<QString> &data)
+{
+    QJsonObject json;
+    QJsonArray toRemove;
+    QString bugId = data[0];
+
+    for (int i = 2; i < data.length(); ++i)
+        toRemove.append(data[i]);
+
+    json["token"] = data[1];
+    json["toRemove"] = toRemove;
+    json["toAdd"] = QJsonArray();
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/setparticipants/") + bugId));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::CreateTag(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["token"] = data[0];
+    json["projectId"] = data[1];
+    json["name"] = data[2];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/tagcreation")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::EditCommentBug(QVector<QString> &data)
+{
+    QJsonObject json;
+
+    json["projectId"] = data[0];
+    json["token"] = data[1];
+    json["commentId"] = data[2];
+    json["title"] = data[3];
+    json["description"] = data[4];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("bugtracker/editcomment")));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
+}
+
+QNetworkReply *DataConnectorOnline::RESTDelete(QVector<QString> &data, QString baseURL)
+{
+    QString URL = baseURL;
+    QVector<QString>::iterator dataIt;
+
+    for (dataIt = data.begin(); dataIt != data.end(); ++dataIt)
+        URL += "/" + *dataIt;
+
+    QNetworkRequest requestSend(QUrl(URL_API + URL));
+    QNetworkReply *request = _Manager->deleteResource(requestSend);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
     return request;
 }

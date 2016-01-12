@@ -32,7 +32,9 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, bool createPage, QWi
         if (createPage)
             _btnComment = new QPushButton(tr("Comment and open"));
         else
+        {
             _btnComment = new QPushButton(tr("Comment"));
+        }
         _statusBar->addWidget(_btnComment);
         _bugID = -1;
         QObject::connect(_btnComment, SIGNAL(released()), this, SLOT(TriggerCommentBtnReleased()));
@@ -78,14 +80,16 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, bool createPage, QWi
     this->setStyleSheet(style);
 }
 
-const QString &BugViewPreviewWidget::GetComment() const
+const QString BugViewPreviewWidget::GetComment() const
 {
-    return _comment->toPlainText();
+    QString str = _comment->toPlainText();
+    return str;
 }
 
-const QString &BugViewPreviewWidget::GetCommentTitle() const
+const QString BugViewPreviewWidget::GetCommentTitle() const
 {
-    return _commentTitle->text();
+    QString str = _commentTitle->text();
+    return str;
 }
 
 void BugViewPreviewWidget::SetDate(const QDateTime &date)

@@ -78,10 +78,10 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
 void BugListElement::TriggerBtnView()
 {
     QJsonObject *data = new QJsonObject();
+
     data->insert("id", _bugID);
     data->insert("title", _title->text());
     _pageManager->TriggerChangePage(BodyBugTracker::BUGVIEW, data);
-    emit OnViewBug(_bugID);
 }
 
 void BugListElement::TriggerBtnClose()

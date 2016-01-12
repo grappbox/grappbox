@@ -64,6 +64,10 @@ namespace API
         QNetworkReply *EditBug(QVector<QString> &data);
         QNetworkReply *OpenBug(QVector<QString> &data);
         QNetworkReply *CommentBug(QVector<QString> &data);
+        QNetworkReply *EditCommentBug(QVector<QString> &data);
+        QNetworkReply *AssignUserToTicket(QVector<QString> &data);
+        QNetworkReply *DeleteUserToTicket(QVector<QString> &data);
+        QNetworkReply *CreateTag(QVector<QString> &data);
 
         QNetworkReply *EditMessageTimeline(QVector<QString> &data);
         QNetworkReply *PostMessageTimeline(QVector<QString> &data);
@@ -75,6 +79,7 @@ namespace API
         QNetworkReply *DeleteProjectUser(QVector<QString> &data);
         QNetworkReply *DeleteProject(QVector<QString> &data);
         QNetworkReply *DeleteCustomerAccess(QVector<QString> &data);
+        QNetworkReply *RESTDelete(QVector<QString> &data, QString baseURL);
 
         // Get
     private:

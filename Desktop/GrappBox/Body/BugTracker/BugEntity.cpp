@@ -53,6 +53,11 @@ BugEntity::BugEntity(QJsonObject obj)
     }
 }
 
+bool BugEntity::operator ==(const BugEntity &entity)
+{
+    return _id == entity._id;
+}
+
 //Getters
 const int BugEntity::GetID() const { return _id; }
 const int BugEntity::GetAuthorId() const { return _authorId; }

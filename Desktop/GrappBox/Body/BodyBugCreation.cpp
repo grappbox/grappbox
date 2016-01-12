@@ -181,10 +181,12 @@ void BodyBugCreation::DeleteComments()
 void BodyBugCreation::TriggerComment()
 {
     QVector<QString> data;
+    QString comment = _commentWidget->GetComment();
+
     data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     data.append(API::SDataManager::GetDataManager()->GetToken());
     data.append(_titleBar->GetTitle());
-    data.append(_commentWidget->GetComment());
+    data.append(comment);
     data.append(QString::number(BUGSTATE_OPEN));
     data.append("");
 
@@ -194,12 +196,38 @@ void BodyBugCreation::TriggerComment()
 void BodyBugCreation::TriggerBugCreated(int UNUSED id, QByteArray data)
 {
     QVector<QString> commentData;
-    QJsonObject json = QJsonDocument::fromBinaryData(data).object();
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+    QString comment = _commentWidget->GetComment();
+    QString commentTitle = _commentWidget->GetCommentTitle();
+    QList<int> assignedUser = _assignees->GetAllAssignee();
+    QList<int> assignedCategories = _categories->GetAllAssignee();
+    QList<int>::iterator it;
+    QVector<QString> tagData;
+    int bugID = json["ticket"].toObject()["id"].toInt();
+    _waitingPageCreated = -1;
+    _bugId = bugID;
+
+    for (it = assignedCategories.begin(); it != assignedCategories.end(); ++it)
+    {
+        tagData.clear();
+        tagData.append(API::SDataManager::GetDataManager()->GetToken());
+        tagData.append(QString::number(bugID));
+        tagData.append(QString::number(*it));
+        API::SDataManager::GetCurrentDataConnector()->Put(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG, tagData, this, "DoNothing", "TriggerAPIFailure");
+    }
+    tagData.clear();
+    tagData.append(QString::number(bugID));
+    tagData.append(API::SDataManager::GetDataManager()->GetToken());
+    for (it = assignedUser.begin(); it != assignedUser.end(); ++it)
+    {
+        tagData.append(QString::number((*it)));
+    }
+    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_ASSIGNUSER_BUG, tagData, this, "DoNothing", "TriggerAPIFailure");
 
     commentData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     commentData.append(API::SDataManager::GetDataManager()->GetToken());
-    commentData.append(_commentWidget->GetCommentTitle());
-    commentData.append(_commentWidget->GetComment());
+    commentData.append(comment);
+    commentData.append(commentTitle);
     commentData.append(QString::number(json["ticket"].toObject()["id"].toInt()));
 
     API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_COMMENT_BUG, commentData, this, "TriggerBugCommented", "TriggerAPIFailure");
@@ -235,28 +263,12 @@ void BodyBugCreation::TriggerGotProjectUsers(int UNUSED id, QByteArray data)
     _assignees->CreateAssignPageItems(usersObjects);
 }
 
-void BodyBugCreation::TriggerBugCommented(int UNUSED id, QByteArray data)
+void BodyBugCreation::TriggerBugCommented(int UNUSED id, QByteArray UNUSED data)
 {
-    QList<int> assignedUser = _assignees->GetAllAssignee();
-    QList<int> assignedCategories = _categories->GetAllAssignee();
-    QList<int>::iterator it;
-    QVector<QString> tagData;
     QJsonObject *intent = new QJsonObject();
-    QJsonObject json = QJsonDocument::fromJson(data).object();
-    int bugID = json["ticket"].toObject()["id"].toInt();
-    _waitingPageCreated = -1;
 
-    for (it = assignedCategories.begin(); it != assignedCategories.end(); ++it)
-    {
-        tagData.clear();
-        tagData.append(API::SDataManager::GetDataManager()->GetToken());
-        tagData.append(QString::number(bugID));
-        tagData.append(QString::number(*it));
-        API::SDataManager::GetCurrentDataConnector()->Put(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG, tagData, this, "DoNothing", "TriggerAPIFailure");
-    }
-    //TODO : Assign users with bug id
 
-    intent->insert("id", bugID);
+    intent->insert("id", _bugId);
     intent->insert("title", this->_titleBar->GetTitle());
     _mainApp->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGVIEW, intent);
 }

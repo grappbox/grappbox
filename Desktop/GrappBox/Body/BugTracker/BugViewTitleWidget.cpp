@@ -3,18 +3,18 @@
 BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *parent) : QWidget(parent)
 {
     QString style;
-    _title = new QLineEdit(tr("View Issue : ") + title);
+    _title = new QLineEdit(title);
     _bugID = -1;
     _mainLayout = new QHBoxLayout();
     _creation = creation;
+    _btnClose = new QPushButton(tr("Close"));
+    _btnEdit = new QPushButton(tr("Edit"));
 
     _title->setEnabled(creation);
     _mainLayout->addWidget(_title);
     if (!creation)
     {
-        _btnClose = new QPushButton(tr("Close"));
-        _btnClose->setObjectName("Close");
-        _btnEdit = new QPushButton(tr("Edit"));
+        _btnClose->setObjectName("Close");    
         _btnEdit->setObjectName("Edit");
         QObject::connect(_btnClose, SIGNAL(released()), this, SLOT(TriggerCloseIssue()));
         QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
@@ -98,5 +98,5 @@ void BugViewTitleWidget::TriggerSaveTitle()
 
 QString BugViewTitleWidget::GetTitle()
 {
-    return _title->text();
+    return QString(_title->text());
 }

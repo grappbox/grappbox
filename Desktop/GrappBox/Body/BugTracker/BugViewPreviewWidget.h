@@ -27,8 +27,8 @@ public:
     void SetAvatar(const QPixmap &avatar);
     void SetComment(const QString &comment);
     void SetCommentTitle(const QString &title);
-    const QString &GetComment() const;
-    const QString &GetCommentTitle() const;
+    const QString GetComment() const;
+    const QString GetCommentTitle() const;
 
 signals:
     void        OnEdit(int);

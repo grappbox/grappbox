@@ -25,6 +25,7 @@ class BugEntity {
 public: // System
     BugEntity();
     explicit BugEntity(QJsonObject obj);
+    bool operator==(const BugEntity &entity);
 
 public: // Getters
     const int                   GetID() const;

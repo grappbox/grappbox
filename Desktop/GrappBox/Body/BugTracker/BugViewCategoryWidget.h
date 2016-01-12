@@ -2,6 +2,7 @@
 #define BUGVIEWCATEGORYWIDGET_H
 
 #include "BugTracker/BugCheckableLabel.h"
+#include "SDataManager.h"
 #include <QWidget>
 #include <QStackedWidget>
 #include <QVBoxLayout>
@@ -10,10 +11,13 @@
 #include <QCheckBox>
 #include <QList>
 #include <QJsonObject>
+#include <QJsonDocument>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QDebug>
 
+#define UNUSED __attribute__((unused))
 #define ITEM_ID         "id"
 #define ITEM_ASSIGNED   "assigned"
 #define ITEM_NAME       "name"
@@ -56,6 +60,8 @@ public slots: //Common slots
 public slots: //Assign page slots
     void            TriggerCreateReleased();
     void            TriggerCheckChange(bool checked, int id, QString name);
+    void            TriggerCreateSuccess(int id, QByteArray data);
+    void            TriggerAPIFailure(int id, QByteArray data);
 
 public slots: //View page slots
 

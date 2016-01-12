@@ -44,18 +44,19 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *dataPage
 
     _pageManager = pageManager;
 
-    //TODO : Link API
+    _bugListOpen.clear();
+    _bugListClosed.clear();
     data.append(API::SDataManager::GetDataManager()->GetToken());
     data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     data.append(QString::number(1));
     data.append(QString::number(0));
-    data.append(QString::number(20));
+    data.append(QString::number(std::numeric_limits<int>::max()));
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_BY_STATE, data, this, "OnGetBugListSuccess", "OnRequestFailure");
     data.clear();
     data.append(API::SDataManager::GetDataManager()->GetToken());
     data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     data.append(QString::number(0));
-    data.append(QString::number(20));
+    data.append(QString::number(std::numeric_limits<int>::max()));
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_CLOSED, data, this, "OnGetBugListClosedSuccess", "OnRequestFailure");
 }
 
@@ -74,7 +75,10 @@ void BodyBugList::ClearLayout(QLayout *layout)
         if (item->layout())
             ClearLayout(item->layout());
         else if (item->widget())
+        {
+            item->widget()->disconnect();
             delete item->widget();
+        }
         delete item;
     }
 }
@@ -83,10 +87,12 @@ void BodyBugList::DeleteListElements()
 {
     QWidget *newScrollArea = new QWidget();
 
-    _listAdapter->destroyed();
+    ClearLayout(_listAdapter);
+    _listAdapter->deleteLater();
     _listAdapter = new QVBoxLayout();
     newScrollArea->setLayout(_listAdapter);
     _listScrollView->setWidget(newScrollArea);
+
 }
 
 void BodyBugList::CreateList()
@@ -95,12 +101,14 @@ void BodyBugList::CreateList()
     QList<BugEntity>::iterator begin = (_title->GetState() == BugListTitleWidget::OPEN ? _bugListOpen.begin() : _bugListClosed.begin());
     QList<BugEntity>::iterator end = (_title->GetState() == BugListTitleWidget::OPEN ? _bugListOpen.end() : _bugListClosed.end());
 
+    _listAdapter->setAlignment(Qt::AlignTop);
     for (listIt = begin; listIt != end; ++listIt)
     {
         BugListElement  *newElem = new BugListElement(_pageManager, (*listIt).GetTitle(), (*listIt).GetID());
 
         newElem->setFixedHeight(LIST_ELEM_HEIGHT);
         _listAdapter->addWidget(newElem);
+        QObject::connect(newElem, SIGNAL(OnCloseBug(int)), this, SLOT(TriggerCloseBug(int)));
         _listAdapter->setAlignment(newElem, Qt::AlignTop);
     }
     _listScrollView->repaint();
@@ -164,4 +172,37 @@ void BodyBugList::TriggerFilterChange(BugListTitleWidget::BugState UNUSED state)
 {
     this->DeleteListElements();
     this->CreateList();
+}
+
+void BodyBugList::TriggerCloseBug(int bugId)
+{
+    QVector<QString> closeData;
+    int APIID;
+
+    closeData.append(API::SDataManager::GetDataManager()->GetToken());
+    closeData.append(QString::number(bugId));
+    APIID = API::SDataManager::GetCurrentDataConnector()->Delete(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT, closeData, this, "TriggerCloseSuccess", "OnRequestFailure");
+    _waitingAPIIDBugId[APIID] = bugId;
+}
+
+void BodyBugList::TriggerCloseSuccess(int id, QByteArray UNUSED data)
+{
+    int bugId = _waitingAPIIDBugId[id];
+    QList<BugEntity>::iterator bugIt;
+    BugEntity entity = BugEntity();
+
+    for (bugIt = _bugListOpen.begin(); bugIt != _bugListOpen.end(); ++bugIt)
+    {
+        if ((*bugIt).GetID() == bugId)
+        {
+            entity = (*bugIt);
+            break;
+        }
+    }
+    if (!entity.IsValid())
+        return;
+    _bugListClosed.append(entity);
+    _bugListOpen.removeOne(entity);
+    _waitingAPIIDBugId.remove(id);
+    TriggerFilterChange(BugListTitleWidget::BugState::NONE);
 }
