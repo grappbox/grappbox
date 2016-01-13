@@ -29,6 +29,7 @@ signals:
     void AnimOpenComment(int);
     void OnDeleteMainMessage(int);
 
+
 public slots:
     void NewComment(MessageTimeLine::MessageTimeLineInfo info);
     void TimeLineDelete(int);

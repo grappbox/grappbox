@@ -17,6 +17,8 @@ CanvasTimeline::CanvasTimeline(QWidget *parent) : QWidget(parent)
     _MainTimelineLayout->setSpacing(0);
     _MainTimelineLayout->setContentsMargins(5, 5, 0, 0);
 
+    _LoadMore = new QPushButton("Load more...");
+
     _ContenerAddMessage = new QWidget();
     QWidget *mainW = new QWidget();
     _ContenerAddMessage->setLayout(new QVBoxLayout());
@@ -66,6 +68,7 @@ CanvasTimeline::CanvasTimeline(QWidget *parent) : QWidget(parent)
 
     setLayout(_MainTimelineLayout);
 
+    QObject::connect(_LoadMore, SIGNAL(clicked(bool)), this, SLOT(OnLoadMore()));
     QObject::connect(_ConfirmAddingMessage, SIGNAL(clicked(bool)), this, SLOT(AddingTimeline()));
 }
 
@@ -147,7 +150,7 @@ void CanvasTimeline::FinishedLoad()
     while (QLayoutItem *item = _MainTimelineLayout->takeAt(0))
     {
         QWidget *widget = item->widget();
-        if (widget != NULL && widget != _ContenerAddMessage)
+        if (widget != NULL && widget != _ContenerAddMessage && widget != _LoadMore)
             delete widget;
         delete item;
     }
@@ -175,10 +178,22 @@ void CanvasTimeline::FinishedLoad()
         QObject::connect(c, SIGNAL(OnDeleteMainMessage(int)), this, SLOT(DeleteMessage(int)));
         QObject::connect(c, SIGNAL(AnimOpenComment(int)), this, SLOT(UpdateTimelineAnim(int)));
     }
+    _TotalLoad = _Messages.size();
+    _MainTimelineLayout->addWidget(_LoadMore, _MainTimelineLayout->count() / 3 + 1, 0, 1, 3);
     _MainTimelineLayout->setColumnStretch(0, 10);
     _MainTimelineLayout->setColumnStretch(1, 1);
     _MainTimelineLayout->setColumnStretch(2, 10);
     emit OnFinishedLoading(_IDTimeline);
+}
+
+void CanvasTimeline::OnLoadMore()
+{
+    QVector<QString> data;
+    data.push_back(API::SDataManager::GetDataManager()->GetToken());
+    data.push_back(QVariant(_IDTimeline).toString());
+    data.push_back(QVariant(_TotalLoad).toString());
+    data.push_back(QVariant(10).toString());
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_TIMELINE, data, this, "TimelineGetDone", "TimelineGetFailed");
 }
 
 void CanvasTimeline::TimelineGetDone(int id, QByteArray array)
@@ -186,6 +201,7 @@ void CanvasTimeline::TimelineGetDone(int id, QByteArray array)
     QList<int> userIdToRetrieve;
     QJsonDocument doc = QJsonDocument::fromJson(array);
     QJsonObject objMain = doc.object();
+    qDebug() << objMain;
     for (QJsonValueRef ref : objMain["messages"].toArray())
     {
         QJsonObject obj = ref.toObject();
@@ -211,7 +227,6 @@ void CanvasTimeline::TimelineGetDone(int id, QByteArray array)
         if (!_Messages.contains(mtl))
             _Messages.append(mtl);
     }
-    _TotalLoad = _Messages.size();
     if (userIdToRetrieve.size() == 0)
     {
         FinishedLoad();
@@ -263,9 +278,9 @@ void CanvasTimeline::AddingTimeline()
     data.push_back(TO_STRING(USER_TOKEN));
     data.push_back(_TitleMessage->text());
     data.push_back(_Message->toPlainText());
+    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE, data, this, "TimelineAddMessageDone", "TimelineAddMessageFailed");
     _TitleMessage->setText("");
     _Message->setText("");
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE, data, this, "TimelineAddMessageDone", "TimelineAddMessageFailed");
 }
 
 void CanvasTimeline::DeleteMessage(int id)

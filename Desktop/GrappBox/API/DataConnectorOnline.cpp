@@ -53,6 +53,7 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
         break;
     case PR_MESSAGE_TIMELINE:
         reply = PostMessageTimeline(data);
+        break;
     case PR_CREATE_BUG:
         reply = OpenBug(data);
         break;

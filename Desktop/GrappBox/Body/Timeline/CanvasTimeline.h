@@ -34,6 +34,8 @@ public slots:
     void AddingTimeline();
     void DeleteMessage(int id);
 
+    void OnLoadMore();
+
     void TimelineGetDone(int id, QByteArray array);
     void TimelineGetFailed(int id, QByteArray array);
 
@@ -60,6 +62,8 @@ private:
     QLabel          *_MessageLabel;
     QTextEdit       *_Message;
     QPushButton     *_ConfirmAddingMessage;
+
+    QPushButton     *_LoadMore;
 
     QList<MessageTimeLine::MessageTimeLineInfo> _Messages;
     QMap<int, API::UserInformation> _Users;

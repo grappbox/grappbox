@@ -54,6 +54,7 @@ MessageTimeLine::MessageTimeLine(MessageTimeLineInfo data, int IdTimeline, QWidg
     font.setPixelSize(20);
     _Title->setFont(font);
     _Message = new QLabel(data.Message);
+    _Message->setWordWrap(true);
     _Message->setStyleSheet("QLabel {border-style:none; border-bottom-style: solid; border-width: 1px; border-color: #5a5a5a; }");
     _Date = new QLabel("Last modified : " + data.DateLastModification.toString("dd/MM/yyyy hh:mm") + " by " + data.LastName + ' ' + data.Name);
     _Date->setFixedHeight(24);

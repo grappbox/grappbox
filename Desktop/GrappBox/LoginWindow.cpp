@@ -15,12 +15,12 @@ LoginWindow::LoginWindow(QWidget *mainP, QWidget *parent) : QMainWindow(parent)
     _GrappboxImage = new QImage(":/Image/Ressources/Title.png");
     QFont font = SFontLoader::GetFont(SFontLoader::OPEN_SANS_BOLD);
     font.setPixelSize(18);
-    _Login = new QLineEdit("marc.wieser@epitech.eu");
+    _Login = new QLineEdit("leo.nadeau@epitech.eu");
     _Login->setFixedHeight(30);
     _Login->setAlignment(Qt::AlignCenter);
     _Login->setFont(font);
     _Login->setFixedWidth(240);
-    _Password = new QLineEdit("tan_f");
+    _Password = new QLineEdit("nadeau_l");
     _Password->setEchoMode(QLineEdit::Password);
     _Password->setFixedHeight(30);
     _Password->setAlignment(Qt::AlignCenter);
