@@ -3904,30 +3904,30 @@ class RolesAndTokenVerificationController extends Controller
   * @apiSuccess {String} user_role.role.name Name of the role
   *
   * @apiSuccessExample Success-Response:
-  *   {
+  *	{
   *		"user_role": [
-  *     	"id": 10,
-  *     	"project": {
+  *			"id": 10,
+  *			"project": {
   *				"id": 2,
   *				"name": "Grappbox"
   *			},
-  *     	"role": {
+  *			"role": {
   *				"id": 6,
   *				"name": "Admin"
   *			}
   *		],
   *		[
-  *     	"id": 30,
-  *     	"project": {
+  *			"id": 30,
+  *			"project": {
   *				"id": 2,
   *				"name": "Grappbox"
   *			},
-  *     	"role": {
+  *			"role": {
   *				"id": 6,
   *				"name": "Graphists"
   *			}
   *		]
-  *   }
+  *	}
   *
   * @apiErrorExample Bad Authentication Token
   *		HTTP/1.1 400 Bad Request
@@ -3992,30 +3992,30 @@ class RolesAndTokenVerificationController extends Controller
   * @apiSuccess {String} user_role.role.name Name of the role
   *
   * @apiSuccessExample Success-Response:
-  *   {
+  *	{
   *		"user_role": [
-  *     	"id": 10,
-  *     	"project": {
+  *			"id": 10,
+  *			"project": {
   *				"id": 2,
   *				"name": "Grappbox"
   *			},
-  *     	"role": {
+  *			"role": {
   *				"id": 6,
   *				"name": "Admin"
   *			}
   *		],
   *		[
-  *     	"id": 30,
-  *     	"project": {
+  *			"id": 30,
+  *			"project": {
   *				"id": 2,
   *				"name": "Grappbox"
   *			},
-  *     	"role": {
+  *			"role": {
   *				"id": 6,
   *				"name": "Graphists"
   *			}
   *		]
-  *   }
+  *	}
   *
   * @apiErrorExample Bad Authentication Token
   *		HTTP/1.1 400 Bad Request
