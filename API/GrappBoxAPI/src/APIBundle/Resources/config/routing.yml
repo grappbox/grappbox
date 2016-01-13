@@ -223,6 +223,18 @@ role_getUsersForRole:
         roleId: \d+
     methods: [GET]
 
+role_getUserConnectedRolesInformations:
+    path:       roles/getuserrolesinformations/{token}
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUserConnectedRolesInfos, _format: json }
+    methods: [GET]
+
+role_getUserRolesInformations:
+    path:       roles/getuserrolesinformations/{token}/{userId}
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUserRolesInfos, _format: json }
+    requirements:
+        roleId: \d+
+    methods: [GET]
+
 
 
 

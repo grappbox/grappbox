@@ -2834,7 +2834,7 @@ class RolesAndTokenVerificationController extends Controller
 
   /**
   * @api {get} /V0.8/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
+  * @apiName getUserRoles
   * @apiGroup Roles
   * @apiVersion 0.8.0
   *
@@ -2875,7 +2875,7 @@ class RolesAndTokenVerificationController extends Controller
 
   /**
   * @api {get} /V0.8/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
+  * @apiName getUserRoles
   * @apiGroup Roles
   * @apiVersion 0.8.1
   *
@@ -2916,7 +2916,7 @@ class RolesAndTokenVerificationController extends Controller
 
   /**
   * @api {get} /V0.9/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
+  * @apiName getUserRoles
   * @apiGroup Roles
   * @apiVersion 0.9.0
   *
@@ -2957,7 +2957,7 @@ class RolesAndTokenVerificationController extends Controller
 
   /**
   * @api {get} /V0.10/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
+  * @apiName getUserRoles
   * @apiGroup Roles
   * @apiVersion 0.10.0
   *
@@ -2998,7 +2998,7 @@ class RolesAndTokenVerificationController extends Controller
 
   /**
   * @api {get} /V0.11/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
+  * @apiName getUserRoles
   * @apiGroup Roles
   * @apiVersion 0.11.0
   *
@@ -3781,7 +3781,7 @@ class RolesAndTokenVerificationController extends Controller
     return new JsonResponse($arr);
   }
 
-	/**
+  /**
   * @api {get} /V0.11/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
   * @apiName getUsersForRole
   * @apiGroup Roles
@@ -3884,5 +3884,180 @@ class RolesAndTokenVerificationController extends Controller
     }
 
     return new JsonResponse(array("id" => $role->getId(),"name" => $role->getName(), "users_assigned" => $usersAssigned, "users_non_assigned" => $usersNonAssigned));
+  }
+
+  /**
+  * @api {get} /V0.11/roles/getuserrolesinformations/:token Get the roles of the user connected
+  * @apiName getUserConnectedRolesInformations
+  * @apiGroup Roles
+  * @apiVersion 0.11.0
+  *
+  * @apiParam {String} token Token of the person connected
+  *
+  * @apiSuccess {Object[]} user_role Array of user roles informations
+  * @apiSuccess {Number} user_role.id Project user role id
+  *	@apiSuccess {Object[]} user_role.project Project informations
+  * @apiSuccess {Number} user_role.project.id Id of the project
+  * @apiSuccess {String} user_role.project.name Name of the project
+  * @apiSuccess {Object[]} user_role.role Role informations
+  * @apiSuccess {Number} user_role.role.id Id of the role
+  * @apiSuccess {String} user_role.role.name Name of the role
+  *
+  * @apiSuccessExample Success-Response:
+  *   {
+  *		"user_role": [
+  *     	"id": 10,
+  *     	"project": {
+  *				"id": 2,
+  *				"name": "Grappbox"
+  *			},
+  *     	"role": {
+  *				"id": 6,
+  *				"name": "Admin"
+  *			}
+  *		],
+  *		[
+  *     	"id": 30,
+  *     	"project": {
+  *				"id": 2,
+  *				"name": "Grappbox"
+  *			},
+  *     	"role": {
+  *				"id": 6,
+  *				"name": "Graphists"
+  *			}
+  *		]
+  *   }
+  *
+  * @apiErrorExample Bad Authentication Token
+  *		HTTP/1.1 400 Bad Request
+  *		{
+  *			"Bad Authentication Token"
+  *		}
+  * @apiErrorExample User roles not found
+  *		HTTP/1.1 404 Not Found
+  *		{
+  *			"The user X don't have roles."
+  *		}
+  */
+  public function getUserConnectedRolesInfosAction(Request $request, $token)
+  {
+  	$user = $this->checkToken($token);
+  	if (!$user)
+		return ($this->setBadTokenError());
+
+  	$em = $this->getDoctrine()->getManager();
+	$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
+
+	if ($userRoles === null)
+	{
+		throw new NotFoundHttpException("The user ".$user->getId()." don't have roles.");
+	}
+
+	$arr = array();
+
+	foreach ($userRoles as $role) {
+		$purId = $role->getId();
+
+		$projectId = $role->getProjectId();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		$projectName = $project->getName();
+
+		$roleId = $role->getRoleId();
+		$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+		$roleName = $role->getName();
+
+		$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+	}
+
+	return new JsonResponse(array("user_role" => $arr));
+  }
+
+  /**
+  * @api {get} /V0.11/roles/getuserrolesinformations/:token/:id Get the roles of the given user
+  * @apiName getUserRolesInformations
+  * @apiGroup Roles
+  * @apiVersion 0.11.0
+  *
+  * @apiParam {String} token Token of the person connected
+  * @apiParam {Number} userId Id of the user you want the roles 
+  *
+  * @apiSuccess {Object[]} user_role Array of user roles informations
+  * @apiSuccess {Number} user_role.id Project user role id
+  *	@apiSuccess {Object[]} user_role.project Project informations
+  * @apiSuccess {Number} user_role.project.id Id of the project
+  * @apiSuccess {String} user_role.project.name Name of the project
+  * @apiSuccess {Object[]} user_role.role Role informations
+  * @apiSuccess {Number} user_role.role.id Id of the role
+  * @apiSuccess {String} user_role.role.name Name of the role
+  *
+  * @apiSuccessExample Success-Response:
+  *   {
+  *		"user_role": [
+  *     	"id": 10,
+  *     	"project": {
+  *				"id": 2,
+  *				"name": "Grappbox"
+  *			},
+  *     	"role": {
+  *				"id": 6,
+  *				"name": "Admin"
+  *			}
+  *		],
+  *		[
+  *     	"id": 30,
+  *     	"project": {
+  *				"id": 2,
+  *				"name": "Grappbox"
+  *			},
+  *     	"role": {
+  *				"id": 6,
+  *				"name": "Graphists"
+  *			}
+  *		]
+  *   }
+  *
+  * @apiErrorExample Bad Authentication Token
+  *		HTTP/1.1 400 Bad Request
+  *		{
+  *			"Bad Authentication Token"
+  *		}
+  * @apiErrorExample User roles not found
+  *		HTTP/1.1 404 Not Found
+  *		{
+  *			"The user X don't have roles."
+  *		}
+  */
+  public function getUserRolesInfosAction(Request $request, $token, $userId)
+  {
+  	$user = $this->checkToken($token);
+  	if (!$user)
+		return ($this->setBadTokenError());
+
+  	$em = $this->getDoctrine()->getManager();
+	$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($userId);
+
+	if ($userRoles === null)
+	{
+		throw new NotFoundHttpException("The user ".$userId." don't have roles.");
+	}
+
+	$arr = array();
+
+	foreach ($userRoles as $role) {
+		$purId = $role->getId();
+
+		$projectId = $role->getProjectId();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		$projectName = $project->getName();
+
+		$roleId = $role->getRoleId();
+		$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+		$roleName = $role->getName();
+
+		$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+	}
+
+	return new JsonResponse(array("user_role" => $arr));
   }
 }
