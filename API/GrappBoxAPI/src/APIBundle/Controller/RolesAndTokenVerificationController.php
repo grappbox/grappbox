@@ -3887,7 +3887,7 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {get} /V0.11/roles/getuserrolesinformations/:token Get the roles of the user connected
+  * @api {get} /V0.11/roles/getuserrolesinformations/:token Get the roles informations of the user connected
   * @apiName getUserConnectedRolesInformations
   * @apiGroup Roles
   * @apiVersion 0.11.0
@@ -3974,7 +3974,7 @@ class RolesAndTokenVerificationController extends Controller
   }
 
   /**
-  * @api {get} /V0.11/roles/getuserrolesinformations/:token/:id Get the roles of the given user
+  * @api {get} /V0.11/roles/getuserrolesinformations/:token/:id Get the roles information of the given user
   * @apiName getUserRolesInformations
   * @apiGroup Roles
   * @apiVersion 0.11.0
