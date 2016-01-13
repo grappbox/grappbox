@@ -4,6 +4,7 @@
 #include <QVector>
 #include <QString>
 #include <QObject>
+#include <QImage>
 
 namespace API
 {
@@ -109,6 +110,19 @@ namespace API
 
     };
 
+    struct UserInformation
+    {
+        int id;
+        QString firstName;
+        QString lastName;
+        QImage avatar;
+        QString email;
+        QString phone;
+        QString country;
+        QString linkedIn;
+        QString viadeo;
+        QString twitter;
+    };
 }
 
 #endif // IDATACONNECTOR

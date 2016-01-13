@@ -121,6 +121,7 @@ HEADERS  += MainWindow.h \
     Body/BodyBugTracker.h \
     Body/BugTracker/IBugPage.h \
     Body/BodyBugCreation.h \
+    WidgetCommon/utils.h \
     Body/BugTracker/BugEntity.h \
     Body/BugTracker/BugTagEntity.h \
     Body/BugTracker/BugUser.h

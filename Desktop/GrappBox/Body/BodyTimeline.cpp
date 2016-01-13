@@ -3,6 +3,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValueRef>
+#include <QJsonArray>
+#include <QDebug>
 #include "BodyTimeline.h"
 
 BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
@@ -63,6 +65,8 @@ BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
     setLayout(_MainLayout);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
+    QObject::connect(_ClientTimeline, SIGNAL(OnFinishedLoading(int)), this, SLOT(OnTimelineSuccessLoad(int)));
+    QObject::connect(_TeamTimeline, SIGNAL(OnFinishedLoading(int)), this, SLOT(OnTimelineSuccessLoad(int)));
     QObject::connect(_ButtonToClient, SIGNAL(clicked(bool)), this, SLOT(OnChange()));
     QObject::connect(_ButtonToTeam, SIGNAL(clicked(bool)), this, SLOT(OnChange()));
 }
@@ -71,11 +75,14 @@ void BodyTimeline::OnTimelineGet(int ID, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject objMain = doc.object();
-    for (QJsonValueRef ref : objMain)
+    for (QJsonValueRef ref : objMain["timelines"].toArray())
     {
         QJsonObject obj = ref.toObject();
-        //if (obj["type_id"].toInt() == 1)
-
+        qDebug() << obj;
+        if (obj["typeId"].toInt() == 1)
+            _ClientTimeline->LoadData(obj["id"].toInt());
+        else
+            _TeamTimeline->LoadData(obj["id"].toInt());
     }
 }
 
@@ -93,14 +100,13 @@ void BodyTimeline::OnTimelineSuccessLoad(int ID)
 
 void BodyTimeline::Show(int ID, MainWindow *mainApp)
 {
-    /*_IdWidget = ID;
+    _IdWidget = ID;
     _MainApp = mainApp;
     QVector<QString> data;
     data.push_back(API::SDataManager::GetDataManager()->GetToken());
     data.push_back(QVariant(API::SDataManager::GetDataManager()->GetCurrentProject()).toString());
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_LIST_TIMELINE, data, this, "OnTimelineGet", "OnTimelineFailGet");
-*/
-    emit OnLoadingDone(ID);
+
 }
 
 void BodyTimeline::Hide()

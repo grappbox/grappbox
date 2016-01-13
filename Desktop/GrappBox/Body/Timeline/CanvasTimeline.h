@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QLabel>
 
+#include <QMap>
 #include <QList>
 
 class CanvasTimeline : public QWidget
@@ -21,18 +22,33 @@ public:
     explicit CanvasTimeline(QWidget *parent = 0);
     void LoadData(int id);
 
+private:
+    void FinishedLoad();
+
 signals:
     void OnFinishedLoading(int id);
+    void OnDeleteMainMessage(int id);
 
 public slots:
     void UpdateTimelineAnim(int Id);
     void AddingTimeline();
+    void DeleteMessage(int id);
+
+    void OnLoadMore();
 
     void TimelineGetDone(int id, QByteArray array);
     void TimelineGetFailed(int id, QByteArray array);
 
+    void TimelineGetUserDone(int id, QByteArray array);
+    void TimelineGetUserFailed(int id, QByteArray array);
+
+    void TimelineAddMessageDone(int id, QByteArray array);
+    void TimelineAddMessageFailed(int id, QByteArray array);
+
 private:
     int             _IDTimeline;
+
+    int             _TotalLoad;
 
     QWidget         *_TimelineContener;
     QGridLayout     *_MainTimelineLayout;
@@ -46,6 +62,12 @@ private:
     QLabel          *_MessageLabel;
     QTextEdit       *_Message;
     QPushButton     *_ConfirmAddingMessage;
+
+    QPushButton     *_LoadMore;
+
+    QList<MessageTimeLine::MessageTimeLineInfo> _Messages;
+    QMap<int, API::UserInformation> _Users;
+
 };
 
 #endif // CANVASTIMELINE_H

@@ -36,7 +36,7 @@ SDataManager      *SDataManager::GetDataManager()
     return (__INSTANCE__SDataManager);
 }
 
-void                       SDataManager::RegisterUserConnected(int id, QString userName, QString userLastName, QString token)
+void                       SDataManager::RegisterUserConnected(int id, QString userName, QString userLastName, QString token, QImage *avatar)
 {
     _UserId = id;
     _UserName = userName;
@@ -73,6 +73,11 @@ QString                    SDataManager::GetToken() const
     if (_UserId == -1)
         return "";
     return _Token;
+}
+
+QImage                     *SDataManager::GetAvatar()
+{
+    return _Avatar;
 }
 
 int                        SDataManager::GetCurrentProject() const
