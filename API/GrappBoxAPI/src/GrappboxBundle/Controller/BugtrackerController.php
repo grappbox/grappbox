@@ -1912,7 +1912,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tags = $bug->getTags();
 		$isAssign = false;
 		foreach ($tags as $tag) {
-			if ($tag === $userToRemove)
+			if ($tag === $tagToRemove)
 			{
 				$isAssign = true;
 			}

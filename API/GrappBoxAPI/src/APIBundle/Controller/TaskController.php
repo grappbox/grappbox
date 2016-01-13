@@ -538,7 +538,7 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 
 		return new JsonResponse(array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt,
-			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray));	
+			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray));
 	}
 
 
@@ -1340,7 +1340,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$tags = $task->getTags();
 		$isAssign = false;
 		foreach ($tags as $tag) {
-			if ($tag === $userToRemove)
+			if ($tag === $tagToRemove)
 			{
 				$isAssign = true;
 			}
@@ -1613,7 +1613,7 @@ class TaskController extends RolesAndTokenVerificationController
 		foreach ($tags as $t) {
 			$id = $t->getId();
 			$name = $t->getName();
-		
+
 			$arr["Tag ".$i] = array("id" => $id, "name" => $name);
 			$i++;
 		}

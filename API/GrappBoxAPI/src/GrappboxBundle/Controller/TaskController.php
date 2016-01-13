@@ -1533,7 +1533,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$tags = $task->getTags();
 		$isAssign = false;
 		foreach ($tags as $tag) {
-			if ($tag === $userToRemove)
+			if ($tag === $tagToRemove)
 			{
 				$isAssign = true;
 			}
