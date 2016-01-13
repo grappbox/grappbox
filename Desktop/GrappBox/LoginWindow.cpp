@@ -86,7 +86,8 @@ void LoginWindow::OnLoginSuccess(int id, QByteArray response)
     QString userName = obj["user"].toObject()["firstname"].toString();
     QString userLastName = obj["user"].toObject()["lastname"].toString();
     QString userToken = obj["user"].toObject()["token"].toString();
-    API::SDataManager::GetDataManager()->RegisterUserConnected(idUser, userName, userLastName, userToken);
+    //QImage *avatar = QImage::fromData(QByteArray::fromBase64(obj["user"].toObject()[""].toString()), "PNG");
+    API::SDataManager::GetDataManager()->RegisterUserConnected(idUser, userName, userLastName, userToken, NULL);
     this->setDisabled(false);
     emit OnLogin();
 }

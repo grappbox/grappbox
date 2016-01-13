@@ -2,6 +2,7 @@
 #define SDATAMANAGER_H
 
 #include <QString>
+#include <QImage>
 #include "IDataConnector.h"
 
 namespace API
@@ -12,7 +13,7 @@ namespace API
     public:
         static IDataConnector      *GetCurrentDataConnector();
         static SDataManager        *GetDataManager();
-        void                       RegisterUserConnected(int id, QString userName, QString userLastName, QString token);
+        void                       RegisterUserConnected(int id, QString userName, QString userLastName, QString token, QImage *avatar);
         void                       LogoutUser();
         static void                Destroy();
 
@@ -21,6 +22,7 @@ namespace API
         QString                    GetUserLastName() const;
         QString                    GetToken() const;
         int                        GetCurrentProject() const;
+        QImage                     *GetAvatar();
 
         void                       SetCurrentProjectId(int id);
 
@@ -35,6 +37,7 @@ namespace API
         QString             _UserName;
         QString             _UserLastName;
         QString             _Token;
+        QImage              *_Avatar;
         int                 _CurrentProject;
 
     };

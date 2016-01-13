@@ -117,7 +117,8 @@ HEADERS  += MainWindow.h \
     Body/BodyBugVisualize.h \
     Body/BodyBugTracker.h \
     Body/BugTracker/IBugPage.h \
-    Body/BodyBugCreation.h
+    Body/BodyBugCreation.h \
+    WidgetCommon/utils.h
 
 RESOURCES += \
     temporaryressources.qrc \

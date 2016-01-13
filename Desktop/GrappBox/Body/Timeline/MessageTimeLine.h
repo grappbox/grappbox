@@ -22,10 +22,10 @@ public:
     struct MessageTimeLineInfo
     {
     public:
-        MessageTimeLineInfo(int idTimeline, bool isComment, QString title, QString message, QDateTime lastModification, int idUser, QImage *avatar, QString name, QString lastName)
+        MessageTimeLineInfo(int idTimeline, int idParent, QString title, QString message, QDateTime lastModification, int idUser, QImage *avatar, QString name, QString lastName)
         {
             IdTimeline = idTimeline;
-            IsComment = isComment;
+            IdParent = idParent;
             Title = title;
             Message = message;
             DateLastModification = lastModification;
@@ -34,9 +34,18 @@ public:
             Name = name;
             LastName = lastName;
         }
+        MessageTimeLineInfo()
+        {
+            MessageTimeLineInfo(-1, false, "", "", QDateTime(), -1, NULL, "", "");
+        }
+
+        bool operator==(MessageTimeLineInfo const& b)
+        {
+            return (IdTimeline == b.IdTimeline);
+        }
 
         int IdTimeline;
-        bool IsComment;
+        int IdParent;
         QString Title;
         QString Message;
         QDateTime DateLastModification;
@@ -49,13 +58,11 @@ public:
 private:
     Q_OBJECT
 public:
-    MessageTimeLine(MessageTimeLineInfo data, QWidget *parent = 0);
+    MessageTimeLine(MessageTimeLineInfo data, int IdTimeline, QWidget *parent = 0);
 
 signals:
-    void OnLoadingDone(int);
-    void OnLoadingError(int);
-    void TimelineEdited(int);
     void TimelineDeleted(int);
+    void NewMessage(MessageTimeLine::MessageTimeLineInfo info);
 
 public slots:
     void OnEdit();
@@ -63,15 +70,27 @@ public slots:
     void OnCancelEdit();
     void OnConfirmEdit();
 
+    void OnEditDone(int id, QByteArray data);
+    void OnEditFail(int id, QByteArray data);
+    void OnDeleteDone(int id, QByteArray data);
+    void OnDeleteFail(int id, QByteArray data);
+
 private:
+    int                 _IDTimelineMessage;
     int                 _IDTimeline;
     int                 _IDUserCreator;
 
     int                 _IDLayoutNormal;
     int                 _IDLayoutEdit;
 
+    QString             _BeforeAPITitle;
+    QString             _BeforeAPIMessage;
+
 private:
+    QGridLayout         *_MainLayoutLoading;
     QStackedLayout      *_MainLayout;
+
+    QLabel              *_LoadingImage;
 
     QGridLayout         *_MainLayoutNormal;
     QLabel              *_Avatar;
@@ -87,6 +106,9 @@ private:
     QTextEdit           *_EditMessageArea;
     PushButtonImage         *_ValidateButton;
     PushButtonImage         *_CancelButton;
+
+    MessageTimeLine::MessageTimeLineInfo _MessageData;
+
 };
 
 #endif // MESSAGETIMELINE_H

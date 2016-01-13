@@ -172,7 +172,6 @@ void MainWindow::OnLogin()
 {
     _Login->hide();
     this->show();
-    qDebug() << "On Login !";
     _MenuWidget->ForceChangeMenu(_CurrentCanvas);
     _MenuWidget->UpdateProject();
     OnMenuChange(_CurrentCanvas);
@@ -218,7 +217,6 @@ void MainWindow::OnUserSettings()
 
 void MainWindow::OnMenuChange(int id)
 {
-    qDebug() << "On Menu Change";
     QWidget *currentWidget = _StackedLayout->itemAt(_CurrentCanvas)->widget();
     QWidget *nextWidget = _StackedLayout->itemAt(id)->widget();
     if (nextWidget == NULL)
@@ -230,19 +228,15 @@ void MainWindow::OnMenuChange(int id)
     (dynamic_cast<IBodyContener*>(currentWidget))->Hide();
     _CurrentCanvas = id;
     _StackedLayout->setCurrentIndex(0);
-    qDebug() << "Show !";
     (dynamic_cast<IBodyContener*>(nextWidget))->Show(_CurrentCanvas, this);
     nextWidget->updateGeometry();
 }
 
 void MainWindow::OnLoadingFinished(int canvas)
 {
-    qDebug() << "Canvs : " << canvas;
-    qDebug() << "Current :" << _CurrentCanvas;
     if (canvas == _CurrentCanvas)
     {
         _StackedLayout->setCurrentIndex(_CurrentCanvas);
         _StackedLayout->itemAt(canvas)->widget()->show();
-        qDebug("TATA");
     }
 }

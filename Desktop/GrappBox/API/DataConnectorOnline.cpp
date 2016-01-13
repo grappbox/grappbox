@@ -14,6 +14,8 @@ DataConnectorOnline::DataConnectorOnline()
 void DataConnectorOnline::OnResponseAPI()
 {
     QNetworkReply *request = dynamic_cast<QNetworkReply*>(QObject::sender());
+    qDebug() << "[DataConnectorOnline] Receive status code : " << request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
+    qDebug() << "[DataConnectorOnline] Receive response from API with the url : " + request->request().url().toString();
     if (request == NULL || !_Request.contains(request))
     {
         QMessageBox::critical(NULL, "Critical error", "Unable to cast the reply of the API response.", QMessageBox::Ok);
@@ -21,8 +23,7 @@ void DataConnectorOnline::OnResponseAPI()
     QByteArray req = request->readAll();
     if (request->error())
     {
-        qDebug() << request->errorString();
-        qDebug() << request->error();
+        qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString();
         QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
     }
     else
@@ -45,6 +46,12 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
         break;
     case PR_CUSTOMER_GENERATE_ACCESS:
         reply = CustomerGenerateAccess(data);
+        break;
+    case PR_EDIT_MESSAGE_TIMELINE:
+        reply = EditMessageTimeline(data);
+        break;
+    case PR_MESSAGE_TIMELINE:
+        reply = PostMessageTimeline(data);
         break;
     }
     if (reply == NULL)
@@ -158,6 +165,12 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
         break;
     case GR_COMMENT_TIMELINE:
         reply = GetAction("timeline/getcomments", data);
+        break;
+    case GR_USER_DATA:
+        reply = GetAction("user/getuserbasicinformations", data);
+        break;
+    case GR_ARCHIVE_MESSAGE_TIMELINE:
+        reply = GetAction("timeline/archivemessage", data);
         break;
     }
     if (reply == NULL)
@@ -517,10 +530,39 @@ QNetworkReply *DataConnectorOnline::CustomerGenerateAccess(QVector<QString> &dat
 
 QNetworkReply *DataConnectorOnline::EditMessageTimeline(QVector<QString> &data)
 {
+    QJsonObject json;
 
+    json["token"] = data[1];
+    json["messageId"] = data[2];
+    json["title"] = data[3];
+    json["message"] = data[4];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("timeline/editmessage/") + data[0]));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
 }
 
 QNetworkReply *DataConnectorOnline::PostMessageTimeline(QVector<QString> &data)
 {
+    QJsonObject json;
 
+    json["token"] = data[1];
+    json["title"] = data[2];
+    json["message"] = data[3];
+    if (data.size() > 4)
+        json["commentedId"] = data[4];
+
+    QJsonDocument doc(json);
+    QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+    QNetworkRequest requestSend(QUrl(URL_API + QString("timeline/postmessage/") + data[0]));
+    requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+    QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    return request;
 }

@@ -1,9 +1,17 @@
 #include "ConversationTimeline.h"
 #include <QPropertyAnimation>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValueRef>
+#include <QPair>
+#include <QJsonArray>
+#include <QMessageBox>
+#include <QDebug>
 
-ConversationTimeline::ConversationTimeline(int id, bool revert, QWidget *parent) : QWidget(parent)
+ConversationTimeline::ConversationTimeline(int timelineId, MessageTimeLine::MessageTimeLineInfo data, bool revert, QWidget *parent) : QWidget(parent)
 {
-    _ConversationId = id;
+    _TimelineId = timelineId;
+    _ConversationId = data.IdTimeline;
     _MainLayout = new QVBoxLayout();
     _CommentLayout = new QVBoxLayout();
 
@@ -16,15 +24,10 @@ ConversationTimeline::ConversationTimeline(int id, bool revert, QWidget *parent)
     _ScrollAnim->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     _ScrollAnim->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
-    _MainMessage = new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(1, false, "Main message", "This is a message", QDateTime::fromString("15/11/2015 14:56", "dd/mm/yyyy hh:mm"), 1, NULL, "Nadeau", "Leo"));
-    _CommentLayout->addWidget(_MainMessage);
-    _CommentLayout->addWidget(new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(-1, false, "Main message", "This is a message", QDateTime::fromString("15/11/2015 14:56", "dd/mm/yyyy hh:mm"), 1, NULL, "Nadeau", "Leo")));
-    for (int i = 0; i < 2; ++i)
-    {
-        _CommentMessage[i + 2] = new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(1, false, "Main message", "This is a message", QDateTime::fromString("15/11/2015 14:56", "dd/mm/yyyy hh:mm"), 1, NULL, "Nadeau", "Leo"));
-        _CommentLayout->addWidget(_CommentMessage[i + 2]);
-    }
+    _MainMessage = new MessageTimeLine(data, timelineId);
+    _CommentMessageNew = new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(-1, data.IdTimeline, "", "", QDateTime(), 1, NULL, "", ""), timelineId);
 
+    _CommentLayout->addWidget(_CommentMessageNew);
     _MainCommentWidget->setLayout(_CommentLayout);
     _CommentLayout->setContentsMargins(20, 0, 0, 0);
     _ScrollAnim->setWidget(_MainCommentWidget);
@@ -43,8 +46,17 @@ ConversationTimeline::ConversationTimeline(int id, bool revert, QWidget *parent)
     _CommentLayout->setSpacing(0);
 
     _CommentHide = true;
+    _ReloadContain = false;
 
+    QObject::connect(_MainMessage, SIGNAL(TimelineDeleted(int)), this, SLOT(TimeLineDelete(int)));
+    QObject::connect(_CommentMessageNew, SIGNAL(NewMessage(MessageTimeLine::MessageTimeLineInfo)), this, SLOT(NewComment(MessageTimeLine::MessageTimeLineInfo)));
     QObject::connect(_OpenComment, SIGNAL(clicked(bool)), this, SLOT(OpenComment()));
+}
+
+void ConversationTimeline::update()
+{
+    QWidget::update();
+    _ScrollAnim->setMaximumHeight(_MainCommentWidget->height());
 }
 
 int ConversationTimeline::GetID() const
@@ -52,11 +64,32 @@ int ConversationTimeline::GetID() const
     return _ConversationId;
 }
 
-void ConversationTimeline::OpenComment()
+void ConversationTimeline::OnAnimEnd()
 {
-    _MainMessage->setFixedSize(_MainMessage->geometry().size());
-    int realSize = _MainCommentWidget->height();
+    _OpenComment->setDisabled(false);
+}
+
+void ConversationTimeline::NewComment(MessageTimeLine::MessageTimeLineInfo info)
+{
+    _ReloadContain = true;
+    OpenComment();
+}
+
+void ConversationTimeline::OpenCommentAnim()
+{
+    int realSize = _MainCommentWidget->minimumSizeHint().height();
+    if (_ReloadContain)
+    {
+        _ScrollAnim->setMinimumHeight(realSize);
+        _ScrollAnim->setMaximumHeight(realSize);
+        _ReloadContain = false;
+        _OpenComment->setDisabled(false);
+        return;
+    }
     _CommentHide = !_CommentHide;
+    _ScrollAnim->setHidden(_CommentHide);
+    _MainMessage->setFixedHeight(_MainMessage->height());
+    qDebug() << "Real size equal to : " << realSize;
     QPropertyAnimation *animationMax = new QPropertyAnimation(_ScrollAnim, "maximumHeight");
     QPropertyAnimation *animationMin = new QPropertyAnimation(_ScrollAnim, "minimumHeight");
     animationMax->setDuration(500);
@@ -67,14 +100,17 @@ void ConversationTimeline::OpenComment()
     animationMin->setStartValue(QVariant(_CommentHide ? realSize : 0));
     animationMin->setEndValue(QVariant(!_CommentHide ? realSize : 0));
     animationMin->start();
+    QObject::connect(animationMax, SIGNAL(finished()), this, SLOT(OnAnimEnd()));
     if (_CommentHide)
     {
+        qDebug() << "Comment is now hiden !";
         _OpenComment->setIcon(QIcon(":/icon/Ressources/Icon/DropDown.png"));
         _OpenComment->setStyleSheet("background: #FFFFFF; border-style: none; border-top-style: solid; border-bottom-style: solid; border-width: 1px; border-color: #7f8c8d;");
         _OpenComment->setText("Show comments");
     }
     else
     {
+        qDebug() << "Comment is now shown !";
         QTransform trans = QTransform().rotate(180);
         QPixmap img = QPixmap(":/icon/Ressources/Icon/DropDown.png").transformed(trans);
         _OpenComment->setIcon(QIcon(img));
@@ -85,18 +121,161 @@ void ConversationTimeline::OpenComment()
         emit AnimOpenComment(_ConversationId);
 }
 
+void ConversationTimeline::OpenComment()
+{
+    if (!_CommentHide && !_ReloadContain)
+    {
+        OpenCommentAnim();
+        return;
+    }
+    _OpenComment->setDisabled(true);
+    QVector<QString> data;
+    data.push_back(API::SDataManager::GetDataManager()->GetToken());
+    data.push_back(QVariant(_TimelineId).toString());
+    data.push_back(QVariant(_ConversationId).toString());
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_COMMENT_TIMELINE, data, this, "TimelineGetDone", "TimelineGetFailed");
+}
+
+void ConversationTimeline::TimelineGetUserDone(int id, QByteArray array)
+{
+    QJsonDocument doc = QJsonDocument::fromJson(array);
+    QJsonObject objMain = doc.object();
+    _Users[id].firstName = objMain["first_name"].toString();
+    _Users[id].lastName = objMain["last_name"].toString();
+    _Users[id].email = objMain["email"].toString();
+    _Users[id].avatar = QImage::fromData(QByteArray::fromBase64(objMain["avatar"].toString().toStdString().c_str()), "PNG");
+    for (API::UserInformation user : _Users)
+    {
+        if (user.email == "")
+            return;
+    }
+    FinishedLoad();
+}
+
+void ConversationTimeline::TimelineGetUserFailed(int id, QByteArray array)
+{
+
+}
+
+void ConversationTimeline::FinishedLoad()
+{
+    while (QLayoutItem* item = _CommentLayout->takeAt(0))
+    {
+        QWidget* widget = item->widget();
+        if (widget != NULL && widget != _CommentMessageNew)
+            delete widget;
+        delete item;
+    }
+    qDebug() << "Draw Comment layout...";
+    _CommentLayout->addWidget(_CommentMessageNew);
+    qDebug() << "Adding Comment message new done.";
+    for (MessageTimeLine::MessageTimeLineInfo info : _Messages)
+    {
+        for (API::UserInformation user : _Users)
+        {
+            if (user.id == info.IdUser)
+            {
+                info.Name = user.firstName;
+                info.LastName = user.lastName;
+                info.Avatar = new QImage(user.avatar);
+            }
+        }
+        qDebug() << "Adding new comment message : " << info.Message;
+        MessageTimeLine *c = new MessageTimeLine(info, _TimelineId, this);
+        _CommentMessage[info.IdTimeline] = c;
+        _CommentLayout->addWidget(c);
+        QObject::connect(c, SIGNAL(TimelineDeleted(int)), this, SLOT(TimeLineDelete(int)));
+    }
+    qDebug() << "Reset new layout to main comment widget. " << _MainCommentWidget;
+    _MainCommentWidget->setLayout(_CommentLayout);
+    QTimer *time = new QTimer();
+    time->setSingleShot(true);
+    QObject::connect(time, SIGNAL(timeout()), this, SLOT(OpenCommentAnim()));
+    time->start(100);
+}
+
+void ConversationTimeline::TimelineGetDone(int id, QByteArray array)
+{
+    QList<int> userIdToRetrieve;
+    QJsonDocument doc = QJsonDocument::fromJson(array);
+    QJsonObject objMain = doc.object();
+    qDebug() << " COMMENT " << objMain;
+    for (QJsonValueRef ref : objMain["comments"].toArray())
+    {
+        QJsonObject obj = ref.toObject();
+        if (!obj["deletedAt"].isNull())
+            continue;
+        MessageTimeLine::MessageTimeLineInfo mtl;
+        mtl.IdTimeline = obj["id"].toInt();
+        mtl.IdParent = obj["parentId"].toInt();
+        mtl.Title = obj["title"].toString();
+        mtl.Message = obj["message"].toString();
+        QDateTime date;
+        QString dateStr;
+        QString format = "yyyy-MM-dd HH:mm:ss.zzzz";
+        if (obj["editedAt"].isNull())
+            dateStr = obj["createdAt"].toObject()["date"].toString();
+        else
+            dateStr = obj["editedAt"].toObject()["date"].toString();
+        date = QDateTime::fromString(dateStr, format);
+        mtl.DateLastModification = date;
+        mtl.IdUser = obj["userId"].toInt();
+        if (!userIdToRetrieve.contains(mtl.IdUser))
+            userIdToRetrieve.append(mtl.IdUser);
+        bool haveToHadMessage = true;
+        for (MessageTimeLine::MessageTimeLineInfo mess : _Messages)
+        {
+            if (mess.IdTimeline == mtl.IdTimeline)
+            {
+                haveToHadMessage = false;
+                break;
+            }
+        }
+        if (haveToHadMessage)
+            _Messages.append(mtl);
+    }
+    if (userIdToRetrieve.size() == 0)
+    {
+        FinishedLoad();
+        return;
+    }
+    for (int i : userIdToRetrieve)
+    {
+        API::UserInformation userInfo;
+        userInfo.id = i;
+        QVector<QString> data;
+        data.push_back(API::SDataManager::GetDataManager()->GetToken());
+        data.push_back(QVariant(i).toString());
+        int requestId = API::SDataManager::GetCurrentDataConnector()->Get(API::DP_USER_DATA, API::GR_USER_DATA, data, this, "TimelineGetUserDone", "TimelineGetUserFailed");
+        _Users[requestId] = userInfo;
+    }
+}
+
+void ConversationTimeline::TimelineGetFailed(int id, QByteArray array)
+{
+
+}
+
 void ConversationTimeline::ForceCloseComment()
 {
     if (!_CommentHide)
         OpenComment();
 }
 
-void ConversationTimeline::TimeLineDelete(int)
+void ConversationTimeline::TimeLineDelete(int id)
 {
-
-}
-
-void ConversationTimeline::TimeLineEdit(int)
-{
-
+    qDebug() << "Receive timeline delete from " << id;
+    qDebug() << "Is main message : " << (id == _ConversationId);
+    if (id == _ConversationId)
+        emit OnDeleteMainMessage(_ConversationId);
+    else
+    {
+        for (MessageTimeLine::MessageTimeLineInfo item : _Messages)
+        {
+            if (item.IdTimeline == id)
+                _Messages.removeOne(item);
+        }
+        _ReloadContain = true;
+        OpenComment();
+    }
 }
