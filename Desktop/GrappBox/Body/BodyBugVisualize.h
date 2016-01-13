@@ -13,6 +13,8 @@
 #include <QScrollArea>
 #include <QList>
 #include <QJsonObject>
+#include <QJsonArray>
+#include <QMessageBox>
 
 #define UNUSED __attribute__((unused))
 #define PH_ASSIGNATION  tr("Assign")
@@ -22,9 +24,11 @@
 
 #define JSON_AVATAR         "avatar"
 #define JSON_ID             "id"
+#define JSON_USERID         "creatorId"
 #define JSON_COMMENTOR      "name"
-#define JSON_COMMENT        "comment"
+#define JSON_COMMENT        "description"
 #define JSON_DATE           "date"
+#define JSON_TITLE          "title"
 
 class BodyBugVisualize : public QWidget, public IBugPage
 {
@@ -42,6 +46,13 @@ signals:
 public slots:
     void                    TriggerCategoryBtnReleased();
     void                    TriggerAssigneeBtnReleased();
+    void                    TriggerIssueClosed(int bugId);
+    void                    TriggerCommentButtonReleased(BugViewPreviewWidget*);
+    void                    TriggerGotComments(int id, QByteArray data);
+    void                    TriggerPushCommentSuccess(int id, QByteArray data);
+    void                    TriggerAPIFailure(int id, QByteArray data);
+    void                    TriggerGotUserProject(int id, QByteArray data);
+    void                    TriggerGotBug(int id, QByteArray data);
 
 private:
     int                     _bugId;
@@ -60,6 +71,7 @@ private:
     QScrollArea             *_assigneesArea;
     QPushButton             *_btnCategoriesAssign;
     QPushButton             *_btnAssigneeAssign;
+    QJsonObject             _bugData;
 };
 
 #endif // BODYBUGVISUALIZE_H

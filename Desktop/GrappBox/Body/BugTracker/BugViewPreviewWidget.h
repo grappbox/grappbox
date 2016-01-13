@@ -1,6 +1,7 @@
 #ifndef BUGVIEWPREVIEWWIDGET_H
 #define BUGVIEWPREVIEWWIDGET_H
 
+#include "SDataManager.h"
 #include <QWidget>
 #include <QScrollArea>
 #include <QLabel>
@@ -11,6 +12,7 @@
 #include <QVBoxLayout>
 #include <QString>
 #include <QDateTime>
+#include <QLineEdit>
 
 #define PH_BUGPREVIEWDATE tr("Commented the")
 
@@ -18,21 +20,26 @@ class BugViewPreviewWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BugViewPreviewWidget(bool isCreation = false, QWidget *parent = 0);
+    explicit BugViewPreviewWidget(int userId, bool isCreation = false, bool createPage = false, QWidget *parent = 0);
     void SetDate(const QDateTime &date);
     void SetCommentor(const QString &name);
     void SetID(const int id);
     void SetAvatar(const QPixmap &avatar);
     void SetComment(const QString &comment);
+    void SetCommentTitle(const QString &title);
+    const QString GetComment() const;
+    const QString GetCommentTitle() const;
+    void RefreshDisplayStatus();
 
 signals:
     void        OnEdit(int);
     void        OnSaved(int);
-    void        OnCommented();
+    void        OnCommented(BugViewPreviewWidget *);
 
 public slots:
     void        TriggerEditBtnReleased();
     void        TriggerCommentBtnReleased();
+
 
 private:
     QString     FormatDateTime(const QDateTime &datetime);
@@ -47,7 +54,9 @@ private:
     QPushButton *_btnComment;
     QLabel      *_lblName;
     QLabel      *_lblDate;
+    QLabel      *_lblDisplayStatus;
     QTextEdit   *_comment;
+    QLineEdit   *_commentTitle;
 };
 
 #endif // BUGVIEWPREVIEWWIDGET_H

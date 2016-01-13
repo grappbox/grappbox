@@ -7,12 +7,20 @@ BugViewAssigneeWidget::BugViewAssigneeWidget(QWidget *parent) : QWidget(parent)
     _mainWidget = new QStackedWidget(this);
     _mainViewLayout = new QVBoxLayout();
     _mainAssignLayout = new QVBoxLayout();
+    _isAPIAssignActivated = true;
 
     _viewPage->setLayout(_mainViewLayout);
     _assignPage->setLayout(_mainAssignLayout);
 
+    this->setMinimumHeight(450);
+
     _mainWidget->addWidget(_viewPage);
     _mainWidget->addWidget(_assignPage);
+}
+
+void BugViewAssigneeWidget::DisableAPIAssignation(const bool disable)
+{
+    _isAPIAssignActivated = !disable;
 }
 
 void BugViewAssigneeWidget::DeletePageItems(const BugViewAssigneeWidget::BugAssigneePage page)
@@ -20,10 +28,10 @@ void BugViewAssigneeWidget::DeletePageItems(const BugViewAssigneeWidget::BugAssi
     QVBoxLayout *deletionLayout = (page == BugAssigneePage::VIEW ? _mainViewLayout : _mainAssignLayout);
     QLayoutItem *currentItem;
 
-    while ((currentItem = deletionLayout->itemAt(0)) != NULL)
+    while ((currentItem = deletionLayout->itemAt(0)) != nullptr)
     {
         if (currentItem->widget())
-            currentItem->widget()->setParent(NULL);
+            currentItem->widget()->setParent(nullptr);
         deletionLayout->removeItem(currentItem);
     }
     emit OnPageItemsDeleted(page);
@@ -32,23 +40,15 @@ void BugViewAssigneeWidget::DeletePageItems(const BugViewAssigneeWidget::BugAssi
 void BugViewAssigneeWidget::CreateAssignPageItems(const QList<QJsonObject> &items)
 {
     QList<QJsonObject>::const_iterator  it;
-    QHBoxLayout *layCreation = new QHBoxLayout();
-    _creationBtn = new QPushButton(tr("Create"));
-    _creationCategory = new QLineEdit(tr("Enter the category name here..."));
-
 
     for (it = items.begin(); it != items.end(); ++it)
     {
         QJsonObject obj = *it;
-        BugCheckableLabel *widCheckable = new BugCheckableLabel(obj[ITEM_ID].toInt(), obj[ITEM_NAME].toString(), obj[ITEM_ASSIGNED].toBool());
+        BugCheckableLabel *widCheckable = new BugCheckableLabel(obj[ITEM_ID].toInt(), obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString(), obj[ITEM_ASSIGNED].toBool());
 
         QObject::connect(widCheckable, SIGNAL(OnCheckChanged(bool,int,QString)), this, SLOT(TriggerCheckChange(bool,int, QString)));
         _mainAssignLayout->addWidget(widCheckable);
     }
-    QObject::connect(_creationBtn, SIGNAL(released()), this, SLOT(TriggerCreateReleased()));
-    layCreation->addWidget(_creationCategory);
-    layCreation->addWidget(_creationBtn);
-    _mainAssignLayout->addLayout(layCreation);
     emit OnPageItemsCreated(BugAssigneePage::ASSIGN);
 }
 
@@ -62,7 +62,7 @@ void BugViewAssigneeWidget::CreateViewPageItems(const QList<QJsonObject> &items)
 
         if (!obj[ITEM_ASSIGNED].toBool())
             continue;
-        _mainViewLayout->addWidget(new QLabel(obj[ITEM_NAME].toString()));
+        _mainViewLayout->addWidget(new QLabel(obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString()));
     }
     emit OnPageItemsCreated(BugAssigneePage::VIEW);
 }
@@ -73,29 +73,39 @@ void BugViewAssigneeWidget::TriggerOpenPage(const BugAssigneePage page)
     emit OnPageChanged(page);
 }
 
-void BugViewAssigneeWidget::TriggerCreateReleased()
-{
-    _creationCategory->setEnabled(false);
-    _creationBtn->setEnabled(false);
-    //TODO : Link API
-    emit OnCreated(-1); //After creation link API
-    emit OnAssigned(-1, _creationCategory->text()); //After assignation link API
-    _creationCategory->setEnabled(true);
-    _creationBtn->setEnabled(true);
-}
-
 void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString name)
 {
-    //TODO : Link API
+    if (_isAPIAssignActivated)
+    {
+        //TODO : Link API
+    }
     if (checked)
         emit OnAssigned(id, name);
     else
         emit OnDelAssigned(id, name);
 }
 
-BugViewAssigneeWidget::BugAssigneePage BugViewAssigneeWidget::GetCurrentPage()
+BugViewAssigneeWidget::BugAssigneePage BugViewAssigneeWidget::GetCurrentPage() const
 {
     if (_mainWidget->currentWidget() == _viewPage)
         return BugAssigneePage::VIEW;
     return BugAssigneePage::ASSIGN;
+}
+
+const QList<int> BugViewAssigneeWidget::GetAllAssignee() const
+{
+    QLayoutItem *item;
+    QList<int> idAssigned;
+
+    while ((item = _mainAssignLayout->takeAt(0)) != 0)
+    {
+        BugCheckableLabel *checkableLabel;
+
+        if (!item->widget())
+            continue;
+        checkableLabel = static_cast<BugCheckableLabel *>(item->widget());
+        if (checkableLabel->IsChecked())
+            idAssigned.append(checkableLabel->GetId());
+    }
+    return idAssigned;
 }

@@ -5,7 +5,7 @@
 
 using namespace API;
 
-static SDataManager *__INSTANCE__SDataManager = NULL;
+static SDataManager *__INSTANCE__SDataManager = nullptr;
 
 SDataManager::SDataManager()
 {
@@ -22,7 +22,7 @@ SDataManager::~SDataManager()
 
 IDataConnector       *SDataManager::GetCurrentDataConnector()
 {
-    if (__INSTANCE__SDataManager == NULL)
+    if (__INSTANCE__SDataManager == nullptr)
         __INSTANCE__SDataManager = new SDataManager();
     if (1) // Temporary ! Condtion is : if user is online ?
         return __INSTANCE__SDataManager->_OnlineDataConnector;
@@ -31,7 +31,7 @@ IDataConnector       *SDataManager::GetCurrentDataConnector()
 
 SDataManager      *SDataManager::GetDataManager()
 {
-    if (__INSTANCE__SDataManager == NULL)
+    if (__INSTANCE__SDataManager == nullptr)
         __INSTANCE__SDataManager = new SDataManager();
     return (__INSTANCE__SDataManager);
 }

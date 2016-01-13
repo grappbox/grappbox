@@ -5,6 +5,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QJSONObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 #include <QMap>
 #include <QTimeZone>
 #include <QBuffer>
@@ -49,6 +50,7 @@ namespace API
     private:
         QNetworkReply *PutUserSettings(QVector<QString> &data);
         QNetworkReply *PutProjectSettings(QVector<QString> &data);
+        QNetworkReply *AssignTagToBug(QVector<QString> &data);
 
         // Post
     private:
@@ -57,6 +59,16 @@ namespace API
         QNetworkReply *AttachRole(QVector<QString> &data);
         QNetworkReply *ProjectInvite(QVector<QString> &data);
         QNetworkReply *CustomerGenerateAccess(QVector<QString> &data);
+
+        QNetworkReply *CloseBug(QVector<QString> &data);
+        QNetworkReply *EditBug(QVector<QString> &data);
+        QNetworkReply *OpenBug(QVector<QString> &data);
+        QNetworkReply *CommentBug(QVector<QString> &data);
+        QNetworkReply *EditCommentBug(QVector<QString> &data);
+        QNetworkReply *AssignUserToTicket(QVector<QString> &data);
+        QNetworkReply *DeleteUserToTicket(QVector<QString> &data);
+        QNetworkReply *CreateTag(QVector<QString> &data);
+
         QNetworkReply *EditMessageTimeline(QVector<QString> &data);
         QNetworkReply *PostMessageTimeline(QVector<QString> &data);
 
@@ -67,6 +79,7 @@ namespace API
         QNetworkReply *DeleteProjectUser(QVector<QString> &data);
         QNetworkReply *DeleteProject(QVector<QString> &data);
         QNetworkReply *DeleteCustomerAccess(QVector<QString> &data);
+        QNetworkReply *RESTDelete(QVector<QString> &data, QString baseURL);
 
         // Get
     private:

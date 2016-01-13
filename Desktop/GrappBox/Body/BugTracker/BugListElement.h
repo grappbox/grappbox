@@ -17,7 +17,6 @@ public:
     explicit BugListElement(BodyBugTracker *pageManager, const QString &bugTitle, const int bugId, QWidget *parent = 0);
 
 signals:
-    void            OnViewBug(int);
     void            OnCloseBug(int);
 
 public slots:

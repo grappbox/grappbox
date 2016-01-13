@@ -9,7 +9,7 @@ ImageUploadWidget::ImageUploadWidget(QWidget *parent) : QWidget(parent)
     _filenameSelected = new QLabel(tr("Select a file..."));
     _selectFileBtn = new QPushButton(tr("Select image"));
     _filename = QString("");
-    _currentPixmap = NULL;
+    _currentPixmap = nullptr;
     _fitImg = new QPushButton(tr("Fit"));
     QVBoxLayout *layoutImage = new QVBoxLayout();
 
@@ -75,7 +75,7 @@ void ImageUploadWidget::OnImageSelectTriggered()
     _filename =  QFileDialog::getOpenFileName(this, tr("Open Image"), QStandardPaths::displayName(QStandardPaths::PicturesLocation), tr("Image Files (*.png *.jpg *.bmp)"));
     _filenameSelected->setText(_filename);
 
-    if (_filename != NULL && _filename != "")
+    if (_filename != nullptr && _filename != "")
     {
         QPixmap img(_filename);
 
@@ -108,7 +108,7 @@ void ImageUploadWidget::SceneChanged(QList<QRectF>)
 {
     QPointF pixPos;
     QPointF newPos;
-    if (_currentPixmap == NULL || !_currentPixmap->isActive())
+    if (_currentPixmap == nullptr || !_currentPixmap->isActive())
         return;
 
     pixPos = _currentPixmap->pos();

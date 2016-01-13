@@ -91,7 +91,7 @@ void RoleTableWidget::reset()
         while ((item = lay->takeAt(0)))
         {
             if (item->widget())
-                item->widget()->setParent(NULL);
+                item->widget()->setParent(nullptr);
             delete item;
         }
     }
@@ -100,7 +100,7 @@ void RoleTableWidget::reset()
     while ((item = _rowLayout->takeAt(0)))
     {
         if (item->widget())
-            item->widget()->setParent(NULL);
+            item->widget()->setParent(nullptr);
         delete item;
     }
     delete _rowLayout;

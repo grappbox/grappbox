@@ -3,18 +3,18 @@
 BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *parent) : QWidget(parent)
 {
     QString style;
-    _title = new QLineEdit(tr("View Issue : ") + title);
+    _title = new QLineEdit(title);
     _bugID = -1;
     _mainLayout = new QHBoxLayout();
     _creation = creation;
+    _btnClose = new QPushButton(tr("Close"));
+    _btnEdit = new QPushButton(tr("Edit"));
 
     _title->setEnabled(creation);
     _mainLayout->addWidget(_title);
     if (!creation)
     {
-        _btnClose = new QPushButton(tr("Close"));
-        _btnClose->setObjectName("Close");
-        _btnEdit = new QPushButton(tr("Edit"));
+        _btnClose->setObjectName("Close");    
         _btnEdit->setObjectName("Edit");
         QObject::connect(_btnClose, SIGNAL(released()), this, SLOT(TriggerCloseIssue()));
         QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
@@ -25,6 +25,7 @@ BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *pa
     this->setLayout(_mainLayout);
 
     //Design
+    _title->setPlaceholderText(tr("Enter the issue name here..."));
     style = "QLineEdit{"
             "max-height: 50px;"
             "}"
@@ -61,8 +62,11 @@ BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *pa
 
 void BugViewTitleWidget::TriggerCloseIssue()
 {
-    //TODO : Link API
-    emit OnIssueClosed(_bugID);
+    QVector<QString> closeData;
+
+    closeData.append(API::SDataManager::GetDataManager()->GetToken());
+    closeData.append(QString::number(_bugID));
+    API::SDataManager::GetCurrentDataConnector()->Delete(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT, closeData, this, "TriggerCloseSuccess", "TriggerAPIFailure");
 }
 
 void BugViewTitleWidget::SetTitle(const QString &title)
@@ -86,9 +90,7 @@ void BugViewTitleWidget::TriggerEditTitle()
 void BugViewTitleWidget::TriggerSaveTitle()
 {
     _title->setEnabled(false);
-    if (_creation){
-        //TODO : Link API
-    }
+
     _btnEdit->setText(tr("Edit"));
     QObject::disconnect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerSaveTitle()));
     QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
@@ -98,5 +100,15 @@ void BugViewTitleWidget::TriggerSaveTitle()
 
 QString BugViewTitleWidget::GetTitle()
 {
-    return _title->text();
+    return QString(_title->text());
+}
+
+void BugViewTitleWidget::TriggerCloseSuccess(int UNUSED id, QByteArray data)
+{
+    emit OnIssueClosed(_bugID);
+}
+
+void BugViewTitleWidget::TriggerAPIFailure(int id, QByteArray data)
+{
+    QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
 }

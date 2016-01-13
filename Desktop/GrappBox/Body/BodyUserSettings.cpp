@@ -73,7 +73,6 @@ void BodyUserSettings::Show(int ID, MainWindow *mainApp)
 {
     QVector<QString> userData;
 
-    qDebug(API::SDataManager::GetDataManager()->GetToken().toStdString().c_str());
     userData.append(API::SDataManager::GetDataManager()->GetToken());
     _mainApplication = mainApp;
     _dataManager->Get(API::DP_USER_DATA, API::GR_USER_SETTINGS, userData,this, "GetUserData", "Failure");

@@ -17,7 +17,8 @@ namespace API
         DP_TASK,
         DP_TIMELINE,
         DP_USER_DATA,
-        DP_CALENDAR
+        DP_CALENDAR,
+        DP_BUGTRACKER
     };
 
     enum GetRequest
@@ -46,7 +47,17 @@ namespace API
         GR_PROJECT_CANCEL_DELETE,
         GR_PROJECT_USER_ROLE,
         GR_CUSTOMER_ACCESSES,
-        GR_CUSTOMER_ACCESS_BY_ID
+        GR_CUSTOMER_ACCESS_BY_ID,
+        GR_USERPROJECT_BUG,
+        GR_XLAST_BUG_OFFSET,
+        GR_XLAST_BUG_OFFSET_BY_STATE,
+        GR_XLAST_BUG_OFFSET_CLOSED,
+        GR_PROJECTBUG_ALL,
+        GR_BUGCOMMENT,
+        GR_GETBUGS_STATUS,
+        GR_PROJECTBUGTAG_ALL,
+        GR_PROJECT_USERS_ALL,
+        GR_BUG,
     };
 
     enum PostRequest
@@ -55,8 +66,15 @@ namespace API
         PR_ROLE_ADD,
         PR_ROLE_ASSIGN,
         PR_CUSTOMER_GENERATE_ACCESS,
+        PR_EDIT_BUG,
+        PR_CREATE_BUG,
+        PR_COMMENT_BUG,
+        PR_ASSIGNUSER_BUG,
+        PR_DELETEUSER_BUG,
+        PR_CREATETAG,
         PR_MESSAGE_TIMELINE,
         PR_EDIT_MESSAGE_TIMELINE,
+        PR_EDIT_COMMENTBUG,
     };
 
     enum DeleteRequest
@@ -65,14 +83,16 @@ namespace API
         DR_ROLE_DETACH,
         DR_PROJECT_USER,
         DR_PROJECT,
-        DR_CUSTOMER_ACCESS
+        DR_CUSTOMER_ACCESS,
+        DR_CLOSE_TICKET_OR_COMMENT,
     };
 
     enum PutRequest
     {
         PUTR_UserSettings,
         PUTR_ProjectSettings,
-        PUTR_INVITE_USER
+        PUTR_INVITE_USER,
+        PUTR_ASSIGNTAG
     };
 
     class IDataConnector

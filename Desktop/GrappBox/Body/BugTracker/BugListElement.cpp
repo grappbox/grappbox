@@ -6,7 +6,7 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
 {
     QString style;
     _pageManager = pageManager;
-    _title = new QLabel("<h3>" + bugTitle + "</h3>");
+    _title = new QLabel(bugTitle);
     _mainLayout = new QHBoxLayout();
     _btnViewBug = new QPushButton(tr("View"));
     _btnCloseBug = new QPushButton(tr("Close"));
@@ -37,6 +37,8 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
              "color : #ffffff;"
              "border-radius: 2px;"
              "padding : 0px;"
+             "padding-top: 5px;"
+             "padding-bottom: 5px;"
              "font-size : 15px;"
              "max-width : 150px;"
              "max-height : 75px;"
@@ -46,6 +48,8 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
              "color : #ffffff;"
              "border-radius: 2px;"
              "padding : 0px;"
+             "padding-top: 5px;"
+             "padding-bottom: 5px;"
              "font-size : 15px;"
              "max-width : 150px;"
              "max-height : 75px;"
@@ -58,6 +62,13 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
              "QPushButton#Close:hover"
              "{"
              "background-color: #d36c63;"
+             "}"
+             "QLabel"
+             "{"
+             "font-weight: bold;"
+             "font-size: 15px;"
+             "padding-top: 5px;"
+             "padding-bottom: 5px;"
              "}";
     this->setStyleSheet(style);
     this->ensurePolished();
@@ -67,10 +78,10 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
 void BugListElement::TriggerBtnView()
 {
     QJsonObject *data = new QJsonObject();
+
     data->insert("id", _bugID);
     data->insert("title", _title->text());
     _pageManager->TriggerChangePage(BodyBugTracker::BUGVIEW, data);
-    emit OnViewBug(_bugID);
 }
 
 void BugListElement::TriggerBtnClose()

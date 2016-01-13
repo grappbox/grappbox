@@ -1,6 +1,6 @@
 #include "BugViewPreviewWidget.h"
 
-BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : QWidget(parent)
+BugViewPreviewWidget::BugViewPreviewWidget(int userId, bool isCreation, bool createPage, QWidget *parent) : QWidget(parent)
 {
     QString style;
     QWidget *widTitleBar = new QWidget();
@@ -9,25 +9,38 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     _titleBar = new QHBoxLayout();
     _statusBar = new QHBoxLayout();
     _avatar = new QLabel();
-    _lblName = new QLabel("");
-    _lblDate = new QLabel(PH_BUGPREVIEWDATE + " " + FormatDateTime(QDateTime::currentDateTime()));
-    _comment = new QTextEdit(isCreation ? tr("Enter the comment here") : "");
+    _lblName = new QLabel(API::SDataManager::GetDataManager()->GetUserName() + " " + API::SDataManager::GetDataManager()->GetUserLastName());
+    _lblDisplayStatus = new QLabel();
+    _lblDate = new QLabel(QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"));
+    _comment = new QTextEdit();
+    _commentTitle = new QLineEdit();
 
+    this->RefreshDisplayStatus();
     _comment->setEnabled(isCreation);
+    _comment->setPlaceholderText(tr("Enter the comment here"));
+    _commentTitle->setEnabled(isCreation);
+    _commentTitle->setPlaceholderText(tr("Enter the comment title here"));
     _titleBar->addWidget(_avatar);
-    _titleBar->addWidget(_lblName);
+    _titleBar->addWidget(_commentTitle);
 
-    _statusBar->addWidget(_lblDate);
+    _statusBar->addWidget(_lblDisplayStatus);
 
     if (!isCreation)
     {
-        _btnEdit = new QPushButton(tr("Edit"));
-        _statusBar->addWidget(_btnEdit);
-        QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditBtnReleased()));
+        if (userId == API::SDataManager::GetDataManager()->GetUserId()){
+            _btnEdit = new QPushButton(tr("Edit"));
+            _statusBar->addWidget(_btnEdit);
+            QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditBtnReleased()));
+        }
     }
     else
     {
-        _btnComment = new QPushButton(tr("Comment"));
+        if (createPage)
+            _btnComment = new QPushButton(tr("Comment and open"));
+        else
+        {
+            _btnComment = new QPushButton(tr("Comment"));
+        }
         _statusBar->addWidget(_btnComment);
         _bugID = -1;
         QObject::connect(_btnComment, SIGNAL(released()), this, SLOT(TriggerCommentBtnReleased()));
@@ -63,6 +76,8 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
             "QPushButton{"
             "min-height: 20px;"
             "max-height: 20px;"
+            "min-width: 100px;"
+            "max-width: 150px;"
             "top: -5px;"
             "}"
             "QLabel{"
@@ -71,14 +86,33 @@ BugViewPreviewWidget::BugViewPreviewWidget(bool isCreation, QWidget *parent) : Q
     this->setStyleSheet(style);
 }
 
+void BugViewPreviewWidget::RefreshDisplayStatus()
+{
+    _lblDisplayStatus->setText(PH_BUGPREVIEWDATE + " " + _lblDate->text() + " by " + _lblName->text());
+}
+
+const QString BugViewPreviewWidget::GetComment() const
+{
+    QString str = _comment->toPlainText();
+    return str;
+}
+
+const QString BugViewPreviewWidget::GetCommentTitle() const
+{
+    QString str = _commentTitle->text();
+    return str;
+}
+
 void BugViewPreviewWidget::SetDate(const QDateTime &date)
 {
     _lblDate->setText(PH_BUGPREVIEWDATE + " " + FormatDateTime(date));
+    RefreshDisplayStatus();
 }
 
 void BugViewPreviewWidget::SetCommentor(const QString &name)
 {
     _lblName->setText(name);
+    RefreshDisplayStatus();
 }
 
 void BugViewPreviewWidget::SetID(const int id)
@@ -96,6 +130,11 @@ void BugViewPreviewWidget::SetComment(const QString &comment)
     _comment->setText(comment);
 }
 
+void BugViewPreviewWidget::SetCommentTitle(const QString &title)
+{
+    _commentTitle->setText(title);
+}
+
 QString BugViewPreviewWidget::FormatDateTime(const QDateTime &datetime)
 {
     return datetime.toString("yyyy/MM/dd " + tr("at") + " hh:mm:ss");
@@ -104,6 +143,7 @@ QString BugViewPreviewWidget::FormatDateTime(const QDateTime &datetime)
 void BugViewPreviewWidget::TriggerEditBtnReleased()
 {
     _comment->setEnabled(!_comment->isEnabled());
+    _commentTitle->setEnabled(!_commentTitle->isEnabled());
     if (_comment->isEnabled())
     {
         _btnEdit->setText(tr("Save"));
@@ -112,13 +152,11 @@ void BugViewPreviewWidget::TriggerEditBtnReleased()
     else
     {
         _btnEdit->setText(tr("Edit"));
-        //TODO: Link API
         emit OnSaved(_bugID);
     }
 }
 
 void BugViewPreviewWidget::TriggerCommentBtnReleased()
 {
-    //TODO : LinkAPI
-    emit OnCommented();
+    emit OnCommented(this);
 }
