@@ -629,6 +629,12 @@ v2_role_getRoleByProjectAndUser:
         userId: \d+
     methods: [GET]
 
+v2_role_getUsersForRole:
+    path:       roles/getusersforrole/{token}/{roleId}
+    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUsersForRole, _format: json }
+    requirements:
+        roleId: \d+
+    methods: [GET]
 
 
 

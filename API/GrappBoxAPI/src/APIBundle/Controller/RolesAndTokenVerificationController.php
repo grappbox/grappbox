@@ -3780,4 +3780,109 @@ class RolesAndTokenVerificationController extends Controller
 
     return new JsonResponse($arr);
   }
+
+	/**
+  * @api {get} /V0.11/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
+  * @apiName getUsersForRole
+  * @apiGroup Roles
+  * @apiVersion 0.11.0
+  *
+  * @apiParam {String} token Token of the person connected
+  * @apiParam {Number} roleId Id of the role
+  *
+  * @apiSuccess {Number} id Id of the role
+  * @apiSuccess {String} name Name of the role
+  * @apiSuccess {Object[]} users_assigned Array of users assigned to the role
+  * @apiSuccess {Number} users_assigned.id Id of the user
+  * @apiSuccess {String} users_assigned.firstname Firstname of the user
+  * @apiSuccess {String} users_assigned.lastname Lastname of the user
+  * @apiSuccess {Object[]} users_non_assigned Array of users non assigned to the role
+  * @apiSuccess {Number} users_non_assigned.id Id of the user
+  * @apiSuccess {String} users_non_assigned.firstname Firstname of the user
+  * @apiSuccess {String} users_non_assigned.lastname Lastname of the user
+  *
+  * @apiSuccessExample Success-Response:
+  *   {
+  *     "id": 2,
+  *     "name": "Admin",
+  *     "users_assigned": [
+  *       {
+  *         "id": 1,
+  *         "firstname": "john",
+  *         "lastname": "doe"
+  *       }
+  *     ],
+  *     "users-non_assigned": [
+  *       {
+  *         "id": 3,
+  *         "firstname": "jean",
+  *         "lastname": "neige"
+  *       },
+  *       {
+  *         "id": 8,
+  *         "firstname": "john",
+  *         "lastname": "snow"
+  *       }
+  *     ]
+  *   }
+  *
+  * @apiErrorExample Bad Authentication Token
+  *   HTTP/1.1 400 Bad Request
+  *   {
+  *     "Bad Authentication Token"
+  *   }
+  * @apiErrorExample Insufficient User Rights
+  *   HTTP/1.1 403 Forbidden
+  *   {
+  *     "Insufficient User Rights"
+  *   }
+  * @apiErrorExample Role not found
+  *     HTTP/1.1 404 Not Found
+  *     {
+  *       "The role with id X doesn't exist"
+  *     }
+  *
+  */
+  public function getUsersForRoleAction(Request $request, $token, $roleId)
+  {
+  	$user = $this->checkToken($token);
+    if (!$user)
+      return ($this->setBadTokenError());
+
+    $em = $this->getDoctrine()->getManager();
+    $role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+    if ($role === null)
+    {
+    	throw new NotFoundHttpException("The role with id ".$roleId." doesn't exist.");
+    }
+
+    if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+      return $this->setNoRightsError();
+
+    $purRepository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+    $qb = $purRepository->createQueryBuilder('pur')->where('pur.roleId = :id')->setParameter('id', $role->getId())->getQuery();
+    $purs = $qb->getResult();
+
+    $usersAssigned = array();
+    $usersNonAssigned = array();
+
+    $users = $role->getProjects()->getUsers();
+    print($role->getId());
+
+    foreach ($users as $u) {
+    	$isAssigned = false;
+
+    	foreach ($purs as $p) {
+    		if ($p->getUserId() == $u->getId())
+    		{
+    			$usersAssigned[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname());
+    			$isAssigned = true;
+    		}
+    	}
+    	if ($isAssigned == false)
+    		$usersNonAssigned[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname());
+    }
+
+    return new JsonResponse(array("id" => $role->getId(),"name" => $role->getName(), "users_assigned" => $usersAssigned, "users_non_assigned" => $usersNonAssigned));
+  }
 }
