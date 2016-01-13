@@ -1149,7 +1149,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null));
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
@@ -1416,7 +1416,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId));
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "DESC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
@@ -1695,7 +1695,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError());
 		}
 
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
