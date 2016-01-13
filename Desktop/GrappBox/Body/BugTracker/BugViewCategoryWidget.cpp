@@ -1,19 +1,23 @@
 #include "BugViewCategoryWidget.h"
 
-BugViewCategoryWidget::BugViewCategoryWidget(QWidget *parent) : QWidget(parent)
+BugViewCategoryWidget::BugViewCategoryWidget(int bugId, QWidget *parent) : QWidget(parent)
 {
+    _bugId = bugId;
     _viewPage = new QWidget();
     _assignPage = new QWidget();
-    _mainWidget = new QStackedWidget(this);
+    _mainWidget = new QStackedLayout();
     _mainViewLayout = new QVBoxLayout();
     _mainAssignLayout = new QVBoxLayout();
     _isAPIAssignActivated = true;
+    _mainViewLayout->setAlignment(Qt::AlignTop);
+    _mainAssignLayout->setAlignment(Qt::AlignTop);
 
     _viewPage->setLayout(_mainViewLayout);
     _assignPage->setLayout(_mainAssignLayout);
 
     _mainWidget->addWidget(_viewPage);
     _mainWidget->addWidget(_assignPage);
+    this->setLayout(_mainWidget);
 }
 
 void BugViewCategoryWidget::DisableAPIAssignation(const bool disable)
@@ -94,9 +98,19 @@ void BugViewCategoryWidget::TriggerCreateReleased()
 
 void BugViewCategoryWidget::TriggerCheckChange(bool checked, int id, QString name)
 {
+    QVector<QString> data;
+    int assignId;
+
     if (_isAPIAssignActivated)
     {
-        //TODO : Link API
+        data.append(API::SDataManager::GetDataManager()->GetToken());
+        data.append(QString::number(_bugId));
+        data.append(QString::number(id));
+        if (checked)
+            assignId = API::SDataManager::GetCurrentDataConnector()->Put(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG, data, this, "TriggerAssignSuccess", "TriggerAssignFailure");
+        else
+            assignId = API::SDataManager::GetCurrentDataConnector()->Delete(API::DP_BUGTRACKER, API::DR_REMOVE_BUGTAG, data, this, "TriggerUnAssignSuccess", "TriggerUnAssignFailure");
+        _apiAssignationWait[assignId] = id;
     }
     if (checked)
         emit OnAssigned(id, name);
@@ -149,4 +163,84 @@ void BugViewCategoryWidget::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED d
     QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
     _creationCategory->setEnabled(true);
     _creationBtn->setEnabled(true);
+}
+
+void BugViewCategoryWidget::SetBugId(const int bugId)
+{
+    _bugId = bugId;
+}
+
+BugCheckableLabel *BugViewCategoryWidget::SearchCheckbox(int id)
+{
+    for (int i = 0; i < _mainAssignLayout->count(); ++i)
+    {
+        BugCheckableLabel *checkbox = nullptr;
+
+        if (_mainAssignLayout->itemAt(i)->widget())
+            checkbox = static_cast<BugCheckableLabel *>(_mainAssignLayout->itemAt(i)->widget());
+        if (checkbox && checkbox->GetId() == id)
+            return checkbox;
+    }
+    return nullptr;
+}
+
+QLabel *BugViewCategoryWidget::SearchLabel(int id)
+{
+    BugCheckableLabel *checkbox = SearchCheckbox(id);
+
+    if (!checkbox)
+        return nullptr;
+    for (int i = 0; i < _mainViewLayout->count(); ++i)
+    {
+        QLabel *lbl = static_cast<QLabel *>(_mainViewLayout->itemAt(i)->widget());
+
+        if (lbl && lbl->text() == checkbox->GetName())
+            return lbl;
+    }
+    return nullptr;
+}
+
+void BugViewCategoryWidget::TriggerAssignSuccess(int id, QByteArray UNUSED data)
+{
+    BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignationWait[id]);
+    QLabel *newLabel = new QLabel(checkbox->GetName());
+
+    _mainViewLayout->addWidget(newLabel);
+    _apiAssignationWait.remove(id);
+}
+
+void BugViewCategoryWidget::TriggerAssignFailure(int id, QByteArray UNUSED data)
+{
+    BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignationWait[id]);
+
+    checkbox->SetChecked(false);
+    _apiAssignationWait.remove(id);
+    TriggerAPIFailure(id, data);
+}
+
+void BugViewCategoryWidget::TriggerUnAssignSuccess(int id, QByteArray UNUSED data)
+{
+    QLabel *lbl = SearchLabel(_apiAssignationWait[id]);
+    QLayoutItem *item;
+
+    for (int i = 0; i < _mainViewLayout->count(); ++i)
+    {
+        item = _mainViewLayout->itemAt(i);
+
+        if (item->widget() && item->widget() == lbl)
+        {
+            item->widget()->setParent(nullptr);
+            _mainViewLayout->removeItem(item);
+        }
+    }
+    _apiAssignationWait.remove(id);
+}
+
+void BugViewCategoryWidget::TriggerUnAssignFailure(int id, QByteArray UNUSED data)
+{
+    BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignationWait[id]);
+
+    checkbox->SetChecked(true);
+    _apiAssignationWait.remove(id);
+    TriggerAPIFailure(id, data);
 }

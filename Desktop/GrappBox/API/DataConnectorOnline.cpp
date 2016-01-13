@@ -53,6 +53,9 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
     case PR_COMMENT_BUG:
         reply = CommentBug(data);
         break;
+    case PR_EDIT_BUG:
+        reply = EditBug(data);
+        break;
     case PR_ASSIGNUSER_BUG:
         reply = AssignUserToTicket(data);
         break;
@@ -250,6 +253,9 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
         break;
     case DR_CLOSE_TICKET_OR_COMMENT:
         reply = RESTDelete(data, "bugtracker/closeticket");
+        break;
+    case DR_REMOVE_BUGTAG:
+        reply = RESTDelete(data, "bugtracker/removetag");
         break;
     }
     if (reply == nullptr)
@@ -553,24 +559,13 @@ QNetworkReply *DataConnectorOnline::DeleteProject(QVector<QString> &data)
 QNetworkReply *DataConnectorOnline::EditBug(QVector<QString> &data)
 {
     QJsonObject json;
-    QJsonArray  tags;
 
     //data[0] = id dans l'URL
     json["token"] = data[1];
     json["title"] = data[2];
     json["description"] = data[3];
-    json["userId"] = data[4];
-    json["stateId"] = data[5];
-    json["stateName"] = data[6];
-    for (int i = 7; i < data.length() - 1; ++i)
-    {
-        QJsonObject newTag;
-
-        newTag["id"] = data[i++];
-        newTag["name"] = data[i];
-        tags.append(newTag);
-    }
-    json["parentId"] = data[data.length() - 1];
+    json["stateId"] = data[4];
+    json["stateName"] = data[5];
 
     QJsonDocument doc(json);
     QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));

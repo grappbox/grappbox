@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QDateTime>
 
 #define PH_BUGOPENSTATE     tr("Open")
 #define PH_BUGCLOSEDSTATE   tr("Closed")
@@ -12,7 +13,7 @@
 class BugViewStatusBar : public QWidget
 {
     Q_OBJECT
-
+public:
     enum BugState
     {
         NONE = 0,
@@ -23,6 +24,7 @@ class BugViewStatusBar : public QWidget
 public:
     explicit    BugViewStatusBar(QWidget *parent = 0);
     void        SetCreatorName(const QString &name);
+    void        SetDate(const QDateTime date);
     void        SetBugStatus(const BugState state);
 
 signals:

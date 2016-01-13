@@ -84,6 +84,7 @@ namespace API
         DR_PROJECT,
         DR_CUSTOMER_ACCESS,
         DR_CLOSE_TICKET_OR_COMMENT,
+        DR_REMOVE_BUGTAG,
     };
 
     enum PutRequest

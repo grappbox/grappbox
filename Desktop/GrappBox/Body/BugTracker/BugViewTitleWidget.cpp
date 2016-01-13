@@ -94,7 +94,6 @@ void BugViewTitleWidget::TriggerSaveTitle()
     _btnEdit->setText(tr("Edit"));
     QObject::disconnect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerSaveTitle()));
     QObject::connect(_btnEdit, SIGNAL(released()), this, SLOT(TriggerEditTitle()));
-    //TODO : Link API
     emit OnTitleEdit(_bugID);
 }
 
