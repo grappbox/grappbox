@@ -3903,7 +3903,6 @@ class RolesAndTokenVerificationController extends Controller
     $usersNonAssigned = array();
 
     $users = $role->getProjects()->getUsers();
-    print($role->getId());
 
     foreach ($users as $u) {
       $isAssigned = false;
@@ -3997,15 +3996,18 @@ class RolesAndTokenVerificationController extends Controller
 
     $projectId = $role->getProjectId();
     $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
-    $projectName = $project->getName();
 
     $roleId = $role->getRoleId();
     $role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
-    $roleName = $role->getName();
 
-    $arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+    if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings"))
+    {
+      $roleName = $role->getName();
+      $projectName = $project->getName();
+
+      $arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+    }
   }
-
   return new JsonResponse(array("user_role" => $arr));
   }
 
@@ -4071,29 +4073,39 @@ class RolesAndTokenVerificationController extends Controller
     return ($this->setBadTokenError());
 
     $em = $this->getDoctrine()->getManager();
-  $userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($userId);
+    $userConnectedProjects = $user->getProjects();
 
-  if ($userRoles === null)
-  {
-    throw new NotFoundHttpException("The user ".$userId." don't have roles.");
-  }
+    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
 
-  $arr = array();
+    $arr = array();
 
-  foreach ($userRoles as $role) {
-    $purId = $role->getId();
+    foreach ($userConnectedProjects as $p) {
+      if ($this->checkRoles($user, $p->getId(), "projectSettings"))
+      {
+        $pId = $p->getId();
+        $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $pId)->setParameter('userId', $userId)->getQuery();
+          $userRoles = $qb->getResult();
 
-    $projectId = $role->getProjectId();
-    $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
-    $projectName = $project->getName();
+        foreach ($userRoles as $role) {
+          $purId = $role->getId();
 
-    $roleId = $role->getRoleId();
-    $role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
-    $roleName = $role->getName();
+          $projectId = $role->getProjectId();
+          $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
-    $arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
-  }
+          $roleId = $role->getRoleId();
+          $role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
 
-  return new JsonResponse(array("user_role" => $arr));
+          if ($project != null && $role != null)
+          {
+            $projectName = $project->getName();
+            $roleName = $role->getName();
+
+            $arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+          }
+        }
+      }
+    }
+
+    return new JsonResponse(array("user_role" => $arr));
   }
 }
