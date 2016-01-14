@@ -8,6 +8,8 @@
             android:title="Projects" />
         <item android:id="@+id/nav_whiteboard" android:icon="@android:drawable/ic_menu_gallery"
             android:title="Whiteboard" />
+        <item android:id="@+id/nav_calendar" android:icon="@android:drawable/ic_menu_gallery"
+            android:title="Calendar" />
         <item android:id="@+id/nav_Timeline" android:icon="@android:drawable/ic_menu_slideshow"
             android:title="Timeline" />
     </group>

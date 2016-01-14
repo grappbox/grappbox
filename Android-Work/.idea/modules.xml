@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Grappbox.iml" filepath="$PROJECT_DIR$/Grappbox.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/caldroid/caldroid.iml" filepath="$PROJECT_DIR$/caldroid/caldroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/caldroid/caldroid.iml" filepath="$PROJECT_DIR$/caldroid/caldroid.iml" />
     </modules>
   </component>
 </project>

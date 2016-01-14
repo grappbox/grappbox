@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/src/main/res/values/attrs.xml -->
+    <!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/values/attrs.xml -->
     <eat-comment/>
     <attr format="reference" name="styleCaldroidGridView"/>
     <attr format="reference" name="styleCaldroidLeftArrow"/>
@@ -10,7 +10,7 @@
     <attr format="reference" name="styleCaldroidSquareCell"/>
     <attr format="reference" name="styleCaldroidViewLayout"/>
     <attr format="reference" name="styleCaldroidWeekdayView"/>
-    <!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/src/main/res/values/color.xml -->
+    <!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/values/color.xml -->
     <eat-comment/>
     <color name="caldroid_333">#333</color>
     <color name="caldroid_555">#555</color>
@@ -27,10 +27,10 @@
     <color name="caldroid_white">#FFFFFF</color>
     <declare-styleable name="Cell"><attr name="android:textColor"/><attr name="android:background"/></declare-styleable>
     <declare-styleable name="DateState"><attr format="boolean" name="state_date_today"/><attr format="boolean" name="state_date_selected"/><attr format="boolean" name="state_date_disabled"/><attr format="boolean" name="state_date_prev_next_month"/></declare-styleable>
-    <!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/src/main/res/values/strings.xml -->
+    <!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="app_name">CalendarFragment</string>
-    <!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/src/main/res/values/styles.xml -->
+    <!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="CaldroidDefault">
         <item name="styleCaldroidViewLayout">@style/CaldroidDefaultCalendarViewLayout</item>

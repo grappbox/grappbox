@@ -1,6 +1,5 @@
 package com.grappbox.grappbox.grappbox;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,10 +20,10 @@ import android.widget.TextView;
 import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
+import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 
 import java.io.IOException;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -138,6 +137,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_whiteboard:
                 fragment = new WhiteboardListFragment();
                 changeToolbarTitle("Whiteboard");
+                break;
+
+            case R.id.nav_calendar:
+                fragment = new CalendarFragment();
+                changeToolbarTitle("Calendar");
                 break;
 
             default:

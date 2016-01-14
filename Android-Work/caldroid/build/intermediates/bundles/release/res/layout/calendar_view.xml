@@ -21,7 +21,6 @@
             android:id="@+id/calendar_month_year_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             style="?styleCaldroidMonthName"/>
 
         <Button
@@ -29,7 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="?styleCaldroidRightArrow" />
-        
     </LinearLayout>
 
     <GridView
@@ -46,4 +44,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-</LinearLayout><!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/src/main/res/layout/calendar_view.xml -->
+</LinearLayout><!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/layout/calendar_view.xml -->

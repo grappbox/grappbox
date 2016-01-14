@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Settings;
 
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.fitness.data.SessionDataSet;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
+import com.grappbox.grappbox.grappbox.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

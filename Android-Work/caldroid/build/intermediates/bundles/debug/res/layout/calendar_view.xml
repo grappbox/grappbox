@@ -13,14 +13,20 @@
 
         <Button
             android:id="@+id/calendar_left_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="?styleCaldroidLeftArrow" />
 
         <TextView
             android:id="@+id/calendar_month_year_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="?styleCaldroidMonthName"/>
 
         <Button
             android:id="@+id/calendar_right_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             style="?styleCaldroidRightArrow" />
     </LinearLayout>
 
@@ -38,4 +44,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-</LinearLayout><!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/src/main/res/layout/calendar_view.xml -->
+</LinearLayout><!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/layout/calendar_view.xml -->

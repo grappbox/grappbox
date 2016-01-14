@@ -6,4 +6,4 @@
     <item android:color="@color/caldroid_lighter_gray" caldroid:state_date_prev_next_month="true"/>
     <item android:color="@color/caldroid_white"/>
 
-</selector><!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/src/main/res/color/cell_text_color_dark.xml -->
+</selector><!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/color/cell_text_color_dark.xml -->

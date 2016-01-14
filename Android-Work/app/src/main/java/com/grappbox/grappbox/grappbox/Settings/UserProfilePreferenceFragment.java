@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.grappbox;
+package com.grappbox.grappbox.grappbox.Settings;
 
 import android.os.Bundle;
 import android.preference.ListPreference;

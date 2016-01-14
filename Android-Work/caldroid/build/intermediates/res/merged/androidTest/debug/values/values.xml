@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/C:/Users/tan_f/Downloads/Caldroid-master/Caldroid-master/caldroid/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <attr format="reference" name="styleCaldroidGridView"/>
     <attr format="reference" name="styleCaldroidLeftArrow"/>
