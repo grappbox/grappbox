@@ -15,8 +15,6 @@ use GrappboxBundle\Entity\User;
 use DateTime;
 use DateInterval;
 
-//use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-
 /**
  *  @IgnoreAnnotation("apiName")
  *  @IgnoreAnnotation("apiGroup")
@@ -31,177 +29,7 @@ use DateInterval;
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} V0.6/accountadministration/login/:token Request login with client access
-	* @apiName client login
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.6.0
-	*
-	* @apiParam {token} client token access
-	*
-	* @apiSuccess {Object} user user's information
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} V0.7/accountadministration/login/:token Request login with client access
-	* @apiName client login
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {token} client token access
-	*
-	* @apiSuccess {Object} user user's information
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} V0.8/accountadministration/login/:token Request login with client access
-	* @apiName client login
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {token} client token access
-	*
-	* @apiSuccess {Object} user user's information
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} V0.9/accountadministration/login/:token Request login with client access
-	* @apiName client login
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {token} client token access
-	*
-	* @apiSuccess {Object} user user's information
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} V0.10/accountadministration/login/:token Request login with client access
-	* @apiName client login
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {token} client token access
-	*
-	* @apiSuccess {Object} user user's information
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} V0.11/accountadministration/login/:token Request login with client access
+	* @-api {get} V0.11/accountadministration/login/:token Request login with client access
 	* @apiName client login
 	* @apiGroup AccountAdministration
 	* @apiVersion 0.11.0
@@ -214,6 +42,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiSuccess {string} user.lastname user's lastname
 	* @apiSuccess {string} user.email user's email
 	* @apiSuccess {string} user.token user's authentication token
+	* @apiSuccess {String} user.avatar user's avatar
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -222,7 +51,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"firstname": "John",
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
+	*				"token": "fkE35dcDneOjF....",
+	*				"avatar": "01001110101100010....."
 	*			}
 	* 	}
 	*
@@ -245,208 +75,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $response;
 	}
 
-	/**
- 	* @api {post} V0.6/accountadministration/login Request login
- 	* @apiName login
- 	* @apiGroup AccountAdministration
- 	* @apiVersion 0.6.0
- 	*
- 	* @apiParam {email} login login (user's email)
- 	* @apiParam {string} password password
- 	*
- 	* @apiSuccess {Object} user user's information
- 	* @apiSuccess {int} user.id whiteboard id
- 	* @apiSuccess {string} user.firstname user's firstname
- 	* @apiSuccess {string} user.lastname user's lastname
- 	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
- 	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
- 	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
- 	* 	}
- 	*
- 	* @apiErrorExample Bad Login
- 	* 	HTTP/1.1 400 Bad Request
- 	* 	{
- 	* 		"Bad Login"
- 	* 	}
-	* @apiErrorExample Bad Password
- 	*		HTTP/1.1 400 Bad Request
-  * 	{
-  *   	"Bad Password"
-  * 	}
- 	*
- 	*/
-
  	/**
- 	* @api {post} V0.7/accountadministration/login Request login
- 	* @apiName login
- 	* @apiGroup AccountAdministration
- 	* @apiVersion 0.7.0
- 	*
- 	* @apiParam {email} login login (user's email)
- 	* @apiParam {string} password password
- 	*
- 	* @apiSuccess {Object} user user's information
- 	* @apiSuccess {int} user.id whiteboard id
- 	* @apiSuccess {string} user.firstname user's firstname
- 	* @apiSuccess {string} user.lastname user's lastname
- 	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
- 	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
- 	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
- 	* 	}
- 	*
- 	* @apiErrorExample Bad Login
- 	* 	HTTP/1.1 400 Bad Request
- 	* 	{
- 	* 		"Bad Login"
- 	* 	}
-	* @apiErrorExample Bad Password
- 	*		HTTP/1.1 400 Bad Request
-  * 	{
-  *   	"Bad Password"
-  * 	}
- 	*
- 	*/
-
- 	/**
- 	* @api {post} V0.8/accountadministration/login Request login
- 	* @apiName login
- 	* @apiGroup AccountAdministration
- 	* @apiVersion 0.8.0
- 	*
- 	* @apiParam {email} login login (user's email)
- 	* @apiParam {string} password password
- 	*
- 	* @apiSuccess {Object} user user's information
- 	* @apiSuccess {int} user.id whiteboard id
- 	* @apiSuccess {string} user.firstname user's firstname
- 	* @apiSuccess {string} user.lastname user's lastname
- 	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
- 	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
- 	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
- 	* 	}
- 	*
- 	* @apiErrorExample Bad Login
- 	* 	HTTP/1.1 400 Bad Request
- 	* 	{
- 	* 		"Bad Login"
- 	* 	}
-	* @apiErrorExample Bad Password
- 	*		HTTP/1.1 400 Bad Request
-  * 	{
-  *   	"Bad Password"
-  * 	}
- 	*
- 	*/
-
- 	/**
- 	* @api {post} V0.9/accountadministration/login Request login
- 	* @apiName login
- 	* @apiGroup AccountAdministration
- 	* @apiVersion 0.9.0
- 	*
- 	* @apiParam {email} login login (user's email)
- 	* @apiParam {string} password password
- 	*
- 	* @apiSuccess {Object} user user's information
- 	* @apiSuccess {int} user.id whiteboard id
- 	* @apiSuccess {string} user.firstname user's firstname
- 	* @apiSuccess {string} user.lastname user's lastname
- 	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
- 	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
- 	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
- 	* 	}
- 	*
- 	* @apiErrorExample Bad Login
- 	* 	HTTP/1.1 400 Bad Request
- 	* 	{
- 	* 		"Bad Login"
- 	* 	}
-	* @apiErrorExample Bad Password
- 	*		HTTP/1.1 400 Bad Request
-  * 	{
-  *   	"Bad Password"
-  * 	}
- 	*
- 	*/
-
- 	/**
- 	* @api {post} V0.10/accountadministration/login Request login
- 	* @apiName login
- 	* @apiGroup AccountAdministration
- 	* @apiVersion 0.10.0
- 	*
- 	* @apiParam {email} login login (user's email)
- 	* @apiParam {string} password password
- 	*
- 	* @apiSuccess {Object} user user's information
- 	* @apiSuccess {int} user.id whiteboard id
- 	* @apiSuccess {string} user.firstname user's firstname
- 	* @apiSuccess {string} user.lastname user's lastname
- 	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
- 	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
- 	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
- 	* 	}
- 	*
- 	* @apiErrorExample Bad Login
- 	* 	HTTP/1.1 400 Bad Request
- 	* 	{
- 	* 		"Bad Login"
- 	* 	}
-	* @apiErrorExample Bad Password
- 	*		HTTP/1.1 400 Bad Request
-  * 	{
-  *   	"Bad Password"
-  * 	}
- 	*
- 	*/
-
- 	/**
- 	* @api {post} V0.11/accountadministration/login Request login
+ 	* @api {post} V0.11/accountadministration/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
  	* @apiVersion 0.11.0
@@ -575,150 +205,29 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em->flush();
 	}
 
-
 	/**
- * @api {get} V0.6/accountadministration/logout/:token Request logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiVersion 0.6.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} data	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	HTTP/1.1 200 OK
- * 	{
- * 		"Logout Successfully"
- * 	}
- *
- * @apiErrorExample Bad Authentication Token
- * 	HTTP/1.1 400 Bad Request
- * 	{
- * 		"Bad Authentication Token"
- * 	}
- *
- */
-
-	/**
- * @api {get} V0.7/accountadministration/logout/:token Request logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiVersion 0.7.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} data	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	HTTP/1.1 200 OK
- * 	{
- * 		"Logout Successfully"
- * 	}
- *
- * @apiErrorExample Bad Authentication Token
- * 	HTTP/1.1 400 Bad Request
- * 	{
- * 		"Bad Authentication Token"
- * 	}
- *
- */
-
-	/**
- * @api {get} V0.8/accountadministration/logout/:token Request logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiVersion 0.8.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} data	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	HTTP/1.1 200 OK
- * 	{
- * 		"Logout Successfully"
- * 	}
- *
- * @apiErrorExample Bad Authentication Token
- * 	HTTP/1.1 400 Bad Request
- * 	{
- * 		"Bad Authentication Token"
- * 	}
- *
- */
-
-	/**
- * @api {get} V0.9/accountadministration/logout/:token Request logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiVersion 0.9.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} data	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	HTTP/1.1 200 OK
- * 	{
- * 		"Logout Successfully"
- * 	}
- *
- * @apiErrorExample Bad Authentication Token
- * 	HTTP/1.1 400 Bad Request
- * 	{
- * 		"Bad Authentication Token"
- * 	}
- *
- */
-
-	/**
- * @api {get} V0.10/accountadministration/logout/:token Request logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiVersion 0.10.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} data	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	HTTP/1.1 200 OK
- * 	{
- * 		"Logout Successfully"
- * 	}
- *
- * @apiErrorExample Bad Authentication Token
- * 	HTTP/1.1 400 Bad Request
- * 	{
- * 		"Bad Authentication Token"
- * 	}
- *
- */
-
-	/**
- * @api {get} V0.11/accountadministration/logout/:token Request logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiVersion 0.11.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} data	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	HTTP/1.1 200 OK
- * 	{
- * 		"Logout Successfully"
- * 	}
- *
- * @apiErrorExample Bad Authentication Token
- * 	HTTP/1.1 400 Bad Request
- * 	{
- * 		"Bad Authentication Token"
- * 	}
- *
- */
+	* @api {get} V0.11/accountadministration/logout/:token Logout
+	* @apiName logout
+	* @apiGroup AccountAdministration
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {string} token user's authentication token
+	*
+	* @apiSuccess {string} data	success message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	HTTP/1.1 200 OK
+	* 	{
+	* 		"Logout Successfully"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	*
+	*/
  	public function logoutAction(Request $request, $token)
  	{
 		$user = $this->checkToken($token);
@@ -737,301 +246,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	}
 
 	/**
-		* @api {post} V0.6/accountadministration/register Request user creation and login
-		* @apiName register
-		* @apiGroup AccountAdministration
-		* @apiVersion 0.6.0
-		*
-		* @apiParam {string} firstname user's firstname
-		* @apiParam {string} lastname user's lastname
-		* @apiParam {DateTime} [birthday] user's birthday
-		* @apiParam {file} [avatar] user's avatar
-		* @apiParam {string} password user's password
-		* @apiParam {email} email user's email
-		* @apiParam {string} [phone] user's phone
-		* @apiParam {string} [country] user's country
-		* @apiParam {url} [linkedin] user's linkedin
-		* @apiParam {url} [viadeo] user's viadeo
-		* @apiParam {url} [twitter] user's twitter
-		*
-		* @apiSuccess {Object} user user's informations
-		* @apiSuccess {int} user.id whiteboard id
-		* @apiSuccess {string} user.firstname user's firstname
-		* @apiSuccess {string} user.lastname user's lastname
-		* @apiSuccess {string} user.email user's email
-		* @apiSuccess {string} user.token user's authentication token
-		*
-		* @apiSuccessExample {json} Success-Response:
-		* 	{
-		*		"user": {
-		*			"id": 12,
-		*			"firstname": "John",
-		*			"lastname": "Doe",
-		*			"email": "john.doe@gmail.com",
-		*			"token": "fkE35dcDneOjF...."
-		*		}
-		* 	}
-		*
-		* @apiErrorExample Missing Parameter
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Missing Parameter"
-	  * 	}
-		* @apiErrorExample Email Already Used
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Email already in DB"
-	  * 	}
-		*
-		*/
-
-	/**
-	* @api {post} V0.7/accountadministration/register Request user creation and login
-	* @apiName register
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {string} firstname user's firstname
-	* @apiParam {string} lastname user's lastname
-	* @apiParam {DateTime} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
-	*
-	* @apiSuccess {Object} user user's informations
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"user": {
-	*			"id": 12,
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"email": "john.doe@gmail.com",
-	*			"token": "fkE35dcDneOjF...."
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Missing Parameter
- 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Missing Parameter"
-	  * 	}
-		* @apiErrorExample Email Already Used
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Email already in DB"
-	  * 	}
-		*
-		*/
-
-	/**
-	* @api {post} V0.8/accountadministration/register Request user creation and login
-	* @apiName register
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {string} firstname user's firstname
-	* @apiParam {string} lastname user's lastname
-	* @apiParam {DateTime} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
-	*
-	* @apiSuccess {Object} user user's informations
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"user": {
-	*			"id": 12,
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"email": "john.doe@gmail.com",
-	*			"token": "fkE35dcDneOjF...."
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Missing Parameter
- 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Missing Parameter"
-	  * 	}
-		* @apiErrorExample Email Already Used
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Email already in DB"
-	  * 	}
-		*
-		*/
-
-	/**
-	* @api {post} V0.9/accountadministration/register Request user creation and login
-	* @apiName register
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {string} firstname user's firstname
-	* @apiParam {string} lastname user's lastname
-	* @apiParam {DateTime} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
-	*
-	* @apiSuccess {Object} user user's informations
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"user": {
-	*			"id": 12,
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"email": "john.doe@gmail.com",
-	*			"token": "fkE35dcDneOjF...."
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Missing Parameter
- 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Missing Parameter"
-	  * 	}
-		* @apiErrorExample Email Already Used
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Email already in DB"
-	  * 	}
-		*
-		*/
-
-	/**
-	* @api {post} V0.10/accountadministration/register Request user creation and login
-	* @apiName register
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} firstname user's firstname
-	* @apiParam {string} lastname user's lastname
-	* @apiParam {DateTime} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
-	*
-	* @apiSuccess {Object} user user's informations
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"user": {
-	*			"id": 12,
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"email": "john.doe@gmail.com",
-	*			"token": "fkE35dcDneOjF...."
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Missing Parameter
- 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Missing Parameter"
-	  * 	}
-		* @apiErrorExample Email Already Used
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Email already in DB"
-	  * 	}
-		*
-		*/
-
-	/**
-	* @api {post} V0.11/accountadministration/register Request user creation and login
-	* @apiName register
-	* @apiGroup AccountAdministration
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} firstname user's firstname
-	* @apiParam {string} lastname user's lastname
-	* @apiParam {DateTime} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
-	*
-	* @apiSuccess {Object} user user's informations
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"user": {
-	*			"id": 12,
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"email": "john.doe@gmail.com",
-	*			"token": "fkE35dcDneOjF...."
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Missing Parameter
- 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Missing Parameter"
-	  * 	}
-		* @apiErrorExample Email Already Used
-	 	* 	HTTP/1.1 400 Bad Request
-	  * 	{
-	  * 		"Email already in DB"
-	  * 	}
-		*
-		*/
-
-	/**
-	* @api {post} V0.11/accountadministration/register Request user creation and login
+	* @api {post} V0.11/accountadministration/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiVersion 0.11.1
@@ -1088,29 +303,20 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em = $this->getDoctrine()->getManager();
 		if ($em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->email)))
 			return $this->setBadRequest("Email already in DB");
+
 		$user = new User();
     $user->setFirstname($content->firstname);
     $user->setLastname($content->lastname);
+		$user->setEmail($content->email);
+
+		$encoder = $this->container->get('security.password_encoder');
+		$encoded = $encoder->encodePassword($user, $content->password);
+		$user->setPassword($encoded);
 
 		if (array_key_exists('birthday', $content))
 			$user->setBirthday(date_create($content->birthday));
-
-		if ($request->files->get('avatar'))
-		{
-			$generator = $this->get('security.secure_random');
-	    $random = $generator->nextBytes(10);
-	    $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
-	    $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
-	    $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
-
-	    $user->setAvatar($fileDir.'/'.$fileName);
-		}
-
-    $encoder = $this->container->get('security.password_encoder');
-    $encoded = $encoder->encodePassword($user, $content->password);
-    $user->setPassword($encoded);
-
-		$user->setEmail($content->email);
+		if (array_key_exists('avatar', $content))
+			$user->setAvatar(date_create($content->avatar));
 		if (array_key_exists('phone', $content))
     	$user->setPhone($content->phone);
 		if (array_key_exists('country', $content))

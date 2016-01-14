@@ -7,11 +7,6 @@ v2_accountAdministration_login:
     defaults:   { _controller: GrappboxBundle:AccountAdministration:login, _format: json }
     methods:    [POST]
 
-v2_accountAdministration_clientLogin:
-    path:       accountadministration/login/{token}
-    defaults:   { _controller: GrappboxBundle:AccountAdministration:clientLogin, _format: json }
-    methods:    [GET]
-
 v2_accountAdministration_logout:
     path:       accountadministration/logout/{token}
     defaults:   { _controller:GrappboxBundle:AccountAdministration:logout, _format: json }
@@ -21,6 +16,11 @@ v2_accountAdministration_register:
     path:       accountadministration/register
     defaults:   { _controller: GrappboxBundle:AccountAdministration:register, _format: json }
     methods:    [POST]
+
+v2_accountAdministration_clientLogin:
+    path:       accountadministration/login/{token}
+    defaults:   { _controller: GrappboxBundle:AccountAdministration:clientLogin, _format: json }
+    methods:    [GET]
 
 
 
