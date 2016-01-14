@@ -937,7 +937,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiName removeUserToTask
 	* @apiGroup Task
 	* @apiDescription Remove a given user to the task wanted
-	* @apiVersion 0..0
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
