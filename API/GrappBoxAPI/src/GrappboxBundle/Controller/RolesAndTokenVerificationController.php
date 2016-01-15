@@ -23,4089 +23,1546 @@ use DateInterval;
 *  @IgnoreAnnotation("apiErrorExample")
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiDescription")
 */
 class RolesAndTokenVerificationController extends Controller
 {
-  // return user if token is correct
-  // return null if token is incorrect
-  protected function checkToken($token)
-  {
-    if (!$token)
-      return NULL;
-    $em = $this->getDoctrine()->getManager();
-    $user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('token' => $token));
-
-    if (!$user)
-      return $user;
-
-    $now = new DateTime('now');
-    if ($user->getToken() && $user->getTokenValidity() && $user->getTokenValidity() < $now)
-    {
-      $this->token = null;
-      return null;
-    }
-    else if ($user->getToken() && $user->getTokenValidity())
-    {
-      $user->setTokenValidity($now->add(new DateInterval("P1D")));
-
-      $em = $this->getDoctrine()->getManager();
-      $em->persist($user);
-      $em->flush();
-    }
-
-    return $user;
-  }
-
-  // return 0 if user has no rigths on this role
-  // return 1 if user has rights
-  protected function checkRoles($user, $projectId, $role)
-  {
-    $em = $this->getDoctrine()->getManager();
-    $query = $em->createQuery(
-                      'SELECT roles.'.$role.'
-                      FROM GrappboxBundle:Role roles
-                      JOIN GrappboxBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
-                      WHERE projectUser.projectId = '.$projectId.' AND projectUser.userId = '.$user->getId());
-    $result = $query->setMaxResults(1)->getOneOrNullResult();
-    return $result[$role];
-  }
-
-  protected function setBadTokenError($code, $part, $function)
-  {
-    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Bad ID");
-    $response = new JsonResponse($ret);
-    $response->setStatusCode(JsonResponse::HTTP_UNAUTHORIZED);
-
-    return $response;
-  }
-
-  protected function setNoRightsError($code, $part, $function)
-  {
-    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Insufficient Rights");
-    $response = new JsonResponse($ret);
-    $response->setStatusCode(JsonResponse::HTTP_FORBIDDEN);
-
-    return $response;
-  }
-
-  protected function setBadRequest($code, $part, $function, $message)
-  {
-  	$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
-    $response = new JsonResponse($ret);
-    $response->setStatusCode(JsonResponse::HTTP_BAD_REQUEST);
-
-    return $response;
-  }
-
-  protected function setNoDataSuccess($code, $part, $function)
-  {
-    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."Success but no data");
-    $ret["data"] = array("array" => array());
-    $response = new JsonResponse($ret);
-    $response->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
-
-    return $response;
-  }
-
-  protected function setSuccess($code, $part, $function, $message, $data)
-  {
-    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
-    $ret["data"] = $data;
-    $response = new JsonResponse($ret);
-    $response->setStatusCode(JsonResponse::HTTP_OK);
-
-    return $response;
-  }
-
-  protected function setCreated($code, $part, $function, $message, $data)
-  {
-    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
-    $ret["data"] = $data;
-    $response = new JsonResponse($ret);
-    $response->setStatusCode(JsonResponse::HTTP_CREATED);
-
-    return $response;
-  }
-
-  /**
-  * @api {post} /V0.6/roles/addprojectroles Add a project role
-  * @apiName addProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.6.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} name Name of the role
-  * @apiParam {Number} teamTimeline Access rights on the project's team timeline
-  * @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-  * @apiParam {Number} gantt Access rights on the project's gantt
-  * @apiParam {Number} whiteboard Access rights on the project's whiteboard
-  * @apiParam {Number} bugtracker Access rights on the project's bugracker
-  * @apiParam {Number} event Access rights on the project's meetings
-  * @apiParam {Number} task Access rights on the project's tasks
-  * @apiParam {Number} projectSettings Access rights on the project's settings
-  * @apiParam {Number} cloud Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  * 	{
-  *			"_token": "aeqf231ced651qcd",
-  *			"projectId": 1,
-  *			"name": "Admin",
-  *			"teamTimeline": 1,
-  *			"customerTimeline": 1,
-  *			"gantt": 1,
-  *			"whiteboard": 1,
-  *			"bugtracker": 1,
-  *			"event": 1,
-  *			"task": 1,
-  *			"projectSettings": 1,
-  *			"cloud": 1
-  * 	}
-  *
-  * @apiSuccess {Number} roleId Id of the role created
-  *
-  * @apiSuccessExample Success-Response:
-  * 	{
-  *			"roleId":1
-  * 	}
-  *
-  * @apiErrorExample Missing Parameter
-  *		HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Missing Parameter"
-  * 	}
-  * @apiErrorExample Bad Authentication Token
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
-  * @apiErrorExample Insufficient User Rights
-  * 	HTTP/1.1 403 Forbidden
-  * 	{
-  * 		"Insufficient User Rights"
-  * 	}
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.7/roles/addprojectroles Add a project role
-  * @apiName addProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.7.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} name Name of the role
-  * @apiParam {Number} teamTimeline Access rights on the project's team timeline
-  * @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-  * @apiParam {Number} gantt Access rights on the project's gantt
-  * @apiParam {Number} whiteboard Access rights on the project's whiteboard
-  * @apiParam {Number} bugtracker Access rights on the project's bugracker
-  * @apiParam {Number} event Access rights on the project's meetings
-  * @apiParam {Number} task Access rights on the project's tasks
-  * @apiParam {Number} projectSettings Access rights on the project's settings
-  * @apiParam {Number} cloud Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "teamTimeline": 1,
-  *     "customerTimeline": 1,
-  *     "gantt": 1,
-  *     "whiteboard": 1,
-  *     "bugtracker": 1,
-  *     "event": 1,
-  *     "task": 1,
-  *     "projectSettings": 1,
-  *     "cloud": 1
-  *   }
-  *
-  * @apiSuccess {Number} roleId Id of the role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "roleId":1
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  * @apiErrorExample Project Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project with id X doesn't exist"
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.8/roles/addprojectroles Add a project role
-  * @apiName addProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} name Name of the role
-  * @apiParam {Number} teamTimeline Access rights on the project's team timeline
-  * @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-  * @apiParam {Number} gantt Access rights on the project's gantt
-  * @apiParam {Number} whiteboard Access rights on the project's whiteboard
-  * @apiParam {Number} bugtracker Access rights on the project's bugracker
-  * @apiParam {Number} event Access rights on the project's meetings
-  * @apiParam {Number} task Access rights on the project's tasks
-  * @apiParam {Number} projectSettings Access rights on the project's settings
-  * @apiParam {Number} cloud Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "teamTimeline": 1,
-  *     "customerTimeline": 1,
-  *     "gantt": 1,
-  *     "whiteboard": 1,
-  *     "bugtracker": 1,
-  *     "event": 1,
-  *     "task": 1,
-  *     "projectSettings": 1,
-  *     "cloud": 1
-  *   }
-  *
-  * @apiSuccess {Number} roleId Id of the role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "roleId":1
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  * @apiErrorExample Project Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project with id X doesn't exist"
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.8/roles/addprojectroles Add a project role
-  * @apiName addProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} name Name of the role
-  * @apiParam {Number} teamTimeline Access rights on the project's team timeline
-  * @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-  * @apiParam {Number} gantt Access rights on the project's gantt
-  * @apiParam {Number} whiteboard Access rights on the project's whiteboard
-  * @apiParam {Number} bugtracker Access rights on the project's bugracker
-  * @apiParam {Number} event Access rights on the project's meetings
-  * @apiParam {Number} task Access rights on the project's tasks
-  * @apiParam {Number} projectSettings Access rights on the project's settings
-  * @apiParam {Number} cloud Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "teamTimeline": 1,
-  *     "customerTimeline": 1,
-  *     "gantt": 1,
-  *     "whiteboard": 1,
-  *     "bugtracker": 1,
-  *     "event": 1,
-  *     "task": 1,
-  *     "projectSettings": 1,
-  *     "cloud": 1
-  *   }
-  *
-  * @apiSuccess {Number} roleId Id of the role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "roleId":1
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  * @apiErrorExample Project Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project with id X doesn't exist"
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.9/roles/addprojectroles Add a project role
-  * @apiName addProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} name Name of the role
-  * @apiParam {Number} teamTimeline Access rights on the project's team timeline
-  * @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-  * @apiParam {Number} gantt Access rights on the project's gantt
-  * @apiParam {Number} whiteboard Access rights on the project's whiteboard
-  * @apiParam {Number} bugtracker Access rights on the project's bugracker
-  * @apiParam {Number} event Access rights on the project's meetings
-  * @apiParam {Number} task Access rights on the project's tasks
-  * @apiParam {Number} projectSettings Access rights on the project's settings
-  * @apiParam {Number} cloud Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "teamTimeline": 1,
-  *     "customerTimeline": 1,
-  *     "gantt": 1,
-  *     "whiteboard": 1,
-  *     "bugtracker": 1,
-  *     "event": 1,
-  *     "task": 1,
-  *     "projectSettings": 1,
-  *     "cloud": 1
-  *   }
-  *
-  * @apiSuccess {Number} roleId Id of the role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "roleId":1
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  * @apiErrorExample Project Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project with id X doesn't exist"
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.10/roles/addprojectroles Add a project role
-  * @apiName addProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} name Name of the role
-  * @apiParam {Number} teamTimeline Access rights on the project's team timeline
-  * @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-  * @apiParam {Number} gantt Access rights on the project's gantt
-  * @apiParam {Number} whiteboard Access rights on the project's whiteboard
-  * @apiParam {Number} bugtracker Access rights on the project's bugracker
-  * @apiParam {Number} event Access rights on the project's meetings
-  * @apiParam {Number} task Access rights on the project's tasks
-  * @apiParam {Number} projectSettings Access rights on the project's settings
-  * @apiParam {Number} cloud Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "teamTimeline": 1,
-  *     "customerTimeline": 1,
-  *     "gantt": 1,
-  *     "whiteboard": 1,
-  *     "bugtracker": 1,
-  *     "event": 1,
-  *     "task": 1,
-  *     "projectSettings": 1,
-  *     "cloud": 1
-  *   }
-  *
-  * @apiSuccess {Number} roleId Id of the role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "roleId":1
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  * @apiErrorExample Project Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project with id X doesn't exist"
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.11/roles/addprojectroles Add a project role
-  * @apiName addProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} name Name of the role
-  * @apiParam {Number} teamTimeline Access rights on the project's team timeline
-  * @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-  * @apiParam {Number} gantt Access rights on the project's gantt
-  * @apiParam {Number} whiteboard Access rights on the project's whiteboard
-  * @apiParam {Number} bugtracker Access rights on the project's bugracker
-  * @apiParam {Number} event Access rights on the project's meetings
-  * @apiParam {Number} task Access rights on the project's tasks
-  * @apiParam {Number} projectSettings Access rights on the project's settings
-  * @apiParam {Number} cloud Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "teamTimeline": 1,
-  *     "customerTimeline": 1,
-  *     "gantt": 1,
-  *     "whiteboard": 1,
-  *     "bugtracker": 1,
-  *     "event": 1,
-  *     "task": 1,
-  *     "projectSettings": 1,
-  *     "cloud": 1
-  *   }
-  *
-  * @apiSuccess {Number} roleId Id of the role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "roleId":1
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  * @apiErrorExample Project Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project with id X doesn't exist"
-  *     }
-  *
-  */
-  public function addProjectRolesAction(Request $request)
-  {
-    $content = $request->getContent();
-    $content = json_decode($content);
-
-  	$user = $this->checkToken($content->_token);
-  	if (!$content->projectId)
-		return $this->setBadRequest("Missing Parameter");
-	  if (!$user)
-		  return ($this->setBadTokenError());
-    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-		  return $this->setNoRightsError();
-
-  	$em = $this->getDoctrine()->getManager();
-  	$role = new Role();
-
-    $project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
-    if ($project === null)
-    {
-      throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
-
-    }
-
-  	$role->setProjects($project);
-  	$role->setName($content->name);
-  	$role->setTeamTimeline($content->teamTimeline);
-  	$role->setCustomerTimeline($content->customerTimeline);
-  	$role->setGantt($content->gantt);
-  	$role->setWhiteboard($content->whiteboard);
-  	$role->setBugtracker($content->bugtracker);
-  	$role->setEvent($content->event);
-  	$role->setTask($content->task);
-  	$role->setProjectSettings($content->projectSettings);
-  	$role->setCloud($content->cloud);
-
-  	$em->persist($role);
-  	$em->flush();
-
-  	return new JsonResponse(array("roleId" => $role->getId()));
-  }
-
-  /**
-  * @api {delete} /V0.6/roles/delprojectroles Delete a project role
-  * @apiName delProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.6.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  * 	{
-  *		"_token": "aeqf231ced651qcd",
-  *		"projectId": 1,
-  *		"roleId": 3
-  * 	}
-  *
-  * @apiSuccess message Remove role success.
-  * @apiSuccessExample Success-Response
-  *     HTTP/1.1 200 OK
-  *	  {
-  *		"message" : "Remove role success."
-  *	  }
-  *
-  * @apiErrorExample Missing Parameter
-  *		HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Missing Parameter"
-  * 	}
-  * @apiErrorExample Bad Authentication Token
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
-  * @apiErrorExample Insufficient User Rights
-  * 	HTTP/1.1 403 Forbidden
-  * 	{
-  * 		"Insufficient User Rights"
-  * 	}
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 3 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {delete} /V0.7/roles/delprojectroles Delete a project role
-  * @apiName delProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.7.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *   "_token": "aeqf231ced651qcd",
-  *   "projectId": 1,
-  *   "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Remove role success.
-  * @apiSuccessExample Success-Response
-  *     HTTP/1.1 200 OK
-  *   {
-  *   "message" : "Remove role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 3 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {delete} /V0.8/roles/delprojectroles Delete a project role
-  * @apiName delProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *   "_token": "aeqf231ced651qcd",
-  *   "projectId": 1,
-  *   "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Remove role success.
-  * @apiSuccessExample Success-Response
-  *     HTTP/1.1 200 OK
-  *   {
-  *   "message" : "Remove role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 3 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {delete} /V0.8/roles/delprojectroles Delete a project role
-  * @apiName delProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *   "_token": "aeqf231ced651qcd",
-  *   "projectId": 1,
-  *   "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Remove role success.
-  * @apiSuccessExample Success-Response
-  *     HTTP/1.1 200 OK
-  *   {
-  *   "message" : "Remove role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 3 doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the Admin role"
-  *   }
-  *
-  */
-
-  /**
-  * @api {delete} /V0.9/roles/delprojectroles Delete a project role
-  * @apiName delProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *   "_token": "aeqf231ced651qcd",
-  *   "projectId": 1,
-  *   "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Remove role success.
-  * @apiSuccessExample Success-Response
-  *     HTTP/1.1 200 OK
-  *   {
-  *   "message" : "Remove role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 3 doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the Admin role"
-  *   }
-  *
-  */
-
-  /**
-  * @api {delete} /V0.10/roles/delprojectroles Delete a project role
-  * @apiName delProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *   "_token": "aeqf231ced651qcd",
-  *   "projectId": 1,
-  *   "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Remove role success.
-  * @apiSuccessExample Success-Response
-  *     HTTP/1.1 200 OK
-  *   {
-  *   "message" : "Remove role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 3 doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the Admin role"
-  *   }
-  *
-  */
-
-  /**
-  * @api {delete} /V0.11/roles/delprojectroles Delete a project role
-  * @apiName delProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *   "_token": "aeqf231ced651qcd",
-  *   "projectId": 1,
-  *   "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Remove role success.
-  * @apiSuccessExample Success-Response
-  *     HTTP/1.1 200 OK
-  *   {
-  *   "message" : "Remove role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 3 doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the Admin role"
-  *   }
-  *
-  */
-  public function delProjectRolesAction(Request $request)
-  {
-    $content = $request->getContent();
-    $content = json_decode($content);
-
-  	$user = $this->checkToken($content->_token);
-  	if (!$content->projectId && !$content->roleId)
-		  return $this->setBadRequest("Missing Parameters");
-    if (!$user)
-		  return ($this->setBadTokenError());
-    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-		  return $this->setNoRightsError();
-
-    $em = $this->getDoctrine()->getManager();
-
-    $role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
-
-    if ($role === null)
-    {
-      throw new NotFoundHttpException("The role with id ".$content->roleId." doesn't exist.");
-    }
-
-    if ($role->getName() == "Admin")
-    {
-      return new JsonResponse('You can\'t remove the Admin role', JsonResponse::HTTP_FORBIDDEN);
-    }
-
-    $em->remove($role);
-    $em->flush();
-
-    return new JsonResponse("Remove role success.");
-  }
-
-  /**
-  * @api {put} /V0.6/roles/putprojectroles Update a project role
-  * @apiName updateProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.6.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} [name] Name of the role
-  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-  * @apiParam {Number} [gantt] Access rights on the project's gantt
-  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-  * @apiParam {Number} [event] Access rights on the project's meetings
-  * @apiParam {Number} [task] Access rights on the project's tasks
-  * @apiParam {Number} [projectSettings] Access rights on the project's settings
-  * @apiParam {Number} [cloud] Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  * 	{
-  *			"_token": "aeqf231ced651qcd",
-  *			"roleId": 2,
-  *			"projectId": 1,
-  *			"name": "Admin",
-  *			"customerTimeline": 0,
-  *			"event": 1,
-  *			"cloud": 0
-  * 	}
-  *
-  * @apiSuccess message Update role success.
-  *
-  * @apiSuccessExample Success-Response:
-  * 	{
-  *			"Update role success."
-  * 	}
-  *
-  * @apiErrorExample Missing Parameter
-  *		HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Missing Parameter"
-  * 	}
-  * @apiErrorExample Bad Authentication Token
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
-  * @apiErrorExample Insufficient User Rights
-  * 	HTTP/1.1 403 Forbidden
-  * 	{
-  * 		"Insufficient User Rights"
-  * 	}
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 2 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.7/roles/putprojectroles Update a project role
-  * @apiName updateProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.7.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} [name] Name of the role
-  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-  * @apiParam {Number} [gantt] Access rights on the project's gantt
-  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-  * @apiParam {Number} [event] Access rights on the project's meetings
-  * @apiParam {Number} [task] Access rights on the project's tasks
-  * @apiParam {Number} [projectSettings] Access rights on the project's settings
-  * @apiParam {Number} [cloud] Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "roleId": 2,
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "customerTimeline": 0,
-  *     "event": 1,
-  *     "cloud": 0
-  *   }
-  *
-  * @apiSuccess message Update role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *   "Update role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 2 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.8/roles/putprojectroles Update a project role
-  * @apiName updateProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} [name] Name of the role
-  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-  * @apiParam {Number} [gantt] Access rights on the project's gantt
-  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-  * @apiParam {Number} [event] Access rights on the project's meetings
-  * @apiParam {Number} [task] Access rights on the project's tasks
-  * @apiParam {Number} [projectSettings] Access rights on the project's settings
-  * @apiParam {Number} [cloud] Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "roleId": 2,
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "customerTimeline": 0,
-  *     "event": 1,
-  *     "cloud": 0
-  *   }
-  *
-  * @apiSuccess message Update role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *   "Update role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 2 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.8/roles/putprojectroles Update a project role
-  * @apiName updateProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} [name] Name of the role
-  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-  * @apiParam {Number} [gantt] Access rights on the project's gantt
-  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-  * @apiParam {Number} [event] Access rights on the project's meetings
-  * @apiParam {Number} [task] Access rights on the project's tasks
-  * @apiParam {Number} [projectSettings] Access rights on the project's settings
-  * @apiParam {Number} [cloud] Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "roleId": 2,
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "customerTimeline": 0,
-  *     "event": 1,
-  *     "cloud": 0
-  *   }
-  *
-  * @apiSuccess message Update role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *   "Update role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 2 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.9/roles/putprojectroles Update a project role
-  * @apiName updateProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} [name] Name of the role
-  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-  * @apiParam {Number} [gantt] Access rights on the project's gantt
-  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-  * @apiParam {Number} [event] Access rights on the project's meetings
-  * @apiParam {Number} [task] Access rights on the project's tasks
-  * @apiParam {Number} [projectSettings] Access rights on the project's settings
-  * @apiParam {Number} [cloud] Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "roleId": 2,
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "customerTimeline": 0,
-  *     "event": 1,
-  *     "cloud": 0
-  *   }
-  *
-  * @apiSuccess message Update role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *   "Update role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 2 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.10/roles/putprojectroles Update a project role
-  * @apiName updateProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} [name] Name of the role
-  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-  * @apiParam {Number} [gantt] Access rights on the project's gantt
-  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-  * @apiParam {Number} [event] Access rights on the project's meetings
-  * @apiParam {Number} [task] Access rights on the project's tasks
-  * @apiParam {Number} [projectSettings] Access rights on the project's settings
-  * @apiParam {Number} [cloud] Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "roleId": 2,
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "customerTimeline": 0,
-  *     "event": 1,
-  *     "cloud": 0
-  *   }
-  *
-  * @apiSuccess message Update role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *   "Update role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 2 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.11/roles/putprojectroles Update a project role
-  * @apiName updateProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {String} [name] Name of the role
-  * @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-  * @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-  * @apiParam {Number} [gantt] Access rights on the project's gantt
-  * @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-  * @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-  * @apiParam {Number} [event] Access rights on the project's meetings
-  * @apiParam {Number} [task] Access rights on the project's tasks
-  * @apiParam {Number} [projectSettings] Access rights on the project's settings
-  * @apiParam {Number} [cloud] Access rights on the project's cloud
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "roleId": 2,
-  *     "projectId": 1,
-  *     "name": "Admin",
-  *     "customerTimeline": 0,
-  *     "event": 1,
-  *     "cloud": 0
-  *   }
-  *
-  * @apiSuccess message Update role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *   "Update role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id 2 doesn't exist."
-  *     }
-  *
-  */
-  public function updateProjectRolesAction(Request $request)
-  {
-    $content = $request->getContent();
-    $content = json_decode($content);
-
-  	$user = $this->checkToken($content->_token);
-  	if (!$content->projectId && !$content->roleId)
-		  return $this->setBadRequest("Missing Parameters");
-    if (!$user)
-		  return ($this->setBadTokenError());
-    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-		  return $this->setNoRightsError();
-
-    $em = $this->getDoctrine()->getManager();
-
-    $role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
-
-    if ($role === null)
-    {
-		  throw new NotFoundHttpException("The role with id ".$content->roleId." doesn't exist.");
-    }
-
-    if (array_key_exists('name', $content))
-      $role->setName($content->name);
-    if (array_key_exists('teamTimeline', $content))
-      $role->setTeamTimeline($content->teamTimeline);
-    if (array_key_exists('customerTimeline', $content))
-      $role->setCustomerTimeline($content->customerTimeline);
-    if (array_key_exists('gantt', $content))
-      $role->setGantt($content->gantt);
-    if (array_key_exists('whiteboard', $content))
-      $role->setWhiteboard($content->whiteboard);
-    if (array_key_exists('bugtracker', $content))
-      $role->setBugtracker($content->bugtracker);
-    if (array_key_exists('event', $content))
-      $role->setEvent($content->event);
-    if (array_key_exists('task', $content))
-      $role->setTask($content->task);
-    if (array_key_exists('projectSettings', $content))
-      $role->setProjectSettings($content->projectSettings);
-    if (array_key_exists('cloud', $content))
-      $role->setcloud($content->cloud);
-
-	  $em->flush();
-
-	  return new JsonResponse("Update role success.");
-  }
-
-  /**
-  * @api {get} /V0.6/roles/getprojectroles/:token/:projectId Get all project roles
-  * @apiName GetProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.6.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the projectId
-  *
-  * @apiSuccess {Object[]} Role Array of roles
-  * @apiSuccess {Number} Role.id Role id
-  * @apiSuccess {String} Role.name Role name
-  * @apiSuccess {Number} Role.team_timeline Team timeline role
-  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
-  * @apiSuccess {Number} Role.gantt Gantt role
-  * @apiSuccess {Number} Role.whiteboard Whiteboard role
-  * @apiSuccess {Number} Role.bugtracker Bugtracker role
-  * @apiSuccess {Number} Role.event Event role
-  * @apiSuccess {Number} Role.task Task role
-  * @apiSuccess {Number} Role.project_settings Project settings role
-  * @apiSuccess {Number} Role.cloud Cloud role
-  *
-  * @apiSuccessExample Success-Response:
-  * 	{
-  *			"Role 1":
-  *			{
-  *				"id": 10,
-  *				"name": "Intern roles",
-  *				"team_timeline": 1,
-  *				"customer_timeline": 0,
-  *				"gantt": 0,
-  *				"whiteboard": 0,
-  *				"bugtracker": 1,
-  *				"event": 0,
-  *				"task": 0,
-  *				"project_settings": 0,
-  *				"cloud": 1
-  * 		}
-  *		}
-  *
-  * @apiErrorExample Bad Authentication Token
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
-  * @apiErrorExample Insufficient User Rights
-  * 	HTTP/1.1 403 Forbidden
-  * 	{
-  * 		"Insufficient User Rights"
-  * 	}
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the project with id 2"
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.7/roles/getprojectroles/:token/:projectId Get all project roles
-  * @apiName GetProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.7.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the projectId
-  *
-  * @apiSuccess {Object[]} Role Array of roles
-  * @apiSuccess {Number} Role.id Role id
-  * @apiSuccess {String} Role.name Role name
-  * @apiSuccess {Number} Role.team_timeline Team timeline role
-  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
-  * @apiSuccess {Number} Role.gantt Gantt role
-  * @apiSuccess {Number} Role.whiteboard Whiteboard role
-  * @apiSuccess {Number} Role.bugtracker Bugtracker role
-  * @apiSuccess {Number} Role.event Event role
-  * @apiSuccess {Number} Role.task Task role
-  * @apiSuccess {Number} Role.project_settings Project settings role
-  * @apiSuccess {Number} Role.cloud Cloud role
-  *
-  * @apiSuccessExample Success-Response:
-  * 	{
-  *			"Role 1":
-  *			{
-  *				"id": 10,
-  *				"name": "Intern roles",
-  *				"team_timeline": 1,
-  *				"customer_timeline": 0,
-  *				"gantt": 0,
-  *				"whiteboard": 0,
-  *				"bugtracker": 1,
-  *				"event": 0,
-  *				"task": 0,
-  *				"project_settings": 0,
-  *				"cloud": 1
-  * 		}
-  *		}
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the project with id 2"
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.8/roles/getprojectroles/:token/:projectId Get all project roles
-  * @apiName GetProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the projectId
-  *
-  * @apiSuccess {Object[]} Role Array of roles
-  * @apiSuccess {Number} Role.id Role id
-  * @apiSuccess {String} Role.name Role name
-  * @apiSuccess {Number} Role.team_timeline Team timeline role
-  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
-  * @apiSuccess {Number} Role.gantt Gantt role
-  * @apiSuccess {Number} Role.whiteboard Whiteboard role
-  * @apiSuccess {Number} Role.bugtracker Bugtracker role
-  * @apiSuccess {Number} Role.event Event role
-  * @apiSuccess {Number} Role.task Task role
-  * @apiSuccess {Number} Role.project_settings Project settings role
-  * @apiSuccess {Number} Role.cloud Cloud role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10,
-  *       "name": "Intern roles",
-  *       "team_timeline": 1,
-  *       "customer_timeline": 0,
-  *       "gantt": 0,
-  *       "whiteboard": 0,
-  *       "bugtracker": 1,
-  *       "event": 0,
-  *       "task": 0,
-  *       "project_settings": 0,
-  *       "cloud": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the project with id 2"
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.8/roles/getprojectroles/:token/:projectId Get all project roles
-  * @apiName GetProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the projectId
-  *
-  * @apiSuccess {Object[]} Role Array of roles
-  * @apiSuccess {Number} Role.id Role id
-  * @apiSuccess {String} Role.name Role name
-  * @apiSuccess {Number} Role.team_timeline Team timeline role
-  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
-  * @apiSuccess {Number} Role.gantt Gantt role
-  * @apiSuccess {Number} Role.whiteboard Whiteboard role
-  * @apiSuccess {Number} Role.bugtracker Bugtracker role
-  * @apiSuccess {Number} Role.event Event role
-  * @apiSuccess {Number} Role.task Task role
-  * @apiSuccess {Number} Role.project_settings Project settings role
-  * @apiSuccess {Number} Role.cloud Cloud role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10,
-  *       "name": "Intern roles",
-  *       "team_timeline": 1,
-  *       "customer_timeline": 0,
-  *       "gantt": 0,
-  *       "whiteboard": 0,
-  *       "bugtracker": 1,
-  *       "event": 0,
-  *       "task": 0,
-  *       "project_settings": 0,
-  *       "cloud": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the project with id 2"
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.9/roles/getprojectroles/:token/:projectId Get all project roles
-  * @apiName GetProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the projectId
-  *
-  * @apiSuccess {Object[]} Role Array of roles
-  * @apiSuccess {Number} Role.id Role id
-  * @apiSuccess {String} Role.name Role name
-  * @apiSuccess {Number} Role.team_timeline Team timeline role
-  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
-  * @apiSuccess {Number} Role.gantt Gantt role
-  * @apiSuccess {Number} Role.whiteboard Whiteboard role
-  * @apiSuccess {Number} Role.bugtracker Bugtracker role
-  * @apiSuccess {Number} Role.event Event role
-  * @apiSuccess {Number} Role.task Task role
-  * @apiSuccess {Number} Role.project_settings Project settings role
-  * @apiSuccess {Number} Role.cloud Cloud role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10,
-  *       "name": "Intern roles",
-  *       "team_timeline": 1,
-  *       "customer_timeline": 0,
-  *       "gantt": 0,
-  *       "whiteboard": 0,
-  *       "bugtracker": 1,
-  *       "event": 0,
-  *       "task": 0,
-  *       "project_settings": 0,
-  *       "cloud": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the project with id 2"
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.10/roles/getprojectroles/:token/:projectId Get all project roles
-  * @apiName GetProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the projectId
-  *
-  * @apiSuccess {Object[]} Role Array of roles
-  * @apiSuccess {Number} Role.id Role id
-  * @apiSuccess {String} Role.name Role name
-  * @apiSuccess {Number} Role.team_timeline Team timeline role
-  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
-  * @apiSuccess {Number} Role.gantt Gantt role
-  * @apiSuccess {Number} Role.whiteboard Whiteboard role
-  * @apiSuccess {Number} Role.bugtracker Bugtracker role
-  * @apiSuccess {Number} Role.event Event role
-  * @apiSuccess {Number} Role.task Task role
-  * @apiSuccess {Number} Role.project_settings Project settings role
-  * @apiSuccess {Number} Role.cloud Cloud role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10,
-  *       "name": "Intern roles",
-  *       "team_timeline": 1,
-  *       "customer_timeline": 0,
-  *       "gantt": 0,
-  *       "whiteboard": 0,
-  *       "bugtracker": 1,
-  *       "event": 0,
-  *       "task": 0,
-  *       "project_settings": 0,
-  *       "cloud": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the project with id 2"
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.11/roles/getprojectroles/:token/:projectId Get all project roles
-  * @apiName GetProjectRoles
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the projectId
-  *
-  * @apiSuccess {Object[]} Role Array of roles
-  * @apiSuccess {Number} Role.id Role id
-  * @apiSuccess {String} Role.name Role name
-  * @apiSuccess {Number} Role.team_timeline Team timeline role
-  * @apiSuccess {Number} Role.customer_timeline Customer timeline role
-  * @apiSuccess {Number} Role.gantt Gantt role
-  * @apiSuccess {Number} Role.whiteboard Whiteboard role
-  * @apiSuccess {Number} Role.bugtracker Bugtracker role
-  * @apiSuccess {Number} Role.event Event role
-  * @apiSuccess {Number} Role.task Task role
-  * @apiSuccess {Number} Role.project_settings Project settings role
-  * @apiSuccess {Number} Role.cloud Cloud role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10,
-  *       "name": "Intern roles",
-  *       "team_timeline": 1,
-  *       "customer_timeline": 0,
-  *       "gantt": 0,
-  *       "whiteboard": 0,
-  *       "bugtracker": 1,
-  *       "event": 0,
-  *       "task": 0,
-  *       "project_settings": 0,
-  *       "cloud": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the project with id 2"
-  *     }
-  *
-  */
-  public function getProjectRolesAction(Request $request, $token, $projectId)
-  {
-    $content = $request->getContent();
-    $content = json_decode($content);
-
-  	$user = $this->checkToken($token);
-  	if (!$user)
-  		return ($this->setBadTokenError());
-  	if (!$this->checkRoles($user, $projectId, "projectSettings"))
-  		return $this->setNoRightsError();
-
-  	$em = $this->getDoctrine()->getManager();
-
-  	$roles = $em->getRepository('GrappboxBundle:Role')->findByprojects($projectId);
-
-  	if ($roles === null)
-  	{
-  		throw new NotFoundHttpException("The're no roles for the project with id ".$projectId);
-  	}
-
-  	$arr =array();
-  	$i = 1;
-
-    if (count($roles) == 0)
-    {
-      return new JsonResponse((Object)$arr);
-    }
-
-  	foreach ($roles as $role) {
-  		$roleId = $role->getId();
-  		$roleName = $role->getName();
-  		$teamTimeline = $role->getTeamTimeline();
-  		$customerTimeline = $role->getCustomerTimeline();
-  		$gantt = $role->getGantt();
-  		$whiteboard = $role->getWhiteboard();
-  		$bugtracker = $role->getBugtracker();
-  		$event = $role->getEvent();
-  		$task = $role->getTask();
-  		$projectSettings = $role->getProjectSettings();
-  		$cloud = $role->getCloud();
-
-  		$arr["Role ".$i] = array("id" => $roleId, "name" => $roleName, "team_timeline" => $teamTimeline, "customer_timeline" => $customerTimeline, "gantt" => $gantt,
-  			"whiteboard" => $whiteboard, "bugtracker" => $bugtracker, "event" => $event, "task" => $task, "project_settings" => $projectSettings, "cloud" => $cloud);
-  		$i++;
-	}
-
-	return new JsonResponse($arr);
-  }
-
-  /**
-  * @api {post} /V0.6/roles/assignpersontorole Assign a person to a role
-  * @apiName assignPersonToRole
-  * @apiGroup Roles
-  * @apiVersion 0.6.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userId Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  * 	{
-  *		"_token": "aeqf231ced651qcd",
-  *		"projectId": 1,
-  *		"userId": 6,
-  *		"roleId": 2
-  * 	}
-  *
-  * @apiSuccess {Number} purId Id of the project user role created
-  *
-  * @apiSuccessExample Success-Response:
-  * 	{
-  *			"purId":1
-  * 	}
-  *
-  * @apiErrorExample Missing Parameter
-  *		HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Missing Parameter"
-  * 	}
-  * @apiErrorExample Bad Authentication Token
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
-  * @apiErrorExample Insufficient User Rights
-  * 	HTTP/1.1 403 Forbidden
-  * 	{
-  * 		"Insufficient User Rights"
-  * 	}
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.7/roles/assignpersontorole Assign a person to a role
-  * @apiName assignPersonToRole
-  * @apiGroup Roles
-  * @apiVersion 0.7.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userId Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 6,
-  *     "roleId": 2
-  *   }
-  *
-  * @apiSuccess {Number} purId Id of the project user role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "person assign to role"
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.8/roles/assignpersontorole Assign a person to a role
-  * @apiName assignPersonToRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userId Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 6,
-  *     "roleId": 2
-  *   }
-  *
-  * @apiSuccess {Number} purId Id of the project user role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "person assign to role"
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.8/roles/assignpersontorole Assign a person to a role
-  * @apiName assignPersonToRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userId Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 6,
-  *     "roleId": 2
-  *   }
-  *
-  * @apiSuccess {Number} purId Id of the project user role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "person assign to role"
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.9/roles/assignpersontorole Assign a person to a role
-  * @apiName assignPersonToRole
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userId Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 6,
-  *     "roleId": 2
-  *   }
-  *
-  * @apiSuccess {Number} purId Id of the project user role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "person assign to role"
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.10/roles/assignpersontorole Assign a person to a role
-  * @apiName assignPersonToRole
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userId Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 6,
-  *     "roleId": 2
-  *   }
-  *
-  * @apiSuccess {Number} purId Id of the project user role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "person assign to role"
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-
-  /**
-  * @api {post} /V0.11/roles/assignpersontorole Assign a person to a role
-  * @apiName assignPersonToRole
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userId Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 6,
-  *     "roleId": 2
-  *   }
-  *
-  * @apiSuccess {Number} purId Id of the project user role created
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "person assign to role"
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  *
-  */
-  public function assignPersonToRoleAction(Request $request)
-  {
-    $content = $request->getContent();
-    $content = json_decode($content);
-
-  	$user = $this->checkToken($content->_token);
-  	if (!$content->projectId && !$content->roleId && !$content->userId)
-	    return $this->setBadRequest("Missing Parameters");
-    if (!$user)
-		  return ($this->setBadTokenError());
-    if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-		  return $this->setNoRightsError();
-
-    $em = $this->getDoctrine()->getManager();
-    $ProjectUserRole = new ProjectUserRole();
-
-    $ProjectUserRole->setProjectId($content->projectId);
-    $ProjectUserRole->setUserId($content->userId);
-    $ProjectUserRole->setRoleId($content->roleId);
-
-    $em->persist($ProjectUserRole);
-    $em->flush();
-
-    return new JsonResponse("person assign to role");
-  }
-
-  /**
-  * @api {put} /V0.6/roles/putpersonrole Update a person role
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.6.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} roleId Id of the role
-  * @apiParam {Number} purId Id of the Project user role to update
-  *
-  * @apiParamExample {json} Request-Example:
-  * 	{
-  *			"_token": "aeqf231ced651qcd",
-  *			"projectId": 1,
-  *			"roleId": 2,
-  *			"purId": 1
-  * 	}
-  *
-  * @apiSuccess message Update of the project user role success.
-  *
-  * @apiSuccessExample Success-Response:
-  * 	{
-  *			"Update of the project user role success."
-  * 	}
-  *
-  * @apiErrorExample Missing Parameter
-  *		HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Missing Parameter"
-  * 	}
-  * @apiErrorExample Bad Authentication Token
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
-  * @apiErrorExample Insufficient User Rights
-  * 	HTTP/1.1 403 Forbidden
-  * 	{
-  * 		"Insufficient User Rights"
-  * 	}
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role 1 doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.7/roles/putpersonrole Update a person role
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.7.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project for searching
-  * @apiParam {Number} userId Id of the user for searching
-  * @apiParam {Number} old_roleId Old id of the role for searching
-  * @apiParam {Number} roleId new role id
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "old_roleId": 2,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Update of the project user role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Update of the project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.8/roles/putpersonrole Update a person role
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project for searching
-  * @apiParam {Number} userId Id of the user for searching
-  * @apiParam {Number} old_roleId Old id of the role for searching
-  * @apiParam {Number} roleId new role id
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "old_roleId": 2,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Update of the project user role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Update of the project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.8/roles/putpersonrole Update a person role
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project for searching
-  * @apiParam {Number} userId Id of the user for searching
-  * @apiParam {Number} old_roleId Old id of the role for searching
-  * @apiParam {Number} roleId new role id
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "old_roleId": 2,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Update of the project user role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Update of the project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.9/roles/putpersonrole Update a person role
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project for searching
-  * @apiParam {Number} userId Id of the user for searching
-  * @apiParam {Number} old_roleId Old id of the role for searching
-  * @apiParam {Number} roleId new role id
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "old_roleId": 2,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Update of the project user role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Update of the project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.10/roles/putpersonrole Update a person role
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project for searching
-  * @apiParam {Number} userId Id of the user for searching
-  * @apiParam {Number} old_roleId Old id of the role for searching
-  * @apiParam {Number} roleId new role id
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "old_roleId": 2,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Update of the project user role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Update of the project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role doesn't exist."
-  *     }
-  *
-  */
-
-  /**
-  * @api {put} /V0.11/roles/putpersonrole Update a person role
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project for searching
-  * @apiParam {Number} userId Id of the user for searching
-  * @apiParam {Number} old_roleId Old id of the role for searching
-  * @apiParam {Number} roleId new role id
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "old_roleId": 2,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccess message Update of the project user role success.
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Update of the project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role doesn't exist."
-  *     }
-  *
-  */
-  public function updatePersonRoleAction(Request $request)
-  {
-    $content = $request->getContent();
-    $content = json_decode($content);
-
-  	$user = $this->checkToken($content->_token);
-  	if (!$content->projectId && !$content->old_roleId && !$content->userId && !$content->roleId)
-		return $this->setBadRequest("Missing Parameters");
-	if (!$user)
-		return ($this->setBadTokenError());
-	if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-		return $this->setNoRightsError();
-
-	$em = $this->getDoctrine()->getManager();
-
-    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
-
-    $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
-    ->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->old_roleId)->getQuery();
-    $ProjectUserRoles = $qb->getResult();
-
-	if ($ProjectUserRoles === null)
+	// return user if token is correct
+	// return null if token is incorrect
+	protected function checkToken($token)
 	{
-		throw new NotFoundHttpException("The project user role doesn't exist.");
+		if (!$token)
+			return NULL;
+		$em = $this->getDoctrine()->getManager();
+		$user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('token' => $token));
+
+		if (!$user)
+			return $user;
+
+		$now = new DateTime('now');
+		if ($user->getToken() && $user->getTokenValidity() && $user->getTokenValidity() < $now)
+		{
+			$this->token = null;
+			return null;
+		}
+		else if ($user->getToken() && $user->getTokenValidity())
+		{
+			$user->setTokenValidity($now->add(new DateInterval("P1D")));
+		
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($user);
+			$em->flush();
+		}
+
+		return $user;
 	}
 
-  foreach ($ProjectUserRoles as $pur) {
-    $pur->setRoleId($content->roleId);
-  }
-
-	$em->flush();
-
-	return new JsonResponse("Update of the project user role success.");
-  }
-
-  /**
-  * @api {get} /V0.8/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} token Token of the person connected
-  *
-  * @apiSuccess {Object[]} UserRole Array of user roles
-  * @apiSuccess {Number} UserRole.id Project user role id
-  * @apiSuccess {Number} UserRole.project_id Id of the project
-  * @apiSuccess {Number} UserRole.role_id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "UserRole 1":
-  *     {
-  *       "id": 10,
-  *       "project_id": 5,
-  *       "role_id": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample User roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The user X don't have roles."
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.8/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} token Token of the person connected
-  *
-  * @apiSuccess {Object[]} UserRole Array of user roles
-  * @apiSuccess {Number} UserRole.id Project user role id
-  * @apiSuccess {Number} UserRole.project_id Id of the project
-  * @apiSuccess {Number} UserRole.role_id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "UserRole 1":
-  *     {
-  *       "id": 10,
-  *       "project_id": 5,
-  *       "role_id": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample User roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The user X don't have roles."
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.9/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} token Token of the person connected
-  *
-  * @apiSuccess {Object[]} UserRole Array of user roles
-  * @apiSuccess {Number} UserRole.id Project user role id
-  * @apiSuccess {Number} UserRole.project_id Id of the project
-  * @apiSuccess {Number} UserRole.role_id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "UserRole 1":
-  *     {
-  *       "id": 10,
-  *       "project_id": 5,
-  *       "role_id": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample User roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The user X don't have roles."
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.10/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} token Token of the person connected
-  *
-  * @apiSuccess {Object[]} UserRole Array of user roles
-  * @apiSuccess {Number} UserRole.id Project user role id
-  * @apiSuccess {Number} UserRole.project_id Id of the project
-  * @apiSuccess {Number} UserRole.role_id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "UserRole 1":
-  *     {
-  *       "id": 10,
-  *       "project_id": 5,
-  *       "role_id": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample User roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The user X don't have roles."
-  *     }
-  *
-  */
-
-  /**
-  * @api {get} /V0.11/roles/getuserroles/:token Get the roles of the user connected
-  * @apiName updatePersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} token Token of the person connected
-  *
-  * @apiSuccess {Object[]} UserRole Array of user roles
-  * @apiSuccess {Number} UserRole.id Project user role id
-  * @apiSuccess {Number} UserRole.project_id Id of the project
-  * @apiSuccess {Number} UserRole.role_id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "UserRole 1":
-  *     {
-  *       "id": 10,
-  *       "project_id": 5,
-  *       "role_id": 1
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample User roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The user X don't have roles."
-  *     }
-  *
-  */
-  public function getUserRolesAction(Request $request, $token)
-  {
-  	$user = $this->checkToken($token);
-  	if (!$user)
-		return ($this->setBadTokenError());
-
-  	$em = $this->getDoctrine()->getManager();
-	$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
-
-	if ($userRoles === null)
+	// return 0 if user has no rigths on this role
+	// return 1 if user has rights
+	protected function checkRoles($user, $projectId, $role)
 	{
-		throw new NotFoundHttpException("The user ".$user->getId()." don't have roles.");
+		$em = $this->getDoctrine()->getManager();
+		$query = $em->createQuery(
+			'SELECT roles.'.$role.'
+			FROM GrappboxBundle:Role roles
+			JOIN GrappboxBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
+			WHERE projectUser.projectId = '.$projectId.' AND projectUser.userId = '.$user->getId());
+		$result = $query->setMaxResults(1)->getOneOrNullResult();
+		return $result[$role];
 	}
 
-	$arr = array();
-	$i = 1;
+	protected function setBadTokenError($code, $part, $function)
+	{
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Bad ID");
+		$response = new JsonResponse($ret);
+		$response->setStatusCode(JsonResponse::HTTP_UNAUTHORIZED);
 
-  if (count($userRoles) == 0)
-  {
-    return new JsonResponse((Object)$arr);
-  }
-
-	foreach ($userRoles as $role) {
-		$purId = $role->getId();
-		$projectId = $role->getProjectId();
-		$roleId = $role->getRoleId();
-
-		$arr["UserRole ".$i] = array("id" => $purId, "project_id" => $projectId, "role_id" => $roleId);
-		$i++;
+		return $response;
 	}
 
-	return new JsonResponse($arr);
-  }
+	protected function setNoRightsError($code, $part, $function)
+	{
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Insufficient Rights");
+		$response = new JsonResponse($ret);
+		$response->setStatusCode(JsonResponse::HTTP_FORBIDDEN);
 
-  /**
-  * @api {delete} /V0.6/roles/delpersonrole Delete a person role
-  * @apiName delPersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.6.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} purId Id of the Project user role
-  *
-  * @apiParamExample {json} Request-Example:
-  * 	{
-  *			"_token": "aeqf231ced651qcd",
-  *			"projectId": 1,
-  *			"purId": 1
-  * 	}
-  *
-  * @apiSuccessExample Success-Response:
-  * 	{
-  *			"Remove project user role success."
-  * 	}
-  *
-  * @apiErrorExample Missing Parameter
-  *		HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Missing Parameter"
-  * 	}
-  * @apiErrorExample Bad Authentication Token
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  * 		"Bad Authentication Token"
-  * 	}
-  * @apiErrorExample Insufficient User Rights
-  * 	HTTP/1.1 403 Forbidden
-  * 	{
-  * 		"Insufficient User Rights"
-  * 	}
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role with id 1 doesn't exist."
-  *     }
-  *
-  */
+		return $response;
+	}
 
-  /**
-  * @api {delete} /V0.7/roles/delpersonrole Delete a person role
-  * @apiName delPersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.7.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userd Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Remove project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role with id 1 doesn't exist."
-  *     }
-  *
-  */
+	protected function setBadRequest($code, $part, $function, $message)
+	{
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
+		$response = new JsonResponse($ret);
+		$response->setStatusCode(JsonResponse::HTTP_BAD_REQUEST);
 
-  /**
-  * @api {delete} /V0.8/roles/delpersonrole Delete a person role
-  * @apiName delPersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userd Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Remove project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role with id 1 doesn't exist."
-  *     }
-  *
-  */
+		return $response;
+	}
 
-  /**
-  * @api {delete} /V0.8/roles/delpersonrole Delete a person role
-  * @apiName delPersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userd Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Remove project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role with id 1 doesn't exist."
-  *     }
-  *
-    * @apiErrorExample Project or role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project or the role doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the creator from Admin role"
-  *   }
-  *
-  */
+	protected function setNoDataSuccess($code, $part, $function)
+	{
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."Success but no data");
+		$ret["data"] = array("array" => array());
+		$response = new JsonResponse($ret);
+		$response->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
 
-  /**
-  * @api {delete} /V0.9/roles/delpersonrole Delete a person role
-  * @apiName delPersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userd Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Remove project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role with id 1 doesn't exist."
-  *     }
-  *
-    * @apiErrorExample Project or role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project or the role doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the creator from Admin role"
-  *   }
-  *
-  */
+		return $response;
+	}
 
-  /**
-  * @api {delete} /V0.10/roles/delpersonrole Delete a person role
-  * @apiName delPersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userd Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Remove project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role with id 1 doesn't exist."
-  *     }
-  *
-    * @apiErrorExample Project or role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project or the role doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the creator from Admin role"
-  *   }
-  *
-  */
+	protected function setSuccess($code, $part, $function, $message, $data)
+	{
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
+		$ret["data"] = $data;
+		$response = new JsonResponse($ret);
+		$response->setStatusCode(JsonResponse::HTTP_OK);
 
-  /**
-  * @api {delete} /V0.11/roles/delpersonrole Delete a person role
-  * @apiName delPersonRole
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} _token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam {Number} userd Id of the user
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiParamExample {json} Request-Example:
-  *   {
-  *     "_token": "aeqf231ced651qcd",
-  *     "projectId": 1,
-  *     "userId": 1,
-  *     "roleId": 3
-  *   }
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Remove project user role success."
-  *   }
-  *
-  * @apiErrorExample Missing Parameter
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Missing Parameter"
-  *   }
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Project user role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project user role with id 1 doesn't exist."
-  *     }
-  *
-    * @apiErrorExample Project or role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The project or the role doesn't exist."
-  *     }
-  *
-  * @apiErrorExample Can't remove
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "You can't remove the creator from Admin role"
-  *   }
-  *
-  */
-  public function delPersonRoleAction(Request $request)
-  {
-    $content = $request->getContent();
-    $content = json_decode($content);
+		return $response;
+	}
 
-  	$user = $this->checkToken($content->_token);
-  	if (!$content->projectId && !$content->userId && !$content->roleId)
-		return $this->setBadRequest("Missing Parameters");
-  	if (!$user)
-  		return ($this->setBadTokenError());
-  	if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
-  		return $this->setNoRightsError();
+	protected function setCreated($code, $part, $function, $message, $data)
+	{
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - ".$message);
+		$ret["data"] = $data;
+		$response = new JsonResponse($ret);
+		$response->setStatusCode(JsonResponse::HTTP_CREATED);
 
-    $em = $this->getDoctrine()->getManager();
+		return $response;
+	}
 
-    $project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
-    $role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+	/**
+	* @api {post} /V0.2/roles/addprojectroles Add a project role
+	* @apiName addProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Add a project role
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {String} name Name of the role
+	* @apiParam {Number} teamTimeline Access rights on the project's team timeline
+	* @apiParam {Number} customerTimeline Access rights on the project's customer timeline
+	* @apiParam {Number} gantt Access rights on the project's gantt
+	* @apiParam {Number} whiteboard Access rights on the project's whiteboard
+	* @apiParam {Number} bugtracker Access rights on the project's bugracker
+	* @apiParam {Number} event Access rights on the project's meetings
+	* @apiParam {Number} task Access rights on the project's tasks
+	* @apiParam {Number} projectSettings Access rights on the project's settings
+	* @apiParam {Number} cloud Access rights on the project's cloud
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"projectId": 1,
+	*			"name": "Admin",
+	*			"teamTimeline": 1,
+	*			"customerTimeline": 1,
+	*			"gantt": 1,
+	*			"whiteboard": 1,
+	*			"bugtracker": 1,
+	*			"event": 1,
+	*			"task": 1,
+	*			"projectSettings": 1,
+	*			"cloud": 1
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the role created
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - addprojectroles - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.3",
+	*			"return_message": "Role - addprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.6",
+	*			"return_message": "Role - addprojectroles - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.9",
+	*			"return_message": "Role - addprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.4",
+	*			"return_message": "Role - addprojectroles - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't create a role named Admin
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.4",
+	*			"return_message": "Role - addprojectroles - Bad Parameter: You can't create a role named Admin"
+	*		}
+	*	}
+	*/
+	public function addProjectRolesAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-    if ($project === null || $role === null)
-    {
-      throw new NotFoundHttpException("The project or the role doesn't exist.");
-    }
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('name', $content) || !array_key_exists('teamTimeline', $content)
+			|| !array_key_exists('customerTimeline', $content) || !array_key_exists('gantt', $content) || !array_key_exists('whiteboard', $content) || !array_key_exists('bugtracker', $content)
+			|| !array_key_exists('event', $content) || !array_key_exists('task', $content) || !array_key_exists('projectSettings', $content) || !array_key_exists('cloud', $content))
+			return $this->setBadRequest("13.1.6", "Role", "addprojectroles", "Missing Parameter");
 
-    if ($project->getCreatorUser()->getId() == $content->userId && $role->getName() == "Admin")
-    {
-      return new JsonResponse('You can\'t remove the creator from Admin role', JsonResponse::HTTP_FORBIDDEN);
-    }
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("13.1.3", "Role", "addprojectroles"));
 
-    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		if ($content->name == "Admin")
+			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: You can't create a role named Admin");
 
-    $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
-    ->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->roleId)->getQuery();
-    $ProjectUserRoles = $qb->getResult();
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+			return $this->setNoRightsError("13.1.9", "Role", "addprojectroles");
 
-    if (count($ProjectUserRoles) == 0)
-    {
-      throw new NotFoundHttpException("The project user role doesn't exist.");
-    }
+		$em = $this->getDoctrine()->getManager();
+		$role = new Role();
 
-    foreach ($ProjectUserRoles as $role) {
-      $em->remove($role);
-    }
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		if ($project === null)
+			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: projectId");
 
-  	$em->flush();
+		$role->setProjects($project);
+		$role->setName($content->name);
+		$role->setTeamTimeline($content->teamTimeline);
+		$role->setCustomerTimeline($content->customerTimeline);
+		$role->setGantt($content->gantt);
+		$role->setWhiteboard($content->whiteboard);
+		$role->setBugtracker($content->bugtracker);
+		$role->setEvent($content->event);
+		$role->setTask($content->task);
+		$role->setProjectSettings($content->projectSettings);
+		$role->setCloud($content->cloud);
 
-  	return new JsonResponse("Remove project user role success.");
-  }
+		$em->persist($role);
+		$em->flush();
 
-  /**
-  * @api {get} /V0.8/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
-  * @apiName getRoleByProjectAndUser
-  * @apiGroup Roles
-  * @apiVersion 0.8.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam [Number] userId Id of the user
-  *
-  * @apiSuccess {Object[]} Role Array of user roles
-  * @apiSuccess {Number} Role.id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the user X for the project Y"
-  *     }
-  *
-  */
+		return $this->setCreated("1.13.1", "Role", "addprojectroles", "Complete Success", array("id" => $role->getId()));
+	}
 
-  /**
-  * @api {get} /V0.8/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
-  * @apiName getRoleByProjectAndUser
-  * @apiGroup Roles
-  * @apiVersion 0.8.1
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam [Number] userId Id of the user
-  *
-  * @apiSuccess {Object[]} Role Array of user roles
-  * @apiSuccess {Number} Role.id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the user X for the project Y"
-  *     }
-  *
-  */
+	/**
+	* @api {delete} /V0.2/roles/delprojectroles Delete a project role
+	* @apiName delProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Delete the given role of the project wanted
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the role
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the role deleted
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - delprojectroles - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.3",
+	*			"return_message": "Role - delprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.6",
+	*			"return_message": "Role - delprojectroles - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.9",
+	*			"return_message": "Role - delprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.4",
+	*			"return_message": "Role - delprojectroles - Bad Parameter: id"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't remove the Admin role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.4",
+	*			"return_message": "Role - delprojectroles - Bad Parameter: You can't remove the Admin role"
+	*		}
+	*	}
+	*/
+	public function delProjectRolesAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-  /**
-  * @api {get} /V0.9/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
-  * @apiName getRoleByProjectAndUser
-  * @apiGroup Roles
-  * @apiVersion 0.9.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam [Number] userId Id of the user
-  *
-  * @apiSuccess {Object[]} Role Array of user roles
-  * @apiSuccess {Number} Role.id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the user X for the project Y"
-  *     }
-  *
-  */
+		if (!array_key_exists('id', $content) || !array_key_exists('token', $content))
+			return $this->setBadRequest("13.2.6", "Role", "delprojectroles", "Missing Parameter");
 
-  /**
-  * @api {get} /V0.10/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
-  * @apiName getRoleByProjectAndUser
-  * @apiGroup Roles
-  * @apiVersion 0.10.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam [Number] userId Id of the user
-  *
-  * @apiSuccess {Object[]} Role Array of user roles
-  * @apiSuccess {Number} Role.id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the user X for the project Y"
-  *     }
-  *
-  */
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("13.2.3", "Role", "delprojectroles"));
 
-  /**
-  * @api {get} /V0.11/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
-  * @apiName getRoleByProjectAndUser
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} projectId Id of the project
-  * @apiParam [Number] userId Id of the user
-  *
-  * @apiSuccess {Object[]} Role Array of user roles
-  * @apiSuccess {Number} Role.id Id of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "Role 1":
-  *     {
-  *       "id": 10
-  *     }
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Invalid Method Value
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "message": "404 not found."
-  *     }
-  * @apiErrorExample Roles not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The're no roles for the user X for the project Y"
-  *     }
-  *
-  */
-  public function getRoleByProjectAndUserAction(Request $request, $token, $projectId, $userId)
-  {
-    $user = $this->checkToken($token);
-    if (!$user)
-      return ($this->setBadTokenError());
-    if (!$this->checkRoles($user, $projectId, "projectSettings"))
-      return $this->setNoRightsError();
-    $em = $this->getDoctrine()->getManager();
-    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$em = $this->getDoctrine()->getManager();
+		$role = $em->getRepository('GrappboxBundle:Role')->find($content->id);
 
-    $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
-    $purs = $qb->getResult();
+		if ($role === null)
+			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: id");
 
-    if ($purs === null)
-    {
-      throw new NotFoundHttpException("The're no roles for the user ".$userId." for the project ".$projectId);
-    }
+		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+			return $this->setNoRightsError("13.2.9", "Role", "delprojectroles");
 
-    $arr = array();
-    $i = 1;
+		if ($role->getName() == "Admin")
+			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: You can't remove the Admin role");
 
-    if (count($purs) == 0)
-    {
-      return new JsonResponse((Object)$arr);
-    }
+		$em->remove($role);
+		$em->flush();
 
-    foreach ($purs as $role) {
-      $roleId = $role->getRoleId();
-      $arr["Role ".$i] = array("id" => $roleId);
-      $i++;
-    }
+		return $this->setSuccess("1.13.1", "Role", "delprojectroles", "Complete Success", array("id" => $content->id));
+	}
 
-    return new JsonResponse($arr);
-  }
+	/**
+	* @api {put} /V0.2/roles/putprojectroles Update a project role
+	* @apiName updateProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Update a given project role
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} roleId Id of the role
+	* @apiParam {String} [name] Name of the role
+	* @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
+	* @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
+	* @apiParam {Number} [gantt] Access rights on the project's gantt
+	* @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
+	* @apiParam {Number} [bugtracker] Access rights on the project's bugracker
+	* @apiParam {Number} [event] Access rights on the project's meetings
+	* @apiParam {Number} [task] Access rights on the project's tasks
+	* @apiParam {Number} [projectSettings] Access rights on the project's settings
+	* @apiParam {Number} [cloud] Access rights on the project's cloud
+	*
+	* @apiParamExample {json} Request-Full-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"roleId": 2,
+	*			"name": "Graphists",
+	*			"teamTimeline": 1,
+	*			"customerTimeline": 0,
+	*			"gantt": 0,
+	*			"whiteboard": 1,
+	*			"bugtracker": 0,
+	*			"event": 1,
+	*			"task": 1,
+	*			"projectSettings": 0,
+	*			"cloud": 0
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"roleId": 2
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Partial-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"roleId": 2,
+	*			"teamTimeline": 1,
+	*			"customerTimeline": 0,
+	*			"whiteboard": 1,
+	*			"event": 1,
+	*			"task": 1
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the role updated
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - putprojectroles - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.3",
+	*			"return_message": "Role - putprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.6",
+	*			"return_message": "Role - putprojectroles - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.9",
+	*			"return_message": "Role - putprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.4",
+	*			"return_message": "Role - putprojectroles - Bad Parameter: id"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't update the Admin role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.4",
+	*			"return_message": "Role - putprojectroles - Bad Parameter: You can't update the Admin role"
+	*		}
+	*	}
+	*/
+	public function updateProjectRolesAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-  /**
-  * @api {get} /V0.11/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
-  * @apiName getUsersForRole
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} roleId Id of the role
-  *
-  * @apiSuccess {Number} id Id of the role
-  * @apiSuccess {String} name Name of the role
-  * @apiSuccess {Object[]} users_assigned Array of users assigned to the role
-  * @apiSuccess {Number} users_assigned.id Id of the user
-  * @apiSuccess {String} users_assigned.firstname Firstname of the user
-  * @apiSuccess {String} users_assigned.lastname Lastname of the user
-  * @apiSuccess {Object[]} users_non_assigned Array of users non assigned to the role
-  * @apiSuccess {Number} users_non_assigned.id Id of the user
-  * @apiSuccess {String} users_non_assigned.firstname Firstname of the user
-  * @apiSuccess {String} users_non_assigned.lastname Lastname of the user
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *     "id": 2,
-  *     "name": "Admin",
-  *     "users_assigned": [
-  *       {
-  *         "id": 1,
-  *         "firstname": "john",
-  *         "lastname": "doe"
-  *       }
-  *     ],
-  *     "users-non_assigned": [
-  *       {
-  *         "id": 3,
-  *         "firstname": "jean",
-  *         "lastname": "neige"
-  *       },
-  *       {
-  *         "id": 8,
-  *         "firstname": "john",
-  *         "lastname": "snow"
-  *       }
-  *     ]
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample Insufficient User Rights
-  *   HTTP/1.1 403 Forbidden
-  *   {
-  *     "Insufficient User Rights"
-  *   }
-  * @apiErrorExample Role not found
-  *     HTTP/1.1 404 Not Found
-  *     {
-  *       "The role with id X doesn't exist"
-  *     }
-  *
-  */
-  public function getUsersForRoleAction(Request $request, $token, $roleId)
-  {
-    $user = $this->checkToken($token);
-    if (!$user)
-      return ($this->setBadTokenError());
+		if (!array_key_exists('roleId', $content) || !array_key_exists('token', $content))
+			return $this->setBadRequest("13.3.6", "Role", "putprojectroles", "Missing Parameter");
+	
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("13.3.3", "Role", "putprojectroles"));
 
-    $em = $this->getDoctrine()->getManager();
-    $role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
-    if ($role === null)
-    {
-      throw new NotFoundHttpException("The role with id ".$roleId." doesn't exist.");
-    }
+		$em = $this->getDoctrine()->getManager();
+		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
 
-    if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
-      return $this->setNoRightsError();
+		if ($role === null)
+			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: roleId");
 
-    $purRepository = $em->getRepository('GrappboxBundle:ProjectUserRole');
-    $qb = $purRepository->createQueryBuilder('pur')->where('pur.roleId = :id')->setParameter('id', $role->getId())->getQuery();
-    $purs = $qb->getResult();
+		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+			return $this->setNoRightsError("13.3.9", "Role", "putprojectroles");
 
-    $usersAssigned = array();
-    $usersNonAssigned = array();
+		if ($role->getName() == "Admin")
+			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: You can't update the Admin role");
 
-    $users = $role->getProjects()->getUsers();
+		if (array_key_exists('name', $content))
+			$role->setName($content->name);
+		if (array_key_exists('teamTimeline', $content))
+			$role->setTeamTimeline($content->teamTimeline);
+		if (array_key_exists('customerTimeline', $content))
+			$role->setCustomerTimeline($content->customerTimeline);
+		if (array_key_exists('gantt', $content))
+			$role->setGantt($content->gantt);
+		if (array_key_exists('whiteboard', $content))
+			$role->setWhiteboard($content->whiteboard);
+		if (array_key_exists('bugtracker', $content))
+			$role->setBugtracker($content->bugtracker);
+		if (array_key_exists('event', $content))
+			$role->setEvent($content->event);
+		if (array_key_exists('task', $content))
+			$role->setTask($content->task);
+		if (array_key_exists('projectSettings', $content))
+			$role->setProjectSettings($content->projectSettings);
+		if (array_key_exists('cloud', $content))
+			$role->setcloud($content->cloud);
 
-    foreach ($users as $u) {
-      $isAssigned = false;
+		$em->flush();
 
-      foreach ($purs as $p) {
-        if ($p->getUserId() == $u->getId())
-        {
-          $usersAssigned[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname());
-          $isAssigned = true;
-        }
-      }
-      if ($isAssigned == false)
-        $usersNonAssigned[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname());
-    }
+		return $this->setSuccess("1.13.1", "Role", "putprojectroles", "Complete Success", array("id" => $role->getId()));
+	}
 
-    return new JsonResponse(array("id" => $role->getId(),"name" => $role->getName(), "users_assigned" => $usersAssigned, "users_non_assigned" => $usersNonAssigned));
-  }
+	/**
+	* @api {get} /V0.2/roles/getprojectroles/:token/:projectId Get all project roles
+	* @apiName GetProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Get all the roles for the wanted project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Object[]} array Array of roles
+	* @apiSuccess {Number} array.id Role id
+	* @apiSuccess {String} array.name Role name
+	* @apiSuccess {Number} array.team_timeline Team timeline role
+	* @apiSuccess {Number} array.customer_timeline Customer timeline role
+	* @apiSuccess {Number} array.gantt Gantt role
+	* @apiSuccess {Number} array.whiteboard Whiteboard role
+	* @apiSuccess {Number} array.bugtracker Bugtracker role
+	* @apiSuccess {Number} array.event Event role
+	* @apiSuccess {Number} array.task Task role
+	* @apiSuccess {Number} array.project_settings Project settings role
+	* @apiSuccess {Number} array.cloud Cloud role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getprojectroles - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 10,
+	*					"name": "Intern roles",
+	*					"team_timeline": 1,
+	*					"customer_timeline": 0,
+	*					"gantt": 0,
+	*					"whiteboard": 0,
+	*					"bugtracker": 1,
+	*					"event": 0,
+	*					"task": 0,
+	*					"project_settings": 0,
+	*					"cloud": 1
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getprojectroles - Success but no data"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.4.3",
+	*			"return_message": "Role - getprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.4.9",
+	*			"return_message": "Role - getprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.4.4",
+	*			"return_message": "Role - getprojectroles - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
+	public function getProjectRolesAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("13.4.3", "Role", "getprojectroles"));
 
-  /**
-  * @api {get} /V0.11/roles/getuserrolesinformations/:token Get the roles informations of the user connected
-  * @apiName getUserConnectedRolesInformations
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} token Token of the person connected
-  *
-  * @apiSuccess {Object[]} user_role Array of user roles informations
-  * @apiSuccess {Number} user_role.id Project user role id
-  * @apiSuccess {Object[]} user_role.project Project informations
-  * @apiSuccess {Number} user_role.project.id Id of the project
-  * @apiSuccess {String} user_role.project.name Name of the project
-  * @apiSuccess {Object[]} user_role.role Role informations
-  * @apiSuccess {Number} user_role.role.id Id of the role
-  * @apiSuccess {String} user_role.role.name Name of the role
-  *
-  * @apiSuccessExample Success-Response:
-  * {
-  *   "user_role": [
-  *     "id": 10,
-  *     "project": {
-  *       "id": 2,
-  *       "name": "Grappbox"
-  *     },
-  *     "role": {
-  *       "id": 6,
-  *       "name": "Admin"
-  *     }
-  *   ],
-  *   [
-  *     "id": 30,
-  *     "project": {
-  *       "id": 2,
-  *       "name": "Grappbox"
-  *     },
-  *       "role": {
-  *       "id": 6,
-  *       "name": "Graphists"
-  *     }
-  *   ]
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample User roles not found
-  *   HTTP/1.1 404 Not Found
-  *   {
-  *     "The user X don't have roles."
-  *   }
-  */
-  public function getUserConnectedRolesInfosAction(Request $request, $token)
-  {
-    $user = $this->checkToken($token);
-    if (!$user)
-    return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
 
-    $em = $this->getDoctrine()->getManager();
-  $userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
+		$em = $this->getDoctrine()->getManager();
+		$roles = $em->getRepository('GrappboxBundle:Role')->findByprojects($projectId);
 
-  if ($userRoles === null)
-  {
-    throw new NotFoundHttpException("The user ".$user->getId()." don't have roles.");
-  }
+		if ($roles === null)
+			return $this->setBadRequest("13.4.4", "Role", "getprojectroles", "Bad Parameter: projectId");
 
-  $arr = array();
+		$arr =array();
 
-  foreach ($userRoles as $role) {
-    $purId = $role->getId();
+		if (count($roles) == 0)
+			return $this->setNoDataSuccess("1.13.3", "Role", "getprojectroles");
 
-    $projectId = $role->getProjectId();
-    $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		foreach ($roles as $role) {
+			$roleId = $role->getId();
+			$roleName = $role->getName();
+			$teamTimeline = $role->getTeamTimeline();
+			$customerTimeline = $role->getCustomerTimeline();
+			$gantt = $role->getGantt();
+			$whiteboard = $role->getWhiteboard();
+			$bugtracker = $role->getBugtracker();
+			$event = $role->getEvent();
+			$task = $role->getTask();
+			$projectSettings = $role->getProjectSettings();
+			$cloud = $role->getCloud();
 
-    $roleId = $role->getRoleId();
-    $role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+			$arr[] = array("id" => $roleId, "name" => $roleName, "team_timeline" => $teamTimeline, "customer_timeline" => $customerTimeline, "gantt" => $gantt,
+				"whiteboard" => $whiteboard, "bugtracker" => $bugtracker, "event" => $event, "task" => $task, "project_settings" => $projectSettings, "cloud" => $cloud);
+		}
 
-    if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings"))
-    {
-      $roleName = $role->getName();
-      $projectName = $project->getName();
+		return $this->setSuccess("1.13.1", "Role", "getprojectroles", "Complete Success", array("array" => $arr));
+	}
 
-      $arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
-    }
-  }
-  return new JsonResponse(array("user_role" => $arr));
-  }
+	/**
+	* @api {post} /V0.2/roles/assignpersontorole Assign a person to a role
+	* @apiName assignPersonToRole
+	* @apiGroup Roles
+	* @apiDescription Assign the given user to the role wanted
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} userId Id of the user
+	* @apiParam {Number} roleId Id of the role
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"userId": 6,
+	*			"roleId": 2
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the project user role created
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - assignpersontorole - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.3",
+	*			"return_message": "Role - assignpersontorole - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.9",
+	*			"return_message": "Role - assignpersontorole - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.6",
+	*			"return_message": "Role - assignpersontorole - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.4",
+	*			"return_message": "Role - assignpersontorole - Bad Parameter: userId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: roleId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.4",
+	*			"return_message": "Role - assignpersontorole - Bad Parameter: roleId"
+	*		}
+	*	}
+	* @apiErrorExample Already In Database
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.7",
+	*			"return_message": "Role - assignpersontorole - Already In Database"
+	*		}
+	*	}
+	*/
+	public function assignPersonToRoleAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-  /**
-  * @api {get} /V0.11/roles/getuserrolesinformations/:token/:id Get the roles informations of the given user
-  * @apiName getUserRolesInformations
-  * @apiGroup Roles
-  * @apiVersion 0.11.0
-  *
-  * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} userId Id of the user you want the roles 
-  *
-  * @apiSuccess {Object[]} user_role Array of user roles informations
-  * @apiSuccess {Number} user_role.id Project user role id
-  * @apiSuccess {Object[]} user_role.project Project informations
-  * @apiSuccess {Number} user_role.project.id Id of the project
-  * @apiSuccess {String} user_role.project.name Name of the project
-  * @apiSuccess {Object[]} user_role.role Role informations
-  * @apiSuccess {Number} user_role.role.id Id of the role
-  * @apiSuccess {String} user_role.role.name Name of the role
-  *
-  * @apiSuccessExample Success-Response:
-  *   {
-  *   "user_role": [
-  *       "id": 10,
-  *       "project": {
-  *       "id": 2,
-  *       "name": "Grappbox"
-  *     },
-  *       "role": {
-  *       "id": 6,
-  *       "name": "Admin"
-  *     }
-  *   ],
-  *   [
-  *       "id": 30,
-  *       "project": {
-  *       "id": 2,
-  *       "name": "Grappbox"
-  *     },
-  *       "role": {
-  *       "id": 6,
-  *       "name": "Graphists"
-  *     }
-  *   ]
-  *   }
-  *
-  * @apiErrorExample Bad Authentication Token
-  *   HTTP/1.1 400 Bad Request
-  *   {
-  *     "Bad Authentication Token"
-  *   }
-  * @apiErrorExample User roles not found
-  *   HTTP/1.1 404 Not Found
-  *   {
-  *     "The user X don't have roles."
-  *   }
-  */
-  public function getUserRolesInfosAction(Request $request, $token, $userId)
-  {
-    $user = $this->checkToken($token);
-    if (!$user)
-    return ($this->setBadTokenError());
+		if (!array_key_exists('roleId', $content) || !array_key_exists('userId', $content) || !array_key_exists('token', $content))
+			return $this->setBadRequest("13.5.6", "Role", "assignpersontorole", "Missing Parameter");
 
-    $em = $this->getDoctrine()->getManager();
-    $userConnectedProjects = $user->getProjects();
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("13.5.3", "Role", "assignpersontorole"));
 
-    $repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$em = $this->getDoctrine()->getManager();
+		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+		$userToAdd = $em->getRepository('GrappboxBundle:User')->find($content->userId);
 
-    $arr = array();
+		if ($role === null)
+			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: roleId");
+		if ($userToAdd === null)
+			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
-    foreach ($userConnectedProjects as $p) {
-      if ($this->checkRoles($user, $p->getId(), "projectSettings"))
-      {
-        $pId = $p->getId();
-        $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $pId)->setParameter('userId', $userId)->getQuery();
-          $userRoles = $qb->getResult();
+		$projectId = $role->getProjects()->getId();
+		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+			return $this->setNoRightsError("13.5.9", "Role", "assignpersontorole");
 
-        foreach ($userRoles as $role) {
-          $purId = $role->getId();
+		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$qb = $repository->createQueryBuilder('p')->where('p.roleId = :roleId', 'p.userId = :userId')->setParameter('roleId', $content->roleId)->setParameter('userId', $content->userId)->getQuery();
+		$purs = $qb->getResult();
 
-          $projectId = $role->getProjectId();
-          $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		if (count($purs) == 0)
+		{
+			$ProjectUserRole = new ProjectUserRole();
+			$ProjectUserRole->setProjectId($projectId);
+			$ProjectUserRole->setUserId($content->userId);
+			$ProjectUserRole->setRoleId($content->roleId);
 
-          $roleId = $role->getRoleId();
-          $role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+			$em->persist($ProjectUserRole);
+			$em->flush();
 
-          if ($project != null && $role != null)
-          {
-            $projectName = $project->getName();
-            $roleName = $role->getName();
+			return $this->setCreated("1.13.1", "Role", "assignpersontorole", "Complete Success", array("id" => $ProjectUserRole->getId()));
+		}
+		else
+			return $this->setBadRequest("13.5.7", "Role", "assignpersontorole", "Already In Database");	
+	}
 
-            $arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
-          }
-        }
-      }
-    }
+	/**
+	* @api {put} /V0.2/roles/putpersonrole Update a person role
+	* @apiName updatePersonRole
+	* @apiGroup Roles
+	* @apiDescription Update a person role
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project for searching
+	* @apiParam {Number} userId Id of the user for searching
+	* @apiParam {Number} old_roleId Old id of the role for searching
+	* @apiParam {Number} roleId new role id
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"projectId": 1,
+	*			"userId": 1,
+	*			"old_roleId": 2,
+	*			"roleId": 3
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the project user role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - putpersonrole - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.6.3",
+	*			"return_message": "Role - putpersonrole - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.6.9",
+	*			"return_message": "Role - putpersonrole - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameter
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.6.6",
+	*			"return_message": "Role - putpersonrole - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.6.4",
+	*			"return_message": "Role - putpersonrole - Bad Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: roleId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.6.4",
+	*			"return_message": "Role - putpersonrole - Bad Parameter: roleId"
+	*		}
+	*	}
+	*/
+	public function updatePersonRoleAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-    return new JsonResponse(array("user_role" => $arr));
-  }
+		if (!array_key_exists('roleId', $content) || !array_key_exists('userId', $content) || !array_key_exists('token', $content)
+			|| !array_key_exists('projectId', $content) || !array_key_exists('old_roleId', $content))
+			return $this->setBadRequest("13.6.6", "Role", "putpersonrole", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("13.6.3", "Role", "putpersonrole"));
+
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+			return $this->setNoRightsError("13.5.9", "Role", "putpersonrole");
+
+		$em = $this->getDoctrine()->getManager();
+		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+
+		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
+		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->old_roleId)->getQuery();
+		$pur = $qb->setMaxResults(1)->getOneOrNullResult();
+
+		if ($pur === null)
+			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter");
+
+		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+		if ($role === null)
+			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter: roleId");
+
+		$pur->setRoleId($content->roleId);
+
+		$em->flush();
+
+		return $this->setSuccess("1.13.1", "Role", "putpersonrole", "Complete Success", array("id" => $pur->getId()));
+	}
+
+	/**
+	* @api {get} /V0.2/roles/getuserroles/:token Get the roles of the user connected
+	* @apiName updatePersonRole
+	* @apiGroup Roles
+	* @apiDescription Get the all the roles of all the projects of the user connected
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	*
+	* @apiSuccess {Object[]} array Array of user roles
+	* @apiSuccess {Number} array.id Project user role id
+	* @apiSuccess {Number} array.project_id Id of the project
+	* @apiSuccess {Number} array.role_id Id of the role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getuserroles - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 10,
+	*					"project_id": 5,
+	*					"role_id": 1
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getuserroles - Success but no data"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.7.3",
+	*			"return_message": "Role - getuserroles - Bad ID"
+	*		}
+	*	}
+	*/
+	public function getUserRolesAction(Request $request, $token)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("13.7.3", "Role", "getuserroles"));
+
+		$em = $this->getDoctrine()->getManager();
+		$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
+
+		if (count($userRoles) == 0 || $userRoles === null)
+			return $this->setNoDataSuccess("1.13.3", "Role", "getuserroles");
+
+		$arr = array();
+
+		foreach ($userRoles as $role) {
+			$purId = $role->getId();
+			$projectId = $role->getProjectId();
+			$roleId = $role->getRoleId();
+
+			$arr[] = array("id" => $purId, "project_id" => $projectId, "role_id" => $roleId);
+		}
+
+		return $this->setSuccess("1.13.1", "Role", "getuserroles", "Complete Success", array("array" => $arr));
+	}
+
+	/**
+	* @api {delete} /V0.2/roles/delpersonrole Delete a person role
+	* @apiName delPersonRole
+	* @apiGroup Roles
+	* @apiDescription Delete a person role
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} userd Id of the user
+	* @apiParam {Number} roleId Id of the role
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"projectId": 5,
+	*			"userId": 1,
+	*			"roleId": 3
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the project user role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - delpersonrole - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.8.3",
+	*			"return_message": "Role - delpersonrole - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.8.9",
+	*			"return_message": "Role - delpersonrole - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameter
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.8.6",
+	*			"return_message": "Role - delpersonrole - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: roleId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.8.4",
+	*			"return_message": "Role - delpersonrole - Bad Parameter: roleId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.8.4",
+	*			"return_message": "Role - delpersonrole - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.8.4",
+	*			"return_message": "Role - delpersonrole - Bad Parameters"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't remove the creator from the Admin role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.8.4",
+	*			"return_message": "Role - delpersonrole - Bad Parameter: You can't remove the creator from the Admin role"
+	*		}
+	*	}
+	*/
+	public function delPersonRoleAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!$content->projectId && !$content->userId && !$content->roleId)
+			return $this->setBadRequest("13.8.6", "Role", "delpersonrole", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("13.8.3", "Role", "delpersonrole"));
+
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+
+		if ($project === null)
+			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: projectId");
+		if ($role === null)
+			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: roleId");
+
+		if ($project->getCreatorUser()->getId() == $content->userId && $role->getName() == "Admin")
+			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't remove the creator from the Admin role");
+
+		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+
+		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
+		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->roleId)->getQuery();
+		$pur = $qb->setMaxResults(1)->getOneOrNullResult();
+
+		if ($pur == null)
+			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameters");
+
+		$purId = $pur->getId();
+		$em->remove($pur);
+		$em->flush();
+
+		return $this->setSuccess("1.13.1", "Role", "delpersonrole", "Complete Success", array("id" => $purId));
+	}
+
+	/**
+	* @api {get} /V0.2/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
+	* @apiName getRoleByProjectAndUser
+	* @apiGroup Roles
+	* @apiDescription Get the roles id for a given user on a given project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam [Number] userId Id of the user
+	*
+	* @apiSuccess {Object[]} array Array of user roles
+	* @apiSuccess {Number} array.id Id of the role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getrolebyprojectanduser - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 10
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getrolebyprojectanduser - Success but no data"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.9.3",
+	*			"return_message": "Role - getrolebyprojectanduser - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.9.9",
+	*			"return_message": "Role - getrolebyprojectanduser - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.9.4",
+	*			"return_message": "Role - getrolebyprojectanduser - Bad Parameters"
+	*		}
+	*	}
+	*/
+	public function getRoleByProjectAndUserAction(Request $request, $token, $projectId, $userId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("13.9.3", "Role", "getrolebyprojectanduser"));
+
+		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+			return $this->setNoRightsError("13.9.9", "Role", "getrolebyprojectanduser");
+
+		$em = $this->getDoctrine()->getManager();
+		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
+		$purs = $qb->getResult();
+
+		if ($purs === null)
+			return $this->setBadRequest("13.9.4", "Role", "getrolebyprojectanduser", "Bad Parameters");
+
+		if (count($purs) == 0)
+			return $this->setNoDataSuccess("1.13.3", "Role", "getrolebyprojectanduser");
+
+		$arr = array();
+
+		foreach ($purs as $role) {
+			$roleId = $role->getRoleId();
+			$arr[] = array("id" => $roleId);
+		}
+
+		return $this->setSuccess("1.13.1", "Role", "getrolebyprojectanduser", "Complete Success", array("array" => $arr));
+	}
+
+	/**
+	* @api {get} /V0.2/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
+	* @apiName getUsersForRole
+	* @apiGroup Roles
+	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} roleId Id of the role
+	*
+	* @apiSuccess {Number} id Id of the role
+	* @apiSuccess {String} name Name of the role
+	* @apiSuccess {Object[]} users_assigned Array of users assigned to the role
+	* @apiSuccess {Number} users_assigned.id Id of the user
+	* @apiSuccess {String} users_assigned.firstname Firstname of the user
+	* @apiSuccess {String} users_assigned.lastname Lastname of the user
+	* @apiSuccess {Object[]} users_non_assigned Array of users non assigned to the role
+	* @apiSuccess {Number} users_non_assigned.id Id of the user
+	* @apiSuccess {String} users_non_assigned.firstname Firstname of the user
+	* @apiSuccess {String} users_non_assigned.lastname Lastname of the user
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getusersforrole - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 2,
+	*			"name": "Admin",
+	*			"users_assigned": [],
+	*			"users-non_assigned": [
+	*				{
+	*					"id": 3,
+	*					"firstname": "jean",
+	*					"lastname": "neige"
+	*				},
+	*				{
+	*					"id": 8,
+	*					"firstname": "john",
+	*					"lastname": "snow"
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.10.3",
+	*			"return_message": "Role - getusersforrole - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.10.9",
+	*			"return_message": "Role - getusersforrole - Insufficient Rights"
+	*		}
+	*	}
+		* @apiErrorExample Bad Parameter: roleId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.10.4",
+	*			"return_message": "Role - getusersforrole - Bad Parameter: roleId"
+	*		}
+	*	}
+	*/
+	public function getUsersForRoleAction(Request $request, $token, $roleId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("13.10.3", "Role", "getusersforrole"));
+
+		$em = $this->getDoctrine()->getManager();
+		$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+		if ($role === null)
+			return $this->setBadRequest("13.10.4", "Role", "getusersforrole", "Bad Parameter: roleId");
+
+		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+			return $this->setNoRightsError("13.10.9", "Role", "getusersforrole");
+
+		$purRepository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$qb = $purRepository->createQueryBuilder('pur')->where('pur.roleId = :id')->setParameter('id', $role->getId())->getQuery();
+		$purs = $qb->getResult();
+
+		$usersAssigned = array();
+		$usersNonAssigned = array();
+
+		$users = $role->getProjects()->getUsers();
+
+		foreach ($users as $u) {
+			$isAssigned = false;
+
+			foreach ($purs as $p) {
+				if ($p->getUserId() == $u->getId())
+				{
+					$usersAssigned[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname());
+					$isAssigned = true;
+				}
+			}
+			if ($isAssigned == false)
+			$usersNonAssigned[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname());
+		}
+
+		return $this->setSuccess("1.13.1", "Role", "getusersforrole", "Complete Success",
+			array("id" => $role->getId(), "name" => $role->getName(), "users_assigned" => $usersAssigned, "users_non_assigned" => $usersNonAssigned));
+	}
+
+	/**
+	* @api {get} /V0.2/roles/getuserrolesinformations/:token Get the roles informations of the user connected
+	* @apiName getUserConnectedRolesInformations
+	* @apiGroup Roles
+	* @apiDescription Get the roles informations for the user connected
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	*
+	* @apiSuccess {Object[]} array Array of user roles informations
+	* @apiSuccess {Number} array.id Project user role id
+	* @apiSuccess {Object[]} array.project Project informations
+	* @apiSuccess {Number} array.project.id Id of the project
+	* @apiSuccess {String} array.project.name Name of the project
+	* @apiSuccess {Object[]} array.role Role informations
+	* @apiSuccess {Number} array.role.id Id of the role
+	* @apiSuccess {String} array.role.name Name of the role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getuserconnectedrolesinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				"id": 10,
+	*				"project": {
+	*					"id": 2,
+	*					"name": "Grappbox"
+	*				},
+	*				"role": {
+	*					"id": 6,
+	*					"name": "Admin"
+	*				}
+	*			],
+	*			[
+	*				"id": 30,
+	*				"project": {
+	*					"id": 2,
+	*					"name": "Grappbox"
+	*				},
+	*				"role": {
+	*					"id": 6,
+	*					"name": "Graphists"
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getuserconnectedrolesinformations - Success but no data"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.11.3",
+	*			"return_message": "Role - getuserconnectedrolesinformations - Bad ID"
+	*		}
+	*	}
+	*/
+	public function getUserConnectedRolesInfosAction(Request $request, $token)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("13.11.3", "Role", "getuserconnectedrolesinformations"));
+
+		$em = $this->getDoctrine()->getManager();
+		$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
+
+		if (count($userRoles) == 0 || $userRoles === null)
+			return $this->setNoDataSuccess("1.13.3", "Role", "getuserconnectedrolesinformations");
+
+		$arr = array();
+
+		foreach ($userRoles as $role) {
+			$purId = $role->getId();
+
+			$projectId = $role->getProjectId();
+			$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+
+			$roleId = $role->getRoleId();
+			$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+
+			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings"))
+			{
+				$roleName = $role->getName();
+				$projectName = $project->getName();
+
+				$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+			}
+		}
+
+		if (count($arr) == 0)
+			return $this->setNoDataSuccess("1.13.3", "Role", "getuserconnectedrolesinformations");
+
+		return $this->setSuccess("1.13.1", "Role", "getuserconnectedrolesinformations", "Complete Success", array("array" => $arr));
+	}
+
+	/**
+	* @api {get} /V0.2/roles/getuserrolesinformations/:token/:id Get the roles informations of the given user
+	* @apiName getUserRolesInformations
+	* @apiGroup Roles
+	* @apiDescription Get the roles informations for the given user
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} userId Id of the user you want the roles 
+	*
+	* @apiSuccess {Object[]} array Array of user roles informations
+	* @apiSuccess {Number} array.id Project user role id
+	* @apiSuccess {Object[]} array.project Project informations
+	* @apiSuccess {Number} array.project.id Id of the project
+	* @apiSuccess {String} array.project.name Name of the project
+	* @apiSuccess {Object[]} array.role Role informations
+	* @apiSuccess {Number} array.role.id Id of the role
+	* @apiSuccess {String} array.role.name Name of the role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getuserrolesinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				"id": 10,
+	*				"project": {
+	*					"id": 2,
+	*					"name": "Grappbox"
+	*				},
+	*				"role": {
+	*					"id": 6,
+	*					"name": "Admin"
+	*				}
+	*			],
+	*			[
+	*				"id": 30,
+	*				"project": {
+	*					"id": 2,
+	*					"name": "Grappbox"
+	*				},
+	*				"role": {
+	*					"id": 6,
+	*					"name": "Graphists"
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getuserrolesinformations - Success but no data"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.12.3",
+	*			"return_message": "Role - getuserrolesinformations - Bad ID"
+	*		}
+	*	}
+	*/
+	public function getUserRolesInfosAction(Request $request, $token, $userId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+		return ($this->setBadTokenError("13.12.3", "Role", "getuserrolesinformations"));
+
+		$em = $this->getDoctrine()->getManager();
+		$userConnectedProjects = $user->getProjects();
+
+		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+
+		$arr = array();
+
+		foreach ($userConnectedProjects as $p) {
+			if ($this->checkRoles($user, $p->getId(), "projectSettings"))
+			{
+				$pId = $p->getId();
+				$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $pId)->setParameter('userId', $userId)->getQuery();
+				$userRoles = $qb->getResult();
+
+				foreach ($userRoles as $role) {
+					$purId = $role->getId();
+
+					$projectId = $role->getProjectId();
+					$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+
+					$roleId = $role->getRoleId();
+					$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+
+					if ($project != null && $role != null)
+					{
+						$projectName = $project->getName();
+						$roleName = $role->getName();
+
+						$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+					}
+				}
+			}
+		}
+
+		if (count($arr) == 0)
+			return $this->setNoDataSuccess("1.13.3", "Role", "getuserrolesinformations");
+
+		return $this->setSuccess("1.13.1", "Role", "getuserrolesinformations", "Complete Success", array("array" => $arr));
+	}
 }

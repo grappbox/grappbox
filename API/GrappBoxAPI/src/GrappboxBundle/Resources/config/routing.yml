@@ -631,19 +631,19 @@ v2_role_getRoleByProjectAndUser:
 
 v2_role_getUsersForRole:
     path:       roles/getusersforrole/{token}/{roleId}
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUsersForRole, _format: json }
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:getUsersForRole, _format: json }
     requirements:
         roleId: \d+
     methods: [GET]
 
 v2_role_getUserConnectedRolesInformations:
     path:       roles/getuserrolesinformations/{token}
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUserConnectedRolesInfos, _format: json }
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:getUserConnectedRolesInfos, _format: json }
     methods: [GET]
 
 v2_role_getUserRolesInformations:
     path:       roles/getuserrolesinformations/{token}/{userId}
-    defaults:   { _controller: APIBundle:RolesAndTokenVerification:getUserRolesInfos, _format: json }
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:getUserRolesInfos, _format: json }
     requirements:
         roleId: \d+
     methods: [GET]
