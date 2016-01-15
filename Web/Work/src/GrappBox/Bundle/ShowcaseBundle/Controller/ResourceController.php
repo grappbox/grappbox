@@ -1,9 +1,9 @@
 <?php
 
 /*!
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
- * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
+* This file is subject to the terms and conditions defined in
+* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+* COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
 namespace GrappBox\Bundle\ShowcaseBundle\Controller;

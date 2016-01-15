@@ -33,7 +33,7 @@ app.run(['$rootScope', '$location', '$timeout', '$cookies', '$http', '$window', 
 	$rootScope.layout = {};
 	$rootScope.layout.loading = false;
 
-	$rootScope.apiVersion = 'V0.9'
+	$rootScope.apiVersion = 'V0.11'
 	$rootScope.apiBaseURL = 'http://api.grappbox.com/app_dev.php/' + $rootScope.apiVersion;
 
 	// On route change (start)

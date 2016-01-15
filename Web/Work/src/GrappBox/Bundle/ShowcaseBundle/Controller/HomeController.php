@@ -20,7 +20,7 @@ class HomeController extends Controller
 {
 	private function setLoginRedirectResponse($apiContent)
 	{
-		$apiBaseURL = "http://api.grappbox.com/app_dev.php/V0.9";
+		$apiBaseURL = "http://api.grappbox.com/app_dev.php/V0.11";
 		$apiCurl = curl_init();
 
 		curl_setopt($apiCurl, CURLOPT_URL, $apiBaseURL."/accountadministration/login");
