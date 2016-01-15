@@ -181,34 +181,39 @@ v2_bugtracker_getProjectTags:
 # -----------------------------------------------------------------------
 #                           CLOUD CONTROLLER
 # -----------------------------------------------------------------------
-v2_cloud_streamActions:
-  path:     cloud/stream
-  defaults:   { _controller: GrappboxBundle:Cloud:stream, _format: json}
-  methods: [POST, DELETE]
+v2_cloud_streamOpenAction:
+  path:     cloud/stream/{token}/{idProject}/{safePassword}
+  defaults:   { _controller: GrappboxBundle:Cloud:openStreamAction, safePassword: null, _format: json}
+  methods: [POST]
+
+v2_cloud_streamCloseAction:
+  path:     cloud/stream/{token}/{projectId}/{streamId}
+  defaults: { _controller: GrappboxBundle:Cloud:closeStreamAction, _format: json}
+  methods: [DELETE]
 
 v2_cloud_sendFile:
-  path:     cloud/sendfile
+  path:     cloud/file
   defaults:   { _controller: GrappboxBundle:Cloud:sendFile , _format: json}
   methods: [PUT]
 
 v2_cloud_getList:
-    path:       cloud/getlist/{token}/{idProject}/{path}/{password}
+    path:       cloud/list/{token}/{idProject}/{path}/{password}
     defaults:   { _controller: GrappboxBundle:Cloud:getList,  password: null, _format: json}
     methods: [GET]
 
 v2_cloud_getFile:
-    path:       cloud/getfile/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
+    path:       cloud/file/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
     defaults:   { _controller: GrappboxBundle:Cloud:getFile, password: null, passwordSafe: null }
     methods: [GET]
 
 v2_cloud_setSafePass:
-    path:       cloud/setsafepass
+    path:       cloud/safepass
     defaults:   { _controller: GrappboxBundle:Cloud:setSafePass }
-    methods: [POST]
+    methods: [PUT]
 
 v2_cloud_delete:
-    path:       cloud/del
-    defaults:   { _controller: GrappboxBundle:Cloud:del , _format: json}
+    path:       cloud/file/{token}/{projectId}/{path}/{password}
+    defaults:   { _controller: GrappboxBundle:Cloud:del, password: null, _format: json}
     methods: [DELETE]
 
 v2_cloud_createDir:
