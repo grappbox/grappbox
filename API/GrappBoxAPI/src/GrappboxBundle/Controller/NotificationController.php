@@ -234,7 +234,7 @@ class NotificationController extends RolesAndTokenVerificationController
   *  {
   *    "info": {
   *      "return_code": "1.15.3",
-  *      "return_message": "Notification - getUserDevices - Success but no data"
+  *      "return_message": "Notification - getUserDevices - No Data Success"
   *    },
   *    "data": {
   *      "array": []
@@ -266,7 +266,7 @@ class NotificationController extends RolesAndTokenVerificationController
     }
 
     if (count($array) <= 0)
-      return $this->setNoDataSuccess("1.15.3", "Notification", "unregisterDevice", "Success but no data");
+      return $this->setNoDataSuccess("1.15.3", "Notification", "unregisterDevice");
     return $this->setSuccess("1.15.1", "Notification", "unregisterDevice", "Complete Success", array("array" => $array));
 	}
 
@@ -324,7 +324,7 @@ class NotificationController extends RolesAndTokenVerificationController
   *  {
   *    "info": {
   *      "return_code": "1.15.3",
-  *      "return_message": "Notification - getNotifications - Success but no data"
+  *      "return_message": "Notification - getNotifications - No Data Success"
   *    },
   *    "data": {
   *      "array": []

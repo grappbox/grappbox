@@ -99,7 +99,7 @@ class RolesAndTokenVerificationController extends Controller
 
   protected function setNoDataSuccess($code, $part, $function)
   {
-    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."Success but no data");
+    $ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."No Data Success");
     $ret["data"] = array("array" => array());
     $response = new JsonResponse($ret);
     $response->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
@@ -4018,7 +4018,7 @@ class RolesAndTokenVerificationController extends Controller
   * @apiVersion 0.11.0
   *
   * @apiParam {String} token Token of the person connected
-  * @apiParam {Number} userId Id of the user you want the roles 
+  * @apiParam {Number} userId Id of the user you want the roles
   *
   * @apiSuccess {Object[]} user_role Array of user roles informations
   * @apiSuccess {Number} user_role.id Project user role id

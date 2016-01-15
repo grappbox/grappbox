@@ -233,7 +233,7 @@ class CloudController extends Controller
 		$receivedData = $json["data"];
 		$userId = $this->getUserId($token);
 
-		$isSafe = preg_match("/Safe/", $receivedData["path"];
+		$isSafe = preg_match("/Safe/", $receivedData["path"]);
 		if ($isSafe)
 		{
 			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
@@ -243,7 +243,7 @@ class CloudController extends Controller
 			$project = null;
 			$passwordEncrypted = null;
 		}
-		if ($this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
+		if (($this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
 		{
 			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.1.9";
@@ -1022,18 +1022,18 @@ class CloudController extends Controller
 		$response["info"]["return_message"] = "Cloud - createDirAction - Complete Success";
 		return new JsonResponse($response);
 	}
-}
 
-// WARNING : ONLY FOR OTHER API CONTROLLERS!
-public function createCloudAction(Request $request, $projectId)
-{
-	$client = new Client(self::$settingsDAV);
-	$adapter = new WebDAVAdapter($client);
-	$flysystem = new Filesystem($adapter);
-	$rpathSafe = "GrappBox|Projects/".(string)($projectId)."/Safe";
-	$rpath = "GrappBox|Projects/".(string)($projectId);
-	//HERE Create the dir in the cloud
-	$flysystem->createDir($rpath);
-	$flysystem->createDir($rpathSafe);
-	return new JsonResponse(Array("infos" => "OK"));
+	// WARNING : ONLY FOR OTHER API CONTROLLERS!
+	public function createCloudAction(Request $request, $projectId)
+	{
+		$client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
+		$rpathSafe = "GrappBox|Projects/".(string)($projectId)."/Safe";
+		$rpath = "GrappBox|Projects/".(string)($projectId);
+		//HERE Create the dir in the cloud
+		$flysystem->createDir($rpath);
+		$flysystem->createDir($rpathSafe);
+		return new JsonResponse(Array("infos" => "OK"));
+	}
 }
