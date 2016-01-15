@@ -1,7 +1,0 @@
-white_board_defaultpage:
-    path:     /hello/{name}
-    defaults: { _controller: WhiteBoardBundle:Default:index }
-
-white_board_homepage:
-    path:     /
-    defaults: { _controller: WhiteBoardBundle:Whiteboard:index }
