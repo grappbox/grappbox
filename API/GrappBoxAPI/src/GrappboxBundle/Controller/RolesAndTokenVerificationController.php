@@ -100,7 +100,7 @@ class RolesAndTokenVerificationController extends Controller
 
 	protected function setNoDataSuccess($code, $part, $function)
 	{
-		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."Success but no data");
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - "."No Data Success");
 		$ret["data"] = array("array" => array());
 		$response = new JsonResponse($ret);
 		$response->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);

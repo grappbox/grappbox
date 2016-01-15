@@ -12,11 +12,13 @@ use GrappboxBundle\Entity\User;
 use GrappboxBundle\Entity\Bug;
 use GrappboxBundle\Entity\BugState;
 use GrappboxBundle\Entity\Tag;
+use GrappboxBundle\Entity\Project;
 use DateTime;
 
 /**
  *  @IgnoreAnnotation("apiName")
  *  @IgnoreAnnotation("apiGroup")
+ *	@IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiVersion")
  *  @IgnoreAnnotation("apiSuccess")
  *  @IgnoreAnnotation("apiSuccessExample")
@@ -29,12 +31,13 @@ class BugtrackerController extends RolesAndTokenVerificationController
 {
 
 	/**
-	* @api {get} /V0.11/bugtracker/getticket/:token/:id Get a ticket
+	* @api {get} /V0.2/bugtracker/getticket/:token/:id Get ticket
 	* @apiName getTicket
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.1
+	* @apiDescription Get ticket informations, tags and assigned users
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the ticket
+	* @apiParam {int} id ticket's id
 	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccess {int} id Ticket id
@@ -59,31 +62,56 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {string} users.avatar user avatar
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
-	*		"title": "function getUser not working",
-	*		"description": "the function does not answer the right way, fix it ASAP !",
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"deletedAt": null,
-	*		"state": {"id": 1, "name": "Waiting"},
-	*		"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
-	*		"users": [
-	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*		]
-	*		}
-	* 	}
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": { "date": "2015-12-29 11:54:57", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "deletedAt": null,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [
+	*      { "id": 1, "name": "To Do", "projectId": 1 },
+	*      { "id": 4, "name": "ASAP", "projectId": 1 }
+	*    ],
+	*    "users": [
+	*      { "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": "100111010000110111 ....." },
+	*      { "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null }
+	*    ]
+	*  }
+	* }
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Id
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "4.1.3",
+	*			"return_message": "Bugtracker - getTicket - Bad id"
+	*		}
 	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Insufficient User Rights"
+	*		"info": {
+	*			"return_code": "4.1.4",
+	*			"return_message": "Bugtracker - getTicket - Bad Parameter: id"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.1.9",
+	*			"return_message": "Bugtracker - getTicket - Insufficient Rights"
+  *		}
 	* 	}
 	*
 	*/
@@ -91,12 +119,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.1.3", "Bugtracker", "getTicket"));
 
 		$em = $this->getDoctrine()->getManager();
 		$ticket = $em->getRepository("GrappboxBundle:Bug")->find($id);
+		if (!($ticket instanceof Bug))
+			return $this->setBadRequest("4.1.4", "Bugtracker", "getTicket", "Bad Parameter: id");
 		if (!$this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
 
 		$object = $ticket->objectToArray();
 		$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($ticket->getStateId())->objectToArray();
@@ -104,7 +134,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		foreach ($ticket->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
 		}
-
 		$participants = array();
 		foreach ($ticket->getUsers() as $key => $value) {
 			$participants[] = array(
@@ -116,199 +145,134 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 		$object["users"] = $participants;
 
-		return new JsonResponse(array("ticket"=>$object));
+		return $this->setSuccess("1.4.3", "Bugtracker", "getTicket", "Complete Success", $object);
 	}
 
 	/**
-	* @api {get} /V0.11/bugtracker/gettickets/:token/:id Get all tickets of a project
-	* @apiName getTickets
-	* @apiGroup Bugtracker
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {int} id id of the project
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} tickets array of all the tickets' project
-	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
-	* @apiSuccess {int} tickets.projectId project id
-	* @apiSuccess {String} tickets.title Ticket title
-	* @apiSuccess {String} tickets.description Ticket content
-	* @apiSuccess {int} tickets.parentId parent Ticket id
-	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
-	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
-	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
-	* @apiSuccess {Object} tickets.state Ticket state
-	* @apiSuccess {Object[]} tickets.tags Ticket tags list
-	* @apiSuccess {int} tickets.tags.id Ticket tags id
-	* @apiSuccess {String} tickets.tags.name Ticket tags name
-	* @apiSuccess {Object[]} tickets.users assigned user list
-	*	@apiSuccess {int} tickets.users.id user id
-	*	@apiSuccess {string} tickets.users.name user full name
-	*	@apiSuccess {string} tickets.users.email user email
-	*	@apiSuccess {string} tickets.users.avatar user avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"tickets" : [
-	*		{"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
-	*			"title": "function getUser not working",
-	*			"description": "the function does not answer the right way, fix it ASAP !",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": {"id": 1, "name": "Waiting"},
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			},
-	*		{"id": "158","creatorId": 12, "projectId": 14, "parentId": null,
-	*			"title": "Bad menu disposition on mobile",
-	*			"description": "the menu is unsusable on mobile",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": {"id": 2, "name": "In traitment"},
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			},
-	*		...
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getTicketsAction(Request $request, $token, $id)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-		if (!$this->checkRoles($user, $id, "bugtracker"))
-			return ($this->setNoRightsError());
-
-		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
-		//TODO check bad project id
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
-		$ticketsArray = array();
-		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
-			$object['tags'] = array();
-			foreach ($value->getTags() as $key => $tag_value) {
-				$object['tags'][] = $tag_value->objectToArray();
-			}
-
-			$participants = array();
-			foreach ($value->getUsers() as $key => $user_value) {
-				$participants[] = array(
-					"id" => $user_value->getId(),
-					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
-					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
-				);
-			}
-			$object["users"] = $participants;
-
-			$ticketsArray[] = $object;
-		}
-
-		return new JsonResponse(array("tickets" => $ticketsArray));
-	}
-
-	/**
-	* @api {post} /V0.11/bugtracker/postticket/:id Post bug ticket
+	* @api {post} /V0.2/bugtracker/postticket Post ticket
 	* @apiName postTicket
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.3
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the project
 	* @apiParam {String} token client authentification token
+	* @apiParam {int} projectId id of the project
 	* @apiParam {String} title Ticket title
 	* @apiParam {String} description Ticket content
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
 	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {Object} ticket ticket object
-	* @apiSuccess {int} ticket.id Ticket id
-	* @apiSuccess {int} ticket.creatorId author id
-	* @apiSuccess {int} ticket.projectId project id
-	* @apiSuccess {String} ticket.title Ticket title
-	* @apiSuccess {String} ticket.description Ticket content
-	* @apiSuccess {int} ticket.parentId parent Ticket id
-	* @apiSuccess {DateTime} ticket.createdAt Ticket creation date
-	* @apiSuccess {DateTime} ticket.editedAt Ticket edition date
-	* @apiSuccess {DateTime} ticket.deletedAt Ticket deletion date
-	* @apiSuccess {String} ticket.state Ticket state
-	* @apiSuccess {Object[]} ticket.tags Ticket tags list
-	* @apiSuccess {int} ticket.tags.id Ticket tags id
-	* @apiSuccess {String} ticket.tags.name Ticket tags name
-	* @apiSuccess {Object[]} ticket.users assigned user list
-	*	@apiSuccess {int} ticket.users.id user id
-	*	@apiSuccess {string} ticket.users.name user full name
-	*	@apiSuccess {string} ticket.users.email user email
-	*	@apiSuccess {string} ticket.users.avatar user avatar
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+  * 		"token": "ThisIsMyToken",
+  * 		"projectId": 1,
+  * 		"title": "J'ai un petit problème",
+  * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
+  * 		"stateId": 1,
+  * 		"stateName": "To Do"
+  * 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {int} creatorId author id
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": 150,
-	*			"title": "function getUser not working",
-	*			"description": "the function does not answer the right way, fix it ASAP !",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": "Wainting",
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			}
-	* 	}
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - postTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": null,
+	*    "deletedAt": null,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [],
+	*    "users": []
+	*  }
+	* }
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Id
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "4.2.3",
+	*			"return_message": "Bugtracker - postTicket - Bad id"
+	*		}
 	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
+	* @apiErrorExample Bad Parameter: projectId
+	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Insufficient User Rights"
+	*		"info": {
+	*			"return_code": "4.2.4",
+	*			"return_message": "Bugtracker - postTicket - Bad Parameter: projectId"
+  *		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.2.6",
+	*			"return_message": "Bugtracker - postTicket - Missing Parameter"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.2.9",
+	*			"return_message": "Bugtracker - postTicket - Insufficient Rights"
+  *		}
 	* 	}
 	*
 	*/
-	public function postTicketAction(Request $request, $id)
+	public function postTicketAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 		$em = $this->getDoctrine()->getManager();
+
+		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content)
+			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
+			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content))
+				return $this->setBadRequest("4.2.6", "Bugtracker", "postTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.2.3", "Bugtracker", "postTicket"));
 
-		if (!$this->checkRoles($user, $id, "bugtracker"))
-			return ($this->setNoRightsError());
+		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
+			return ($this->setNoRightsError("4.2.9", "Bugtracker", "postTicket"));
 
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
-		//TODO check bad project id
+		$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
+		if (!($project instanceof Project))
+			return $this->setBadRequest("4.2.4", "Bugtracker", "postTicket", "Bad Parameter: projectId");
 
 		$bug = new Bug();
 		$bug->setProjects($project);
@@ -351,90 +315,140 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 		$ticket["users"] = $participants;
 
-		return new JsonResponse(array("ticket"=>$ticket));
+		return $this->setCreated("1.4.3", "Bugtracker", "postTicket", "Complete Success", $ticket);
 	}
 
 	/**
-	* @api {post} /V0.11/bugtracker/editticket/:id Edit a bug ticket
+	* @api {post} /V0.2/bugtracker/editticket Edit ticket
 	* @apiName editTicket
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.3
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the ticket
 	* @apiParam {String} token client authentification token
+	* @apiParam {int} bugId id of the bug ticket
 	* @apiParam {String} title Ticket title
 	* @apiParam {String} description Ticket content
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
 	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {Object} ticket ticket object
-	* @apiSuccess {int} ticket.id Ticket id
-	* @apiSuccess {int} ticket.creatorId author id
-	* @apiSuccess {int} ticket.projectId project id
-	* @apiSuccess {String} ticket.title Ticket title
-	* @apiSuccess {String} ticket.description Ticket content
-	* @apiSuccess {int} ticket.parentId parent Ticket id
-	* @apiSuccess {DateTime} ticket.createdAt Ticket creation date
-	* @apiSuccess {DateTime} ticket.editedAt Ticket edition date
-	* @apiSuccess {DateTime} ticket.deletedAt Ticket deletion date
-	* @apiSuccess {String} ticket.state Ticket state
-	* @apiSuccess {Object[]} ticket.tags Ticket tags list
-	* @apiSuccess {int} ticket.tags.id Ticket tags id
-	* @apiSuccess {String} ticket.tags.name Ticket tags name
-	* @apiSuccess {Object[]} ticket.users assigned user list
-	*	@apiSuccess {int} ticket.users.id user id
-	*	@apiSuccess {string} ticket.users.name user full name
-	*	@apiSuccess {string} ticket.users.email user email
-	*	@apiSuccess {string} ticket.users.avatar user avatar
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+  * 		"token": "ThisIsMyToken",
+  * 		"bugId": 1,
+  * 		"title": "J'ai un petit problème",
+  * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
+  * 		"stateId": 1,
+  * 		"stateName": "To Do"
+  * 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {int} creatorId author id
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"ticket": {"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
-	*			"title": "function getUser not working",
-	*			"description": "the function does not answer the right way, fix it ASAP !",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": "Wainting",
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			}
-	* 	}
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - editTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "deletedAt": null,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [],
+	*    "users": []
+	*  }
+	* }
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Id
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "4.3.3",
+	*			"return_message": "Bugtracker - editTicket - Bad id"
+	*		}
 	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
+	* @apiErrorExample Bad Parameter: big_Iid
+	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Insufficient User Rights"
+	*		"info": {
+	*			"return_code": "4.3.4",
+	*			"return_message": "Bugtracker - editTicket - Bad Parameter: bugId"
+  *		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.3.6",
+	*			"return_message": "Bugtracker - editTicket - Missing Parameter"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.3.9",
+	*			"return_message": "Bugtracker - editTicket - Insufficient Rights"
+  *		}
 	* 	}
 	*
 	*/
-	public function editTicketAction(Request $request, $id)
+	public function editTicketAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!array_key_exists("token", $content) || !array_key_exists("bugId", $content)
+			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
+			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content))
+				return $this->setBadRequest("4.3.6", "Bugtracker", "editTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.3.3", "Bugtracker", "editTicket"));
+
 		$em = $this->getDoctrine()->getManager();
-		$bug = $em->getRepository('GrappboxBundle:Bug')->find($id);
+		$bug = $em->getRepository('GrappboxBundle:Bug')->find($content->bugId);
+		if (!($bug instanceof Bug))
+			return $this->setBadRequest("4.3.4", "Bugtracker", "postTicket", "Bad Parameter: bugId");
+
 		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.3.9", "Bugtracker", "postTicket"));
 
 		$bug->setTitle($content->title);
 		$bug->setDescription($content->description);
 		$bug->setEditedAt(new DateTime('now'));
 
-		if (array_key_exists("stateId", $content) && $content->stateId != 0)
+		if ($content->stateId != 0)
 			$state = $em->getRepository("GrappboxBundle:BugState")->find($content->stateId);
 		if ($state instanceof BugState)
 			$bug->setStateId($content->stateId);
@@ -486,11 +500,85 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return new JsonResponse(array("ticket"=>$ticket));
+		return $this->setSuccess("1.4.3", "Bugtracker", "editTicket", "Complete Success", $ticket);
 	}
 
 	/**
-	* @api {post} /V0.11/bugtracker/postcomment/:id Post a comment
+	* @-api {get} /V0.11/bugtracker/getcomments/:token/:id/:ticketId Get comments of a ticket
+	* @apiName getComments
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {int} id project id
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} ticketId commented ticket id
+	*
+	* @apiSuccess {Object[]} tickets array of all the ticket's comments
+	* @apiSuccess {int} tickets.id Ticket id
+	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {int} tickets.projectId project id
+  * @apiSuccess {int} tickets.parentId parent message id
+	* @apiSuccess {int} tickets.title comment title
+	* @apiSuccess {int} tickets.description comment message
+	* @apiSuccess {DateTime} tickets.createdAt Message creation date
+	* @apiSuccess {DateTime} tickets.editedAt Message edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Message deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"comments": [
+	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": 150,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null
+	*			},
+	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": 150,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null
+	*			},
+	*		...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getCommentsAction(Request $request, $token, $id, $ticketId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => $ticketId));
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$ticketsArray[] = $value->objectToArray();
+		}
+
+		return new JsonResponse(array("comments" => $ticketsArray));
+	}
+
+	/**
+	* @-api {post} /V0.11/bugtracker/postcomment/:id Post a comment
 	* @apiName postComment
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.1
@@ -585,7 +673,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.11/bugtracker/editcomment/:id Edit a comment
+	* @-api {post} /V0.11/bugtracker/editcomment/:id Edit a comment
 	* @apiName EditComment
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.1
@@ -655,415 +743,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/bugtracker/getcomments/:token/:id/:ticketId Get comments of a ticket
-	* @apiName getComments
-	* @apiGroup Bugtracker
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {int} id project id
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} ticketId commented ticket id
-	*
-	* @apiSuccess {Object[]} tickets array of all the ticket's comments
-	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
-	* @apiSuccess {int} tickets.projectId project id
-  * @apiSuccess {int} tickets.parentId parent message id
-	* @apiSuccess {int} tickets.title comment title
-	* @apiSuccess {int} tickets.description comment message
-	* @apiSuccess {DateTime} tickets.createdAt Message creation date
-	* @apiSuccess {DateTime} tickets.editedAt Message edition date
-	* @apiSuccess {DateTime} tickets.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"comments": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": 150,
-	*			"title": "function getUser not working",
-	*			"description": "the function does not answer the right way, fix it ASAP !",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null
-	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": 150,
-	*			"title": "Bad menu disposition on mobile",
-	*			"description": "the menu is unsusable on mobile",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null
-	*			},
-	*		...
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getCommentsAction(Request $request, $token, $id, $ticketId)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-		if (!$this->checkRoles($user, $id, "bugtracker"))
-			return ($this->setNoRightsError());
-
-		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
-		//TODO check project id
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => $ticketId));
-		$ticketsArray = array();
-		foreach ($tickets as $key => $value) {
-			$ticketsArray[] = $value->objectToArray();
-		}
-
-		return new JsonResponse(array("comments" => $ticketsArray));
-	}
-
-	/**
-	* @api {get} /V0.11/bugtracker/getlasttickets/:token/:id/:offset/:limit Get X last tickets from offset Y
-	* @apiName getLastTickets
-	* @apiGroup Bugtracker
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {int} id id of the project
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
-	* @apiParam {int} limit number max of tickets to get
-	*
-	* @apiSuccess {Object[]} tickets array of all the tickets' project
-	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
-	* @apiSuccess {int} tickets.projectId project id
-	* @apiSuccess {String} tickets.title Ticket title
-	* @apiSuccess {String} tickets.description Ticket content
-	* @apiSuccess {int} tickets.parentId parent Ticket id
-	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
-	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
-	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
-	* @apiSuccess {Object} tickets.state Ticket state
-	* @apiSuccess {Object[]} tickets.tags Ticket tags list
-	* @apiSuccess {int} tickets.tags.id Ticket tags id
-	* @apiSuccess {String} tickets.tags.name Ticket tags name
-	* @apiSuccess {Object[]} tickets.users assigned user list
-	*	@apiSuccess {int} tickets.users.id user id
-	*	@apiSuccess {string} tickets.users.name user full name
-	*	@apiSuccess {string} tickets.users.email user email
-	*	@apiSuccess {string} tickets.users.avatar user avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"tickets": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
-	*			"title": "function getUser not working",
-	*			"description": "the function does not answer the right way, fix it ASAP !",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": {"id": 1, "name": "Waiting"},
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
-	*			"title": "Bad menu disposition on mobile",
-	*			"description": "the menu is unsusable on mobile",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": {"id": 2, "name": "In traitment"},
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			},
-	*		...
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getLastTicketsAction(Request $request, $token, $id, $offset, $limit)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-		if (!$this->checkRoles($user, $id, "bugtracker"))
-			return ($this->setNoRightsError());
-
-		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
-		//TODO check project id
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
-		$ticketsArray = array();
-		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
-			$object['tags'] = array();
-			foreach ($value->getTags() as $key => $tag_value) {
-				$object['tags'][] = $tag_value->objectToArray();
-			}
-
-			$participants = array();
-			foreach ($value->getUsers() as $key => $user_value) {
-				$participants[] = array(
-					"id" => $user_value->getId(),
-					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
-					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
-				);
-			}
-			$object["users"] = $participants;
-
-			$ticketsArray[] = $object;
-		}
-
-		return new JsonResponse(array("tickets" => $ticketsArray));
-	}
-
-	/**
-	* @api {get} /V0.11/bugtracker/getticketsbyuser/:token/:id/:user Get Tickets asssigned to a user for a project
-	* @apiName getTicketsByUser
-	* @apiGroup Bugtracker
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {int} id id of the project
-	* @apiParam {int} user id of the user
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} tickets array of all the tickets' project
-	* @apiSuccess {int} tickets.id Ticket id
-	* @apiSuccess {int} tickets.creatorId author id
-	* @apiSuccess {int} tickets.userId assigned user id
-	* @apiSuccess {int} tickets.projectId project id
-	* @apiSuccess {String} tickets.title Ticket title
-	* @apiSuccess {String} tickets.description Ticket content
-	* @apiSuccess {int} tickets.parentId parent Ticket id
-	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
-	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
-	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
-	* @apiSuccess {Object} tickets.state Ticket state
-	* @apiSuccess {Object[]} tickets.tags Ticket tags list
-	* @apiSuccess {int} tickets.tags.id Ticket tags id
-	* @apiSuccess {String} tickets.tags.name Ticket tags name
-	* @apiSuccess {Object[]} tickets.users assigned user list
-	*	@apiSuccess {int} tickets.users.id user id
-	*	@apiSuccess {string} tickets.users.name user full name
-	*	@apiSuccess {string} tickets.users.email user email
-	*	@apiSuccess {string} tickets.users.avatar user avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"tickets": [
-	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
-	*			"title": "function getUser not working",
-	*			"description": "the function does not answer the right way, fix it ASAP !",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": {"id": 1, "name": "Waiting"},
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			},
-	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
-	*			"title": "Bad menu disposition on mobile",
-	*			"description": "the menu is unsusable on mobile",
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null,
-	*			"state": {"id": 2, "name": "In traitment"},
-	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
-	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*			]
-	*			},
-	*		...
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getTicketsByUserAction(Request $request, $token, $id, $userId)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-		if (!$this->checkRoles($user, $id, "bugtracker"))
-			return ($this->setNoRightsError());
-
-		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
-		//TODO check project id
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user ));
-		$ticketsArray = array();
-		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
-			$object['tags'] = array();
-			foreach ($value->getTags() as $key => $tag_value) {
-				$object['tags'][] = $tag_value->objectToArray();
-			}
-
-			$participants = array();
-			foreach ($value->getUsers() as $key => $user_value) {
-				$participants[] = array(
-					"id" => $user_value->getId(),
-					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
-					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
-				);
-			}
-			$object["users"] = $participants;
-
-			$ticketsArray[] = $object;
-		}
-
-		return new JsonResponse(array("tickets" => $ticketsArray));
-	}
-
-	/**
-	* @api {delete} /V0.11/bugtracker/closeticket/:token/:id Close ticket or delete comment
-	* @apiName closeTicket
-	* @apiGroup Bugtracker
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id id of the ticket
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {String} success succes message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"Success"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function closeTicketAction(Request $request, $token, $id)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("XXX", "xxx", "XXX"));
-		$em = $this->getDoctrine()->getManager();
-		$bug = $em->getRepository("GrappboxBundle:Bug")->find($id);
-		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker"))
-			return ($this->setNoRightsError("XXX", "xxx", "XXX"));
-
-		$bug->setDeletedAt(new DateTime('now'));
-
-		$em->persist($bug);
-		$em->flush();
-
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket closed";
-		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been closed";
-
-		$wdata['type'] = "Bugtracker";
-		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "The ticket ".$bug->getTitle()." has been closed";
-
-		$userNotif = array();
-		foreach ($bug->getUsers() as $key => $value) {
-			$userNotif[] = $value->getId();
-		}
-
-		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
-
-		return new JsonResponse('Success');
-	}
-
-	/**
-	* @api {get} /V0.11/bugtracker/getstates/:token Get Tickets Status
-	* @apiName getStates
-	* @apiGroup Bugtracker
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {String} success succes message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"Success"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getStatesAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-		$em = $this->getDoctrine()->getManager();
-		$states = $em->getRepository("GrappboxBundle:BugState")->findAll();
-
-		$states_array = array();
-		foreach ($states as $key => $value) {
-			$states_array[] = $value->objectToArray();
-		}
-
-		return new JsonResponse($states_array);
-	}
-
-	/**
-	* @api {post} /V0.11/bugtracker/setparticipants/:id Add/remove users to the ticket
+	* @-api {post} /V0.11/bugtracker/setparticipants/:id Add/remove users to the ticket
 	* @apiName setParticipants
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.1
@@ -1208,14 +888,188 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
-	* @apiName getTicketsByStatus
+	* @-api {delete} /V0.11/bugtracker/closeticket/:token/:id Close ticket or delete comment
+	* @apiName closeTicket
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.3
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {int} id id of the ticket
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {String} success succes message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"Success"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function closeTicketAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("XXX", "xxx", "XXX"));
+		$em = $this->getDoctrine()->getManager();
+		$bug = $em->getRepository("GrappboxBundle:Bug")->find($id);
+		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker"))
+			return ($this->setNoRightsError("XXX", "xxx", "XXX"));
+
+		$bug->setDeletedAt(new DateTime('now'));
+
+		$em->persist($bug);
+		$em->flush();
+
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Bugtracker - Ticket closed";
+		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been closed";
+
+		$wdata['type'] = "Bugtracker";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = "The ticket ".$bug->getTitle()." has been closed";
+
+		$userNotif = array();
+		foreach ($bug->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+
+		if (count($userNotif) > 0)
+			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		return new JsonResponse('Success');
+	}
+
+	/**
+	* @-api {get} /V0.11/bugtracker/gettickets/:token/:id Get all tickets of a project
+	* @apiName getTickets
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.1
 	*
 	* @apiParam {int} id id of the project
 	* @apiParam {String} token client authentification token
-	* @apiParam {int} state status id
+	*
+	* @apiSuccess {Object[]} tickets array of all the tickets' project
+	* @apiSuccess {int} tickets.id Ticket id
+	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {int} tickets.projectId project id
+	* @apiSuccess {String} tickets.title Ticket title
+	* @apiSuccess {String} tickets.description Ticket content
+	* @apiSuccess {int} tickets.parentId parent Ticket id
+	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
+	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
+	* @apiSuccess {Object} tickets.state Ticket state
+	* @apiSuccess {Object[]} tickets.tags Ticket tags list
+	* @apiSuccess {int} tickets.tags.id Ticket tags id
+	* @apiSuccess {String} tickets.tags.name Ticket tags name
+	* @apiSuccess {Object[]} tickets.users assigned user list
+	*	@apiSuccess {int} tickets.users.id user id
+	*	@apiSuccess {string} tickets.users.name user full name
+	*	@apiSuccess {string} tickets.users.email user email
+	*	@apiSuccess {string} tickets.users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"tickets" : [
+	*		{"id": "154","creatorId": 12, "projectId": 14, "parentId": null,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 1, "name": "Waiting"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		{"id": "158","creatorId": 12, "projectId": 14, "parentId": null,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 2, "name": "In traitment"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+ 	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getTicketsAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check bad project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$object = $value->objectToArray();
+			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['tags'] = array();
+			foreach ($value->getTags() as $key => $tag_value) {
+				$object['tags'][] = $tag_value->objectToArray();
+			}
+
+			$participants = array();
+			foreach ($value->getUsers() as $key => $user_value) {
+				$participants[] = array(
+					"id" => $user_value->getId(),
+					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"email" => $user_value->getEmail(),
+					"avatar" => $user_value->getAvatar()
+				);
+			}
+			$object["users"] = $participants;
+
+			$ticketsArray[] = $object;
+		}
+
+		return new JsonResponse(array("tickets" => $ticketsArray));
+	}
+
+	/**
+	* @-api {get} /V0.11/bugtracker/getlasttickets/:token/:id/:offset/:limit Get X last tickets from offset Y
+	* @apiName getLastTickets
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
 	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
 	* @apiParam {int} limit number max of tickets to get
 	*
@@ -1278,13 +1132,13 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 		"Bad Authentication Token"
 	* 	}
 	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
+ 	* 	HTTP/1.1 403 Forbidden
 	* 	{
 	* 		"Insufficient User Rights"
 	* 	}
 	*
 	*/
-	public function getTicketsByStateAction(Request $request, $token, $id, $state, $offset, $limit)
+	public function getLastTicketsAction(Request $request, $token, $id, $offset, $limit)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
@@ -1295,7 +1149,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
 		//TODO check project id
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -1323,7 +1177,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/bugtracker/getlastclosedtickets/:token/:id/:offset/:limit Get X last closed tickets from offset Y
+	* @-api {get} /V0.11/bugtracker/getlastclosedtickets/:token/:id/:offset/:limit Get X last closed tickets from offset Y
 	* @apiName getLastClosedTickets
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.2
@@ -1440,7 +1294,285 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.11/bugtracker/tagcreation Create a tag
+	* @-api {get} /V0.11/bugtracker/getticketsbyuser/:token/:id/:user Get Tickets asssigned to a user for a project
+	* @apiName getTicketsByUser
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.1
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {int} user id of the user
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {Object[]} tickets array of all the tickets' project
+	* @apiSuccess {int} tickets.id Ticket id
+	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {int} tickets.userId assigned user id
+	* @apiSuccess {int} tickets.projectId project id
+	* @apiSuccess {String} tickets.title Ticket title
+	* @apiSuccess {String} tickets.description Ticket content
+	* @apiSuccess {int} tickets.parentId parent Ticket id
+	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
+	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
+	* @apiSuccess {Object} tickets.state Ticket state
+	* @apiSuccess {Object[]} tickets.tags Ticket tags list
+	* @apiSuccess {int} tickets.tags.id Ticket tags id
+	* @apiSuccess {String} tickets.tags.name Ticket tags name
+	* @apiSuccess {Object[]} tickets.users assigned user list
+	*	@apiSuccess {int} tickets.users.id user id
+	*	@apiSuccess {string} tickets.users.name user full name
+	*	@apiSuccess {string} tickets.users.email user email
+	*	@apiSuccess {string} tickets.users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"tickets": [
+	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 1, "name": "Waiting"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 2, "name": "In traitment"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getTicketsByUserAction(Request $request, $token, $id, $userId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user ));
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$object = $value->objectToArray();
+			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['tags'] = array();
+			foreach ($value->getTags() as $key => $tag_value) {
+				$object['tags'][] = $tag_value->objectToArray();
+			}
+
+			$participants = array();
+			foreach ($value->getUsers() as $key => $user_value) {
+				$participants[] = array(
+					"id" => $user_value->getId(),
+					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"email" => $user_value->getEmail(),
+					"avatar" => $user_value->getAvatar()
+				);
+			}
+			$object["users"] = $participants;
+
+			$ticketsArray[] = $object;
+		}
+
+		return new JsonResponse(array("tickets" => $ticketsArray));
+	}
+
+	/**
+	* @-api {get} /V0.11/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit Get X last tickets from offset Y with status Z
+	* @apiName getTicketsByStatus
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.3
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} state status id
+	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
+	* @apiParam {int} limit number max of tickets to get
+	*
+	* @apiSuccess {Object[]} tickets array of all the tickets' project
+	* @apiSuccess {int} tickets.id Ticket id
+	* @apiSuccess {int} tickets.creatorId author id
+	* @apiSuccess {int} tickets.projectId project id
+	* @apiSuccess {String} tickets.title Ticket title
+	* @apiSuccess {String} tickets.description Ticket content
+	* @apiSuccess {int} tickets.parentId parent Ticket id
+	* @apiSuccess {DateTime} tickets.createdAt Ticket creation date
+	* @apiSuccess {DateTime} tickets.editedAt Ticket edition date
+	* @apiSuccess {DateTime} tickets.deletedAt Ticket deletion date
+	* @apiSuccess {Object} tickets.state Ticket state
+	* @apiSuccess {Object[]} tickets.tags Ticket tags list
+	* @apiSuccess {int} tickets.tags.id Ticket tags id
+	* @apiSuccess {String} tickets.tags.name Ticket tags name
+	* @apiSuccess {Object[]} tickets.users assigned user list
+	*	@apiSuccess {int} tickets.users.id user id
+	*	@apiSuccess {string} tickets.users.name user full name
+	*	@apiSuccess {string} tickets.users.email user email
+	*	@apiSuccess {string} tickets.users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"tickets": [
+	*		{"id": "154","creatorId": 12, "userId": 25, "projectId": 14, "parentId": null,
+	*			"title": "function getUser not working",
+	*			"description": "the function does not answer the right way, fix it ASAP !",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 1, "name": "Waiting"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "API"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		{"id": "158","creatorId": 12, "userId": 21, "projectId": 14, "parentId": null,
+	*			"title": "Bad menu disposition on mobile",
+	*			"description": "the menu is unsusable on mobile",
+	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"deletedAt": null,
+	*			"state": {"id": 2, "name": "In traitment"},
+	*			"tags" : [{"id": 1, "name": "Urgent"}, {"id": 51, "name": "UI"}],
+	*			"users": [
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*			]
+	*			},
+	*		...
+	*		]
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getTicketsByStateAction(Request $request, $token, $id, $state, $offset, $limit)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		if (!$this->checkRoles($user, $id, "bugtracker"))
+			return ($this->setNoRightsError());
+
+		$em = $this->getDoctrine()->getManager();
+
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		//TODO check project id
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$object = $value->objectToArray();
+			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['tags'] = array();
+			foreach ($value->getTags() as $key => $tag_value) {
+				$object['tags'][] = $tag_value->objectToArray();
+			}
+
+			$participants = array();
+			foreach ($value->getUsers() as $key => $user_value) {
+				$participants[] = array(
+					"id" => $user_value->getId(),
+					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"email" => $user_value->getEmail(),
+					"avatar" => $user_value->getAvatar()
+				);
+			}
+			$object["users"] = $participants;
+
+			$ticketsArray[] = $object;
+		}
+
+		return new JsonResponse(array("tickets" => $ticketsArray));
+	}
+
+/*
+* --------------------------------------------------------------------
+*														TAGS MANAGEMENT
+* --------------------------------------------------------------------
+*/
+	/**
+	* @-api {get} /V0.11/bugtracker/getstates/:token Get Tickets Status
+	* @apiName getStates
+	* @apiGroup Bugtracker
+	* @apiVersion 0.11.0
+	*
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {String} success succes message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"Success"
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	* 		"Bad Authentication Token"
+	* 	}
+	* @apiErrorExample Insufficient User Rights
+	* 	HTTP/1.1 403 Forbidden
+	* 	{
+	* 		"Insufficient User Rights"
+	* 	}
+	*
+	*/
+	public function getStatesAction(Request $request, $token)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError());
+		$em = $this->getDoctrine()->getManager();
+		$states = $em->getRepository("GrappboxBundle:BugState")->findAll();
+
+		$states_array = array();
+		foreach ($states as $key => $value) {
+			$states_array[] = $value->objectToArray();
+		}
+
+		return new JsonResponse($states_array);
+	}
+
+	/**
+	* @-api {post} /V0.11/bugtracker/tagcreation Create a tag
 	* @apiName tagCreation
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
@@ -1521,7 +1653,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.11/bugtracker/tagupdate Update a tag
+	* @-api {put} /V0.11/bugtracker/tagupdate Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
@@ -1601,8 +1733,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return new JsonResponse(array("tag_id" => $id, "tag_name" => $name));
 	}
 
-		/**
-	* @api {get} /V0.11/bugtracker/taginformations/:token/:tagId Get a tag informations
+	/**
+	* @-api {get} /V0.11/bugtracker/taginformations/:token/:tagId Get a tag informations
 	* @apiName tagInformations
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -1670,7 +1802,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.11/bugtracker/deletetag/:token/:tagId Delete a tag
+	* @-api {delete} /V0.11/bugtracker/deletetag/:token/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
@@ -1737,7 +1869,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.11/bugtracker/assigntag Assign a tag to a bug
+	* @-api {put} /V0.11/bugtracker/assigntag Assign a tag to a bug
 	* @apiName assignTag
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -1833,7 +1965,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.11/bugtracker/removetag/:token/:bugId/:tagId Remove a tag to a bug
+	* @-api {delete} /V0.11/bugtracker/removetag/:token/:bugId/:tagId Remove a tag to a bug
 	* @apiName removeTag
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -1930,7 +2062,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/bugtracker/getprojecttags/:token/:projectId Get all the tags for a project
+	* @-api {get} /V0.11/bugtracker/getprojecttags/:token/:projectId Get all the tags for a project
 	* @apiName getProjectTags
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3

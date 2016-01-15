@@ -218,7 +218,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	/**
- * @api {get} V0.2/accountadministration/logout/:token logout
+ * @api {get} V0.2/accountadministration/logout/:token Logout
  * @apiName logout
  * @apiGroup AccountAdministration
  * @apiDescription unvalid user's token
@@ -272,24 +272,52 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} firstname user's firstname
+	* @apiParam {string} password user's password
+	* @apiParam {email} email user's email
 	* @apiParam {string} lastname user's lastname
 	* @apiParam {Date} [birthday] user's birthday
 	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
 	* @apiParam {string} [phone] user's phone
 	* @apiParam {string} [country] user's country
 	* @apiParam {url} [linkedin] user's linkedin
 	* @apiParam {url} [viadeo] user's viadeo
 	* @apiParam {url} [twitter] user's twitter
 	*
-	* @apiParamExample {json} Request-Example:
+	* @apiParamExample {json} Request-Example Minimum:
 	*   {
 	*   	"data": {
 	*   		"firstname": "Janne",
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword"
+	*   	}
+	*   }
+	* @apiParamExample {json} Request-Example Partial:
+	*   {
+	*   	"data": {
+	*   		"firstname": "Janne",
+	*   		"lastname": "Doe",
+	*   		"email": "janne.doe@gmail.com",
+	*   		"password": "ThisisAPassword",
+	*   		"avatar": "100100111010011110100100.......",
+	*   		"phone": "010-1658-9520",
+	*   		"country": "New Caledonia"
+	*   	}
+	*   }
+	* @apiParamExample {json} Request-Example Full:
+	*   {
+	*   	"data": {
+	*   		"firstname": "Janne",
+	*   		"lastname": "Doe",
+	*   		"email": "janne.doe@gmail.com",
+	*   		"password": "ThisisAPassword",
+	*   		"birthday": "1980-12-04",
+	*   		"avatar": "100100111010011110100100.......",
+	*   		"phone": "010-1658-9520",
+	*   		"country": "New Caledonia",
+	*   		"linkedin": "linkedin.com/janne.doe"
+	*   		"viadeo": "viadeo.com/janne.doe",
+	*   		"twitter": "twitter.com/janne.doe"
 	*   	}
 	*   }
 	*
@@ -317,7 +345,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			}
 	* 	}
 	*
-	* @apiErrorExample Missing Paremeter
+	* @apiErrorExample Missing Parameter
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
