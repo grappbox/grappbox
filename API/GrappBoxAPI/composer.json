@@ -14,6 +14,8 @@
         "doctrine/orm": "~2.2,>=2.2.3,<2.5",
         "doctrine/dbal": "<2.5",
         "doctrine/doctrine-bundle": "~1.4",
+        "doctrine/mongodb-odm": "~1.0",
+        "doctrine/mongodb-odm-bundle": "~3.0",
         "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
@@ -22,7 +24,6 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "league/flysystem" : "~1.0.12",
         "league/flysystem-webdav": "^1.0",
-        "nelmio/api-doc-bundle": "@dev",
         "nelmio/cors-bundle": "^1.4"
     },
     "require-dev": {

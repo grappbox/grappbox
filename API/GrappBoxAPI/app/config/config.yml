@@ -94,3 +94,16 @@ nelmio_cors:
             allow_origin: ['*']
             allow_headers: ['*']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+
+doctrine_mongodb:
+    connections:
+        default:
+            server: mongodb://localhost:27017
+            options:
+                connect: true
+    default_database: symfony_database
+    document_managers:
+        default:
+            mappings:
+                MongoBundle: yml
+            metadata_cache_driver: array

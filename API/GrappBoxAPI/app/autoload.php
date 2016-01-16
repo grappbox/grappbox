@@ -9,5 +9,8 @@ use Composer\Autoload\ClassLoader;
 $loader = require __DIR__.'/../vendor/autoload.php';
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+// For mongoDB
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+AnnotationDriver::registerAnnotationClasses();
 
 return $loader;
