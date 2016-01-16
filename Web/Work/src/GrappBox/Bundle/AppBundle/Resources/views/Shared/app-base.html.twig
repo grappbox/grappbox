@@ -37,8 +37,9 @@
 		'@AppBundle/Resources/public/js/custom/app.angular.js'
 		'@AppBundle/Resources/public/js/custom/app-routing.angular.js'
 		'@AppBundle/Resources/public/js/custom/app-login.angular.js'
-		'@AppBundle/Resources/public/js/custom/dashboard/app-dashboard.angular.js'
 		'@AppBundle/Resources/public/js/custom/notifications/app-notifications.angular.js'
+		'@AppBundle/Resources/public/js/custom/dashboard/app-dashboard.angular.js'
+		'@AppBundle/Resources/public/js/custom/cloud/app-cloud-list.angular.js'
 		'@AppBundle/Resources/public/js/custom/profile/app-profile.angular.js'
 		'@AppBundle/Resources/public/js/custom/settings/app-settings.angular.js'
 		'@AppBundle/Resources/public/js/custom/whiteboard/app-whiteboard-list.angular.js'
@@ -76,19 +77,28 @@
 							</li>
 							<li>
 								<a href="./" title="Go to your dashboard" class="btn-right-sweep ng-class:{ 'active' : isActive('/') };">
-								<i class="fa fa-dashboard fa-fw"></i>Dashboard</a></li>
+								<i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+							</li>
+							<li>
+								<a href="cloud" title="Access your online files and folders" class="btn-right-sweep ng-class:{ 'active' : isActive('/cloud') };">
+								<i class="fa fa-cloud-upload fa-fw"></i>Cloud</a>
+							</li>
 							<li>
 								<a href="whiteboard" title="Go to the collaborative whiteboard" class="btn-right-sweep ng-class:{ 'active' : isActive('/whiteboard') };">
-								<i class="fa fa-edit fa-fw"></i>Whiteboard</a></li>
+								<i class="fa fa-edit fa-fw"></i>Whiteboard</a>
+							</li>
 							<li>
 								<a href="profile" title="Manage your profile" class="btn-right-sweep ng-class:{ 'active' : isActive('/profile') };">
-								<i class="fa fa-user fa-fw"></i>Profile</a></li>
+								<i class="fa fa-user fa-fw"></i>Profile</a>
+							</li>
 							<li>
 								<a href="settings" title="Manage your account settings" class="btn-right-sweep ng-class:{ 'active' : isActive('/settings') };">
-								<i class="fa fa-gear fa-fw"></i>Settings</a></li>
+								<i class="fa fa-gear fa-fw"></i>Settings</a>
+							</li>
 							<li>
 								<a href="logout" title="Sign out of GrappBox" class="btn-right-sweep">
-								<i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
+								<i class="fa fa-sign-out fa-fw"></i>Logout</a>
+							</li>
 						</ul>
 					</div>
 				</div>

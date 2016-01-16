@@ -17,6 +17,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		caseInsensitiveMatch : true
 	})
 	.when('/login', {
+		caseInsensitiveMatch : true,
 		resolve: {
 			factory: redirectAfterLogin
 		}
@@ -24,6 +25,11 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	.when('/notifications', {
 		templateUrl : '../resources/pages/notifications.html',
 		controller  : 'grappboxController',
+		caseInsensitiveMatch : true
+	})
+	.when('/cloud', {
+		templateUrl : '../resources/pages/cloud-list.html',
+		controller  : 'cloudController',
 		caseInsensitiveMatch : true
 	})
 	.when('/whiteboard', {
@@ -50,6 +56,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		caseInsensitiveMatch : true
 	})
 	.when('/logout', {
+		caseInsensitiveMatch : true,
 		resolve: {
 			factory: redirectAfterLogout
 		}

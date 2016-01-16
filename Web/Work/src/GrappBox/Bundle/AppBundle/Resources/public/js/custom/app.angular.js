@@ -28,35 +28,25 @@ app.controller('grappboxController', function() {} );
 * 'layout, loading, apiVersion, apiBaseURL'
 *
 */
-app.run(['$rootScope', '$location', '$timeout', '$cookies', '$http', '$window', function($rootScope, $location, $timeout, $cookies, $http, $window) {
+app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($rootScope, $location, $cookies, $http, $window) {
 	// ROOTSCOPE variables
-	$rootScope.layout = {};
-	$rootScope.layout.loading = false;
-
 	$rootScope.apiVersion = 'V0.11'
 	$rootScope.apiBaseURL = 'http://api.grappbox.com/app_dev.php/' + $rootScope.apiVersion;
 
 	// On route change (start)
 	$rootScope.$on('$routeChangeStart', function() {
-		$timeout(function(){ $rootScope.layout.loading = true; });
-
 		if (!$cookies.get('USERTOKEN') || !$cookies.get('LASTLOGINMESSAGE')) {
 			if ($cookies.get('USERTOKEN'))
 				$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN'));
-			cleanAllCookies($cookies);
+			_removeUserCookies($cookies);
 			$cookies.put('LASTLOGINMESSAGE', sha256('_missing'), { path: '/' });
 			$window.location.href='/#login';
 		}
 	});
 	// On route change (success)
-	$rootScope.$on('$routeChangeSuccess', function () {
-		$timeout(function(){ $rootScope.layout.loading = false; }, 200);
-	});
+	$rootScope.$on('$routeChangeSuccess', function () { });
 	// On route change (error)
-	$rootScope.$on('$routeChangeError', function () {
-		console.log('Failed to load page.').
-		$rootScope.layout.loading = false;
-	});
+	$rootScope.$on('$routeChangeError', function () { });
 }]);
 
 
@@ -80,11 +70,11 @@ app.controller('sidebarController', ['$scope', '$location', function($scope, $lo
 * Clean all cookies
 *
 */
-var cleanAllCookies = function($cookies) {
+var _removeUserCookies = function($cookies) {
 	var cookies = $cookies.getAll();
 	for (var key in cookies) {
 		$cookies.remove(key, { path: '/' });
 	};
 };
 
-cleanAllCookies['$inject'] = ['$cookies'];
+_removeUserCookies['$inject'] = ['$cookies'];
