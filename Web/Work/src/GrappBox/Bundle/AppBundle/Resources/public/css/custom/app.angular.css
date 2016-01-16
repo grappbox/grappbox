@@ -16,73 +16,68 @@
 
 /* ==================== General layout ==================== */
 
-#app-wrapper { background: #fff; }
-#page-wrapper { height: auto; padding: 0 30px 50px 30px; background: #fff; border-left: 1px solid #e0e0e0; transition: .2s ease all; }
+#app-wrapper { padding-left: 0; background: #fff; transition: all .3s ease; }
 
-.alert { margin: 50px 1px -20px 1px; border-radius: 0; }
-.alert span { font-size: 18px; }
+#app-wrapper.toggled { padding-left: 250px; }
+#app-wrapper.toggled #sidebar-wrapper { width: 250px; }
+#app-wrapper.toggled #page-content-wrapper { position: absolute; margin-right: -250px; }
 
-section:nth-of-type(1) { min-height: auto; margin: 30px 0 60px 0; }
-section { margin: 0 0 60px 0; }
+#page-content-wrapper { width: 100%; position: absolute; padding: 15px; }
 
-footer .app-footer { margin: 0 0 0 250px; }
+@media (min-width: 768px) {
+	#app-wrapper { padding-left: 250px; }
+	#app-wrapper.toggled { padding-left: 0; }
+    #app-wrapper.toggled #sidebar-wrapper { width: 0; }
+    #app-wrapper.toggled #page-content-wrapper { position: relative; margin-right: 0; }
 
-@media (max-width:767px) {
-	section:nth-of-type(1) { min-height: auto; }
-	section { margin: 0 0 60px 0; }
+    #sidebar-wrapper { width: 250px; }
+    #page-content-wrapper { padding: 20px; position: relative; }
 }
 
+
+/* ==================== General layout (navigation) ==================== */
+
+#sidebar-wrapper { z-index: 1000; position: fixed; left: 250px; height: 100%; margin-left: -250px; overflow-y: auto; transition: all .3s ease; background: #f5f5f5; border-right: 1px solid #e0e0e0; overflow: hidden; }
+
+.sidebar-nav { position: absolute; top: 0; width: 250px; margin: 0; padding: 0; list-style: none; }
+.sidebar-nav li a { font-size: 18px; display: block; padding: 18px 20px; color: #212121; }
+.sidebar-nav li a:before { transition-duration: .2s; background: #d32f2f; }
+.sidebar-nav li a.active { background: #d32f2f; }
+
+.sidebar-nav li a.active,
+.sidebar-nav li a:active,
+.sidebar-nav li a:hover,
+.sidebar-nav li a:focus,
+.sidebar-nav li a.active:active,
+.sidebar-nav li a.active:hover,
+.sidebar-nav li a.active:focus { color: #f5f5f5; }
+
+.sidebar-nav .sidebar-brand a { font-size: 32px; text-transform: uppercase; }
+.sidebar-nav .sidebar-brand a:active,
+.sidebar-nav .sidebar-brand a:focus,
+.sidebar-nav .sidebar-brand a:hover { color: #d32f2f; }
+
+.legal-nav .divider,
+.sidebar-nav .divider { height: 1px; background: #e0e0e0; }
+
+.legal-nav { position: absolute; bottom: 0; width: 100%; }
+.legal-nav .copyright { font-size: 16px; padding: 5px 20px 20px 20px; margin: 0; }
+
 @media (min-width:768px) {
-	#page-wrapper { margin: 0 0 0 250px; }
+	.sidebar-nav { z-index: 1; position: absolute; }
 }
 
 
 /* ==================== General layout (animations) ==================== */
+
+.alert { margin: 50px 1px -20px 1px; border-radius: 0; }
+.alert span { font-size: 18px; }
 
 .btn-float { display: inline-block; vertical-align: middle; transform: translateZ(0); box-shadow: 0 0 1px rgba(0, 0, 0, 0); backface-visibility: hidden; transition-duration: .3s; transition-property: transform; transition-timing-function: ease-out; }
 
 .btn-float:active,
 .btn-float:focus,
 .btn-float:hover { transform: translateY(-8px); }
-
-
-/* ==================== Navigation ==================== */
-
-#menu-wrapper { transition: .2s ease all; }
-
-.navbar { position: relative; min-height: 60px; margin: 0; background: #f5f5f5; box-shadow: none; }
-
-.navbar-brand a,
-.navbar-brand span { font-size: 44px; letter-spacing: -2px; text-transform: uppercase; }
-
-.navbar-brand { line-height: normal; display: inline-block; float: none; width: 100%; height: 60px; margin: 0 auto; padding: 2px 0 0 15px; text-align: left; color: #212121; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-
-.navbar-brand a:active,
-.navbar-brand a:hover,
-.navbar-brand a:focus,
-.navbar-brand a:active span,
-.navbar-brand a:hover span,
-.navbar-brand a:focus span,
-.navbar-brand span:active,
-.navbar-brand span:hover,
-.navbar-brand span:focus { color: #ff5722; }
-
-.sidebar { margin: 30px 0 0 0; padding: 0; list-style: none; }
-
-.sidebar li a { font-size: 18px; font-weight: 400; display: block; padding: 20px; background: #fff; }
-.sidebar li a.active { color: #f5f5f5; background: #616161; }
-.sidebar li a:before { transition-duration: .2s; background: #616161; }
-
-.sidebar li a:active,
-.sidebar li a:hover,
-.sidebar li a:focus,
-.sidebar li a.active:active,
-.sidebar li a.active:hover,
-.sidebar li a.active:focus { color: #f5f5f5; }
-
-@media (min-width:768px) {
-	.sidebar { z-index: 1; position: absolute; width: 250px; }
-}
 
 
 /* ==================== General laytout (sections) ==================== */
@@ -103,6 +98,14 @@ footer .app-footer { margin: 0 0 0 250px; }
 .app-section .app-section-content p,
 .app-section .app-section-content strong { font-size: 16px; line-height: initial; }
 
+section:nth-of-type(1) { min-height: auto; margin: 20px 0; }
+section { margin: 0 0 60px 0; }
+
+@media (max-width: 767px) {
+	section:nth-of-type(1) { min-height: auto; }
+	section { margin: 0 0 60px 0; }
+}
+
 
 /* ==================== General layout (error and secondary pages) ==================== */
 
@@ -111,7 +114,7 @@ footer .app-footer { margin: 0 0 0 250px; }
 
 /* ==================== Section: dashboard ==================== */
 
-#dashboard-view .app-section-content { margin: 0 -30px; min-height: 230px; background: #e0e0e0; }
+#dashboard-view .app-section-content { margin: 0 -20px; min-height: 230px; background: #e0e0e0; }
 #dashboard-view .app-data { display: table-cell; }
 
 #dashboard-view .app-data.empty p,
@@ -149,9 +152,9 @@ footer .app-footer { margin: 0 0 0 250px; }
 #dashboard-view .each-progress-data .progress-details div:last-child { display: inline-block; padding: 0; }
 
 
-/* ==================== Section: Cloud (list) ==================== */
+/* ==================== Section: Cloud (list and help) ==================== */
 
-#cloud-list-view .app-section-content { margin: 0 -30px; min-height: 230px; background: #e0e0e0; }
+#cloud-list-view .app-section-content { margin: 0 -20px; min-height: 230px; background: #e0e0e0; }
 #cloud-list-view .app-data { display: table-cell; }
 
 #cloud-list-view .app-data.empty p,
@@ -177,10 +180,12 @@ footer .app-footer { margin: 0 0 0 250px; }
 #cloud-list-view .each-project-data .project-cloud-link a { display: block; padding: 15px; text-align: center; color: #f5f5f5; }
 #cloud-list-view .each-project-data .project-cloud-link a { border-top: 1px solid #f5f5f5; background-color: #8bc34a; }
 
+#cloud-list-view .lead-help { padding: 20px; border: 1px solid #e0e0e0; }
+
 
 /* ==================== Section: whiteboard (list) ==================== */
 
-#whiteboard-list-view .app-section-content { margin: 0 -30px; background: #e0e0e0; }
+#whiteboard-list-view .app-section-content { margin: 0 -20px; background: #e0e0e0; }
 
 #whiteboard-list-view .app-data { display: table-cell; }
 #whiteboard-list-view .app-data .app-data-list li { display: block; }

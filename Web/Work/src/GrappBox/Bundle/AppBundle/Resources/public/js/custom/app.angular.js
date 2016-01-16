@@ -20,7 +20,14 @@ app.config(['$httpProvider', function($httpProvider) {
 	delete $httpProvider.defaults.headers.common['X-Requested-With'];
 }]);
 
-app.controller('grappboxController', function() {} );
+app.controller('grappboxController', ['$scope', '$location', function($scope, $location) {
+	$scope.isLinkActive = function(route) {
+	if (route === '/whiteboard')
+		return (($location.path().indexOf('whiteboard')) > -1);
+	else
+		return route === $location.path();
+	};
+}]);
 
 
 /**
@@ -47,21 +54,6 @@ app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($ro
 	$rootScope.$on('$routeChangeSuccess', function () { });
 	// On route change (error)
 	$rootScope.$on('$routeChangeError', function () { });
-}]);
-
-
-/**
-* Controller definition
-* APP sidebar
-*
-*/
-app.controller('sidebarController', ['$scope', '$location', function($scope, $location) {
-	$scope.isActive = function(route) {
-		if (route === '/whiteboard')
-			return (($location.path().indexOf('whiteboard')) > -1);
-		else
-			return route === $location.path();
-	};
 }]);
 
 
