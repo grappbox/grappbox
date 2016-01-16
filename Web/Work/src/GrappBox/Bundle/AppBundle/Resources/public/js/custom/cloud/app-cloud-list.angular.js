@@ -9,7 +9,7 @@
 * APP Cloud modules list (one for each project)
 *
 */
-app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', function($rootScope, $scope, $routeParams, $http, $cookies) {
+app.controller('cloudListController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', function($rootScope, $scope, $routeParams, $http, $cookies) {
   $scope.alertList = [];
 
   $scope.closeAlert = function(index) {
@@ -25,12 +25,12 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
   // Get all user's current projects (with information)
   $http.get($rootScope.apiBaseURL + '/dashboard/getprojectsglobalprogress/' + $cookies.get('USERTOKEN'))
     .then(function successCallback(response) {
-      $scope.userProjectsWithCloudList = (response.data && Object.keys(response.data).length ? response.data : null);
-      $scope.userProjectsWithCloudList_isValid = true;
+      $scope.userProjects = (response.data && Object.keys(response.data).length ? response.data : null);
+      $scope.userProjects_isValid = true;
     },
     function errorCallback(response) {
-      $scope.userProjectsWithCloudList = null;
-      $scope.userProjectsWithCloudList_isValid = false;
+      $scope.userProjects = null;
+      $scope.userProjects_isValid = false;
     });
 
 }]);

@@ -2,7 +2,7 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="cloud-list-view" ng-controller="cloudController">
+<div class="view view-content" id="cloud-list-view" ng-controller="cloudListController">
 
     <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}" close="closeAlert($index)">{[{ alert.message }]}</uib-alert>
 
@@ -12,44 +12,44 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="col-lg-12">
                     <!-- grappbox.data : cloud list -->
                     <div class="section-heading app-section-heading">
-                        <h2>Choose a Cloud</h2>
-                        <p class="lead">Hold to navigate between all your current projects that already have a Cloud module (sorted by name).</p>
+                        <h2>Choose the Cloud you want to access</h2>
+                        <p class="lead">Hold to navigate between all your your project Cloud modules (sorted by name).<br>For each project, you'll find useful information project and client name. Use the link below each card to go to the associated online storage.</p>
                     </div>
                     <div class="section-content app-section-content">
                         <div id="all-clouds-data">
-                            <div ng-if="userProjectsWithCloudList_isValid && userProjectsWithCloudList" panhandler>
-                                <div class="app-data" ng-repeat="projectWithCloud in userProjectsWithCloudList">
+                            <div ng-if="userProjects_isValid && userProjects" panhandler>
+                                <div class="app-data" ng-repeat="project in userProjects">
                                     <ul class="app-data-list each-project-data btn-float">
-                                        <li class="project-picture" ng-show="projectWithCloud.project_logo === null">
+                                        <li class="project-picture" ng-show="project.project_logo === null">
                                             <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
-                                        <li class="project-picture" ng-show="projectWithCloud.project_logo !== null">
-                                            <img data-ng-src="data:image/png;base64,{[{ projectWithCloud.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                                        <li class="project-picture" ng-show="project.project_logo !== null">
+                                            <img data-ng-src="data:image/png;base64,{[{ project.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
                                         <li class="project-details">
-                                            <div class="project-name">{[{ projectWithCloud.project_name }]}</div>
-                                            <div class="project-client">{[{ projectWithCloud.project_company }]}</div>
+                                            <div class="project-name">{[{ project.project_name }]}</div>
+                                            <div class="project-client">{[{ project.project_company }]}</div>
                                             <div class="clearfix"></div>
                                         </li>
                                         <li class="client-details">
-                                            <div class="client-phone">{[{ projectWithCloud.project_phone }]}</div>
-                                            <div class="client-mail">{[{ projectWithCloud.contact_mail }]}</div>
+                                            <div class="client-phone">{[{ project.project_phone }]}</div>
+                                            <div class="client-mail">{[{ project.contact_mail }]}</div>
                                             <div class="clearfix"></div>
                                         </li>
                                         <li class="clearfix"></li>
                                         <li class="project-cloud-link">
-                                            <a ng-href="cloud/{[{ projectWithCloud.project_id }]}" title="Go to '{[{ projectWithCloud.project_name }]}' dedicated Cloud storage"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
+                                            <a ng-href="cloud/{[{ project.project_id }]}" title="Go to '{[{ project.project_name }]}' dedicated Cloud storage"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
 
-                            <div ng-if="userProjectsWithCloudList_isValid && !userProjectsWithCloudList">
+                            <div ng-if="userProjects_isValid && !userProjects">
                                 <div class="app-data error">
-                                    <p><i class="fa fa-drown-o"></i>None of your current projects have a Cloud module attached.</p>
+                                    <p><i class="fa fa-drown-o"></i>You don't have any project.</p>
                                 </div>
                             </div>
-                            <div ng-if="!userProjectsWithCloudList_isValid">
+                            <div ng-if="!userProjects_isValid">
                                 <div class="app-data error">
                                     <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                                 </div>
@@ -61,55 +61,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
     </section>
 
-    <section class="app-section" id="cloud-list-actions">
+    <section class="app-section" id="cloud-list">
         <div class="container app-container">
             <div class="row">
                 <div class="col-lg-12">
-                    <!-- grappbox.data : cloud list actions -->
+                    <!-- grappbox.data : cloud information -->
                     <div class="section-heading app-section-heading">
-                        <h2>Create a new cloud</h2>
-                        <p class="lead">Hold to navigate between all your current projects that DO NOT have a Cloud module (sorted by name).<br>To create a Cloud for a project, simply press 'Create' below the selected projectWithCloud.</p>
-                    </div>
-                    <div class="section-content app-section-content">
-                        <div id="all-clouds-data">
-                            <div ng-if="userProjectsWithCloudList_isValid && userProjectsWithCloudList" panhandler>
-                                <div class="app-data" ng-repeat="projectWithCloud in userProjectsWithCloudList">
-                                    <ul class="app-data-list each-project-data btn-float">
-                                        <li class="project-picture" ng-show="projectWithCloud.project_logo === null">
-                                            <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                        </li>
-                                        <li class="project-picture" ng-show="projectWithCloud.project_logo !== null">
-                                            <img data-ng-src="data:image/png;base64,{[{ projectWithCloud.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                        </li>
-                                        <li class="project-details">
-                                            <div class="project-name">{[{ projectWithCloud.project_name }]}</div>
-                                            <div class="project-client">{[{ projectWithCloud.project_company }]}</div>
-                                            <div class="clearfix"></div>
-                                        </li>
-                                        <li class="client-details">
-                                            <div class="client-phone">{[{ projectWithCloud.project_phone }]}</div>
-                                            <div class="client-mail">{[{ projectWithCloud.contact_mail }]}</div>
-                                            <div class="clearfix"></div>
-                                        </li>
-                                        <li class="clearfix"></li>
-                                        <li class="project-cloud-link">
-                                            <a ng-href="cloud/{[{ projectWithCloud.project_id }]}" title="Create a dedicated Cloud storage for '{[{ projectWithCloud.project_name }]}'"><i class="fa fa-plus fa-fw"></i>Create a Cloud storage</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div ng-if="userProjectsWithCloudList_isValid && !userProjectsWithCloudList">
-                                <div class="app-data error">
-                                    <p><i class="fa fa-smile-o"></i>All of your current projects have a Cloud module attached.</p>
-                                </div>
-                            </div>
-                            <div ng-if="!userProjectsWithCloudList_isValid">
-                                <div class="app-data error">
-                                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <p class="lead">When your create a project, GrappBox automaticly attach a dedicated Cloud storage that allows you to keep all your essential files with you. Each project can have a maximum of one Cloud module, whose overall capacity depends on your plan. This page shows you a full list of your projects, and the associated Cloud modules. Use the 'Go to Cloud storage' button below each project card to begin.</p>
                     </div>
                 </div>
             </div>

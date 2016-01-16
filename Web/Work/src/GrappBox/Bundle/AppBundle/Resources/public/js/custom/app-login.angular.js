@@ -29,7 +29,7 @@ var redirectAfterLogout = function($q, $http, $rootScope, $cookies, $window) {
 	var deferred = $q.defer();
 
 	$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN')).success(function(data) {
-		cleanAllCookies($cookies);
+		_removeUserCookies($cookies);
 		$window.location.href = "/";
 		deferred.resolve(true);
 	});

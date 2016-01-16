@@ -29,7 +29,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	})
 	.when('/cloud', {
 		templateUrl : '../resources/pages/cloud-list.html',
-		controller  : 'cloudController',
+		controller  : 'cloudListController',
 		caseInsensitiveMatch : true
 	})
 	.when('/whiteboard', {
