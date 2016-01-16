@@ -105,5 +105,5 @@ doctrine_mongodb:
     document_managers:
         default:
             mappings:
-                MongoBundle: yml
+                GrappboxBundle: yml
             metadata_cache_driver: array
