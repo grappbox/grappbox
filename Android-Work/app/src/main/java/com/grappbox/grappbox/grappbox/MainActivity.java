@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
@@ -26,7 +27,7 @@ import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Toolbar _toolbar;
@@ -143,7 +144,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new CalendarFragment();
                 changeToolbarTitle("Calendar");
                 break;
-
+            case R.id.nav_Cloud:
+                fragment = new CloudExplorerFragment();
+                changeToolbarTitle("Cloud");
+                break;
             default:
                 break;
         }
@@ -153,6 +157,8 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     public void logoutUser()
     {

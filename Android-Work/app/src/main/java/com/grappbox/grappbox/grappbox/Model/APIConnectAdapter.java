@@ -30,7 +30,9 @@ public class APIConnectAdapter  {
     private static APIConnectAdapter _instance = null;
 
     private static final String _APIUrlBase = "http://api.grappbox.com/app_dev.php/";
-    private static final String _APIVersion = "V0.11";
+    private static final String _APIBaseVersion = "V0.11";
+
+    String _APIVersion = _APIBaseVersion;
     HttpURLConnection _connection = null;
     BufferedReader reader = null;
     String resultAPI;
@@ -40,6 +42,11 @@ public class APIConnectAdapter  {
 
     private APIConnectAdapter() {
 
+    }
+
+    public void setVersion(String version)
+    {
+        _APIVersion = version;
     }
 
     public static APIConnectAdapter getInstance()
@@ -111,6 +118,7 @@ public class APIConnectAdapter  {
     {
         if (_connection != null){
             _connection.disconnect();
+            _APIVersion = _APIBaseVersion;
         }
         if (reader != null){
             try {

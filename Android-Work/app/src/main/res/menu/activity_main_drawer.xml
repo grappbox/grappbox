@@ -12,6 +12,7 @@
             android:title="Calendar" />
         <item android:id="@+id/nav_Timeline" android:icon="@android:drawable/ic_menu_slideshow"
             android:title="Timeline" />
+        <item android:id="@+id/nav_Cloud" android:icon="@drawable/ic_backup" android:title="Cloud"/>
     </group>
 
 </menu>

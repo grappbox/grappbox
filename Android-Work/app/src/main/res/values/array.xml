@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cloudExplorer_fileAction">
+        <item>Download file</item>
+        <item>Delete file</item>
+    </string-array>
+</resources>

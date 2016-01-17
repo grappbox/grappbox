@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.grappbox.grappbox.grappbox.R;
+
 import java.util.List;
 import java.util.Vector;
 

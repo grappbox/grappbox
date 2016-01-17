@@ -14,6 +14,7 @@ public class SessionAdapter {
     private String _login;
     private String _password;
     private boolean _isLogged = false;
+    private int    _currentSelectedProject = 1;
 
     private SessionAdapter()
     {
@@ -63,6 +64,8 @@ public class SessionAdapter {
         return _login;
     }
 
+    public int getCurrentSelectedProject() { return _currentSelectedProject; }
+
     public void LogInUser(String id, String firstname, String lastname, String token, String login, String password)
     {
         _userID = id;
@@ -72,5 +75,10 @@ public class SessionAdapter {
         _isLogged = true;
         _login = login;
         _password = password;
+    }
+
+    public void setCurrentSelectedProject(int projectId)
+    {
+        _currentSelectedProject = projectId;
     }
 }
