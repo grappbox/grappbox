@@ -33,6 +33,9 @@
     <string name="bold_checkbox_label"><b>Bold</b></string>
     <string name="underline_checkbox_label"><u>Underline</u></string>
 
+    <string name="positive_response">OK</string>
+    <string name="negative_response">Cancel</string>
+
     <string-array name="list_global_progress">
         <item>project_id</item>
         <item>project_name</item>
@@ -146,4 +149,5 @@
     <string name="undo">Undo</string>
     <string name="filetype">filetype</string>
     <string name="filename">Filename</string>
+    <string name="safe_password_question">Enter the Safe password</string>
 </resources>
