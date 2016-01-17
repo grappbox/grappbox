@@ -1,3 +1,7 @@
+mongo:
+    resource: "@MongoBundle/Resources/config/routing.yml"
+    prefix:   /
+
 grappbox:
     resource: "@GrappboxBundle/Resources/config/routing.yml"
     prefix:   /V0.2/

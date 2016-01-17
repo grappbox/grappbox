@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new GrappboxBundle\GrappboxBundle(),
             new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
+            new MongoBundle\MongoBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

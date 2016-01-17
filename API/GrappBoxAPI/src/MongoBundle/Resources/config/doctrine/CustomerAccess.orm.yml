@@ -1,0 +1,31 @@
+GrappboxBundle\Entity\CustomerAccess:
+    type: entity
+    table: customers_access
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        hash:
+            type: string
+            length: 255
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: TRUE
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: customers_access
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }
