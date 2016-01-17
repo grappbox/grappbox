@@ -952,7 +952,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "1.6.3",
-	*			"return_message": "Project - getcustomeraccessbyproject - Success but no data"
+	*			"return_message": "Project - getcustomeraccessbyproject - No Data Success"
 	*		},
 	*		"data": {
 	*			"array": []
@@ -1434,7 +1434,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "1.6.3",
-	*			"return_message": "Project - getusertoproject - Success but no data"
+	*			"return_message": "Project - getusertoproject - No Data Success"
 	*		},
 	*		"data": {
 	*			"array": []

@@ -593,7 +593,7 @@ class RolesAndTokenVerificationController extends Controller
 	*	{
 	*		"info": {
 	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getprojectroles - Success but no data"
+	*			"return_message": "Role - getprojectroles - No Data Success"
 	*		},
 	*		"data": {
 	*			"array": []
@@ -950,7 +950,7 @@ class RolesAndTokenVerificationController extends Controller
 	*	{
 	*		"info": {
 	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getuserroles - Success but no data"
+	*			"return_message": "Role - getuserroles - No Data Success"
 	*		},
 	*		"data": {
 	*			"array": []
@@ -1164,7 +1164,7 @@ class RolesAndTokenVerificationController extends Controller
 	*	{
 	*		"info": {
 	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getrolebyprojectanduser - Success but no data"
+	*			"return_message": "Role - getrolebyprojectanduser - No Data Success"
 	*		},
 	*		"data": {
 	*			"array": []
@@ -1366,25 +1366,27 @@ class RolesAndTokenVerificationController extends Controller
 	*		},
 	*		"data": {
 	*			"array": [
-	*				"id": 10,
-	*				"project": {
-	*					"id": 2,
-	*					"name": "Grappbox"
+	*				{
+	*					"id": 10,
+	*					"project": {
+	*						"id": 2,
+	*						"name": "Grappbox"
+	*					},
+	*					"role": {
+	*						"id": 6,
+	*						"name": "Admin"
+	*					}
 	*				},
-	*				"role": {
-	*					"id": 6,
-	*					"name": "Admin"
-	*				}
-	*			],
-	*			[
-	*				"id": 30,
-	*				"project": {
-	*					"id": 2,
-	*					"name": "Grappbox"
-	*				},
-	*				"role": {
-	*					"id": 6,
-	*					"name": "Graphists"
+	*				{
+	*					"id": 30,
+	*					"project": {
+	*						"id": 2,
+	*						"name": "Grappbox"
+	*					},
+	*					"role": {
+	*						"id": 6,
+	*						"name": "Graphists"
+	*					}
 	*				}
 	*			]
 	*		}
@@ -1395,7 +1397,7 @@ class RolesAndTokenVerificationController extends Controller
 	*	{
 	*		"info": {
 	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getuserconnectedrolesinformations - Success but no data"
+	*			"return_message": "Role - getuserconnectedrolesinformations - No Data Success"
 	*		},
 	*		"data": {
 	*			"array": []
@@ -1476,25 +1478,27 @@ class RolesAndTokenVerificationController extends Controller
 	*		},
 	*		"data": {
 	*			"array": [
-	*				"id": 10,
-	*				"project": {
-	*					"id": 2,
-	*					"name": "Grappbox"
+	*				{
+	*					"id": 10,
+	*					"project": {
+	*						"id": 2,
+	*						"name": "Grappbox"
+	*					},
+	*					"role": {
+	*						"id": 6,
+	*						"name": "Admin"
+	*					}
 	*				},
-	*				"role": {
-	*					"id": 6,
-	*					"name": "Admin"
-	*				}
-	*			],
-	*			[
-	*				"id": 30,
-	*				"project": {
-	*					"id": 2,
-	*					"name": "Grappbox"
-	*				},
-	*				"role": {
-	*					"id": 6,
-	*					"name": "Graphists"
+	*				{
+	*					"id": 30,
+	*					"project": {
+	*						"id": 2,
+	*						"name": "Grappbox"
+	*					},
+	*					"role": {
+	*						"id": 6,
+	*						"name": "Graphists"
+	*					}
 	*				}
 	*			]
 	*		}
@@ -1505,7 +1509,7 @@ class RolesAndTokenVerificationController extends Controller
 	*	{
 	*		"info": {
 	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getuserrolesinformations - Success but no data"
+	*			"return_message": "Role - getuserrolesinformations - No Data Success"
 	*		},
 	*		"data": {
 	*			"array": []
