@@ -1,0 +1,22 @@
+MongoBundle\Document\WhiteboardModif:
+    type: document
+    db: symfony_database
+    collection: whiteboard_modifs
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        whiteboardId:
+            type: int
+            name: whiteboard_id
+        drawType:
+            type: int
+            name: draw_type
+        path:
+            type: string
+            length: 255
+        createdAt:
+            type: date
+            name: created_at
+    lifecycleCallbacks: {  }

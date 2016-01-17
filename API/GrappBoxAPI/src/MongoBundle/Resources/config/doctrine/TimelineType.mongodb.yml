@@ -1,0 +1,13 @@
+MongoBundle\Document\TimelineType:
+    type: document
+    db: symfony_database
+    collection: timeline_types
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        name:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

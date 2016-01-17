@@ -1,0 +1,94 @@
+MongoBundle\Document\Project:
+    type: document
+    db: symfony_database
+    collection: projects
+    repositoryClass: MongoBundle\Document\ProjectRepository
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        name:
+            type: string
+            length: 255
+        description:
+            type: string
+            nullable: TRUE
+        logo:
+            type: string
+            nullable: TRUE
+        phone:
+            type: string
+            nullable: true
+        company:
+            type: string
+            nullable: true
+        contactEmail:
+            type: string
+            length: 255
+            name: contact_email
+            nullable: TRUE
+        facebook:
+            type: string
+            length: 255
+            nullable: TRUE
+        twitter:
+            type: string
+            length: 255
+            nullable: TRUE
+        createdAt:
+            type: date
+            name: created_at
+        deletedAt:
+            type: date
+            name: deleted_at
+            nullable: TRUE
+        safePassword:
+            type: string
+            name: safe_password
+            nullable: TRUE
+    referenceOne:
+        creator_user:
+          targetDocument: User
+          inversedBy: project_creator
+    referenceMany:
+        users:
+          targetDocument: User
+          inversedBy: projects
+        tasks:
+          targetDocument: Task
+          mappedBy: projects
+          cascade: [remove]
+        bugs:
+          targetDocument: Bug
+          mappedBy: projects
+          cascade: [remove]
+        timelines:
+          targetDocument: Timeline
+          mappedBy: projects
+          cascade: [remove]
+        events:
+          targetDocument: Event
+          mappedBy: projects
+          cascade: [remove]
+        whiteboards:
+          targetDocument: Whiteboard
+          mappedBy: projects
+          cascade: [remove]
+        roles:
+          targetDocument: Role
+          mappedBy: projects
+          cascade: [remove]
+        gantts:
+          targetDocument: Gantt
+          mappedBy: projects
+          cascade: [remove]
+        customers_access:
+          targetDocument: CustomerAccess
+          mappedBy: projects
+          cascade: [remove]
+        tags:
+          targetDocument: Tag
+          mappedBy: project
+          cascade: [remove]
+    lifecycleCallbacks: {  }

@@ -2,3 +2,23 @@ services:
 #    mongo.example:
 #        class: MongoBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+    # event_repository:
+    #     class: MongoBundle\Document\EventRepository
+    #     factory_service: doctrine_mongodb.odm.document_manager
+    #     factory_method:  getRepository
+    #     arguments: ["MongoBundle\Document\Event"]
+    # project_repository:
+    #     class: MongoBundle\Document\ProjectRepository
+    #     factory_service: doctrine_mongodb.odm.document_manager
+    #     factory_method:  getRepository
+    #     arguments: ["MongoBundle\Document\Project"]
+    # task_repository:
+    #     class: MongoBundle\Document\TaskRepository
+    #     factory_service: doctrine_mongodb.odm.document_manager
+    #     factory_method:  getRepository
+    #     arguments: ["MongoBundle\Document\Task"]
+    # user_repository:
+    #     class: MongoBundle\Document\UserRepository
+    #     factory_service: doctrine_mongodb.odm.document_manager
+    #     factory_method:  getRepository
+    #     arguments: ["MongoBundle\Document\User"]

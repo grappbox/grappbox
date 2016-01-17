@@ -1,0 +1,19 @@
+MongoBundle\Document\ProjectUserRole:
+    type: document
+    db: symfony_database
+    collection: project_user_role
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        projectId:
+            type: int
+            name: project_id
+        userId:
+            type: int
+            name: user_id
+        roleId:
+            type: int
+            name: role_id
+    lifecycleCallbacks: {  }

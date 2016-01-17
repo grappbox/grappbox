@@ -1,0 +1,23 @@
+MongoBundle\Document\WhiteboardObject:
+    type: document
+    db: symfony_database
+    collection: whiteboard_objects
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        object:
+            type: string
+        createdAt:
+            type: date
+            name: created_at
+        deletedAt:
+            type: date
+            name: deleted_at
+            nullable: TRUE
+    referenceOne:
+        whiteboard:
+          targetDocument: Whiteboard
+          inversedBy: objects
+    lifecycleCallbacks: {  }

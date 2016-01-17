@@ -1,0 +1,27 @@
+MongoBundle\Document\CustomerAccess:
+    type: document
+    db: symfony_database
+    collection: customers_access
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        name:
+            type: string
+            length: 255
+        hash:
+            type: string
+            length: 255
+        createdAt:
+            type: date
+            name: created_at
+        deletedAt:
+            type: date
+            name: deleted_at
+            nullable: TRUE
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: customers_access
+    lifecycleCallbacks: {  }
