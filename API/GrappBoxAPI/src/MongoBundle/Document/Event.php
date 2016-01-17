@@ -70,6 +70,27 @@ class Event
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
+    public function objectToArray()
+    {
+      $projectId = null;
+      if ($this->projects)
+        $projectId = $this->projects->getId();
+        return array(
+            'id' => $this->id,
+            'projectId' => $projectId,
+            'creatorId' => $this->creator_user->getId(),
+            'eventTypeId' => $this->eventtypes->getId(),
+            'eventType' => $this->eventtypes->getName(),
+            'title' => $this->title,
+            'description' => $this->description,
+            'beginDate' => $this->beginDate,
+            'endDate' => $this->endDate,
+            'createdAt' => $this->createdAt,
+            'editedAt' => $this->editedAt,
+            'deletedAt' => $this->deletedAt
+        );
+    }
+
     /**
      * Get id
      *

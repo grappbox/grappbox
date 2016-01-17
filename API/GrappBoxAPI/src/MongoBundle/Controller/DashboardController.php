@@ -43,7 +43,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("2.1.3", "Dashboard", "getteamoccupation"));
 
-		return $this->getDoctrine()->getManager()->getRepository('MongoBundle:Project')->findTeamOccupationV2($user->getId());
+		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Project')->findTeamOccupationV2($user->getId());
 	}
 
 	/**
@@ -63,7 +63,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("2.2.3", "Dashboard", "getnextmeetings"));
 
-		return $this->getDoctrine()->getManager()->getRepository('MongoBundle:Event')->findNextMeetingsV2($user->getId());
+		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Event')->findNextMeetingsV2($user->getId());
 	}
 
   	/**
@@ -82,7 +82,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('MongoBundle:Project')->findProjectGlobalProgress($user->getId()));
+		return new JsonResponse($this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Project')->findProjectGlobalProgress($user->getId()));
 	}
 
   	/**
@@ -102,7 +102,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($id);
 
 		if ($project === null)
@@ -142,7 +142,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($id);
 
 		if ($project === null)
@@ -181,7 +181,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$tasks = $em->getRepository('MongoBundle:Task')->findByprojects($id);
 
 		if ($tasks === null)
@@ -231,7 +231,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 
 		$firstName = $user->getFirstname();
 		$lastName = $user->getLastname();
@@ -265,7 +265,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:User');
 
 		$qb = $repository->createQueryBuilder('u')->join('u.projects', 'p')->where('p.id = :id')->setParameter('id', $id)->getQuery();
@@ -317,7 +317,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository('MongoBundle:Event')->find($id);
 
 		if ($event === null)
@@ -376,7 +376,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Project');
 
 		$qb = $repository->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $user->getId())->getQuery();
@@ -422,7 +422,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$tasks = $em->getRepository('MongoBundle:Task')->findByprojects($id);
 
 		if ($tasks === null)
@@ -476,7 +476,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$timelineMessages = $em->getRepository('MongoBundle:TimelineMessage')->findBytimelineId($id);
 
 		if ($timelineMessages === null)
@@ -509,7 +509,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$bugs = $em->getRepository('MongoBundle:Bug')->findByprojectId($id);
 
 		if ($bugs === null)

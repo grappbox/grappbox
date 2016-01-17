@@ -49,7 +49,7 @@ class PlanningController extends RolesAndTokenVerificationController
 		$date_end = new DateTime($content->date);
 		$date_end->add(new DateInterval('P1D'));
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Event');
 		$query = $repository->createQueryBuilder('e')
     	->innerJoin('e.users', 'u')
@@ -97,7 +97,7 @@ class PlanningController extends RolesAndTokenVerificationController
 		$date_end = new DateTime($content->date);
 		$date_end->add(new DateInterval('P7D'));
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Event');
 		$query = $repository->createQueryBuilder('e')
 			->innerJoin('e.users', 'u')
@@ -146,7 +146,7 @@ class PlanningController extends RolesAndTokenVerificationController
 		$date_end = new DateTime($content->date);
 		$date_end->add(new DateInterval('P1M'));
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Event');
 		$query = $repository->createQueryBuilder('e')
 			->innerJoin('e.users', 'u')

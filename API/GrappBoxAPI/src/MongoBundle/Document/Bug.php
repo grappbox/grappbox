@@ -70,6 +70,26 @@ class Bug
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "creator" => array("id" => $this->creator->getID(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastName()),
+        "projectId" => $this->projects->getId(),
+        "title" => $this->title,
+        "description" => $this->description,
+        "parentId" => $this->parentId,
+        "createdAt" => $this->createdAt,
+        "editedAt" => $this->editedAt,
+        "deletedAt" => $this->deletedAt
+      );
+    }
     
     /**
      * Get id

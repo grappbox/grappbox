@@ -55,6 +55,26 @@ class TimelineMessage
      */
     protected $timelines;
 
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "userId" => $this->userId,
+        "timelineId" => $this->timelineId,
+        "title" => $this->title,
+        "message" => $this->message,
+        "parentId" => $this->parentId,
+        "createdAt" => $this->createdAt,
+        "editedAt" => $this->editedAt,
+        "deletedAt" => $this->deletedAt
+      );
+    }
+
 
     /**
      * Get id

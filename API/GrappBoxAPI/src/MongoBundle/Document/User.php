@@ -2,7 +2,9 @@
 
 namespace MongoBundle\Document;
 
-class User
+use Symfony\Component\Security\Core\User\UserInterface;
+
+class User implements UserInterface
 {
 
     /**
@@ -95,6 +97,33 @@ class User
         $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+    public function getSalt()
+    {
+       return null;
+    }
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+    public function eraseCredentials()
+    {
+    }
+    public function objectToArray()
+    {
+      return array(
+          'id' => $this->id,
+          'firstname' => $this->firstname,
+          'lastname' => $this->lastname,
+          'email' => $this->email,
+          'token' => $this->token,
+          'avatar' => $this->avatar
+      );
     }
     
     /**

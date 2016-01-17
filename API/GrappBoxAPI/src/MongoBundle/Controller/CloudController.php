@@ -124,14 +124,14 @@ class CloudController extends Controller
 
 	private function getUserId($token)
 	{
-		$userRepository = $this->getDoctrine()->getRepository("MongoBundle:User");
+		$userRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:User");
 		$user = $userRepository->findOneByToken($token);
 		return (is_null($user) ? -1 : $user->getId());
 	}
 
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
-		$db = $this->getDoctrine();
+		$db = $this->get('doctrine_mongodb')->getManager();
 		$role = $db->getRepository("MongoBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
 		if (is_null($role))
 			return (-1);
@@ -228,7 +228,7 @@ class CloudController extends Controller
 	* }
 	*/
 	private function openStreamAction($token, $idProject, $safePassword, Request $request){
-		$dbManager = $this->get('doctrine_mongodb');
+		$dbManager = $this->get('doctrine_mongodb')->getManager();
 		$json = json_decode($request->getContent(), true);
 		$receivedData = $json["data"];
 		$userId = $this->getUserId($token);
@@ -236,7 +236,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $receivedData["path"]);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = ($safe_password ? $this->grappSha1($json["session_infos"]["safe_password"]) : NULL);
 		}
 		else {
@@ -260,7 +260,7 @@ class CloudController extends Controller
 			$response["info"]["return_message"] = "Cloud - openStreamAction - Bad Parameter";
 			return new JsonResponse($response);
 		}
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$stream = new CloudTransfer();
 		$stream->setCreatorId($userId)
 					 ->setFilename($receivedData["filename"])
@@ -348,9 +348,9 @@ class CloudController extends Controller
 	*	}
 	*/
 	private function closeStreamAction($token, $projectId, $streamId, Request $request){
-		$dbManager = $this->get('doctrine_mongodb');
-		$cloudTransferRepository = $this->getDoctrine()->getRepository("MongoBundle:CloudTransfer");
-		$em = $this->get('doctrine_mongodb');
+		$dbManager = $this->get('doctrine_mongodb')->getManager();
+		$cloudTransferRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudTransfer");
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$stream = $cloudTransferRepository->find($streamId);
 		$user_id = $this->getUserId($token);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
@@ -477,7 +477,7 @@ class CloudController extends Controller
 	*	}
 	*/
 	public function sendFileAction(Request $request){
-		$cloudTransferRepository = $this->getDoctrine()->getRepository("MongoBundle:CloudTransfer");
+		$cloudTransferRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudTransfer");
 		$json = json_decode($request->getContent(), true);
 		$token = $json["session_infos"]["token"];
 		$receivedData = $json["stream_infos"];
@@ -591,7 +591,7 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe){
-			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $password; // TODO : SHA-1 512 Hashing when algo created!
 		}
 		else{
@@ -611,7 +611,7 @@ class CloudController extends Controller
 		$flysystem = new Filesystem($adapter);
 		$prepath = str_replace(" ", "|", str_replace(",", "/", $path));
 		$rpath = "/GrappBox|Projects/".(string)($idProject).$prepath;
-		$securedFileRepository = $this->getDoctrine()->getRepository("MongoBundle:CloudSecuredFileMetadata");
+		$securedFileRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata");
 
 		$content = str_replace("|", " ", $adapter->listContents($rpath));
 		foreach ($content as $i => $row)
@@ -667,12 +667,12 @@ class CloudController extends Controller
 		$cloudBasePath = implode('/', $cloudPathArray);
 		if ($cloudBasePath == "")
 			$cloudBasePath = "/";
-		$filePassword = $this->getDoctrine()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+		$filePassword = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
 
 		$isSafe = preg_match("/Safe/", $cloudPath);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $this->grappSha1($password);
 		}
 		else {
@@ -782,12 +782,12 @@ class CloudController extends Controller
 	*/
 	public function setSafePassAction(Request $request)
 	{
-		$dbManager = $this->get('doctrine_mongodb');
+		$dbManager = $this->get('doctrine_mongodb')->getManager();
 		$json = json_decode($request->getContent(), true);
 		$token = $json["data"]["token"];
 		$userId = $this->getUserId($token);
 		$idProject = (int)$json["data"]["project_id"];
-		$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
+		$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
 		{
 			header("HTTP/1.1 206 Partial Content", True, 206);
@@ -879,7 +879,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($projectId);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($projectId);
 			$passwordEncrypted = $this->grappSha1($password);
 		}
 		else {
@@ -993,7 +993,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $json["data"]["path"]);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $this->grappSha1($json["data"]["password"]);
 		}
 		else {

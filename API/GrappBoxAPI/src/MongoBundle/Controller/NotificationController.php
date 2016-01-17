@@ -75,7 +75,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
 		return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
-	$em = $this->get('doctrine_mongodb');
+	$em = $this->get('doctrine_mongodb')->getManager();
 	$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
 
 	if ($device instanceof Devices)
@@ -122,7 +122,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("15.2.3", "Notification", "unregisterDevice"));
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$device = $em->getRepository("MongoBundle:Devices")->find($id);
 		if (!($device instanceof Devices))
 			return $this->setBadRequest("15.2.4", "Notification", "unregisterDevice", "Bad Parameter: id");
@@ -149,7 +149,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user));
 
 		$array = array();
@@ -187,7 +187,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		else if ($read == "false")
 			$read_value = false;
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$notification = $em->getRepository("MongoBundle:Notification")->findBy(array("user" => $user, "isRead" => $read), array(), $limit, $offset);
 
 		$notif_array = array();
@@ -208,7 +208,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("15.5.3", "Notification", "setNotificationToRead"));
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$notification = $em->getRepository("MongoBundle:Notification")->find($id);
 
 		if (!($notification instanceof Notification))
@@ -230,7 +230,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		$wdata['targetId'] = 2;
 		$wdata['message'] = "You have been added on the project Grappbox";
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 
 		return new JsonResponse($this->pushNotificationAction([1, 2], $mdata, $wdata, $em));
 	}

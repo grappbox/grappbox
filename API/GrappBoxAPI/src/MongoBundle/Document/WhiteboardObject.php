@@ -30,6 +30,17 @@ class WhiteboardObject
      */
     protected $whiteboard;
 
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'whiteboardId' => $this->whiteboardId,
+            'object' => $this->object,
+            'createdAt' => $this->createdAt,
+            'deletedAt' => $this->deletedAt
+        );
+    }
+
 
     /**
      * Get id

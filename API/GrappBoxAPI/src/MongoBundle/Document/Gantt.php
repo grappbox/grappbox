@@ -36,6 +36,19 @@ class Gantt
     protected $updator_user;
 
 
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'projectId' => $this->projects,
+            'creatorId' => $this->creator_user,
+            'updatorId' => $this->updator_user,
+            'createdAt' => $this->createdAt,
+            'updatedAt' => $this->updatedAt
+        );
+    }
+
+
     /**
      * Get id
      *

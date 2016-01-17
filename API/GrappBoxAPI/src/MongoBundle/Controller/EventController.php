@@ -44,7 +44,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$types = $em->getRepository("MongoBundle:EventType")->findAll();
 
 		$types_array = array();
@@ -72,7 +72,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{
@@ -126,7 +126,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
@@ -236,7 +236,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		if (array_key_exists("projectId", $content))
 		{
 			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
@@ -300,7 +300,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
@@ -383,7 +383,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{

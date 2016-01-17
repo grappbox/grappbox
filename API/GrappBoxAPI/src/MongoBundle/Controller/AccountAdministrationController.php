@@ -67,7 +67,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*/
 	public function clientLoginAction(Request $request, $token)
 	{
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$user = $em->getRepository('MongoBundle:User')->findOneBy(array('token' => $token));
 		if (!$user || $user->getTokenValidity())
 			return $this->setBadTokenError();
@@ -102,7 +102,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			$content = json_decode($content);
 			$content = $content->data;
 
-		  $em = $this->get('doctrine_mongodb');
+		  $em = $this->get('doctrine_mongodb')->getManager();
 		  $user = $em->getRepository('MongoBundle:User')->findOneBy(array('email' => $content->login));
 			if (!$user)
 				return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: login");
@@ -128,7 +128,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 	private function checkProjectsDeletedTime($user)
 	{
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Project');
 
 		$qb = $repository->createQueryBuilder('p');
@@ -209,7 +209,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		$user->setToken(null);
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$em->persist($user);
 		$em->flush();
 
@@ -284,7 +284,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content) || !array_key_exists('password', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Missing Parameter");
 
-		$em = $this->get('doctrine_mongodb');
+		$em = $this->get('doctrine_mongodb')->getManager();
 		if ($em->getRepository('MongoBundle:User')->findOneBy(array('email' => $content->email)))
 			return $this->setBadRequest("14.3.7", "AccountAdministration", "register", "Already in Database");
 

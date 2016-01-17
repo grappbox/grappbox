@@ -24,6 +24,14 @@ class EventType
     {
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name
+        );
+    }
     
     /**
      * Get id

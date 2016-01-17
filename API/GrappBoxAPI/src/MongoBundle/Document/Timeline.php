@@ -39,6 +39,21 @@ class Timeline
     {
         $this->timelineMessages = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "typeId" => $this->typeId,
+        "projectId" => $this->projectId,
+        "name" => $this->name
+      );
+    }
     
     /**
      * Get id

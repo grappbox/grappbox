@@ -54,6 +54,20 @@ class Whiteboard
     {
         $this->objects = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'projectId' => $this->getProjects()->getId(),
+            'userId' => $this->userId,
+            'name' => $this->name,
+            'updatorId' => $this->updatorId,
+            'updatedAt' => $this->updatedAt,
+            'createdAt' => $this->createdAt,
+            'deletedAt' => $this->deletedAt
+        );
+    }
     
     /**
      * Get id

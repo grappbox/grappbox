@@ -70,6 +70,21 @@ class Task
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+    public function objectToArray()
+    {
+      return array(
+        'id' => $this->id,
+        'creatorId' => $this->creatorId ,
+        'title' => $this->title ,
+        'description' => $this->description ,
+        'dueDate' => $this->dueDate ,
+        'startedAt' => $this->startedAt ,
+        'finishedAt' => $this->finishedAt ,
+        'projectId' => $this->projects->id ,
+        //'users' => $this-> ,  TODO: array of users_id and/or user_name assigned to this tasks
+      );
+    }
     
     /**
      * Get id

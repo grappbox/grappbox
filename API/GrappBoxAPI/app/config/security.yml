@@ -14,6 +14,8 @@ security:
     encoders:
       GrappboxBundle\Entity\User:
         algorithm: bcrypt
+      MongoBundle\Document\User:
+        algorithm: bcrypt
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
