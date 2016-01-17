@@ -4,7 +4,8 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('ProfileCtrl', function ($scope, $rootScope, $state, GetProfileInfo, ProjectsList, NextMeetings, GetCurrentTasks) {
+.controller('ProfileCtrl', function ($scope, $rootScope, $state,
+    GetProfileInfo, ProjectsList, NextMeetings, GetCurrentTasks, GetUserConnectedRoles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -90,12 +91,34 @@ angular.module('GrappBox.controllers')
                 if (Object.keys(data.toJSON()).length < 1)
                     $scope.currentTasksError = "You don't have task.";
             })
-            .then(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-            })
             .catch(function (error) {
                 console.error('Get current tasks list failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
     }
     $scope.GetCurrentTasks();
+
+    /*
+    ** Get user connected roles
+    ** Method: GET
+    */
+    $scope.userConnectedRoles = {};
+    $scope.userConnectedRolesError = "";
+    $scope.GetUserConnectedRoles = function () {
+        GetUserConnectedRoles.get({ token: $rootScope.userDatas.token }).$promise
+            .then(function (data) {
+                console.log('Get user connected roles successful !');
+                console.log(data);
+                $scope.userConnectedRoles = data;
+                if (Object.keys(data.toJSON()).length < 1)
+                    $scope.userConnectedRolesError = "You don't have role.";
+            })
+            .then(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+            })
+            .catch(function (error) {
+                console.error('Get user connected roles failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+    }
+    $scope.GetUserConnectedRoles();
 })

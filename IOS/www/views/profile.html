@@ -73,5 +73,14 @@
                 </ion-item>
             </ion-item>
         </ion-list>
+
+        <!-- Roles of the user currently connected on different projects -->
+        <div class="item item-divider">My roles</div>
+        <ion-list>
+            {{ userConnectedRolesError }}
+            <ion-item ng-repeat="role in userConnectedRoles.user_role">
+                {{ role.role.name }} on {{ role.project.name }}
+            </ion-item>
+        </ion-list>
     </ion-content>
 </ion-view>

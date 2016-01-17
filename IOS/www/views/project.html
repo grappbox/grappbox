@@ -24,43 +24,70 @@
                 <p><strong>Facebook: </strong> {{ projectInfo.facebook }}</p>
                 <p><strong>Twitter: </strong> {{ projectInfo.twitter }}</p>
                 <p ng-show="projectInfo.deleted_at != null"><strong style="color:red">IN DELETION :(</strong></p>
-                <a class="button button-block button-dark"
-                   ui-sref="app.editProject({projectId: projectId})">
-                    Edit
-                </a>
+
+                <div class="button-bar">
+                    <a class="button button-block button-dark"
+                            ui-sref="app.editProject({projectId: projectId})">
+                        Edit
+                    </a>
+                    <a class="button button-block button-dark"
+                       ui-sref="app.roles({projectId: projectId})">
+                        Roles
+                    </a>
+                </div>
             </ion-item>
         </ion-list>
         <!-- Users on project -->
-        <div class="item item-divider">Members on project</div>
+        <div class="item item-divider">Members</div>
         <ion-list>
             <ion-item class="item-avatar"
                       ng-repeat="userOnProject in userList"
-                      ng-click="showMemberActionSheet(userOnProject.id)"
-                      >
+                      ng-click="showMemberActionSheet(userOnProject.id)">
                 <img ng-src="userOnProject.avatar" />
                 <h2>{{ userOnProject.first_name }} {{ userOnProject.last_name }}</h2>
             </ion-item>
         </ion-list>
 
         <!-- Add a user -->
-        <div class="item item-divider">Add member to project</div>
         <form>
-            <ion-input class="item item-input">
-                <ion-label>Email</ion-label>
-                <input type="email" placeholder="User email"
-                       name="userToAdd_email" ng-model="userToAdd.userEmail" required />
-            </ion-input>
-            <a class="button button-block button-dark"
-               ng-click="AddUserToProject()">
-                Add user to project
-            </a>
+            <ion-item class="item-input-inset">
+                <label class="item-input-wrapper">
+                    <input type="text" placeholder="User email"
+                           name="userToAdd_email" ng-model="userToAdd.userEmail" required>
+                </label>
+                <button class="button button-small button-dark"
+                        ng-click="AddUserToProject()">
+                    Add
+                </button>
+            </ion-item>
         </form>
+
+        <!-- Roles on project -->
+        <div class="item item-divider">Roles</div>
+        <ion-list>
+            <ion-item class=".col"
+                      ng-repeat="role in projectRoles"
+                      ui-sref="app.usersOnRole({projectId: projectId, roleId: role.id})">
+                <h2>{{ role.name }}</h2>
+            </ion-item>
+        </ion-list>
+
+        <!-- Add a role on project -->
+        <form>
+            <ion-item class="item-input-inset">
+                <button class="button button-block button-dark"
+                        ui-sref="app.roles({projectId: projectId})">
+                    Add
+                </button>
+            </ion-item>
+        </form>
+
 
         <!-- Customers accesses on project -->
         <div class="item item-divider">Customers Accesses</div>
         <p>{{ customersError }}</p>
         <ion-list>
-            <ion-item class="item-avatar"
+            <ion-item class="item-avatar item-text-wrap"
                       ng-repeat="customerOnProject in customersList"
                       ng-click="showCustomerActionSheet(customerOnProject.id)">
                 <img ng-src="" />
@@ -72,15 +99,16 @@
 
         <!-- Generate a link for customer -->
         <form>
-            <ion-input class="item item-input">
-                <ion-label>Access name</ion-label>
-                <input type="text" placeholder="Customer access name"
-                       name="customerAccessToAdd_email" ng-model="customerAccessToAdd.accessName" required />
-            </ion-input>
-            <a class="button button-block button-dark"
-               ng-click="GenerateAccess()">
-                Generate
-            </a>
+            <ion-item class="item-input-inset">
+                <label class="item-input-wrapper">
+                    <input type="text" placeholder="Customer access name"
+                           name="customerAccessToAdd_email" ng-model="customerAccessToAdd.accessName" required />
+                </label>
+                <button class="button button-small button-dark"
+                        ng-click="GenerateAccess()">
+                    Generate
+                </button>
+            </ion-item>
         </form>
 
         <!-- Danger zone -->
@@ -92,6 +120,6 @@
         <a ng-show="projectInfo.deleted_at != null" class="button button-block button-dark"
            ng-click="RetreiveProject()">
             Retreive this project
-        </a>        
+        </a>
     </ion-content>
 </ion-view>

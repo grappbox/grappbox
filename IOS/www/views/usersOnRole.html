@@ -1,0 +1,74 @@
+﻿<!--
+    Summary: Users on a specific role view
+-->
+
+<ion-view>
+    <ion-nav-title>{{ usersForRole.name }}</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Users on role -->
+        <div class="item item-divider">Members</div>
+        <ion-list>
+            <ion-item ng-repeat="userAssigned in usersForRole.users_assigned"
+                      ng-click="showMemberActionSheet(userAssigned.id)">
+                <h2>{{ userAssigned.firstname }} {{ userAssigned.lastname }}</h2>
+            </ion-item>
+        </ion-list>
+
+        <!-- Users on project but not assigned to this role -->
+        <ion-list>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Member unassigned
+                </div>
+                <select ng-model="userToAdd.userId">
+                    <option ng-repeat="userUnassigned in usersForRole.users_non_assigned"
+                            value="{{ userUnassigned.id }}">
+                    {{ userUnassigned.firstname }} {{ userUnassigned.lastname }}
+                    </option>
+                </select>
+            </label>
+        </ion-list>
+
+        <!-- Assign role -->
+        <button class="button button-block button-dark"
+                ng-click="AssignToRole()">
+            Assign
+        </button>
+
+        <!-- Add a role -->
+        <div class="item item-divider">Update role</div>
+        <ion-list>
+            <ion-item class="item-input">
+                <ion-label class="input-label">Role name: </ion-label>
+                <input type="text" ng-model="role.name" placeholder="Your role name">
+            </ion-item>
+            <ion-checkbox ng-model="role.teamTimeline">Team Timeline</ion-checkbox>
+            <ion-checkbox ng-model="role.customerTimeline">Customer Timeline</ion-checkbox>
+            <ion-checkbox ng-model="role.gantt">Gantt</ion-checkbox>
+            <ion-checkbox ng-model="role.whiteboard">Whiteboard</ion-checkbox>
+            <ion-checkbox ng-model="role.bugtracker">Bugtracker</ion-checkbox>
+            <ion-checkbox ng-model="role.event">Event</ion-checkbox>
+            <ion-checkbox ng-model="role.task">Task</ion-checkbox>
+            <ion-checkbox ng-model="role.projectSettings">Project settings</ion-checkbox>
+            <ion-checkbox ng-model="role.cloud">Cloud</ion-checkbox>
+        </ion-list>
+
+        <!-- Update role -->
+        <button class="button button-block button-dark"
+                ng-click="UpdateProjectRole()">
+            Update
+        </button>
+
+        <!-- Danger zone -->
+        <div class="item item-divider bar bar-assertive">Danger zone</div>
+        <a class="button button-block button-dark"
+           ng-click="PopupDeleteRole()">
+            Delete this role
+        </a>
+    </ion-content>
+</ion-view>

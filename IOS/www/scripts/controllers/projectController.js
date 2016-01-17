@@ -5,13 +5,15 @@
 angular.module('GrappBox.controllers')
 
 .controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $http,
-    ProjectView, AddUserToProject, UsersOnProjectList, GenCustomerAccess, GetCustomersAccessOnProject, RetreiveProject) {
+    ProjectView, AddUserToProject, UsersOnProjectList, GenCustomerAccess, GetCustomersAccessOnProject, RetreiveProject,
+    GetProjectRoles) {
 
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetProjectInfo();
         $scope.GetUsersOnProject();
         $scope.GetCustomersOnProject();
+        $scope.GetProjectRoles();
         console.log("View refreshed !");
     }
 
@@ -63,11 +65,11 @@ angular.module('GrappBox.controllers')
 
     /*
     ** Add a user to project
-    ** Method: PUT
+    ** Method: POST
     */
     $scope.userToAdd = {};
     $scope.AddUserToProject = function () {
-        AddUserToProject.update({
+        AddUserToProject.save({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
             userEmail: $scope.userToAdd.userEmail,
@@ -84,6 +86,7 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Add user to project failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.log(error);
             })
     }
 
@@ -338,5 +341,28 @@ angular.module('GrappBox.controllers')
                 console.error(error);
             })
     }
+
+    /*
+    ** Get roles on project
+    ** Method: GET
+    */
+    $scope.projectRoles = {};
+    $scope.GetProjectRoles = function () {
+        GetProjectRoles.get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get project roles successful !');
+                $scope.projectRoles = data;
+            })
+            .then(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+            })
+            .catch(function (error) {
+                console.error('Get project roles failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+    }
+    $scope.GetProjectRoles();
 })
 

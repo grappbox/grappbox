@@ -121,6 +121,32 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
         })
 
         /*
+        ** PROJECTS ROLES
+        */
+        // roles view
+        .state('app.roles', {
+            url: "/projects/:projectId/roles",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/roles.html",
+                    controller: 'RolesCtrl'
+                }
+            }
+        })
+
+        // users on role view
+        .state('app.usersOnRole', {
+            url: "/projects/:projectId/roles/:roleId",
+            params: { role: null },
+            views: {
+                'menuContent': {
+                    templateUrl: "views/usersOnRole.html",
+                    controller: 'UsersOnRoleCtrl'
+                }
+            }
+        })
+
+        /*
         ** NEXT MEETING
         */
         // next meeting view
@@ -207,17 +233,6 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
                 'menuContent': {
                     templateUrl: "views/user.html",
                     controller: 'UserCtrl'
-                }
-            }
-        })
-
-        // user settings view
-        .state('app.userSettings', {
-            url: "/userSettings",
-            views: {
-                'menuContent': {
-                    templateUrl: "views/userSettings.html",
-                    controller: 'UserSettingsCtrl'
                 }
             }
         })

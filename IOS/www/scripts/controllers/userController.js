@@ -4,10 +4,12 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('UserCtrl', function ($scope, $rootScope, $state, $stateParams, GetUserInfo) {
+.controller('UserCtrl', function ($scope, $rootScope, $state, $stateParams,
+    GetUserInfo, GetMemberRoles) {
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetUserInfo();
+        $scope.GetMemberRoles();
         console.log("View refreshed !");
     }
 
@@ -30,4 +32,26 @@ angular.module('GrappBox.controllers')
             })
     }
     $scope.GetUserInfo();
+
+    /*
+    ** Get member roles
+    ** Method: GET
+    */
+    $scope.memberRoles = {};
+    $scope.GetMemberRoles = function () {
+        GetMemberRoles.get({
+            token: $rootScope.userDatas.token,
+            userId: $stateParams.userId
+        }).$promise
+            .then(function (data) {
+                console.log('Get member roles successful !');
+                $scope.memberRoles = data;
+                console.log(data);
+            })
+            .catch(function (error) {
+                console.error('Get member roles failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+    }
+    $scope.GetMemberRoles();
 })

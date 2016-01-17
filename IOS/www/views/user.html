@@ -28,5 +28,12 @@
                 <p><strong>Viadeo: </strong> {{ userInfo.viadeo }}</p>
             </ion-item>
         </ion-list>
+
+        <div class="item item-divider">Roles</div>
+        <ion-list>
+            <ion-item ng-repeat="role in memberRoles.user_role">
+                <h2>{{ role.role.name }}</h2> on <h2>{{ role.project.name }}</h2>
+            </ion-item>
+        </ion-list>
     </ion-content>
 </ion-view>

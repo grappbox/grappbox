@@ -52,9 +52,7 @@ angular.module('GrappBox.api', ['ngResource'])
 })
 
 .factory('AddUserToProject', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'projects/addusertoproject', null, {
-        'update': { method: 'PUT' }
-    });
+    return $resource($rootScope.API + 'projects/addusertoproject');
 })
 
 .factory('UsersOnProjectList', function ($rootScope, $resource) {
@@ -87,6 +85,41 @@ angular.module('GrappBox.api', ['ngResource'])
 
 .factory('GetCurrentTasks', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'user/getalltasks/:token', { token: "@token" });
+})
+
+// ROLE
+.factory('GetProjectRoles', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/getprojectroles/:token/:projectId', { token: "@token", projectId: "@projectId" });
+})
+
+.factory('GetPersonRolesIdOnProject', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/getrolebyprojectanduser/:token/:projectId/:userId', { token: "@token", projectId: "@projectId", userId: "@userId" });
+})
+
+.factory('GetUserConnectedRoles', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/getuserrolesinformations/:token', { token: "@token" });
+})
+
+.factory('GetMemberRoles', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/getuserrolesinformations/:token/:id', { token: "@token" });
+})
+
+.factory('GetUsersForRole', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/getusersforrole/:token/:roleId', { token: "@token", roleId: "@roleId" });
+})
+
+.factory('AddNewRole', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/addprojectroles');
+})
+
+.factory('AssignToRole', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/assignpersontorole');
+})
+
+.factory('UpdateProjectRole', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/putprojectroles', null, {
+        'update': { method: 'PUT' }
+    });
 })
 
 // GANTT
