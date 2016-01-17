@@ -67,7 +67,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*/
 	public function clientLoginAction(Request $request, $token)
 	{
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$user = $em->getRepository('MongoBundle:User')->findOneBy(array('token' => $token));
 		if (!$user || $user->getTokenValidity())
 			return $this->setBadTokenError();
@@ -78,7 +78,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
  	/**
- 	* @api {post} V0.2/accountadministration/login Login
+ 	* @api {post} mongo/accountadministration/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
@@ -95,46 +95,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		}
 	*   }
 	*
- 	* @apiSuccess {int} id user's id
- 	* @apiSuccess {string} firstname user's firstname
- 	* @apiSuccess {string} lastname user's lastname
- 	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {String} avatar user's avatar
- 	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
-	*			"info": {
-	*				"return_code": "1.14.1",
-	*				"return_message": "AccountAdministration - login - Complete Success"
-  *			},
- 	*			"data": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": "01101000101101000111...."
-	*			}
- 	* 	}
- 	*
-	* @apiErrorExample Bad Parameter: login
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.1.4",
-	*			"return_message": "AccountAdministration - login - Bad Parameter: login"
-  *		}
-	* 	}
-	* @apiErrorExample Bad Parameter: password
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.1.4",
-	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
-  *		}
-	* 	}
- 	*
  	*/
 	public function loginAction(Request $request)
 	{
@@ -142,7 +102,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			$content = json_decode($content);
 			$content = $content->data;
 
-		  $em = $this->getDoctrine()->getManager();
+		  $em = $this->get('doctrine_mongodb');
 		  $user = $em->getRepository('MongoBundle:User')->findOneBy(array('email' => $content->login));
 			if (!$user)
 				return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: login");
@@ -168,7 +128,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 	private function checkProjectsDeletedTime($user)
 	{
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$repository = $em->getRepository('MongoBundle:Project');
 
 		$qb = $repository->createQueryBuilder('p');
@@ -218,7 +178,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	/**
- * @api {get} V0.2/accountadministration/logout/:token Logout
+ * @api {get} mongo/accountadministration/logout/:token Logout
  * @apiName logout
  * @apiGroup AccountAdministration
  * @apiDescription unvalid user's token
@@ -239,14 +199,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  *			}
  * 	}
  *
- * @apiErrorExample Bad Id
- * 	HTTP/1.1 400 Bad Request
- * 	{
- *		"info": {
- *			"return_code": "14.2.3",
- *			"return_message": "AccountAdministration - logout - Bad id"
- *		}
- * 	}
  *
  */
  	public function logoutAction(Request $request, $token)
@@ -257,7 +209,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		$user->setToken(null);
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$em->persist($user);
 		$em->flush();
 
@@ -265,7 +217,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	}
 
 	/**
-	* @api {post} V0.2/accountadministration/register Register
+	* @api {post} mongo/accountadministration/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him
@@ -321,46 +273,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   	}
 	*   }
 	*
-	* @apiSuccess {int} id user's id
- 	* @apiSuccess {string} firstname user's firstname
- 	* @apiSuccess {string} lastname user's lastname
- 	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {String} avatar user's avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	HTTP/1.1 201 Created
-	* 	{
-	*			"info": {
-	*				"return_code": "1.14.1",
-	*				"return_message": "AccountAdministration - register - Complete Success"
-  *			},
- 	*			"data": {
-	*				"id": 12,
-	*				"firstname": "Janne",
-	*				"lastname": "Doe",
-	*				"email": "janne.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": "01101000101101000111...."
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Missing Parameter
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.3.6",
-	*			"return_message": "AccountAdministration - register - Missing Parameter"
-  *		}
-	* 	}
-	* @apiErrorExample Already in DB
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.3.7",
-	*			"return_message": "AccountAdministration - register - Already in Database"
-  *		}
-	* 	}
 	*
 	*/
 	public function registerAction(Request $request)
@@ -372,7 +284,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content) || !array_key_exists('password', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Missing Parameter");
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		if ($em->getRepository('MongoBundle:User')->findOneBy(array('email' => $content->email)))
 			return $this->setBadRequest("14.3.7", "AccountAdministration", "register", "Already in Database");
 

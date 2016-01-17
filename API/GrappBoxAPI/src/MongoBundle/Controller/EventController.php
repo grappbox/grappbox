@@ -36,22 +36,6 @@ class EventController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {string} token user authentication token
 	*
-	* @apiSuccess {Object[]} types types list
-	* @apiSuccess {int} types.id type id
-	* @apiSuccess {string} types.name type name
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0:{"id": 1, "name": "Event"},
-	*		1:{"id": 2, "name": "Meeting"},
-	*		2:{"id": 3, "name": "Private"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
 	*
 	*/
 	public function getTypesAction(Request $request, $token)
@@ -60,7 +44,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$types = $em->getRepository("MongoBundle:EventType")->findAll();
 
 		$types_array = array();
@@ -80,53 +64,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {int} id event id
 	* @apiParam {string} token user authentication token
 	*
-	* @apiSuccess {Object} event event info
-	* @apiSuccess {int} event.id Event id
-	* @apiSuccess {int} event.creatorId creator user id
-	* @apiSuccess {int} event.projectId project id
-	* @apiSuccess {int} event.eventTypeId Event type id
-	* @apiSuccess {string} event.eventType Event type name
-	*	@apiSuccess {string} event.title event title
-	*	@apiSuccess {string} event.description event description
-	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
-	*	@apiSuccess {DateTime} event.endDate ending date of the event
-	*	@apiSuccess {DateTime} event.createAt event creation date
-	*	@apiSuccess {DateTime} event.editedAt event edition date
-	*	@apiSuccess {DateTime} event.deletedAt event delete date
-	*	@apiSuccess {Object[]} users list of participants
-	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
-	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"event": {
-	*			"id": 12, "creatorId":95, "projectId": 21,
-	*			"eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming", "description": "blablabla",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": null,
-	*			"deletedAt": null
-	*		},
-	*		"users": [
-	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
 	*
 	*/
 	public function getEventAction(Request $request, $token, $id)
@@ -135,7 +72,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{
@@ -178,53 +115,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {string[]} toAdd list of users' email to add
 	* @apiParam {int[]} toRemove list of users' id to remove
 	*
-	* @apiSuccess {Object} event event info
-	* @apiSuccess {int} event.id Event id
-	* @apiSuccess {int} event.creatorId creator user id
-	* @apiSuccess {int} event.projectId project id
-	* @apiSuccess {int} event.eventTypeId Event type id
-	* @apiSuccess {string} event.eventType Event type name
-	*	@apiSuccess {string} event.title event title
-	*	@apiSuccess {string} event.description event description
-	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
-	*	@apiSuccess {DateTime} event.endDate ending date of the event
-	*	@apiSuccess {DateTime} event.createAt event creation date
-	*	@apiSuccess {DateTime} event.editedAt event edition date
-	*	@apiSuccess {DateTime} event.deletedAt event delete date
-	*	@apiSuccess {Object[]} users list of participants
-	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
-	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"event": {
-	*			"id": 12, "creatorId":95, "projectId": 21,
-	*			"eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming", "description": "blablabla",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": null,
-	*			"deletedAt": null
-	*		},
-	*		"users": [
-	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
 	*
 	*/
 	public function setParticipantsAction(Request $request, $id)
@@ -236,7 +126,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
@@ -335,53 +225,6 @@ class EventController extends RolesAndTokenVerificationController
 	*	@apiParam {DateTime} begin beginning date & hour of the event
 	*	@apiParam {DateTime} end ending date & hour of the event
 	*
-	* @apiSuccess {Object} event event info
-	* @apiSuccess {int} event.id Event id
-	* @apiSuccess {int} event.creatorId creator user id
-	* @apiSuccess {int} event.projectId project id
-	* @apiSuccess {int} event.eventTypeId Event type id
-	* @apiSuccess {string} event.eventType Event type name
-	*	@apiSuccess {string} event.title event title
-	*	@apiSuccess {string} event.description event description
-	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
-	*	@apiSuccess {DateTime} event.endDate ending date of the event
-	*	@apiSuccess {DateTime} event.createAt event creation date
-	*	@apiSuccess {DateTime} event.editedAt event edition date
-	*	@apiSuccess {DateTime} event.deletedAt event delete date
-	*	@apiSuccess {Object[]} users list of participants
-	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
-	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"event": {
-	*			"id": 12, "creatorId":95, "projectId": 21,
-	*			"eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming", "description": "blablabla",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": null,
-	*			"deletedAt": null
-	*		},
-	*		"users": [
-	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
 	*
 	*/
 	public function postEventAction(Request $request)
@@ -393,7 +236,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		if (array_key_exists("projectId", $content))
 		{
 			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
@@ -447,54 +290,6 @@ class EventController extends RolesAndTokenVerificationController
 	*	@apiParam {DateTime} begin beginning date & hour of the event
 	*	@apiParam {DateTime} end ending date & hour of the event
 	*
-	* @apiSuccess {Object} event event info
-	* @apiSuccess {int} event.id Event id
-	* @apiSuccess {int} event.creatorId creator user id
-	* @apiSuccess {int} event.projectId project id
-	* @apiSuccess {int} event.eventTypeId Event type id
-	* @apiSuccess {string} event.eventType Event type name
-	*	@apiSuccess {string} event.title event title
-	*	@apiSuccess {string} event.description event description
-	*	@apiSuccess {DateTime} event.beginDate beginning date of the event
-	*	@apiSuccess {DateTime} event.endDate ending date of the event
-	*	@apiSuccess {DateTime} event.createAt event creation date
-	*	@apiSuccess {DateTime} event.editedAt event edition date
-	*	@apiSuccess {DateTime} event.deletedAt event delete date
-	*	@apiSuccess {Object[]} users list of participants
-	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
-	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"event": {
-	*			"id": 12, "creatorId":95, "projectId": 21,
-	*			"eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming", "description": "blablabla",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": null,
-	*			"deletedAt": null
-	*		},
-	*		"users": [
-	*			{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*			{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
 	*/
 	public function editEventAction(Request $request, $id)
 	{
@@ -505,7 +300,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
@@ -580,23 +375,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {int} id event id
 	* @apiParam {string} token user authentication token
 	*
-	* @apiSuccess {string} message succes message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"Success"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
 	*
 	*/
 	public function delEventAction(Request $request, $token, $id)
@@ -605,7 +383,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{
@@ -624,21 +402,4 @@ class EventController extends RolesAndTokenVerificationController
 
 		return new JsonResponse('Success');
 	}
-
-
-	// public function addAlertAction(Request $request, $id)
-	// {
-	// 	$content = $request->getContent();
-	// 	$content = json_decode($content);
-	//
-	// 	$user = $this->checkToken($content->token);
-	// 	if (!$user)
-	// 		return ($this->setBadTokenError());
-	// 	// if (!$content->projectId)
-	// 	// 	return $this->setBadRequest("Missing Parameter");
-	// 	// if (!$this->checkRoles($user, $content->projectId, "event"))
-	// 	// 	return ($this->setNoRightsError());
-	//
-	// 	return new Response('add Alert '.$id.' Success');
-	// }
 }

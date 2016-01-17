@@ -61,32 +61,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - registerDevice - Complete Success"
-	*		},
-	*		"data": {}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.1.3",
-	*			"return_message": "Notification - registerDevice - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "15.1.6",
-	*			"return_message": "Notification - registerDevice - Missing Parameter"
-	*		}
-	*	}
 	*
 	*/
 	public function registerDeviceAction(Request $request)
@@ -101,7 +75,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
 		return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
-	$em = $this->getDoctrine()->getManager();
+	$em = $this->get('doctrine_mongodb');
 	$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
 
 	if ($device instanceof Devices)
@@ -141,32 +115,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - unregisterDevice - Complete Success"
-	*		},
-	*		"data": {}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.2.3",
-	*			"return_message": "Notification - unregisterDevice - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "15.2.4",
-	*			"return_message": "Notification - unregisterDevice - Bad Parameter: id"
-	*		}
-	*	}
 	*/
 	public function unregisterDeviceAction(Request $request, $token, $id)
 	{
@@ -174,7 +122,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("15.2.3", "Notification", "unregisterDevice"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$device = $em->getRepository("MongoBundle:Devices")->find($id);
 		if (!($device instanceof Devices))
 			return $this->setBadRequest("15.2.4", "Notification", "unregisterDevice", "Bad Parameter: id");
@@ -194,60 +142,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiParam {String} token user authentication token
 	*
 	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.1",
-	*			"return_message": "Notification - getuserdevices - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 3,
-	*					"user": {
-	*						"id": 13,
-	*						"firstname": "John",
-	*						"lastname": "Doe"
-	*					},
-	*					"name": "John Doe's iPhone",
-	*					"token": "az5fds4zerv*8aze8ff8z9z8yh8f9d8g9yuy9ee214rtaze",
-	*					"type": "iOS"
-	*				},
-	*				{
-	*					"id": 4,
-	*					"user": {
-	*					  "id": 13,
-	*					  "firstname": "John",
-	*					  "lastname": "Doe"
-	*					},
-	*					"name": "John Doe's Android Phone",
-	*					"token": "aZ5fds4zeMPC8ff8z9DFT8yh8f9F8g9yuy9",
-	*					"type": "Android"
-	*				}
-	*			]
-	*		}
-	*	}
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - getUserDevices - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.3.3",
-	*			"return_message": "Notification - getuserdevices - Bad ID"
-	*		}
-	*	}
 	*/
 	public function getUserDevicesAction(Request $request, $token)
 	{
@@ -255,7 +149,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user));
 
 		$array = array();
@@ -281,62 +175,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiParam {int} limit number max of notifications to get
 	*
 	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.1",
-	*			"return_message": "Notification - getNotifications - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 3,
-	*					"type": "Bugtracker",
-	*					"targetId": 1,
-	*					"message": "You have been assigned to ticket Ticket de Test",
-	*					"createdAt": {
-	*						"date": "2016-01-12 14:09:46",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe/Paris"
-	*					},
-	*					"isRead": false
-	*				},
-	*				{
-	*					"id": 4,
-	*					"type": "Bugtracker",
-	*					"targetId": 1,
-	*					"message": "The ticket Ticket de Test has been closed",
-	*					"createdAt": {
-	*						"date": "2016-01-12 14:12:46",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe/Paris"
-	*					},
-	*					"isRead": false
-	*				}
-	*			]
-	*		}
-	*	}
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - getNotifications - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.4.3",
-	*			"return_message": "Notification - getNotifications - Bad ID"
-	*		}
-	*	}
 	*/
 	public function getNotificationsAction(Request $request, $token, $read, $offset, $limit)
 	{
@@ -349,7 +187,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		else if ($read == "false")
 			$read_value = false;
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$notification = $em->getRepository("MongoBundle:Notification")->findBy(array("user" => $user, "isRead" => $read), array(), $limit, $offset);
 
 		$notif_array = array();
@@ -370,7 +208,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("15.5.3", "Notification", "setNotificationToRead"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$notification = $em->getRepository("MongoBundle:Notification")->find($id);
 
 		if (!($notification instanceof Notification))
@@ -392,7 +230,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		$wdata['targetId'] = 2;
 		$wdata['message'] = "You have been added on the project Grappbox";
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 
 		return new JsonResponse($this->pushNotificationAction([1, 2], $mdata, $wdata, $em));
 	}

@@ -228,7 +228,7 @@ class CloudController extends Controller
 	* }
 	*/
 	private function openStreamAction($token, $idProject, $safePassword, Request $request){
-		$dbManager = $this->getDoctrine()->getManager();
+		$dbManager = $this->get('doctrine_mongodb');
 		$json = json_decode($request->getContent(), true);
 		$receivedData = $json["data"];
 		$userId = $this->getUserId($token);
@@ -260,7 +260,7 @@ class CloudController extends Controller
 			$response["info"]["return_message"] = "Cloud - openStreamAction - Bad Parameter";
 			return new JsonResponse($response);
 		}
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$stream = new CloudTransfer();
 		$stream->setCreatorId($userId)
 					 ->setFilename($receivedData["filename"])
@@ -348,9 +348,9 @@ class CloudController extends Controller
 	*	}
 	*/
 	private function closeStreamAction($token, $projectId, $streamId, Request $request){
-		$dbManager = $this->getDoctrine()->getManager();
+		$dbManager = $this->get('doctrine_mongodb');
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("MongoBundle:CloudTransfer");
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb');
 		$stream = $cloudTransferRepository->find($streamId);
 		$user_id = $this->getUserId($token);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
@@ -782,7 +782,7 @@ class CloudController extends Controller
 	*/
 	public function setSafePassAction(Request $request)
 	{
-		$dbManager = $this->getDoctrine()->getManager();
+		$dbManager = $this->get('doctrine_mongodb');
 		$json = json_decode($request->getContent(), true);
 		$token = $json["data"]["token"];
 		$userId = $this->getUserId($token);
