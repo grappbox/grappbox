@@ -32,7 +32,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	// TODO is it used ? can it be deleted ?
 
 	/**
-	* @-api {get} V0.11/accountadministration/login/:token Request login with client access
+	* @-api {get} mongo/accountadministration/login/:token Request login with client access
 	* @apiName client login
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token

@@ -625,7 +625,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getprojectsglobalprogress/:token Get the global progress of the projects of a user
+  	* @api {get} /mongo/dashboard/getprojectsglobalprogress/:token Get the global progress of the projects of a user
   	* @apiName getProjectsGlobalProgress
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -972,7 +972,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getprojectcreator/:token/:id Get a project creator
+  	* @api {get} /mongo/dashboard/getprojectcreator/:token/:id Get a project creator
   	* @apiName getProjectCreator
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -1393,7 +1393,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getprojectbasicinformations/:token/:id Get a project basic informations
+  	* @api {get} /mongo/dashboard/getprojectbasicinformations/:token/:id Get a project basic informations
   	* @apiName getProjectBasicInformations
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -1982,7 +1982,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getprojecttasks/:token/:id Get a project tasks
+  	* @api {get} /mongo/dashboard/getprojecttasks/:token/:id Get a project tasks
   	* @apiName getProjectTasks
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -2416,7 +2416,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getuserbasicinformations/:token Get the connected user basic informations
+  	* @api {get} /mongo/dashboard/getuserbasicinformations/:token Get the connected user basic informations
   	* @apiName getUserBasicInformations
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -2462,7 +2462,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getuserbasicinformations/:token Get the connected user basic informations
+  	* @api {get} /mongo/dashboard/getuserbasicinformations/:token Get the connected user basic informations
   	* @apiName getUserBasicInformations
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.1
@@ -2791,7 +2791,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getprojectpersons/:token/:id Get all the persons on a project
+  	* @api {get} /mongo/dashboard/getprojectpersons/:token/:id Get all the persons on a project
   	* @apiName getProjectPersons
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -3445,7 +3445,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getmeetingbasicinformations/:token/:id Get a meeting basic informations
+  	* @api {get} /mongo/dashboard/getmeetingbasicinformations/:token/:id Get a meeting basic informations
   	* @apiName getMeetingBasicInformations
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -3821,7 +3821,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getprojectlist/:token Get a list of projects the user connected is on
+  	* @api {get} /mongo/dashboard/getprojectlist/:token Get a list of projects the user connected is on
   	* @apiName getProjectList
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -4184,7 +4184,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getprojecttasksstatus/:token/:id Get the project tasks status
+  	* @api {get} /mongo/dashboard/getprojecttasksstatus/:token/:id Get the project tasks status
   	* @apiName getProjectTasksStatus
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -4478,7 +4478,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getnumbertimelinemessages/:token/:id Get the number of messages for a timeline
+  	* @api {get} /mongo/dashboard/getnumbertimelinemessages/:token/:id Get the number of messages for a timeline
   	* @apiName getNumberTimelineMessages
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0
@@ -4739,7 +4739,7 @@ class DashboardController extends RolesAndTokenVerificationController
   	*/
 
   	/**
-  	* @api {get} /V0.11/dashboard/getnumberbugs/:token/:id Get the number of bugs for a project
+  	* @api {get} /mongo/dashboard/getnumberbugs/:token/:id Get the number of bugs for a project
   	* @apiName getNumberBugs
   	* @apiGroup Dashboard
   	* @apiVersion 0.11.0

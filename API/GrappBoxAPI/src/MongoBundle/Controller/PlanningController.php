@@ -27,7 +27,7 @@ class PlanningController extends RolesAndTokenVerificationController
 {
 
 	/**
-	* @api {post} /V0.11/planning/getday get planning of a day
+	* @api {post} /mongo/planning/getday get planning of a day
 	* @apiName getDayPlanning
 	* @apiGroup Planning
 	* @apiVersion 0.11.0
@@ -119,7 +119,7 @@ class PlanningController extends RolesAndTokenVerificationController
 
 
 	/**
-	* @api {post} /V0.11/planning/getweek get planning of a week
+	* @api {post} /mongo/planning/getweek get planning of a week
 	* @apiName getWeekPlanning
 	* @apiGroup Planning
 	* @apiVersion 0.11.0
@@ -211,7 +211,7 @@ class PlanningController extends RolesAndTokenVerificationController
 
 
 	/**
-	* @api {put} /V0.11/planning/getmonth get planning of a month
+	* @api {put} /mongo/planning/getmonth get planning of a month
 	* @apiName getMonthPlanning
 	* @apiGroup Planning
 	* @apiVersion 0.11.0

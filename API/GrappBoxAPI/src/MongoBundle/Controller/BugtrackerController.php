@@ -2090,7 +2090,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @-api {post} /V0.11/bugtracker/tagcreation Create a tag
+	* @-api {post} /mongo/bugtracker/tagcreation Create a tag
 	* @apiName tagCreation
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
@@ -2188,7 +2188,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @-api {put} /V0.11/bugtracker/tagupdate Update a tag
+	* @-api {put} /mongo/bugtracker/tagupdate Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
@@ -2269,7 +2269,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @-api {get} /V0.11/bugtracker/taginformations/:token/:tagId Get a tag informations
+	* @-api {get} /mongo/bugtracker/taginformations/:token/:tagId Get a tag informations
 	* @apiName tagInformations
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -2337,7 +2337,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @-api {delete} /V0.11/bugtracker/deletetag/:token/:tagId Delete a tag
+	* @-api {delete} /mongo/bugtracker/deletetag/:token/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3
@@ -2404,7 +2404,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @-api {put} /V0.11/bugtracker/assigntag Assign a tag to a bug
+	* @-api {put} /mongo/bugtracker/assigntag Assign a tag to a bug
 	* @apiName assignTag
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -2500,7 +2500,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @-api {delete} /V0.11/bugtracker/removetag/:token/:bugId/:tagId Remove a tag to a bug
+	* @-api {delete} /mongo/bugtracker/removetag/:token/:bugId/:tagId Remove a tag to a bug
 	* @apiName removeTag
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.0
@@ -2597,7 +2597,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @-api {get} /V0.11/bugtracker/getprojecttags/:token/:projectId Get all the tags for a project
+	* @-api {get} /mongo/bugtracker/getprojecttags/:token/:projectId Get all the tags for a project
 	* @apiName getProjectTags
 	* @apiGroup Bugtracker
 	* @apiVersion 0.11.3

@@ -36,7 +36,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/whiteboard/list/:token/:projectId Get the whiteboards' list of a project
+	* @api {get} /mongo/whiteboard/list/:token/:projectId Get the whiteboards' list of a project
 	* @apiName listWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.11.0
@@ -113,7 +113,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.11/whiteboard/new Create a new Whiteboard
+	* @api {post} /mongo/whiteboard/new Create a new Whiteboard
 	* @apiName createWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.11.0
@@ -203,7 +203,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/whiteboard/open/:token/:id Open a whiteboard
+	* @api {get} /mongo/whiteboard/open/:token/:id Open a whiteboard
 	* @apiName openWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.11.0
@@ -301,7 +301,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} V0.11/whiteboard/pushdraw/:id Push a whiteboard modification
+	* @api {put} mongo/whiteboard/pushdraw/:id Push a whiteboard modification
 	* @apiName pushDrawOnWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.11.0
@@ -394,7 +394,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/whiteboard/pulldraw/:id Pull a whiteboard modification
+	* @api {get} /mongo/whiteboard/pulldraw/:id Pull a whiteboard modification
 	* @apiName pullDrawOnWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.11.0
@@ -509,7 +509,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.11/whiteboard/delete/:token/:id Delete a Whiteboard
+	* @api {delete} /mongo/whiteboard/delete/:token/:id Delete a Whiteboard
 	* @apiName deleteWhiteboard
 	* @apiGroup Whiteboard
 	* @apiVersion 0.11.0

@@ -149,14 +149,16 @@ v2_bugtracker_getTagInfos:
     path:       /bugtracker/taginformations/{token}/{tagId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:getTagInfos', _format: json }
     requirements:
-        tagId: \d+
+        token:  "[a-zA-Z]+"
+        tagId:  \d+
     methods: [GET]
 
 v2_bugtracker_deleteTag:
     path:       /bugtracker/deletetag/{token}/{tagId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:deleteTag', _format: json }
     requirements:
-        tagId: \d+
+        token:  "[a-zA-Z]+"
+        tagId:  \d+
     methods: [DELETE]
 
 v2_bugtracker_assignTag:
@@ -168,15 +170,17 @@ v2_bugtracker_removeTag:
     path:       /bugtracker/removetag/{token}/{bugId}/{tagId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:removeTag', _format: json }
     requirements:
-        taskId: \d+
-        tagId: \d+
+        token:  "[a-zA-Z]+"
+        bugId:  \d+
+        tagId:  \d+
     methods: [DELETE]
 
 v2_bugtracker_getProjectTags:
     path:       /bugtracker/getprojecttags/{token}/{projectId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:getProjectTags', _format: json }
     requirements:
-        projectId: \d+
+        token:      "[a-zA-Z]+"
+        projectId:  \d+
     methods: [GET]
 
 

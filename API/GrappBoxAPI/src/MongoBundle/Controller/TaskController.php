@@ -27,7 +27,7 @@ use MongoBundle\Document\Tag;
 class TaskController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /V0.2/tasks/taskcreation Create a task
+	* @api {post} /mongo/tasks/taskcreation Create a task
 	* @apiName taskCreation
 	* @apiGroup Task
 	* @apiDescription Create a task
@@ -218,7 +218,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/tasks/taskupdate Update a task
+	* @api {put} /mongo/tasks/taskupdate Update a task
 	* @apiName taskUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
@@ -547,7 +547,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/tasks/taskinformations/:token/:taskId Get a task informations
+	* @api {get} /mongo/tasks/taskinformations/:token/:taskId Get a task informations
 	* @apiName taskInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given task
@@ -751,7 +751,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 
 	/**
-	* @api {put} /V0.2/tasks/archivetask Archive a task
+	* @api {put} /mongo/tasks/archivetask Archive a task
 	* @apiName archiveTask
 	* @apiGroup Task
 	* @apiDescription Archive the given task
@@ -845,7 +845,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/tasks/taskdelete/:token/:taskId Delete a task
+	* @api {delete} /mongo/tasks/taskdelete/:token/:taskId Delete a task
 	* @apiName taskDelete
 	* @apiGroup Task
 	* @apiDescription Delete definitely the given task
@@ -916,7 +916,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/tasks/assignusertotask Assign a user to a task
+	* @api {put} /mongo/tasks/assignusertotask Assign a user to a task
 	* @apiName assignUserToTask
 	* @apiGroup Task
 	* @apiDescription Assign a given user to the task wanted
@@ -1064,7 +1064,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/tasks/removeusertotask/:token/:taskId/:userId Remove a user to a task
+	* @api {delete} /mongo/tasks/removeusertotask/:token/:taskId/:userId Remove a user to a task
 	* @apiName removeUserToTask
 	* @apiGroup Task
 	* @apiDescription Remove a given user to the task wanted
@@ -1175,7 +1175,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.2/tasks/tagcreation Create a tag
+	* @api {post} /mongo/tasks/tagcreation Create a tag
 	* @apiName tagCreation
 	* @apiGroup Task
 	* @apiDescription Create a tag
@@ -1273,7 +1273,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/tasks/tagupdate Update a tag
+	* @api {put} /mongo/tasks/tagupdate Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
@@ -1370,7 +1370,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/tasks/taginformations/:token/:tagId Get a tag informations
+	* @api {get} /mongo/tasks/taginformations/:token/:tagId Get a tag informations
 	* @apiName tagInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given tag
@@ -1439,7 +1439,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/tasks/deletetag/:token/:tagId Delete a tag
+	* @api {delete} /mongo/tasks/deletetag/:token/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Task
 	* @apiDescription Delete the given tag
@@ -1508,7 +1508,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/tasks/assigntagtotask Assign a tag to a task
+	* @api {put} /mongo/tasks/assigntagtotask Assign a tag to a task
 	* @apiName assignTagToTask
 	* @apiGroup Task
 	* @apiDescription Assign a given tag to the task wanted
@@ -1638,7 +1638,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/tasks/removetagtotask/:token/:taskId/:tagId Remove a tag to a task
+	* @api {delete} /mongo/tasks/removetagtotask/:token/:taskId/:tagId Remove a tag to a task
 	* @apiName removeTagToTask
 	* @apiGroup Task
 	* @apiDescription Remove the given tag from the task wanted
@@ -1733,7 +1733,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
+	* @api {get} /mongo/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
 	* @apiName getProjectTasks
 	* @apiGroup Task
 	* @apiDescription Get all the tasks for a given project
@@ -1830,7 +1830,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*	}
 	*
 	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
+	*	HTTP/1.1 206 Partial Content
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.3",
@@ -1933,7 +1933,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/tasks/getprojecttags/:token/:projectId Get all the tags for a project
+	* @api {get} /mongo/tasks/getprojecttags/:token/:projectId Get all the tags for a project
 	* @apiName getProjectTags
 	* @apiGroup Task
 	* @apiDescription Get all the tags for a given project

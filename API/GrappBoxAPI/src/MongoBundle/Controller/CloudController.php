@@ -141,7 +141,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V0.11/cloud/stream Open a new stream in order to upload file
+	* @api {post} /mongo/cloud/stream Open a new stream in order to upload file
 	* @apiVersion 0.11.0
 	* @apiDescription This method is here to create an upload process between API and Cloud.
 	* @apiGroup Cloud
@@ -278,7 +278,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.11/cloud/stream Close a stream in order to complete an upload
+	* @api {delete} /mongo/cloud/stream Close a stream in order to complete an upload
 	* @apiVersion 0.11.0
 	* @apiDescription This method is here to finalize an upload and make the file downloadable.
 	* @apiGroup Cloud
@@ -390,7 +390,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {put} /V0.11/cloud/sendfile send a file chunk.
+	* @api {put} /mongo/cloud/sendfile send a file chunk.
 	* @apiVersion 0.11.0
 	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
 	* @apiGroup Cloud
@@ -504,7 +504,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.11/cloud/getlist/:token/:idProject/:path/[:passwordSafe] Cloud LS
+	* @api {get} /mongo/cloud/getlist/:token/:idProject/:path/[:passwordSafe] Cloud LS
 	* @apiVersion 0.11.0
 	* @apiDescription Get the list of a given directory.
 	* @apiGroup Cloud
@@ -705,7 +705,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /v0.11/cloud/setsafepass Set the safe password
+	* @api {post} /mongo/cloud/setsafepass Set the safe password
 	* @apiVersion 0.11.0
 	* @apiDescription This method is there to change the safe password for a given project.
 	* @apiGroup Cloud
@@ -806,7 +806,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.11/cloud/del Delete a file or a directory
+	* @api {delete} /mongo/cloud/del Delete a file or a directory
 	* @apiVersion 0.11.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
@@ -907,7 +907,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V0.11/cloud/createdir create a directory
+	* @api {post} /mongo/cloud/createdir create a directory
 	* @apiVersion 0.11.0
 	* @apiDescription This method is there to create a directory in the cloud
 	* @apiGroup Cloud

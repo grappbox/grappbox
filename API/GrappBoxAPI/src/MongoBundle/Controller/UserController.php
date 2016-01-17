@@ -43,7 +43,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/basicinformations/:token Request the basic informations of the connected user
+	* @api {get} /mongo/user/basicinformations/:token Request the basic informations of the connected user
 	* @apiName getBasicInformations
 	* @apiGroup Users
 	* @apiVersion 0.11.1
@@ -100,7 +100,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
+	* @api {get} /mongo/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
 	* @apiName getUserBasicInformations
 	* @apiGroup Users
 	* @apiVersion 0.11.1
@@ -177,7 +177,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.11/user/basicinformations/:token Update the basic informations of the user connected
+	* @api {put} /mongo/user/basicinformations/:token Update the basic informations of the user connected
 	* @apiName putBasicInformations
 	* @apiGroup Users
 	* @apiVersion 0.11.1
@@ -274,7 +274,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
+	* @api {get} /mongo/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
 	* @apiGroup Users
 	* @apiVersion 0.11.0
@@ -321,7 +321,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/getidbyemail/:token/:email Request the user Id with the email
+	* @api {get} /mongo/user/getidbyemail/:token/:email Request the user Id with the email
 	* @apiName getIdByEmail
 	* @apiGroup Users
 	* @apiVersion 0.11.0
@@ -380,7 +380,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/getnextmeetings/:token Request the next meetings of the connected user
+	* @api {get} /mongo/user/getnextmeetings/:token Request the next meetings of the connected user
 	* @apiName getNextMeetings
 	* @apiGroup Users
 	* @apiVersion 0.11.0
@@ -443,7 +443,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/getprojects/:token Request the user connected projects
+	* @api {get} /mongo/user/getprojects/:token Request the user connected projects
 	* @apiName getProjects
 	* @apiGroup Users
 	* @apiVersion 0.11.0
@@ -500,7 +500,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/getalltasks/:token Request the user connected tasks
+	* @api {get} /mongo/user/getalltasks/:token Request the user connected tasks
 	* @apiName getAllTasks
 	* @apiGroup Users
 	* @apiVersion 0.11.0
@@ -557,7 +557,7 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
+	* @api {get} /mongo/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
 	* @apiName getCurrentAndNextTasks
 	* @apiGroup Users
 	* @apiVersion 0.11.0

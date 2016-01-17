@@ -40,7 +40,7 @@ class NotificationController extends RolesAndTokenVerificationController
 
 
 	/**
-	* @api {post} /V0.2/notification/registerdevice Register user device
+	* @api {post} /mongo/notification/registerdevice Register user device
 	* @apiName registerDevice
 	* @apiGroup Notification
 	* @apiDescription Register user mobile device for mobile notification send process
@@ -124,7 +124,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/notification/unregisterdevice/:token/:id Unregister user device
+	* @api {delete} /mongo/notification/unregisterdevice/:token/:id Unregister user device
 	* @apiName unregisterDevice
 	* @apiGroup Notification
 	* @apiDescription Unregister user mobile device to mobile notification send process
@@ -185,7 +185,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/notification/getuserdevices/:token Get user registered devices
+	* @api {delete} /mongo/notification/getuserdevices/:token Get user registered devices
 	* @apiName getuserDevices
 	* @apiGroup Notification
 	* @apiDescription Get user registered devices informations
@@ -269,7 +269,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/notification/getnotifications/:token/:read/offset/limit Get user notifications
+	* @api {delete} /mongo/notification/getnotifications/:token/:read/offset/limit Get user notifications
 	* @apiName getNotifications
 	* @apiGroup Notification
 	* @apiDescription Get user notifications

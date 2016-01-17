@@ -2090,10 +2090,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @-api {post} /V0.11/bugtracker/tagcreation Create a tag
+	* @api {post} /V0.2/bugtracker/tagcreation Create tag
 	* @apiName tagCreation
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.3
+	* @apiDescription Create a tag
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -2102,7 +2103,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
+	*			"token": "ThisIsMyToken",
 	*			"projectId": 2,
 	*			"name": "Urgent"
 	*		}
@@ -2114,8 +2115,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 201 Created
 	*	{
 	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - tagcreation - Complete Success"
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - tagCreation - Complete Success"
 	*		},
 	*		"data": {
 	*			"id": 1
@@ -2126,32 +2127,32 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "12.8.3",
-	*			"return_message": "Task - tagcreation - Bad ID"
+	*			"return_code": "4.15.3",
+	*			"return_message": "Bugtracker - tagCreation - Bad ID"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "12.8.6",
-	*			"return_message": "Task - tagcreation - Missing Parameter"
+	*			"return_code": "4.15.6",
+	*			"return_message": "Bugtracker - tagCreation - Missing Parameter"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
 	*	HTTP/1.1 403 Forbidden
 	*	{
 	*		"info": {
-	*			"return_code": "12.8.9",
-	*			"return_message": "Task - tagcreation - Insufficient Rights"
+	*			"return_code": "4.15.9",
+	*			"return_message": "Bugtracker - tagCreation - Insufficient Rights"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "12.8.4",
-	*			"return_message": "Task - tagcreation - Bad Parameter: projectId"
+	*			"return_code": "4.15.4",
+	*			"return_message": "Bugtracker - tagCreation - Bad Parameter: projectId"
 	*		}
 	*	}
 	*/
@@ -2159,21 +2160,22 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) && !array_key_exists('token', $content) && !array_key_exists('projectId', $content)))
-			return $this->setBadRequest("Missing Parameter");
+		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content))
+			return $this->setBadRequest("4.15.6", "Bugtracker", "tagCreation", "Missing Parameter");
+
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.15.3", "Bugtracker", "tagCreation"));
+
 		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.15.9", "Bugtracker", "tagCreation"));
+
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
-
-		if ($project === null)
-		{
-			throw new NotFoundHttpException("The project with id ".$content->projectId." doesn't exist");
-		}
+		if (!($project instanceof Project))
+			return $this->setBadRequest("4.15.4", "Bugtracker", "tagCreation", "Bad Parameter: projectId");
 
 		$tag = new Tag();
 		$tag->setName($content->name);
@@ -2182,399 +2184,451 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($tag);
 		$em->flush();
 
-		$id = $tag->getId();
-
-		return new JsonResponse(array("tag_id" => $id));
+		return $this->setCreated("1.4.1", "Bugtracker", "tagCreation", "Complete Success", array("tag_id" => $tag->getId()));
 	}
 
 	/**
-	* @-api {put} /V0.11/bugtracker/tagupdate Update a tag
+	* @api {put} /V0.2/bugtracker/tagupdate Update tag
 	* @apiName tagUpdate
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.3
+	* @apiDescription Update a tag
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
 	* @apiParam {String} name Name of the tag
 	*
 	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"token": "1fez4c5ze31e5f14cze31fc",
-	*		"tagId": 1,
-	*		"name": "ASAP"
-	* 	}
+	*	{
+	*		"data": {
+	*			"token": "ThisIsMyToken",
+	*			"tagId": 1,
+	*			"name": "ASAP"
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the tag
+	* @apiSuccess {String} name Name of the tag
 	*
 	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"tag_id" : 1,
-	*		"tag_name": "ASAP"
-	*	  }
+	*	HTTP/1.1 200 Ok
+	*	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - tagUpdate - Complete Success"
+	*		},
+	*		"data": {
+	*			"id" : 1,
+	*			"name": "ASAP"
+	*		}
+	*	}
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "4.16.3",
+	*			"return_message": "Bugtracker - tagUpdate - Bad ID"
+	*		}
+	*	}
 	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample No tag found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The tag with id X doesn't exist"
-	* 	}
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.16.6",
+	*			"return_message": "Bugtracker - tagUpdate - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "4.16.9",
+	*			"return_message": "Bugtracker - tagUpdate - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.16.4",
+	*			"return_message": "Bugtracker - tagUpdate - Bad Parameter: projectId"
+	*		}
+	*	}
 	*/
 	public function tagUpdateAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) && !array_key_exists('token', $content) && !array_key_exists('tagId', $content)))
-			return $this->setBadRequest("Missing Parameter");
+		if ($content === null || !array_key_exists('name', $content) && !array_key_exists('token', $content) && !array_key_exists('tagId', $content))
+			return $this->setBadRequest("4.16.6", "Bugtracker", "tagUpdate", "Missing Parameter");
+
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.16.3", "Bugtracker", "tagUpdate"));
+
 		$em = $this->getDoctrine()->getManager();
 		$tag = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
-
-		if ($tag === null)
-		{
-			throw new NotFoundHttpException("The tag with id ".$content->tagId." doesn't exist");
-		}
+		if (!($tag instanceof Tag))
+			return $this->setBadRequest("4.16.4", "Bugtracker", "tagUpdate", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.16.9", "Bugtracker", "tagUpdate"));
 
 		$tag->setName($content->name);
 		$em->flush();
 
-		$id = $tag->getId();
-		$name = $tag->getName();
-
-		return new JsonResponse(array("tag_id" => $id, "tag_name" => $name));
+		return $this->setSuccess("1.4.1", "Bugtracker", "tagUpdate", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
 	}
 
 	/**
-	* @-api {get} /V0.11/bugtracker/taginformations/:token/:tagId Get a tag informations
+	* @api {get} /V0.2/bugtracker/taginformations/:token/:tagId Get tag info
 	* @apiName tagInformations
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.0
+	* @apiDescription Get a tag informations
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
 	*
-		* @apiSuccess {Number} id Id of the tag
-		* @apiSuccess {String} name Name of the tag
-		*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"id": 1,
-	*		"name": "To Do"
-	*	  }
+	* @apiSuccess {Number} id Id of the tag
+	* @apiSuccess {String} name Name of the tag
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 Ok
+	*	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - tagInformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"id" : 1,
+	*			"name": "ASAP"
+	*		}
+	*	}
+	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample No tag found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The tag with id X doesn't exist"
-	* 	}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "4.17.3",
+	*			"return_message": "Bugtracker - tagInformations - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "4.17.9",
+	*			"return_message": "Bugtracker - tagInformations - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: tagId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.17.4",
+	*			"return_message": "Bugtracker - tagInformations - Bad Parameter: tagId"
+	*		}
+	*	}
 	*/
 	public function getTagInfosAction(Request $request, $token, $tagId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.17.3", "Bugtracker", "tagInformations"));
+
 		$em = $this->getDoctrine()->getManager();
 		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
-
-		if ($tag === null)
-		{
-			throw new NotFoundHttpException("The tag with id ".$tagId." doesn't exist");
-		}
+		if (!($tag instanceof Tag))
+			return $this->setBadRequest("4.17.4", "Bugtracker", "tagInformations", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.17.9", "Bugtracker", "tagInformations"));
 
-		$id = $tag->getId();
-		$name = $tag->getName();
-
-		return new JsonResponse(array("id" => $id, "name" => $name));
+		return $this->setSuccess("4.17.3", "Bugtracker", "tagInformations", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
 	}
 
 	/**
-	* @-api {delete} /V0.11/bugtracker/deletetag/:token/:tagId Delete a tag
+	* @api {delete} /V0.2/bugtracker/deletetag/:token/:tagId Delete tag
 	* @apiName deleteTag
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.3
+	* @apiDescription Delete a tag
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
-		*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"Tag deleted."
-	*	  }
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiSuccess {Number} id Id of the deleted tag
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - deleteTag - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 1
+	*		}
+	*	}
+	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample No tag found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The tag with id X doesn't exist"
-	* 	}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "4.18.3",
+	*			"return_message": "Bugtracker - deleteTag - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "4.18.9",
+	*			"return_message": "Bugtracker - deleteTag - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: tagId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.18.4",
+	*			"return_message": "Bugtracker - deleteTag - Bad Parameter: tagId"
+	*		}
+	*	}
 	*/
 	public function deleteTagAction(Request $request, $token, $tagId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.18.3", "Bugtracker", "deleteTag"));
+
 		$em = $this->getDoctrine()->getManager();
 		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
+		if (!($tag instanceof Tag))
+			return $this->setBadRequest("4.18.4", "Bugtracker", "deleteTag", "Bad Parameter: tagId");
 
-		if ($tag === null)
-		{
-			throw new NotFoundHttpException("The tag with id ".$tagId." doesn't exist");
-		}
-
-		$project = $tag->getProject();
-		if ($project === null)
-			return ($this->setNoRightsError());
-		$projectId = $project->getId();
-		if (!$this->checkRoles($user, $projectId, "bugtracker"))
-			return ($this->setNoRightsError());
+		if (!$this->checkRoles($user, $tag->getProjects()->getId(), "bugtracker"))
+			return ($this->setNoRightsError("4.18.9", "Bugtracker", "deleteTag"));
 
 		$em->remove($tag);
 		$em->flush();
 
-		return new JsonResponse("Tag deleted.");
+		return $this->setSuccess("1.4.1", "Bugtracker", "deleteTag", "Complete Success", array("id" => $tagId));
 	}
 
 	/**
-	* @-api {put} /V0.11/bugtracker/assigntag Assign a tag to a bug
-	* @apiName assignTag
+	* @api {put} /V0.2/bugtracker/assigntag Assign tag
+	* @apiName assignTagToBug
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.0
+	* @apiDescription Assign a tag to a bug
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} bugId Id of the bug ticket
+	* @apiParam {Number} bugId Id of the bug
 	* @apiParam {Number} tagId Id of the tag
-		*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"Tag assigned to bug successfull!"
-	*	  }
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "1fez4c5ze31e5f14cze31fc",
+	*			"bugId": 1,
+	*			"tagId": 3
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the bug
+	* @apiSuccess {Object[]} tag Tag's informations
+	* @apiSuccess {Number} tag.id Id of the tag
+	* @apiSuccess {String} tag.name Name of the tag
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - assignTagToBug - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*			"tag": {
+	*				"id": 18
+	*				"name": "To Do"
+	*			}
+	*		}
+	*	}
+	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "4.19.3",
+	*			"return_message": "Bugtracker - assignTagToBug - Bad ID"
+	*		}
+	*	}
 	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample No bug found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The bug with id X doesn't exist"
-	* 	}
-	* @apiErrorExample Tag already assigned
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"The tag is already assign to the bug"
-	* 	}
-	* @apiErrorExample No tag found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The tag with id X doesn't exist"
-	* 	}
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.19.6",
+	*			"return_message": "Bugtracker - assignTagToBug - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "4.19.9",
+	*			"return_message": "Bugtracker - assignTagToBug - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: bugId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.19.4",
+	*			"return_message": "Bugtracker - assignTagToBug - Bad Parameter: bugkId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: tagId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.19.4",
+	*			"return_message": "Bugtracker - assignTagToBug - Bad Parameter: tagId"
+	*		}
+	*	}
+	* @apiErrorExample Already In Database
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.19.7",
+	*			"return_message": "Bugtracker - assignTagToBug - Already In Database"
+	*		}
+	*	}
 	*/
 	public function assignTagAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
 		if ($content === null || (!array_key_exists('tagId', $content) && !array_key_exists('token', $content) && !array_key_exists('bugId', $content)))
-			return $this->setBadRequest("Missing Parameter");
+			return $this->setBadRequest("4.19.6", "Bugtracker", "assignTagToBug", "Missing Parameter");
+
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.19.3", "Bugtracker", "assignTagToBug"));
 
 		$em = $this->getDoctrine()->getManager();
 		$bug = $em->getRepository('GrappboxBundle:Bug')->find($content->bugId);
-
-		if ($bug === null)
-		{
-			throw new NotFoundHttpException("The bug with id ".$content->bugId." doesn't exist");
-		}
+		if (!($bug instanceof Bug))
+			return $this->setBadRequest("4.19.4", "Bugtracker", "assignTagToBug", "Bad Parameter: bugId");
 
 		$projectId = $bug->getProjects()->getId();
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.19.9", "Bugtracker", "assignTagToBug"));
 
 		$tagToAdd = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
-
-		if ($tagToAdd === null)
-		{
-			throw new NotFoundHttpException("The tag with id ".$content->tagId." doesn't exist");
-		}
+		if (!($tagToAdd instanceof Tag))
+			return $this->setBadRequest("4.19.4", "Bugtracker", "assignTagToBug", "Bad Parameter: tagId");
 
 		$tags = $bug->getTags();
 		foreach ($tags as $tag) {
 			if ($tag === $tagToAdd)
-			{
-				return new JsonResponse('The tag is already assign to the bug', JsonResponse::HTTP_BAD_REQUEST);
-			}
+				return $this->setBadRequest("4.192.7", "Bugtracker", "assignTagToBug", "Already In Database");
 		}
 
 		$bug->addTag($tagToAdd);
 
 		$em->flush();
-		return new JsonResponse("Tag assigned to bug successfull!");
+
+		return $this->setSuccess("1.4.1", "Bugtracker", "assignTagToBug", "Complete Success",
+			array("id" => $bug->getId(), "tag" => array("id" => $tagToAdd->getId(), "name" => $tagToAdd->getName())));
 	}
 
 	/**
-	* @-api {delete} /V0.11/bugtracker/removetag/:token/:bugId/:tagId Remove a tag to a bug
-	* @apiName removeTag
+	* @api {delete} /V0.2/bugtracker/removetag/:token/:bugId/:tagId Remove tag
+	* @apiName removeTagToBug
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.0
+	* @apiDescription Remove a tag to a bug
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} bugId Id of the bug
 	* @apiParam {Number} tagId Id of the tag
-		*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"Tag removed from the bug."
-	*	  }
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiSuccess {Number} id Id of the tag removed
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - removeTagToBug - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 1
+	*		}
+	*	}
+	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample No bug found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The bug with id X doesn't exist"
-	* 	}
-	* @apiErrorExample No tag found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The tag with id X doesn't exist"
-	* 	}
-	* @apiErrorExample No tag found on the bug
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The tag with id X is not assigned to the bug"
-	* 	}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "4.20.3",
+	*			"return_message": "Bugtracker - removeTagToBug - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "4.20.9",
+	*			"return_message": "Bugtracker - removeTagToBug - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: bugId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.20.4",
+	*			"return_message": "Bugtracker - removeTagToBug - Bad Parameter: bugId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: tagId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "4.20.4",
+	*			"return_message": "Bugtracker - removeTagToBug - Bad Parameter: tagId"
+	*		}
+	*	}
 	*/
 	public function removeTagAction(Request $request, $token, $bugId, $tagId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.20.3", "Bugtracker", "removeTagToBug"));
 
 		$em = $this->getDoctrine()->getManager();
 		$bug = $em->getRepository('GrappboxBundle:Bug')->find($bugId);
-
-		if ($bug === null)
-		{
-			throw new NotFoundHttpException("The bug with id ".$bugId." doesn't exist");
-		}
+		if (!($bug instanceof Bug))
+			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: bugId");
 
 		$projectId = $bug->getProjects()->getId();
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.20.9", "Bugtracker", "removeTagToBug"));
 
 		$tagToRemove = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
-
-		if ($tagToRemove === null)
-		{
-			throw new NotFoundHttpException("The tag with id ".$tagId." doesn't exist");
-		}
+		if (!($tagToRemove instanceof Tag))
+			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: tagId");
 
 		$tags = $bug->getTags();
 		$isAssign = false;
@@ -2586,85 +2640,86 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 
 		if ($isAssign === false)
-		{
-			throw new NotFoundHttpException("The tag with id ".$tagId." is not assigned to the bug");
-		}
+			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: tagId");
 
 		$bug->removeTag($tagToRemove);
 
 		$em->flush();
-		return new JsonResponse("Tag removed from the bug.");
+			return $this->setSuccess("1.4.1", "Bugtracker", "removeTagToBug", "Complete Success", array("id" => $tagId));
 	}
 
 	/**
-	* @-api {get} /V0.11/bugtracker/getprojecttags/:token/:projectId Get all the tags for a project
+	* @api {get} /V0.2/bugtracker/getprojecttags/:token/:projectId Get tags by project
 	* @apiName getProjectTags
 	* @apiGroup Bugtracker
-	* @apiVersion 0.11.3
+	* @apiDescription Get all the tags for a project
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
 	*
-	* @apiSuccess {Object[]} Tag Array of tag
-		* @apiSuccess {Number} Tag.id Id of the tag
-		* @apiSuccess {String} Tag.name Name of the tag
-		*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"Tag 1": {
-	*			"id": 1,
-	*			"name": "To Do"
-	*		}
-	*	  }
+	* @apiSuccess {int} id Id of the tag
+	* @apiSuccess {string} name name of the tag
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - getProjectTags - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": [
+	*				{ "id": 1, "name": "To Do" },
+	*				{ "id": 1, "name": "Doing" },
+	*				...
+	*			]
+	*		}
+	*	}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 206 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.4.3",
+	*			"return_message": "Bugtracker - getProjectTags - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Missing Parameters
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Missing Parameter"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 400 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample No tags found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"There are no tags for the project with id X"
-	* 	}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "4.21.3",
+	*			"return_message": "Bugtracker - getProjectTags - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "4.21.9",
+	*			"return_message": "Bugtracker - getProjectTags - Insufficient Rights"
+	*		}
+	*	}
+	*
 	*/
 	public function getProjectTagsAction(Request $request, $token, $projectId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("4.21.3", "Bugtracker", "getProjectTags"));
+
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
-			return ($this->setNoRightsError());
+			return ($this->setNoRightsError("4.21.9", "Bugtracker", "getProjectTags"));
+
 		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('GrappboxBundle:Tag');
-
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();
-
-		if ($tags === null)
-		{
-			throw new NotFoundHttpException("There are no tags for the project with id ".$projectId);
-		}
-		if (count($tags) == 0)
-		{
-			return new JsonResponse((Object)array());
-		}
 
 		$arr = array();
 		$i = 1;
@@ -2673,11 +2728,13 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$id = $t->getId();
 			$name = $t->getName();
 
-			$arr["Tag ".$i] = array("id" => $id, "name" => $name);
+			$arr[] = array("id" => $id, "name" => $name);
 			$i++;
 		}
 
-		return new JsonResponse($arr);
+		if (count($arr) <= 0)
+			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getProjectTags");
+		return $this->setSuccess("1.4.1", "Bugtracker", "getProjectTags", "Complete Success", array("array" => $arr));
 	}
 
 }

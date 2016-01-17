@@ -1,6 +1,6 @@
 mongo:
     resource: "@MongoBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /mongo/
 
 grappbox:
     resource: "@GrappboxBundle/Resources/config/routing.yml"

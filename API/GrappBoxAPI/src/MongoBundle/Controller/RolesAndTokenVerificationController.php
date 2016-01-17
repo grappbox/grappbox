@@ -129,7 +129,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {post} /V0.2/roles/addprojectroles Add a project role
+	* @api {post} /mongo/roles/addprojectroles Add a project role
 	* @apiName addProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Add a project role
@@ -269,7 +269,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {delete} /V0.2/roles/delprojectroles Delete a project role
+	* @api {delete} /mongo/roles/delprojectroles Delete a project role
 	* @apiName delProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Delete the given role of the project wanted
@@ -374,7 +374,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {put} /V0.2/roles/putprojectroles Update a project role
+	* @api {put} /mongo/roles/putprojectroles Update a project role
 	* @apiName updateProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Update a given project role
@@ -540,7 +540,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getprojectroles/:token/:projectId Get all project roles
+	* @api {get} /mongo/roles/getprojectroles/:token/:projectId Get all project roles
 	* @apiName GetProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Get all the roles for the wanted project
@@ -666,7 +666,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {post} /V0.2/roles/assignpersontorole Assign a person to a role
+	* @api {post} /mongo/roles/assignpersontorole Assign a person to a role
 	* @apiName assignPersonToRole
 	* @apiGroup Roles
 	* @apiDescription Assign the given user to the role wanted
@@ -796,7 +796,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {put} /V0.2/roles/putpersonrole Update a person role
+	* @api {put} /mongo/roles/putpersonrole Update a person role
 	* @apiName updatePersonRole
 	* @apiGroup Roles
 	* @apiDescription Update a person role
@@ -914,7 +914,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getuserroles/:token Get the roles of the user connected
+	* @api {get} /mongo/roles/getuserroles/:token Get the roles of the user connected
 	* @apiName updatePersonRole
 	* @apiGroup Roles
 	* @apiDescription Get the all the roles of all the projects of the user connected
@@ -992,7 +992,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {delete} /V0.2/roles/delpersonrole Delete a person role
+	* @api {delete} /mongo/roles/delpersonrole Delete a person role
 	* @apiName delPersonRole
 	* @apiGroup Roles
 	* @apiDescription Delete a person role
@@ -1130,7 +1130,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
+	* @api {get} /mongo/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
 	* @apiName getRoleByProjectAndUser
 	* @apiGroup Roles
 	* @apiDescription Get the roles id for a given user on a given project
@@ -1227,7 +1227,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
+	* @api {get} /mongo/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
 	* @apiName getUsersForRole
 	* @apiGroup Roles
 	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
@@ -1340,7 +1340,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getuserrolesinformations/:token Get the roles informations of the user connected
+	* @api {get} /mongo/roles/getuserrolesinformations/:token Get the roles informations of the user connected
 	* @apiName getUserConnectedRolesInformations
 	* @apiGroup Roles
 	* @apiDescription Get the roles informations for the user connected
@@ -1451,7 +1451,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getuserrolesinformations/:token/:id Get the roles informations of the given user
+	* @api {get} /mongo/roles/getuserrolesinformations/:token/:id Get the roles informations of the given user
 	* @apiName getUserRolesInformations
 	* @apiGroup Roles
 	* @apiDescription Get the roles informations for the given user

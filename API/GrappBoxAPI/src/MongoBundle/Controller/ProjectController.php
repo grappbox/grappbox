@@ -33,7 +33,7 @@ use MongoBundle\Document\Timeline;
 class ProjectController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /V0.2/projects/projectcreation Create a project for the user connected
+	* @api {post} /mongo/projects/projectcreation Create a project for the user connected
 	* @apiName projectCreation
 	* @apiGroup Project
 	* @apiDescription Create a project for the user connected
@@ -225,7 +225,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/projects/updateinformations Update a project informations
+	* @api {put} /mongo/projects/updateinformations Update a project informations
 	* @apiName updateInformations
 	* @apiGroup Project
 	* @apiDescription Update the given project informations
@@ -431,7 +431,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/projects/getinformations/:token/:projectId Get a project basic informations
+	* @api {get} /mongo/projects/getinformations/:token/:projectId Get a project basic informations
 	* @apiName getInformations
 	* @apiGroup Project
 	* @apiDescription Get the given project basic informations
@@ -534,7 +534,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/projects/delproject Delete a project 7 days after the call
+	* @api {delete} /mongo/projects/delproject Delete a project 7 days after the call
 	* @apiName delProject
 	* @apiGroup Project
 	* @apiDescription Set the deleted at of the given project to 7 days after the call of the function
@@ -635,7 +635,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
+	* @api {get} /mongo/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
 	* @apiName retrieveProject
 	* @apiGroup Project
 	* @apiDescription Retreive a project set to be deleted, but have to be called before the 7 days are passed
@@ -706,7 +706,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.2/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
+	* @api {post} /mongo/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
 	* @apiName generateCustomerAccess
 	* @apiGroup Project
 	* @apiDescription Generate or regenerate a customer access for the given project
@@ -827,7 +827,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
+	* @api {get} /mongo/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
 	* @apiName getCustomerAccessById
 	* @apiGroup Project
 	* @apiDescription Get a customer access by it's id
@@ -910,7 +910,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
+	* @api {get} /mongo/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
 	* @apiName getCustomerAccessByProject
 	* @apiGroup Project
 	* @apiDescription Get a customer access by it's poject id
@@ -1017,7 +1017,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/projects/delcustomeraccess Delete a customer access
+	* @api {delete} /mongo/projects/delcustomeraccess Delete a customer access
 	* @apiName delCustomerAccess
 	* @apiGroup Project
 	* @apiDescription Delete the given customer access
@@ -1113,7 +1113,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.2/projects/addusertoproject Add a user to a project
+	* @api {post} /mongo/projects/addusertoproject Add a user to a project
 	* @apiName addUserToProject
 	* @apiGroup Project
 	* @apiDescription Add a given user to the project wanted
@@ -1257,7 +1257,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/projects/removeusertoproject Remove a user from the project
+	* @api {delete} /mongo/projects/removeusertoproject Remove a user from the project
 	* @apiName removeUserToProject
 	* @apiGroup Project
 	* @apiDescription Remove a given user to the project wanted
@@ -1398,7 +1398,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/projects/getusertoproject/:token/:projectId Get all the users on a project
+	* @api {get} /mongo/projects/getusertoproject/:token/:projectId Get all the users on a project
 	* @apiName getUserToProject
 	* @apiGroup Project
 	* @apiDescription Get all the users on the given project

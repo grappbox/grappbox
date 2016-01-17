@@ -29,7 +29,7 @@ use DateTime;
 class EventController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /V0.11/event/getTypes/:token Get event types
+	* @api {get} /mongo/event/getTypes/:token Get event types
 	* @apiName getTypes
 	* @apiGroup Event
 	* @apiVersion 0.11.0
@@ -72,7 +72,7 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/event/getevent/:token/:id get event
+	* @api {get} /mongo/event/getevent/:token/:id get event
 	* @apiName getEvent
 	* @apiGroup Event
 	* @apiVersion 0.11.0
@@ -168,7 +168,7 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.11/event/setparticipants/:id Add/remove users to the event
+	* @api {post} /mongo/event/setparticipants/:id Add/remove users to the event
 	* @apiName setParticipants
 	* @apiGroup Event
 	* @apiVersion 0.11.0
@@ -322,7 +322,7 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.11/event/postevent/:id Post an event/meeting
+	* @api {post} /mongo/event/postevent/:id Post an event/meeting
 	* @apiName postEvent
 	* @apiGroup Event
 	* @apiVersion 0.11.0
@@ -433,7 +433,7 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.11/event/editevent/:id Edit an event/meeting
+	* @api {post} /mongo/event/editevent/:id Edit an event/meeting
 	* @apiName editEvent
 	* @apiGroup Event
 	* @apiVersion 0.11.0
@@ -572,7 +572,7 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.11/event/delevent/:token/:id Delete an event/meeting
+	* @api {delete} /mongo/event/delevent/:token/:id Delete an event/meeting
 	* @apiName delEvent
 	* @apiGroup Event
 	* @apiVersion 0.11.0

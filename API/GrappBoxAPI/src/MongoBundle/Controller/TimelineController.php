@@ -28,7 +28,7 @@ class TimelineController extends RolesAndTokenVerificationController
 {
 
 	/**
-	* @api {get} /V0.11/timeline/gettimelines/:token/:id List the timeline of a project
+	* @api {get} /mongo/timeline/gettimelines/:token/:id List the timeline of a project
 	* @apiName getTimelines
 	* @apiGroup Timeline
 	* @apiVersion 0.11.0
@@ -235,7 +235,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.11/timeline/editmessage/:id Edit a message
+	* @api {post} /mongo/timeline/editmessage/:id Edit a message
 	* @apiName editMessage
 	* @apiGroup Timeline
 	* @apiVersion 0.11.0
@@ -315,7 +315,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/timeline/getmessages/:token/:id Get all messages from a timeline except comments
+	* @api {get} /mongo/timeline/getmessages/:token/:id Get all messages from a timeline except comments
 	* @apiName getMessages
 	* @apiGroup Timeline
 	* @apiVersion 0.11.0
@@ -391,7 +391,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/timeline/getcomments/:token/:id/:message Get comments of a message
+	* @api {get} /mongo/timeline/getcomments/:token/:id/:message Get comments of a message
 	* @apiName getComments
 	* @apiGroup Timeline
 	* @apiVersion 0.11.0
@@ -468,7 +468,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
+	* @api {get} /mongo/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
 	* @apiName getLastMessages
 	* @apiGroup Timeline
 	* @apiVersion 0.11.0
@@ -553,7 +553,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.11/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
+	* @api {get} /mongo/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
 	* @apiVersion 0.11.0
