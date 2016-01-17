@@ -34,7 +34,7 @@ v2_bugtracker_getTicket:
     path:       /bugtracker/getticket/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTicket, _format: json }
     requirements:
-        id: \d+
+        id:     \d+
         token:  "[a-zA-Z]+"
     methods:  [GET]
 
@@ -46,88 +46,93 @@ v2_bugtracker_postTicket:
 v2_bugtracker_editTicket:
     path:       /bugtracker/editticket
     defaults:   { _controller: GrappboxBundle:Bugtracker:editTicket, _format: json }
-    methods:  [POST]
+    methods:  [PUT]
 
 v2_bugtracker_getComments:
     path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getComments, _format: json }
     requirements:
-        id: \d+
+        token:    "[a-zA-Z]+"
+        id:       \d+
+        ticketId: \d+
     methods:  [GET]
 
 v2_bugtracker_postComment:
-    path:       /bugtracker/postcomment/{id}
+    path:       /bugtracker/postcomment
     defaults:   { _controller: GrappboxBundle:Bugtracker:postComment, _format: json }
-    requirements:
-        id: \d+
     methods:  [POST]
 
 v2_bugtracker_editComment:
-    path:       /bugtracker/editcomment/{id}
+    path:       /bugtracker/editcomment
     defaults:   { _controller: GrappboxBundle:Bugtracker:editComment, _format: json }
-    requirements:
-        id: \d+
-    methods:  [POST]
+    methods:  [PUT]
 
 v2_bugtracker_setParticipants:
-    path:       /bugtracker/setparticipants/{id}
+    path:       /bugtracker/setparticipants
     defaults:   { _controller: GrappboxBundle:Bugtracker:setParticipants, _format: json }
-    requirements:
-        id: \d+
-    methods: [POST]
+    methods: [PUT]
 
 v2_bugtracker_closeTicket:
     path:       /bugtracker/closeticket/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Bugtracker:closeTicket, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
     methods:  [DELETE]
 
 v2_bugtracker_getTickets:
     path:       /bugtracker/gettickets/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTickets, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
     methods:  [GET]
 
 v2_bugtracker_getLastTickets:
     path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getLastTickets, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
         offset: \d+
-        limit: \d+
+        limit:  \d+
     methods:  [GET]
 
 v2_bugtracker_getLastClosedTickets:
     path:       /bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getLastClosedTickets, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
         offset: \d+
-        limit: \d+
+        limit:  \d+
     methods:  [GET]
 
 v2_bugtracker_getTicketsByUser:
     path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTicketsByUser, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
+        userId: \d+
     methods:  [GET]
 
 v2_bugtracker_getTicketsByState:
     path:       /bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTicketsByState, _format: json }
     requirements:
-        id: \d+
-        state: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
+        state:  \d+
         offset: \d+
-        limit: \d+
+        limit:  \d+
     methods:  [GET]
 
 v2_bugtracker_getStates:
     path:       /bugtracker/getstates/{token}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getStates, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
     methods:  [GET]
 
 v2_bugtracker_tagCreation:
