@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,12 +10,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
-use GrappboxBundle\Entity\Project;
-use GrappboxBundle\Entity\CustomerAccess;
-use GrappboxBundle\Entity\Role;
-use GrappboxBundle\Entity\ProjectUserRole;
-use GrappboxBundle\Entity\Tag;
-use GrappboxBundle\Entity\Timeline;
+use MongoBundle\Document\Project;
+use MongoBundle\Document\CustomerAccess;
+use MongoBundle\Document\Role;
+use MongoBundle\Document\ProjectUserRole;
+use MongoBundle\Document\Tag;
+use MongoBundle\Document\Timeline;
 
 /**
 *  @IgnoreAnnotation("apiName")
@@ -186,7 +186,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->persist($pur);
 
-		$qb = $em->getRepository('GrappboxBundle:Tag')->createQueryBuilder('t')->getQuery();
+		$qb = $em->getRepository('MongoBundle:Tag')->createQueryBuilder('t')->getQuery();
 		$tags = $qb->getResult();
 
 		foreach ($tags as $t) {
@@ -220,7 +220,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$customerTimeline->setName("CustomerTimeline - ".$project->getName());
 		$em->persist($customerTimeline);
 		$em->flush();
-		
+
 		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id));
 	}
 
@@ -363,19 +363,19 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.2.4", "Project", "updateinformations", "Bad Parameter: projectId");
 
 		if (array_key_exists('creatorId', $content))
 		{
-			$creatorUser = $em->getRepository('GrappboxBundle:User')->find($content->creatorId);
+			$creatorUser = $em->getRepository('MongoBundle:User')->find($content->creatorId);
 
 			if ($creatorUser === null)
 				return $this->setBadRequest("6.2.4", "Project", "updateinformations", "Bad Parameter: creatorId");
 
-			$repository = $em->getRepository('GrappboxBundle:Role');
+			$repository = $em->getRepository('MongoBundle:Role');
 
 			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $content->projectId)->getQuery();
 			$role = $qb->getResult();
@@ -385,7 +385,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			else
 				$role = $role[0];
 
-			$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+			$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 			$creatorUserId = $project->getCreatorUser()->getId();
 			$roleId = $role->getId();
 
@@ -513,7 +513,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.3.9", "Project", "getinformations"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.3.4", "Project", "getinformations", "Bad Parameter: projectId");
@@ -620,7 +620,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.4.4", "Project", "delproject", "Bad Parameter: projectId");
@@ -694,7 +694,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.5.9", "Project", "retrieveproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.5.4", "Project", "retrieveproject", "Bad Parameter: projectId");
@@ -790,12 +790,12 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.6.9", "Project", "generatecustomeraccess"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.6.4", "Project", "generatecustomeraccess", "Bad Parameter: projectId");
 
-		$repository = $em->getRepository('GrappboxBundle:CustomerAccess');
+		$repository = $em->getRepository('MongoBundle:CustomerAccess');
 
 		$qb = $repository->createQueryBuilder('ca')->join('ca.projects', 'p')->where('ca.name = :name', 'p.id = :id')->setParameter('name', $content->name)->setParameter('id', $content->projectId)->getQuery();
 		$customerAccess = $qb->getResult();
@@ -893,7 +893,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("6.7.3", "Project", "getcustomeraccessbyid"));
 
 		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->find($id);
+		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->find($id);
 
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.7.4", "Project", "getcustomeraccessbyid", "Bad Parameter: id");
@@ -994,7 +994,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.8.9", "Project", "getcustomeraccessbyproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->findByprojects($projectId);
+		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByprojects($projectId);
 
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.8.4", "Project", "getcustomeraccessbyproject", "Bad Parameter: projectId");
@@ -1101,7 +1101,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.9.9", "Project", "delcustomeraccess"));
 
 		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->find($content->customerAccessId);
+		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->find($content->customerAccessId);
 
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.9.4", "Project", "delcustomeraccess", "Bad Parameter: customerAccessId");
@@ -1219,12 +1219,12 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->id);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->id);
 
 		if ($project === null)
 			return $this->setBadRequest("6.10.4", "Project", "addusertoproject", "Bad Parameter: id");
 
-		$userToAdd = $em->getRepository('GrappboxBundle:User')->findOneByemail($content->email);
+		$userToAdd = $em->getRepository('MongoBundle:User')->findOneByemail($content->email);
 		if ($userToAdd === null)
 			return $this->setBadRequest("6.10.4", "Project", "addusertoproject", "Bad Parameter: email");
 
@@ -1356,12 +1356,12 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: projectId");
 
-		$userToRemove = $em->getRepository('GrappboxBundle:User')->find($content->userId);
+		$userToRemove = $em->getRepository('MongoBundle:User')->find($content->userId);
 		if ($userToRemove === null)
 			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: userId");
 
@@ -1476,7 +1476,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.12.9", "Project", "getusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.12.4", "Project", "getusertoproject", "Bad Parameter: projectId");

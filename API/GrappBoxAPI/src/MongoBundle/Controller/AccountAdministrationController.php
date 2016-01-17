@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,9 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
-use GrappboxBundle\Controller\RolesAndTokenVerificationController;
-use GrappboxBundle\Entity\Project;
-use GrappboxBundle\Entity\User;
+use MongoBundle\Controller\RolesAndTokenVerificationController;
+use MongoBundle\Document\Project;
+use MongoBundle\Document\User;
 use DateTime;
 use DateInterval;
 
@@ -68,7 +68,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	public function clientLoginAction(Request $request, $token)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('token' => $token));
+		$user = $em->getRepository('MongoBundle:User')->findOneBy(array('token' => $token));
 		if (!$user || $user->getTokenValidity())
 			return $this->setBadTokenError();
 
@@ -143,7 +143,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			$content = $content->data;
 
 		  $em = $this->getDoctrine()->getManager();
-		  $user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->login));
+		  $user = $em->getRepository('MongoBundle:User')->findOneBy(array('email' => $content->login));
 			if (!$user)
 				return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: login");
 
@@ -169,7 +169,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	private function checkProjectsDeletedTime($user)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:Project');
+		$repository = $em->getRepository('MongoBundle:Project');
 
 		$qb = $repository->createQueryBuilder('p');
 
@@ -373,7 +373,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Missing Parameter");
 
 		$em = $this->getDoctrine()->getManager();
-		if ($em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->email)))
+		if ($em->getRepository('MongoBundle:User')->findOneBy(array('email' => $content->email)))
 			return $this->setBadRequest("14.3.7", "AccountAdministration", "register", "Already in Database");
 
 		$user = new User();

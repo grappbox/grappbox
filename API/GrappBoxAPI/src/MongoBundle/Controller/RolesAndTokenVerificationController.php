@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -8,8 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use GrappboxBundle\Entity\Role;
-use GrappboxBundle\Entity\ProjectUserRole;
+use MongoBundle\Document\Role;
+use MongoBundle\Document\ProjectUserRole;
 use DateTime;
 use DateInterval;
 
@@ -34,7 +34,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$token)
 			return NULL;
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('token' => $token));
+		$user = $em->getRepository('MongoBundle:User')->findOneBy(array('token' => $token));
 
 		if (!$user)
 			return $user;
@@ -48,7 +48,7 @@ class RolesAndTokenVerificationController extends Controller
 		else if ($user->getToken() && $user->getTokenValidity())
 		{
 			$user->setTokenValidity($now->add(new DateInterval("P1D")));
-		
+
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($user);
 			$em->flush();
@@ -64,8 +64,8 @@ class RolesAndTokenVerificationController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$query = $em->createQuery(
 			'SELECT roles.'.$role.'
-			FROM GrappboxBundle:Role roles
-			JOIN GrappboxBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
+			FROM MongoBundle:Role roles
+			JOIN MongoBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
 			WHERE projectUser.projectId = '.$projectId.' AND projectUser.userId = '.$user->getId());
 		$result = $query->setMaxResults(1)->getOneOrNullResult();
 		return $result[$role];
@@ -246,7 +246,7 @@ class RolesAndTokenVerificationController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$role = new Role();
 
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: projectId");
 
@@ -356,7 +356,7 @@ class RolesAndTokenVerificationController extends Controller
 			return ($this->setBadTokenError("13.2.3", "Role", "delprojectroles"));
 
 		$em = $this->getDoctrine()->getManager();
-		$role = $em->getRepository('GrappboxBundle:Role')->find($content->id);
+		$role = $em->getRepository('MongoBundle:Role')->find($content->id);
 
 		if ($role === null)
 			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: id");
@@ -496,13 +496,13 @@ class RolesAndTokenVerificationController extends Controller
 
 		if (!array_key_exists('roleId', $content) || !array_key_exists('token', $content))
 			return $this->setBadRequest("13.3.6", "Role", "putprojectroles", "Missing Parameter");
-	
+
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("13.3.3", "Role", "putprojectroles"));
 
 		$em = $this->getDoctrine()->getManager();
-		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
 
 		if ($role === null)
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: roleId");
@@ -635,7 +635,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
 
 		$em = $this->getDoctrine()->getManager();
-		$roles = $em->getRepository('GrappboxBundle:Role')->findByprojects($projectId);
+		$roles = $em->getRepository('MongoBundle:Role')->findByprojects($projectId);
 
 		if ($roles === null)
 			return $this->setBadRequest("13.4.4", "Role", "getprojectroles", "Bad Parameter: projectId");
@@ -763,8 +763,8 @@ class RolesAndTokenVerificationController extends Controller
 			return ($this->setBadTokenError("13.5.3", "Role", "assignpersontorole"));
 
 		$em = $this->getDoctrine()->getManager();
-		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
-		$userToAdd = $em->getRepository('GrappboxBundle:User')->find($content->userId);
+		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
+		$userToAdd = $em->getRepository('MongoBundle:User')->find($content->userId);
 
 		if ($role === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: roleId");
@@ -775,7 +775,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return $this->setNoRightsError("13.5.9", "Role", "assignpersontorole");
 
-		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 		$qb = $repository->createQueryBuilder('p')->where('p.roleId = :roleId', 'p.userId = :userId')->setParameter('roleId', $content->roleId)->setParameter('userId', $content->userId)->getQuery();
 		$purs = $qb->getResult();
 
@@ -792,7 +792,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setCreated("1.13.1", "Role", "assignpersontorole", "Complete Success", array("id" => $ProjectUserRole->getId()));
 		}
 		else
-			return $this->setBadRequest("13.5.7", "Role", "assignpersontorole", "Already In Database");	
+			return $this->setBadRequest("13.5.7", "Role", "assignpersontorole", "Already In Database");
 	}
 
 	/**
@@ -893,7 +893,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setNoRightsError("13.5.9", "Role", "putpersonrole");
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
 		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->old_roleId)->getQuery();
@@ -902,7 +902,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($pur === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter");
 
-		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
 		if ($role === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter: roleId");
 
@@ -973,7 +973,7 @@ class RolesAndTokenVerificationController extends Controller
 			return ($this->setBadTokenError("13.7.3", "Role", "getuserroles"));
 
 		$em = $this->getDoctrine()->getManager();
-		$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
+		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
 
 		if (count($userRoles) == 0 || $userRoles === null)
 			return $this->setNoDataSuccess("1.13.3", "Role", "getuserroles");
@@ -1102,8 +1102,8 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
-		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
+		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
 
 		if ($project === null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: projectId");
@@ -1113,7 +1113,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($project->getCreatorUser()->getId() == $content->userId && $role->getName() == "Admin")
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't remove the creator from the Admin role");
 
-		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
 		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->roleId)->getQuery();
@@ -1206,7 +1206,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setNoRightsError("13.9.9", "Role", "getrolebyprojectanduser");
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
 		$purs = $qb->getResult();
 
@@ -1305,14 +1305,14 @@ class RolesAndTokenVerificationController extends Controller
 			return ($this->setBadTokenError("13.10.3", "Role", "getusersforrole"));
 
 		$em = $this->getDoctrine()->getManager();
-		$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+		$role = $em->getRepository('MongoBundle:Role')->find($roleId);
 		if ($role === null)
 			return $this->setBadRequest("13.10.4", "Role", "getusersforrole", "Bad Parameter: roleId");
 
 		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
 			return $this->setNoRightsError("13.10.9", "Role", "getusersforrole");
 
-		$purRepository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$purRepository = $em->getRepository('MongoBundle:ProjectUserRole');
 		$qb = $purRepository->createQueryBuilder('pur')->where('pur.roleId = :id')->setParameter('id', $role->getId())->getQuery();
 		$purs = $qb->getResult();
 
@@ -1419,7 +1419,7 @@ class RolesAndTokenVerificationController extends Controller
 			return ($this->setBadTokenError("13.11.3", "Role", "getuserconnectedrolesinformations"));
 
 		$em = $this->getDoctrine()->getManager();
-		$userRoles = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByuserId($user->getId());
+		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
 
 		if (count($userRoles) == 0 || $userRoles === null)
 			return $this->setNoDataSuccess("1.13.3", "Role", "getuserconnectedrolesinformations");
@@ -1430,10 +1430,10 @@ class RolesAndTokenVerificationController extends Controller
 			$purId = $role->getId();
 
 			$projectId = $role->getProjectId();
-			$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+			$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 			$roleId = $role->getRoleId();
-			$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+			$role = $em->getRepository('MongoBundle:Role')->find($roleId);
 
 			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings"))
 			{
@@ -1458,7 +1458,7 @@ class RolesAndTokenVerificationController extends Controller
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} userId Id of the user you want the roles 
+	* @apiParam {Number} userId Id of the user you want the roles
 	*
 	* @apiSuccess {Object[]} array Array of user roles informations
 	* @apiSuccess {Number} array.id Project user role id
@@ -1533,7 +1533,7 @@ class RolesAndTokenVerificationController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$userConnectedProjects = $user->getProjects();
 
-		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
+		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 
 		$arr = array();
 
@@ -1548,10 +1548,10 @@ class RolesAndTokenVerificationController extends Controller
 					$purId = $role->getId();
 
 					$projectId = $role->getProjectId();
-					$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+					$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 					$roleId = $role->getRoleId();
-					$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
+					$role = $em->getRepository('MongoBundle:Role')->find($roleId);
 
 					if ($project != null && $role != null)
 					{

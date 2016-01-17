@@ -1,18 +1,18 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use GrappboxBundle\Controller\RolesAndTokenVerificationController;
+use MongoBundle\Controller\RolesAndTokenVerificationController;
 
-use GrappboxBundle\Entity\User;
-use GrappboxBundle\Entity\Bug;
-use GrappboxBundle\Entity\BugState;
-use GrappboxBundle\Entity\Tag;
-use GrappboxBundle\Entity\Project;
+use MongoBundle\Document\User;
+use MongoBundle\Document\Bug;
+use MongoBundle\Document\BugState;
+use MongoBundle\Document\Tag;
+use MongoBundle\Document\Project;
 use DateTime;
 
 /**
@@ -124,14 +124,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.1.3", "Bugtracker", "getTicket"));
 
 		$em = $this->getDoctrine()->getManager();
-		$ticket = $em->getRepository("GrappboxBundle:Bug")->find($id);
+		$ticket = $em->getRepository("MongoBundle:Bug")->find($id);
 		if (!($ticket instanceof Bug))
 			return $this->setBadRequest("4.1.4", "Bugtracker", "getTicket", "Bad Parameter: id");
 		if (!$this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker"))
 			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
 
 		$object = $ticket->objectToArray();
-		$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($ticket->getStateId())->objectToArray();
+		$object['state'] = $em->getRepository("MongoBundle:BugState")->find($ticket->getStateId())->objectToArray();
 		$object['tags'] = array();
 		foreach ($ticket->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
@@ -275,7 +275,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError("4.2.9", "Bugtracker", "postTicket"));
 
-		$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
+		$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.2.4", "Bugtracker", "postTicket", "Bad Parameter: projectId");
 
@@ -287,7 +287,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setCreatedAt(new DateTime('now'));
 
 		if (array_key_exists("stateId", $content) && $content->stateId != 0)
-			$state = $em->getRepository("GrappboxBundle:BugState")->find($content->stateId);
+			$state = $em->getRepository("MongoBundle:BugState")->find($content->stateId);
 		if ($state instanceof BugState)
 			$bug->setStateId($content->stateId);
 		else {
@@ -445,7 +445,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.3.3", "Bugtracker", "editTicket"));
 
 		$em = $this->getDoctrine()->getManager();
-		$bug = $em->getRepository('GrappboxBundle:Bug')->find($content->bugId);
+		$bug = $em->getRepository('MongoBundle:Bug')->find($content->bugId);
 		if (!($bug instanceof Bug))
 			return $this->setBadRequest("4.3.4", "Bugtracker", "postTicket", "Bad Parameter: bugId");
 
@@ -457,7 +457,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setEditedAt(new DateTime('now'));
 
 		if ($content->stateId != 0)
-			$state = $em->getRepository("GrappboxBundle:BugState")->find($content->stateId);
+			$state = $em->getRepository("MongoBundle:BugState")->find($content->stateId);
 		if ($state instanceof BugState)
 			$bug->setStateId($content->stateId);
 		else {
@@ -610,11 +610,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("4.4.9", "Bugtracker", "getComments"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		$project = $em->getRepository("MongoBundle:Project")->find($id);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.4.4", "Bugtracker", "getComments", "Bad Parameter: id");
 
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => $ticketId));
+		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => $ticketId));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$ticketsArray[] = $value->objectToArray();
@@ -733,7 +733,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError("4.5.9", "Bugtracker", "postComments"));
 
-		$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
+		$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.5.4", "Bugtracker", "postComments", "Bad Parameter: projectId");
 
@@ -878,7 +878,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError("4.6.9", "Bugtracker", "editComments"));
 
-		$bug = $em->getRepository("GrappboxBundle:Bug")->find($content->commentId);
+		$bug = $em->getRepository("MongoBundle:Bug")->find($content->commentId);
 		if (!($bug instanceof Bug))
 			return $this->setBadRequest("4.6.4", "Bugtracker", "editComments", "Bad Parameter: commentId");
 
@@ -1021,7 +1021,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.7.3", "Bugtracker", "setParticipants"));
 
-		$bug = $em->getRepository("GrappboxBundle:Bug")->find($content->bugId);
+		$bug = $em->getRepository("MongoBundle:Bug")->find($content->bugId);
 		if (!($bug instanceof Bug))
 			return $this->setBadRequest("4.7.4", "Bugtracker", "setParticipants", "Bad Parameter: bugId");
 
@@ -1039,7 +1039,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$wdata['message'] = "You have been assigned to ticket ".$bug->getTitle();
 
 		foreach ($content->toAdd as $key => $value) {
-			$toAddUser = $em->getRepository("GrappboxBundle:User")->find($value);
+			$toAddUser = $em->getRepository("MongoBundle:User")->find($value);
 			if ($toAddUser instanceof User)
 			{
 				foreach ($bug->getUsers() as $key => $value) {
@@ -1062,7 +1062,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$wdata['message'] = "You have been removed of ticket ".$bug->getTitle();
 
 		foreach ($content->toRemove as $key => $value) {
-			$toRemoveuser = $em->getRepository("GrappboxBundle:User")->find($value);
+			$toRemoveuser = $em->getRepository("MongoBundle:User")->find($value);
 
 			if ($toRemoveuser instanceof User)
 			{
@@ -1077,7 +1077,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$object = $bug->objectToArray();
-		$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($bug->getStateId())->objectToArray();
+		$object['state'] = $em->getRepository("MongoBundle:BugState")->find($bug->getStateId())->objectToArray();
 		$object['tags'] = array();
 		foreach ($bug->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
@@ -1154,7 +1154,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.8.3", "Bugtracker", "closeTicket"));
 
-		$bug = $em->getRepository("GrappboxBundle:Bug")->find($id);
+		$bug = $em->getRepository("MongoBundle:Bug")->find($id);
 		if (!($bug instanceof Bug))
 			return $this->setBadRequest("4.8.4", "Bugtracker", "closeTicket", "Bad Parameter: id");
 
@@ -1314,18 +1314,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.9.3", "Bugtracker", "getTickets"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		$project = $em->getRepository("MongoBundle:Project")->find($id);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.9.4", "Bugtracker", "getTickets", "Bad Parameter: id");
 
 		if (!$this->checkRoles($user, $id, "bugtracker"))
 			return ($this->setNoRightsError("4.9.9", "Bugtracker", "getTickets"));
 
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
+		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['state'] = $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -1480,18 +1480,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.10.3", "Bugtracker", "getLastTickets"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		$project = $em->getRepository("MongoBundle:Project")->find($id);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.10.4", "Bugtracker", "getLastTickets", "Bad Parameter: id");
 
 		if (!$this->checkRoles($user, $id, "bugtracker"))
 			return ($this->setNoRightsError("4.10.9", "Bugtracker", "getLastTickets"));
 
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
+		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['state'] = $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -1646,20 +1646,20 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.11.3", "Bugtracker", "getLastClosedTickets"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		$project = $em->getRepository("MongoBundle:Project")->find($id);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.11.4", "Bugtracker", "getLastClosedTickets", "Bad Parameter: id");
 
 		if (!$this->checkRoles($user, $id, "bugtracker"))
 			return ($this->setNoRightsError("4.11.9", "Bugtracker", "getLastClosedTickets"));
 
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "parentId" => null), array(), $limit, $offset);
+		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "parentId" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			if ($value->getDeletedAt() != null)
 			{
 				$object = $value->objectToArray();
-				$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+				$object['state'] = $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
 				$object['tags'] = array();
 				foreach ($value->getTags() as $key => $tag_value) {
 					$object['tags'][] = $tag_value->objectToArray();
@@ -1814,18 +1814,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.12.3", "Bugtracker", "getTicketsByUser"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		$project = $em->getRepository("MongoBundle:Project")->find($id);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.12.4", "Bugtracker", "getTicketsByUser", "Bad Parameter: id");
 
 		if (!$this->checkRoles($user, $id, "bugtracker"))
 			return ($this->setNoRightsError("4.12.9", "Bugtracker", "getTicketsByUser"));
 
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user));
+		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['state'] = $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -1981,18 +1981,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.13.3", "Bugtracker", "getTicketsByStatus"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		$project = $em->getRepository("MongoBundle:Project")->find($id);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.13.4", "Bugtracker", "getTicketsByStatus", "Bad Parameter: id");
 
 		if (!$this->checkRoles($user, $id, "bugtracker"))
 			return ($this->setNoRightsError("4.13.9", "Bugtracker", "getTicketsByStatus"));
 
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
+		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['state'] = $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -2071,7 +2071,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.14.3", "Bugtracker", "getStates"));
 
 		$em = $this->getDoctrine()->getManager();
-		$states = $em->getRepository("GrappboxBundle:BugState")->findAll();
+		$states = $em->getRepository("MongoBundle:BugState")->findAll();
 
 		$states_array = array();
 		foreach ($states as $key => $value) {
@@ -2168,7 +2168,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
 		{
@@ -2248,7 +2248,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
+		$tag = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
 
 		if ($tag === null)
 		{
@@ -2319,7 +2319,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('MongoBundle:Tag')->find($tagId);
 
 		if ($tag === null)
 		{
@@ -2383,7 +2383,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('MongoBundle:Tag')->find($tagId);
 
 		if ($tag === null)
 		{
@@ -2467,7 +2467,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$bug = $em->getRepository('GrappboxBundle:Bug')->find($content->bugId);
+		$bug = $em->getRepository('MongoBundle:Bug')->find($content->bugId);
 
 		if ($bug === null)
 		{
@@ -2478,7 +2478,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 
-		$tagToAdd = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
+		$tagToAdd = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
 
 		if ($tagToAdd === null)
 		{
@@ -2558,7 +2558,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$bug = $em->getRepository('GrappboxBundle:Bug')->find($bugId);
+		$bug = $em->getRepository('MongoBundle:Bug')->find($bugId);
 
 		if ($bug === null)
 		{
@@ -2569,7 +2569,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 
-		$tagToRemove = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
+		$tagToRemove = $em->getRepository('MongoBundle:Tag')->find($tagId);
 
 		if ($tagToRemove === null)
 		{
@@ -2652,7 +2652,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "bugtracker"))
 			return ($this->setNoRightsError());
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:Tag');
+		$repository = $em->getRepository('MongoBundle:Tag');
 
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();

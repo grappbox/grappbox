@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -8,9 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use GrappboxBundle\Controller\RolesAndTokenVerificationController;
-use GrappboxBundle\Entity\Project;
-use GrappboxBundle\Entity\User;
+use MongoBundle\Controller\RolesAndTokenVerificationController;
+use MongoBundle\Document\Project;
+use MongoBundle\Document\User;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -108,7 +108,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("2.1.3", "Dashboard", "getteamoccupation"));
 
-		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findTeamOccupationV2($user->getId());
+		return $this->getDoctrine()->getManager()->getRepository('MongoBundle:Project')->findTeamOccupationV2($user->getId());
 	}
 
 	/**
@@ -212,7 +212,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("2.2.3", "Dashboard", "getnextmeetings"));
 
-		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetingsV2($user->getId());
+		return $this->getDoctrine()->getManager()->getRepository('MongoBundle:Event')->findNextMeetingsV2($user->getId());
 	}
 
 	/**
@@ -688,7 +688,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError());
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findProjectGlobalProgress($user->getId()));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('MongoBundle:Project')->findProjectGlobalProgress($user->getId()));
 	}
 
 	/**
@@ -1017,7 +1017,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($id);
+		$project = $em->getRepository('MongoBundle:Project')->find($id);
 
 		if ($project === null)
 		{
@@ -1026,7 +1026,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$creatorId = $project->getCreatorUser();
 
-		$user = $em->getRepository('GrappboxBundle:User')->find($creatorId);
+		$user = $em->getRepository('MongoBundle:User')->find($creatorId);
 
 		if ($user === null)
 		{
@@ -1449,7 +1449,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($id);
+		$project = $em->getRepository('MongoBundle:Project')->find($id);
 
 		if ($project === null)
 		{
@@ -2060,7 +2060,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tasks = $em->getRepository('GrappboxBundle:Task')->findByprojects($id);
+		$tasks = $em->getRepository('MongoBundle:Task')->findByprojects($id);
 
 		if ($tasks === null)
 		{
@@ -2834,7 +2834,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:User');
+		$repository = $em->getRepository('MongoBundle:User');
 
 		$qb = $repository->createQueryBuilder('u')->join('u.projects', 'p')->where('p.id = :id')->setParameter('id', $id)->getQuery();
 		$users = $qb->getResult();
@@ -3533,7 +3533,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository('GrappboxBundle:Event')->find($id);
+		$event = $em->getRepository('MongoBundle:Event')->find($id);
 
 		if ($event === null)
 		{
@@ -3861,7 +3861,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:Project');
+		$repository = $em->getRepository('MongoBundle:Project');
 
 		$qb = $repository->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $user->getId())->getQuery();
 		$projects = $qb->getResult();
@@ -4231,7 +4231,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$tasks = $em->getRepository('GrappboxBundle:Task')->findByprojects($id);
+		$tasks = $em->getRepository('MongoBundle:Task')->findByprojects($id);
 
 		if ($tasks === null)
 		{
@@ -4513,7 +4513,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$timelineMessages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBytimelineId($id);
+		$timelineMessages = $em->getRepository('MongoBundle:TimelineMessage')->findBytimelineId($id);
 
 		if ($timelineMessages === null)
 		{
@@ -4774,7 +4774,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$bugs = $em->getRepository('GrappboxBundle:Bug')->findByprojectId($id);
+		$bugs = $em->getRepository('MongoBundle:Bug')->findByprojectId($id);
 
 		if ($bugs === null)
 		{

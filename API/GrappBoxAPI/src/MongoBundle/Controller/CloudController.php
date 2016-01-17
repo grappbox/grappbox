@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -8,8 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use \DateTime;
 
-use GrappboxBundle\Entity\CloudTransfer;
-use GrappboxBundle\Entity\CloudSecuredFileMetadata;
+use MongoBundle\Document\CloudTransfer;
+use MongoBundle\Document\CloudSecuredFileMetadata;
 
 use Sabre\DAV\Client;
 use League\Flysystem\WebDAV\WebDAVAdapter;
@@ -124,7 +124,7 @@ class CloudController extends Controller
 
 	private function getUserId($token)
 	{
-		$userRepository = $this->getDoctrine()->getRepository("GrappboxBundle:User");
+		$userRepository = $this->getDoctrine()->getRepository("MongoBundle:User");
 		$user = $userRepository->findOneByToken($token);
 		return (is_null($user) ? -1 : $user->getId());
 	}
@@ -132,10 +132,10 @@ class CloudController extends Controller
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
 		$db = $this->getDoctrine();
-		$role = $db->getRepository("GrappboxBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
+		$role = $db->getRepository("MongoBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
 		if (is_null($role))
 			return (-1);
-		$roleTable = $db->getRepository("GrappboxBundle:Role")->findOneById($role->getRoleId());
+		$roleTable = $db->getRepository("MongoBundle:Role")->findOneById($role->getRoleId());
 		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
 	}
 
@@ -236,7 +236,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $receivedData["path"]);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = ($safe_password ? $this->grappSha1($json["session_infos"]["safe_password"]) : NULL);
 		}
 		else {
@@ -349,7 +349,7 @@ class CloudController extends Controller
 	*/
 	private function closeStreamAction($token, $projectId, $streamId, Request $request){
 		$dbManager = $this->getDoctrine()->getManager();
-		$cloudTransferRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudTransfer");
+		$cloudTransferRepository = $this->getDoctrine()->getRepository("MongoBundle:CloudTransfer");
 		$em = $this->getDoctrine()->getManager();
 		$stream = $cloudTransferRepository->find($streamId);
 		$user_id = $this->getUserId($token);
@@ -477,7 +477,7 @@ class CloudController extends Controller
 	*	}
 	*/
 	public function sendFileAction(Request $request){
-		$cloudTransferRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudTransfer");
+		$cloudTransferRepository = $this->getDoctrine()->getRepository("MongoBundle:CloudTransfer");
 		$json = json_decode($request->getContent(), true);
 		$token = $json["session_infos"]["token"];
 		$receivedData = $json["stream_infos"];
@@ -541,11 +541,11 @@ class CloudController extends Controller
 	* @apiSuccess (200) {string} infos.return_code Request end state code
 	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
 	* @apiSuccess (200) {Object} data All informations about response will be here.
-	* @apiSuccess (200) {Object[]} data.array List of all entity found by owncloud
-	*	@apiSuccess (200) {string} data.array.type The entity's type
-	* @apiSuccess (200) {string} data.array.filename The entity's name in owncloud
-	* @apiSuccess (200) {boolean} data.array.is_secured True if the entity is a password protected file.
-	* @apiSuccess (200) {string} [data.array.size] (Only on files) The size of the entity in bytes
+	* @apiSuccess (200) {Object[]} data.array List of all Document found by owncloud
+	*	@apiSuccess (200) {string} data.array.type The Document's type
+	* @apiSuccess (200) {string} data.array.filename The Document's name in owncloud
+	* @apiSuccess (200) {boolean} data.array.is_secured True if the Document is a password protected file.
+	* @apiSuccess (200) {string} [data.array.size] (Only on files) The size of the Document in bytes
 	* @apiSuccess (200) {string} [data.array.mimetype] (Only on files) The mimetype of the file.
 	* @apiSuccess (200) {Number} [data.array.timestamp] (Only on files) The timestamp of the last modification.
 	*
@@ -591,7 +591,7 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe){
-			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $password; // TODO : SHA-1 512 Hashing when algo created!
 		}
 		else{
@@ -611,7 +611,7 @@ class CloudController extends Controller
 		$flysystem = new Filesystem($adapter);
 		$prepath = str_replace(" ", "|", str_replace(",", "/", $path));
 		$rpath = "/GrappBox|Projects/".(string)($idProject).$prepath;
-		$securedFileRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata");
+		$securedFileRepository = $this->getDoctrine()->getRepository("MongoBundle:CloudSecuredFileMetadata");
 
 		$content = str_replace("|", " ", $adapter->listContents($rpath));
 		foreach ($content as $i => $row)
@@ -667,12 +667,12 @@ class CloudController extends Controller
 		$cloudBasePath = implode('/', $cloudPathArray);
 		if ($cloudBasePath == "")
 			$cloudBasePath = "/";
-		$filePassword = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+		$filePassword = $this->getDoctrine()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
 
 		$isSafe = preg_match("/Safe/", $cloudPath);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $this->grappSha1($password);
 		}
 		else {
@@ -787,7 +787,7 @@ class CloudController extends Controller
 		$token = $json["data"]["token"];
 		$userId = $this->getUserId($token);
 		$idProject = (int)$json["data"]["project_id"];
-		$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
+		$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
 		{
 			header("HTTP/1.1 206 Partial Content", True, 206);
@@ -879,7 +879,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($projectId);
+			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($projectId);
 			$passwordEncrypted = $this->grappSha1($password);
 		}
 		else {
@@ -993,7 +993,7 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $json["data"]["path"]);
 		if ($isSafe)
 		{
-			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
+			$project = $this->getDoctrine()->getRepository("MongoBundle:Project")->findOneById($idProject);
 			$passwordEncrypted = $this->grappSha1($json["data"]["password"]);
 		}
 		else {

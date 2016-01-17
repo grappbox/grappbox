@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -8,8 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use GrappboxBundle\Entity\Task;
-use GrappboxBundle\Entity\Tag;
+use MongoBundle\Document\Task;
+use MongoBundle\Document\Tag;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -170,7 +170,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.1.9", "Task", "taskcreation"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: projectId");
 
@@ -448,7 +448,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.2.3", "Task", "taskupdate"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 
 		if ($task === null)
 			return $this->setBadRequest("12.2.4", "Task", "taskupdate", "Bad Parameter: taskId");
@@ -702,7 +702,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.3.3", "Task", "taskinformations"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.3.4", "Task", "taskinformations", "Bad Parameter: taskId");
 
@@ -830,7 +830,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.4.3", "Task", "archivetask"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.4.4", "Task", "archivetask", "Bad Parameter: taskId");
 
@@ -901,7 +901,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.5.3", "Task", "taskdelete"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.5.4", "Task", "taskdelete", "Bad Parameter: taskId");
 
@@ -1022,7 +1022,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.6.3", "Task", "assignusertotask"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 
 		if ($task === null)
 			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: taskId");
@@ -1031,7 +1031,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError("12.6.9", "Task", "assignusertotask"));
 
-		$userToAdd = $em->getRepository('GrappboxBundle:User')->find($content->userId);
+		$userToAdd = $em->getRepository('MongoBundle:User')->find($content->userId);
 
 		if ($userToAdd === null)
 			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: userId");
@@ -1128,7 +1128,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.7.3", "Task", "removeusertotask"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 
 		if ($task === null)
 			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: taskId");
@@ -1137,7 +1137,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError("12.7.9", "Task", "removeusertotask"));
 
-		$userToRemove = $em->getRepository('GrappboxBundle:User')->find($userId);
+		$userToRemove = $em->getRepository('MongoBundle:User')->find($userId);
 
 		if ($userToRemove === null)
 			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: userId");
@@ -1258,7 +1258,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.8.9", "Task", "tagcreation"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.8.4", "Task", "tagcreation", "Bad Parameter: projectId");
 
@@ -1355,7 +1355,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.9.3", "Task", "tagupdate"));
 
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
+		$tag = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
 		if ($tag === null)
 			return $this->setBadRequest("12.9.4", "Task", "tagupdate", "Bad Parameter: tagId");
 
@@ -1427,7 +1427,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.10.3", "Task", "taginformations"));
 
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('MongoBundle:Tag')->find($tagId);
 		if ($tag === null)
 			return $this->setBadRequest("12.10.4", "Task", "taginformations", "Bad Parameter: tagId");
 
@@ -1494,7 +1494,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.11.3", "Task", "deletetag"));
 
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('MongoBundle:Tag')->find($tagId);
 		if ($tag === null)
 			return $this->setBadRequest("12.11.4", "Task", "deletetag", "Bad Parameter: tagId");
 
@@ -1612,7 +1612,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.12.3", "Task", "assigntagtotask"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.12.4", "Task", "assigntagtotask", "Bad Parameter: taskId");
 
@@ -1620,7 +1620,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError("12.12.9", "Task", "assigntagtotask"));
 
-		$tagToAdd = $em->getRepository('GrappboxBundle:Tag')->find($content->tagId);
+		$tagToAdd = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
 		if ($tagToAdd === null)
 			return $this->setBadRequest("12.12.4", "Task", "assigntagtotask", "Bad Parameter: tagId");
 
@@ -1702,7 +1702,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.13.3", "Task", "removetagtotask"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('GrappboxBundle:Task')->find($taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.13.4", "Task", "removetagtotask", "Bad Parameter: taskId");
 
@@ -1710,7 +1710,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError("12.13.9", "Task", "removetagtotask"));
 
-		$tagToRemove = $em->getRepository('GrappboxBundle:Tag')->find($tagId);
+		$tagToRemove = $em->getRepository('MongoBundle:Tag')->find($tagId);
 		if ($tagToRemove === null)
 			return $this->setBadRequest("12.13.4", "Task", "removetagtotask", "Bad Parameter: tagId");
 
@@ -1876,7 +1876,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.14.9", "Task", "getprojecttasks"));
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:Task');
+		$repository = $em->getRepository('MongoBundle:Task');
 		$qb = $repository->createQueryBuilder('t')->join('t.projects', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tasks = $qb->getResult();
 		if ($tasks === null)
@@ -2023,7 +2023,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.15.9", "Task", "getprojecttags"));
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('GrappboxBundle:Tag');
+		$repository = $em->getRepository('MongoBundle:Tag');
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();
 		if ($tags === null)

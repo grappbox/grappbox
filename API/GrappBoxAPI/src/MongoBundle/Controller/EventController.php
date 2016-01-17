@@ -1,16 +1,16 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use GrappboxBundle\Entity\Event;
-use GrappboxBundle\Entity\EventType;
-use GrappboxBundle\Entity\User;
-use GrappboxBundle\Entity\Project;
+use MongoBundle\Document\Event;
+use MongoBundle\Document\EventType;
+use MongoBundle\Document\User;
+use MongoBundle\Document\Project;
 use DateTime;
 
 /**
@@ -61,7 +61,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$types = $em->getRepository("GrappboxBundle:EventType")->findAll();
+		$types = $em->getRepository("MongoBundle:EventType")->findAll();
 
 		$types_array = array();
 		foreach ($types as $key => $value) {
@@ -136,7 +136,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
+		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();
@@ -237,7 +237,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
+		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
 			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
@@ -254,7 +254,7 @@ class EventController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists("projectId", $content))
 		{
-			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
+			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
 			if (!$this->checkRoles($user, $content->projectId, "event"))
 				return ($this->setNoRightsError());
 		}
@@ -269,7 +269,7 @@ class EventController extends RolesAndTokenVerificationController
 		$wdata['message'] = "You have been assigned to event ".$event->getTitle();
 
 		foreach ($content->toAdd as $key => $value) {
-			$toAddUser = $em->getRepository("GrappboxBundle:User")->find($value);
+			$toAddUser = $em->getRepository("MongoBundle:User")->find($value);
 			if ($toAddUser instanceof User)
 			{
 				foreach ($event->getUsers() as $key => $value) {
@@ -292,7 +292,7 @@ class EventController extends RolesAndTokenVerificationController
 		$wdata['message'] = "You have been removed of event ".$event->getTitle();
 
 		foreach ($content->toRemove as $key => $value) {
-			$toRemoveUser = $em->getRepository("GrappboxBundle:User")->find($value);
+			$toRemoveUser = $em->getRepository("MongoBundle:User")->find($value);
 			if ($toRemoveUser instanceof User)
 			{
 				if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
@@ -396,7 +396,7 @@ class EventController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		if (array_key_exists("projectId", $content))
 		{
-			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
+			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
 			if (!$this->checkRoles($user, $content->projectId, "event"))
 				return ($this->setNoRightsError());
 		}
@@ -405,7 +405,7 @@ class EventController extends RolesAndTokenVerificationController
 		$event->setCreatorUser($user);
 		if (array_key_exists("projectId", $content))
 			$event->setProjects($project);
-		$type = $em->getRepository("GrappboxBundle:EventType")->find($content->typeId);
+		$type = $em->getRepository("MongoBundle:EventType")->find($content->typeId);
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
@@ -506,7 +506,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
+		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 		{
 			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
@@ -523,14 +523,14 @@ class EventController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists("projectId", $content))
 		{
-			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
+			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
 			if (!$this->checkRoles($user, $content->projectId, "event"))
 				return ($this->setNoRightsError());
 		}
 
 		if (array_key_exists("projectId", $content))
 			$event->setProjects($project);
-		$type = $em->getRepository("GrappboxBundle:EventType")->find($content->typeId);
+		$type = $em->getRepository("MongoBundle:EventType")->find($content->typeId);
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
@@ -606,7 +606,7 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("GrappboxBundle:Event")->find($id);
+		$event = $em->getRepository("MongoBundle:Event")->find($id);
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();

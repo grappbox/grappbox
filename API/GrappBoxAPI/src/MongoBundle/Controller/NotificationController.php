@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappboxBundle\Controller;
+namespace MongoBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 
-use GrappboxBundle\Controller\RolesAndTokenVerificationController;
+use MongoBundle\Controller\RolesAndTokenVerificationController;
 
-use GrappboxBundle\Entity\Notification;
-use GrappboxBundle\Entity\Devices;
+use MongoBundle\Document\Notification;
+use MongoBundle\Document\Devices;
 use DateTime;
 
 /**
@@ -102,7 +102,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
 	$em = $this->getDoctrine()->getManager();
-	$device = $em->getRepository("GrappboxBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
+	$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
 
 	if ($device instanceof Devices)
 	{
@@ -175,7 +175,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("15.2.3", "Notification", "unregisterDevice"));
 
 		$em = $this->getDoctrine()->getManager();
-		$device = $em->getRepository("GrappboxBundle:Devices")->find($id);
+		$device = $em->getRepository("MongoBundle:Devices")->find($id);
 		if (!($device instanceof Devices))
 			return $this->setBadRequest("15.2.4", "Notification", "unregisterDevice", "Bad Parameter: id");
 
@@ -256,7 +256,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
 
 		$em = $this->getDoctrine()->getManager();
-		$device = $em->getRepository("GrappboxBundle:Devices")->findBy(array("user" => $user));
+		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user));
 
 		$array = array();
 		foreach ($device as $key => $value) {
@@ -350,7 +350,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			$read_value = false;
 
 		$em = $this->getDoctrine()->getManager();
-		$notification = $em->getRepository("GrappboxBundle:Notification")->findBy(array("user" => $user, "isRead" => $read), array(), $limit, $offset);
+		$notification = $em->getRepository("MongoBundle:Notification")->findBy(array("user" => $user, "isRead" => $read), array(), $limit, $offset);
 
 		$notif_array = array();
 		foreach ($notification as $key => $value) {
@@ -371,7 +371,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("15.5.3", "Notification", "setNotificationToRead"));
 
 		$em = $this->getDoctrine()->getManager();
-		$notification = $em->getRepository("GrappboxBundle:Notification")->find($id);
+		$notification = $em->getRepository("MongoBundle:Notification")->find($id);
 
 		if (!($notification instanceof Notification))
 			return ($this->setBadRequest("15.5.3", "Notification", "setNotificationToRead", "Bad ID"));
@@ -419,12 +419,12 @@ class NotificationController extends RolesAndTokenVerificationController
 	{
 
 		foreach ($usersIds as $userId) {
-			$user = $em->getRepository("GrappboxBundle:User")->find($userId);
+			$user = $em->getRepository("MongoBundle:User")->find($userId);
 
 			if ($user != null)
 			{
 				//notificaton for devices
-				// $devices = $em->getRepository("GrappboxBundle:Devices")->findByuser($user);
+				// $devices = $em->getRepository("MongoBundle:Devices")->findByuser($user);
 
 				// foreach ($devices as $device) {
 				// 	$type = $device->getType();
