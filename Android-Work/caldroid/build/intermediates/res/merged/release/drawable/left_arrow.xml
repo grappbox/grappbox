@@ -3,4 +3,3 @@
     android:src="@drawable/calendar_prev_arrow"
     android:tileMode="disabled" android:gravity="center" >
 </bitmap>
-<!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/drawable/left_arrow.xml -->

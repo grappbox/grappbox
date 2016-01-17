@@ -3,8 +3,8 @@
     package="com.caldroid.test" >
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="22" />
+        android:minSdkVersion="19"
+        android:targetSdkVersion="23" />
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"

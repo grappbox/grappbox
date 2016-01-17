@@ -44,4 +44,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-</LinearLayout><!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/src/main/res/layout/calendar_view.xml --><!-- From: file:/C:/Users/tan_f/Documents/EIP/Project/Grappbox/caldroid/build/intermediates/bundles/debug/res/layout/calendar_view.xml -->
+</LinearLayout>
