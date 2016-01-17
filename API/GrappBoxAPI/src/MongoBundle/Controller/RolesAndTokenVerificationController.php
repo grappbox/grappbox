@@ -33,7 +33,7 @@ class RolesAndTokenVerificationController extends Controller
 	{
 		if (!$token)
 			return NULL;
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$user = $em->getRepository('MongoBundle:User')->findOneBy(array('token' => $token));
 
 		if (!$user)
@@ -49,7 +49,7 @@ class RolesAndTokenVerificationController extends Controller
 		{
 			$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
-			$em = $this->getDoctrine()->getManager();
+			$em = $this->get('doctrine_mongodb')->getManager();
 			$em->persist($user);
 			$em->flush();
 		}
@@ -61,7 +61,7 @@ class RolesAndTokenVerificationController extends Controller
 	// return 1 if user has rights
 	protected function checkRoles($user, $projectId, $role)
 	{
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$query = $em->createQuery(
 			'SELECT roles.'.$role.'
 			FROM MongoBundle:Role roles
@@ -130,10 +130,6 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {post} /mongo/roles/addprojectroles Add a project role
-	* @apiName addProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Add a project role
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -165,62 +161,6 @@ class RolesAndTokenVerificationController extends Controller
 	*			"cloud": 1
 	*		}
 	*	}
-	*
-	* @apiSuccess {Number} id Id of the role created
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - addprojectroles - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.3",
-	*			"return_message": "Role - addprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.6",
-	*			"return_message": "Role - addprojectroles - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.9",
-	*			"return_message": "Role - addprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.4",
-	*			"return_message": "Role - addprojectroles - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't create a role named Admin
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.4",
-	*			"return_message": "Role - addprojectroles - Bad Parameter: You can't create a role named Admin"
-	*		}
-	*	}
 	*/
 	public function addProjectRolesAction(Request $request)
 	{
@@ -243,7 +183,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return $this->setNoRightsError("13.1.9", "Role", "addprojectroles");
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$role = new Role();
 
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
@@ -270,10 +210,6 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {delete} /mongo/roles/delprojectroles Delete a project role
-	* @apiName delProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Delete the given role of the project wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} id Id of the role
@@ -283,62 +219,6 @@ class RolesAndTokenVerificationController extends Controller
 	*		"data": {
 	*			"token": "aeqf231ced651qcd",
 	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the role deleted
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - delprojectroles - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.3",
-	*			"return_message": "Role - delprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.6",
-	*			"return_message": "Role - delprojectroles - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.9",
-	*			"return_message": "Role - delprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.4",
-	*			"return_message": "Role - delprojectroles - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't remove the Admin role
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.4",
-	*			"return_message": "Role - delprojectroles - Bad Parameter: You can't remove the Admin role"
 	*		}
 	*	}
 	*/
@@ -355,7 +235,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.2.3", "Role", "delprojectroles"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$role = $em->getRepository('MongoBundle:Role')->find($content->id);
 
 		if ($role === null)
@@ -375,10 +255,6 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {put} /mongo/roles/putprojectroles Update a project role
-	* @apiName updateProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Update a given project role
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} roleId Id of the role
@@ -410,83 +286,6 @@ class RolesAndTokenVerificationController extends Controller
 	*			"cloud": 0
 	*		}
 	*	}
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2
-	*		}
-	*	}
-	*
-	* @apiParamExample {json} Request-Partial-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2,
-	*			"teamTimeline": 1,
-	*			"customerTimeline": 0,
-	*			"whiteboard": 1,
-	*			"event": 1,
-	*			"task": 1
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the role updated
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - putprojectroles - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.3",
-	*			"return_message": "Role - putprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.6",
-	*			"return_message": "Role - putprojectroles - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.9",
-	*			"return_message": "Role - putprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.4",
-	*			"return_message": "Role - putprojectroles - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't update the Admin role
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.4",
-	*			"return_message": "Role - putprojectroles - Bad Parameter: You can't update the Admin role"
-	*		}
-	*	}
 	*/
 	public function updateProjectRolesAction(Request $request)
 	{
@@ -501,7 +300,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.3.3", "Role", "putprojectroles"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
 
 		if ($role === null)
@@ -541,89 +340,9 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getprojectroles/:token/:projectId Get all project roles
-	* @apiName GetProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Get all the roles for the wanted project
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {Object[]} array Array of roles
-	* @apiSuccess {Number} array.id Role id
-	* @apiSuccess {String} array.name Role name
-	* @apiSuccess {Number} array.team_timeline Team timeline role
-	* @apiSuccess {Number} array.customer_timeline Customer timeline role
-	* @apiSuccess {Number} array.gantt Gantt role
-	* @apiSuccess {Number} array.whiteboard Whiteboard role
-	* @apiSuccess {Number} array.bugtracker Bugtracker role
-	* @apiSuccess {Number} array.event Event role
-	* @apiSuccess {Number} array.task Task role
-	* @apiSuccess {Number} array.project_settings Project settings role
-	* @apiSuccess {Number} array.cloud Cloud role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getprojectroles - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10,
-	*					"name": "Intern roles",
-	*					"team_timeline": 1,
-	*					"customer_timeline": 0,
-	*					"gantt": 0,
-	*					"whiteboard": 0,
-	*					"bugtracker": 1,
-	*					"event": 0,
-	*					"task": 0,
-	*					"project_settings": 0,
-	*					"cloud": 1
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getprojectroles - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.4.3",
-	*			"return_message": "Role - getprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.4.9",
-	*			"return_message": "Role - getprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.4.4",
-	*			"return_message": "Role - getprojectroles - Bad Parameter: projectId"
-	*		}
-	*	}
 	*/
 	public function getProjectRolesAction(Request $request, $token, $projectId)
 	{
@@ -634,7 +353,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$roles = $em->getRepository('MongoBundle:Role')->findByprojects($projectId);
 
 		if ($roles === null)
@@ -667,10 +386,6 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {post} /mongo/roles/assignpersontorole Assign a person to a role
-	* @apiName assignPersonToRole
-	* @apiGroup Roles
-	* @apiDescription Assign the given user to the role wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} userId Id of the user
@@ -682,70 +397,6 @@ class RolesAndTokenVerificationController extends Controller
 	*			"token": "aeqf231ced651qcd",
 	*			"userId": 6,
 	*			"roleId": 2
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the project user role created
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - assignpersontorole - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.3",
-	*			"return_message": "Role - assignpersontorole - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.9",
-	*			"return_message": "Role - assignpersontorole - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.6",
-	*			"return_message": "Role - assignpersontorole - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.4",
-	*			"return_message": "Role - assignpersontorole - Bad Parameter: userId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: roleId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.4",
-	*			"return_message": "Role - assignpersontorole - Bad Parameter: roleId"
-	*		}
-	*	}
-	* @apiErrorExample Already In Database
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.7",
-	*			"return_message": "Role - assignpersontorole - Already In Database"
 	*		}
 	*	}
 	*/
@@ -762,7 +413,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.5.3", "Role", "assignpersontorole"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
 		$userToAdd = $em->getRepository('MongoBundle:User')->find($content->userId);
 
@@ -797,10 +448,6 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {put} /mongo/roles/putpersonrole Update a person role
-	* @apiName updatePersonRole
-	* @apiGroup Roles
-	* @apiDescription Update a person role
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project for searching
@@ -816,62 +463,6 @@ class RolesAndTokenVerificationController extends Controller
 	*			"userId": 1,
 	*			"old_roleId": 2,
 	*			"roleId": 3
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the project user role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - putpersonrole - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.6.3",
-	*			"return_message": "Role - putpersonrole - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.6.9",
-	*			"return_message": "Role - putpersonrole - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameter
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.6.6",
-	*			"return_message": "Role - putpersonrole - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.6.4",
-	*			"return_message": "Role - putpersonrole - Bad Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: roleId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.6.4",
-	*			"return_message": "Role - putpersonrole - Bad Parameter: roleId"
 	*		}
 	*	}
 	*/
@@ -892,7 +483,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return $this->setNoRightsError("13.5.9", "Role", "putpersonrole");
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
@@ -915,56 +506,8 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getuserroles/:token Get the roles of the user connected
-	* @apiName updatePersonRole
-	* @apiGroup Roles
-	* @apiDescription Get the all the roles of all the projects of the user connected
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
-	*
-	* @apiSuccess {Object[]} array Array of user roles
-	* @apiSuccess {Number} array.id Project user role id
-	* @apiSuccess {Number} array.project_id Id of the project
-	* @apiSuccess {Number} array.role_id Id of the role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getuserroles - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10,
-	*					"project_id": 5,
-	*					"role_id": 1
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getuserroles - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.7.3",
-	*			"return_message": "Role - getuserroles - Bad ID"
-	*		}
-	*	}
 	*/
 	public function getUserRolesAction(Request $request, $token)
 	{
@@ -972,7 +515,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.7.3", "Role", "getuserroles"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
 
 		if (count($userRoles) == 0 || $userRoles === null)
@@ -993,10 +536,6 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {delete} /mongo/roles/delpersonrole Delete a person role
-	* @apiName delPersonRole
-	* @apiGroup Roles
-	* @apiDescription Delete a person role
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -1010,78 +549,6 @@ class RolesAndTokenVerificationController extends Controller
 	*			"projectId": 5,
 	*			"userId": 1,
 	*			"roleId": 3
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the project user role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - delpersonrole - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.3",
-	*			"return_message": "Role - delpersonrole - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.9",
-	*			"return_message": "Role - delpersonrole - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameter
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.6",
-	*			"return_message": "Role - delpersonrole - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: roleId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.4",
-	*			"return_message": "Role - delpersonrole - Bad Parameter: roleId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.4",
-	*			"return_message": "Role - delpersonrole - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.4",
-	*			"return_message": "Role - delpersonrole - Bad Parameters"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't remove the creator from the Admin role
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.4",
-	*			"return_message": "Role - delpersonrole - Bad Parameter: You can't remove the creator from the Admin role"
 	*		}
 	*	}
 	*/
@@ -1101,7 +568,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
 
@@ -1131,70 +598,10 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
-	* @apiName getRoleByProjectAndUser
-	* @apiGroup Roles
-	* @apiDescription Get the roles id for a given user on a given project
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam [Number] userId Id of the user
-	*
-	* @apiSuccess {Object[]} array Array of user roles
-	* @apiSuccess {Number} array.id Id of the role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getrolebyprojectanduser - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getrolebyprojectanduser - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.9.3",
-	*			"return_message": "Role - getrolebyprojectanduser - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.9.9",
-	*			"return_message": "Role - getrolebyprojectanduser - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.9.4",
-	*			"return_message": "Role - getrolebyprojectanduser - Bad Parameters"
-	*		}
-	*	}
 	*/
 	public function getRoleByProjectAndUserAction(Request $request, $token, $projectId, $userId)
 	{
@@ -1205,7 +612,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return $this->setNoRightsError("13.9.9", "Role", "getrolebyprojectanduser");
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
 		$purs = $qb->getResult();
@@ -1228,75 +635,9 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
-	* @apiName getUsersForRole
-	* @apiGroup Roles
-	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} roleId Id of the role
-	*
-	* @apiSuccess {Number} id Id of the role
-	* @apiSuccess {String} name Name of the role
-	* @apiSuccess {Object[]} users_assigned Array of users assigned to the role
-	* @apiSuccess {Number} users_assigned.id Id of the user
-	* @apiSuccess {String} users_assigned.firstname Firstname of the user
-	* @apiSuccess {String} users_assigned.lastname Lastname of the user
-	* @apiSuccess {Object[]} users_non_assigned Array of users non assigned to the role
-	* @apiSuccess {Number} users_non_assigned.id Id of the user
-	* @apiSuccess {String} users_non_assigned.firstname Firstname of the user
-	* @apiSuccess {String} users_non_assigned.lastname Lastname of the user
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getusersforrole - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 2,
-	*			"name": "Admin",
-	*			"users_assigned": [],
-	*			"users-non_assigned": [
-	*				{
-	*					"id": 3,
-	*					"firstname": "jean",
-	*					"lastname": "neige"
-	*				},
-	*				{
-	*					"id": 8,
-	*					"firstname": "john",
-	*					"lastname": "snow"
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.10.3",
-	*			"return_message": "Role - getusersforrole - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.10.9",
-	*			"return_message": "Role - getusersforrole - Insufficient Rights"
-	*		}
-	*	}
-		* @apiErrorExample Bad Parameter: roleId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.10.4",
-	*			"return_message": "Role - getusersforrole - Bad Parameter: roleId"
-	*		}
-	*	}
 	*/
 	public function getUsersForRoleAction(Request $request, $token, $roleId)
 	{
@@ -1304,7 +645,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.10.3", "Role", "getusersforrole"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$role = $em->getRepository('MongoBundle:Role')->find($roleId);
 		if ($role === null)
 			return $this->setBadRequest("13.10.4", "Role", "getusersforrole", "Bad Parameter: roleId");
@@ -1341,76 +682,8 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getuserrolesinformations/:token Get the roles informations of the user connected
-	* @apiName getUserConnectedRolesInformations
-	* @apiGroup Roles
-	* @apiDescription Get the roles informations for the user connected
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
-	*
-	* @apiSuccess {Object[]} array Array of user roles informations
-	* @apiSuccess {Number} array.id Project user role id
-	* @apiSuccess {Object[]} array.project Project informations
-	* @apiSuccess {Number} array.project.id Id of the project
-	* @apiSuccess {String} array.project.name Name of the project
-	* @apiSuccess {Object[]} array.role Role informations
-	* @apiSuccess {Number} array.role.id Id of the role
-	* @apiSuccess {String} array.role.name Name of the role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getuserconnectedrolesinformations - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10,
-	*					"project": {
-	*						"id": 2,
-	*						"name": "Grappbox"
-	*					},
-	*					"role": {
-	*						"id": 6,
-	*						"name": "Admin"
-	*					}
-	*				},
-	*				{
-	*					"id": 30,
-	*					"project": {
-	*						"id": 2,
-	*						"name": "Grappbox"
-	*					},
-	*					"role": {
-	*						"id": 6,
-	*						"name": "Graphists"
-	*					}
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getuserconnectedrolesinformations - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.11.3",
-	*			"return_message": "Role - getuserconnectedrolesinformations - Bad ID"
-	*		}
-	*	}
 	*/
 	public function getUserConnectedRolesInfosAction(Request $request, $token)
 	{
@@ -1418,7 +691,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.11.3", "Role", "getuserconnectedrolesinformations"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
 
 		if (count($userRoles) == 0 || $userRoles === null)
@@ -1452,77 +725,9 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getuserrolesinformations/:token/:id Get the roles informations of the given user
-	* @apiName getUserRolesInformations
-	* @apiGroup Roles
-	* @apiDescription Get the roles informations for the given user
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} userId Id of the user you want the roles
-	*
-	* @apiSuccess {Object[]} array Array of user roles informations
-	* @apiSuccess {Number} array.id Project user role id
-	* @apiSuccess {Object[]} array.project Project informations
-	* @apiSuccess {Number} array.project.id Id of the project
-	* @apiSuccess {String} array.project.name Name of the project
-	* @apiSuccess {Object[]} array.role Role informations
-	* @apiSuccess {Number} array.role.id Id of the role
-	* @apiSuccess {String} array.role.name Name of the role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getuserrolesinformations - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10,
-	*					"project": {
-	*						"id": 2,
-	*						"name": "Grappbox"
-	*					},
-	*					"role": {
-	*						"id": 6,
-	*						"name": "Admin"
-	*					}
-	*				},
-	*				{
-	*					"id": 30,
-	*					"project": {
-	*						"id": 2,
-	*						"name": "Grappbox"
-	*					},
-	*					"role": {
-	*						"id": 6,
-	*						"name": "Graphists"
-	*					}
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getuserrolesinformations - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.12.3",
-	*			"return_message": "Role - getuserrolesinformations - Bad ID"
-	*		}
-	*	}
 	*/
 	public function getUserRolesInfosAction(Request $request, $token, $userId)
 	{
@@ -1530,7 +735,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 		return ($this->setBadTokenError("13.12.3", "Role", "getuserrolesinformations"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$userConnectedProjects = $user->getProjects();
 
 		$repository = $em->getRepository('MongoBundle:ProjectUserRole');

@@ -34,15 +34,11 @@ class ProjectController extends RolesAndTokenVerificationController
 {
 	/**
 	* @api {post} /mongo/projects/projectcreation Create a project for the user connected
-	* @apiName projectCreation
-	* @apiGroup Project
-	* @apiDescription Create a project for the user connected
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} name Name of the project
 	* @apiParam {String} [description] Description of the project
-	* @apiParam {Text} [logo] Logo of the project
+	* @apiParam {String} [logo] Logo of the project
 	* @apiParam {String} [phone] Phone for the project
 	* @apiParam {String} [company] Company of the project
 	* @apiParam {String} [email] Email for the project
@@ -65,59 +61,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"password": "yolo42"
 	*		}
 	*	}
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"name": "Grappbox"
-	*		}
-	*	}
-	*
-	* @apiParamExample {json} Request-Partial-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"name": "Grappbox",
-	*			"description": "grappbox est un projet de gestion de projets",
-	*			"phone": "+335 65 23 45 94",
-	*			"company": "L'oie oppressée",
-	*			"email": "contact@oieoppresee.com",
-	*			"password": "yolo42"
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the project created
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - projectcreation - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.1.3",
-	*			"return_message": "Project - projectcreation - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.1.6",
-	*			"return_message": "Project - projectcreation - Missing Parameter"
-	*		}
-	*	}
 	*/
 	public function projectCreationAction(Request $request)
 	{
@@ -132,7 +75,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return $this->setBadTokenError("6.1.3", "Project", "projectcreation");
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 
 		$project = new Project();
 		$project->setName($content->name);
@@ -203,9 +146,6 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->flush();
 		$id = $project->getId();
 
-		$cloudClass = new CloudController();
-		$cloudClass->createCloudAction($request, $id);
-
 		$teamTimeline = new Timeline();
 		$teamTimeline->setTypeId(2);
 		$teamTimeline->setProjects($project);
@@ -226,10 +166,6 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {put} /mongo/projects/updateinformations Update a project informations
-	* @apiName updateInformations
-	* @apiGroup Project
-	* @apiDescription Update the given project informations
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -261,90 +197,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"password": "yolo42"
 	*		}
 	*	}
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"projectId": 2
-	*		}
-	*	}
-	*
-	* @apiParamExample {json} Request-Partial-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"projectId": 2,
-	*			"description": "grappbox est un projet de gestion de projets",
-	*			"logo": "10001111001100110010101010",
-	*			"phone": "+335 65 23 45 94",
-	*			"twitter": "www.twitter.com/OieOpp"
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the project updated
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - updateinformations - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.2.3",
-	*			"return_message": "Project - updateinformations - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.2.6",
-	*			"return_message": "Project - updateinformations - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.2.9",
-	*			"return_message": "Project - updateinformations - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.2.4",
-	*			"return_message": "Project - updateinformations - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Reading Error: role
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.2.1",
-	*			"return_message": "Project - updateinformations - Reading Error: role"
-	*		}
-	*	}
-	* @apiErrorExample Reading Error: project user role
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.2.1",
-	*			"return_message": "Project - updateinformations - Reading Error: project user role"
-	*		}
-	*	}
 	*/
 	public function updateInformationsAction(Request $request)
 	{
@@ -362,7 +214,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
@@ -432,76 +284,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/getinformations/:token/:projectId Get a project basic informations
-	* @apiName getInformations
-	* @apiGroup Project
-	* @apiDescription Get the given project basic informations
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {String} name Name of the project
-	* @apiSuccess {String} description Description of the project
-	* @apiSuccess {Text} logo Logo of the project
-	* @apiSuccess {String} phone Phone number of the project
-	* @apiSuccess {String} company Company name
-	* @apiSuccess {String} contact_mail for the project
-	* @apiSuccess {String} facebook Facebook for the project
-	* @apiSuccess {String} twitter Twitter for the project
-	* @apiSuccess {Datetime} creation_date Date of creation of the project
-	* @apiSuccess {Datetime} deleted_at Date when the project will be deleted
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - getinformations - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est un projet",
-	*			"logo": "10100011000011001",
-	*			"phone": "+89130 2145 8795",
-	*			"company": "L'oie Oppressée",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "https://facebook.com/Grappbox",
-	*			"twitter": "https://twitter.com/Grappbox",
-	*			"creation_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"deleted_at": null
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.3.3",
-	*			"return_message": "Project - getinformations - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.3.4",
-	*			"return_message": "Project - getinformations - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.3.9",
-	*			"return_message": "Project - getinformations - Insufficient Rights"
-	*		}
-	*	}
 	*/
 	public function getInformationsAction(Request $request, $token, $projectId)
 	{
@@ -512,7 +297,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.3.9", "Project", "getinformations"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 		if ($project === null)
@@ -535,10 +320,6 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {delete} /mongo/projects/delproject Delete a project 7 days after the call
-	* @apiName delProject
-	* @apiGroup Project
-	* @apiDescription Set the deleted at of the given project to 7 days after the call of the function
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -548,58 +329,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"token": "aeqf231ced651qcd",
 	*			"projectId": 1
-	*		}
-	*	}
-	*
-	* @apiSuccess {DateTime} deletion_date Date of deletion of the project
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - delproject - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"deletion_date": {
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.4.3",
-	*			"return_message": "Project - delproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.4.6",
-	*			"return_message": "Project - delproject - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.4.9",
-	*			"return_message": "Project - delproject - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.4.4",
-	*			"return_message": "Project - delproject - Bad Parameter: projectId"
 	*		}
 	*	}
 	*/
@@ -619,7 +348,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
@@ -636,53 +365,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
-	* @apiName retrieveProject
-	* @apiGroup Project
-	* @apiDescription Retreive a project set to be deleted, but have to be called before the 7 days are passed
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {Number} id Id of the project retrieve
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - retrieveproject - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.5.3",
-	*			"return_message": "Project - retrieveproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.5.9",
-	*			"return_message": "Project - retrieveproject - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.5.4",
-	*			"return_message": "Project - retrieveproject - Bad Parameter: projectId"
-	*		}
-	*	}
 	*/
 	public function retrieveProjectAction(Request $request, $token, $projectId)
 	{
@@ -693,7 +378,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.5.9", "Project", "retrieveproject"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 		if ($project === null)
@@ -707,10 +392,6 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {post} /mongo/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
-	* @apiName generateCustomerAccess
-	* @apiGroup Project
-	* @apiDescription Generate or regenerate a customer access for the given project
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} projectId Id of the project
@@ -722,54 +403,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"token": "13cqs43c54vqd3",
 	*			"projectId": 2,
 	*			"name": "access for Toyota"
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the customer access
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - generatecustomeraccess - Complete Success"
-  	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.6.3",
-	*			"return_message": "Project - generatecustomeraccess - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.6.6",
-	*			"return_message": "Project - generatecustomeraccess - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.6.9",
-	*			"return_message": "Project - generatecustomeraccess - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.6.4",
-	*			"return_message": "Project - generatecustomeraccess - Bad Parameter: projectId"
 	*		}
 	*	}
 	*/
@@ -789,7 +422,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.6.9", "Project", "generatecustomeraccess"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
@@ -828,63 +461,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
-	* @apiName getCustomerAccessById
-	* @apiGroup Project
-	* @apiDescription Get a customer access by it's id
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} id Id of the customer access
-	*
-	* @apiSuccess {String} customer_token Customer access token
-	* @apiSuccess {Number} project_id Id of the project
-	* @apiSuccess {String} name Name of the customer access
-	* @apiSuccess {Datetime} creation_date Date of creation of the customer access
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - getcustomeraccessbyid - Complete Success"
-	*		},
-	*		"data": {
-	*			"customer_token": "dizjflqfq41c645w",
-	*			"project_id": 2,
-	*			"name": "access for X company",
-	*			"creation_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.3",
-	*			"return_message": "Project - getcustomeraccessbyid - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.4",
-	*			"return_message": "Project - getcustomeraccessbyid - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.9",
-	*			"return_message": "Project - getcustomeraccessbyid - Insufficient Rights"
-	*		}
-	*	}
 	*/
 	public function getCustomerAccessByIdAction(Request $request, $token, $id)
 	{
@@ -892,7 +471,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.7.3", "Project", "getcustomeraccessbyid"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->find($id);
 
 		if ($customerAccess === null)
@@ -911,78 +490,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
-	* @apiName getCustomerAccessByProject
-	* @apiGroup Project
-	* @apiDescription Get a customer access by it's poject id
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {Object[]} array Array of customer access
-	* @apiSuccess {String} array.name Name of the customer access
-	* @apiSuccess {String} array.customer_token Customer access token
-	* @apiSuccess {Number} array.id Id of the customer access
-	* @apiSuccess {Datetime} array.creation_date Date of creation of the customer access
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - getcustomeraccessbyproject - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"name": "access for client X",
-	*					"customer_token": "dizjflqfq41c645w",
-	*					"id": 2,
-	*					"creation_date": {
-	*						"date":"2015-10-15 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					}
-	*				}
-	*			]
-	*		}
-	*	}
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.3",
-	*			"return_message": "Project - getcustomeraccessbyproject - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.8.3",
-	*			"return_message": "Project - getcustomeraccessbyproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.8.4",
-	*			"return_message": "Project - getcustomeraccessbyproject - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.8.9",
-	*			"return_message": "Project - getcustomeraccessbyproject - Insufficient Rights"
-	*		}
-	*	}
 	*/
 	public function getCustomerAccessByProjectAction(Request $request, $token, $projectId)
 	{
@@ -993,7 +503,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.8.9", "Project", "getcustomeraccessbyproject"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByprojects($projectId);
 
 		if ($customerAccess === null)
@@ -1018,10 +528,6 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {delete} /mongo/projects/delcustomeraccess Delete a customer access
-	* @apiName delCustomerAccess
-	* @apiGroup Project
-	* @apiDescription Delete the given customer access
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -1033,54 +539,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"token": "aeqf231ced651qcd",
 	*			"projectId": 1,
 	*			"customerAccessId": 3
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the customer access deleted
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - delcustomeraccess - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.9.3",
-	*			"return_message": "Project - delcustomeraccess - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.9.6",
-	*			"return_message": "Project - delcustomeraccess - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.9.9",
-	*			"return_message": "Project - delcustomeraccess - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: customerAccessId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.9.4",
-	*			"return_message": "Project - delcustomeraccess - Bad Parameter: customerAccessId"
 	*		}
 	*	}
 	*/
@@ -1100,7 +558,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.9.9", "Project", "delcustomeraccess"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->find($content->customerAccessId);
 
 		if ($customerAccess === null)
@@ -1114,10 +572,6 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {post} /mongo/projects/addusertoproject Add a user to a project
-	* @apiName addUserToProject
-	* @apiGroup Project
-	* @apiDescription Add a given user to the project wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} id Id of the project
@@ -1129,76 +583,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"token": "nfeq34efbfkqf54",
 	*			"id": 2,
 	*			"email": "toto@titi.com"
-	*		}
-	*	}
-	*
-	* @apiSuccess id Id of the user add
-	* @apiSuccess firstname First name of the user add
-	* @apiSuccess lastname Last name of the user add
-	* @apiSuccess avatar Avatar of the user add
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - addusertoproject - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*			"firstname": "john",
-	*			"lastname": "doe",
-	*			"avatar": "DATA"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.10.3",
-	*			"return_message": "Project - addusertoproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.10.6",
-	*			"return_message": "Project - addusertoproject - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.10.9",
-	*			"return_message": "Project - addusertoproject - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.10.4",
-	*			"return_message": "Project - addusertoproject - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: email
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.10.4",
-	*			"return_message": "Project - addusertoproject - Bad Parameter: email"
-	*		}
-	*	}
-	* @apiErrorExample Already In Database
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.10.7",
-	*			"return_message": "Project - addusertoproject - Already In Database"
 	*		}
 	*	}
 	*/
@@ -1218,7 +602,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->id, "projectSettings"))
 			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->id);
 
 		if ($project === null)
@@ -1258,10 +642,6 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {delete} /mongo/projects/removeusertoproject Remove a user from the project
-	* @apiName removeUserToProject
-	* @apiGroup Project
-	* @apiDescription Remove a given user to the project wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -1273,69 +653,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"token": "aeqf231ced651qcd",
 	*			"projectId": 1,
 	*			"userId": 3
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the user removed
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - removeusertoproject - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 18
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.11.3",
-	*			"return_message": "Project - removeusertoproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.11.6",
-	*			"return_message": "Project - removeusertoproject - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.11.9",
-	*			"return_message": "Project - removeusertoproject - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.11.4",
-	*			"return_message": "Project - removeusertoproject - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.11.4",
-	*			"return_message": "Project - removeusertoproject - Bad Parameter: userId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't remove the project creator
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.11.4",
-	*			"return_message": "Project - removeusertoproject - Bad Parameter: You can't remove the project creator"
 	*		}
 	*	}
 	*/
@@ -1355,7 +672,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 
 		if ($project === null)
@@ -1399,72 +716,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/getusertoproject/:token/:projectId Get all the users on a project
-	* @apiName getUserToProject
-	* @apiGroup Project
-	* @apiDescription Get all the users on the given project
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {Object[]} array Array of users
-	* @apiSuccess {Number} id Id of the user
-	* @apiSuccess {String} firstname First name of the user
-	* @apiSuccess {String} lastname Last name of the user
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - getusertoproject - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 3,
-	*					"first_name": "John",
-	*					"last_name": "Doe"
-	*				}
-	*			]
-	*		}
-	*	}
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.3",
-	*			"return_message": "Project - getusertoproject - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.12.3",
-	*			"return_message": "Project - getusertoproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.12.4",
-	*			"return_message": "Project - getusertoproject - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.12.9",
-	*			"return_message": "Project - getusertoproject - Insufficient Rights"
-	*		}
-	*	}
 	*/
 	public function getUserToProjectAction(Request $request, $token, $projectId)
 	{
@@ -1475,7 +729,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "projectSettings"))
 			return ($this->setNoRightsError("6.12.9", "Project", "getusertoproject"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 		if ($project === null)

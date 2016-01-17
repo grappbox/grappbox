@@ -28,10 +28,6 @@ class TaskController extends RolesAndTokenVerificationController
 {
 	/**
 	* @api {post} /mongo/tasks/taskcreation Create a task
-	* @apiName taskCreation
-	* @apiGroup Task
-	* @apiDescription Create a task
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projecId Id of the project
@@ -67,90 +63,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone":"Europe\/Paris"
 	*			}
 	*	}
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	*	{
-	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
-	*			"projectId": 2,
-	*			"title": "Update server",
-	*			"description": "update the server apache to a newer version",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-16 19:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-	*	}
-	*
-	* @apiParamExample {json} Request-Partial-Example:
-	*	{
-	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
-	*			"projectId": 2,
-	*			"title": "Update server",
-	*			"description": "update the server apache to a newer version",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-16 19:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-15 10:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the task created
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskcreation - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id" : 3
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.1.3",
-	*			"return_message": "Task - taskcreation - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.1.6",
-	*			"return_message": "Task - taskcreation - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.1.9",
-	*			"return_message": "Task - taskcreation - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.1.4",
-	*			"return_message": "Task - taskcreation - Bad Parameter: projectId"
-	*		}
-	*	}
 	*/
 	public function createTaskAction(Request $request)
 	{
@@ -169,7 +81,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "task"))
 			return ($this->setNoRightsError("12.1.9", "Task", "taskcreation"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: projectId");
@@ -219,10 +131,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {put} /mongo/tasks/taskupdate Update a task
-	* @apiName taskUpdate
-	* @apiGroup Task
-	* @apiDescription Update a given task
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
@@ -256,183 +164,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*			}
 	*		}
 	*	}
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"taskId": 10
-	*		}
-	*	}
-	*
-	* @apiParamExample {json} Request-Partial-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"taskId": 10,
-	*			"started_at": {
-	*				"date":"2015-10-10 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at": {
-	*				"date":"2015-10-15 18:23:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the task
-	* @apiSuccess {String} title Title of the task
-	* @apiSuccess {String} description Description of the task
-	* @apiSuccess {Datetime} due_date Due date of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
-	* @apiSuccess {Datetime} finished_at Date of finish of the task
-	* @apiSuccess {Datetime} created_at Date of creation of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
-	* @apiSuccess {Object[]} creator Creator informations
-	* @apiSuccess {Number} creator.id Id of the creator
-	* @apiSuccess {String} creator.firstname Frist name of the creator
-	* @apiSuccess {String} creator.lastname Last name of the creator
-	* @apiSuccess {Object[]} users_assigned Array of users assigned to the task
-	* @apiSuccess {Number} users_assigned.id Id of the user assigned
-	* @apiSuccess {String} users_assigned.firstname Frist name of the user assigned
-	* @apiSuccess {String} users_assigned.lastname Last name of the user assigned
-	* @apiSuccess {Object[]} tags Array of tags assigned to the task
-	* @apiSuccess {Number} tags.id Id of the tag
-	* @apiSuccess {String} tags.name Name of the tag
-	*
-	* @apiSuccessExample Success-Full-Data-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskupdate - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 2,
-	*			"title": "Update servers",
-	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-10 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at":
-	*			{
-	*				"date":"2015-10-15 18:23:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"creator": {
-	*				"id": 1,
-	*				"firstname": "john",
-	*				"lastname": "doe"
-	*			},
-	*			"users_assigned": [
-	*				{
-	*					"id": 1,
-	*					"firstname": "john",
-	*					"lastname": "doe"
-	*				},
-	*				{
-	*					"id": 3,
-	*					"firstname": "jane",
-	*					"lastname": "doe"
-	*				}
-	*			],
-	*			"tags": [
-	*				{
-	*					"id": 1,
-	*					"name": "To Do"
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-Partial-Data-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskupdate - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 2,
-	*			"title": "Update servers",
-	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"started_at": null,
-	*			"finished_at": null,
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"creator": {
-	*				"id": 1,
-	*				"firstname": "john",
-	*				"lastname": "doe"
-	*			},
-	*			"users_assigned": [],
-	*			"tags": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.2.3",
-	*			"return_message": "Task - taskupdate - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.2.6",
-	*			"return_message": "Task - taskupdate - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.2.9",
-	*			"return_message": "Task - taskupdate - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.2.4",
-	*			"return_message": "Task - taskupdate - Bad Parameter: taskId"
-	*		}
-	*	}
 	*/
 	public function updateTaskAction(Request $request)
 	{
@@ -447,7 +178,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.2.3", "Task", "taskupdate"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 
 		if ($task === null)
@@ -548,152 +279,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/tasks/taskinformations/:token/:taskId Get a task informations
-	* @apiName taskInformations
-	* @apiGroup Task
-	* @apiDescription Get the informations of the given task
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
-	*
-	* @apiSuccess {Number} id Id of the task
-	* @apiSuccess {String} title Title of the task
-	* @apiSuccess {String} description Description of the task
-	* @apiSuccess {Datetime} due_date Due date of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
-	* @apiSuccess {Datetime} finished_at Date of finish of the task
-	* @apiSuccess {Datetime} created_at Date of creation of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
-	* @apiSuccess {Object[]} creator Creator informations
-	* @apiSuccess {Number} creator.id Id of the creator
-	* @apiSuccess {String} creator.first_name Frist name of the creator
-	* @apiSuccess {String} creator.last_name Last name of the creator
-	* @apiSuccess {Object[]} users_assigned Array of users assigned to the task
-	* @apiSuccess {Number} users_assigned.id Id of the user assigned
-	* @apiSuccess {String} users_assigned.first_name Frist name of the user assigned
-	* @apiSuccess {String} users_assigned.last_name Last name of the user assigned
-	* @apiSuccess {Object[]} tags Array of tags assigned to the task
-	* @apiSuccess {Number} tags.id Id of the tag
-	* @apiSuccess {String} tags.name Name of the tag
-	*
-	* @apiSuccessExample Success-Full-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskinformations - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 2,
-	*			"title": "Update servers"
-	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-10 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at": null,
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"started_at": null,
-	*			"creator": {
-	*				"id": 1,
-	*				"first_name": "john",
-	*				"last_name": "doe"
-	*			},
-	*			"users_assigned": [
-	*				{
-	*					"id": 1,
-	*					"first_name": "john",
-	*					"last_name": "doe"
-	*				},
-	*				{
-	*					"id": 3,
-	*					"first_name": "jane",
-	*					"last_name": "doe"
-	*				}
-	*			],
-	*			"tags": [
-	*				{
-	*					"id": 1,
-	*					"name": "To Do"
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-Partial-Data-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskinformations - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 2,
-	*			"title": "Update servers",
-	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"started_at": null,
-	*			"finished_at": null,
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"creator": {
-	*				"id": 1,
-	*				"firstname": "john",
-	*				"lastname": "doe"
-	*			},
-	*			"users_assigned": [],
-	*			"tags": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.3.3",
-	*			"return_message": "Task - taskinformations - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.3.9",
-	*			"return_message": "Task - taskinformations - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.3.4",
-	*			"return_message": "Task - taskinformations - Bad Parameter: taskId"
-	*		}
-	*	}
 	*/
 	public function getTaskInfosAction(Request $request, $token, $taskId)
 	{
@@ -701,7 +289,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.3.3", "Task", "taskinformations"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.3.4", "Task", "taskinformations", "Bad Parameter: taskId");
@@ -752,10 +340,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {put} /mongo/tasks/archivetask Archive a task
-	* @apiName archiveTask
-	* @apiGroup Task
-	* @apiDescription Archive the given task
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
@@ -767,54 +351,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"taskId": 10
 	*		}
 	* 	}
-	*
-	* @apiSuccess {Number} id Id of the task archived
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - archivetask - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id" : 3
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.4.3",
-	*			"return_message": "Task - archivetask - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.4.6",
-	*			"return_message": "Task - archivetask - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.4.9",
-	*			"return_message": "Task - archivetask - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.4.4",
-	*			"return_message": "Task - archivetask - Bad Parameter: taskId"
-	*		}
-	*	}
 	*/
 	public function archiveTaskAction(Request $request)
 	{
@@ -829,7 +365,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.4.3", "Task", "archivetask"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.4.4", "Task", "archivetask", "Bad Parameter: taskId");
@@ -846,53 +382,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {delete} /mongo/tasks/taskdelete/:token/:taskId Delete a task
-	* @apiName taskDelete
-	* @apiGroup Task
-	* @apiDescription Delete definitely the given task
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
-	*
-	* @apiSuccess {Number} id Id of the task delete
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskdelete - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id" : 3
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.5.3",
-	*			"return_message": "Task - taskdelete - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.5.9",
-	*			"return_message": "Task - taskdelete - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.5.4",
-	*			"return_message": "Task - taskdelete - Bad Parameter: taskId"
-	*		}
-	*	}
 	*/
 	public function deleteTaskAction(Request $request, $token, $taskId)
 	{
@@ -900,7 +392,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.5.3", "Task", "taskdelete"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.5.4", "Task", "taskdelete", "Bad Parameter: taskId");
@@ -917,10 +409,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {put} /mongo/tasks/assignusertotask Assign a user to a task
-	* @apiName assignUserToTask
-	* @apiGroup Task
-	* @apiDescription Assign a given user to the task wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
@@ -934,79 +422,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"userId": 18
 	*		}
 	* 	}
-	*
-	* @apiSuccess {Number} id Id of the task
-	* @apiSuccess {Object[]} user User's informations
-	* @apiSuccess {Number} user.id Id of the user
-	* @apiSuccess {String} user.firstname Firstname of the user
-	* @apiSuccess {String} user.lastname Lastname of the user
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - assignusertotask - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*			"user": {
-	*				"id": 18
-	*				"firstname": "john",
-	*				"lastname": "doe",
-	*			}
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.6.3",
-	*			"return_message": "Task - assignusertotask - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.6.6",
-	*			"return_message": "Task - assignusertotask - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.6.9",
-	*			"return_message": "Task - assignusertotask - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.6.4",
-	*			"return_message": "Task - assignusertotask - Bad Parameter: taskId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.6.4",
-	*			"return_message": "Task - assignusertotask - Bad Parameter: userId"
-	*		}
-	*	}
-	* @apiErrorExample Already In Database
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.6.7",
-	*			"return_message": "Task - assignusertotask - Already In Database"
-	*		}
-	*	}
 	*/
 	public function assignUserToTaskAction(Request $request)
 	{
@@ -1021,7 +436,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.6.3", "Task", "assignusertotask"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 
 		if ($task === null)
@@ -1065,61 +480,10 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {delete} /mongo/tasks/removeusertotask/:token/:taskId/:userId Remove a user to a task
-	* @apiName removeUserToTask
-	* @apiGroup Task
-	* @apiDescription Remove a given user to the task wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
 	* @apiParam {Number} userId Id of the user
-	*
-	* @apiSuccess {Number} id Id of the user removed
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - removeusertotask - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.7.3",
-	*			"return_message": "Task - removeusertotask - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.7.9",
-	*			"return_message": "Task - removeusertotask - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.7.4",
-	*			"return_message": "Task - removeusertotask - Bad Parameter: taskId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.7.4",
-	*			"return_message": "Task - removeusertotask - Bad Parameter: userId"
-	*		}
-	*	}
 	*/
 	public function removeUserToTaskAction(Request $request, $token, $taskId, $userId)
 	{
@@ -1127,7 +491,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.7.3", "Task", "removeusertotask"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 
 		if ($task === null)
@@ -1176,10 +540,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {post} /mongo/tasks/tagcreation Create a tag
-	* @apiName tagCreation
-	* @apiGroup Task
-	* @apiDescription Create a tag
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -1191,53 +551,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"projectId": 2,
 	*			"name": "Urgent"
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the tag created
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - tagcreation - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.8.3",
-	*			"return_message": "Task - tagcreation - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.8.6",
-	*			"return_message": "Task - tagcreation - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.8.9",
-	*			"return_message": "Task - tagcreation - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.8.4",
-	*			"return_message": "Task - tagcreation - Bad Parameter: projectId"
 	*		}
 	*	}
 	*/
@@ -1257,7 +570,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $content->projectId, "task"))
 			return ($this->setNoRightsError("12.8.9", "Task", "tagcreation"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.8.4", "Task", "tagcreation", "Bad Parameter: projectId");
@@ -1274,10 +587,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {put} /mongo/tasks/tagupdate Update a tag
-	* @apiName tagUpdate
-	* @apiGroup Task
-	* @apiDescription Update a given task
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
@@ -1289,55 +598,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"tagId": 1,
 	*			"name": "ASAP"
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the tag
-	* @apiSuccess {String} name Name of the tag
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 Ok
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - tagupdate - Complete Success"
-	*		},
-	*		"data": {
-	*			"id" : 1,
-	*			"name": "ASAP"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.9.3",
-	*			"return_message": "Task - tagupdate - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.9.6",
-	*			"return_message": "Task - tagupdate - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.9.9",
-	*			"return_message": "Task - tagupdate - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.9.4",
-	*			"return_message": "Task - tagupdate - Bad Parameter: projectId"
 	*		}
 	*	}
 	*/
@@ -1354,7 +614,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.9.3", "Task", "tagupdate"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$tag = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
 		if ($tag === null)
 			return $this->setBadRequest("12.9.4", "Task", "tagupdate", "Bad Parameter: tagId");
@@ -1371,54 +631,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/tasks/taginformations/:token/:tagId Get a tag informations
-	* @apiName tagInformations
-	* @apiGroup Task
-	* @apiDescription Get the informations of the given tag
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
-	*
-	* @apiSuccess {Number} id Id of the tag
-	* @apiSuccess {String} name Name of the tag
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 Ok
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taginformations - Complete Success"
-	*		},
-	*		"data": {
-	*			"id" : 1,
-	*			"name": "ASAP"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.10.3",
-	*			"return_message": "Task - taginformations - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.10.9",
-	*			"return_message": "Task - taginformations - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: tagId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.10.4",
-	*			"return_message": "Task - taginformations - Bad Parameter: tagId"
-	*		}
-	*	}
 	*/
 	public function getTagInfosAction(Request $request, $token, $tagId)
 	{
@@ -1426,7 +641,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.10.3", "Task", "taginformations"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$tag = $em->getRepository('MongoBundle:Tag')->find($tagId);
 		if ($tag === null)
 			return $this->setBadRequest("12.10.4", "Task", "taginformations", "Bad Parameter: tagId");
@@ -1440,52 +655,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {delete} /mongo/tasks/deletetag/:token/:tagId Delete a tag
-	* @apiName deleteTag
-	* @apiGroup Task
-	* @apiDescription Delete the given tag
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
-  	*
-  	* @apiSuccess {Number} id Id of the deleted tag
-  	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - deletetag - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.11.3",
-	*			"return_message": "Task - deletetag - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.11.9",
-	*			"return_message": "Task - deletetag - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: tagId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.11.4",
-	*			"return_message": "Task - deletetag - Bad Parameter: tagId"
-	*		}
-	*	}
 	*/
 	public function deleteTagAction(Request $request, $token, $tagId)
 	{
@@ -1493,7 +665,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.11.3", "Task", "deletetag"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$tag = $em->getRepository('MongoBundle:Tag')->find($tagId);
 		if ($tag === null)
 			return $this->setBadRequest("12.11.4", "Task", "deletetag", "Bad Parameter: tagId");
@@ -1509,10 +681,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {put} /mongo/tasks/assigntagtotask Assign a tag to a task
-	* @apiName assignTagToTask
-	* @apiGroup Task
-	* @apiDescription Assign a given tag to the task wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
@@ -1524,77 +692,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"taskId": 1,
 	*			"tagId": 3
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the task
-	* @apiSuccess {Object[]} tag Tag's informations
-	* @apiSuccess {Number} tag.id Id of the tag
-	* @apiSuccess {String} tag.name Name of the tag
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - assigntagtotask - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*			"tag": {
-	*				"id": 18
-	*				"name": "To Do"
-	*			}
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.12.3",
-	*			"return_message": "Task - assigntagtotask - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.12.6",
-	*			"return_message": "Task - assigntagtotask - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.12.9",
-	*			"return_message": "Task - assigntagtotask - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.12.4",
-	*			"return_message": "Task - assigntagtotask - Bad Parameter: taskId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: tagId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.12.4",
-	*			"return_message": "Task - assigntagtotask - Bad Parameter: tagId"
-	*		}
-	*	}
-	* @apiErrorExample Already In Database
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.12.7",
-	*			"return_message": "Task - assigntagtotask - Already In Database"
 	*		}
 	*	}
 	*/
@@ -1611,7 +708,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.12.3", "Task", "assigntagtotask"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.12.4", "Task", "assigntagtotask", "Bad Parameter: taskId");
@@ -1639,61 +736,10 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {delete} /mongo/tasks/removetagtotask/:token/:taskId/:tagId Remove a tag to a task
-	* @apiName removeTagToTask
-	* @apiGroup Task
-	* @apiDescription Remove the given tag from the task wanted
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
 	* @apiParam {Number} tagId Id of the tag
-  	*
-	* @apiSuccess {Number} id Id of the tag removed
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - removetagtotask - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.13.3",
-	*			"return_message": "Task - removetagtotask - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.13.9",
-	*			"return_message": "Task - removetagtotask - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: taskId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.13.4",
-	*			"return_message": "Task - removetagtotask - Bad Parameter: taskId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: tagId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.13.4",
-	*			"return_message": "Task - removetagtotask - Bad Parameter: tagId"
-	*		}
-	*	}
 	*/
 	public function removeTagToTaskAction(Request $request, $token, $taskId, $tagId)
 	{
@@ -1701,7 +747,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.13.3", "Task", "removetagtotask"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
 		if ($task === null)
 			return $this->setBadRequest("12.13.4", "Task", "removetagtotask", "Bad Parameter: taskId");
@@ -1734,137 +780,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
-	* @apiName getProjectTasks
-	* @apiGroup Task
-	* @apiDescription Get all the tasks for a given project
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {Object[]} array Array of tasks
-	* @apiSuccess {Number} array.id Id of the task
-	* @apiSuccess {String} array.title Title of the task
-	* @apiSuccess {String} array.description Description of the task
-	* @apiSuccess {Datetime} array.due_date Due date of the task
-	* @apiSuccess {Datetime} array.started_at Date of start of the task
-	* @apiSuccess {Datetime} array.finished_at Date of finish of the task
-	* @apiSuccess {Datetime} array.created_at Date of creation of the task
-	* @apiSuccess {Datetime} array.started_at Date of start of the task
-	* @apiSuccess {Object[]} array.creator Creator informations
-	* @apiSuccess {Number} array.creator.id Id of the creator
-	* @apiSuccess {String} array.creator.first_name Frist name of the creator
-	* @apiSuccess {String} array.creator.last_name Last name of the creator
-	* @apiSuccess {Object[]} array.users_assigned Array of users assigned to the task
-	* @apiSuccess {Number} array.users_assigned.id Id of the user assigned
-	* @apiSuccess {String} array.users_assigned.first_name Frist name of the user assigned
-	* @apiSuccess {String} array.users_assigned.last_name Last name of the user assigned
-	* @apiSuccess {Object[]} array.tags Array of tags assigned to the task
-	* @apiSuccess {Number} array.tags.id Id of the tag
-	* @apiSuccess {String} array.tags.name Name of the tag
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - getprojecttasks - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"array": [
-	*				{
-	*					"id": 2,
-	*					"title": "Update servers",
-	*					"description": "update all the servers",
-	*					"due_date":
-	*					{
-	*						"date":"2015-10-15 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"started_at":
-	*					{
-	*						"date":"2015-10-10 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"finished_at":
-	*					{
-	*						"date":"2015-10-15 18:23:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"created_at":
-	*					{
-	*						"date":"2015-10-09 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"creator": {
-	*						"id": 1,
-	*						"firstname": "john",
-	*						"lastname": "doe"
-	*					},
-	*					"users_assigned": [
-	*						{
-	*							"id": 1,
-	*							"firstname": "john",
-	*							"lastname": "doe"
-	*						},
-	*						{
-	*							"id": 3,
-	*							"firstname": "jane",
-	*							"lastname": "doe"
-	*						}
-	*					],
-	*					"tags": [
-	*						{
-	*							"id": 1,
-	*							"name": "To Do"
-	*						}
-	*					]
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.3",
-	*			"return_message": "Task - getprojecttasks - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.14.3",
-	*			"return_message": "Task - getprojecttasks - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.14.9",
-	*			"return_message": "Task - getprojecttasks - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.14.4",
-	*			"return_message": "Task - getprojecttasks - Bad Parameter: projectId"
-	*		}
-	*	}
 	*/
 	public function getProjectTasksAction(Request $request, $token, $projectId)
 	{
@@ -1875,7 +793,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError("12.14.9", "Task", "getprojecttasks"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Task');
 		$qb = $repository->createQueryBuilder('t')->join('t.projects', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tasks = $qb->getResult();
@@ -1934,84 +852,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/tasks/getprojecttags/:token/:projectId Get all the tags for a project
-	* @apiName getProjectTags
-	* @apiGroup Task
-	* @apiDescription Get all the tags for a given project
-	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {Object[]} array Array of tag
-	* @apiSuccess {Number} array.id Id of the tag
-	* @apiSuccess {String} array.name Name of the tag
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.1",
-	*			"return_message": "Task - getprojecttags - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"array": [
-	*				{
-	*					"id": 1,
-	*					"name": "To Do"
-	*				},
-	*				{
-	*					"id": 2,
-	*					"name": "Doing"
-	*				},
-	*				{
-	*					"id": 3,
-	*					"name": "Done"
-	*				},
-	*				{
-	*					"id": 15,
-	*					"name": "Urgent"
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.12.3",
-	*			"return_message": "Task - getprojecttags - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "12.15.3",
-	*			"return_message": "Task - getprojecttags - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "12.15.9",
-	*			"return_message": "Task - getprojecttags - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "12.15.4",
-	*			"return_message": "Task - getprojecttags - Bad Parameter: projectId"
-	*		}
-	*	}
 	*/
 	public function getProjectTagsAction(Request $request, $token, $projectId)
 	{
@@ -2022,7 +865,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$this->checkRoles($user, $projectId, "task"))
 			return ($this->setNoRightsError("12.15.9", "Task", "getprojecttags"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Tag');
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();
