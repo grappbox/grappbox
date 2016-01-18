@@ -795,7 +795,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Task');
-		$qb = $repository->createQueryBuilder('t')->join('t.projects', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
+		$qb = $repository->createQueryBuilder()->field('projects.id')->equals($projectId)->getQuery();
 		$tasks = $qb->execute();
 		if ($tasks === null)
 			return $this->setBadRequest("12.14.4", "Task", "getprojecttasks", "Bad Parameter: projectId");
@@ -867,7 +867,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Tag');
-		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
+		$qb = $repository->createQueryBuilder()->field('project.id')->equals($projectId)->getQuery();
 		$tags = $qb->execute();
 		if ($tags === null)
 			return $this->setBadRequest("12.15.4", "Task", "getprojecttags", "Bad Parameter: projectId");
