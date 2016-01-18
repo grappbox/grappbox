@@ -20,15 +20,15 @@ angular.module('GrappBox.controllers')
     $scope.role = $stateParams.role;
 
     // Conversion to boolean so ion-checkbox display well in HTML
-    /*$scope.role.teamTimeline = Boolean($scope.role.teamTimeline);
-    $scope.role.customerTimeline = Boolean($scope.role.customerTimeline);
+    $scope.role.team_timeline = Boolean($scope.role.team_timeline);
+    $scope.role.customer_timeline = Boolean($scope.role.customer_timeline);
     $scope.role.gantt = Boolean($scope.role.gantt);
     $scope.role.whiteboard = Boolean($scope.role.whiteboard);
     $scope.role.bugtracker = Boolean($scope.role.bugtracker);
     $scope.role.event = Boolean($scope.role.event);
     $scope.role.task = Boolean($scope.role.task);
-    $scope.role.projectSettings = Boolean($scope.role.projectSettings);
-    $scope.role.cloud = Boolean($scope.role.cloud);*/
+    $scope.role.project_settings = Boolean($scope.role.project_settings);
+    $scope.role.cloud = Boolean($scope.role.cloud);
 
     // Remove confirm popup for deleting role
     $scope.PopupDeleteRole = function () {
@@ -200,14 +200,14 @@ angular.module('GrappBox.controllers')
             roleId: $scope.roleId,
             projectId: $scope.projectId,
             name: $scope.role.name,
-            teamTimeline: $scope.role.teamTimeline,
-            customerTimeline: $scope.role.customerTimeline,
+            teamTimeline: $scope.role.team_timeline,
+            customerTimeline: $scope.role.customer_timeline,
             gantt: $scope.role.gantt,
             whiteboard: $scope.role.whiteboard,
             bugtracker: $scope.role.bugtracker,
             event: $scope.role.event,
             task: $scope.role.task,
-            projectSettings: $scope.role.projectSettings,
+            projectSettings: $scope.role.project_settings,
             cloud: $scope.role.cloud
         }).$promise
             .then(function (data) {

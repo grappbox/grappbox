@@ -35,7 +35,7 @@ angular.module('GrappBox.controllers')
     $scope.GetProfileInfo();
 
     $scope.EditProfile = function () {
-        /*EditProfile.update({
+        EditProfile.update({
             token: $rootScope.userDatas.token,
             first_name: $scope.profileInfo.first_name,
             last_name: $scope.profileInfo.last_name,
@@ -56,6 +56,6 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Edit profile failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
-            })*/
+            })
     }    
 })
