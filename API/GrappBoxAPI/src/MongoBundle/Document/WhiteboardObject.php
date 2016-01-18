@@ -2,16 +2,20 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\WhiteboardObject
+ */
 class WhiteboardObject
 {
-
     /**
      * @var $id
      */
     protected $id;
 
     /**
-     * @var text $object
+     * @var string $object
      */
     protected $object;
 
@@ -29,6 +33,7 @@ class WhiteboardObject
      * @var MongoBundle\Document\Whiteboard
      */
     protected $whiteboard;
+
 
     public function objectToArray()
     {
@@ -55,10 +60,10 @@ class WhiteboardObject
     /**
      * Set object
      *
-     * @param text $object
+     * @param string $object
      * @return self
      */
-    public function setObject(\text $object)
+    public function setObject($object)
     {
         $this->object = $object;
         return $this;
@@ -67,7 +72,7 @@ class WhiteboardObject
     /**
      * Get object
      *
-     * @return text $object
+     * @return string $object
      */
     public function getObject()
     {

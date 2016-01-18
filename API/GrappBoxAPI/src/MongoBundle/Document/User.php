@@ -4,9 +4,11 @@ namespace MongoBundle\Document;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * MongoBundle\Document\User
+ */
 class User implements UserInterface
 {
-
     /**
      * @var $id
      */
@@ -28,7 +30,7 @@ class User implements UserInterface
     protected $birthday;
 
     /**
-     * @var text $avatar
+     * @var string $avatar
      */
     protected $avatar;
 
@@ -99,6 +101,8 @@ class User implements UserInterface
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+
+
     public function getUsername()
     {
         return $this->email;
@@ -114,6 +118,7 @@ class User implements UserInterface
     public function eraseCredentials()
     {
     }
+    
     public function objectToArray()
     {
       return array(
@@ -125,6 +130,7 @@ class User implements UserInterface
           'avatar' => $this->avatar
       );
     }
+
     
     /**
      * Get id
@@ -205,10 +211,10 @@ class User implements UserInterface
     /**
      * Set avatar
      *
-     * @param text $avatar
+     * @param string $avatar
      * @return self
      */
-    public function setAvatar(\text $avatar)
+    public function setAvatar($avatar)
     {
         $this->avatar = $avatar;
         return $this;
@@ -217,7 +223,7 @@ class User implements UserInterface
     /**
      * Get avatar
      *
-     * @return text $avatar
+     * @return string $avatar
      */
     public function getAvatar()
     {

@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Setting
+ */
 class Setting
 {
-
     /**
      * @var $id
      */

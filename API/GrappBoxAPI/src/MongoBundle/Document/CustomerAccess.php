@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\CustomerAccess
+ */
 class CustomerAccess
 {
-
     /**
      * @var $id
      */

@@ -16,7 +16,7 @@ class ProjectRepository extends DocumentRepository
 	{
 		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
 
-		$projects = $qb->getQuery()->getResult();
+		$projects = $qb->getQuery()->execute();
 
 		$arr = array();
 		$i = 0;
@@ -77,7 +77,7 @@ class ProjectRepository extends DocumentRepository
 	{
 		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
 		
-		$projects = $qb->getQuery()->getResult();
+		$projects = $qb->getQuery()->execute();
 
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
@@ -144,7 +144,7 @@ class ProjectRepository extends DocumentRepository
 	{
 		$qb = $this->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $id);
 
-		$projects = $qb->getQuery()->getResult();
+		$projects = $qb->getQuery()->execute();
 
 		$arr = array();
 		$i = 0;
@@ -217,7 +217,7 @@ class ProjectRepository extends DocumentRepository
 	{
 		$qb = $this->createQueryBuilder('p');
 
-		$projects = $qb->getQuery()->getResult();
+		$projects = $qb->getQuery()->execute();
 
 		if ($projects === null)
 		{

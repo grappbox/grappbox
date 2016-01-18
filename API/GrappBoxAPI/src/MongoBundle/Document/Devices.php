@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Devices
+ */
 class Devices
 {
-
     /**
      * @var $id
      */
@@ -40,7 +44,6 @@ class Devices
         "token" => $this->token,
         "type" => $this->type
       );
-
     }
 
 

@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Project
+ */
 class Project
 {
-
     /**
      * @var $id
      */
@@ -16,12 +20,12 @@ class Project
     protected $name;
 
     /**
-     * @var text $description
+     * @var string $description
      */
     protected $description;
 
     /**
-     * @var text $logo
+     * @var string $logo
      */
     protected $logo;
 
@@ -169,10 +173,10 @@ class Project
     /**
      * Set description
      *
-     * @param text $description
+     * @param string $description
      * @return self
      */
-    public function setDescription(\text $description)
+    public function setDescription($description)
     {
         $this->description = $description;
         return $this;
@@ -181,7 +185,7 @@ class Project
     /**
      * Get description
      *
-     * @return text $description
+     * @return string $description
      */
     public function getDescription()
     {
@@ -191,10 +195,10 @@ class Project
     /**
      * Set logo
      *
-     * @param text $logo
+     * @param string $logo
      * @return self
      */
-    public function setLogo(\text $logo)
+    public function setLogo($logo)
     {
         $this->logo = $logo;
         return $this;
@@ -203,7 +207,7 @@ class Project
     /**
      * Get logo
      *
-     * @return text $logo
+     * @return string $logo
      */
     public function getLogo()
     {

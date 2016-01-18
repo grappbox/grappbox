@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Whiteboard
+ */
 class Whiteboard
 {
-
     /**
      * @var $id
      */
@@ -54,6 +58,7 @@ class Whiteboard
     {
         $this->objects = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
 
     public function objectToArray()
     {

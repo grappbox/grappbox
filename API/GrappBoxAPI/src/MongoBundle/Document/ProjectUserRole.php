@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\ProjectUserRole
+ */
 class ProjectUserRole
 {
-
     /**
      * @var $id
      */

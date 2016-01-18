@@ -129,8 +129,8 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->persist($pur);
 
-		$qb = $em->getRepository('MongoBundle:Tag')->createQueryBuilder('t')->getQuery();
-		$tags = $qb->getResult();
+		$qb = $em->getRepository('MongoBundle:Tag')->createQueryBuilder('t');
+		$tags = $qb->getQuery()->execute();
 
 		foreach ($tags as $t) {
 			if ($t->getProject() === null)
@@ -229,8 +229,8 @@ class ProjectController extends RolesAndTokenVerificationController
 
 			$repository = $em->getRepository('MongoBundle:Role');
 
-			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $content->projectId)->getQuery();
-			$role = $qb->getResult();
+			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $content->projectId);
+			$role = $qb->getQuery()->execute();
 
 			if (count($role) == 0)
 				return $this->setBadRequest("6.2.1", "Project", "updateinformations", "Reading Error: role");
@@ -242,8 +242,8 @@ class ProjectController extends RolesAndTokenVerificationController
 			$roleId = $role->getId();
 
 			$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
-			->setParameter('projectId', $content->projectId)->setParameter('userId', $creatorUserId)->setParameter('roleId', $roleId)->getQuery();
-			$ProjectUserRoles = $qb->getResult();
+			->setParameter('projectId', $content->projectId)->setParameter('userId', $creatorUserId)->setParameter('roleId', $roleId);
+			$ProjectUserRoles = $qb->getQuery()->execute();
 
 			if (count($ProjectUserRoles) == 0)
 				return $this->setBadRequest("6.2.1", "Project", "updateinformations", "Reading Error: project user role");
@@ -430,8 +430,8 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$repository = $em->getRepository('MongoBundle:CustomerAccess');
 
-		$qb = $repository->createQueryBuilder('ca')->join('ca.projects', 'p')->where('ca.name = :name', 'p.id = :id')->setParameter('name', $content->name)->setParameter('id', $content->projectId)->getQuery();
-		$customerAccess = $qb->getResult();
+		$qb = $repository->createQueryBuilder('ca')->join('ca.projects', 'p')->where('ca.name = :name', 'p.id = :id')->setParameter('name', $content->name)->setParameter('id', $content->projectId);
+		$customerAccess = $qb->getQuery()->execute();
 
 		if (count($customerAccess) == 0)
 		{

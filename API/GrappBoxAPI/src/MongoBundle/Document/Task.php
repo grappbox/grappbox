@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Task
+ */
 class Task
 {
-
     /**
      * @var $id
      */
@@ -16,7 +20,7 @@ class Task
     protected $title;
 
     /**
-     * @var text $description
+     * @var string $description
      */
     protected $description;
 
@@ -71,6 +75,7 @@ class Task
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+
     public function objectToArray()
     {
       return array(
@@ -82,9 +87,9 @@ class Task
         'startedAt' => $this->startedAt ,
         'finishedAt' => $this->finishedAt ,
         'projectId' => $this->projects->id ,
-        //'users' => $this-> ,  TODO: array of users_id and/or user_name assigned to this tasks
       );
     }
+
     
     /**
      * Get id
@@ -121,10 +126,10 @@ class Task
     /**
      * Set description
      *
-     * @param text $description
+     * @param string $description
      * @return self
      */
-    public function setDescription(\text $description)
+    public function setDescription($description)
     {
         $this->description = $description;
         return $this;
@@ -133,7 +138,7 @@ class Task
     /**
      * Get description
      *
-     * @return text $description
+     * @return string $description
      */
     public function getDescription()
     {

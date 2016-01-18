@@ -68,6 +68,7 @@ class RolesAndTokenVerificationController extends Controller
 			JOIN MongoBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
 			WHERE projectUser.projectId = '.$projectId.' AND projectUser.userId = '.$user->getId());
 		$result = $query->setMaxResults(1)->getOneOrNullResult();
+
 		return $result[$role];
 	}
 
@@ -428,7 +429,7 @@ class RolesAndTokenVerificationController extends Controller
 
 		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 		$qb = $repository->createQueryBuilder('p')->where('p.roleId = :roleId', 'p.userId = :userId')->setParameter('roleId', $content->roleId)->setParameter('userId', $content->userId)->getQuery();
-		$purs = $qb->getResult();
+		$purs = $qb->execute();
 
 		if (count($purs) == 0)
 		{
@@ -488,7 +489,7 @@ class RolesAndTokenVerificationController extends Controller
 
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
 		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->old_roleId)->getQuery();
-		$pur = $qb->setMaxResults(1)->getOneOrNullResult();
+		$pur = $qb->getSingleResult();
 
 		if ($pur === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter");
@@ -584,7 +585,7 @@ class RolesAndTokenVerificationController extends Controller
 
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
 		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->roleId)->getQuery();
-		$pur = $qb->setMaxResults(1)->getOneOrNullResult();
+		$pur = $qb->getSingleResult();
 
 		if ($pur == null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameters");
@@ -615,7 +616,7 @@ class RolesAndTokenVerificationController extends Controller
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
-		$purs = $qb->getResult();
+		$purs = $qb->execute();
 
 		if ($purs === null)
 			return $this->setBadRequest("13.9.4", "Role", "getrolebyprojectanduser", "Bad Parameters");
@@ -655,7 +656,7 @@ class RolesAndTokenVerificationController extends Controller
 
 		$purRepository = $em->getRepository('MongoBundle:ProjectUserRole');
 		$qb = $purRepository->createQueryBuilder('pur')->where('pur.roleId = :id')->setParameter('id', $role->getId())->getQuery();
-		$purs = $qb->getResult();
+		$purs = $qb->execute();
 
 		$usersAssigned = array();
 		$usersNonAssigned = array();
@@ -747,7 +748,7 @@ class RolesAndTokenVerificationController extends Controller
 			{
 				$pId = $p->getId();
 				$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $pId)->setParameter('userId', $userId)->getQuery();
-				$userRoles = $qb->getResult();
+				$userRoles = $qb->execute();
 
 				foreach ($userRoles as $role) {
 					$purId = $role->getId();

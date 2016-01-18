@@ -27,131 +27,76 @@ use DateTime;
 class TimelineController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /V0.8/timeline/gettimelines/:token/:id List the timeline of a project
+	* @api {get} /V0.2/timeline/gettimelines/:token/:id List the timeline of a project
 	* @apiName getTimelines
 	* @apiGroup Timeline
-	* @apiVersion 0.8.1
+	* @apiDescription List all the timelines of a project
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} id id of the project
 	*
-	* @apiSuccess {Object[]} timelines Timeline object array
-	* @apiSuccess {int} timelines.id Timeline id
-	* @apiSuccess {String} timelines.name Timeline name
-	* @apiSuccess {int} timelines.prjectId project id
-	* @apiSuccess {int} timelines.typeId Timeline type id
-	* @apiSuccess {String} timelines.typeName Timeline type name
+	* @apiSuccess {Object[]} array Array of timeline informations
+	* @apiSuccess {int} array.id Timeline id
+	* @apiSuccess {String} array.name Timeline name
+	* @apiSuccess {int} array.projectId project id
+	* @apiSuccess {int} array.typeId Timeline type id
+	* @apiSuccess {String} array.typeName Timeline type name
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			0: {"id": 2, "projectId": 12, "typeId": 1, "typeName": "customerTimeline", "name": "Customer timeline project XYZ"},
-	*			1: {"id": 3, "projectId": 12, "typeId": 2, "typeName": "teamTimeline", "name": "Team timeline project XYZ"}
-	* 	}
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.1",
+	*			"return_message": "Timeline - gettimelines - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": [
+	*				{
+	*					"id": 2,
+	*					"typeId": 1,
+	*					"projectId": 12,
+	*					"name": "Customer timeline project XYZ",
+	*					"typeName": "customerTimeline"
+	*				},
+	*				{
+	*					"id": 3,
+	*					"typeId": 2,
+	*					"projectId": 12,
+	*					"name": "Team timeline project XYZ",
+	*					"typeName": "teamTimeline"
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.3",
+	*			"return_message": "Timeline - gettimelines - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/gettimelines/:token/:id List the timeline of a project
-	* @apiName getTimelines
-	* @apiGroup Timeline
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} id id of the project
-	*
-	* @apiSuccess {Object[]} timelines Timeline object array
-	* @apiSuccess {int} timelines.id Timeline id
-	* @apiSuccess {String} timelines.name Timeline name
-	* @apiSuccess {int} timelines.projectId project id
-	* @apiSuccess {int} timelines.typeId Timeline type id
-	* @apiSuccess {String} timelines.typeName Timeline type name
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			0: {"id": 2, "projectId": 12, "typeId": 1, "typeName": "customerTimeline", "name": "Customer timeline project XYZ"},
-	*			1: {"id": 3, "projectId": 12, "typeId": 2, "typeName": "teamTimeline", "name": "Team timeline project XYZ"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/timeline/gettimelines/:token/:id List the timeline of a project
-	* @apiName getTimelines
-	* @apiGroup Timeline
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} id id of the project
-	*
-	* @apiSuccess {Object[]} timelines Timeline object array
-	* @apiSuccess {int} timelines.id Timeline id
-	* @apiSuccess {String} timelines.name Timeline name
-	* @apiSuccess {int} timelines.projectId project id
-	* @apiSuccess {int} timelines.typeId Timeline type id
-	* @apiSuccess {String} timelines.typeName Timeline type name
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			0: {"id": 2, "projectId": 12, "typeId": 1, "typeName": "customerTimeline", "name": "Customer timeline project XYZ"},
-	*			1: {"id": 3, "projectId": 12, "typeId": 2, "typeName": "teamTimeline", "name": "Team timeline project XYZ"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/timeline/gettimelines/:token/:id List the timeline of a project
-	* @apiName getTimelines
-	* @apiGroup Timeline
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} id id of the project
-	*
-	* @apiSuccess {Object[]} timelines Timeline object array
-	* @apiSuccess {int} timelines.id Timeline id
-	* @apiSuccess {String} timelines.name Timeline name
-	* @apiSuccess {int} timelines.projectId project id
-	* @apiSuccess {int} timelines.typeId Timeline type id
-	* @apiSuccess {String} timelines.typeName Timeline type name
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		[
-	*			{"id": 2, "typeId": 1, "projectId": 12, "name": "Customer timeline project XYZ", "typeName": "customerTimeline"},
-	*			{"id": 3, "typeId": 2, "projectId": 12, "name": "Team timeline project XYZ", "typeName": "teamTimeline"}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "11.1.3",
+	*			"return_message": "Timeline - gettimelines - Bad ID"
+	*		}
+	*	}
 	*/
 	public function getTimelinesAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.1.3", "Task", "gettimelines"));
 
 		$em = $this->getDoctrine()->getManager();
 		$timelines = $em->getRepository('GrappboxBundle:Timeline')->findBy(array("projectId" => $id));
@@ -168,7 +113,10 @@ class TimelineController extends RolesAndTokenVerificationController
 			}
 		}
 
-		return new JsonResponse(array("timelines" => $timeline_array));
+		if (count($timeline_array) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "gettimelines");
+
+		return $this->setSuccess("1.11.1", "Timeline", "gettimelines", "Complete Success", array("array" => $timeline_array));
 	}
 
 	/**
@@ -216,7 +164,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 201 Created
 	*	{
 	*		"info": {
-	*			"return_code": "1.11.2",
+	*			"return_code": "1.11.1",
 	*			"return_message": "Timeline - postmessage - Complete Success"
   	*		},
 	*		"data": {
@@ -235,7 +183,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 201 Created
 	*	{
 	*		"info": {
-	*			"return_code": "1.11.2",
+	*			"return_code": "1.11.1",
 	*			"return_message": "Timeline - postmessage - Complete Success"
   	*		},
 	*		"data": {
@@ -320,149 +268,30 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setSuccess("1.11.2", "Timeline", "postmessage", "Complete Success", $message->objectToArray());
+		return $this->setCreated("1.11.1", "Timeline", "postmessage", "Complete Success", $message->objectToArray());
 	}
 
 	/**
-	* @api {post} /V0.7/timeline/editmessage/:id Edit a message
+	* @api {post} /V0.2/timeline/editmessage/:id Edit a message
 	* @apiName editMessage
 	* @apiGroup Timeline
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId message's id
-	* @apiParam {String} message message to post
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"message": "What about a meeting tomorrow morning or next monday ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.8/timeline/editmessage/:id Edit a message
-	* @apiName editMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId message's id
-	* @apiParam {String} message message to post
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"message": "What about a meeting tomorrow morning or next monday ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.9/timeline/editmessage/:id Edit a message
-	* @apiName editMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId message's id
-	* @apiParam {String} message message to post
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"message": "What about a meeting tomorrow morning or next monday ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.9/timeline/editmessage/:id Edit a message
-	* @apiName editMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.9.3
+	* @apiDescription Edit a given message
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id id of the timeline
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} messageId message's id
 	* @apiParam {String} title message title
 	* @apiParam {String} message message to post
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	* 	{
+	*		"data": {
+	*			"token": "13135",
+	*			"title": "Project delayed",
+	*			"message": "Hi, i think we should delay the delivery date of the project, what do you think about it?"
+	*		}
+	* 	}
 	*
 	* @apiSuccess {int} id Message id
 	* @apiSuccess {int} userId author id
@@ -474,131 +303,58 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} editedAt Message last modification date
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"title": "hello",
-	*		"message": "What about a meeting tomorrow morning or next monday ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.10/timeline/editmessage/:id Edit a message
-	* @apiName editMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId message's id
-	* @apiParam {String} title message title
-	* @apiParam {String} message message to post
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} title Message title
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"id": "154",
-	*		"userId": "25",
-	*		"timelineId": 14,
-	*		"title": "hello",
-	*		"message": "What about a meeting tomorrow morning or next monday ?",
-	*		"parentId": 12,
-	*		"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {post} /V0.11/timeline/editmessage/:id Edit a message
-	* @apiName editMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId message's id
-	* @apiParam {String} title message title
-	* @apiParam {String} message message to post
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
-	* @apiSuccess {int} timelineId timeline id
-	* @apiSuccess {String} title Message title
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId parent message id
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"message": {
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.1",
+	*			"return_message": "Timeline - editmessage - Complete Success"
+  	*		},
+	*		"data": {
 	*			"id": "154",
 	*			"userId": "25",
 	*			"timelineId": 14,
 	*			"title": "hello",
 	*			"message": "What about a meeting tomorrow morning or next monday ?",
 	*			"parentId": 12,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 07:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			"createdAt": {
+	*				"date": "1945-06-18 06:00:00",
+	*				"timezone_type": 3,
+	*				"timezone": "Europe\/Paris"
+	*			},
+	*			"editedAt": {
+	*				"date": "1945-06-18 07:00:00",
+	*				"timezone_type": 3,
+	*				"timezone": "Europe\/Paris"
 	*			}
-	* 	}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
+	* 	HTTP/1.1 401 Unauthorized
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "11.3.3",
+	*			"return_message": "Timeline - editmessage - Bad ID"
+  	*		}
 	* 	}
-	* @apiErrorExample Insufficient User Rights
+	* @apiErrorExample Insufficient Rights
 	* 	HTTP/1.1 403 Forbidden
 	* 	{
-	* 		"Insufficient User Rights"
+	*		"info": {
+	*			"return_code": "11.3.9",
+	*			"return_message": "Timeline - editmessage - Insufficient Rights"
+  	*		}
 	* 	}
-	*
 	*/
 	public function editMessageAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.3.3", "Timeline", "editmessage"));
 
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
@@ -607,10 +363,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		} else {
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		}
 
 		$message = $em->getRepository('GrappboxBundle:TimelineMessage')->find($content->messageId);
@@ -621,379 +377,126 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
-		return new JsonResponse(array("message" => $message->objectToArray()));
+		return $this->setSuccess("1.11.1", "Timeline", "editmessage", "Complete Success", $message->objectToArray());
 	}
 
 	/**
-	* @api {get} /V0.7/timeline/getmessages/:token/:id Get all messages from a timeline
+	* @api {get} /V0.2/timeline/getmessages/:token/:id Get all messages from a timeline except comments
 	* @apiName getMessages
 	* @apiGroup Timeline
-	* @apiVersion 0.7.0
+	* @apiDescription Get all the messages but not the comments from a timeline
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id id of the timeline
 	* @apiParam {String} token client authentification token
 	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
-  	* @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
+	* @apiSuccess {Object[]} array Array of all the timeline's messages
+	* @apiSuccess {int} array.id Message id
+	* @apiSuccess {int} array.userId Id of the author of the message
+	* @apiSuccess {int} array.timelineId Id of the timeline
+	* @apiSuccess {String} array.title Message title
+	* @apiSuccess {String} array.message Message content
+ 	* @apiSuccess {int} array.parentId Parent message id if it's a comment
+	* @apiSuccess {DateTime} array.createdAt Message creation date
+	* @apiSuccess {DateTime} array.editedAt Message edition date
+	* @apiSuccess {DateTime} array.deletedAt Message deletion date
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL, "createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": 154, "createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
-	*		2 : ...
-	* 	}
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.1",
+	*			"return_message": "Timeline - getmessages - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": "154",
+	*					"userId": "25",
+	*					"timelineId": 14,
+	*					"title": "hello",
+	*					"message": "What about a meeting tomorrow morning ?",
+	*					"parentId": null,
+	*					"createdAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"editedAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"deletedAt": null
+	*				},
+	*				{
+	*					"id": "158",
+	*					"userId": "21",
+	*					"timelineId": 14,
+	*					"title": "hello",
+	*					"message": "Ok, let's do this !",
+	*					"parentId": null,
+	*					"createdAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"editedAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"deletedAt": null
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.3",
+	*			"return_message": "Timeline - gettimelines - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
+	* 	HTTP/1.1 401 Unauthorized
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "11.4.3",
+	*			"return_message": "Timeline - getmessages - Bad ID"
+  	*		}
 	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 403 Forbidden
 	* 	{
-	* 		"Insufficient User Rights"
+	*		"info": {
+	*			"return_code": "11.4.9",
+	*			"return_message": "Timeline - getmessages - Insufficient Rights"
+  	*		}
 	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/timeline/getmessages/:token/:id Get all messages from a timeline
-	* @apiName getMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
-  	* @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL, "createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": 154, "createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/timeline/getmessages/:token/:id Get all messages from a timeline
-	* @apiName getMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.8.1
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": 154,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/timeline/getmessages/:token/:id Get all messages from a timeline except comments
-	* @apiName getMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.8.2
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
- 	* @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/getmessages/:token/:id Get all messages from a timeline except comments
-	* @apiName getMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
- 	* @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/getmessages/:token/:id Get all messages from a timeline except comments
-	* @apiName getMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.9.3
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
- 	* @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/timeline/getmessages/:token/:id Get all messages from a timeline except comments
-	* @apiName getMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
- 	* @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/timeline/getmessages/:token/:id Get all messages from a timeline except comments
-	* @apiName getMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
- 	* @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"messages": [
-	*		{"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		{"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		...
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
 	*/
 	public function getMessagesAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.4.3", "Timeline", "getmessages"));
+
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
-
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		} else {
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		}
 
 		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"));
@@ -1002,544 +505,140 @@ class TimelineController extends RolesAndTokenVerificationController
 			$timelineMessages[] = $value->objectToArray();
 		}
 
-		return new JsonResponse(array("messages" => $timelineMessages));
+		if (count($timelineMessages) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "getmessages");
+
+		return $this->setSuccess("1.11.1", "Timeline", "getmessages", "Complete Success", array("array" => $timelineMessages));
 	}
 
 	/**
-	* @api {get} /V0.8/timeline/getcomments/:token/:id/:message Get comments of a message
-	* @apiName getComments
-	* @apiGroup Timeline
-	* @apiVersion 0.8.1
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} message commented message id
-	*
-	* @apiSuccess {Object[]} messages array of all the message's comments
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/getcomments/:token/:id/:message Get comments of a message
-	* @apiName getComments
-	* @apiGroup Timeline
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} message commented message id
-	*
-	* @apiSuccess {Object[]} messages array of all the message's comments
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/getcomments/:token/:id/:message Get comments of a message
-	* @apiName getComments
-	* @apiGroup Timeline
-	* @apiVersion 0.9.3
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} message commented message id
-	*
-	* @apiSuccess {Object[]} messages array of all the message's comments
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/timeline/getcomments/:token/:id/:message Get comments of a message
-	* @apiName getComments
-	* @apiGroup Timeline
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} message commented message id
-	*
-	* @apiSuccess {Object[]} messages array of all the message's comments
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/timeline/getcomments/:token/:id/:message Get comments of a message
-	* @apiName getComments
-	* @apiGroup Timeline
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} message commented message id
-	*
-	* @apiSuccess {Object[]} messages array of all the message's comments
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"comments": [
-	*		{"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		{"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": 150,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		 ...
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getCommentsAction(Request $request, $token, $id, $messageId)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError());
-		$em = $this->getDoctrine()->getManager();
-		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
-
-		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
-		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
-		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
-		}
-
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "DESC"));
-		$timelineMessages = array();
-		foreach ($messages as $key => $value) {
-			$timelineMessages[] = $value->objectToArray();
-		}
-
-		return new JsonResponse(array("comments" => $timelineMessages));
-	}
-
-	/**
-	* @api {get} /V0.8/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
+	* @api {get} /V0.2/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
 	* @apiName getLastMessages
 	* @apiGroup Timeline
-	* @apiVersion 0.8.1
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset message offset from where to get the messages (start to 0)
-	* @apiParam {int} limit number max of messages to get
+	* @apiParam {int} id Id of the timeline
+	* @apiParam {String} token Client authentification token
+	* @apiParam {int} offset Message offset from where to get the messages (start to 0)
+	* @apiParam {int} limit Number max of messages to get
 	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
-	* @apiName getLastMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset message offset from where to get the messages (start to 0)
-	* @apiParam {int} limit number max of messages to get
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
+	* @apiSuccess {Object[]} array Array of all the timeline's messages
+	* @apiSuccess {int} array.id Message id
+	* @apiSuccess {int} array.userId author id
+	* @apiSuccess {int} array.timelineId timeline id
+	* @apiSuccess {String} array.title Message title
+	* @apiSuccess {String} array.message Message content
+	* @apiSuccess {int} array.parentId parent message id
+	* @apiSuccess {DateTime} array.createdAt Message creation date
+	* @apiSuccess {DateTime} array.editedAt Message edition date
+	* @apiSuccess {DateTime} array.deletedAt Message deletion date
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14, "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14, "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.3",
+	*			"return_message": "Timeline - getlastmessages - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": "154",
+	*					"userId": "25",
+	*					"timelineId": 14,
+	*					"title": "hello",
+	*					"message": "What about a meeting tomorrow morning ?",
+	*					"parentId": null,
+	*					"createdAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"editedAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"deletedAt": null
+	*				},
+	*				{
+	*					"id": "158",
+	*					"userId": "21",
+	*					"timelineId": 14,
+	*					"title": "hello",
+	*					"message": "Ok, let's do this !",
+	*					"parentId": null,
+	*					"createdAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"editedAt": {
+	*						"date": "1945-06-18 06:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"},
+	*					"deletedAt": null
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.3",
+	*			"return_message": "Timeline - getlastmessages - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
-	* @apiName getLastMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.9.3
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset message offset from where to get the messages (start to 0)
-	* @apiParam {int} limit number max of messages to get
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
-	* @apiName getLastMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset message offset from where to get the messages (start to 0)
-	* @apiParam {int} limit number max of messages to get
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		0 : {"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		1 : {"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		2 : ...
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
-	* @apiName getLastMessages
-	* @apiGroup Timeline
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset message offset from where to get the messages (start to 0)
-	* @apiParam {int} limit number max of messages to get
-	*
-	* @apiSuccess {Object[]} messages array of all the timeline's messages
-	* @apiSuccess {int} messages.id Message id
-	* @apiSuccess {int} messages.userId author id
-	* @apiSuccess {int} messages.timelineId timeline id
-	* @apiSuccess {String} messages.title Message title
-	* @apiSuccess {String} messages.message Message content
-  * @apiSuccess {int} messages.parentId parent message id
-	* @apiSuccess {DateTime} messages.createdAt Message creation date
-	* @apiSuccess {DateTime} messages.editedAt Message edition date
-	* @apiSuccess {DateTime} messages.deletedAt Message deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		"messages": [
-	*		{"id": "154","userId": "25", "timelineId": 14,
-	*			"title": "hello", "message": "What about a meeting tomorrow morning ?", "parentId": NULL,
-	*			createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		{"id": "158","userId": "21", "timelineId": 14,
-	*			"title": "hello", "message": "Ok, let's do this !", "parentId": NULL,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": null},
-	*		...
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample Bad Timeline Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Timeline Id"
-	* 	}
-	*
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "11.5.3",
+	*			"return_message": "Timeline - getlastmessages - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "11.5.9",
+	*			"return_message": "Timeline - getlastmessages - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "11.5.4",
+	*			"return_message": "Timeline - getlastmessages - Bad Parameter: id"
+	*		}
+	*	}
 	*/
 	public function getLastMessagesAction(Request $request, $token, $id, $offset, $limit)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.5.3", "Timeline", "getlastmessages"));
+
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 		if (!($timeline instanceof Timeline))
-			return $this->setBadRequest("Bad Timeline Id");
+			return $this->setBadRequest("11.5.4", "Timeline", "getlastmessages", "Bad Parameter: id");
 
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		} else {
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		}
 
 		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"), $limit, $offset);
@@ -1548,182 +647,80 @@ class TimelineController extends RolesAndTokenVerificationController
 			$timelineMessages[] = $value->objectToArray();
 		}
 
-		return new JsonResponse(array("messages" => $timelineMessages));
+		if (count($timelineMessages) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "getlastmessages");
+
+		return $this->setSuccess("1.11.1", "Timeline", "getlastmessages", "Complete Success", array("array" => $timelineMessages));
 	}
 
 	/**
-	* @api {get} /V0.7/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
+	* @api {get} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
-	* @apiVersion 0.7.0
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId id of the message
+	* @apiParam {int} id Id of the timeline
+	* @apiParam {String} token Client authentification token
+	* @apiParam {int} messageId Id of the message
 	*
-	* @apiSuccess {String} success succes message
+	* @apiSuccess {Number} id Id of the message archived
 	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"Success"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
-	* @apiName ArchiveMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId id of the message
-	*
-	* @apiSuccess {String} success succes message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"Success"
-	* 	}
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.1",
+	*			"return_message": "Timeline - archivemessage - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id" : 3
+	*		}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
-	* @apiName ArchiveMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId id of the message
-	*
-	* @apiSuccess {String} success succes message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"Success"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
-	* @apiName ArchiveMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId id of the message
-	*
-	* @apiSuccess {String} success succes message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"Success"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
-	* @apiName ArchiveMessage
-	* @apiGroup Timeline
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId id of the message
-	*
-	* @apiSuccess {String} success succes message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"Success"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
- 	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	* @apiErrorExample Bad Timeline Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Timeline Id"
-	* 	}
-	*
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "11.6.3",
+	*			"return_message": "Timeline - archivemessage - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "11.6.9",
+	*			"return_message": "Timeline - archivemessage - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "11.6.4",
+	*			"return_message": "Timeline - archivemessage - Bad Parameter: id"
+	*		}
+	*	}
 	*/
 	public function archiveMessageAction(Request $request, $token, $id, $messageId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.6.3", "Timeline", "archivemessage"));
 
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
 		if (!($timeline instanceof Timeline))
-			return $this->setBadRequest("Bad Timeline Id");
+			return $this->setBadRequest("11.6.4", "Timeline", "archivemessage", "Bad Parameter: id");
 
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		} else {
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		}
 
 		$message = $em->getRepository('GrappboxBundle:TimelineMessage')->find($messageId);
@@ -1738,6 +735,6 @@ class TimelineController extends RolesAndTokenVerificationController
 			$message = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
 		}
 
-		return new JsonResponse('Success');
+		return $this->setSuccess("1.11.1", "Timeline", "archivemessage", "Complete Success", array("id" => $messageId));
 	}
 }

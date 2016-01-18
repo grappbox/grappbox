@@ -268,8 +268,8 @@ class DashboardController extends RolesAndTokenVerificationController
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:User');
 
-		$qb = $repository->createQueryBuilder('u')->join('u.projects', 'p')->where('p.id = :id')->setParameter('id', $id)->getQuery();
-		$users = $qb->getResult();
+		$qb = $repository->createQueryBuilder('u')->join('u.projects', 'p')->where('p.id = :id')->setParameter('id', $id);
+		$users = $qb->getQuery()->execute();
 
 		if ($users === null)
 		{
@@ -379,8 +379,8 @@ class DashboardController extends RolesAndTokenVerificationController
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Project');
 
-		$qb = $repository->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $user->getId())->getQuery();
-		$projects = $qb->getResult();
+		$qb = $repository->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $user->getId());
+		$projects = $qb->getQuery()->execute();
 
 		if ($projects === null)
 		{

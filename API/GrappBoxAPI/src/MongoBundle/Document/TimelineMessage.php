@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\TimelineMessage
+ */
 class TimelineMessage
 {
-
     /**
      * @var $id
      */
@@ -26,7 +30,7 @@ class TimelineMessage
     protected $title;
 
     /**
-     * @var text $message
+     * @var string $message
      */
     protected $message;
 
@@ -54,6 +58,7 @@ class TimelineMessage
      * @var MongoBundle\Document\Timeline
      */
     protected $timelines;
+
 
     /**
      * Get object content into array
@@ -155,10 +160,10 @@ class TimelineMessage
     /**
      * Set message
      *
-     * @param text $message
+     * @param string $message
      * @return self
      */
-    public function setMessage(\text $message)
+    public function setMessage($message)
     {
         $this->message = $message;
         return $this;
@@ -167,7 +172,7 @@ class TimelineMessage
     /**
      * Get message
      *
-     * @return text $message
+     * @return string $message
      */
     public function getMessage()
     {

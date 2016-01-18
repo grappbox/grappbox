@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Role
+ */
 class Role
 {
-
     /**
      * @var $id
      */

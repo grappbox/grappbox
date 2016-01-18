@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\WhiteboardModif
+ */
 class WhiteboardModif
 {
-
     /**
      * @var $id
      */

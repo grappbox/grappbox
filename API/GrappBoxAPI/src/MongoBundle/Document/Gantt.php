@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Gantt
+ */
 class Gantt
 {
-
     /**
      * @var $id
      */
@@ -34,6 +38,7 @@ class Gantt
      * @var MongoBundle\Document\User
      */
     protected $updator_user;
+
 
 
     public function objectToArray()

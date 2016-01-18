@@ -34,7 +34,6 @@ mongo_bugtracker_getTicket:
     path:       /bugtracker/getticket/{token}/{id}
     defaults:   { _controller: MongoBundle:Bugtracker:getTicket, _format: json }
     requirements:
-        id:     \d+
         token:  "[a-zA-Z]+"
     methods:  [GET]
 
@@ -53,8 +52,6 @@ mongo_bugtracker_getComments:
     defaults:   { _controller: MongoBundle:Bugtracker:getComments, _format: json }
     requirements:
         token:    "[a-zA-Z]+"
-        id:       \d+
-        ticketId: \d+
     methods:  [GET]
 
 mongo_bugtracker_postComment:
@@ -77,7 +74,6 @@ mongo_bugtracker_closeTicket:
     defaults:   { _controller: MongoBundle:Bugtracker:closeTicket, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
     methods:  [DELETE]
 
 mongo_bugtracker_getTickets:
@@ -85,7 +81,6 @@ mongo_bugtracker_getTickets:
     defaults:   { _controller: MongoBundle:Bugtracker:getTickets, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
     methods:  [GET]
 
 mongo_bugtracker_getLastTickets:
@@ -93,7 +88,6 @@ mongo_bugtracker_getLastTickets:
     defaults:   { _controller: MongoBundle:Bugtracker:getLastTickets, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
         offset: \d+
         limit:  \d+
     methods:  [GET]
@@ -103,7 +97,6 @@ mongo_bugtracker_getLastClosedTickets:
     defaults:   { _controller: MongoBundle:Bugtracker:getLastClosedTickets, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
         offset: \d+
         limit:  \d+
     methods:  [GET]
@@ -113,8 +106,6 @@ mongo_bugtracker_getTicketsByUser:
     defaults:   { _controller: MongoBundle:Bugtracker:getTicketsByUser, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
-        userId: \d+
     methods:  [GET]
 
 mongo_bugtracker_getTicketsByState:
@@ -122,8 +113,6 @@ mongo_bugtracker_getTicketsByState:
     defaults:   { _controller: MongoBundle:Bugtracker:getTicketsByState, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
-        state:  \d+
         offset: \d+
         limit:  \d+
     methods:  [GET]
@@ -148,15 +137,11 @@ mongo_bugtracker_tagUpdate:
 mongo_bugtracker_getTagInfos:
     path:       /bugtracker/taginformations/{token}/{tagId}
     defaults:   { _controller: 'MongoBundle:Bugtracker:getTagInfos', _format: json }
-    requirements:
-        tagId: \d+
     methods: [GET]
 
 mongo_bugtracker_deleteTag:
     path:       /bugtracker/deletetag/{token}/{tagId}
     defaults:   { _controller: 'MongoBundle:Bugtracker:deleteTag', _format: json }
-    requirements:
-        tagId: \d+
     methods: [DELETE]
 
 mongo_bugtracker_assignTag:
@@ -167,16 +152,11 @@ mongo_bugtracker_assignTag:
 mongo_bugtracker_removeTag:
     path:       /bugtracker/removetag/{token}/{bugId}/{tagId}
     defaults:   { _controller: 'MongoBundle:Bugtracker:removeTag', _format: json }
-    requirements:
-        taskId: \d+
-        tagId: \d+
     methods: [DELETE]
 
 mongo_bugtracker_getProjectTags:
     path:       /bugtracker/getprojecttags/{token}/{projectId}
     defaults:   { _controller: 'MongoBundle:Bugtracker:getProjectTags', _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 
@@ -249,29 +229,21 @@ mongo_dashboard_getNextMeetings:
 mongo_dashboard_getProjectsGlobalProgress:
     path:       dashboard/getprojectsglobalprogress/{token}
     defaults:   { _controller: MongoBundle:Dashboard:getProjectsGlobalProgress, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getProjectCreator:
     path:       dashboard/getprojectcreator/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getProjectCreator, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getProjectBasicInformations:
     path:       dashboard/getprojectbasicinformations/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getProjectBasicInformations, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getProjectTasks:
     path:       dashboard/getprojecttasks/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getProjectTasks, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getUserBasicInformations:
@@ -282,15 +254,11 @@ mongo_dashboard_getUserBasicInformations:
 mongo_dashboard_getProjectPersons:
     path:       dashboard/getprojectpersons/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getProjectPersons, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getMeetingBasicInformations:
     path:       dashboard/getmeetingbasicinformations/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getMeetingBasicInformations, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getProjectList:
@@ -301,22 +269,16 @@ mongo_dashboard_getProjectList:
 mongo_dashboard_getProjectTasksStatus:
     path:       dashboard/getprojecttasksstatus/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getProjectTasksStatus, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getNumberTimelineMessages:
     path:       dashboard/getnumbertimelinemessages/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getNumberTimelineMessages, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_dashboard_getNumberBugs:
     path:       dashboard/getnumberbugs/{token}/{id}
     defaults:   { _controller: MongoBundle:Dashboard:getNumberBugs, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 
@@ -334,15 +296,11 @@ mongo_event_getTypes:
 mongo_event_getEvent:
     path:       /event/getevent/{token}/{id}
     defaults:   { _controller: MongoBundle:Event:getEvent, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_event_setParticipants:
     path:       /event/setparticipants/{id}
     defaults:   { _controller: MongoBundle:Event:setParticipants, _format: json }
-    requirements:
-        id: \d+
     methods: [POST]
 
 mongo_event_postEvent:
@@ -353,15 +311,11 @@ mongo_event_postEvent:
 mongo_event_editEvent:
     path:       /event/editevent/{id}
     defaults:   { _controller: MongoBundle:Event:editEvent, _format: json }
-    requirements:
-        id: \d+
     methods: [POST]
 
 mongo_event_delEvent:
     path:       /event/delevent/{token}/{id}
     defaults:   { _controller: MongoBundle:Event:delEvent, _format: json }
-    requirements:
-        id: \d+
     methods: [DELETE]
 
 # meeting_addAlert:
@@ -422,7 +376,6 @@ mongo_notification_unregisterDevice:
     defaults:   { _controller: MongoBundle:Notification:unregisterDevice }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
     methods: [DELETE]
 
 mongo_notification_getUserDevices:
@@ -447,7 +400,6 @@ mongo_notification_setNotificationToRead:
     defaults:   { _controller: MongoBundle:Notification:setNotificationToRead }
     requirements:
         token:  "[a-zA-Z]+"
-        id:     \d+
     methods: [PUT]
 
 
@@ -525,8 +477,6 @@ mongo_project_updateInformations:
 mongo_project_getInformations:
     path:       projects/getinformations/{token}/{projectId}
     defaults:   { _controller: MongoBundle:Project:getInformations, _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 mongo_project_delProject:
@@ -537,8 +487,6 @@ mongo_project_delProject:
 mongo_project_retrieveProject:
     path:       projects/retrieveproject/{token}/{projectId}
     defaults:   { _controller: MongoBundle:Project:retrieveProject, _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 mongo_project_generateCustomerAccess:
@@ -549,15 +497,11 @@ mongo_project_generateCustomerAccess:
 mongo_project_getCustomerAccessById:
     path:       projects/getcustomeraccessbyid/{token}/{id}
     defaults:   { _controller: MongoBundle:Project:getCustomerAccessById, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_project_getCustomerAccessByProject:
     path:       projects/getcustomeraccessbyproject/{token}/{projectId}
     defaults:   { _controller: MongoBundle:Project:getCustomerAccessByProject, _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 mongo_project_delCustomerAccess:
@@ -578,8 +522,6 @@ mongo_project_removeUserToProject:
 mongo_project_getUserToProject:
     path:       projects/getusertoproject/{token}/{projectId}
     defaults:   { _controller: MongoBundle:Project:getUserToProject, _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 
@@ -606,8 +548,6 @@ mongo_role_putProjectRoles:
 mongo_role_getProjectRoles:
     path:       roles/getprojectroles/{token}/{projectId}
     defaults:   { _controller: MongoBundle:RolesAndTokenVerification:getProjectRoles, _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 mongo_role_assignPersonToRole:
@@ -633,16 +573,11 @@ mongo_role_delPersonRole:
 mongo_role_getRoleByProjectAndUser:
     path:       roles/getrolebyprojectanduser/{token}/{projectId}/{userId}
     defaults:   { _controller: MongoBundle:RolesAndTokenVerification:getRoleByProjectAndUser, _format: json }
-    requirements:
-        projectId: \d+
-        userId: \d+
     methods: [GET]
 
 mongo_role_getUsersForRole:
     path:       roles/getusersforrole/{token}/{roleId}
     defaults:   { _controller: MongoBundle:RolesAndTokenVerification:getUsersForRole, _format: json }
-    requirements:
-        roleId: \d+
     methods: [GET]
 
 mongo_role_getUserConnectedRolesInformations:
@@ -653,8 +588,6 @@ mongo_role_getUserConnectedRolesInformations:
 mongo_role_getUserRolesInformations:
     path:       roles/getuserrolesinformations/{token}/{userId}
     defaults:   { _controller: MongoBundle:RolesAndTokenVerification:getUserRolesInfos, _format: json }
-    requirements:
-        roleId: \d+
     methods: [GET]
 
 
@@ -677,8 +610,6 @@ mongo_task_taskUpdate:
 mongo_task_getTaskInfos:
     path:       tasks/taskinformations/{token}/{taskId}
     defaults:   { _controller: 'MongoBundle:Task:getTaskInfos', _format: json }
-    requirements:
-        taskId: \d+
     methods: [GET]
 
 mongo_task_archiveTask:
@@ -689,8 +620,6 @@ mongo_task_archiveTask:
 mongo_task_taskDelete:
     path:       tasks/taskdelete/{token}/{taskId}
     defaults:   { _controller: MongoBundle:Task:deleteTask, _format: json }
-    requirements:
-        taskId: \d+
     methods: [DELETE]
 
 mongo_task_assignUserToTask:
@@ -701,9 +630,6 @@ mongo_task_assignUserToTask:
 mongo_task_removeUserToTask:
     path:       tasks/removeusertotask/{token}/{taskId}/{userId}
     defaults:   { _controller: 'MongoBundle:Task:removeUserToTask', _format: json }
-    requirements:
-        taskId: \d+
-        userId: \d+
     methods: [DELETE]
 
 mongo_task_tagCreation:
@@ -719,15 +645,11 @@ mongo_task_tagUpdate:
 mongo_task_getTagInfos:
     path:       tasks/taginformations/{token}/{tagId}
     defaults:   { _controller: 'MongoBundle:Task:getTagInfos', _format: json }
-    requirements:
-        tagId: \d+
     methods: [GET]
 
 mongo_task_deleteTag:
     path:       tasks/deletetag/{token}/{tagId}
     defaults:   { _controller: 'MongoBundle:Task:deleteTag', _format: json }
-    requirements:
-        tagId: \d+
     methods: [DELETE]
 
 mongo_task_assignTagToTask:
@@ -738,23 +660,16 @@ mongo_task_assignTagToTask:
 mongo_task_removeTagToTask:
     path:       tasks/removetagtotask/{token}/{taskId}/{tagId}
     defaults:   { _controller: 'MongoBundle:Task:removeTagToTask', _format: json }
-    requirements:
-        taskId: \d+
-        tagId: \d+
     methods: [DELETE]
 
 mongo_task_getProjectTasks:
     path:       tasks/getprojecttasks/{token}/{projectId}
     defaults:   { _controller: MongoBundle:Task:getProjectTasks, _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 mongo_task_getProjectTags:
     path:       tasks/getprojecttags/{token}/{projectId}
     defaults:   { _controller: 'MongoBundle:Task:getProjectTags', _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 
@@ -767,50 +682,36 @@ mongo_task_getProjectTags:
 mongo_timeline_getTimelines:
     path:       /timeline/gettimelines/{token}/{id}
     defaults:   { _controller: MongoBundle:Timeline:getTimelines, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_timeline_postMessage:
     path:       /timeline/postmessage/{id}
     defaults:   { _controller: MongoBundle:Timeline:postMessage, _format: json }
-    requirements:
-        id: \d+
     methods: [POST]
 
 mongo_timeline_editMessage:
     path:       /timeline/editmessage/{id}
     defaults:   { _controller: MongoBundle:Timeline:editMessage, _format: json }
-    requirements:
-        id: \d+
     methods: [POST]
 
 mongo_timeline_getMessages:
     path:       /timeline/getmessages/{token}/{id}
     defaults:   { _controller: MongoBundle:Timeline:getMessages, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_timeline_getLastMessages:
     path:       /timeline/getlastmessages/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: MongoBundle:Timeline:getLastMessages, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_timeline_getComments:
     path:       /timeline/getcomments/{token}/{id}/{messageId}
     defaults:   { _controller: MongoBundle:Timeline:getComments, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_timeline_archiveMessage:
     path:       /timeline/archivemessage/{token}/{id}/{messageId}
     defaults:   { _controller: MongoBundle:Timeline:archiveMessage, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 
@@ -828,8 +729,6 @@ mongo_user_basicInformations:
 mongo_user_getUserBasicInformations:
     path:       user/getuserbasicinformations/{token}/{userId}
     defaults:   { _controller: MongoBundle:User:getUserBasicInformations, _format: json }
-    requirements:
-        userId: \d+
     methods: [GET]
 
 mongo_user_getIdByName:
@@ -915,8 +814,6 @@ mongo_user_getCurrentAndNextTasks:
 mongo_whiteboard_list:
     path:		whiteboard/list/{token}/{projectId}
     defaults:	{ _controller: MongoBundle:Whiteboard:listWhiteboard, _format: json }
-    requirements:
-        projectId: \d+
     methods: [GET]
 
 mongo_whiteboard_new:
@@ -927,27 +824,19 @@ mongo_whiteboard_new:
 mongo_whiteboard_open:
     path:		whiteboard/open/{token}/{id}
     defaults:	{ _controller: MongoBundle:Whiteboard:openWhiteboard, _format: json }
-    requirements:
-        id: \d+
     methods: [GET]
 
 mongo_whiteboard_pushDraw:
     path:		whiteboard/pushdraw/{id}
     defaults:	{ _controller: MongoBundle:Whiteboard:pushDraw, _format: json }
-    requirements:
-        id: \d+
     methods: [POST]
 
 mongo_whiteboard_pullDraw:
     path:		whiteboard/pulldraw/{id}
     defaults:	{ _controller: MongoBundle:Whiteboard:pullDraw, _format: json }
-    requirements:
-        id: \d+
     methods: [POST]
 
 mongo_whiteboard_delete:
     path:		whiteboard/delete/{token}/{id}
     defaults:	{ _controller: MongoBundle:Whiteboard:delWhiteboard, _format: json }
-    requirements:
-        id: \d+
     methods: [DELETE]

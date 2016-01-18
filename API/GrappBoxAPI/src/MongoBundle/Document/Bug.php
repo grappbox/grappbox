@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Bug
+ */
 class Bug
 {
-
     /**
      * @var $id
      */
@@ -21,7 +25,7 @@ class Bug
     protected $title;
 
     /**
-     * @var text $description
+     * @var string $description
      */
     protected $description;
 
@@ -91,6 +95,7 @@ class Bug
       );
     }
     
+    
     /**
      * Get id
      *
@@ -148,10 +153,10 @@ class Bug
     /**
      * Set description
      *
-     * @param text $description
+     * @param string $description
      * @return self
      */
-    public function setDescription(\text $description)
+    public function setDescription($description)
     {
         $this->description = $description;
         return $this;
@@ -160,7 +165,7 @@ class Bug
     /**
      * Get description
      *
-     * @return text $description
+     * @return string $description
      */
     public function getDescription()
     {

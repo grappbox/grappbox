@@ -16,7 +16,7 @@ class TaskRepository extends DocumentRepository
 	{
 		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
 
-		$tasks = $qb->getQuery()->getResult();
+		$tasks = $qb->getQuery()->execute();
 
 		if ($tasks === null)
 		{
@@ -56,7 +56,7 @@ class TaskRepository extends DocumentRepository
 	{
 		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
 
-		$tasks = $qb->getQuery()->getResult();
+		$tasks = $qb->getQuery()->execute();
 
 		if ($tasks === null)
 		{

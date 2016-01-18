@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\CloudTransfer
+ */
 class CloudTransfer
 {
-
     /**
      * @var $id
      */
@@ -16,7 +20,7 @@ class CloudTransfer
     protected $filename;
 
     /**
-     * @var text $path
+     * @var string $path
      */
     protected $path;
 
@@ -31,7 +35,7 @@ class CloudTransfer
     protected $deletionDate;
 
     /**
-     * @var text $password
+     * @var string $password
      */
     protected $password;
 
@@ -76,10 +80,10 @@ class CloudTransfer
     /**
      * Set path
      *
-     * @param text $path
+     * @param string $path
      * @return self
      */
-    public function setPath(\text $path)
+    public function setPath($path)
     {
         $this->path = $path;
         return $this;
@@ -88,7 +92,7 @@ class CloudTransfer
     /**
      * Get path
      *
-     * @return text $path
+     * @return string $path
      */
     public function getPath()
     {
@@ -142,10 +146,10 @@ class CloudTransfer
     /**
      * Set password
      *
-     * @param text $password
+     * @param string $password
      * @return self
      */
-    public function setPassword(\text $password)
+    public function setPassword($password)
     {
         $this->password = $password;
         return $this;
@@ -154,7 +158,7 @@ class CloudTransfer
     /**
      * Get password
      *
-     * @return text $password
+     * @return string $password
      */
     public function getPassword()
     {

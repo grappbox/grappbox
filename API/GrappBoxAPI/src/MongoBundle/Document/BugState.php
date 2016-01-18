@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\BugState
+ */
 class BugState
 {
-
     /**
      * @var $id
      */
@@ -14,6 +18,7 @@ class BugState
      * @var string $name
      */
     protected $name;
+
 
     /**
      * Get object content into array

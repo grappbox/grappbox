@@ -133,7 +133,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		$qb = $repository->createQueryBuilder('p');
 
-		$projects = $qb->getQuery()->getResult();
+		$projects = $qb->getQuery()->execute();
 		$nullDate = date_create("0000-00-00 00:00:00");
 		$defDate = new \DateTime;
 

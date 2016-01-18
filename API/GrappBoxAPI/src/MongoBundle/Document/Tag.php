@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Tag
+ */
 class Tag
 {
-
     /**
      * @var $id
      */
@@ -35,6 +39,8 @@ class Tag
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
+
 
     public function objectToArray()
     {

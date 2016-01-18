@@ -107,3 +107,4 @@ doctrine_mongodb:
             mappings:
                 MongoBundle: yml
             metadata_cache_driver: array
+    auto_generate_hydrator_classes: true 

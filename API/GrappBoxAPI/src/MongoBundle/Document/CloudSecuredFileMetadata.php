@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\CloudSecuredFileMetadata
+ */
 class CloudSecuredFileMetadata
 {
-
     /**
      * @var $id
      */
@@ -16,7 +20,7 @@ class CloudSecuredFileMetadata
     protected $filename;
 
     /**
-     * @var text $password
+     * @var string $password
      */
     protected $password;
 
@@ -26,7 +30,7 @@ class CloudSecuredFileMetadata
     protected $creationDate;
 
     /**
-     * @var text $cloudPath
+     * @var string $cloudPath
      */
     protected $cloudPath;
 
@@ -66,10 +70,10 @@ class CloudSecuredFileMetadata
     /**
      * Set password
      *
-     * @param text $password
+     * @param string $password
      * @return self
      */
-    public function setPassword(\text $password)
+    public function setPassword($password)
     {
         $this->password = $password;
         return $this;
@@ -78,7 +82,7 @@ class CloudSecuredFileMetadata
     /**
      * Get password
      *
-     * @return text $password
+     * @return string $password
      */
     public function getPassword()
     {
@@ -110,10 +114,10 @@ class CloudSecuredFileMetadata
     /**
      * Set cloudPath
      *
-     * @param text $cloudPath
+     * @param string $cloudPath
      * @return self
      */
-    public function setCloudPath(\text $cloudPath)
+    public function setCloudPath($cloudPath)
     {
         $this->cloudPath = $cloudPath;
         return $this;
@@ -122,7 +126,7 @@ class CloudSecuredFileMetadata
     /**
      * Get cloudPath
      *
-     * @return text $cloudPath
+     * @return string $cloudPath
      */
     public function getCloudPath()
     {

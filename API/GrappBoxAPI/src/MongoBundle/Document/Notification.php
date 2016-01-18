@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Notification
+ */
 class Notification
 {
-
     /**
      * @var $id
      */
@@ -21,7 +25,7 @@ class Notification
     protected $targetId;
 
     /**
-     * @var text $message
+     * @var string $message
      */
     protected $message;
 
@@ -39,6 +43,7 @@ class Notification
      * @var MongoBundle\Document\User
      */
     protected $user;
+
 
     public function objectToArray()
     {
@@ -114,10 +119,10 @@ class Notification
     /**
      * Set message
      *
-     * @param text $message
+     * @param string $message
      * @return self
      */
-    public function setMessage(\text $message)
+    public function setMessage($message)
     {
         $this->message = $message;
         return $this;
@@ -126,7 +131,7 @@ class Notification
     /**
      * Get message
      *
-     * @return text $message
+     * @return string $message
      */
     public function getMessage()
     {

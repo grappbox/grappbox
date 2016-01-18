@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Event
+ */
 class Event
 {
-
     /**
      * @var $id
      */
@@ -16,7 +20,7 @@ class Event
     protected $title;
 
     /**
-     * @var text $description
+     * @var string $description
      */
     protected $description;
 
@@ -69,7 +73,7 @@ class Event
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     public function objectToArray()
     {
       $projectId = null;
@@ -90,7 +94,7 @@ class Event
             'deletedAt' => $this->deletedAt
         );
     }
-
+    
     /**
      * Get id
      *
@@ -126,10 +130,10 @@ class Event
     /**
      * Set description
      *
-     * @param text $description
+     * @param string $description
      * @return self
      */
-    public function setDescription(\text $description)
+    public function setDescription($description)
     {
         $this->description = $description;
         return $this;
@@ -138,7 +142,7 @@ class Event
     /**
      * Get description
      *
-     * @return text $description
+     * @return string $description
      */
     public function getDescription()
     {

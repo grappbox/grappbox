@@ -57,7 +57,7 @@ class PlanningController extends RolesAndTokenVerificationController
 			->andWhere('e.deletedAt IS NULL')
 			->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
     	->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
-    	->getQuery()->getResult();
+    	->getQuery()->execute();
 
 		$events = array();
 		foreach ($query as $key => $value) {
@@ -105,7 +105,7 @@ class PlanningController extends RolesAndTokenVerificationController
 			->andWhere('e.deletedAt IS NULL')
 			->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
 			->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
-			->getQuery()->getResult();
+			->getQuery()->execute();
 
 		$events = array();
 		foreach ($query as $key => $value) {
@@ -154,7 +154,7 @@ class PlanningController extends RolesAndTokenVerificationController
 			->andWhere('e.deletedAt IS NULL')
 			->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
 			->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
-			->getQuery()->getResult();
+			->getQuery()->execute();
 
 		$events = array();
 		foreach ($query as $key => $value) {

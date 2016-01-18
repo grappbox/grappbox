@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\EventType
+ */
 class EventType
 {
-
     /**
      * @var $id
      */
@@ -24,6 +28,7 @@ class EventType
     {
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
 
     public function objectToArray()
     {

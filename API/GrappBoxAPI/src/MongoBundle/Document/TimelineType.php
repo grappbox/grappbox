@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\TimelineType
+ */
 class TimelineType
 {
-
     /**
      * @var $id
      */
@@ -14,6 +18,8 @@ class TimelineType
      * @var string $name
      */
     protected $name;
+
+
 
     public function objectToArray()
     {

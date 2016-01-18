@@ -16,7 +16,7 @@ class UserRepository extends DocumentRepository
 	{
 		$qb = $this->createQueryBuilder('u')->where('u.firstname = :firstname', 'u.lastname = :lastname')->setParameter('firstname', $firstname)->setParameter('lastname', $lastname);
 
-		$users = $qb->getQuery()->getResult();
+		$users = $qb->getQuery()->execute();
 
 		$arr = array();
 		$i = 1;

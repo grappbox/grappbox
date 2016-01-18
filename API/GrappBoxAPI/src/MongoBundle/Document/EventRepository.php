@@ -15,7 +15,7 @@ class EventRepository extends DocumentRepository
 	public function findNextMeetings($id)
 	{
 		$qb = $this->createQueryBuilder('e');
-		$meetings = $qb->getQuery()->getResult();
+		$meetings = $qb->getQuery()->execute();
 		$arr = array();
 		$i = 0;
 		$defaultDate = new \DateTime;
@@ -83,7 +83,7 @@ class EventRepository extends DocumentRepository
 	{
 		$defaultDate = new \DateTime;
 		$qb = $this->createQueryBuilder('e')->where('e.endDate > :defaultDate')->setParameter('defaultDate', $defaultDate);
-		$meetings = $qb->getQuery()->getResult();
+		$meetings = $qb->getQuery()->execute();
 
 		$resp = new JsonResponse();
 		$ret = array();

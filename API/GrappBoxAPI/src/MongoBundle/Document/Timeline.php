@@ -2,9 +2,13 @@
 
 namespace MongoBundle\Document;
 
+
+
+/**
+ * MongoBundle\Document\Timeline
+ */
 class Timeline
 {
-
     /**
      * @var $id
      */
@@ -40,6 +44,7 @@ class Timeline
         $this->timelineMessages = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+
     /**
      * Get object content into array
      *
@@ -54,6 +59,7 @@ class Timeline
         "name" => $this->name
       );
     }
+
     
     /**
      * Get id
