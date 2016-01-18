@@ -1242,7 +1242,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Tag');
 
-		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId);
+		$qb = $repository->createQueryBuilder()->field('project.id')->equals($projectId);
 		$tags = $qb->getQuery()->execute();
 
 		if ($tags === null)

@@ -15,7 +15,7 @@ class ProjectRepository extends DocumentRepository
 {
 	public function findTeamOccupation($id)
 	{
-		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder()->field('creator_user')->equals($id);
 
 		$projects = $qb->getQuery()->execute();
 
@@ -76,9 +76,9 @@ class ProjectRepository extends DocumentRepository
 
 	public function findTeamOccupationV2($id)
 	{
-		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder()->field('creator_user')->equals($id);
 
-		$projects = $qb->getQuery()->execute()->count();
+		$projects = $qb->getQuery()->execute();
 
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
@@ -143,7 +143,7 @@ class ProjectRepository extends DocumentRepository
 
 	public function findProjectGlobalProgress($id)
 	{
-		$qb = $this->createQueryBuilder('p')->join('p.users', 'u')->where('u.id = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
 
 		$projects = $qb->getQuery()->execute();
 
@@ -216,7 +216,7 @@ class ProjectRepository extends DocumentRepository
 
 	public function findUserProjects($id)
 	{
-		$qb = $this->createQueryBuilder('p');
+		$qb = $this->createQueryBuilder();
 
 		$projects = $qb->getQuery()->execute();
 

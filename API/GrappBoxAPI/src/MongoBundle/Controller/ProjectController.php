@@ -129,7 +129,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->persist($pur);
 
-		$qb = $em->getRepository('MongoBundle:Tag')->createQueryBuilder('t');
+		$qb = $em->getRepository('MongoBundle:Tag')->createQueryBuilder();
 		$tags = $qb->getQuery()->execute();
 
 		foreach ($tags as $t) {
@@ -229,7 +229,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 			$repository = $em->getRepository('MongoBundle:Role');
 
-			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $content->projectId);
+			$qb = $repository->createQueryBuilder()->field('name')->equals('Admin')->filed('projects.id')->equals($content->projectId);
 			$role = $qb->getQuery()->execute();
 
 			if (count($role) == 0)
@@ -241,8 +241,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$creatorUserId = $project->getCreatorUser()->getId();
 			$roleId = $role->getId();
 
-			$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
-			->setParameter('projectId', $content->projectId)->setParameter('userId', $creatorUserId)->setParameter('roleId', $roleId);
+			$qb = $repository->createQueryBuilder()->field('projectId')->equals($content->projectId)->field('userId')->equals($creatorUserId)->field('roleId')->equals($roleId);
 			$ProjectUserRoles = $qb->getQuery()->execute();
 
 			if (count($ProjectUserRoles) == 0)
@@ -436,7 +435,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$repository = $em->getRepository('MongoBundle:CustomerAccess');
 
-		$qb = $repository->createQueryBuilder('ca')->join('ca.projects', 'p')->where('ca.name = :name', 'p.id = :id')->setParameter('name', $content->name)->setParameter('id', $content->projectId);
+		$qb = $repository->createQueryBuilder()->field('name')->equals($content->name)->field('projects.id')->equals($content->projectId);
 		$customerAccess = $qb->getQuery()->execute();
 
 		if (count($customerAccess) == 0)

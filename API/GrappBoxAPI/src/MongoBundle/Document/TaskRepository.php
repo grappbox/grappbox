@@ -14,7 +14,7 @@ class TaskRepository extends DocumentRepository
 {
 	public function findUserAllTasks($id)
 	{
-		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
 
 		$tasks = $qb->getQuery()->execute();
 
@@ -54,7 +54,7 @@ class TaskRepository extends DocumentRepository
 
 	public function findUserCurrentAndNextTasks($id)
 	{
-		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
 
 		$tasks = $qb->getQuery()->execute();
 
