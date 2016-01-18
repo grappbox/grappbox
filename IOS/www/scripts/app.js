@@ -3,7 +3,7 @@
     Every pages mentionned here are stocked in Templates folder
 */
 
-angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api'])
+angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives'])
 
 // on starting
 .run(function ($ionicPlatform, $rootScope) {

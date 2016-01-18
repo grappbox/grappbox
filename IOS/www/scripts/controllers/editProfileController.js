@@ -24,7 +24,6 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get profile info successful !');
                 $scope.profileInfo = data;
-                $scope.profileInfo.birthday.date = new Date($scope.profileInfo.birthday.date);
             })
             .then(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -36,7 +35,7 @@ angular.module('GrappBox.controllers')
     $scope.GetProfileInfo();
 
     $scope.EditProfile = function () {
-        EditProfile.update({
+        /*EditProfile.update({
             token: $rootScope.userDatas.token,
             first_name: $scope.profileInfo.first_name,
             last_name: $scope.profileInfo.last_name,
@@ -57,6 +56,6 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Edit profile failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
-            })
-    }
+            })*/
+    }    
 })

@@ -9,7 +9,7 @@
         <!-- Project information -->
         <div class="item item-divider"></div>
         <p>Type your personal informations</p>
-        <form>
+        <form name="profile_form">
             <ion-input class="item item-input">
                 <ion-label>First Name</ion-label>
                 <input type="text"
@@ -70,10 +70,19 @@
                 <ion-label>Password</ion-label>
                 <input type="password"
                        placeholder="My password'"
-                       name="project_password"
+                       name="profile_password"
                        ng-model="profileInfo.password" />
             </ion-input>
-            <a class="button button-block button-dark" ng-click="EditProfile()">
+            <ion-input class="item item-input">
+                <ion-label>Confirm password</ion-label>
+                <input type="password"
+                       placeholder="Confirm password'"
+                       name="profile_confirmPassword"
+                       ng-model="profileInfo.confirmPassword"
+                       password-verify="profileInfo.password" />
+            </ion-input>
+            <span ng-show="profile_form.profile_confirmPassword.$dirty && profile_form.profile_confirmPassword.$error.passwordVerify">Passwords do not match.</span>
+            <a class="button button-block button-dark" ng-disabled="profile_form.$invalid" ng-click="EditProfile()">
                 Save
             </a>
         </form>

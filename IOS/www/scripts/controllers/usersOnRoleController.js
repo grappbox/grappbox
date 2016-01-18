@@ -20,7 +20,7 @@ angular.module('GrappBox.controllers')
     $scope.role = $stateParams.role;
 
     // Conversion to boolean so ion-checkbox display well in HTML
-    $scope.role.teamTimeline = Boolean($scope.role.teamTimeline);
+    /*$scope.role.teamTimeline = Boolean($scope.role.teamTimeline);
     $scope.role.customerTimeline = Boolean($scope.role.customerTimeline);
     $scope.role.gantt = Boolean($scope.role.gantt);
     $scope.role.whiteboard = Boolean($scope.role.whiteboard);
@@ -28,7 +28,7 @@ angular.module('GrappBox.controllers')
     $scope.role.event = Boolean($scope.role.event);
     $scope.role.task = Boolean($scope.role.task);
     $scope.role.projectSettings = Boolean($scope.role.projectSettings);
-    $scope.role.cloud = Boolean($scope.role.cloud);
+    $scope.role.cloud = Boolean($scope.role.cloud);*/
 
     // Remove confirm popup for deleting role
     $scope.PopupDeleteRole = function () {
