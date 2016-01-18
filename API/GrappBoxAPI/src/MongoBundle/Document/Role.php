@@ -321,4 +321,22 @@ class Role
     {
         return $this->projects;
     }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" =>  $this->name ,
+        "teamTimeline" =>  $this->teamTimeline ,
+        "customerTimeline" => $this->customerTimeline ,
+        "gantt" => $this->gantt ,
+        "whiteboard" => $this->whiteboard ,
+        "bugtracker" => $this->bugtracker ,
+        "event" => $this->event ,
+        "task" => $this->task ,
+        "projectSettings" => $this->projectSettings ,
+        "cloud" => $this->cloud ,
+
+      );
+    }
 }

@@ -294,8 +294,14 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return $this->setBadTokenError("6.3.3", "Project", "getinformations");
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
-			return ($this->setNoRightsError("6.3.9", "Project", "getinformations"));
+			$roles = $this->checkRoles($user, $projectId, "projectSettings");
+
+			return new JsonResponse($roles);
+			//return new JsonResponse($roles->getProjectSettings());
+
+
+		// if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		// 	return ($this->setNoRightsError("6.3.9", "Project", "getinformations"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);

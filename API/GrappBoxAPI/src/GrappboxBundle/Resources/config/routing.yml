@@ -243,39 +243,46 @@ v2_cloud_createDir:
 v2_dashboard_getTeamOccupation:
     path:       dashboard/getteamoccupation/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getTeamOccupation, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_dashboard_getNextMeetings:
     path:       dashboard/getnextmeetings/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getNextMeetings, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_dashboard_getProjectsGlobalProgress:
     path:       dashboard/getprojectsglobalprogress/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectsGlobalProgress, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_dashboard_getProjectCreator:
     path:       dashboard/getprojectcreator/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectCreator, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
     methods: [GET]
 
 v2_dashboard_getProjectBasicInformations:
     path:       dashboard/getprojectbasicinformations/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectBasicInformations, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
     methods: [GET]
 
 v2_dashboard_getProjectTasks:
     path:       dashboard/getprojecttasks/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectTasks, _format: json }
     requirements:
-        id: \d+
+        token:  "[a-zA-Z]+"
+        id:     \d+
     methods: [GET]
 
 v2_dashboard_getUserBasicInformations:

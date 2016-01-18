@@ -3,6 +3,7 @@
 namespace MongoBundle\Document;
 
 use Doctrine\ODM\MongoDB\DocumentRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * ProjectRepository
@@ -76,8 +77,8 @@ class ProjectRepository extends DocumentRepository
 	public function findTeamOccupationV2($id)
 	{
 		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
-		
-		$projects = $qb->getQuery()->execute();
+
+		$projects = $qb->getQuery()->execute()->count();
 
 		$defaultDate = date_create("0000-00-00 00:00:00");
 
@@ -87,7 +88,7 @@ class ProjectRepository extends DocumentRepository
 
 		if ($projects === null || count($projects) == 0)
 		{
-			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getteamoccupation - Success but no data");
+			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getteamoccupation - No Data Success");
 			$ret["data"] = array("array" => []);
 			$resp->setStatusCode(JsonResponse::HTTP_OK);
 			$resp->setData($ret);
@@ -124,7 +125,7 @@ class ProjectRepository extends DocumentRepository
 				if ($busy == true)
 				{
 					$arr[] = array("name" => $projectName, "users" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
-				}				
+				}
 				else
 				{
 					$arr[] = array("name" => $projectName, "users" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);

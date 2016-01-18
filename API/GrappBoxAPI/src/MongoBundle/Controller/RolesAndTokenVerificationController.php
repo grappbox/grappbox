@@ -62,14 +62,14 @@ class RolesAndTokenVerificationController extends Controller
 	protected function checkRoles($user, $projectId, $role)
 	{
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$query = $em->createQuery(
-			'SELECT roles.'.$role.'
-			FROM MongoBundle:Role roles
-			JOIN MongoBundle:ProjectUserRole projectUser WITH roles.id = projectUser.roleId
-			WHERE projectUser.projectId = '.$projectId.' AND projectUser.userId = '.$user->getId());
-		$result = $query->setMaxResults(1)->getOneOrNullResult();
+		$repository = $em->getRepository('MongoBundle:Role');
 
-		return $result[$role];
+		$qb = $em->getRepository("MongoBundle:ProjectUserRole")->findOneBy(array("userId" => $user->getId(), "projectId" => $projectId));
+
+		$result = $em->getRepository("MongoBundle:Role")->find($qb->getRoleId());
+
+		$res = $result->objectToArray();
+		 return $res[$role];
 	}
 
 	protected function setBadTokenError($code, $part, $function)
