@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use GrappboxBundle\Controller\RolesAndTokenVerificationController;
-use GrappboxBundle\Entity\User;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -20,6 +19,7 @@ use GrappboxBundle\Entity\User;
  *  @IgnoreAnnotation("apiError")
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
+ *	@IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiParamExample")
  */
 class UserController extends RolesAndTokenVerificationController
@@ -31,7 +31,7 @@ class UserController extends RolesAndTokenVerificationController
 
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.1.3", "User", "basicinformations"));
 
 		$method = $request->getMethod();
 		$em = $this->getDoctrine()->getManager();
@@ -43,302 +43,16 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.6/user/basicinformations/:token Request the basic informations of the connected user
+	* @api {get} /V0.2/user/basicinformations/:token Request the basic informations of the connected user
 	* @apiName getBasicInformations
 	* @apiGroup Users
-	* @apiVersion 0.6.0
+	* @apiDescription Request the basic informations of the connected user
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token token of the person connected
 	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.7/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
@@ -349,25 +63,34 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} twitter Twitter of the person
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": "1945-06-18",
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getbasicinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18",
+	*			"avatar": "10001111001100110010101010",
+	*			"email": "john.doe@gmail.com"
+	*			"phone": "+33984231475",
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.1.3",
+	*			"return_message": "User - getbasicinformations - Bad ID"
+	*		}
+	*	}
 	*/
 	private function getBasicInformations($user)
 	{
@@ -382,165 +105,22 @@ class UserController extends RolesAndTokenVerificationController
 		$viadeo = $user->getViadeo();
 		$twitter = $user->getTwitter();
 
-		return new JsonResponse(array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday,
+		return $this->setSuccess("1.7.1", "User", "getbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
 			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
-	* @api {get} /V0.9/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
+	* @api {get} /V0.2/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
 	* @apiName getUserBasicInformations
 	* @apiGroup Users
-	* @apiVersion 0.9.0
+	* @apiDescription Request the basic informations for the given user
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token token of the person connected
 	* @apiParam {Number} userId id of the user you want some informations
 	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with id X doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
-	* @apiName getUserBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {String} token token of the person connected
-	* @apiParam {Number} userId id of the user you want some informations
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with id X doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
-	* @apiName getUserBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token token of the person connected
-	* @apiParam {Number} userId id of the user you want some informations
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	* @apiSuccess {Datetime} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with id X doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
-	* @apiName getUserBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {String} token token of the person connected
-	* @apiParam {Number} userId id of the user you want some informations
-	*
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
@@ -551,43 +131,52 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} twitter Twitter of the person
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": "1945-06-18"
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com"
-	*		"phone": "+33984231475",
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getuserbasicinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18"
+	*			"avatar": "10001111001100110010101010",
+	*			"email": "john.doe@gmail.com"
+	*			"phone": "+33984231475",
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
 	* 	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with id X doesn't exist"
-	* 	}
-	*
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.2.3",
+	*			"return_message": "User - getuserbasicinformations - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.2.4",
+	*			"return_message": "User - getuserbasicinformations - Bad Parameter: userId"
+	*		}
+	*	}
 	*/
 	public function getUserBasicInformationsAction(Request $request, $token, $userId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.2.3", "User", "getuserbasicinformations"));
 
 		$userInfos = $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:User')->find($userId);
 		if ($userInfos === null)
-		{
-			throw new NotFoundHttpException("The user with id ".$userId." doesn't exist");
-		}
+			return $this->setBadRequest("7.2.4", "User", "getuserbasicinformations", "Bad Parameter: userId");
 
 		$firstName = $userInfos->getFirstname();
 		$lastName = $userInfos->getLastname();
@@ -603,393 +192,20 @@ class UserController extends RolesAndTokenVerificationController
 		$viadeo = $userInfos->getViadeo();
 		$twitter = $userInfos->getTwitter();
 
-		return new JsonResponse(array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday,
+		return new JsonResponse(array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
 			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
-	* @api {put} /V0.6/user/basicinformations/:token Update the basic informations of the user connected
+	* @api {put} /V0.2/user/basicinformations/:token Update the basic informations of the user connected
 	* @apiName putBasicInformations
 	* @apiGroup Users
-	* @apiVersion 0.6.0
+	* @apiDescription Update the basic informations of the user connected
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatr of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.6/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatr of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.7/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [password] Password of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"password": "azertyuiop",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.8/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [password] Password of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"password": "azertyuiop",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.9/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [password] Password of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"password": "azertyuiop",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.10/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [password] Password of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"password": "azertyuiop",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.11/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Datetime} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [password] Password of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"password": "azertyuiop",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {put} /V0.11/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiVersion 0.11.1
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
+	* @apiParam {String} [firstname] First name of the person
+	* @apiParam {String} [lastname] Last name of the person
 	* @apiParam {Date} [birthday] Birthday of the person
 	* @apiParam {Text} [avatar] Avatar of the person
 	* @apiParam {String} [email] Email of the person
@@ -1000,45 +216,89 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiParam {String} [viadeo] Viadeo of the person
 	* @apiParam {String} [twitter] Twitter of the person
 	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": "1945-06-18"
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"password": "azertyuiop",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
+	* @apiParamExample {json} Request-Full-Example:
+	*	{
+	*		"data": {
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18",
+	*			"avatar": "10001111001100110010101010",
+	*			"email": "john.doe@gmail.com",
+	*			"password": "azertyuiop",
+	*			"phone": +33984231475,
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	*	{
+	*		"data": {}
+	*	}
+	*
+	* @apiParamExample {json} Request-Partial-Example:
+	*	{
+	*		"data": {
+	*			"birthday": "1945-06-18",
+	*			"password": "azertyuiop",
+	*			"phone": +33984231475,
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
+	*	}
+	*
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
+	* @apiSuccess {Date} birthday Birthday of the person
+	* @apiSuccess {Text} avatar Avatr of the person
+	* @apiSuccess {String} email Email of the person
+	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} country Country the person in living in
+	* @apiSuccess {String} linkedin Linkedin of the person
+	* @apiSuccess {String} viadeo Viadeo of the person
+	* @apiSuccess {String} twitter Twitter of the person
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - putuserbasicinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 1
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18"
+	*			"avatar": "10001111001100110010101010",
+	*			"email": "john.doe@gmail.com"
+	*			"phone": "+33984231475",
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
 	* 	}
-	*
-	* @apiSuccessExample Success-Response
-	*     HTTP/1.1 200 OK
-	*	  {
-	*		"message" : "User Basic Informations changed."
-	*	  }
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.1.3",
+	*			"return_message": "User - putbasicinformations - Bad ID"
+	*		}
+	*	}
 	*/
 	private function putBasicInformations($content, $user, $em)
 	{
-		if (array_key_exists('first_name', $content))
+		$content = $content->data;
+
+		if (array_key_exists('firstname', $content))
 			$user->setFirstname($content->first_name);
-		if (array_key_exists('last_name', $content))
+		if (array_key_exists('lastname', $content))
 			$user->setLastname($content->last_name);
 		if (array_key_exists('birthday', $content))
 		{
@@ -1075,820 +335,273 @@ class UserController extends RolesAndTokenVerificationController
 		}
 
 		$em->flush();
-		return new JsonResponse("User Basic Informations changed.");
+
+		$id = $user->getId();
+		$firstName = $user->getFirstname();
+		$lastName = $user->getLastname();
+		$birthday = $user->getBirthday()->format('Y-m-d');
+		$avatar = $user->getAvatar();
+		$email = $user->getEmail();
+		$phone = $user->getPhone();
+		$country = $user->getCountry();
+		$linkedin = $user->getLinkedin();
+		$viadeo = $user->getViadeo();
+		$twitter = $user->getTwitter();
+
+		return $this->setSuccess("1.7.1", "User", "putbasicinformations", "Complete Success", array("id" => $id, "firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
+			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
-	* @api {get} /V0.6/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
+	* @api {get} /V0.2/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
 	* @apiGroup Users
-	* @apiVersion 0.6.0
+	* @apiDescription Request the user Id with the first name and the last name
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user's authentication token
 	* @apiParam {String} firstName first name of the user
 	* @apiParam {String} lastName last name of the user
 	*
-	* @apiSuccess {Object[]} User array of n persons
-	* @apiSuccess {Number} User.id id of the person
-	* @apiSuccess {String} User.first_name First name of the person
-	* @apiSuccess {String} User.last_name Last name of the person
+	* @apiSuccess {Object[]} array Array of persons
+	* @apiSuccess {Number} array.id Id of the person
+	* @apiSuccess {String} array.firstname First name of the person
+	* @apiSuccess {String} array.lastname Last name of the person
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"User 1":
-	*		{
-	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getidbyname - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 2,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				}
+	*			]
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
-	* @apiName getIdByName
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
-	*
-	* @apiSuccess {Object[]} User array of n persons
-	* @apiSuccess {Number} User.id id of the person
-	* @apiSuccess {String} User.first_name First name of the person
-	* @apiSuccess {String} User.last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"User 1":
-	*		{
-	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.3",
+	*			"return_message": "User - getidbyname - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.7/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
-	* @apiName getIdByName
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
-	*
-	* @apiSuccess {Object[]} User array of n persons
-	* @apiSuccess {Number} User.id id of the person
-	* @apiSuccess {String} User.first_name First name of the person
-	* @apiSuccess {String} User.last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"User 1":
-	*		{
-	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.4.3",
+	*			"return_message": "User - getidbyname - Bad ID"
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
-	* @apiName getIdByName
-	* @apiGroup Users
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
-	*
-	* @apiSuccess {Object[]} User array of n persons
-	* @apiSuccess {Number} User.id id of the person
-	* @apiSuccess {String} User.first_name First name of the person
-	* @apiSuccess {String} User.last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"User 1":
-	*		{
-	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
+	*	}
+	* @apiErrorExample Bad Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.4.4",
+	*			"return_message": "User - getidbyname - Bad Parameters"
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
-	* @apiName getIdByName
-	* @apiGroup Users
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
-	*
-	* @apiSuccess {Object[]} User array of n persons
-	* @apiSuccess {Number} User.id id of the person
-	* @apiSuccess {String} User.first_name First name of the person
-	* @apiSuccess {String} User.last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"User 1":
-	*		{
-	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
-	* @apiName getIdByName
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
-	*
-	* @apiSuccess {Object[]} User array of n persons
-	* @apiSuccess {Number} User.id id of the person
-	* @apiSuccess {String} User.first_name First name of the person
-	* @apiSuccess {String} User.last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"User 1":
-	*		{
-	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
-	* @apiName getIdByName
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
-	*
-	* @apiSuccess {Object[]} User array of n persons
-	* @apiSuccess {Number} User.id id of the person
-	* @apiSuccess {String} User.first_name First name of the person
-	* @apiSuccess {String} User.last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"User 1":
-	*		{
-	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	}
 	*/
 	public function getIdByNameAction(Request $request, $token, $firstname, $lastname)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.4.3", "User", "getidbyname"));
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:User')->findUserByName($firstname, $lastname));
+		$repository = $em->getRepository('GrappboxBundle:User');
+		$qb = $repository->createQueryBuilder('u')->where('u.firstname = :firstname', 'u.lastname = :lastname')->setParameter('firstname', $firstname)->setParameter('lastname', $lastname);
+		$users = $qb->getQuery()->getResult();
+		if ($users === null)
+			return $this->setBadRequest("7.4.4", "User", "getidbyname", "Bad Parameters");
+
+		$arr = array();
+
+		foreach ($users as $user) {
+			$id = $user->getId();
+
+			$arr[] = array("id" => $id, "firstname" => $firstname, "lastname" => $lastname);
+		}
+
+		if (count($arr) == 0)
+			return $this->setNoDataSuccess("1.7.3", "User", "getidbyname");
+
+		return $this->setSuccess("1.7.1", "User", "getidbyname", "Complete Success", array("array" => $arr));
 	}
 
 	/**
-	* @api {get} /V0.9/user/getidbyemail/:token/:email Request the user Id with the email
+	* @api {get} /V0.2/user/getidbyemail/:token/:email Request the user Id with the email
 	* @apiName getIdByEmail
 	* @apiGroup Users
-	* @apiVersion 0.9.0
+	* @apiDescription Request the user Id with the email
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user's authentication token
 	* @apiParam {String} email email of the user
 	*
 	* @apiSuccess {Number} id id of the person
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"id": 2,
-	*		"first_name": "John",
-	*		"last_name": "Doe"
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getidbyemail - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 2,
+	*			"first_name": "John",
+	*			"last_name": "Doe"
+	*		}
 	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with email X@Y.Z doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/getidbyemail/:token/:email Request the user Id with the email
-	* @apiName getIdByEmail
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} email email of the user
-	*
-	* @apiSuccess {Number} id id of the person
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"id": 2,
-	*		"first_name": "John",
-	*		"last_name": "Doe"
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with email X@Y.Z doesn't exist"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getidbyemail/:token/:email Request the user Id with the email
-	* @apiName getIdByEmail
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} email email of the user
-	*
-	* @apiSuccess {Number} id id of the person
-	* @apiSuccess {String} first_name First name of the person
-	* @apiSuccess {String} last_name Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"id": 2,
-	*		"first_name": "John",
-	*		"last_name": "Doe"
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	* @apiErrorExample No user found
-	* 	HTTP/1.1 404 Not found
-	* 	{
-	* 		"The user with email X@Y.Z doesn't exist"
-	* 	}
-	*
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.5.3",
+	*			"return_message": "User - getidbyemail - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: email
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.5.4",
+	*			"return_message": "User - getidbyemail - Bad Parameter: email"
+	*		}
+	*	}
 	*/
 	public function getIdByEmailAction(Request $request, $token, $email)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.5.3", "User", "getidbyemail"));
 
 		$userEmail = $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:User')->findOneByEmail($email);
 
 		if ($userEmail === null)
-		{
-			throw new NotFoundHttpException("The user with email ".$email." doesn't exist");
-		}
+			return $this->setBadRequest("7.5.4", "User", "getidbyemail", "Bad Parameter: email");
 
 		$id = $userEmail->getId();
 		$firstname = $userEmail->getFirstname();
 		$lastname = $userEmail->getLastname();
 
-		return new JsonResponse(array("id" => $id, "first_name" => $firstname, "last_name" => $lastname));
+		return $this->setSuccess("1.7.1", "User", "getidbyemail", "Complete Success", array("id" => $id, "firstname" => $firstname, "lastname" => $lastname));
 	}
 
 	/**
-	* @api {get} /V0.6/user/getnextmeetings/:token Request the next meetings of the connected user
+	* @api {get} /V0.2/user/getnextmeetings/:token Request the next meetings of the connected user
 	* @apiName getNextMeetings
 	* @apiGroup Users
-	* @apiVersion 0.6.0
+	* @apiDescription Request the next meetings of the connected user
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user's authentication token
 	*
-	* @apiSuccess {Object[]} Meeting array of n meeting
-	* @apiSuccess {String} Meeting.project_name Name of the project
-	* @apiSuccess {String} Meeting.project_logo Logo of the project
-	* @apiSuccess {String} Meeting.event_type Type of meeting
-	* @apiSuccess {String} Meeting.event_title Title of the meeting
-	* @apiSuccess {String} Meeting.event_description Description of the event
-	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
+	* @apiSuccess {Object[]} array array of events
+	* @apiSuccess {Object[]} projects Project informations
+	* @apiSuccess {String} array.projects.name Name of the project
+	* @apiSuccess {Text} array.projects.logo Logo of the project
+	* @apiSuccess {String} array.type Type of meeting
+	* @apiSuccess {String} array.title Title of the meeting
+	* @apiSuccess {String} array.description Description of the event
+	* @apiSuccess {Datetime} array.begin_date Date of the begining of the meeting
+	* @apiSuccess {Datetime} array.end_date Date of meeting's ending
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Meeting 1":
-	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "Grappbox.com/logo.png",
-	*			"event_type": "Client",
-	*			"event_title": "Cahier Des Charges",
-	*			"event_description": "Mise à jour du CDC avec le client",
-	*			"event_begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getnextmeetings - Complete Success"
 	*		},
-	*		"Meeting 2":
-	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "Dentiste",
-	*			"event_description": "Rdv avec le dentiste pour changer ma couronne",
-	*			"event_begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"projects": {
+	*						"name": "Grappbox",
+	*						"logo": "DATA"
+	*					},
+	*					"type": "Client",
+	*					"title": "Cahier Des Charges",
+	*					"description": "Mise à jour du CDC avec le client",
+	*					"begin_date": {
+	*						"date": "1945-06-18 08:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"end_date": {
+	*						"date": "1945-06-18 18:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					}
+	*				},
+	*				{
+	*					"projects": {
+	*						"name": "",
+	*						"logo": ""
+	*					},
+	*					"type": "Personnel",
+	*					"title": "Dentiste",
+	*					"description": "Rdv avec le dentiste pour changer ma couronne",
+	*					"begin_date": {
+	*						"date": "1946-06-18 09:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*					"end_date": {
+	*						"date": "1946-06-18 11:00:00",
+	*						"timezone_type": 3,
+	*						"timezone": "Europe\/Paris"
+	*					},
+	*				}
+	*			]
 	*		}
-	* 	}
+	*	}
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.3",
+	*			"return_message": "User - getnextmeetings - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/getnextmeetings/:token Request the next meetings of the connected user
-	* @apiName getNextMeetings
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Meeting array of n meeting
-	* @apiSuccess {String} Meeting.project_name Name of the project
-	* @apiSuccess {String} Meeting.project_logo Logo of the project
-	* @apiSuccess {String} Meeting.event_type Type of meeting
-	* @apiSuccess {String} Meeting.event_title Title of the meeting
-	* @apiSuccess {String} Meeting.event_description Description of the event
-	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Meeting 1":
-	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "Grappbox.com/logo.png",
-	*			"event_type": "Client",
-	*			"event_title": "Cahier Des Charges",
-	*			"event_description": "Mise à jour du CDC avec le client",
-	*			"event_begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		"Meeting 2":
-	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "Dentiste",
-	*			"event_description": "Rdv avec le dentiste pour changer ma couronne",
-	*			"event_begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.6.3",
+	*			"return_message": "User - getnextmeetings - Bad ID"
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.7/user/getnextmeetings/:token Request the next meetings of the connected user
-	* @apiName getNextMeetings
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Meeting array of n meeting
-	* @apiSuccess {String} Meeting.project_name Name of the project
-	* @apiSuccess {String} Meeting.project_logo Logo of the project
-	* @apiSuccess {String} Meeting.event_type Type of meeting
-	* @apiSuccess {String} Meeting.event_title Title of the meeting
-	* @apiSuccess {String} Meeting.event_description Description of the event
-	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Meeting 1":
-	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "Grappbox.com/logo.png",
-	*			"event_type": "Client",
-	*			"event_title": "Cahier Des Charges",
-	*			"event_description": "Mise à jour du CDC avec le client",
-	*			"event_begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		"Meeting 2":
-	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "Dentiste",
-	*			"event_description": "Rdv avec le dentiste pour changer ma couronne",
-	*			"event_begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/user/getnextmeetings/:token Request the next meetings of the connected user
-	* @apiName getNextMeetings
-	* @apiGroup Users
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Meeting array of n meeting
-	* @apiSuccess {String} Meeting.project_name Name of the project
-	* @apiSuccess {String} Meeting.project_logo Logo of the project
-	* @apiSuccess {String} Meeting.event_type Type of meeting
-	* @apiSuccess {String} Meeting.event_title Title of the meeting
-	* @apiSuccess {String} Meeting.event_description Description of the event
-	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Meeting 1":
-	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "Grappbox.com/logo.png",
-	*			"event_type": "Client",
-	*			"event_title": "Cahier Des Charges",
-	*			"event_description": "Mise à jour du CDC avec le client",
-	*			"event_begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		"Meeting 2":
-	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "Dentiste",
-	*			"event_description": "Rdv avec le dentiste pour changer ma couronne",
-	*			"event_begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/user/getnextmeetings/:token Request the next meetings of the connected user
-	* @apiName getNextMeetings
-	* @apiGroup Users
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Meeting array of n meeting
-	* @apiSuccess {String} Meeting.project_name Name of the project
-	* @apiSuccess {String} Meeting.project_logo Logo of the project
-	* @apiSuccess {String} Meeting.event_type Type of meeting
-	* @apiSuccess {String} Meeting.event_title Title of the meeting
-	* @apiSuccess {String} Meeting.event_description Description of the event
-	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Meeting 1":
-	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "Grappbox.com/logo.png",
-	*			"event_type": "Client",
-	*			"event_title": "Cahier Des Charges",
-	*			"event_description": "Mise à jour du CDC avec le client",
-	*			"event_begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		"Meeting 2":
-	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "Dentiste",
-	*			"event_description": "Rdv avec le dentiste pour changer ma couronne",
-	*			"event_begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/getnextmeetings/:token Request the next meetings of the connected user
-	* @apiName getNextMeetings
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Meeting array of n meeting
-	* @apiSuccess {String} Meeting.project_name Name of the project
-	* @apiSuccess {String} Meeting.project_logo Logo of the project
-	* @apiSuccess {String} Meeting.event_type Type of meeting
-	* @apiSuccess {String} Meeting.event_title Title of the meeting
-	* @apiSuccess {String} Meeting.event_description Description of the event
-	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Meeting 1":
-	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "Grappbox.com/logo.png",
-	*			"event_type": "Client",
-	*			"event_title": "Cahier Des Charges",
-	*			"event_description": "Mise à jour du CDC avec le client",
-	*			"event_begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		"Meeting 2":
-	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "Dentiste",
-	*			"event_description": "Rdv avec le dentiste pour changer ma couronne",
-	*			"event_begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getnextmeetings/:token Request the next meetings of the connected user
-	* @apiName getNextMeetings
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Meeting array of n meeting
-	* @apiSuccess {String} Meeting.project_name Name of the project
-	* @apiSuccess {String} Meeting.project_logo Logo of the project
-	* @apiSuccess {String} Meeting.event_type Type of meeting
-	* @apiSuccess {String} Meeting.event_title Title of the meeting
-	* @apiSuccess {String} Meeting.event_description Description of the event
-	* @apiSuccess {Datetime} Meeting.event_begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} Meeting.event_end_date Date of meeting's ending
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Meeting 1":
-	*		{
-	*			"project_name": "Grappbox",
-	*			"project_logo": "Grappbox.com/logo.png",
-	*			"event_type": "Client",
-	*			"event_title": "Cahier Des Charges",
-	*			"event_description": "Mise à jour du CDC avec le client",
-	*			"event_begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		"Meeting 2":
-	*		{
-	*			"project_name": "",
-	*			"project_logo": "",
-	*			"event_type": "Personnel",
-	*			"event_title": "Dentiste",
-	*			"event_description": "Rdv avec le dentiste pour changer ma couronne",
-	*			"event_begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"event_end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	}
 	*/
 	public function getNextMeetingsAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.6.3", "User", "getnextmeetings"));
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetings($user->getId()));
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetingsV2($user->getId(), "7", "User", "getnextmeetings");
 	}
 
 	/**

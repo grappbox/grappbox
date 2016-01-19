@@ -215,7 +215,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("2.2.3", "Dashboard", "getnextmeetings"));
 
-		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetingsV2($user->getId());
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetingsV2($user->getId(), "2", "Dashboard", "getnextmeetings");
 	}
 
 	/**

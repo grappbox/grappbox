@@ -537,7 +537,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
-	*			"return_code": "1.11.3",
+	*			"return_code": "1.11.1",
 	*			"return_message": "Timeline - getlastmessages - Complete Success"
 	*		},
 	*		"data": {

@@ -81,7 +81,7 @@ class EventRepository extends EntityRepository
 		return ($arr);
 	}
 
-	public function findNextMeetingsV2($id)
+	public function findNextMeetingsV2($id, $code, $part, $function)
 	{
 		$defaultDate = new \DateTime;
 		$qb = $this->createQueryBuilder('e')->where('e.endDate > :defaultDate')->setParameter('defaultDate', $defaultDate);
@@ -158,7 +158,7 @@ class EventRepository extends EntityRepository
 
 		if (count($arr) == 0)
 		{
-			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getnextmeetings - Success but no data");
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
 			$ret["data"] = array("array" => []);
 			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
 			$resp->setData($ret);
@@ -166,7 +166,7 @@ class EventRepository extends EntityRepository
 			return $resp;
 		}
 
-		$ret["info"] = array("return_code" => "1.2.1", "return_message" => "Dashboard - getnextmeetings - Complete success");
+		$ret["info"] = array("return_code" => "1.".$code.".1", "return_message" => $part." - ".$function." - Complete success");
 		$ret["data"] = array("array" => $arr);
 		$resp->setStatusCode(JsonResponse::HTTP_OK);
 		$resp->setData($ret);
