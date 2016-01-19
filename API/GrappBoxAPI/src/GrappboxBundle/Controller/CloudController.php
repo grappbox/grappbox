@@ -619,6 +619,7 @@ class CloudController extends Controller
 			$content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
 			$filename = split('/', $content[$i]["path"]);
 			$filename = $filename[count($filename) - 1];
+			$filename = urldecode($filename);
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
 			$content[$i]["is_secured"] = !($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null);
