@@ -1,61 +1,63 @@
 package com.grappbox.grappbox.grappbox.Cloud;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
-import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.ProtocolException;
 
 /**
- * Created by wieser_m on 17/01/2016.
+ * Created by wieser_m on 19/01/2016.
  */
-public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
+public class CreateDirectoryTask extends AsyncTask<String, Void, String> {
 
     private CloudFileAdapter        _adapter;
-    private String                  _askedPath;
-    private CloudExplorerFragment   _cloudExplorerFragment;
+    private CloudExplorerFragment   _context;
+    private String                  _filename;
 
-    GetCloudFileListTask(CloudExplorerFragment context, CloudFileAdapter adapter)
+    CreateDirectoryTask(CloudExplorerFragment context, CloudFileAdapter adapter)
     {
         _adapter = adapter;
-        _cloudExplorerFragment = context;
+        _context = context;
     }
+
     @Override
     protected String doInBackground(String... params) {
-        if (params.length < 2)
+        if (params.length < 3)
             return null;
-        String token = SessionAdapter.getInstance().getToken();
-        int projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
-        String path = params[0];
-        String passwordSafe = params[1];
         APIConnectAdapter api = APIConnectAdapter.getInstance();
+        JSONObject json = new JSONObject();
+        JSONObject data = new JSONObject();
+        String path = params[0];
+        String name = params[1];
+        String pass = params[2];
 
-
-        Log.e("API", path);
-        _askedPath = path;
-        path = path.replace('/', ',');
-        path = path.replace(' ', '|');
+        assert path != null && name != null && pass != null;
+        _filename = name;
         try {
-            api.setVersion("V0.2");
-            api.startConnection("cloud/list/" + token + "/" + String.valueOf(projectId) + "/" + path + (passwordSafe == "" ? "" : "/" + passwordSafe));
-            api.setRequestConnection("GET");
+            data.put("token", SessionAdapter.getInstance().getToken());
+            data.put("project_id", SessionAdapter.getInstance().getCurrentSelectedProject());
+            data.put("path", path);
+            data.put("dir_name", name);
+            if (pass != "")
+                data.put("password", pass);
+            json.put("data", data);
 
+            api.setVersion("V0.2");
+            api.startConnection("cloud/createdir");
+            api.setRequestConnection("POST");
+            api.sendJSON(json);
             return api.getInputSream();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
@@ -74,14 +76,11 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
         if (responseCode < 300) {
             APIConnectAdapter.getInstance().closeConnection();
         }
-        JSONObject json = null;
-        JSONArray data;
-
-        if (s == null || (_askedPath.startsWith("/Safe") && s.isEmpty()))
+        else
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
 
-            builder.setMessage(R.string.password_error);
+            builder.setMessage(_adapter.getContext().getString(R.string.problem_grappbox_server) + _adapter.getContext().getString(R.string.error_code_head) + String.valueOf(responseCode));
             builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -89,26 +88,22 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
                 }
             });
             builder.create().show();
-            if (_cloudExplorerFragment != null) {
-                _cloudExplorerFragment.setSafePassword("");
-                _cloudExplorerFragment.resetPath();
+            if (_context != null) {
+                _context.setSafePassword("");
             }
             return;
         }
-        _adapter.clear();
-        if (!_askedPath.equals("/"))
-        {
-            FileItem item = new FileItem(FileItem.EFileType.BACK, "Go to parent");
 
-            _adapter.add(item);
-        }
         try {
-            json = new JSONObject(s);
-            if (!json.getJSONObject("info").getString("return_code").startsWith("1."))
+            JSONObject json = new JSONObject(s);
+            JSONObject infos = json.getJSONObject("info");
+
+            assert infos != null;
+            if (!infos.getString("return_code").startsWith("1."))
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
 
-                builder.setMessage(R.string.problem_grappbox_server);
+                builder.setMessage(_adapter.getContext().getString(R.string.problem_grappbox_server) + _adapter.getContext().getString(R.string.error_code_head) + infos.getString("return_code"));
                 builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -116,20 +111,19 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
                     }
                 });
                 builder.create().show();
+                if (_context != null) {
+                    _context.setSafePassword("");
+                }
                 return;
             }
-            data = json.getJSONObject("data").getJSONArray("array");
-            for (int i = 0; i < data.length(); ++i)
-            {
-                FileItem file = new FileItem();
-
-                file.fromJson(data.getJSONObject(i));
-
-                _adapter.add(file);
-            }
+            FileItem item = new FileItem();
+            item.set_filename(_filename);
+            item.set_type(FileItem.EFileType.DIR);
+            _adapter.add(item);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         super.onPostExecute(s);
     }
+
 }

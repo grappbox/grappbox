@@ -4,4 +4,7 @@
         <item>Download file</item>
         <item>Delete file</item>
     </string-array>
+    <string-array name="cloudExplorer_dirAction">
+        <item>Delete folder</item>
+    </string-array>
 </resources>

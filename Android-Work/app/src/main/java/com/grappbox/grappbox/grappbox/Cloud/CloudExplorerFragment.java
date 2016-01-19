@@ -134,15 +134,16 @@ public class CloudExplorerFragment extends Fragment {
         assert dialog != null;
         final EditText txtEdit = (EditText) dialogView.findViewById(R.id.folder_name);
         assert txtEdit != null;
-        
+
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CreateDirectoryTask task = new CreateDirectoryTask(_childrenContext, _adapter);
                 if (txtEdit.getText().toString().contains("/")) {
                     txtEdit.setError(getContext().getString(R.string.error_folder_incorrect_characters));
                     return;
                 }
-                //TODO : create directory
+                task.execute(_path, txtEdit.getText().toString(), _safePassword);
                 dialog.dismiss();
             }
         });
@@ -172,11 +173,33 @@ public class CloudExplorerFragment extends Fragment {
             }
         });
 
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                CloudFileAdapter adapter1 = (CloudFileAdapter) parent.getAdapter();
+                final FileItem clickedItem = adapter1.getItem(position);
+                if (clickedItem.get_type() == FileItem.EFileType.DIR && !clickedItem.get_filename().equals("Safe"))
+                {
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+                    dialogBuilder.setItems(R.array.cloudExplorer_dirAction, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            DeleteFileTask task  = new DeleteFileTask(_childrenContext, _adapter, clickedItem);
+                            task.execute(_path, _safePassword);
+                        }
+                    });
+                    dialogBuilder.show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CloudFileAdapter adapter1 = (CloudFileAdapter) parent.getAdapter();
-                FileItem clickedItem = adapter1.getItem(position);
+                final FileItem clickedItem = adapter1.getItem(position);
 
                 if (clickedItem.get_type() == FileItem.EFileType.BACK)
                 {
@@ -211,7 +234,8 @@ public class CloudExplorerFragment extends Fragment {
                                     //TODO : API Call Download File
                                     break;
                                 case 1:
-                                    //TODO : API Call Delete File
+                                    DeleteFileTask task  = new DeleteFileTask(_childrenContext, _adapter, clickedItem);
+                                    task.execute(_path, _safePassword);
                                     break;
                                 default:
                                     break;

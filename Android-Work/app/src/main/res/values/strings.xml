@@ -160,4 +160,5 @@
     <string name="placeholder_create_folder">Enter the folder name here...</string>
     <string name="placeholder_safe_password">Enter the safe password here...</string>
     <string name="error_folder_incorrect_characters">The folder name have some incorrect characters (/)</string>
+    <string name="error_code_head">"\nError code : "</string>
 </resources>

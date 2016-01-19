@@ -1,7 +1,6 @@
 package com.grappbox.grappbox.grappbox.Cloud;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -9,9 +8,7 @@ import android.util.Log;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
-import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,19 +16,21 @@ import java.io.IOException;
 import java.net.ProtocolException;
 
 /**
- * Created by wieser_m on 17/01/2016.
+ * Created by wieser_m on 19/01/2016.
  */
-public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
+public class DeleteFileTask extends AsyncTask<String, Void, String> {
+    CloudExplorerFragment       _context;
+    CloudFileAdapter            _adapter;
+    String                      _filename;
+    FileItem                    _deletedObject;
 
-    private CloudFileAdapter        _adapter;
-    private String                  _askedPath;
-    private CloudExplorerFragment   _cloudExplorerFragment;
-
-    GetCloudFileListTask(CloudExplorerFragment context, CloudFileAdapter adapter)
+    DeleteFileTask(CloudExplorerFragment context, CloudFileAdapter adapter, FileItem object)
     {
+        _context = context;
         _adapter = adapter;
-        _cloudExplorerFragment = context;
+        _deletedObject = object;
     }
+
     @Override
     protected String doInBackground(String... params) {
         if (params.length < 2)
@@ -40,17 +39,17 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
         int projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
         String path = params[0];
         String passwordSafe = params[1];
+        _filename = _deletedObject.get_filename();
         APIConnectAdapter api = APIConnectAdapter.getInstance();
 
-
-        Log.e("API", path);
-        _askedPath = path;
+        assert path != null && passwordSafe != null;
+        path = (path.equals("/") ? (path + _filename) : (path.replace(' ', '|') + "," + _filename));
         path = path.replace('/', ',');
         path = path.replace(' ', '|');
         try {
             api.setVersion("V0.2");
-            api.startConnection("cloud/list/" + token + "/" + String.valueOf(projectId) + "/" + path + (passwordSafe == "" ? "" : "/" + passwordSafe));
-            api.setRequestConnection("GET");
+            api.startConnection("cloud/file/" + token + "/" + String.valueOf(projectId) + "/" + path + (passwordSafe == "" ? "" : "/" + passwordSafe));
+            api.setRequestConnection("DELETE");
 
             return api.getInputSream();
         } catch (ProtocolException e) {
@@ -64,6 +63,8 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         int responseCode = 500;
+        JSONObject json = null;
+        JSONObject info = null;
 
         try {
             responseCode = APIConnectAdapter.getInstance().getResponseCode();
@@ -74,14 +75,11 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
         if (responseCode < 300) {
             APIConnectAdapter.getInstance().closeConnection();
         }
-        JSONObject json = null;
-        JSONArray data;
-
-        if (s == null || (_askedPath.startsWith("/Safe") && s.isEmpty()))
+        else
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
 
-            builder.setMessage(R.string.password_error);
+            builder.setMessage(_adapter.getContext().getString(R.string.problem_grappbox_server) + _adapter.getContext().getString(R.string.error_code_head) + String.valueOf(responseCode));
             builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -89,26 +87,21 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
                 }
             });
             builder.create().show();
-            if (_cloudExplorerFragment != null) {
-                _cloudExplorerFragment.setSafePassword("");
-                _cloudExplorerFragment.resetPath();
+            if (_context != null) {
+                _context.setSafePassword("");
             }
             return;
         }
-        _adapter.clear();
-        if (!_askedPath.equals("/"))
-        {
-            FileItem item = new FileItem(FileItem.EFileType.BACK, "Go to parent");
 
-            _adapter.add(item);
-        }
         try {
             json = new JSONObject(s);
-            if (!json.getJSONObject("info").getString("return_code").startsWith("1."))
+            info = json.getJSONObject("info");
+            assert info != null;
+            if (!info.getString("return_code").startsWith("1."))
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
 
-                builder.setMessage(R.string.problem_grappbox_server);
+                builder.setMessage(_adapter.getContext().getString(R.string.problem_grappbox_server) + _adapter.getContext().getString(R.string.error_code_head) + info.getString("return_code"));
                 builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -116,17 +109,12 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
                     }
                 });
                 builder.create().show();
+                if (_context != null) {
+                    _context.setSafePassword("");
+                }
                 return;
             }
-            data = json.getJSONObject("data").getJSONArray("array");
-            for (int i = 0; i < data.length(); ++i)
-            {
-                FileItem file = new FileItem();
-
-                file.fromJson(data.getJSONObject(i));
-
-                _adapter.add(file);
-            }
+            _adapter.remove(_deletedObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
