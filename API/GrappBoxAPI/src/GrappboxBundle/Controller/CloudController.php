@@ -997,7 +997,7 @@ class CloudController extends Controller
 			$passwordEncrypted = $this->grappSha1($json["data"]["password"]);
 		}
 		else {
-			$project == NULL;
+			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
