@@ -85,9 +85,13 @@ class Event
         return array(
             'id' => $this->id,
             'projectId' => $projectId,
-            'creatorId' => $this->creator_user->getId(),
-            'eventTypeId' => $this->eventtypes->getId(),
-            'eventType' => $this->eventtypes->getName(),
+            'creator' => array(
+                'id' => $this->creator_user->getId(),
+                'fullname' => $this->creator_user->getFirstName()." ".$this->creator_user->getLastName()
+            ),
+            'type' => array(
+              'id' => $this->eventtypes->getId(),
+              'name' => $this->eventtypes->getName()),
             'title' => $this->title,
             'description' => $this->description,
             'beginDate' => $this->beginDate,

@@ -29,39 +29,45 @@ use DateInterval;
  */
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
-	// TODO is it used ? can it be deleted ?
 
 	/**
-	* @-api {get} V0.11/accountadministration/login/:token Request login with client access
-	* @apiName client login
+	* @-api {get} V0.2/accountadministration/login/:token Client login
+	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
-	* @apiVersion 0.11.0
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {token} client token access
 	*
-	* @apiSuccess {Object} user user's information
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
+	* @apiSuccess {int} id whiteboard id
+	* @apiSuccess {string} firstname user's firstname
+	* @apiSuccess {string} lastname user's lastname
+	* @apiSuccess {string} email user's email
+	* @apiSuccess {string} token user's authentication token
 	*
 	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"user": {
+ 	* 	{
+	*			"info": {
+	*				"return_code": "1.14.1",
+	*				"return_message": "AccountAdministration - clientlogin - Complete Success"
+  *			},
+ 	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
+	*				"token": "fkE35dcDneOjF....",
+	*				"avatar": "01101000101101000111...."
 	*			}
-	* 	}
+ 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Id
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
-	* 		"Bad Authentication Token"
+	*		"info": {
+	*			"return_code": "14.4.3",
+	*			"return_message": "AccountAdministration - clientlogin - Bad id"
+	*		}
 	* 	}
 	*
 	*/
@@ -70,11 +76,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('token' => $token));
 		if (!$user || $user->getTokenValidity())
-			return $this->setBadTokenError();
+			return $this->setBadTokenError("14.4.3", "AccountAdministration", "clientLogin");
 
-		$response = new JsonResponse();
-		$response->setData(array('user' => $user->objectToArray()));
-		return $response;
+		return $this->setSuccess("1.14.1", "AccountAdministration", "clientLogin", "Complete Success", $user->objectToArray());
 	}
 
  	/**

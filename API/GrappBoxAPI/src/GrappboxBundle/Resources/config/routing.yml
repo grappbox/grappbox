@@ -349,21 +349,22 @@ v2_dashboard_getNumberBugs:
 v2_event_getTypes:
     path:       /event/gettypes/{token}
     defaults:   { _controller: GrappboxBundle:Event:getTypes, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_event_getEvent:
     path:       /event/getevent/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Event:getEvent, _format: json }
     requirements:
-        id: \d+
+        id:     \d+
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_event_setParticipants:
-    path:       /event/setparticipants/{id}
+    path:       /event/setparticipants
     defaults:   { _controller: GrappboxBundle:Event:setParticipants, _format: json }
-    requirements:
-        id: \d+
-    methods: [POST]
+    methods: [PUT]
 
 v2_event_postEvent:
     path:       /event/postevent
@@ -371,17 +372,16 @@ v2_event_postEvent:
     methods: [POST]
 
 v2_event_editEvent:
-    path:       /event/editevent/{id}
+    path:       /event/editevent
     defaults:   { _controller: GrappboxBundle:Event:editEvent, _format: json }
-    requirements:
-        id: \d+
-    methods: [POST]
+    methods: [PUT]
 
 v2_event_delEvent:
     path:       /event/delevent/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Event:delEvent, _format: json }
     requirements:
-        id: \d+
+        id:     \d+
+        token:  "[a-zA-Z]+"
     methods: [DELETE]
 
 # meeting_addAlert:
