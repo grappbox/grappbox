@@ -288,12 +288,15 @@ v2_dashboard_getProjectTasks:
 v2_dashboard_getUserBasicInformations:
     path:       dashboard/getuserbasicinformations/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getUserBasicInformations, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_dashboard_getProjectPersons:
     path:       dashboard/getprojectpersons/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectPersons, _format: json }
     requirements:
+        token:  "[a-zA-Z]+"
         id: \d+
     methods: [GET]
 
@@ -301,12 +304,15 @@ v2_dashboard_getMeetingBasicInformations:
     path:       dashboard/getmeetingbasicinformations/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getMeetingBasicInformations, _format: json }
     requirements:
+        token:  "[a-zA-Z]+"
         id: \d+
     methods: [GET]
 
 v2_dashboard_getProjectList:
     path:       dashboard/getprojectlist/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectList, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_dashboard_getProjectTasksStatus:
@@ -314,6 +320,7 @@ v2_dashboard_getProjectTasksStatus:
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectTasksStatus, _format: json }
     requirements:
         id: \d+
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_dashboard_getNumberTimelineMessages:
@@ -321,6 +328,7 @@ v2_dashboard_getNumberTimelineMessages:
     defaults:   { _controller: GrappboxBundle:Dashboard:getNumberTimelineMessages, _format: json }
     requirements:
         id: \d+
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_dashboard_getNumberBugs:
@@ -328,6 +336,7 @@ v2_dashboard_getNumberBugs:
     defaults:   { _controller: GrappboxBundle:Dashboard:getNumberBugs, _format: json }
     requirements:
         id: \d+
+        token:  "[a-zA-Z]+"
     methods: [GET]
 
 
