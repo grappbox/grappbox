@@ -1,12 +1,15 @@
 package com.grappbox.grappbox.grappbox.Cloud;
 
-import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
+import com.grappbox.grappbox.grappbox.R;
+import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,15 +23,19 @@ import java.net.ProtocolException;
  */
 public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
 
-    private CloudFileAdapter _adapter;
-    private String          _askedPath;
+    private CloudFileAdapter        _adapter;
+    private String                  _askedPath;
+    private CloudExplorerFragment   _cloudExplorerFragment;
 
-    GetCloudFileListTask(CloudFileAdapter adapter)
+    GetCloudFileListTask(CloudExplorerFragment context, CloudFileAdapter adapter)
     {
         _adapter = adapter;
+        _cloudExplorerFragment = context;
     }
     @Override
     protected String doInBackground(String... params) {
+        if (params.length < 2)
+            return null;
         String token = SessionAdapter.getInstance().getToken();
         int projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
         String path = params[0];
@@ -39,7 +46,8 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
         _askedPath = path;
         path = path.replace('/', ',');
         try {
-            api.startConnection("cloud/getlist/" + token + "/" + String.valueOf(projectId) + "/" + path + (passwordSafe == "" ? "" : "/" + passwordSafe));
+            api.setVersion("V0.2");
+            api.startConnection("cloud/list/" + token + "/" + String.valueOf(projectId) + "/" + path + (passwordSafe == "" ? "" : "/" + passwordSafe));
             api.setRequestConnection("GET");
 
             return api.getInputSream();
@@ -53,10 +61,38 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        APIConnectAdapter.getInstance().closeConnection();
+        int responseCode = 500;
+
+        try {
+            responseCode = APIConnectAdapter.getInstance().getResponseCode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (responseCode < 300) {
+            APIConnectAdapter.getInstance().closeConnection();
+        }
         JSONObject json = null;
         JSONArray data;
 
+        if (s == null || (_askedPath.startsWith("/Safe") && s.isEmpty()))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
+
+            builder.setMessage(R.string.password_error);
+            builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    cancel(true);
+                }
+            });
+            builder.create().show();
+            if (_cloudExplorerFragment != null) {
+                _cloudExplorerFragment.setSafePassword("");
+                _cloudExplorerFragment.resetPath();
+            }
+            return;
+        }
         _adapter.clear();
         if (!_askedPath.equals("/"))
         {
@@ -66,7 +102,21 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
         }
         try {
             json = new JSONObject(s);
-            data = json.getJSONArray("data");
+            if (!json.getJSONObject("info").getString("return_code").startsWith("1."))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
+
+                builder.setMessage(R.string.problem_grappbox_server);
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cancel(true);
+                    }
+                });
+                builder.create().show();
+                return;
+            }
+            data = json.getJSONObject("data").getJSONArray("array");
             for (int i = 0; i < data.length(); ++i)
             {
                 FileItem file = new FileItem();

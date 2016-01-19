@@ -9,6 +9,7 @@
     <string name="login_connect_button">Connexion</string>
 
     <string name="login_error">Your login or password is incorrect</string>
+    <string name="password_error">The password you enter is incorrect</string>
     <string name="login_error_return_button">Return</string>
     <string name="title_activity_main">MainActivity</string>
 
@@ -150,4 +151,13 @@
     <string name="filetype">filetype</string>
     <string name="filename">Filename</string>
     <string name="safe_password_question">Enter the Safe password</string>
+    <string name="cloudexplorer_addpanel_title">Add new</string>
+    <string name="str_new_directory">New directory</string>
+    <string name="string_createdir">Create Folder</string>
+    <string name="str_import">Import file</string>
+    <string name="str_import_secure">Import secured file</string>
+    <string name="problem_grappbox_server">We can\'t arrive to deal with grappbox server, please try again. If the problem persist, contact grappbox team at problem@grappbox.com</string>
+    <string name="placeholder_create_folder">Enter the folder name here...</string>
+    <string name="placeholder_safe_password">Enter the safe password here...</string>
+    <string name="error_folder_incorrect_characters">The folder name have some incorrect characters (/)</string>
 </resources>

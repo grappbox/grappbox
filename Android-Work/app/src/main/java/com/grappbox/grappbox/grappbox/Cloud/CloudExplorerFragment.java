@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -15,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +36,7 @@ public class CloudExplorerFragment extends Fragment {
     private CloudFileAdapter _adapter;
     private GetCloudFileListTask _currentLSTask = null;
     private String _safePassword = "";
+    CloudExplorerFragment _childrenContext;
 
     public CloudExplorerFragment() {
         _path = "/";
@@ -44,6 +48,16 @@ public class CloudExplorerFragment extends Fragment {
         if (getArguments() != null) {
 
         }
+        _childrenContext = this;
+    }
+    public void setSafePassword(String password)
+    {
+        _safePassword = password;
+    }
+
+    public void resetPath()
+    {
+        _path = "/";
     }
 
     private void handleSafe(GetCloudFileListTask currentTask)
@@ -58,11 +72,11 @@ public class CloudExplorerFragment extends Fragment {
         builder.setCancelable(true);
         builder.setTitle(R.string.safe_password_question);
         builder.setView(passView);
-        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener(){
+        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                EditText passview = (EditText)((AlertDialog) dialog).findViewById(R.id.cloudexplorer_safepassword_view);
+                EditText passview = (EditText) ((AlertDialog) dialog).findViewById(R.id.cloudexplorer_safepassword_view);
 
                 _safePassword = passview.getText().toString();
                 _currentLSTask.execute(_path, _safePassword);
@@ -70,16 +84,68 @@ public class CloudExplorerFragment extends Fragment {
             }
         });
 
-        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener(){
+        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                _currentLSTask = null;
                 dialog.cancel();
+            }
+        });
+
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                _currentLSTask = null;
+                goToParent();
             }
         });
         dialog = builder.create();
         dialog.show();
+    }
+
+    public void goToParent()
+    {
+        List<String> list = new ArrayList<>();
+        String[] path = _path.split("/");
+        Collections.addAll(list, path);
+
+        list.remove(list.size() - 1);
+        _path = TextUtils.join("/", list.toArray());
+    }
+
+    public void createDirectory()
+    {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getLayoutInflater(null);
+        View dialogView = inflater.inflate(R.layout.cloudexplorer_alertdialog_createdir, null);
+
+        builder.setCancelable(true);
+        builder.setTitle("Create new folder");
+        builder.setView(dialogView);
+        builder.setPositiveButton(R.string.positive_response, null);
+        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        final AlertDialog dialog = builder.show();
+        assert dialog != null;
+        final EditText txtEdit = (EditText) dialogView.findViewById(R.id.folder_name);
+        assert txtEdit != null;
+        
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (txtEdit.getText().toString().contains("/")) {
+                    txtEdit.setError(getContext().getString(R.string.error_folder_incorrect_characters));
+                    return;
+                }
+                //TODO : create directory
+                dialog.dismiss();
+            }
+        });
     }
 
     @Override
@@ -88,14 +154,23 @@ public class CloudExplorerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cloud_explorer, container, false);
         ListView list = (ListView) view.findViewById(R.id.cloudexplorer_itemlist);
-        CloudFileAdapter adapter = new CloudFileAdapter(getContext(), R.id.cloudexplorer_item_filename);
+        final CloudFileAdapter adapter = new CloudFileAdapter(getContext(), R.id.cloudexplorer_item_filename);
+        ImageButton btnCreateDir = (ImageButton) view.findViewById(R.id.btn_createDir);
+
         _adapter = adapter;
-        GetCloudFileListTask task = new GetCloudFileListTask(adapter);
+        GetCloudFileListTask task = new GetCloudFileListTask(this, adapter);
         if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
             handleSafe(task);
         else
             task.execute(_path, _safePassword);
         list.setAdapter(adapter);
+
+        btnCreateDir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createDirectory();
+            }
+        });
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -105,15 +180,10 @@ public class CloudExplorerFragment extends Fragment {
 
                 if (clickedItem.get_type() == FileItem.EFileType.BACK)
                 {
-                    List<String> list = new ArrayList<>();
-                    String[] path = _path.split("/");
-                    Collections.addAll(list, path);
-
-                    list.remove(list.size() - 1);
-                    _path = TextUtils.join("/", list.toArray());
+                    goToParent();
                     if (_path == "")
                         _path = "/";
-                    GetCloudFileListTask task = new GetCloudFileListTask(_adapter);
+                    GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
                     if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
                         handleSafe(task);
                     else
@@ -124,7 +194,7 @@ public class CloudExplorerFragment extends Fragment {
                         _path += clickedItem.get_filename();
                     else
                         _path += ("/" + clickedItem.get_filename());
-                    GetCloudFileListTask task = new GetCloudFileListTask(_adapter);
+                    GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
                     if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
                         handleSafe(task);
                     else
