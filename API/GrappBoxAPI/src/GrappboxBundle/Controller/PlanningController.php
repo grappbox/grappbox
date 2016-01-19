@@ -14,6 +14,7 @@ use DateInterval;
 /**
 *  @IgnoreAnnotation("apiName")
 *  @IgnoreAnnotation("apiGroup")
+*  @IgnoreAnnotation("apiDescription")
 *  @IgnoreAnnotation("apiVersion")
 *  @IgnoreAnnotation("apiSuccess")
 *  @IgnoreAnnotation("apiSuccessExample")
@@ -25,125 +26,76 @@ use DateInterval;
 
 class PlanningController extends RolesAndTokenVerificationController
 {
-	/**
-	* @api {post} /V0.10/planning/getday get planning of a day
-	* @apiName getDayPlanning
-	* @apiGroup Planning
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of event to list (hour, min and second MUST be set to zero)
-	*
-	* @apiSuccess {Object[]} data event list
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {DateTime} beginDate beginning date of the event
-	*	@apiSuccess {DateTime} endDate ending date of the event
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		[
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
 
 	/**
-	* @api {post} /V0.11/planning/getday get planning of a day
+	* @api {get} /V0.2/planning/getday/:token/:date Get day planning
 	* @apiName getDayPlanning
 	* @apiGroup Planning
-	* @apiVersion 0.11.0
+	* @apiDescription Get a one day planning
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of event to list (hour, min and second MUST be set to zero)
+	* @apiParam {string} date date of event to list (into YYYY-MM-DD format)
 	*
-	* @apiSuccess {Object[]} data event list
 	* @apiSuccess {int} id Event id
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
+	* @apiSuccess {Object} type Event type object
+	* @apiSuccess {int} type.id Event type id
+	* @apiSuccess {string} type.name Event type name
 	*	@apiSuccess {string} title event title
 	*	@apiSuccess {DateTime} beginDate beginning date of the event
 	*	@apiSuccess {DateTime} endDate ending date of the event
 	*
-	* @apiSuccessExample {json} Success-Response:
+	* @apiSuccessExample Complete Success:
 	* 	{
-	*		[
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - getDayPlanning - Complete success"
 	*		},
+	*		"data":
 	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			"array": [
+	*				{
+	*				"id": 12,
+	*				"type": {"id": 1, "name": "Event"},
+	*				"title": "Brainstorming",
+	*				"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*				},
+	*				...
+	*			]
 	*		}
-	*		]
+	* 	}
+	* @apiSuccessExample Success But No Data:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.3",
+	*			"return_message": "Calendar - getDayPlanning - No Data Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": []
+	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "5.1.3",
+	*	    "return_message": "Calendar - getDayPlanning - Bad ID"
+	*	  }
+	*	}
 	*
 	*/
-	public function getDayPlanningAction(Request $request)
+	public function getDayPlanningAction(Request $request, $token, $date)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
-		$date_begin = new DateTime($content->date);
-		$date_end = new DateTime($content->date);
+			return ($this->setBadTokenError("5.1.3", "Calendar", "getDayPlanning"));
+
+		$date_begin = new DateTime($date);
+		$date_end = new DateTime($date);
 		$date_end->add(new DateInterval('P1D'));
 
 		$em = $this->getDoctrine()->getManager();
@@ -160,136 +112,88 @@ class PlanningController extends RolesAndTokenVerificationController
 		foreach ($query as $key => $value) {
 			$events[] = array(
 				"id" => $value->getId(),
-				"eventTypeId" => $value->getEventtypes()->getId(),
-				"eventtType" => $value->getEventtypes()->getName(),
+				"type" => array(
+					"id" => $value->getEventtypes()->getId(),
+					"name" => $value->getEventtypes()->getName()
+				),
 				"title" => $value->getTitle(),
 				"beginDate" => $value->getBeginDate(),
 				"endDate" => $value->getEndDate()
 			);
 		}
 
-		return new JsonResponse($events);
+		return $this->setSuccess("1.5.1", "Calendar", "getDayPlanning", "Complete Success", array("array" => $events));
 	}
 
 	/**
-	* @api {post} /V0.10/planning/getweek get planning of a week
+	* @api {get} /V0.2/planning/getweek/:token/:date Get week planning
 	* @apiName getWeekPlanning
 	* @apiGroup Planning
-	* @apiVersion 0.10.0
+	* @apiDescription Get planning of a week
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of the first day of the week (hour, min and second MUST be set to zero)
+	* @apiParam {string} date date of the first day of the week (into YYYY-MM-DD format)
 	*
-	* @apiSuccess {Object[]} data event list
 	* @apiSuccess {int} id Event id
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
+	* @apiSuccess {Object} type Event type object
+	* @apiSuccess {int} type.id Event type id
+	* @apiSuccess {string} type.name Event type name
 	*	@apiSuccess {string} title event title
 	*	@apiSuccess {DateTime} beginDate beginning date of the event
 	*	@apiSuccess {DateTime} endDate ending date of the event
 	*
-	* @apiSuccessExample {json} Success-Response:
+	* @apiSuccessExample Complete Success:
 	* 	{
-	*		[
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - getWeekPlanning - Complete success"
 	*		},
+	*		"data":
 	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			"array": [
+	*				{
+	*				"id": 12,
+	*				"type": {"id": 1, "name": "Event"},
+	*				"title": "Brainstorming",
+	*				"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*				},
+	*				...
+	*			]
 	*		}
-	*		]
+	* 	}
+	* @apiSuccessExample Success But No Data:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.3",
+	*			"return_message": "Calendar - getWeekPlanning - No Data Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": []
+	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "5.2.3",
+	*	    "return_message": "Calendar - getWeekPlanning - Bad ID"
+	*	  }
+	*	}
 	*
 	*/
-
-	/**
-	* @api {post} /V0.11/planning/getweek get planning of a week
-	* @apiName getWeekPlanning
-	* @apiGroup Planning
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of the first day of the week (hour, min and second MUST be set to zero)
-	*
-	* @apiSuccess {Object[]} data event list
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {DateTime} beginDate beginning date of the event
-	*	@apiSuccess {DateTime} endDate ending date of the event
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		[
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getWeekPlanningAction(Request $request)
+	public function getWeekPlanningAction(Request $request, $token, $date)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
-		$date_begin = new DateTime($content->date);
-		$date_end = new DateTime($content->date);
+			return ($this->setBadTokenError("5.2.3", "Calendar", "getWeekPlanning"));
+
+		$date_begin = new DateTime($date);
+		$date_end = new DateTime($date);
 		$date_end->add(new DateInterval('P7D'));
 
 		$em = $this->getDoctrine()->getManager();
@@ -306,136 +210,88 @@ class PlanningController extends RolesAndTokenVerificationController
 		foreach ($query as $key => $value) {
 			$events[] = array(
 				"id" => $value->getId(),
-				"eventTypeId" => $value->getEventtypes()->getId(),
-				"eventtType" => $value->getEventtypes()->getName(),
+				"type" => array(
+					"id" => $value->getEventtypes()->getId(),
+					"name" => $value->getEventtypes()->getName()
+				),
 				"title" => $value->getTitle(),
 				"beginDate" => $value->getBeginDate(),
 				"endDate" => $value->getEndDate()
 			);
 		}
 
-		return new JsonResponse($events);
+		return $this->setSuccess("1.5.1", "Calendar", "getWeekPlanning", "Complete Success", array("array" => $events));
 	}
 
 	/**
-	* @api {put} /V0.10/planning/getmonth get planning of a month
+	* @api {get} /V0.2/planning/getmonth/:token/:date Get month planning
 	* @apiName getMonthPlanning
 	* @apiGroup Planning
-	* @apiVersion 0.10.0
+	* @apiDescription Get planning of a month
+	* @apiVersion 0.22.0
 	*
 	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of the first day of the month (hour, min and second MUST be set to zero)
+	* @apiParam {string} date date of the first day of the month (into YYYY-MM-DD format)
 	*
-	* @apiSuccess {Object[]} data event list
 	* @apiSuccess {int} id Event id
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
+	* @apiSuccess {Object} type Event type object
+	* @apiSuccess {int} type.id Event type id
+	* @apiSuccess {string} type.name Event type name
 	*	@apiSuccess {string} title event title
 	*	@apiSuccess {DateTime} beginDate beginning date of the event
 	*	@apiSuccess {DateTime} endDate ending date of the event
 	*
-	* @apiSuccessExample {json} Success-Response:
+	* @apiSuccessExample Complete Success:
 	* 	{
-	*		[
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - getMonthPlanning - Complete success"
 	*		},
+	*		"data":
 	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			"array": [
+	*				{
+	*				"id": 12,
+	*				"type": {"id": 1, "name": "Event"},
+	*				"title": "Brainstorming",
+	*				"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*				},
+	*				...
+	*			]
 	*		}
-	*		]
+	* 	}
+	* @apiSuccessExample Success But No Data:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.3",
+	*			"return_message": "Calendar - getMonthPlanning - No Data Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": []
+	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "5.3.3",
+	*	    "return_message": "Calendar - getMonthPlanning - Bad ID"
+	*	  }
+	*	}
 	*
 	*/
-
-	/**
-	* @api {put} /V0.11/planning/getmonth get planning of a month
-	* @apiName getMonthPlanning
-	* @apiGroup Planning
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of the first day of the month (hour, min and second MUST be set to zero)
-	*
-	* @apiSuccess {Object[]} data event list
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} eventTypeId Event type id
-	* @apiSuccess {string} eventType Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {DateTime} beginDate beginning date of the event
-	*	@apiSuccess {DateTime} endDate ending date of the event
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*		[
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		},
-	*		{
-	*			"id": 12, "projectId": 21, "eventTypeId": 1, "eventType": "Event",
-	*			"title": "Brainstorming",
-	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	*		]
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	* @apiErrorExample Insufficient User Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	* 		"Insufficient User Rights"
-	* 	}
-	*
-	*/
-	public function getMonthPlanningAction(Request $request)
+	public function getMonthPlanningAction(Request $request, $token, $date)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
-		$date_begin = new DateTime($content->date);
-		$date_end = new DateTime($content->date);
+			return ($this->setBadTokenError("5.3.3", "Calendar", "getMonthPlanning"));
+
+		$date_begin = new DateTime($date);
+		$date_end = new DateTime($date);
 		$date_end->add(new DateInterval('P1M'));
 
 		$em = $this->getDoctrine()->getManager();
@@ -452,14 +308,16 @@ class PlanningController extends RolesAndTokenVerificationController
 		foreach ($query as $key => $value) {
 			$events[] = array(
 				"id" => $value->getId(),
-				"eventTypeId" => $value->getEventtypes()->getId(),
-				"eventtType" => $value->getEventtypes()->getName(),
+				"type" => array(
+					"id" => $value->getEventtypes()->getId(),
+					"name" => $value->getEventtypes()->getName()
+				),
 				"title" => $value->getTitle(),
 				"beginDate" => $value->getBeginDate(),
 				"endDate" => $value->getEndDate()
 			);
 		}
 
-		return new JsonResponse($events);
+		return $this->setSuccess("1.5.1", "Calendar", "getMonthPlanning", "Complete Success", array("array" => $events));
 	}
 }

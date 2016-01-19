@@ -434,12 +434,12 @@ v2_event_delEvent:
 # -----------------------------------------------------------------------
 v2_notification_registerDevice:
     path:       /notification/registerdevice
-    defaults:   { _controller: GrappboxBundle:Notification:registerDevice }
+    defaults:   { _controller: GrappboxBundle:Notification:registerDevice, _format: json }
     methods: [POST]
 
 v2_notification_unregisterDevice:
     path:       /notification/unregisterdevice/{token}/{id}
-    defaults:   { _controller: GrappboxBundle:Notification:unregisterDevice }
+    defaults:   { _controller: GrappboxBundle:Notification:unregisterDevice, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
         id:     \d+
@@ -447,14 +447,14 @@ v2_notification_unregisterDevice:
 
 v2_notification_getUserDevices:
     path:       /notification/getuserdevices/{token}
-    defaults:   { _controller: GrappboxBundle:Notification:getUserDevices }
+    defaults:   { _controller: GrappboxBundle:Notification:getUserDevices, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
     methods: [GET]
 
 v2_notification_getNotifications:
     path:		    /notification/getnotifications/{token}/{read}/{offset}/{limit}
-    defaults:   { _controller: GrappboxBundle:Notification:getNotifications }
+    defaults:   { _controller: GrappboxBundle:Notification:getNotifications, _format: json }
     requirements:
         token:	"[a-zA-Z]+"
         read:   "[a-zA-Z]+"
@@ -464,7 +464,7 @@ v2_notification_getNotifications:
 
 v2_notification_setNotificationToRead:
     path:       /notification/setnotificationtoread/{token}/{id}
-    defaults:   { _controller: GrappboxBundle:Notification:setNotificationToRead }
+    defaults:   { _controller: GrappboxBundle:Notification:setNotificationToRead, _format: json }
     requirements:
         token:  "[a-zA-Z]+"
         id:     \d+
@@ -475,20 +475,28 @@ v2_notification_setNotificationToRead:
 #                           PLANNING CONTROLLER
 # -----------------------------------------------------------------------
 v2_planning_getDayPlanning:
-    path:       /planning/getday
-    defaults:   { _controller: GrappboxBundle:Planning:getDayPlanning }
+    path:       /planning/getday/{token}/{date}
+    defaults:   { _controller: GrappboxBundle:Planning:getDayPlanning, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
+        date:   \d+-\d+-\d+
+    methods: [GET]
 
 v2_planning_getWeekPlanning:
-    path:       /planning/getweek
-    defaults:   { _controller: GrappboxBundle:Planning:getWeekPlanning }
+    path:       /planning/getweek/{token}/{date}
+    defaults:   { _controller: GrappboxBundle:Planning:getWeekPlanning, _format: json}
+    requirements:
+        token:  "[a-zA-Z]+"
+        date:   \d+-\d+-\d+
+    methods: [GET]
 
 v2_planning_getMonthPlanning:
-    path:       /planning/getmonth
-    defaults:   { _controller: GrappboxBundle:Planning:getMonthPlanning }
-
-v2_planning_getCurrentEvents:
-    path:       /planning/getcurrentevents
-    defaults:   { _controller: GrappboxBundle:Planning:getCurrentEvents }
+    path:       /planning/getmonth/{token}/{date}
+    defaults:   { _controller: GrappboxBundle:Planning:getMonthPlanning, _format: json }
+    requirements:
+        token:  "[a-zA-Z]+"
+        date:   \d+-\d+-\d+
+    methods: [GET]
 
 
 
