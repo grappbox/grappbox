@@ -230,7 +230,7 @@ v2_cloud_createDir:
     methods: [POST]
 
 v2_cloud_delete_secured:
-    path:       cloud/file/{token}/{projectId}/{path}/{password}/{safe_password}
+    path:       cloud/filesecured/{token}/{projectId}/{path}/{password}/{safe_password}
     defaults:   { _controller: GrappboxBundle:Cloud:delSecured, safe_password: null, _format: json}
     methods: [DELETE]
 
