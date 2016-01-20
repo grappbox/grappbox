@@ -1036,6 +1036,7 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$apath = explode('/', $path);
 		$filename = $apath[count($apath) - 1];
+		var_dump($apath);
 		$apath = array_splice($apath, count($apath));
 		$apath = join('/', $apath);
 
