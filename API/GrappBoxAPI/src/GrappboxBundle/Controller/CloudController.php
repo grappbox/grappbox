@@ -1067,7 +1067,6 @@ class CloudController extends Controller
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
 		$flysystem->delete($path);
-		var_dump($file);
 		$this->getDoctrine()->getManager()->remove($file);
 		$this->getDoctrine()->getManager()->flush();
 		$response["info"]["return_code"] = "1.3.1";
