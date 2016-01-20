@@ -884,9 +884,9 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$apath = explode('/', $path);
 		$filename = $apath[count($apath) - 1];
-		array_splice($apath, count($apath) - 1, 1);
+		$apath = array_splice($apath, count($apath) - 1);
 		$apath = join('/', $apath);
-		$apath = "/GrappBox|Project/" + $projectId + (substr($apath, 0, 1) == "/" ? "" : "/") + $apath;
+		$apath = "/GrappBox|Project/" + $projectId + $apath;
 		var_dump($apath);
 		var_dump($filename);
 		var_dump($path);
