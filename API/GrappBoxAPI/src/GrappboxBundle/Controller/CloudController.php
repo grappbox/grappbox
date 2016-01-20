@@ -759,6 +759,8 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
+		var_dump($filePassword);
+		var_dump($passwordFileEncrypted);
 		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordFileEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
 			header("HTTP/1.1 206 Partial Content", True, 206);
