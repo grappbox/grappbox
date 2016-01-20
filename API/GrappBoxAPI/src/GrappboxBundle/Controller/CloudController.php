@@ -386,6 +386,7 @@ class CloudController extends Controller
 			"publicUpload" => (bool)false,
 			"permissions" => (int)1
 		));
+		$shareRequest->createCurl("http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares");
 		$em->persist($stream);
 		$em->flush();
 		$response["info"]["return_code"] = "1.3.1";
