@@ -21,12 +21,21 @@ app.config(['$httpProvider', function($httpProvider) {
 }]);
 
 app.controller('grappboxController', ['$scope', '$location', function($scope, $location) {
-	$scope.isLinkActive = function(route) {
-	if (route === '/whiteboard')
-		return (($location.path().indexOf('whiteboard')) > -1);
-	else
-		return route === $location.path();
-	};
+	$scope.isPageActive = function(route) {
+		var isPageActive = false;
+		switch(route) {
+			case '/whiteboard':
+				isPageActive = ($location.path().indexOf('whiteboard') > -1);
+				break;
+			case '/cloud':
+				isPageActive = ($location.path().indexOf('cloud') > -1);
+				break;
+			default:
+				isPageActive = (route === $location.path());
+				break;
+			};
+		return isPageActive;
+	}
 }]);
 
 
@@ -51,9 +60,11 @@ app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($ro
 		}
 	});
 	// On route change (success)
-	$rootScope.$on('$routeChangeSuccess', function () { });
+	$rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$rootScope.title = current.$$route.title;
+	 });
 	// On route change (error)
-	$rootScope.$on('$routeChangeError', function () { });
+	$rootScope.$on('$routeChangeError', function() { });
 }]);
 
 

@@ -34,3 +34,28 @@ app.controller('cloudListController', ['$rootScope', '$scope', '$routeParams', '
     });
 
 }]);
+
+
+/**
+* Routine definition
+* Check if requested Cloud is accessible
+*
+*/
+var isCloudAccessible = function($rootScope, $http, $cookies, $route, $q, $location) {
+  var deferred = $q.defer();
+
+  $http.get($rootScope.apiBaseURL + '/dashboard/getprojectbasicinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
+    .then(function successCallback(response) {
+      deferred.resolve(true);
+    },
+    function errorCallback(response) {
+      deferred.reject();
+      $location.path('cloud').search({
+        'id': $route.current.params.id
+      });
+    });
+
+    return deferred.promise;
+};
+
+isCloudAccessible['$inject'] = ['$rootScope', '$http', '$cookies', '$route', '$q', '$location'];

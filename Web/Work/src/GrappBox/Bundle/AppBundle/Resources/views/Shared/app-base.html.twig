@@ -39,6 +39,7 @@
 		'@AppBundle/Resources/public/js/custom/app-login.angular.js'
 		'@AppBundle/Resources/public/js/custom/notifications/app-notifications.angular.js'
 		'@AppBundle/Resources/public/js/custom/dashboard/app-dashboard.angular.js'
+		'@AppBundle/Resources/public/js/custom/cloud/app-cloud.angular.js'
 		'@AppBundle/Resources/public/js/custom/cloud/app-cloud-list.angular.js'
 		'@AppBundle/Resources/public/js/custom/profile/app-profile.angular.js'
 		'@AppBundle/Resources/public/js/custom/settings/app-settings.angular.js'
@@ -69,26 +70,26 @@
 					</li>
 					<li class="divider"></li>
 					<li>
-						<a href="notifications" title="See all your notifications" class="btn-right-sweep ng-class:{ 'active' : isLinkActive('/notifications') };">
+						<a href="notifications" title="See all your notifications" class="btn-right-sweep ng-class:{ 'active' : isPageActive('/notifications') };">
 						<i class="fa fa-exclamation fa-fw"></i>Notifications</a>
 					</li>
 					<li>
-						<a href="./" title="Go to your dashboard" class="btn-right-sweep ng-class:{ 'active' : isLinkActive('/') };">
+						<a href="./" title="Go to your dashboard" class="btn-right-sweep ng-class:{ 'active' : isPageActive('/') };">
 						<i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
 					</li>
 					<li>
-						<a href="cloud" title="Access your online files and folders" class="btn-right-sweep ng-class:{ 'active' : isLinkActive('/cloud') };">
+						<a href="cloud" title="Access your online files and folders" class="btn-right-sweep ng-class:{ 'active' : isPageActive('/cloud') };">
 						<i class="fa fa-cloud-upload fa-fw"></i>Cloud</a>
 					</li>
-					<li><a href="whiteboard" title="Go to the collaborative whiteboard" class="btn-right-sweep ng-class:{ 'active' : isLinkActive('/whiteboard') };">
+					<li><a href="whiteboard" title="Go to the collaborative whiteboard" class="btn-right-sweep ng-class:{ 'active' : isPageActive('/whiteboard') };">
 						<i class="fa fa-edit fa-fw"></i>Whiteboard</a>
 					</li>
 					<li>
-						<a href="profile" title="Manage your profile" class="btn-right-sweep ng-class:{ 'active' : isLinkActive('/profile') };">
+						<a href="profile" title="Manage your profile" class="btn-right-sweep ng-class:{ 'active' : isPageActive('/profile') };">
 						<i class="fa fa-user fa-fw"></i>Profile</a>
 					</li>
 					<li>
-						<a href="settings" title="Manage your account settings" class="btn-right-sweep ng-class:{ 'active' : isLinkActive('/settings') };">
+						<a href="settings" title="Manage your account settings" class="btn-right-sweep ng-class:{ 'active' : isPageActive('/settings') };">
 						<i class="fa fa-gear fa-fw"></i>Settings</a>
 					</li>
 					<li class="divider"></li>
@@ -104,6 +105,14 @@
 			</div>
 			<!-- Page content -->
 			<div id="page-content-wrapper">
+				<div class="page-header">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="app-page-title">{[{ title }]}</div>
+						</div>
+					</div>
+				</div>
+
 				<div class="page-content">
 					<div class="row">
 						<div class="col-md-12">
@@ -116,18 +125,6 @@
 				</div>
 			</div>
 		</div>
-
-<!-- 		<footer>
-			<div class="container app-footer">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="content-footer footer">
-							<
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer> -->
 
 		{% javascripts
 		'@ShowcaseBundle/Resources/public/js/vendor/jquery.js'

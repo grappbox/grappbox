@@ -1,0 +1,41 @@
+<!-- This file is subject to the terms and conditions defined   in file 'LICENSE.txt',
+which is part of the GRAPPBOX source code package.
+COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
+
+<div class="view view-content" id="cloud-content-view" ng-controller="cloudController">
+
+    <section class="app-section" id="cloud-content">
+        <div class="container app-container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- grappbox.data : cloud content -->
+                    <div class="section-heading app-section-heading">
+                        <h2>Cloud for project #{[{ currentProjectID }]}</h2>
+                        <p class="lead">Hold to navigate between all your current projects that already have a Cloud module (sorted by name).</p>
+                    </div>
+                    <div class="section-content app-section-content">
+                        <div id="all-cloud-objects">
+                            <div ng-if="cloudObjects_isValid && cloudObjects">
+                                <div class="row app-data-labels">
+                                    <div class="col-md-1 object-type-icon-label hidden"></div>
+                                    <div class="col-md-4 object-name-label">Name</div>
+                                    <div class="col-md-4 object-type-label">Type</div>
+                                    <div class="col-md-3 object-size-label">Size</div>
+                                </div>
+                                <div class="app-data" ng-repeat="object in cloudObjects">
+                                    <div class="row app-data-list each-object-data">
+                                        <div class="col-md-1 object-type-icon"><i class="fa {[{ object.type == 'dir' ? fa-folder : fa-file }]"></i></div>
+                                        <div class="col-md-4 object-name">{[{ object.filename }]}</div>
+                                        <div class="col-md-4 object-type">{[{ object.type == 'file' ? 'File' : 'Directory' }]}</div>
+                                        <div class="col-md-3 object-size">{[{ object.size ? object.size : 'N/A'}]} {[{ object.size ? ' KB' : ''}]}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

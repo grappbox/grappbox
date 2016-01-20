@@ -17,7 +17,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <div ng-if="teamOccupationList_isValid && teamOccupationList" panhandler>
                                 <div class="app-data" ng-repeat="member in teamOccupationList">
                                     <ul class="app-data-list each-member-data btn-float">
-                                        <li class="team-member-picture"><img data-ng-src="{[{ member.picture === undefined ? '../resources/images/default-avatar.min.png' : member.picture }]}" height="120" width="120"></li>
+                                        <li class="team-member-picture"><img data-ng-src="{[{ member.picture === undefined ? '../resources/images/default-avatar.min.png' : member.picture }]}" class="{[{ member.occupation == 'free' ? 'member-available' : 'member-busy' }]}" height="120" width="120"></li>
                                         <li class="team-member-name">{[{ member.first_name }]} {[{ member.last_name }]}<br>({[{ member.project_name }]})</li>
                                         <li class="team-member-status {[{ member.occupation == 'free' ? 'member-available' : 'member-busy' }]}">
                                             <i class="fa {[{ member.occupation == 'free' ? 'fa-check' : 'fa-times' }]}"></i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}
@@ -57,7 +57,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <div ng-if="nextMeetingsList_isValid && nextMeetingsList" panhandler>
                                 <div class="app-data" ng-repeat="meeting in nextMeetingsList">
                                     <ul class="app-data-list each-meeting-data btn-float">
-                                        <li class="meeting-type">{[{ meeting.event_title }]}<br>(Type: {[{ meeting.event_type }]})</li>
+                                        <li class="meeting-title">{[{ meeting.event_title }]}</li>
+                                        <li class="meeting-type">Type: {[{ meeting.event_type }]}</li>
                                         <li class="meeting-schedule">
                                             <div class="meeting-schedule-data meeting-date"><i class="fa fa-calendar"></i>From {[{ formatDate(meeting.event_begin_date.date) }]}<br>to {[{ formatDate(meeting.event_end_date.date) }]}</div>
                                         </li>
