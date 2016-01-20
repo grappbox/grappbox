@@ -1037,9 +1037,11 @@ class CloudController extends Controller
 		$filename = $apath[count($apath) - 1];
 		$apath = array_splice($apath, count($apath) - 1);
 		$apath = join('/', $apath);
+		var_dump($apath);
 		if (count($apath) < 2)
 			$apath = "/";
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
+
 		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
@@ -1051,7 +1053,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ((!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if (is_null($file) || (!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.9.9";
@@ -1061,14 +1063,11 @@ class CloudController extends Controller
 
 		//Now we can delete the file or the directory
 		$path = "/GrappBox|Projects/".(string)($projectId).str_replace(' ', '|', $path);
-		try
-		{
-			$client = new Client(self::$settingsDAV);
-			$adapter = new WebDAVAdapter($client);
-			$flysystem = new Filesystem($adapter);
-			$flysystem->delete($path);
-		}
-		catch(Exception $e)	{	}
+		$client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
+		$flysystem->delete($path);
+		var_dump($file);
 		$this->getDoctrine()->getManager()->remove($file);
 		$this->getDoctrine()->getManager()->flush();
 		$response["info"]["return_code"] = "1.3.1";
