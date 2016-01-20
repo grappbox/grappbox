@@ -882,6 +882,11 @@ class CloudController extends Controller
 	{
 		$path = str_replace(',', '/', $path);
 		$userId = $this->getUserId($token);
+		$apath = split('/', $path);
+		$filename = $apath[count($apath) - 1];
+		unset($apath[count($apath) - 1]);
+		$apath = "/" + join('/', $apath);
+		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
@@ -892,7 +897,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if (!is_null($file) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.7.9";
