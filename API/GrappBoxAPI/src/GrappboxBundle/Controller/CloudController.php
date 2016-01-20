@@ -227,7 +227,7 @@ class CloudController extends Controller
 	*		}
 	* }
 	*/
-	private function openStreamAction($token, $idProject, $safePassword, Request $request){
+	public function openStreamAction($token, $idProject, $safePassword, Request $request){
 		$dbManager = $this->getDoctrine()->getManager();
 		$json = json_decode($request->getContent(), true);
 		$receivedData = $json["data"];
@@ -347,7 +347,7 @@ class CloudController extends Controller
 	*		}
 	*	}
 	*/
-	private function closeStreamAction($token, $projectId, $streamId, Request $request){
+	public function closeStreamAction($token, $projectId, $streamId, Request $request){
 		$dbManager = $this->getDoctrine()->getManager();
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudTransfer");
 		$em = $this->getDoctrine()->getManager();
