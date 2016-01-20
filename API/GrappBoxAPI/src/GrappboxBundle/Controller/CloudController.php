@@ -882,10 +882,11 @@ class CloudController extends Controller
 	{
 		$path = str_replace(',', '/', $path);
 		$userId = $this->getUserId($token);
-		$apath = split('/', $path);
+		$apath = explode('/', $path);
 		$filename = $apath[count($apath) - 1];
-		unset($apath[count($apath) - 1]);
-		$apath = "/" + join('/', $apath);
+		array_splice($apath, count($apath) - 1, 1);
+		$apath = join('/', $apath);
+		$apath = "/GrappBox|Project/" + $projectId + ($apath[0] == "/" ? "" : "/") + $apath;
 		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
