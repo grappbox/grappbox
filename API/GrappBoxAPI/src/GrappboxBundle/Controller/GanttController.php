@@ -6,8 +6,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-
 class GanttController extends Controller
 {
 	/**
