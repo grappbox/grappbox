@@ -1042,6 +1042,9 @@ class CloudController extends Controller
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
 
 		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
+		var_dump($apath);
+		var_dump($file);
+		var_dump($filename);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
