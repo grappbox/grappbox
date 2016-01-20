@@ -890,12 +890,7 @@ class CloudController extends Controller
 			$apath = "/";
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
 
-		var_dump($apath);
-		var_dump($filename);
-		var_dump($path);
-
 		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
-		var_dump($file);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
@@ -910,7 +905,7 @@ class CloudController extends Controller
 			{
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.7.9";
-				$response["info"]["return_message"] = "Cloud - delAction - Insufficient Success";
+				$response["info"]["return_message"] = "Cloud - delAction - Insufficient Right Access";
 				return new JsonResponse($response);
 			}
 
@@ -998,6 +993,8 @@ class CloudController extends Controller
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
 		$flysystem->delete($path);
+		$this->getDoctrine()->getManager()->remove($file);
+		$this->getDoctrine()->getManager()->flush();
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
 		return new JsonResponse($response);
