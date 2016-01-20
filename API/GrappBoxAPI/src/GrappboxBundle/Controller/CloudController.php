@@ -1037,7 +1037,7 @@ class CloudController extends Controller
 		$apath = explode('/', $path);
 		$filename = $apath[count($apath) - 1];
 		var_dump($apath);
-		$apath = array_splice($apath, count($apath));
+		unset($apath[count($apath) - 1]);
 		var_dump($apath);
 		$apath = join('/', $apath);
 		var_dump($apath);
