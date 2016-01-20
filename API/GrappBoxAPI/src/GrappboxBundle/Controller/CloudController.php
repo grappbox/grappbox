@@ -1061,10 +1061,14 @@ class CloudController extends Controller
 
 		//Now we can delete the file or the directory
 		$path = "/GrappBox|Projects/".(string)($projectId).str_replace(' ', '|', $path);
-		$client = new Client(self::$settingsDAV);
-		$adapter = new WebDAVAdapter($client);
-		$flysystem = new Filesystem($adapter);
-		$flysystem->delete($path);
+		try
+		{
+			$client = new Client(self::$settingsDAV);
+			$adapter = new WebDAVAdapter($client);
+			$flysystem = new Filesystem($adapter);
+			$flysystem->delete($path);
+		}
+		catch(Exception $e)	{	}
 		$this->getDoctrine()->getManager()->remove($file);
 		$this->getDoctrine()->getManager()->flush();
 		$response["info"]["return_code"] = "1.3.1";
