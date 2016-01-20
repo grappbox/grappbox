@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.grappbox;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,10 +26,16 @@ import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
+    public static final int PICK_DOCUMENT_FROM_SYSTEM = 1;
+    public static final int PICK_DOCUMENT_SECURED_FROM_SYSTEM = 2;
     private static final String TAG = MainActivity.class.getSimpleName();
     private Toolbar _toolbar;
     private FragmentManager _fragmentManager;
@@ -56,9 +63,24 @@ public class MainActivity extends AppCompatActivity
         TextView text = (TextView)headerView.findViewById(R.id.nav_head_name_user);
         String name = SessionAdapter.getInstance().getFisrname() + " " + SessionAdapter.getInstance().getLastname();
         text.setText(name);
+        if (this.getIntent() != null)
+        {
+            Intent loader = this.getIntent();
+            String cloudPath = loader.getStringExtra(CloudExplorerFragment.CLOUDEXPLORER_PATH);
+            if (cloudPath != null)
+            {
+                CloudExplorerFragment fragment = new CloudExplorerFragment();
+                fragment.setPath(cloudPath);
+                _fragmentManager = getSupportFragmentManager();
+                changeToolbarTitle("Cloud");
+                _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                return;
+            }
+        }
         if (savedInstanceState == null) {
             _fragmentManager = getSupportFragmentManager();
             _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
+
         }
     }
 

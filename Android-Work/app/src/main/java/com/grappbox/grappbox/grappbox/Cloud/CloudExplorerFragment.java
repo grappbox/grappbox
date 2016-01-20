@@ -1,15 +1,29 @@
 package com.grappbox.grappbox.grappbox.Cloud;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +36,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.grappbox.grappbox.grappbox.MainActivity;
+import com.grappbox.grappbox.grappbox.Model.FileUtils;
 import com.grappbox.grappbox.grappbox.R;
 
+import java.io.File;
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +50,8 @@ import java.util.List;
 public class CloudExplorerFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String _APISafeDirectoryPath = "/Safe";
-    private String _path;
+    public static final String CLOUDEXPLORER_PATH = "key_cloudexplorer_path";
+    private static String _path;
     private CloudFileAdapter _adapter;
     private GetCloudFileListTask _currentLSTask = null;
     private String _safePassword = "";
@@ -42,12 +61,15 @@ public class CloudExplorerFragment extends Fragment {
         _path = "/";
     }
 
+    public void setPath(String path)
+    {
+        _path = path;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
 
-        }
         _childrenContext = this;
     }
     public void setSafePassword(String password)
@@ -150,6 +172,79 @@ public class CloudExplorerFragment extends Fragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK)
+            return;
+        Log.e("WATCH ME", "ACTIVITY RESULT : " + String.valueOf(requestCode));
+        switch (requestCode)
+        {
+            case MainActivity.PICK_DOCUMENT_FROM_SYSTEM:
+                fileSelectedResult(data, false);
+                break;
+            case MainActivity.PICK_DOCUMENT_SECURED_FROM_SYSTEM:
+                fileSelectedResult(data, true);
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void fileSelectedResult(Intent intent, boolean isSecured)
+    {
+        Uri uri = intent.getData();
+        Cursor fileStat = getActivity().getContentResolver().query(uri, null, null, null, null);
+        assert fileStat != null;
+        int filename_index = fileStat.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        int size_index = fileStat.getColumnIndex(OpenableColumns.SIZE);
+        fileStat.moveToFirst();
+        String filename = fileStat.getString(filename_index);
+        int size = fileStat.getInt(size_index);
+        fileStat.close();
+
+        final UploadFileTask task = new UploadFileTask(this, _adapter, uri, filename, _safePassword, size);
+        if (isSecured)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            EditText txtFilePassword = new EditText(getContext());
+            txtFilePassword.setHint(R.string.cloudexplorer_filepassword);
+            txtFilePassword.setTransformationMethod(new PasswordTransformationMethod());
+            txtFilePassword.setId(R.id.cloudexplorer_filepassword_view);
+            builder.setTitle(R.string.set_file_password);
+            builder.setView(txtFilePassword);
+            builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AlertDialog alert = (AlertDialog) dialog;
+                    EditText textView = (EditText) alert.findViewById(R.id.cloudexplorer_filepassword_view);
+
+                    task.execute(_path, textView.getText().toString());
+                }
+            });
+            builder.show();
+        }
+        else
+        {
+            task.execute(_path, "");
+        }
+    }
+
+    public void importFile()
+    {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, MainActivity.PICK_DOCUMENT_FROM_SYSTEM);
+
+    }
+
+    public void importFileSecure()
+    {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, MainActivity.PICK_DOCUMENT_SECURED_FROM_SYSTEM);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -157,6 +252,8 @@ public class CloudExplorerFragment extends Fragment {
         ListView list = (ListView) view.findViewById(R.id.cloudexplorer_itemlist);
         final CloudFileAdapter adapter = new CloudFileAdapter(getContext(), R.id.cloudexplorer_item_filename);
         ImageButton btnCreateDir = (ImageButton) view.findViewById(R.id.btn_createDir);
+        ImageButton btnUpload = (ImageButton) view.findViewById(R.id.btn_import);
+        ImageButton btnUploadSecure = (ImageButton) view.findViewById(R.id.btn_import_secure);
 
         _adapter = adapter;
         GetCloudFileListTask task = new GetCloudFileListTask(this, adapter);
@@ -170,6 +267,18 @@ public class CloudExplorerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 createDirectory();
+            }
+        });
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                importFile();
+            }
+        });
+        btnUploadSecure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                importFileSecure();
             }
         });
 
@@ -232,10 +341,60 @@ public class CloudExplorerFragment extends Fragment {
                             {
                                 case 0:
                                     //TODO : API Call Download File
+                                    if (!clickedItem.isSecured())
+                                    {
+                                        DownloadFileTask task  = new DownloadFileTask(getActivity().getApplicationContext());
+                                        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,_path + "," + clickedItem.get_filename(), _safePassword, clickedItem.get_filename());
+                                    }
+                                    else
+                                    {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                        EditText txtFilePassword = new EditText(getContext());
+                                        txtFilePassword.setHint(R.string.cloudexplorer_filepassword);
+                                        txtFilePassword.setTransformationMethod(new PasswordTransformationMethod());
+                                        txtFilePassword.setId(R.id.cloudexplorer_filepassword_view);
+                                        builder.setTitle(R.string.set_file_password);
+                                        builder.setView(txtFilePassword);
+                                        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                DownloadFileSecuredTask task = new DownloadFileSecuredTask(getActivity().getApplicationContext(), getActivity());
+                                                AlertDialog alert = (AlertDialog) dialog;
+                                                EditText textView = (EditText) alert.findViewById(R.id.cloudexplorer_filepassword_view);
+
+                                                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, _path + "," + clickedItem.get_filename(), textView.getText().toString(), _safePassword, clickedItem.get_filename());
+                                            }
+                                        });
+                                        builder.show();
+                                    }
                                     break;
                                 case 1:
-                                    DeleteFileTask task  = new DeleteFileTask(_childrenContext, _adapter, clickedItem);
-                                    task.execute(_path, _safePassword);
+                                    if (!clickedItem.isSecured())
+                                    {
+                                        DeleteFileTask task  = new DeleteFileTask(_childrenContext, _adapter, clickedItem);
+                                        task.execute(_path, _safePassword);
+                                    }
+                                    else
+                                    {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                        EditText txtFilePassword = new EditText(getContext());
+                                        txtFilePassword.setHint(R.string.cloudexplorer_filepassword);
+                                        txtFilePassword.setTransformationMethod(new PasswordTransformationMethod());
+                                        txtFilePassword.setId(R.id.cloudexplorer_filepassword_view);
+                                        builder.setTitle(R.string.set_file_password);
+                                        builder.setView(txtFilePassword);
+                                        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                DeleteFileSecureTask task = new DeleteFileSecureTask(_childrenContext, _adapter, clickedItem);
+                                                AlertDialog alert = (AlertDialog) dialog;
+                                                EditText textView = (EditText) alert.findViewById(R.id.cloudexplorer_filepassword_view);
+
+                                                task.execute(_path, textView.getText().toString(), _safePassword);
+                                            }
+                                        });
+                                        builder.show();
+                                    }
                                     break;
                                 default:
                                     break;

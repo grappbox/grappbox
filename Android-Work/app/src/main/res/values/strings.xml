@@ -157,8 +157,13 @@
     <string name="str_import">Import file</string>
     <string name="str_import_secure">Import secured file</string>
     <string name="problem_grappbox_server">We can\'t arrive to deal with grappbox server, please try again. If the problem persist, contact grappbox team at problem@grappbox.com</string>
-    <string name="placeholder_create_folder">Enter the folder name here...</string>
-    <string name="placeholder_safe_password">Enter the safe password here...</string>
+    <string name="placeholder_create_folder">Enter the folder name here…</string>
+    <string name="placeholder_safe_password">Enter the safe password here…</string>
     <string name="error_folder_incorrect_characters">The folder name have some incorrect characters (/)</string>
     <string name="error_code_head">"\nError code : "</string>
+    <string name="cloudexplorer_filepassword">Enter the file password here…</string>
+    <string name="set_file_password">Set the file password</string>
+    <string name="cloud_file_import_notification">File importation in progress</string>
+    <string name="cloudexplorer_import_pending_text">Prepare the system for uploading</string>
+    <string name="cloudexplorer_import">We are importing your file, please wait</string>
 </resources>

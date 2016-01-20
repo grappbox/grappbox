@@ -53,8 +53,6 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
             api.setRequestConnection("GET");
 
             return api.getInputSream();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,20 +93,13 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
             }
             return;
         }
-        _adapter.clear();
-        if (!_askedPath.equals("/"))
-        {
-            FileItem item = new FileItem(FileItem.EFileType.BACK, "Go to parent");
-
-            _adapter.add(item);
-        }
         try {
             json = new JSONObject(s);
             if (!json.getJSONObject("info").getString("return_code").startsWith("1."))
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
 
-                builder.setMessage(R.string.problem_grappbox_server);
+                builder.setMessage(_cloudExplorerFragment.getString(R.string.problem_grappbox_server) + _cloudExplorerFragment.getString(R.string.error_code_head) + json.getJSONObject("info").getString("return_message"));
                 builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -116,7 +107,16 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
                     }
                 });
                 builder.create().show();
+                _cloudExplorerFragment.setSafePassword("");
+                _cloudExplorerFragment.resetPath();
                 return;
+            }
+            _adapter.clear();
+            if (!_askedPath.equals("/"))
+            {
+                FileItem item = new FileItem(FileItem.EFileType.BACK, "Go to parent");
+
+                _adapter.add(item);
             }
             data = json.getJSONObject("data").getJSONArray("array");
             for (int i = 0; i < data.length(); ++i)

@@ -49,8 +49,10 @@ public class APIConnectAdapter  {
         _APIVersion = version;
     }
 
-    public static APIConnectAdapter getInstance()
+    public static APIConnectAdapter getInstance(boolean... unique)
     {
+        if (unique.length > 0 && unique[0])
+            return new APIConnectAdapter();
         if (_instance == null){
             _instance = new APIConnectAdapter();
         }

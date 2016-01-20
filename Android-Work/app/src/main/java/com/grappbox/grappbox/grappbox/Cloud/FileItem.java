@@ -43,7 +43,7 @@ public class FileItem {
         stringType = Collections.unmodifiableMap(types);
 
         keys.put(EJsonKeys.FILENAME, "filename");
-        keys.put(EJsonKeys.SECURED, "isSecured");
+        keys.put(EJsonKeys.SECURED, "is_secured");
         keys.put(EJsonKeys.FILETYPE, "type");
         keys.put(EJsonKeys.MIMETYPE, "mimetype");
         keys.put(EJsonKeys.FILESIZE, "size");
