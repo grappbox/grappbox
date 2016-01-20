@@ -12,6 +12,11 @@ BugCheckableLabel::BugCheckableLabel(const int id, const QString &name, const bo
     this->setLayout(_mainLayout);
 }
 
+void BugCheckableLabel::SetChecked(bool checked)
+{
+    _checked->setChecked(checked);
+}
+
 void BugCheckableLabel::TriggerCheckChange(bool checked)
 {
     emit OnCheckChanged(checked, _id, _checked->text());
@@ -22,7 +27,7 @@ const int BugCheckableLabel::GetId() const
     return _id;
 }
 
-const QString &BugCheckableLabel::GetName() const
+const QString BugCheckableLabel::GetName() const
 {
     return _checked->text();
 }

@@ -5,13 +5,10 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     QString style;
     QWidget *widgetTitleCategory = new QWidget();
     QWidget *widgetTitleAssignee = new QWidget();
-    QWidget *commentWidget = new QWidget();
     QLabel *lblTitleCategory = new QLabel("<h3>" + tr("Categories") + "</h3>");
     QLabel *lblTitleAssignee = new QLabel("<h3>" + tr("Assignee") + "</h3>");
     QHBoxLayout *layoutTitleCategory = new QHBoxLayout();
     QHBoxLayout *layoutTitleAssignee = new QHBoxLayout();
-    QVBoxLayout *layoutCategoryArea = new QVBoxLayout();
-    QVBoxLayout *layoutAssigneeArea = new QVBoxLayout();
     _btnCategoriesAssign = new QPushButton(PH_ASSIGNATION);
     _btnAssigneeAssign = new QPushButton(PH_ASSIGNATION);
     _bugId = -1;
@@ -41,10 +38,13 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
 
     _categoriesArea->setMaximumWidth(250);
     _assigneesArea->setMaximumWidth(250);
-    layoutAssigneeArea->addWidget(_assignees);
-    layoutCategoryArea->addWidget(_categories);
-    _categoriesArea->setLayout(layoutCategoryArea);
-    _assigneesArea->setLayout(layoutAssigneeArea);
+
+
+    _categoriesArea->setWidget(_categories);
+    _categoriesArea->setWidgetResizable(true);
+    _assigneesArea->setWidget(_assignees);
+    _assigneesArea->setWidgetResizable(true);
+
     _sideMenuLayout->addWidget(widgetTitleCategory);
     _sideMenuLayout->addWidget(_categoriesArea);
     _sideMenuLayout->addWidget(widgetTitleAssignee);
@@ -60,6 +60,7 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     QObject::connect(_btnAssigneeAssign, SIGNAL(released()), this, SLOT(TriggerAssigneeBtnReleased()));
     QObject::connect(_btnCategoriesAssign, SIGNAL(released()), this, SLOT(TriggerCategoryBtnReleased()));
     QObject::connect(_titleBar, SIGNAL(OnIssueClosed(int)), this, SLOT(TriggerIssueClosed(int)));
+    QObject::connect(_titleBar, SIGNAL(OnTitleEdit(int)), this, SLOT(TriggerSaveTitle(int)));
 
     _mainLayout->addWidget(_titleBar);
     _mainLayout->addLayout(_bodyLayout);
@@ -116,58 +117,6 @@ void BodyBugVisualize::Show(BodyBugTracker *pageManager, QJsonObject *data)
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_BUGCOMMENT, commentData, this, "TriggerGotComments", "TriggerAPIFailure");
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_BUG, bugData, this, "TriggerGotBug", "TriggerAPIFailure");
 
-
-
-    //Start Fake Data
-    QList<QJsonObject> fdataAssigneeView, fdataAssigneeAssign, fdataCategoryView, fdataCategoryAssign;
-    QJsonObject obj1, obj2, obj3, obj4, obj5, obj6, obj7, obj8;
-
-    obj1.insert("id", 1);
-    obj1.insert("assigned", true);
-    obj1.insert("name", "mougen_v");
-    obj2.insert("id", 2);
-    obj2.insert("assigned", true);
-    obj2.insert("name", "launoi_a");
-
-
-    obj5.insert("id", 4);
-    obj5.insert("assigned", false);
-    obj5.insert("name", "hemmer_r");
-    obj6.insert("id", 3);
-    obj6.insert("assigned", false);
-    obj6.insert("name", "feytou_p");
-
-    obj3.insert("id", 1);
-    obj3.insert("assigned", false);
-    obj3.insert("name", "question");
-    obj7.insert("id", 2);
-    obj7.insert("assigned", false);
-    obj7.insert("name", "help wanted");
-
-    obj4.insert("id", 3);
-    obj4.insert("assigned", true);
-    obj4.insert("name", "bug");
-    obj8.insert("id", 4);
-    obj8.insert("assigned", true);
-    obj8.insert("name", "enhanced");
-
-    fdataAssigneeView.append(obj1);
-    fdataAssigneeView.append(obj2);
-    fdataAssigneeAssign.append(obj5);
-    fdataAssigneeAssign.append(obj1);
-    fdataAssigneeAssign.append(obj2);
-    fdataAssigneeAssign.append(obj6);
-
-    fdataCategoryAssign.append(obj3);
-    fdataCategoryAssign.append(obj7);
-    fdataCategoryAssign.append(obj4);
-    fdataCategoryAssign.append(obj8);
-    fdataCategoryView.append(obj4);
-    fdataCategoryView.append(obj8);
-    //End Fake Data
-    _categories->CreateAssignPageItems(fdataCategoryAssign);
-    _categories->CreateViewPageItems(fdataCategoryView);
-
     emit OnLoadingDone(BodyBugTracker::BUGVIEW);
 }
 
@@ -175,7 +124,7 @@ void BodyBugVisualize::Hide()
 {
     _assignees->DeletePageItems(BugViewAssigneeWidget::BugAssigneePage::VIEW);
     _assignees->DeletePageItems(BugViewAssigneeWidget::BugAssigneePage::ASSIGN);
-    _categories->DeletePageItems(BugViewCategoryWidget::BugCategoryPage::VIEW);
+    _categories->DeletePageItems(BugViewCategoryWidget::BugCategoryPage::ASSIGN);
     _categories->DeletePageItems(BugViewCategoryWidget::BugCategoryPage::VIEW);
     hide();
 }
@@ -271,7 +220,7 @@ void BodyBugVisualize::TriggerGotComments(int UNUSED id, QByteArray data)
             date = editedAt.toString("yyyy-MM-dd HH:mm:ss");
         }
         com.insert(JSON_AVATAR, "");
-        com.insert(JSON_COMMENTOR, QString::number(com["userId"].toInt()));
+        com.insert(JSON_COMMENTOR, com["creator"].toObject()["fullname"].toString());
         com.insert(JSON_DATE, date);
         commentList.append(com);
     }
@@ -321,34 +270,47 @@ void BodyBugVisualize::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
 void BodyBugVisualize::TriggerGotBug(int UNUSED id, QByteArray data)
 {
     QVector<QString> userProjectData;
+    QDateTime date;
 
     _bugData = QJsonDocument::fromJson(data).object()["ticket"].toObject();
+
+    if (_bugData.contains("deletedAt") && !_bugData["deletedAt"].isNull())
+        _statusBar->SetBugStatus(BugViewStatusBar::CLOSED);
+    else
+        _statusBar->SetBugStatus(BugViewStatusBar::OPEN);
+    _statusBar->SetCreatorName(_bugData["creator"].toObject()["fullname"].toString());
+    date = QDateTime::fromString(_bugData["createdAt"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+    _statusBar->SetDate(date);
+
     userProjectData.append(API::SDataManager::GetDataManager()->GetToken());
     userProjectData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL, userProjectData, this, "TriggerGotUserProject", "TriggerAPIFailure");
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL, userProjectData, this, "TriggerGotTagProject", "TriggerAPIFailure");
 }
 
 void BodyBugVisualize::TriggerGotUserProject(int UNUSED id, QByteArray data)
 {
-
     QJsonObject json = QJsonDocument::fromJson(data).object();
     QJsonArray users = _bugData["users"].toArray();
     QList<QJsonObject> usersProjects;
     QList<QJsonObject> usersAssigned;
 
-
     for (QJsonArray::iterator it = users.begin(); it != users.end(); ++it)
     {
         QJsonObject currentBugUser = (*it).toObject();
+        QString fullname = currentBugUser["name"].toString();
+        QStringList names = fullname.split(" ");
 
         currentBugUser.insert("assigned", true);
+        currentBugUser.insert("first_name", names[0]);
+        names.removeFirst();
+        currentBugUser.insert("last_name", QString(names.join(" ")));
         usersAssigned.append(currentBugUser);
     }
     for (int i = 1; json.contains("User " + QString::number(i)); ++i)
     {
         QJsonObject current = json["User " + QString::number(i)].toObject();
         bool assigned = false;
-
         for (QJsonArray::iterator it = users.begin(); it != users.end(); ++it)
         {
             QJsonObject currentBugUser = (*it).toObject();
@@ -360,9 +322,65 @@ void BodyBugVisualize::TriggerGotUserProject(int UNUSED id, QByteArray data)
             }
         }
         current.insert("assigned", assigned);
-        usersProjects.append(current);
+        usersProjects.append(QJsonObject(current));
     }
     _assignees->CreateViewPageItems(usersAssigned);
     _assignees->CreateAssignPageItems(usersProjects);
-    emit OnLoadingDone(BodyBugTracker::BUGVIEW);
+    _assignees->SetBugId(_bugId);
+}
+
+void BodyBugVisualize::TriggerGotTagProject(int UNUSED id, QByteArray data)
+{
+    QJsonObject json = QJsonDocument::fromJson(data).object();
+    QList<QJsonObject> tagProjects;
+    QList<QJsonObject> tagAssigned;
+    QJsonArray tags = _bugData["tags"].toArray();
+
+    for (QJsonArray::iterator it = tags.begin(); it != tags.end(); ++it)
+    {
+        QJsonObject currentBugUser = (*it).toObject();
+
+        currentBugUser.insert("assigned", true);
+        tagAssigned.append(currentBugUser);
+    }
+    for (int i = 1; json.contains("Tag " + QString::number(i)); ++i)
+    {
+        QJsonObject current = json["Tag " + QString::number(i)].toObject();
+        bool assigned = false;
+        for (QJsonArray::iterator it = tags.begin(); it != tags.end(); ++it)
+        {
+            QJsonObject currentBugUser = (*it).toObject();
+
+            if (currentBugUser["id"].toInt() == current["id"].toInt())
+            {
+                assigned = true;
+                break;
+            }
+        }
+        current.insert("assigned", assigned);
+        tagProjects.append(QJsonObject(current));
+    }
+    _categories->CreateViewPageItems(tagAssigned);
+    _categories->CreateAssignPageItems(tagProjects);
+    _categories->SetBugId(_bugId);
+
+}
+
+void BodyBugVisualize::TriggerSaveTitle(int bugId)
+{
+    QString title = _titleBar->GetTitle();
+    QVector<QString> data;
+
+    data.append(QString::number(bugId));
+    data.append(API::SDataManager::GetDataManager()->GetToken());
+    data.append(title);
+    data.append(_bugData["description"].toString());
+    data.append(QString::number(1));
+    data.append("");
+    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_EDIT_BUG, data, this, "TriggerDoNothing", "TriggerAPIFailure");
+}
+
+void BodyBugVisualize::TriggerDoNothing(int UNUSED id, QByteArray UNUSED data)
+{
+
 }

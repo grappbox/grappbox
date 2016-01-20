@@ -12,8 +12,9 @@ class BugCheckableLabel : public QWidget
 public:
     explicit        BugCheckableLabel(const int id, const QString &name, const bool checked, QWidget *parent = 0);
     const int       GetId() const;
-    const QString   &GetName() const;
+    const QString   GetName() const;
     const bool      IsChecked() const;
+    void            SetChecked(bool checked);
 
 signals:
     void            OnCheckChanged(bool, int, QString);

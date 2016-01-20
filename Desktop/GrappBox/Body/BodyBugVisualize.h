@@ -53,6 +53,9 @@ public slots:
     void                    TriggerAPIFailure(int id, QByteArray data);
     void                    TriggerGotUserProject(int id, QByteArray data);
     void                    TriggerGotBug(int id, QByteArray data);
+    void                    TriggerGotTagProject(int id, QByteArray data);
+    void                    TriggerSaveTitle(int bugId);
+    void                    TriggerDoNothing(int id, QByteArray data);
 
 private:
     int                     _bugId;

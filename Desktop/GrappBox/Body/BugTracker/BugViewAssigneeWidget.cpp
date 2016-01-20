@@ -1,21 +1,23 @@
 #include "BugViewAssigneeWidget.h"
 
-BugViewAssigneeWidget::BugViewAssigneeWidget(QWidget *parent) : QWidget(parent)
+BugViewAssigneeWidget::BugViewAssigneeWidget(int bugId, QWidget *parent) : QWidget(parent)
 {
+    _bugId = bugId;
     _viewPage = new QWidget();
     _assignPage = new QWidget();
-    _mainWidget = new QStackedWidget(this);
+    _mainWidget = new QStackedLayout();
     _mainViewLayout = new QVBoxLayout();
     _mainAssignLayout = new QVBoxLayout();
+    _mainAssignLayout->setAlignment(Qt::AlignTop);
+    _mainViewLayout->setAlignment(Qt::AlignTop);
     _isAPIAssignActivated = true;
 
     _viewPage->setLayout(_mainViewLayout);
     _assignPage->setLayout(_mainAssignLayout);
 
-    this->setMinimumHeight(450);
-
     _mainWidget->addWidget(_viewPage);
     _mainWidget->addWidget(_assignPage);
+    this->setLayout(_mainWidget);
 }
 
 void BugViewAssigneeWidget::DisableAPIAssignation(const bool disable)
@@ -44,11 +46,18 @@ void BugViewAssigneeWidget::CreateAssignPageItems(const QList<QJsonObject> &item
     for (it = items.begin(); it != items.end(); ++it)
     {
         QJsonObject obj = *it;
-        BugCheckableLabel *widCheckable = new BugCheckableLabel(obj[ITEM_ID].toInt(), obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString(), obj[ITEM_ASSIGNED].toBool());
+        int id = obj[ITEM_ID].toInt();
+        qDebug() << "ID = " << id;
+        BugCheckableLabel *widCheckable = new BugCheckableLabel(id, obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString(), obj[ITEM_ASSIGNED].toBool());
 
+        widCheckable->setMinimumHeight(35);
+        widCheckable->setMinimumWidth(230);
+        widCheckable->setMaximumWidth(230);
         QObject::connect(widCheckable, SIGNAL(OnCheckChanged(bool,int,QString)), this, SLOT(TriggerCheckChange(bool,int, QString)));
+
         _mainAssignLayout->addWidget(widCheckable);
     }
+
     emit OnPageItemsCreated(BugAssigneePage::ASSIGN);
 }
 
@@ -59,10 +68,11 @@ void BugViewAssigneeWidget::CreateViewPageItems(const QList<QJsonObject> &items)
     for (it = items.begin(); it != items.end(); ++it)
     {
         QJsonObject obj = *it;
+        QLabel *newLabel = new QLabel(obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString());
 
         if (!obj[ITEM_ASSIGNED].toBool())
             continue;
-        _mainViewLayout->addWidget(new QLabel(obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString()));
+        _mainViewLayout->addWidget(newLabel);
     }
     emit OnPageItemsCreated(BugAssigneePage::VIEW);
 }
@@ -75,9 +85,19 @@ void BugViewAssigneeWidget::TriggerOpenPage(const BugAssigneePage page)
 
 void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString name)
 {
+    QVector<QString> data;
+    int assignId;
+
     if (_isAPIAssignActivated)
     {
-        //TODO : Link API
+        data.append(QString::number(_bugId));
+        data.append(API::SDataManager::GetDataManager()->GetToken());
+        data.append(QString::number(id));
+        if (checked)
+            assignId = API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_ASSIGNUSER_BUG, data, this, "TriggerAssignSuccess", "TriggerAssignFailure");
+        else
+            assignId = API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_DELETEUSER_BUG, data, this, "TriggerUnAssignSuccess", "TriggerUnAssignFailure");
+        _apiAssignWaiting[assignId] = id;
     }
     if (checked)
         emit OnAssigned(id, name);
@@ -108,4 +128,95 @@ const QList<int> BugViewAssigneeWidget::GetAllAssignee() const
             idAssigned.append(checkableLabel->GetId());
     }
     return idAssigned;
+}
+
+BugCheckableLabel *BugViewAssigneeWidget::SearchCheckbox(int id)
+{
+    for (int i = 0; i < _mainAssignLayout->count(); ++i)
+    {
+        BugCheckableLabel *checkbox = nullptr;
+        checkbox = static_cast<BugCheckableLabel *>(_mainAssignLayout->itemAt(i)->widget());
+
+        qDebug() << "ID = "<< (checkbox ? checkbox->GetId() : -1);
+        qDebug() << "Passed ID = " << id;
+        if (checkbox && checkbox->GetId() == id)
+        {
+            return checkbox;
+        }
+    }
+    return nullptr;
+}
+
+QLabel *BugViewAssigneeWidget::SearchLabel(int id)
+{
+    BugCheckableLabel *checkbox = SearchCheckbox(id);
+
+    if (!checkbox)
+        return nullptr;
+    for (int i = 0; i < _mainViewLayout->count(); ++i)
+    {
+        QLabel *lbl = static_cast<QLabel *>(_mainViewLayout->itemAt(i)->widget());
+
+        if (lbl && lbl->text() == checkbox->GetName())
+            return lbl;
+    }
+    return nullptr;
+}
+
+void BugViewAssigneeWidget::SetBugId(int bugId)
+{
+    _bugId = bugId;
+}
+
+void BugViewAssigneeWidget::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
+{
+    QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
+}
+
+void BugViewAssigneeWidget::TriggerAssignFailure(int id, QByteArray UNUSED data)
+{
+    BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignWaiting[id]);
+
+    checkbox->SetChecked(false);
+    _apiAssignWaiting.remove(id);
+    TriggerAPIFailure(id, data);
+}
+
+void BugViewAssigneeWidget::TriggerAssignSuccess(int id, QByteArray UNUSED data)
+{
+    BugCheckableLabel *checkbox = nullptr;
+    QLabel *newLabel = new QLabel();
+
+    checkbox = SearchCheckbox(_apiAssignWaiting[id]);
+    newLabel->setText(checkbox->GetName());
+
+    _mainViewLayout->addWidget(newLabel);
+    _apiAssignWaiting.remove(id);
+}
+
+void BugViewAssigneeWidget::TriggerUnAssignFailure(int id, QByteArray UNUSED data)
+{
+    BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignWaiting[id]);
+
+    checkbox->SetChecked(true);
+    _apiAssignWaiting.remove(id);
+    TriggerAPIFailure(id, data);
+}
+
+void BugViewAssigneeWidget::TriggerUnAssignSuccess(int id, QByteArray UNUSED data)
+{
+    QLabel *lbl = SearchLabel(_apiAssignWaiting[id]);
+    QLayoutItem *item;
+
+    for (int i = 0; i < _mainViewLayout->count(); ++i)
+    {
+        item = _mainViewLayout->itemAt(i);
+
+        if (item->widget() && item->widget() == lbl)
+        {
+            item->widget()->setParent(nullptr);
+            _mainViewLayout->removeItem(item);
+        }
+    }
+    _apiAssignWaiting.remove(id);
 }

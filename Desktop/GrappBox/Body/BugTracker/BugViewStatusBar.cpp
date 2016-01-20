@@ -26,3 +26,8 @@ void BugViewStatusBar::SetBugStatus(const BugState state)
         return;
     _lblBugStatus->setText(_bugState == BugState::OPEN ? PH_BUGOPENSTATE : PH_BUGCLOSEDSTATE);
 }
+
+void BugViewStatusBar::SetDate(const QDateTime date)
+{
+    _lblCreationDate->setText(date.toString("yyyy-MM-dd HH:mm:ss"));
+}
