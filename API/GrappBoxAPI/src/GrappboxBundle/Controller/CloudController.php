@@ -1032,6 +1032,7 @@ class CloudController extends Controller
 	public function delSecuredAction($token, $projectId, $path, $password, $safe_password, Request $request)
 	{
 		$path = str_replace(',', '/', $path);
+		$path = str_replace(' ', '|', $path);
 		$userId = $this->getUserId($token);
 		$apath = explode('/', $path);
 		$filename = $apath[count($apath) - 1];
@@ -1042,7 +1043,9 @@ class CloudController extends Controller
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
 
 		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
-
+		var_dump($apath);
+		var_dump($filename);
+		var_dump($file);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
