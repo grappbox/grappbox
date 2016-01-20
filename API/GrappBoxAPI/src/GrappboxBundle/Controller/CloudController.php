@@ -1038,7 +1038,7 @@ class CloudController extends Controller
 		$apath = array_splice($apath, count($apath) - 1);
 		$apath = join('/', $apath);
 		var_dump($apath);
-		if (count($apath) < 2)
+		if (count($apath) < 2 || $apath[0] != "/")
 			$apath = "/";
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
 
@@ -1057,7 +1057,7 @@ class CloudController extends Controller
 			{
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.9.9";
-				$response["info"]["return_message"] = "Cloud - delSafeAction - Insufficient Success";
+				$response["info"]["return_message"] = "Cloud - delSafeAction - Insufficient Right Access";
 				return new JsonResponse($response);
 			}
 
