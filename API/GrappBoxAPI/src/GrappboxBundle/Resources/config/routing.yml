@@ -191,12 +191,12 @@ v2_bugtracker_getProjectTags:
 # -----------------------------------------------------------------------
 v2_cloud_streamOpenAction:
   path:     cloud/stream/{token}/{idProject}/{safePassword}
-  defaults:   { _controller: GrappboxBundle:Cloud:openStreamAction, safePassword: null, _format: json}
+  defaults:   { _controller: GrappboxBundle:Cloud:openStream, safePassword: null, _format: json}
   methods: [POST]
 
 v2_cloud_streamCloseAction:
   path:     cloud/stream/{token}/{projectId}/{streamId}
-  defaults: { _controller: GrappboxBundle:Cloud:closeStreamAction, _format: json}
+  defaults: { _controller: GrappboxBundle:Cloud:closeStream, _format: json}
   methods: [DELETE]
 
 v2_cloud_sendFile:
