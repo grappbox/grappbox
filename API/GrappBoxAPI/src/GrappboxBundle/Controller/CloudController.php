@@ -479,8 +479,8 @@ class CloudController extends Controller
 	public function sendFileAction(Request $request){
 		$cloudTransferRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudTransfer");
 		$json = json_decode($request->getContent(), true);
-		$token = $json["session_infos"]["token"];
-		$receivedData = $json["stream_infos"];
+		$token = $json["data"]["token"];
+		$receivedData = $json["data"];
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
