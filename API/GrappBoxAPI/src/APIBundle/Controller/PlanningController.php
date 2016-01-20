@@ -33,7 +33,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiVersion 0.11.0
 	*
 	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of event to list (hour, min and second MUST be set to zero)
+	* @apiParam {Date} date date of event to list (hour, min and second MUST be set to zero)
 	*
 	* @apiSuccess {Object[]} data event list
 	* @apiSuccess {int} id Event id
@@ -124,7 +124,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiVersion 0.11.0
 	*
 	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of the first day of the week (hour, min and second MUST be set to zero)
+	* @apiParam {Date} date date of the first day of the week (hour, min and second MUST be set to zero)
 	*
 	* @apiSuccess {Object[]} data event list
 	* @apiSuccess {int} id Event id
@@ -209,13 +209,13 @@ class PlanningController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.11/planning/getmonth get planning of a month
+	* @api {post} /V0.11/planning/getmonth get planning of a month
 	* @apiName getMonthPlanning
 	* @apiGroup Planning
 	* @apiVersion 0.11.0
 	*
 	* @apiParam {string} token user authentication token
-	* @apiParam {DateTime} date date of the first day of the month (hour, min and second MUST be set to zero)
+	* @apiParam {Date} date date of the first day of the month (hour, min and second MUST be set to zero)
 	*
 	* @apiSuccess {Object[]} data event list
 	* @apiSuccess {int} id Event id
