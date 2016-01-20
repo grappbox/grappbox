@@ -139,6 +139,11 @@ class CloudController extends Controller
 		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
 	}
 
+	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
+	{
+		return $str; //TODO : code the Grappbox sha-1 algorithm when assigned people ready
+	}
+
 	/**
 	*
 	* @api {post} /V0.11/cloud/stream Open a new stream in order to upload file
