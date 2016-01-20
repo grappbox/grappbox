@@ -242,7 +242,7 @@ class CloudController extends Controller
 		if ($isSafe)
 		{
 			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
-			$passwordEncrypted = ($safePassword ? $this->grappSha1($json["session_infos"]["safe_password"]) : NULL);
+			$passwordEncrypted = ($safePassword ? $this->grappSha1($safePassword) : NULL);
 		}
 		else {
 			$project = null;
