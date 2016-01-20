@@ -104,8 +104,8 @@ class TimelineController extends RolesAndTokenVerificationController
 		$timeline_array = array();
 		foreach ($timelines as $key => $value) {
 			$type = $em->getRepository('GrappboxBundle:TimelineType')->find($value->getTypeId());
-			if (($this->checkRoles($user, $id, "customerTimeline") && strcmp($type->getName(), "customerTimeline") == 0)
-					|| ($this->checkRoles($user, $id, "teamTimeline") && strcmp($type->getName(), "teamTimeline") == 0))
+			if (($this->checkRoles($user, $id, "customerTimeline") < 1 && strcmp($type->getName(), "customerTimeline") == 0)
+					|| ($this->checkRoles($user, $id, "teamTimeline") < 1 && strcmp($type->getName(), "teamTimeline") == 0))
 			{
 				$tmp = $value->objectToArray();
 				$tmp["typeName"] = $type->getName();
@@ -231,10 +231,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		}
 
@@ -362,10 +362,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		}
 
@@ -492,10 +492,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 1)
 				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 1)
 				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		}
 
@@ -634,10 +634,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 1)
 				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 1)
 				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		}
 
@@ -716,10 +716,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		}
 

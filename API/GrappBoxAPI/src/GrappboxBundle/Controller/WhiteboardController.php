@@ -450,7 +450,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError());
 		if (!$projectId)
 			return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $projectId, "whiteboard"))
+		if ($this->checkRoles($user, $projectId, "whiteboard") < 1)
 			return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
@@ -877,7 +877,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			 return ($this->setBadTokenError());
 		if (!array_key_exists('projectId', $content) || !array_key_exists('whiteboardName', $content))
 			 return $this->setBadRequest("Missing Parameter");
-		if (!$this->checkRoles($user, $content->projectId, "whiteboard"))
+		if ($this->checkRoles($user, $content->projectId, "whiteboard") < 2)
 			 return ($this->setNoRightsError());
 
 		$em = $this->getDoctrine()->getManager();
@@ -1450,7 +1450,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			 return $this->setBadRequest("Bad Whiteboard Id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 1)
 			 return ($this->setNoRightsError());
 		if ($whiteboard->getDeletedAt())
 			 return $this->setBadRequest("Whiteboard Deleted");
@@ -1816,7 +1816,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			return $this->setBadRequest("Bad Whiteboard Id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
 			return ($this->setNoRightsError());
 		if (!array_key_exists('modification', $content))
 		 	return $this->setBadRequest("Missing Parameter");
@@ -2333,7 +2333,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			 return $this->setBadRequest("Bad Whiteboard Id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 1)
 			 return ($this->setNoRightsError());
 		if (!array_key_exists('lastUpdate', $content))
  			 return $this->setBadRequest("Missing Parameter");
@@ -2631,7 +2631,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			 return $this->setBadRequest("Bad Whiteboard Id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
 			 return ($this->setNoRightsError());
 
 		if ($whiteboard)

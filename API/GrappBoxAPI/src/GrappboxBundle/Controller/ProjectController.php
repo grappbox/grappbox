@@ -220,7 +220,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$customerTimeline->setName("CustomerTimeline - ".$project->getName());
 		$em->persist($customerTimeline);
 		$em->flush();
-		
+
 		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id));
 	}
 
@@ -359,7 +359,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.2.3", "Project", "updateinformations"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -509,7 +509,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return $this->setBadTokenError("6.3.3", "Project", "getinformations");
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return ($this->setNoRightsError("6.3.9", "Project", "getinformations"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -616,7 +616,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.4.3", "Project", "delproject"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -690,7 +690,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.5.3", "Project", "retrieveproject"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.5.9", "Project", "retrieveproject"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -786,7 +786,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.6.3", "Project", "generatecustomeraccess"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.6.9", "Project", "generatecustomeraccess"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -898,7 +898,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.7.4", "Project", "getcustomeraccessbyid", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $customerAccess->getProjects()->getId(), "projectSettings"))
+		if ($this->checkRoles($user, $customerAccess->getProjects()->getId(), "projectSettings") < 1)
 			return ($this->setNoRightsError("6.7.9", "Project", "getcustomeraccessbyid"));
 
 		$name = $customerAccess->getName();
@@ -990,7 +990,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.8.3", "Project", "getcustomeraccessbyproject"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return ($this->setNoRightsError("6.8.9", "Project", "getcustomeraccessbyproject"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -1097,7 +1097,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.9.3", "Project", "delcustomeraccess"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.9.9", "Project", "delcustomeraccess"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -1215,7 +1215,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.10.3", "Project", "addusertoproject"));
 
-		if (!$this->checkRoles($user, $content->id, "projectSettings"))
+		if ($this->checkRoles($user, $content->id, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -1352,7 +1352,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.11.3", "Project", "removeusertoproject"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -1472,7 +1472,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.12.3", "Project", "getusertoproject"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return ($this->setNoRightsError("6.12.9", "Project", "getusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
