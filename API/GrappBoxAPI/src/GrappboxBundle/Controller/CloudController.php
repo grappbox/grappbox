@@ -886,7 +886,7 @@ class CloudController extends Controller
 		$filename = $apath[count($apath) - 1];
 		$apath = array_splice($apath, count($apath) - 1);
 		$apath = join('/', $apath);
-		if (count($apath) < 2)
+		if ($apath == 1 || count($apath) < 2)
 			$apath = "/";
 		$apath = "/GrappBox|Project/" + $projectId + $apath;
 
