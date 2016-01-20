@@ -28,7 +28,7 @@ class CurlRequest {
 	protected $_webpage;
 	protected $_status;
 	public    $authentication = 1;
-	public    $auth_name      = 'GrappBot';
+	public    $auth_name      = 'grappbox';
 	public    $auth_pass      = 'GolfBravo$$';
 
 	public function __construct($timeOut = 30)
