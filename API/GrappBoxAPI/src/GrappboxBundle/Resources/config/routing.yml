@@ -229,6 +229,11 @@ v2_cloud_createDir:
     defaults:   { _controller: GrappboxBundle:Cloud:createDir, _format: json }
     methods: [POST]
 
+v2_cloud_delete_secured:
+    path:       cloud/file/{token}/{projectId}/{path}/{password}/{safe_password}
+    defaults:   { _controller: GrappboxBundle:Cloud:delSecured, safe_password: null, _format: json}
+    methods: [DELETE]
+
 # v2_cloud_createCloud: #TODO : Delete this route, it's a test route
 #     path:       cloud/createcloud/{projectId}
 #     defaults:   { _controller: GrappboxBundle:Cloud:createCloud }

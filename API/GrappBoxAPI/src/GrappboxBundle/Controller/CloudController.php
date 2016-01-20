@@ -888,7 +888,7 @@ class CloudController extends Controller
 		$apath = join('/', $apath);
 		if (count($apath) < 2)
 			$apath = "/";
-		$apath = "/GrappBox|Project/" . $projectId . $apath;
+		$apath = "/GrappBox|Projects/" . $projectId . $apath;
 
 		var_dump($apath);
 		var_dump($filename);
@@ -911,6 +911,84 @@ class CloudController extends Controller
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.7.9";
 				$response["info"]["return_message"] = "Cloud - delAction - Insufficient Success";
+				return new JsonResponse($response);
+			}
+
+		//Now we can delete the file or the directory
+		$path = "/GrappBox|Projects/".(string)($projectId).str_replace(' ', '|', $path);
+		$client = new Client(self::$settingsDAV);
+		$adapter = new WebDAVAdapter($client);
+		$flysystem = new Filesystem($adapter);
+		$flysystem->delete($path);
+		$response["info"]["return_code"] = "1.3.1";
+		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
+		return new JsonResponse($response);
+	}
+
+	/**
+	*
+	* @api {delete} /V0.2/cloud/file/:token/:project_id/:path/:password/:safe_password Delete a file or a directory
+	* @apiVersion 0.2.0
+	* @apiDescription This method is there to delete something in the cloud
+	* @apiGroup Cloud
+	* @apiName Delete
+	* @apiParam {string} token The token of authenticated user.
+	* @apiParam {Number} project_id The project id to execute the command.
+	* @apiParam {string} path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
+	* @apiParam {string} password the password of the file you want to delete
+	* @apiParam {string} [password] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
+	* @apiParamExample {curl} Request Example:
+	* curl -X DELETE http://api.grappbox.com/app_dev.php/V0.2/cloud/del/MyToken/1/,Doulan.txt/satan
+	*
+	* @apiSuccessExample {json} Success Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"infos" : {
+	*			"return_code" : 1.4.1,
+	*			"return_message" : "Cloud - delAction - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiError (206) {Object} info Informations about the request
+	* @apiError (206) {string} infos.return_code Request end state code
+	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	*
+	* @apiErrorExample {json} Error Response:
+	*	HTTP/1.1 206 Partial Content
+	*	{
+	*		"infos" : {
+	*			"return_code" : 3.7.9,
+	*			"return_message" : "Cloud - delAction - Insufficient Right"
+	*		}
+	*	}
+	*/
+	public function delSecuredAction($token, $projectId, $path, $password, $safe_password, Request $request)
+	{
+		$path = str_replace(',', '/', $path);
+		$userId = $this->getUserId($token);
+		$apath = explode('/', $path);
+		$filename = $apath[count($apath) - 1];
+		$apath = array_splice($apath, count($apath) - 1);
+		$apath = join('/', $apath);
+		if (count($apath) < 2)
+			$apath = "/";
+		$apath = "/GrappBox|Projects/" . $projectId . $apath;
+		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
+		$isSafe = preg_match("/Safe/", $path);
+		if ($isSafe)
+		{
+			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($projectId);
+			$passwordEncrypted = $this->grappSha1($safe_password);
+		}
+		else {
+			$project = NULL;
+			$passwordEncrypted = NULL;
+		}
+		if ((!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+			{
+				header("HTTP/1.1 206 Partial Content", True, 206);
+				$response["info"]["return_code"] = "3.9.9";
+				$response["info"]["return_message"] = "Cloud - delSafeAction - Insufficient Success";
 				return new JsonResponse($response);
 			}
 
