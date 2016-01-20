@@ -9,9 +9,6 @@ QT       += core gui widgets network
 TARGET = GrappBox
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -Wunused-parameter \
-    -Wunused-variable
-
 CONFIG += c++11
 
 INCLUDEPATH += Body \
@@ -69,7 +66,13 @@ SOURCES += main.cpp \
     Body/BodyBugCreation.cpp \
     Body/BugTracker/BugEntity.cpp \
     Body/BugTracker/BugTagEntity.cpp \
-    Body/BugTracker/BugUser.cpp
+    Body/BugTracker/BugUser.cpp \
+    Body/Calendar/CalendarView.cpp \
+    CalendarViewDay.cpp \
+    Body/Calendar/CalendarEvent.cpp \
+    Body/Calendar/CalendarViewMonth.cpp \
+    Body/Calendar/CalendarEventMonth.cpp \
+    Body/BodyCalendar.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -124,7 +127,13 @@ HEADERS  += MainWindow.h \
     WidgetCommon/utils.h \
     Body/BugTracker/BugEntity.h \
     Body/BugTracker/BugTagEntity.h \
-    Body/BugTracker/BugUser.h
+    Body/BugTracker/BugUser.h \
+    Body/Calendar/CalendarView.h \
+    CalendarViewDay.h \
+    Body/Calendar/CalendarEvent.h \
+    Body/Calendar/CalendarViewMonth.h \
+    Body/Calendar/CalendarEventMonth.h \
+    Body/BodyCalendar.h
 
 RESOURCES += \
     temporaryressources.qrc \
