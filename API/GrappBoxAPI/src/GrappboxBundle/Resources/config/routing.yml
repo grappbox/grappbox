@@ -210,8 +210,13 @@ v2_cloud_getList:
     methods: [GET]
 
 v2_cloud_getFile:
-    path:       cloud/file/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
-    defaults:   { _controller: GrappboxBundle:Cloud:getFile, password: null, passwordSafe: null }
+    path:       cloud/file/{cloudPath}/{token}/{idProject}/{passwordSafe}
+    defaults:   { _controller: GrappboxBundle:Cloud:getFile, passwordSafe: null }
+    methods: [GET]
+
+v2_cloud_getFile_secured:
+    path:       cloud/filesecured/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
+    defaults:   { _controller: GrappboxBundle:Cloud:getFileSecured, passwordSafe: null }
     methods: [GET]
 
 v2_cloud_setSafePass:

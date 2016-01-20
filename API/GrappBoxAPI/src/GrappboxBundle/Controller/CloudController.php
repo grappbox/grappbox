@@ -637,7 +637,79 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.2/cloud/file/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
+	* @api {get} /V0.2/cloud/file/:cloudPath/:token/:idProject/[:passwordSafe] Download a file
+	* @apiVersion 0.2.0
+	* @apiDescription This method is there to start a download.
+	* @apiGroup Cloud
+	* @apiName Download file
+	* @apiParam {string} CloudPath The path to the file with coma instead of slash. This have to start with a coma
+	* @apiParam {string} token The token of authenticated user.
+	* @apiParam {Number} idProject The project id to execute the command.
+	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the file is in the safe
+	* @apiParamExample {curl} Request Example:
+	*	curl http://api.grappbox.com/V0.6/cloud/getfile/,Sauron/minus5percent/1/mustache/satan
+	* @apiSuccess (203) {string} Header HTTP/1.1 203 Redirect (You will be redirected on the file URL in GET method (for download))
+	*
+	* @apiError (206) {Object} info Informations about the request
+	* @apiError (206) {string} infos.return_code Request end state code
+	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	*
+	* @apiErrorExample {json} Error Response:
+	*	HTTP/1.1 206 Partial Content
+	*	{
+	*		"infos" : {
+	*			"return_code" : 3.5.9,
+	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
+	*		}
+	*	}
+	*/
+	public function getFileAction($cloudPath, $token, $idProject, $passwordSafe, Request $request){
+		$userId = $this->getUserId($token);
+		$cloudPathArray = explode(',', $cloudPath);
+		$filename = $cloudPathArray[count($cloudPathArray) - 1];
+		unset($cloudPathArray[count($cloudPathArray) - 1]);
+		$cloudBasePath = implode('/', $cloudPathArray);
+		if ($cloudBasePath == "")
+			$cloudBasePath = "/";
+		$filePassword = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+
+		$isSafe = preg_match("/Safe/", $cloudPath);
+		if ($isSafe)
+		{
+			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
+			$passwordEncrypted = $this->grappSha1($passwordSafe);
+		}
+		else {
+			$project = NULL;
+			$passwordEncrypted = NULL;
+		}
+		if (!is_null($filePassword) || $userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		{
+			header("HTTP/1.1 206 Partial Content", True, 206);
+			$response["info"]["return_code"] = "3.5.9";
+			$response["info"]["return_message"] = "Cloud - getFileAction - Insufficient Right";
+			return new JsonResponse($response);
+		}
+
+		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
+		$cloudPath = str_replace(',', '/', $cloudPath);
+		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox|Projects/".(string)($idProject).$cloudPath);
+		$searchRequest = new CurlRequest();
+		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
+		if ($searchResult->meta->statuscode != 100 ||
+			$searchResult->data->element->share_type != "3")
+			{
+				header("HTTP/1.1 206 Partial Content", True, 206);
+				$response["info"]["return_code"] = "3.5.10";
+				$response["info"]["return_message"] = "Cloud - getFileAction - Target file not found";
+				return new JsonResponse($response);
+			}
+		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+	}
+
+	/**
+	*
+	* @api {get} /V0.2/cloud/filesecured/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
@@ -664,9 +736,9 @@ class CloudController extends Controller
 	*		}
 	*	}
 	*/
-	public function getFileAction($cloudPath, $token, $idProject, $password = null, $passwordSafe = null, Request $request){
+	public function getFileSecuredAction($cloudPath, $token, $idProject, $password, $passwordSafe = null, Request $request){
 		$userId = $this->getUserId($token);
-		$passwordEncrypted = $password; //TODO : sha-1 512 hashing Here in password
+		$passwordFileEncrypted = $this->grappSha1($password);
 		$cloudPathArray = explode(',', $cloudPath);
 		$filename = $cloudPathArray[count($cloudPathArray) - 1];
 		unset($cloudPathArray[count($cloudPathArray) - 1]);
@@ -679,17 +751,17 @@ class CloudController extends Controller
 		if ($isSafe)
 		{
 			$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
-			$passwordEncrypted = $this->grappSha1($password);
+			$passwordEncrypted = $this->grappSha1($passwordSafe);
 		}
 		else {
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordFileEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
 			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.5.9";
-			$response["info"]["return_message"] = "Cloud - openStreamAction - Insufficient Right";
+			$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Insufficient Right";
 			return new JsonResponse($response);
 		}
 
@@ -703,7 +775,7 @@ class CloudController extends Controller
 			{
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.5.10";
-				$response["info"]["return_message"] = "Cloud - getFileAction - Target file not found";
+				$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Target file not found";
 				return new JsonResponse($response);
 			}
 		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
