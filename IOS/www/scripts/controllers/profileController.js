@@ -22,6 +22,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.profileInfo = {};
     $scope.GetProfileInfo = function () {
+        $rootScope.showLoading();
         GetProfileInfo.get({
             token: $rootScope.userDatas.token
         }).$promise
@@ -29,11 +30,12 @@ angular.module('GrappBox.controllers')
                 console.log('Get profile info successful !');
                 $scope.profileInfo = data;
             })
-            .then(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-            })
             .catch(function (error) {
                 console.error('Get profile info failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
             })
     }
     $scope.GetProfileInfo();
@@ -44,6 +46,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
+        $rootScope.showLoading();
         ProjectsList.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
@@ -51,6 +54,10 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Get projects list failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
             })
     }
     $scope.GetProjects();
@@ -62,6 +69,7 @@ angular.module('GrappBox.controllers')
     $scope.nextMeetingsTab = {};
     $scope.nextMeetingsError = "";
     $scope.GetNextMeetings = function () {
+        $rootScope.showLoading();
         NextMeetings.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
@@ -73,6 +81,10 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Get next meetings list failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
     }
     $scope.GetNextMeetings();
 
@@ -83,6 +95,7 @@ angular.module('GrappBox.controllers')
     $scope.currentTasksTab = {};
     $scope.currentTasksError = "";
     $scope.GetCurrentTasks = function () {
+        $rootScope.showLoading();
         GetCurrentTasks.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get current tasks list successful !');
@@ -94,6 +107,10 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Get current tasks list failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
     }
     $scope.GetCurrentTasks();
 
@@ -104,6 +121,7 @@ angular.module('GrappBox.controllers')
     $scope.userConnectedRoles = {};
     $scope.userConnectedRolesError = "";
     $scope.GetUserConnectedRoles = function () {
+        $rootScope.showLoading();
         GetUserConnectedRoles.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get user connected roles successful !');
@@ -112,12 +130,13 @@ angular.module('GrappBox.controllers')
                 if (Object.keys(data.toJSON()).length < 1)
                     $scope.userConnectedRolesError = "You don't have role.";
             })
-            .then(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-            })
             .catch(function (error) {
                 console.error('Get user connected roles failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
             })
     }
     $scope.GetUserConnectedRoles();

@@ -18,6 +18,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.project = {};
     $scope.GetProjectInfo = function () {
+        $rootScope.showLoading();
         ProjectView.get({
             token: $rootScope.userDatas.token,
             projectId: $stateParams.projectId
@@ -33,10 +34,15 @@ angular.module('GrappBox.controllers')
                 console.error('Get project info failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.log('projectId: ' + $stateParams.projectId);
             })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
     }
     $scope.GetProjectInfo();
 
     $scope.EditProject = function () {
+        $rootScope.showLoading();
         EditProject.update({
             token: $rootScope.userDatas.token,
             projectId: $stateParams.projectId,
@@ -57,6 +63,9 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Edit project failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $rootScope.hideLoading();
             })
     }
 })

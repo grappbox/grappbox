@@ -6,7 +6,7 @@
 angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives'])
 
 // on starting
-.run(function ($ionicPlatform, $rootScope) {
+.run(function ($ionicPlatform, $rootScope, $ionicLoading) {
     $ionicPlatform.ready(function () {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -19,6 +19,16 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
     });
     $rootScope.API_VERSION = '0.11'; //actual API's version
     $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
+
+    $rootScope.showLoading = function () {
+        $ionicLoading.show({
+            template: '<p>Loading...</p><ion-spinner></ion-spinner>'
+        });
+    };
+
+    $rootScope.hideLoading = function () {
+        $ionicLoading.hide();
+    };
 })
 
 .config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider) {

@@ -22,6 +22,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.projectRoles = {};
     $scope.GetProjectRoles = function () {
+        $rootScope.showLoading();
         GetProjectRoles.get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
@@ -30,11 +31,12 @@ angular.module('GrappBox.controllers')
                 console.log('Get project roles successful !');
                 $scope.projectRoles = data;
             })
-            .then(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-            })
             .catch(function (error) {
                 console.error('Get project roles failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $scope.hideLoading();
             })
     }
     $scope.GetProjectRoles();
@@ -45,6 +47,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.roleType = {};
     $scope.AddNewRole = function () {
+        $rootScope.showLoading();
         console.log($scope.roleType.teamTimeline);
         AddNewRole.save({
             _token: $rootScope.userDatas.token,
@@ -68,6 +71,10 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Add new role failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $scope.hideLoading();
             })
     }
 })

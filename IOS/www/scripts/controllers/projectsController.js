@@ -17,16 +17,18 @@ angular.module('GrappBox.controllers')
     */
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
+        $rootScope.showLoading();
         ProjectsList.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
                 $scope.projectsTab = data;
             })
-            .then(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-            })
             .catch(function (error) {
                 console.error('Get projects list failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
             })
     }
     $scope.GetProjects();

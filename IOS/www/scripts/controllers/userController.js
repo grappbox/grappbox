@@ -19,6 +19,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.userInfo = {};
     $scope.GetUserInfo = function () {
+        $rootScope.showLoading();
         GetUserInfo.get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
@@ -30,6 +31,10 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Get user info failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
     }
     $scope.GetUserInfo();
 
@@ -39,6 +44,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.memberRoles = {};
     $scope.GetMemberRoles = function () {
+        $rootScope.showLoading();
         GetMemberRoles.get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
@@ -51,6 +57,10 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Get member roles failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
             })
     }
     $scope.GetMemberRoles();

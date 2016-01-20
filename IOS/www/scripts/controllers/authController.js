@@ -12,6 +12,7 @@ angular.module('GrappBox.controllers')
     });
 
     $scope.login = function () {
+        $rootScope.showLoading();
         Login.save({ login: $scope.user.email, password: $scope.user.password }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
@@ -22,9 +23,13 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Connexion failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
+            .finally(function () {
+                $rootScope.hideLoading();
+            })
     }
 
     $scope.loginWithToken = function () {
+        $rootScope.showLoading();
         Login.save({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
@@ -33,6 +38,9 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Connexion failed ! Reason: ' + error);
+            })
+            .finally(function () {
+                $rootScope.hideLoading();
             })
     }
 })

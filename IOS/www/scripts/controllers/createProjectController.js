@@ -8,6 +8,7 @@ angular.module('GrappBox.controllers')
     $scope.project = {};
 
     $scope.CreateProject = function () {
+        $rootScope.showLoading();
         CreateProject.save({
             token: $rootScope.userDatas.token,
             name: $scope.project.name,
@@ -26,6 +27,9 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Create project failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $rootScope.hideLoading();
             })
     }
 })

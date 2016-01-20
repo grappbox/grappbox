@@ -18,6 +18,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.profileInfo = {};
     $scope.GetProfileInfo = function () {
+        $rootScope.showLoading();
         GetProfileInfo.get({
             token: $rootScope.userDatas.token
         }).$promise
@@ -31,10 +32,15 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Get profile info failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
     }
     $scope.GetProfileInfo();
 
     $scope.EditProfile = function () {
+        $rootScope.showLoading();
         EditProfile.update({
             token: $rootScope.userDatas.token,
             first_name: $scope.profileInfo.first_name,
@@ -56,6 +62,9 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Edit profile failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $rootScope.hideLoading();
             })
     }    
 })

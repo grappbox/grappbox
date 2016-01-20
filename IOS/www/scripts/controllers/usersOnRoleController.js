@@ -11,7 +11,6 @@ angular.module('GrappBox.controllers')
     $scope.doRefresh = function () {
 
         $scope.GetUsersForRole();
-
         console.log("View refreshed !");
     }
 
@@ -51,6 +50,7 @@ angular.module('GrappBox.controllers')
     ** Method: DELETE
     */
     $scope.deleteRole = function () {
+        $rootScope.showLoading();
         $http.delete($rootScope.API + 'roles/delprojectroles', {
             data: {
                 _token: $rootScope.userDatas.token,
@@ -61,12 +61,13 @@ angular.module('GrappBox.controllers')
         .then(function (data) {
             console.log('Delete role successful !');
             $scope.deleteRoleData = data;
-        })
-        .then(function () {
             $state.go('app.roles', { projectId: $scope.projectId });
         })
         .catch(function (error) {
             console.error('Delete role failed ! Reason: ' + error.status + ' ' + error.statusText);
+        })
+        .finally(function () {
+            $rootScope.hideLoading();
         })
     }
 
@@ -76,6 +77,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.usersForRole = {};
     $scope.GetUsersForRole = function () {
+        $rootScope.showLoading();
         GetUsersForRole.get({
             token: $rootScope.userDatas.token,
             roleId: $scope.roleId
@@ -85,12 +87,13 @@ angular.module('GrappBox.controllers')
                 $scope.usersForRole = data;
                 console.log(data);
             })
-            .then(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-            })
             .catch(function (error) {
                 console.error('Get users for role failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
             })
     }
     $scope.GetUsersForRole();
@@ -102,6 +105,7 @@ angular.module('GrappBox.controllers')
     $scope.userAssignedData = {};
     $scope.userToAdd = {};
     $scope.AssignToRole = function () {
+        $rootScope.showLoading();
         console.log($scope.userToAdd.userId);
         AssignToRole.save({
             _token: $rootScope.userDatas.token,
@@ -115,12 +119,13 @@ angular.module('GrappBox.controllers')
                 $scope.GetUsersForRole();
                 console.log(data);
             })
-            .then(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-            })
             .catch(function (error) {
                 console.error('Assign user on role failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
             })
     }
 
@@ -165,6 +170,7 @@ angular.module('GrappBox.controllers')
     ** Method: DELETE
     */
     $scope.RemoveUserFromRole = function () {
+        $rootScope.showLoading();
         $http.delete($rootScope.API + 'roles/delpersonrole', {
             data: {
                 _token: $rootScope.userDatas.token,
@@ -176,16 +182,15 @@ angular.module('GrappBox.controllers')
         .then(function (data) {
             console.log('Remove user from project successful !');
             $scope.userRemoveRoleData = data;
-        })
-        .then(function () {
             $scope.GetUsersForRole();
-        })
-        .then(function () {
-            $scope.$broadcast('scroll.refreshComplete');
         })
         .catch(function (error) {
             console.error('Remove user from role failed ! Reason: ' + error.status + ' ' + error.statusText);
             console.error(error);
+        })
+        .finally(function () {
+            $scope.$broadcast('scroll.refreshComplete');
+            $rootScope.hideLoading();
         })
     }
 
@@ -195,6 +200,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.updatedRoleData = {};
     $scope.UpdateProjectRole = function () {
+        $rootScope.showLoading();
         UpdateProjectRole.update({
             _token: $rootScope.userDatas.token,
             roleId: $scope.roleId,
@@ -218,6 +224,9 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Update project role failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+            })
+            .finally(function () {
+                $rootScope.hideLoading();
             })
     }
 })
