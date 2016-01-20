@@ -122,7 +122,20 @@ angular.module('GrappBox.api', ['ngResource'])
     });
 })
 
+// BUGTRACKER
+.factory('GetTickets', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/gettickets/:token/:id', { id: "@id", token: "@token" });
+})
+
+.factory('GetTicket', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/getticket/:token/:id', { id: "@id", token: "@token" });
+})
+
+.factory('GetCommentsOnTicket', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/getcomments/:token/:id/:ticketId', { id: "@id", token: "@token", ticketId: "@ticketId" });
+})
+
 // GANTT
 .factory('GetCurrentAndNextTasks', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'user/getcurrentandnexttasks/:token', { token: "@token" });
-})
+});
