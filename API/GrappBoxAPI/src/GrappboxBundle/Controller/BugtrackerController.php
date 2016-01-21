@@ -1691,7 +1691,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiName getTicketsByUser
 	* @apiGroup Bugtracker
 	*	@apiDescription Get Tickets asssigned to a user for a project
-	* @apiVersion 0.11.1
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id id of the project
 	* @apiParam {int} user id of the user
