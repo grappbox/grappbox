@@ -165,15 +165,15 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$role = new Role();
 		$role->setName("Admin");
-		$role->setTeamTimeline(1);
-		$role->setCustomerTimeline(1);
-		$role->setGantt(1);
-		$role->setWhiteboard(1);
-		$role->setBugtracker(1);
-		$role->setEvent(1);
-		$role->setTask(1);
-		$role->setProjectSettings(1);
-		$role->setCloud(1);
+		$role->setTeamTimeline(2);
+		$role->setCustomerTimeline(2);
+		$role->setGantt(2);
+		$role->setWhiteboard(2);
+		$role->setBugtracker(2);
+		$role->setEvent(2);
+		$role->setTask(2);
+		$role->setProjectSettings(2);
+		$role->setCloud(2);
 		$role->setProjects($project);
 
 		$em->persist($role);
