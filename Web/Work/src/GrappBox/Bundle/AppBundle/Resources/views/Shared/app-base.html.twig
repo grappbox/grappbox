@@ -24,7 +24,7 @@
 		'@ShowcaseBundle/Resources/public/css/vendor/font-awesome.css'
 		'@ShowcaseBundle/Resources/public/css/custom/base.css'
 		'@AppBundle/Resources/public/css/custom/app.angular.css'
-		filter='?yui_css' output='resources/css/app.min.css' %}
+		filter='?uglifycss' output='resources/css/app.min.css' %}
 		<link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
 		{% endstylesheets %}
 
@@ -46,7 +46,7 @@
 		'@AppBundle/Resources/public/js/custom/whiteboard/app-whiteboard-list.angular.js'
 		'@AppBundle/Resources/public/js/custom/whiteboard/app-whiteboard-draw.angular.js'
 		'@AppBundle/Resources/public/js/custom/whiteboard/app-whiteboard-draw-factory.angular.js'
-		filter='?yui_js' output='resources/js/app.angular.min.js' %}
+		filter='?uglifyjs2' output='resources/js/app.angular.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}
 
@@ -132,7 +132,7 @@
 		'@ShowcaseBundle/Resources/public/js/vendor/smooth-scroll.js'
 		'@ShowcaseBundle/Resources/public/js/vendor/sha256.js'
 		'@AppBundle/Resources/public/js/custom/app.jquery.js'
-		filter='?yui_js' output='resources/js/app.jquery.min.js' %}
+		filter='?uglifyjs2' output='resources/js/app.jquery.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}
 

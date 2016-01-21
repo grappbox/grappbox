@@ -24,7 +24,7 @@
         '@ShowcaseBundle/Resources/public/css/vendor/bootstrap.css'
         '@ShowcaseBundle/Resources/public/css/vendor/font-awesome.css'
         '@ShowcaseBundle/Resources/public/css/custom/base.css'
-        filter='?yui_css' output='resources/css/base.min.css' %}
+        filter='?uglifycss' output='resources/css/base.min.css' %}
         <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
         {% endstylesheets %}
 
@@ -52,7 +52,7 @@
             '@ShowcaseBundle/Resources/public/js/vendor/sha256.js'
             '@ShowcaseBundle/Resources/public/js/vendor/smooth-scroll.js'
             '@ShowcaseBundle/Resources/public/js/custom/base.js'
-            filter='?yui_js' output='resources/js/base.min.js' %}
+            filter='?uglifyjs2' output='resources/js/base.min.js' %}
             <script type="text/javascript" src="{{ asset_url }}"></script>
             {% endjavascripts %}
 
