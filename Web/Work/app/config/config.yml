@@ -47,9 +47,9 @@ assetic:
     filters:
         cssrewrite: ~
         uglifyjs2:
-            jar: "%kernel.root_dir%/Resources/node_modules/uglify-js/bin/uglifyjs"
+            bin: "%kernel.root_dir%/Resources/node_modules/uglify-js/bin/uglifyjs"
         uglifycss:
-            jar: "%kernel.root_dir%/Resources/node_modules/uglifycss/uglifycss"
+            bin: "%kernel.root_dir%/Resources/node_modules/uglifycss/uglifycss"
 
 # Doctrine Configuration
 doctrine:
