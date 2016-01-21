@@ -288,7 +288,8 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	{
 	*		"data": {
 	*			"token": "13135",
-	*			"title": "Project delayed",
+	*			"messageId": 15,
+	*			"title": "Hello there!",
 	*			"message": "Hi, i think we should delay the delivery date of the project, what do you think about it?"
 	*		}
 	* 	}
@@ -515,6 +516,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @api {get} /V0.2/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
 	* @apiName getLastMessages
 	* @apiGroup Timeline
+	* @apiDescription Get the last X messages from offset Y of the given timeline
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id Id of the timeline
@@ -657,6 +659,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @api {get} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
+	* @apiDescription Archive the given message and his comments
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id Id of the timeline

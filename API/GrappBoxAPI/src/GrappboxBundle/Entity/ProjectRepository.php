@@ -362,4 +362,87 @@ class ProjectRepository extends EntityRepository
 
 		return $arr;
 	}
+
+	public function findUserProjectsV2($id, $code, $part, $function)
+	{
+		$qb = $this->createQueryBuilder('p');
+		$projects = $qb->getQuery()->getResult();
+
+		$resp = new JsonResponse();
+		$ret = array();
+		$arr = array();
+
+		if ($projects === null)
+		{
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_OK);
+			$resp->setData($ret);
+
+			return $resp;
+		}
+
+		$arr = array();
+
+		foreach ($projects as $project) {
+			$creatorId = $project->getCreatorUser()->getId();
+
+			if ($creatorId == $id)
+			{
+				$projectId = $project->getId();
+				$projectName = $project->getName();
+				$projectDescription = $project->getDescription();
+				$projectLogo = $project->getLogo();
+				$projectPhone = $project->getPhone();
+				$projectCompany = $project->getCompany();
+				$contactMail = $project->getContactEmail();
+				$facebook = $project->getFacebook();
+				$twitter = $project->getTwitter();
+
+				$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail,
+					"facebook" => $facebook, "twitter" => $twitter);
+			}
+			else
+			{
+				$projectUsers = $project->getUsers();
+
+				foreach ($projectUsers as $projectUser) {
+					$userId = $projectUser->getId();
+
+					if ($userId == $id)
+					{
+						$projectId = $project->getId();
+						$projectName = $project->getName();
+						$projectDescription = $project->getDescription();
+						$projectLogo = $project->getLogo();
+						$projectPhone = $project->getPhone();
+						$projectCompany = $project->getCompany();
+						$contactMail = $project->getContactEmail();
+						$facebook = $project->getFacebook();
+						$twitter = $project->getTwitter();
+
+						$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail,
+							"facebook" => $facebook, "twitter" => $twitter);
+					}
+				}
+			}
+		}
+
+		if (count($arr) == 0 || count($projects) == 0)
+		{
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." projects + arr - No Data Success");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
+			$resp->setData($ret);
+
+			return $resp;
+		}
+
+		$ret["info"] = array("return_code" => "1.".$code.".1", "return_message" => $part." - ".$function." - Complete success");
+		$ret["data"] = array("array" => $arr);
+		$resp->setStatusCode(JsonResponse::HTTP_OK);
+		$resp->setData($ret);
+
+		return ($resp);
+	}
 }

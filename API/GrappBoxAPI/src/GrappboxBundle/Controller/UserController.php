@@ -192,7 +192,7 @@ class UserController extends RolesAndTokenVerificationController
 		$viadeo = $userInfos->getViadeo();
 		$twitter = $userInfos->getTwitter();
 
-		return new JsonResponse(array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
+		return $this->setSuccess("1.7.1", "User", "getuserbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
 			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
@@ -421,6 +421,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("7.4.3", "User", "getidbyname"));
 
+		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('GrappboxBundle:User');
 		$qb = $repository->createQueryBuilder('u')->where('u.firstname = :firstname', 'u.lastname = :lastname')->setParameter('firstname', $firstname)->setParameter('lastname', $lastname);
 		$users = $qb->getQuery()->getResult();
@@ -605,1053 +606,230 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.6/user/getprojects/:token Request the user connected projects
+	* @api {get} /V0.2/user/getprojects/:token Request the user connected projects
 	* @apiName getProjects
 	* @apiGroup Users
-	* @apiVersion 0.6.0
+	* @apiDescription Request all the user's connected projects
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user's authentication token
 	*
-	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.id id of the project
-	* @apiSuccess {String} Project.name Name of the project
-	* @apiSuccess {String} Project.description Description of the project
-	* @apiSuccess {String} Project.logo Logo of the project
-	* @apiSuccess {String} Project.contact_mail Mail for the project
-	* @apiSuccess {String} Project.facebook Facebook of the project
-	* @apiSuccess {String} Project.twitter Twitter of the project
+	* @apiSuccess {Object[]} array Array of projects
+	* @apiSuccess {Number} array.id Id of the project
+	* @apiSuccess {String} array.name Name of the project
+	* @apiSuccess {String} array.description Description of the project
+	* @apiSuccess {String} array.phone Phone of the project
+	* @apiSuccess {String} array.company Company of the project
+	* @apiSuccess {String} array.logo Logo of the project
+	* @apiSuccess {String} array.contact_mail Mail for the project
+	* @apiSuccess {String} array.facebook Facebook of the project
+	* @apiSuccess {String} array.twitter Twitter of the project
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Project 1":
-	*		{
-	*			"id": 2,
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est une application de gestion de projet.",
-	*			"phone": "+339 46 12 45 78",
-	*			"company": "Ubisoft",
-	*			"logo": "Grappbox.com/logo.png",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "www.facebook.com/GrappBox",
-	*			"twitter": "twitter.com/GrappBox"
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getprojects - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 2,
+	*					"name": "Grappbox",
+	*					"description": "Grappbox est une application de gestion de projet.",
+	*					"phone": "+339 46 12 45 78",
+	*					"company": "Ubisoft",
+	*					"logo": "DATA",
+	*					"contact_mail": "contact@grappbox.com",
+	*					"facebook": "www.facebook.com/GrappBox",
+	*					"twitter": "twitter.com/GrappBox"
+	*				}
+	*			]
 	*		}
-	* 	}
+	*	}
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.3",
+	*			"return_message": "User - getprojects - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/getprojects/:token Request the user connected projects
-	* @apiName getProjects
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.id id of the project
-	* @apiSuccess {String} Project.name Name of the project
-	* @apiSuccess {String} Project.description Description of the project
-	* @apiSuccess {String} Project.phone Phone of the project
-	* @apiSuccess {String} Project.company Company of the project
-	* @apiSuccess {String} Project.logo Logo of the project
-	* @apiSuccess {String} Project.contact_mail Mail for the project
-	* @apiSuccess {String} Project.facebook Facebook of the project
-	* @apiSuccess {String} Project.twitter Twitter of the project
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Project 1":
-	*		{
-	*			"id": 2,
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est une application de gestion de projet.",
-	*			"phone": "+339 46 12 45 78",
-	*			"company": "Ubisoft",
-	*			"logo": "Grappbox.com/logo.png",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "www.facebook.com/GrappBox",
-	*			"twitter": "twitter.com/GrappBox"
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.7.3",
+	*			"return_message": "User - getprojects - Bad ID"
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.7/user/getprojects/:token Request the user connected projects
-	* @apiName getProjects
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.id id of the project
-	* @apiSuccess {String} Project.name Name of the project
-	* @apiSuccess {String} Project.description Description of the project
-	* @apiSuccess {String} Project.phone Phone of the project
-	* @apiSuccess {String} Project.company Company of the project
-	* @apiSuccess {String} Project.logo Logo of the project
-	* @apiSuccess {String} Project.contact_mail Mail for the project
-	* @apiSuccess {String} Project.facebook Facebook of the project
-	* @apiSuccess {String} Project.twitter Twitter of the project
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Project 1":
-	*		{
-	*			"id": 2,
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est une application de gestion de projet.",
-	*			"phone": "+339 46 12 45 78",
-	*			"company": "Ubisoft",
-	*			"logo": "Grappbox.com/logo.png",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "www.facebook.com/GrappBox",
-	*			"twitter": "twitter.com/GrappBox"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/user/getprojects/:token Request the user connected projects
-	* @apiName getProjects
-	* @apiGroup Users
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.id id of the project
-	* @apiSuccess {String} Project.name Name of the project
-	* @apiSuccess {String} Project.description Description of the project
-	* @apiSuccess {String} Project.phone Phone of the project
-	* @apiSuccess {String} Project.company Company of the project
-	* @apiSuccess {String} Project.logo Logo of the project
-	* @apiSuccess {String} Project.contact_mail Mail for the project
-	* @apiSuccess {String} Project.facebook Facebook of the project
-	* @apiSuccess {String} Project.twitter Twitter of the project
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Project 1":
-	*		{
-	*			"id": 2,
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est une application de gestion de projet.",
-	*			"phone": "+339 46 12 45 78",
-	*			"company": "Ubisoft",
-	*			"logo": "Grappbox.com/logo.png",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "www.facebook.com/GrappBox",
-	*			"twitter": "twitter.com/GrappBox"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/user/getprojects/:token Request the user connected projects
-	* @apiName getProjects
-	* @apiGroup Users
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.id id of the project
-	* @apiSuccess {String} Project.name Name of the project
-	* @apiSuccess {String} Project.description Description of the project
-	* @apiSuccess {String} Project.phone Phone of the project
-	* @apiSuccess {String} Project.company Company of the project
-	* @apiSuccess {String} Project.logo Logo of the project
-	* @apiSuccess {String} Project.contact_mail Mail for the project
-	* @apiSuccess {String} Project.facebook Facebook of the project
-	* @apiSuccess {String} Project.twitter Twitter of the project
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Project 1":
-	*		{
-	*			"id": 2,
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est une application de gestion de projet.",
-	*			"phone": "+339 46 12 45 78",
-	*			"company": "Ubisoft",
-	*			"logo": "Grappbox.com/logo.png",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "www.facebook.com/GrappBox",
-	*			"twitter": "twitter.com/GrappBox"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/getprojects/:token Request the user connected projects
-	* @apiName getProjects
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.id id of the project
-	* @apiSuccess {String} Project.name Name of the project
-	* @apiSuccess {String} Project.description Description of the project
-	* @apiSuccess {String} Project.phone Phone of the project
-	* @apiSuccess {String} Project.company Company of the project
-	* @apiSuccess {String} Project.logo Logo of the project
-	* @apiSuccess {String} Project.contact_mail Mail for the project
-	* @apiSuccess {String} Project.facebook Facebook of the project
-	* @apiSuccess {String} Project.twitter Twitter of the project
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Project 1":
-	*		{
-	*			"id": 2,
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est une application de gestion de projet.",
-	*			"phone": "+339 46 12 45 78",
-	*			"company": "Ubisoft",
-	*			"logo": "Grappbox.com/logo.png",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "www.facebook.com/GrappBox",
-	*			"twitter": "twitter.com/GrappBox"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getprojects/:token Request the user connected projects
-	* @apiName getProjects
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Project array of n project
-	* @apiSuccess {Number} Project.id id of the project
-	* @apiSuccess {String} Project.name Name of the project
-	* @apiSuccess {String} Project.description Description of the project
-	* @apiSuccess {String} Project.phone Phone of the project
-	* @apiSuccess {String} Project.company Company of the project
-	* @apiSuccess {String} Project.logo Logo of the project
-	* @apiSuccess {String} Project.contact_mail Mail for the project
-	* @apiSuccess {String} Project.facebook Facebook of the project
-	* @apiSuccess {String} Project.twitter Twitter of the project
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Project 1":
-	*		{
-	*			"id": 2,
-	*			"name": "Grappbox",
-	*			"description": "Grappbox est une application de gestion de projet.",
-	*			"phone": "+339 46 12 45 78",
-	*			"company": "Ubisoft",
-	*			"logo": "Grappbox.com/logo.png",
-	*			"contact_mail": "contact@grappbox.com",
-	*			"facebook": "www.facebook.com/GrappBox",
-	*			"twitter": "twitter.com/GrappBox"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	}
 	*/
 	public function getProjectsAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.7.3", "User", "getprojects"));
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findUserProjects($user->getId()));
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findUserProjectsV2($user->getId(), "7", "User", "getprojects");
 	}
 
 	/**
-	* @api {get} /V0.6/user/getalltasks/:token Request the user connected tasks
+	* @api {get} /V0.2/user/getalltasks/:token Request the user connected tasks
 	* @apiName getAllTasks
 	* @apiGroup Users
-	* @apiVersion 0.6.0
+	* @apiDescription Request the user connected tasks
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user's authentication token
 	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
+	* @apiSuccess {Object[]} array Array of tasks
+	* @apiSuccess {Number} array.id Id of the task
+	* @apiSuccess {String} array.title Title of the task
+	* @apiSuccess {String} array.description Description of the task
+	* @apiSuccess {Object[]} array.project Project Informations
+	* @apiSuccess {Number} array.project.id Project id link to the task
+	* @apiSuccess {String} array.project.name Project's name
+	* @apiSuccess {Datetime} array.due_date Due date for the task
+	* @apiSuccess {Datetime} array.started_at Begining of the task
+	* @apiSuccess {Datetime} array.finished_at Task finished date
+	* @apiSuccess {Datetime} array.created_at Date of creation of the task
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getalltasks - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 2,
+	*					"title": "Whiteboard API",
+	*					"description": "Implémentation de la partie whiteboard de l'API",
+	*					"project": {
+	*						"id": 3,
+	*						"name": "Grappbox"
+	*					},
+	*					"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*				}
+	*			]
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/getalltasks/:token Request the user connected tasks
-	* @apiName getAllTasks
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.3",
+	*			"return_message": "User - getalltasks - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.7/user/getalltasks/:token Request the user connected tasks
-	* @apiName getAllTasks
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.8.3",
+	*			"return_message": "User - getalltasks - Bad ID"
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/user/getalltasks/:token Request the user connected tasks
-	* @apiName getAllTasks
-	* @apiGroup Users
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/user/getalltasks/:token Request the user connected tasks
-	* @apiName getAllTasks
-	* @apiGroup Users
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/getalltasks/:token Request the user connected tasks
-	* @apiName getAllTasks
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getalltasks/:token Request the user connected tasks
-	* @apiName getAllTasks
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	}
 	*/
 	public function getAllTasksAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.8.3", "User", "getalltasks"));
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserAllTasks($user->getId()));
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserAllTasksV2($user->getId(), "7", "User", "getalltasks");
 	}
 
 	/**
-	* @api {get} /V0.6/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
+	* @api {get} /V0.2/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
 	* @apiName getCurrentAndNextTasks
 	* @apiGroup Users
-	* @apiVersion 0.6.0
+	* @apiDescription Request the user connected current and next tasks
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user's authentication token
 	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
+	* @apiSuccess {Object[]} array Array of tasks
+	* @apiSuccess {Number} array.id Id of the task
+	* @apiSuccess {String} array.title Title of the task
+	* @apiSuccess {String} array.description Description of the task
+	* @apiSuccess {Object[]} array.project Project informations
+	* @apiSuccess {Number} array.project.id Project id link to the task
+	* @apiSuccess {String} array.project.name Project's name
+	* @apiSuccess {Datetime} array.due_date Due date for the task
+	* @apiSuccess {Datetime} array.started_at Begining of the task
+	* @apiSuccess {Datetime} array.finished_at Task finished date
+	* @apiSuccess {Datetime} array.created_at Date of creation of the task
 	*
 	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "0000-00-00 00:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getcurrentandnexttasks - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 2,
+	*					"title": "Whiteboard API",
+	*					"description": "Implémentation de la partie whiteboard de l'API",
+	*					"project": {
+	*						"id": 3,
+	*						"name": "Grappbox"
+	*					},
+	*					"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*				}
+	*			]
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.6/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
-	* @apiName getCurrentAndNextTasks
-	* @apiGroup Users
-	* @apiVersion 0.6.1
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "0000-00-00 00:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.3",
+	*			"return_message": "User - getcurrentandnexttasks - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.7/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
-	* @apiName getCurrentAndNextTasks
-	* @apiGroup Users
-	* @apiVersion 0.7.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "0000-00-00 00:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.3",
+	*			"return_message": "User - getcurrentandnexttasks - Bad ID"
 	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.8/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
-	* @apiName getCurrentAndNextTasks
-	* @apiGroup Users
-	* @apiVersion 0.8.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "0000-00-00 00:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.9/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
-	* @apiName getCurrentAndNextTasks
-	* @apiGroup Users
-	* @apiVersion 0.9.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "0000-00-00 00:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.10/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
-	* @apiName getCurrentAndNextTasks
-	* @apiGroup Users
-	* @apiVersion 0.10.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "0000-00-00 00:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
-	*/
-
-	/**
-	* @api {get} /V0.11/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
-	* @apiName getCurrentAndNextTasks
-	* @apiGroup Users
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} Task array of n project
-	* @apiSuccess {Number} Task.id id of the task
-	* @apiSuccess {String} Task.title title of the task
-	* @apiSuccess {String} Task.description Description of the task
-	* @apiSuccess {Number} Task.project_id Project id link to the task
-	* @apiSuccess {String} Task.project_name Project's name
-	* @apiSuccess {Datetime} Task.due_date Due date for the task
-	* @apiSuccess {Datetime} Task.started_at Begining of the task
-	* @apiSuccess {Datetime} Task.finished_at Task finished date
-	* @apiSuccess {Datetime} Task.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	* 	{
-	*		"Task 1":
-	*		{
-	*			"id": 2,
-	*			"title": "Whiteboard API",
-	*			"description": "Implémentation de la partie whiteboard de l'API",
-	*			"project_id": 3,
-	*			"project_name": "Grappbox",
-	*			"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"finished_at": {"date": "0000-00-00 00:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Invalid Method Value
-	*     HTTP/1.1 404 Not Found
-	*     {
-	*       "message": "404 not found."
-	*     }
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
-	*
+	*	}
 	*/
 	public function getCurrentAndNextTasksAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.9.3", "User", "getcurrentandnexttasks"));
 
-		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserCurrentAndNextTasks($user->getId()));
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserCurrentAndNextTasksV2($user->getId(), "7", "User", "getcurrentandnexttasks");
 	}
 }
