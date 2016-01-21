@@ -4,6 +4,7 @@
 #include "ibodycontener.h"
 #include "Calendar/CalendarEvent.h"
 #include "Calendar/CalendarViewMonth.h"
+#include "Calendar/CalendarViewWeek.h"
 
 #include <QStackedLayout>
 #include <QCheckBox>
@@ -28,28 +29,31 @@ signals:
     void OnLoadingDone(int);
 
 public slots:
-    /*void OnDayCheckedChange(int);
-    void OnMonthCheckedChange(int);
-    void OnYearCheckedChange(int);
+    void OnDayCheckedChange(bool value);
+    void OnMonthCheckedChange(bool value);
+    void OnWeekCheckedChange(bool value);
 
     void OnNext();
     void OnPrev();
 
-    void OnProjectCheckChange();*/
+    void OnProjectCheckChange();
 
 private:
     enum ViewType
     {
-        MONTH,
-        WEEK,
-        DAY
+        MONTH = 0,
+        WEEK = 1,
+        DAY = 2
     };
+
+    void UpdateType();
 
 private:
     MainWindow *_MainApp;
     int _WidgetId;
     ViewType _View;
 
+    QDate _LastDrawingDate;
     QDate _CurrentDrawingDate;
 
     QMap<QDate, QList<Event*> > _MapMonthEvent;
@@ -79,6 +83,8 @@ private:
     QPushButton *_ToMonth;
 
     CalendarViewMonth *_ViewMonth;
+    CalendarViewWeek *_ViewWeek;
+    CalendarViewDay *_ViewDay;
 };
 
 #endif // BODYCALENDAR_H

@@ -34,6 +34,55 @@ void CalendarViewDay::paintEvent(QPaintEvent *event)
     CalendarView::paintEvent(event);
 }
 
+void CalendarViewDay::LoadEvents(QList<Event *> events, QDate date)
+{
+    _AssociatedDate = date;
+    QList<Event*> _DayEvent;
+    for (Event *event : events)
+    {
+        if (event->Start.date() <= date && event->End.date() >= date)
+        {
+            if (event->Start.date() != date || event->End.date() != date)
+            {
+                Event *newEvent = new Event(*event);
+                if (event->Start.date() < date)
+                {
+                    newEvent->Start.setDate(date);
+                    newEvent->Start.setTime(QTime(0, 0, 0));
+                }
+                if (event->End.date() > date)
+                {
+                    newEvent->End.setDate(date);
+                    newEvent->End.setTime(QTime(24, 0, 0));
+                }
+                _DayEvent.push_back(newEvent);
+            }
+            else
+                _DayEvent.push_back(event);
+        }
+    }
+    _Events = _DayEvent;
+    LoadEventInterne();
+}
+
+void CalendarViewDay::HideProject(int id)
+{
+    for (CalendarEvent *event : _EventsWidget)
+    {
+        if (event->GetEvent().ProjectId == id)
+            event->hide();
+    }
+}
+
+void CalendarViewDay::ShowProject(int id)
+{
+    for (CalendarEvent *event : _EventsWidget)
+    {
+        if (event->GetEvent().ProjectId == id)
+            event->show();
+    }
+}
+
 int CalendarViewDay::GetMaximumColumnForEvent(Event *event, QMap<int, int> eventsOverlap) const
 {
     int currentColumn = eventsOverlap[event->EventId];
@@ -49,13 +98,18 @@ int CalendarViewDay::GetMaximumColumnForEvent(Event *event, QMap<int, int> event
     return currentColumn;
 }
 
-void CalendarViewDay::LoadEvent()
+void CalendarViewDay::LoadEventInterne()
 {
-    qDebug() << "Load event !";
+    while (QLayoutItem *item = _MainLayout->takeAt(0))
+    {
+        if (item->widget())
+            delete item->widget();
+        delete item;
+    }
+
     QMap<int, int> eventsOverlap;
     QList<int> differOverlap;
 
-    qDebug() << "Check overlap !";
     for (Event *event : _Events)
     {
         eventsOverlap[event->EventId] = 1;

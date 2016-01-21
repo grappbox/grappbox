@@ -13,6 +13,8 @@ class CalendarViewMonth : public CalendarView
 public:
     CalendarViewMonth();
     virtual void LoadEvents(QList<Event*> events, QDate date);
+    virtual void HideProject(int id);
+    virtual void ShowProject(int id);
 
 signals:
 

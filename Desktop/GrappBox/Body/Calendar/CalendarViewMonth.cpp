@@ -23,27 +23,13 @@ CalendarViewMonth::CalendarViewMonth()
     setLayout(_MainLayout);
     _AssociatedDate = QDate(2016, 03, 01);
 
-    for (int i = 0; i < 200; ++i)
-    {
-        Event *event = new Event();
-        event->Color = QColor(qrand() % 255, qrand() % 255, qrand() % 255);
-        event->Title = "Event";
-        int hour = qrand() % 21;
-        int minute = qrand() % 60;
-        event->Start.setDate(QDate(2016, 03, qrand() % 30));
-        event->Start.setTime(QTime(hour, minute));
-        event->End.setDate(event->Start.date());
-        event->End.setTime(QTime(hour + 2, minute));
-        event->EventId = i;
-        _Events.push_back(event);
-    }
-
     LoadWidgets();
 }
 
 void CalendarViewMonth::LoadEvents(QList<Event *> events, QDate date)
 {
     CalendarView::LoadEvents(events, date);
+    _AssociatedDate.setDate(date.year(), date.month(), 1);
     if (_Days.size() == 0)
         LoadWidgets();
     else
@@ -78,8 +64,22 @@ void CalendarViewMonth::ReloadWidgets()
         CalendarEventMonth *newLabel = _Days.at(i);
         if (creationDate.month() != _AssociatedDate.month())
             newLabel->setDisabled(true);
+        else
+            newLabel->setDisabled(false);
         _Days.push_back(newLabel);
         newLabel->LoadEvents(_Events, creationDate);
         creationDate = creationDate.addDays(1);
     }
+}
+
+void CalendarViewMonth::HideProject(int id)
+{
+    for (CalendarEventMonth *event : _Days)
+        event->HideProject(id);
+}
+
+void CalendarViewMonth::ShowProject(int id)
+{
+    for (CalendarEventMonth *event : _Days)
+        event->ShowProject(id);
 }

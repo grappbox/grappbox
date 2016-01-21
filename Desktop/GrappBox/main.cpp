@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 
     BodyCalendar *day = new BodyCalendar();
     day->show();
+    day->setFixedSize(1024, 786);
 
     return a.exec();
 

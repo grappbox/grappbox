@@ -10,3 +10,11 @@ void CalendarView::LoadEvents(QList<Event *> events, QDate date)
     _Events = events;
     _AssociatedDate = date;
 }
+
+void CalendarView::HideProject(int id)
+{
+}
+
+void CalendarView::ShowProject(int id)
+{
+}

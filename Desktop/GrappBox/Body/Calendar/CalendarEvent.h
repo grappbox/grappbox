@@ -21,6 +21,34 @@ struct Event
     QColor Color;
     QString Project;
 
+    Event()
+    {
+        EventId = 0;
+        ProjectId = 0;
+        CreatorId = 0;
+        Start = QDateTime();
+        End = QDateTime();
+        Title = "";
+        Description = "";
+        EventTypeName = "";
+        Color = QColor();
+        Project = "";
+    }
+
+    Event(const Event& copy)
+    {
+        EventId = copy.EventId;
+        ProjectId = copy.ProjectId;
+        CreatorId = copy.CreatorId;
+        Start = copy.Start;
+        End = copy.End;
+        Title = copy.Title;
+        Description = copy.Description;
+        EventTypeName = copy.EventTypeName;
+        Color = copy.Color;
+        Project = copy.Project;
+    }
+
     bool IsOverlapping(const Event &event) const
     {
         return (Start <= event.End && event.Start <= End);
@@ -39,6 +67,8 @@ class CalendarEvent : public QWidget
     Q_OBJECT
 public:
     explicit CalendarEvent(Event event, QWidget *parent = 0);
+
+    const Event &GetEvent() const;
 
 signals:
 

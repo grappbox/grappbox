@@ -16,6 +16,8 @@ class CalendarEventMonth : public QWidget
 public:
     explicit CalendarEventMonth(QDate date, QWidget *parent = 0);
     void LoadEvents(const QList<Event*> &event, QDate date);
+    void HideProject(int id);
+    void ShowProject(int id);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
@@ -32,6 +34,8 @@ private:
     QVBoxLayout *_EventLayout;
 
     QLabel *_DayNumberLabel;
+
+    QList<int> _HidedProject;
 };
 
 #endif // CALENDAREVENTMONTH_H

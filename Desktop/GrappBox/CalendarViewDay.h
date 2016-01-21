@@ -18,6 +18,9 @@ class CalendarViewDay : public CalendarView
 {
 public:
     CalendarViewDay();
+    void LoadEvents(QList<Event *> events, QDate date);
+    virtual void HideProject(int id);
+    virtual void ShowProject(int id);
 
 protected:
     virtual void paintEvent(QPaintEvent *event);
@@ -27,7 +30,7 @@ signals:
 public slots:
 
 private:
-    void LoadEvent();
+    void LoadEventInterne();
     int GetMaximumColumnForEvent(Event *event, QMap<int, int> eventsOverlap) const;
 
     QGridLayout     *_MainLayout;

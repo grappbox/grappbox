@@ -14,6 +14,8 @@ class CalendarView : public QWidget
 public:
     CalendarView();
     virtual void LoadEvents(QList<Event*> events, QDate date);
+    virtual void HideProject(int id);
+    virtual void ShowProject(int id);
 
 signals:
 

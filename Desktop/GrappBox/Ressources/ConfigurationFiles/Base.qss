@@ -33,3 +33,23 @@ QTextEdit:focus
 {
     border-color: #2980b9;
 }
+
+QPushButton
+{
+    background-color: #fbfcfc;
+    border: none;
+    color: #000000;
+    min-height: 20;
+}
+
+QPushButton:hover
+{
+    background-color: #e74c3c;
+    color: #fbfbfc;
+}
+
+QPushButton:pressed
+{
+    background-color: #d73c2c;
+    color: #fbfbfc;
+}

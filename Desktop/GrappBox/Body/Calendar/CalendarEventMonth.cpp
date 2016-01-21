@@ -28,6 +28,13 @@ CalendarEventMonth::CalendarEventMonth(QDate date, QWidget *parent) : QWidget(pa
 
 void CalendarEventMonth::LoadEvents(const QList<Event*> &event, QDate date)
 {
+    while (QLayoutItem *item = _EventLayout->takeAt(0))
+    {
+        if (item->widget())
+            delete item->widget();
+        delete item;
+    }
+    _Events.clear();
     _Date = date;
     _DayNumberLabel->setText(date.toString("dd"));
     for (Event *env : event)
@@ -40,6 +47,8 @@ void CalendarEventMonth::LoadEvents(const QList<Event*> &event, QDate date)
     int i = 0;
     for (Event *env : _Events)
     {
+        if (_HidedProject.contains(env->ProjectId))
+            continue;
         if (i == 5)
         {
             QLabel *plusEnv = new QLabel("+" + QVariant(_Events.size() - 5).toString() + " events...");
@@ -65,4 +74,18 @@ void CalendarEventMonth::paintEvent(QPaintEvent *event)
     QPainter p(this);
     QStyle *s = style();
     s->drawPrimitive(QStyle::PE_Widget, opt, &p, this);
+}
+
+void CalendarEventMonth::HideProject(int id)
+{
+    _HidedProject.push_back(id);
+    QList<Event*> event = QList<Event*>(_Events);
+    LoadEvents(event, _Date);
+}
+
+void CalendarEventMonth::ShowProject(int id)
+{
+    _HidedProject.removeAll(id);
+    QList<Event*> event = QList<Event*>(_Events);
+    LoadEvents(event, _Date);
 }
