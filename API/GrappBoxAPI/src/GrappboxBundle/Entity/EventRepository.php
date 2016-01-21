@@ -93,9 +93,9 @@ class EventRepository extends EntityRepository
 
 		if ($meetings === null || count($meetings) == 0)
 		{
-			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getnextmeetings - No Data Success");
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
 			$ret["data"] = array("array" => []);
-			$resp->setStatusCode(JsonResponse::HTTP_OK);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
 			$resp->setData($ret);
 
 			return $resp;
