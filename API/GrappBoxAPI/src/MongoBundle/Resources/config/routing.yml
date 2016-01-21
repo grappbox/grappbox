@@ -11,7 +11,7 @@ mongo_accountAdministration_logout:
     path:       accountadministration/logout/{token}
     defaults:   { _controller:MongoBundle:AccountAdministration:logout, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:    [GET]
 
 mongo_accountAdministration_register:
@@ -34,7 +34,7 @@ mongo_bugtracker_getTicket:
     path:       /bugtracker/getticket/{token}/{id}
     defaults:   { _controller: MongoBundle:Bugtracker:getTicket, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:  [GET]
 
 mongo_bugtracker_postTicket:
@@ -51,7 +51,7 @@ mongo_bugtracker_getComments:
     path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
     defaults:   { _controller: MongoBundle:Bugtracker:getComments, _format: json }
     requirements:
-        token:    "[a-zA-Z]+"
+        token:    "[a-zA-Z0-9]+"
     methods:  [GET]
 
 mongo_bugtracker_postComment:
@@ -73,21 +73,21 @@ mongo_bugtracker_closeTicket:
     path:       /bugtracker/closeticket/{token}/{id}
     defaults:   { _controller: MongoBundle:Bugtracker:closeTicket, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:  [DELETE]
 
 mongo_bugtracker_getTickets:
     path:       /bugtracker/gettickets/{token}/{id}
     defaults:   { _controller: MongoBundle:Bugtracker:getTickets, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:  [GET]
 
 mongo_bugtracker_getLastTickets:
     path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: MongoBundle:Bugtracker:getLastTickets, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         offset: \d+
         limit:  \d+
     methods:  [GET]
@@ -96,7 +96,7 @@ mongo_bugtracker_getLastClosedTickets:
     path:       /bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: MongoBundle:Bugtracker:getLastClosedTickets, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         offset: \d+
         limit:  \d+
     methods:  [GET]
@@ -105,14 +105,14 @@ mongo_bugtracker_getTicketsByUser:
     path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
     defaults:   { _controller: MongoBundle:Bugtracker:getTicketsByUser, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:  [GET]
 
 mongo_bugtracker_getTicketsByState:
     path:       /bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
     defaults:   { _controller: MongoBundle:Bugtracker:getTicketsByState, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         offset: \d+
         limit:  \d+
     methods:  [GET]
@@ -121,7 +121,7 @@ mongo_bugtracker_getStates:
     path:       /bugtracker/getstates/{token}
     defaults:   { _controller: MongoBundle:Bugtracker:getStates, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:  [GET]
 
 mongo_bugtracker_tagCreation:
@@ -375,22 +375,22 @@ mongo_notification_unregisterDevice:
     path:       /notification/unregisterdevice/{token}/{id}
     defaults:   { _controller: MongoBundle:Notification:unregisterDevice }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [DELETE]
 
 mongo_notification_getUserDevices:
     path:       /notification/getuserdevices/{token}
     defaults:   { _controller: MongoBundle:Notification:getUserDevices }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 mongo_notification_getNotifications:
     path:		    /notification/getnotifications/{token}/{read}/{offset}/{limit}
     defaults:   { _controller: MongoBundle:Notification:getNotifications }
     requirements:
-        token:	"[a-zA-Z]+"
-        read:   "[a-zA-Z]+"
+        token:	"[a-zA-Z0-9]+"
+        read:   "[a-zA-Z0-9]+"
         offset: \d+
         limit:  \d+
     methods: [GET]
@@ -399,7 +399,7 @@ mongo_notification_setNotificationToRead:
     path:       /notification/setnotificationtoread/{token}/{id}
     defaults:   { _controller: MongoBundle:Notification:setNotificationToRead }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [PUT]
 
 

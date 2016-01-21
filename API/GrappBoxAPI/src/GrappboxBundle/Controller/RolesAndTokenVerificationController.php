@@ -48,7 +48,7 @@ class RolesAndTokenVerificationController extends Controller
 		else if ($user->getToken() && $user->getTokenValidity())
 		{
 			$user->setTokenValidity($now->add(new DateInterval("P1D")));
-		
+
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($user);
 			$em->flush();
@@ -132,7 +132,7 @@ class RolesAndTokenVerificationController extends Controller
 	* @api {post} /V0.2/roles/addprojectroles Add a project role
 	* @apiName addProjectRoles
 	* @apiGroup Roles
-	* @apiDescription Add a project role
+	* @apiDescription Add a project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
@@ -153,11 +153,11 @@ class RolesAndTokenVerificationController extends Controller
 	*		"data": {
 	*			"token": "aeqf231ced651qcd",
 	*			"projectId": 1,
-	*			"name": "Admin",
-	*			"teamTimeline": 1,
-	*			"customerTimeline": 1,
-	*			"gantt": 1,
-	*			"whiteboard": 1,
+	*			"name": "Intern",
+	*			"teamTimeline": 2,
+	*			"customerTimeline": 0,
+	*			"gantt": 0,
+	*			"whiteboard": 2,
 	*			"bugtracker": 1,
 	*			"event": 1,
 	*			"task": 1,
@@ -240,7 +240,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($content->name == "Admin")
 			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: You can't create a role named Admin");
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.1.9", "Role", "addprojectroles");
 
 		$em = $this->getDoctrine()->getManager();
@@ -361,7 +361,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.2.9", "Role", "delprojectroles");
 
 		if ($role->getName() == "Admin")
@@ -377,7 +377,7 @@ class RolesAndTokenVerificationController extends Controller
 	* @api {put} /V0.2/roles/putprojectroles Update a project role
 	* @apiName updateProjectRoles
 	* @apiGroup Roles
-	* @apiDescription Update a given project role
+	* @apiDescription Update a given project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
@@ -399,15 +399,15 @@ class RolesAndTokenVerificationController extends Controller
 	*			"token": "aeqf231ced651qcd",
 	*			"roleId": 2,
 	*			"name": "Graphists",
-	*			"teamTimeline": 1,
+	*			"teamTimeline": 2,
 	*			"customerTimeline": 0,
 	*			"gantt": 0,
 	*			"whiteboard": 1,
 	*			"bugtracker": 0,
 	*			"event": 1,
 	*			"task": 1,
-	*			"projectSettings": 0,
-	*			"cloud": 0
+	*			"projectSettings": 1,
+	*			"cloud": 2
 	*		}
 	*	}
 	*
@@ -426,7 +426,7 @@ class RolesAndTokenVerificationController extends Controller
 	*			"roleId": 2,
 	*			"teamTimeline": 1,
 	*			"customerTimeline": 0,
-	*			"whiteboard": 1,
+	*			"whiteboard": 2,
 	*			"event": 1,
 	*			"task": 1
 	*		}
@@ -496,7 +496,7 @@ class RolesAndTokenVerificationController extends Controller
 
 		if (!array_key_exists('roleId', $content) || !array_key_exists('token', $content))
 			return $this->setBadRequest("13.3.6", "Role", "putprojectroles", "Missing Parameter");
-	
+
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("13.3.3", "Role", "putprojectroles"));
@@ -507,7 +507,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: roleId");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.3.9", "Role", "putprojectroles");
 
 		if ($role->getName() == "Admin")
@@ -631,7 +631,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.4.3", "Role", "getprojectroles"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
 
 		$em = $this->getDoctrine()->getManager();
@@ -772,7 +772,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
 		$projectId = $role->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "assignpersontorole");
 
 		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
@@ -792,7 +792,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setCreated("1.13.1", "Role", "assignpersontorole", "Complete Success", array("id" => $ProjectUserRole->getId()));
 		}
 		else
-			return $this->setBadRequest("13.5.7", "Role", "assignpersontorole", "Already In Database");	
+			return $this->setBadRequest("13.5.7", "Role", "assignpersontorole", "Already In Database");
 	}
 
 	/**
@@ -889,7 +889,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.6.3", "Role", "putpersonrole"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "putpersonrole");
 
 		$em = $this->getDoctrine()->getManager();
@@ -1098,7 +1098,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.8.3", "Role", "delpersonrole"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
 
 		$em = $this->getDoctrine()->getManager();
@@ -1202,7 +1202,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.9.3", "Role", "getrolebyprojectanduser"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return $this->setNoRightsError("13.9.9", "Role", "getrolebyprojectanduser");
 
 		$em = $this->getDoctrine()->getManager();
@@ -1309,7 +1309,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.10.4", "Role", "getusersforrole", "Bad Parameter: roleId");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 1)
 			return $this->setNoRightsError("13.10.9", "Role", "getusersforrole");
 
 		$purRepository = $em->getRepository('GrappboxBundle:ProjectUserRole');
@@ -1435,7 +1435,7 @@ class RolesAndTokenVerificationController extends Controller
 			$roleId = $role->getRoleId();
 			$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
 
-			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings"))
+			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings") < 1)
 			{
 				$roleName = $role->getName();
 				$projectName = $project->getName();
@@ -1458,7 +1458,7 @@ class RolesAndTokenVerificationController extends Controller
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} userId Id of the user you want the roles 
+	* @apiParam {Number} userId Id of the user you want the roles
 	*
 	* @apiSuccess {Object[]} array Array of user roles informations
 	* @apiSuccess {Number} array.id Project user role id
@@ -1538,7 +1538,7 @@ class RolesAndTokenVerificationController extends Controller
 		$arr = array();
 
 		foreach ($userConnectedProjects as $p) {
-			if ($this->checkRoles($user, $p->getId(), "projectSettings"))
+			if ($this->checkRoles($user, $p->getId(), "projectSettings") < 1)
 			{
 				$pId = $p->getId();
 				$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $pId)->setParameter('userId', $userId)->getQuery();

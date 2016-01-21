@@ -193,7 +193,7 @@ class EventController extends RolesAndTokenVerificationController
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();
-				if (!$this->checkRoles($user, $project->getId(), "event"))
+				if ($this->checkRoles($user, $project->getId(), "event") < 1)
 					return ($this->setNoRightsError("5.2.9", "Calendar", "getEvent"));
 			}
 		else
@@ -351,7 +351,7 @@ class EventController extends RolesAndTokenVerificationController
 
 		if ($event->getProjects() instanceof Project)
 		{
-			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
+			if ($this->checkRoles($user, $event->getProjects()->getId(), "event") < 2)
 				return ($this->setNoRightsError("5.3.9", "Calendar", "setParticipants"));
 		}
 		else {
@@ -553,7 +553,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (array_key_exists("projectId", $content))
 		{
 			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
-			if (!$this->checkRoles($user, $content->projectId, "event"))
+			if ($this->checkRoles($user, $content->projectId, "event") < 2)
 				return ($this->setNoRightsError("5.3.9", "Calendar", "postEvent"));
 		}
 
@@ -729,7 +729,7 @@ class EventController extends RolesAndTokenVerificationController
 
 		if ($event->getProjects() instanceof Project)
 		{
-			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
+			if ($this->checkRoles($user, $event->getProjects()->getId(), "event") < 2)
 				return ($this->setNoRightsError("5.5.9", "Calendar", "editEvent"));
 		}
 		else {
@@ -744,7 +744,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (array_key_exists("projectId", $content))
 		{
 			$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
-			if (!$this->checkRoles($user, $content->projectId, "event"))
+			if ($this->checkRoles($user, $content->projectId, "event") < 2)
 				return ($this->setNoRightsError("5.5.9", "Calendar", "editEvent"));
 		}
 
@@ -858,7 +858,7 @@ class EventController extends RolesAndTokenVerificationController
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();
-				if (!$this->checkRoles($user, $project->getId(), "event"))
+				if ($this->checkRoles($user, $project->getId(), "event") < 2)
 					return ($this->setNoRightsError("5.6.9", "Calendar", "delEvent"));
 			}
 		else if ($user->getId() != $event->getCreatorUser()->getId())

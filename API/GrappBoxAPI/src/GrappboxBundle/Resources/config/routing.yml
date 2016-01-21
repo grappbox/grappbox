@@ -11,7 +11,7 @@ v2_accountAdministration_logout:
     path:       accountadministration/logout/{token}
     defaults:   { _controller:GrappboxBundle:AccountAdministration:logout, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:    [GET]
 
 v2_accountAdministration_register:
@@ -35,7 +35,7 @@ v2_bugtracker_getTicket:
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTicket, _format: json }
     requirements:
         id:     \d+
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:  [GET]
 
 v2_bugtracker_postTicket:
@@ -52,7 +52,7 @@ v2_bugtracker_getComments:
     path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getComments, _format: json }
     requirements:
-        token:    "[a-zA-Z]+"
+        token:    "[a-zA-Z0-9]+"
         id:       \d+
         ticketId: \d+
     methods:  [GET]
@@ -76,7 +76,7 @@ v2_bugtracker_closeTicket:
     path:       /bugtracker/closeticket/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Bugtracker:closeTicket, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
     methods:  [DELETE]
 
@@ -84,7 +84,7 @@ v2_bugtracker_getTickets:
     path:       /bugtracker/gettickets/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTickets, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
     methods:  [GET]
 
@@ -92,7 +92,7 @@ v2_bugtracker_getLastTickets:
     path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getLastTickets, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
         offset: \d+
         limit:  \d+
@@ -102,7 +102,7 @@ v2_bugtracker_getLastClosedTickets:
     path:       /bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getLastClosedTickets, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
         offset: \d+
         limit:  \d+
@@ -112,7 +112,7 @@ v2_bugtracker_getTicketsByUser:
     path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTicketsByUser, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
         userId: \d+
     methods:  [GET]
@@ -121,7 +121,7 @@ v2_bugtracker_getTicketsByState:
     path:       /bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getTicketsByState, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
         state:  \d+
         offset: \d+
@@ -132,7 +132,7 @@ v2_bugtracker_getStates:
     path:       /bugtracker/getstates/{token}
     defaults:   { _controller: GrappboxBundle:Bugtracker:getStates, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods:  [GET]
 
 v2_bugtracker_tagCreation:
@@ -149,7 +149,7 @@ v2_bugtracker_getTagInfos:
     path:       /bugtracker/taginformations/{token}/{tagId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:getTagInfos', _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         tagId:  \d+
     methods: [GET]
 
@@ -157,7 +157,7 @@ v2_bugtracker_deleteTag:
     path:       /bugtracker/deletetag/{token}/{tagId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:deleteTag', _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         tagId:  \d+
     methods: [DELETE]
 
@@ -170,7 +170,7 @@ v2_bugtracker_removeTag:
     path:       /bugtracker/removetag/{token}/{bugId}/{tagId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:removeTag', _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         bugId:  \d+
         tagId:  \d+
     methods: [DELETE]
@@ -179,7 +179,7 @@ v2_bugtracker_getProjectTags:
     path:       /bugtracker/getprojecttags/{token}/{projectId}
     defaults:   { _controller: 'GrappboxBundle:Bugtracker:getProjectTags', _format: json }
     requirements:
-        token:      "[a-zA-Z]+"
+        token:      "[a-zA-Z0-9]+"
         projectId:  \d+
     methods: [GET]
 
@@ -191,12 +191,12 @@ v2_bugtracker_getProjectTags:
 # -----------------------------------------------------------------------
 v2_cloud_streamOpenAction:
   path:     cloud/stream/{token}/{idProject}/{safePassword}
-  defaults:   { _controller: GrappboxBundle:Cloud:openStreamAction, safePassword: null, _format: json}
+  defaults:   { _controller: GrappboxBundle:Cloud:openStream, safePassword: null, _format: json}
   methods: [POST]
 
 v2_cloud_streamCloseAction:
   path:     cloud/stream/{token}/{projectId}/{streamId}
-  defaults: { _controller: GrappboxBundle:Cloud:closeStreamAction, _format: json}
+  defaults: { _controller: GrappboxBundle:Cloud:closeStream, _format: json}
   methods: [DELETE]
 
 v2_cloud_sendFile:
@@ -210,8 +210,13 @@ v2_cloud_getList:
     methods: [GET]
 
 v2_cloud_getFile:
-    path:       cloud/file/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
-    defaults:   { _controller: GrappboxBundle:Cloud:getFile, password: null, passwordSafe: null }
+    path:       cloud/file/{cloudPath}/{token}/{idProject}/{passwordSafe}
+    defaults:   { _controller: GrappboxBundle:Cloud:getFile, passwordSafe: null }
+    methods: [GET]
+
+v2_cloud_getFile_secured:
+    path:       cloud/filesecured/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
+    defaults:   { _controller: GrappboxBundle:Cloud:getFileSecured, passwordSafe: null }
     methods: [GET]
 
 v2_cloud_setSafePass:
@@ -229,6 +234,11 @@ v2_cloud_createDir:
     defaults:   { _controller: GrappboxBundle:Cloud:createDir, _format: json }
     methods: [POST]
 
+v2_cloud_delete_secured:
+    path:       cloud/filesecured/{token}/{projectId}/{path}/{password}/{safe_password}
+    defaults:   { _controller: GrappboxBundle:Cloud:delSecured, safe_password: null, _format: json}
+    methods: [DELETE]
+
 # v2_cloud_createCloud: #TODO : Delete this route, it's a test route
 #     path:       cloud/createcloud/{projectId}
 #     defaults:   { _controller: GrappboxBundle:Cloud:createCloud }
@@ -244,28 +254,28 @@ v2_dashboard_getTeamOccupation:
     path:       dashboard/getteamoccupation/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getTeamOccupation, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_dashboard_getNextMeetings:
     path:       dashboard/getnextmeetings/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getNextMeetings, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_dashboard_getProjectsGlobalProgress:
     path:       dashboard/getprojectsglobalprogress/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectsGlobalProgress, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_dashboard_getProjectCreator:
     path:       dashboard/getprojectcreator/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectCreator, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
     methods: [GET]
 
@@ -273,7 +283,7 @@ v2_dashboard_getProjectBasicInformations:
     path:       dashboard/getprojectbasicinformations/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectBasicInformations, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
     methods: [GET]
 
@@ -281,7 +291,7 @@ v2_dashboard_getProjectTasks:
     path:       dashboard/getprojecttasks/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectTasks, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
     methods: [GET]
 
@@ -289,14 +299,14 @@ v2_dashboard_getUserBasicInformations:
     path:       dashboard/getuserbasicinformations/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getUserBasicInformations, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_dashboard_getProjectPersons:
     path:       dashboard/getprojectpersons/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectPersons, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id: \d+
     methods: [GET]
 
@@ -304,7 +314,7 @@ v2_dashboard_getMeetingBasicInformations:
     path:       dashboard/getmeetingbasicinformations/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getMeetingBasicInformations, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id: \d+
     methods: [GET]
 
@@ -312,7 +322,7 @@ v2_dashboard_getProjectList:
     path:       dashboard/getprojectlist/{token}
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectList, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_dashboard_getProjectTasksStatus:
@@ -320,7 +330,7 @@ v2_dashboard_getProjectTasksStatus:
     defaults:   { _controller: GrappboxBundle:Dashboard:getProjectTasksStatus, _format: json }
     requirements:
         id: \d+
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_dashboard_getNumberTimelineMessages:
@@ -328,7 +338,7 @@ v2_dashboard_getNumberTimelineMessages:
     defaults:   { _controller: GrappboxBundle:Dashboard:getNumberTimelineMessages, _format: json }
     requirements:
         id: \d+
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_dashboard_getNumberBugs:
@@ -336,7 +346,7 @@ v2_dashboard_getNumberBugs:
     defaults:   { _controller: GrappboxBundle:Dashboard:getNumberBugs, _format: json }
     requirements:
         id: \d+
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 
@@ -350,7 +360,7 @@ v2_event_getTypes:
     path:       /event/gettypes/{token}
     defaults:   { _controller: GrappboxBundle:Event:getTypes, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_event_getEvent:
@@ -358,7 +368,7 @@ v2_event_getEvent:
     defaults:   { _controller: GrappboxBundle:Event:getEvent, _format: json }
     requirements:
         id:     \d+
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_event_setParticipants:
@@ -381,7 +391,7 @@ v2_event_delEvent:
     defaults:   { _controller: GrappboxBundle:Event:delEvent, _format: json }
     requirements:
         id:     \d+
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [DELETE]
 
 # meeting_addAlert:
@@ -441,7 +451,7 @@ v2_notification_unregisterDevice:
     path:       /notification/unregisterdevice/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Notification:unregisterDevice, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
     methods: [DELETE]
 
@@ -449,15 +459,15 @@ v2_notification_getUserDevices:
     path:       /notification/getuserdevices/{token}
     defaults:   { _controller: GrappboxBundle:Notification:getUserDevices, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
 v2_notification_getNotifications:
     path:		    /notification/getnotifications/{token}/{read}/{offset}/{limit}
     defaults:   { _controller: GrappboxBundle:Notification:getNotifications, _format: json }
     requirements:
-        token:	"[a-zA-Z]+"
-        read:   "[a-zA-Z]+"
+        token:	"[a-zA-Z0-9]+"
+        read:   "[a-zA-Z0-9]+"
         offset: \d+
         limit:  \d+
     methods: [GET]
@@ -466,7 +476,7 @@ v2_notification_setNotificationToRead:
     path:       /notification/setnotificationtoread/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Notification:setNotificationToRead, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         id:     \d+
     methods: [PUT]
 
@@ -478,7 +488,7 @@ v2_planning_getDayPlanning:
     path:       /planning/getday/{token}/{date}
     defaults:   { _controller: GrappboxBundle:Planning:getDayPlanning, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         date:   \d+-\d+-\d+
     methods: [GET]
 
@@ -486,7 +496,7 @@ v2_planning_getWeekPlanning:
     path:       /planning/getweek/{token}/{date}
     defaults:   { _controller: GrappboxBundle:Planning:getWeekPlanning, _format: json}
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         date:   \d+-\d+-\d+
     methods: [GET]
 
@@ -494,7 +504,7 @@ v2_planning_getMonthPlanning:
     path:       /planning/getmonth/{token}/{date}
     defaults:   { _controller: GrappboxBundle:Planning:getMonthPlanning, _format: json }
     requirements:
-        token:  "[a-zA-Z]+"
+        token:  "[a-zA-Z0-9]+"
         date:   \d+-\d+-\d+
     methods: [GET]
 

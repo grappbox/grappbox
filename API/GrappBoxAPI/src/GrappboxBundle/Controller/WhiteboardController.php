@@ -603,9 +603,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			return $this->setBadRequest("10.5.4", "Whiteboard", "pull", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
-			return ($this->setNoRightsError("10.5.9", "Whiteboard", "pull"));
-		;
+
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 1)
+			 return ($this->setNoRightsError("10.5.9", "Whiteboard", "pull"));
 
 		$date = new \DateTime($content->lastUpdate);
 
@@ -690,8 +690,8 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			return $this->setBadRequest("10.6.4", "Whiteboard", "delete", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
-			return ($this->setNoRightsError("10.6.9", "Whiteboard", "delete"));
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
+			 return ($this->setNoRightsError("10.6.9", "Whiteboard", "delete"));
 
 		if ($whiteboard)
 		{
