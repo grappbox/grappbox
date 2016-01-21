@@ -193,6 +193,11 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 				{
 					if ($project->getDeletedAt() < $defDate)
 					{
+						$purs = $em->getRepository('GrappboxBundle:ProjectUserRole')->findByprojectId($project->getId());
+
+						foreach ($purs as $pur) {
+							$em->remove($pur);
+						}
 						$em->remove($project);
 					}
 				}
@@ -210,6 +215,11 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 						{
 							if ($project->getDeletedAt() < $defDate)
 							{
+								$purs = $em->getRepository('GrappboxBundle:projectUserRole')->findByprojectId($project->getId());
+
+								foreach ($purs as $pur) {
+									$em->remove($pur);
+								}
 								$em->remove($project);
 							}
 						}

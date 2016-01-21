@@ -41,4 +41,5 @@ GrappboxBundle\Entity\Whiteboard:
         objects:
           targetEntity: WhiteboardObject
           mappedBy: whiteboard
+          cascade: [remove]
     lifecycleCallbacks: {  }

@@ -71,7 +71,6 @@ GrappboxBundle\Entity\User:
         bug_creator:
           targetEntity: Bug
           mappedBy: creator
-          cascade: [remove]
         event_creator:
           targetEntity: Event
           mappedBy: creator_user
@@ -87,13 +86,12 @@ GrappboxBundle\Entity\User:
         notifications:
           targetEntity: Notification
           mappedBy: user
+          cascade: [remove]
         devices:
           targetEntity: Devices
           mappedBy: user
+          cascade: [remove]
         task_creator:
           targetEntity: Task
           mappedBy: creator_user
-        # whiteboards:
-        #   targetEntity: Whiteboard
-        #   mappedBy: updators
     lifecycleCallbacks: {  }

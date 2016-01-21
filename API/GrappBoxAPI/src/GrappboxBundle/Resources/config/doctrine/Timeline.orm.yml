@@ -28,4 +28,5 @@ GrappboxBundle\Entity\Timeline:
         timelineMessages:
           targetEntity: TimelineMessage
           mappedBy: timelines
+          cascade: [remove]
     lifecycleCallbacks: {  }
