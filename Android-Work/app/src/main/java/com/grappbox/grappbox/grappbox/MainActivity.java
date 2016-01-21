@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
 import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_calendar:
-                fragment = new CalendarFragment();
+                fragment = new AgendaFragment();
                 changeToolbarTitle("Calendar");
                 break;
             case R.id.nav_Cloud:

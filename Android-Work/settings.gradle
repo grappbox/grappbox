@@ -1,1 +1,1 @@
-include ':app', ':', ':caldroid'
+include ':app', ':', ':caldroid', ':agendacalendarview'

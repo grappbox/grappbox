@@ -3,8 +3,8 @@ package com.grappbox.grappbox.grappbox;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.Nullable;
+//import android.support.annotation.LayoutRes;
+//import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +37,7 @@ public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
         return getDelegate().getSupportActionBar();
     }
 
-    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+    public void setSupportActionBar(Toolbar toolbar) {
         getDelegate().setSupportActionBar(toolbar);
     }
 
@@ -47,7 +47,7 @@ public abstract class AppCompatPreferenceActivity extends PreferenceActivity {
     }
 
     @Override
-    public void setContentView(@LayoutRes int layoutResID) {
+    public void setContentView(int layoutResID) {
         getDelegate().setContentView(layoutResID);
     }
 

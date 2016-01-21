@@ -69,6 +69,16 @@ public class APIConnectAdapter  {
         _connection.setConnectTimeout(15000);
     }
 
+    public void startConnection(String url, String version) throws IOException
+    {
+        String connectURL = _APIUrlBase + version + "/" + url;
+        Log.v("URL", connectURL);
+        _url = new URL(connectURL);
+        _connection = (HttpURLConnection) _url.openConnection();
+        _connection.setReadTimeout(10000);
+        _connection.setConnectTimeout(15000);
+    }
+
     public void setRequestConnection(String typeRequest) throws ProtocolException
     {
         _TypeRequest = typeRequest;
@@ -261,6 +271,31 @@ public class APIConnectAdapter  {
         }
         Log.v("JSON", forecastJSON.getString(userInfo[2]));
         return values;
+    }
+
+    public List<ContentValues> getMonthPlanning(String resultAPI) throws JSONException
+    {
+        List<ContentValues> listResult = new Vector<ContentValues>();
+
+
+        JSONObject forecastJSON = new JSONObject(resultAPI).getJSONObject("data");
+        JSONArray arrayJSON = forecastJSON.getJSONArray("array");
+        Log.v("JSON ARRAY :", arrayJSON.toString());
+        for (int i = 0; i < arrayJSON.length(); ++i)
+        {
+            JSONObject event = arrayJSON.getJSONObject(i);
+            ContentValues values = new ContentValues();
+
+            values.put("id", event.getString("id"));
+            values.put("title", event.getString("title"));
+            values.put("beginDate", event.getJSONObject("beginDate").getString("date"));
+            values.put("endDate", event.getJSONObject("endDate").getString("date"));
+            values.put("idTypeEvent", event.getJSONObject("type").getString("id"));
+            values.put("nameTypeEvent", event.getJSONObject("type").getString("name"));
+            printContentValues(values);
+            listResult.add(values);
+        }
+        return listResult;
     }
 
     public void printContentValues(ContentValues values)

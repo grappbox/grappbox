@@ -19,7 +19,6 @@ import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.fitness.data.SessionDataSet;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;

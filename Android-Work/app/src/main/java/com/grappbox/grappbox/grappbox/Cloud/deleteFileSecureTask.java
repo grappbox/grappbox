@@ -3,7 +3,6 @@ package com.grappbox.grappbox.grappbox.Cloud;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
@@ -13,16 +12,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.ProtocolException;
 
 /**
  * Created by wieser_m on 19/01/2016.
  */
 public class DeleteFileSecureTask extends AsyncTask<String, Void, String> {
-    CloudExplorerFragment       _context;
-    CloudFileAdapter            _adapter;
+    CloudExplorerFragment _context;
+    CloudFileAdapter _adapter;
     String                      _filename;
-    FileItem                    _deletedObject;
+    FileItem _deletedObject;
 
     DeleteFileSecureTask(CloudExplorerFragment context, CloudFileAdapter adapter, FileItem object)
     {

@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\right_arrow.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\right_arrow.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\red_border_dark.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\red_border_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\red_border.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\red_border.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\red_border_gray_bg.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\red_border_gray_bg.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\left_arrow.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\left_arrow.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\disabled_cell_dark.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\disabled_cell_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\disable_cell.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\disable_cell.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\cell_bg_dark.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\cell_bg_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\cell_bg.xml",
+        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\cell_bg.xml"
+    }
+]
