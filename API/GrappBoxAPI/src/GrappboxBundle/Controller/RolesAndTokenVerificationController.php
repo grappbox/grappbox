@@ -1435,7 +1435,7 @@ class RolesAndTokenVerificationController extends Controller
 			$roleId = $role->getRoleId();
 			$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
 
-			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings") < 1)
+			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings") > 1)
 			{
 				$roleName = $role->getName();
 				$projectName = $project->getName();
@@ -1538,7 +1538,7 @@ class RolesAndTokenVerificationController extends Controller
 		$arr = array();
 
 		foreach ($userConnectedProjects as $p) {
-			if ($this->checkRoles($user, $p->getId(), "projectSettings") < 1)
+			if ($this->checkRoles($user, $p->getId(), "projectSettings") > 1)
 			{
 				$pId = $p->getId();
 				$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $pId)->setParameter('userId', $userId)->getQuery();
