@@ -509,9 +509,6 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return $this->setBadTokenError("6.3.3", "Project", "getinformations");
 
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
-			return ($this->setNoRightsError("6.3.9", "Project", "getinformations"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
@@ -898,9 +895,6 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.7.4", "Project", "getcustomeraccessbyid", "Bad Parameter: id");
 
-		if ($this->checkRoles($user, $customerAccess->getProjects()->getId(), "projectSettings") < 1)
-			return ($this->setNoRightsError("6.7.9", "Project", "getcustomeraccessbyid"));
-
 		$name = $customerAccess->getName();
 		$hash = $customerAccess->getHash();
 		$createdAt = $customerAccess->getCreatedAt();
@@ -990,12 +984,8 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.8.3", "Project", "getcustomeraccessbyproject"));
 
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
-			return ($this->setNoRightsError("6.8.9", "Project", "getcustomeraccessbyproject"));
-
 		$em = $this->getDoctrine()->getManager();
 		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->findByprojects($projectId);
-
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.8.4", "Project", "getcustomeraccessbyproject", "Bad Parameter: projectId");
 
@@ -1471,9 +1461,6 @@ class ProjectController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.12.3", "Project", "getusertoproject"));
-
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
-			return ($this->setNoRightsError("6.12.9", "Project", "getusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
