@@ -15,14 +15,14 @@
                 <input type="text"
                        placeholder="My first name"
                        name="profile_firstName"
-                       ng-model="profileInfo.first_name"/>
+                       ng-model="profileInfo.firstname"/>
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Last Name</ion-label>
                 <input type="text"
                        placeholder="My last name"
                        name="profile_lastName"
-                       ng-model="profileInfo.last_name" />
+                       ng-model="profileInfo.lastname" />
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Birthday</ion-label>
@@ -79,10 +79,11 @@
                        placeholder="Confirm password'"
                        name="profile_confirmPassword"
                        ng-model="profileInfo.confirmPassword"
-                       password-verify="profileInfo.password" />
+                        /><!-- password-verify="profileInfo.password" -->
             </ion-input>
-            <span ng-show="profile_form.profile_confirmPassword.$dirty && profile_form.profile_confirmPassword.$error.passwordVerify">Passwords do not match.</span>
-            <a class="button button-block button-dark" ng-disabled="profile_form.$invalid" ng-click="EditProfile()">
+            <span ng-show="profileInfo.password != profileInfo.confirmPassword">Passwords do not match.</span>
+            <!--<span ng-show="profile_form.profile_confirmPassword.$dirty && profile_form.profile_confirmPassword.$error.passwordVerify">Passwords do not match.</span>-->
+            <a class="button button-block button-dark" ng-disabled="profileInfo.password != profileInfo.confirmPassword" ng-click="EditProfile()"><!--profile_form.$invalid-->
                 Save
             </a>
         </form>

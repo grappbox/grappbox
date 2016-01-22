@@ -21,10 +21,10 @@
                 <div class="list">
                     <a class="item item-avatar"
                        ng-repeat="teamOccupation in teamOccupationTab"
-                       ui-sref="app.user({userId: teamOccupation.user_id})">
+                       ui-sref="app.user({userId: teamOccupation.users.id})">
                         <img ng-src="{{ teamOccupation.image }}" />
-                        <h2>{{ teamOccupation.project_name }}</h2>
-                        <h3>{{ teamOccupation.first_name }} {{ teamOccupation.last_name }}</h3>
+                        <h2>{{ teamOccupation.users.firstname }} {{ teamOccupation.users.lastname }}</h2>
+                        <h3>{{ teamOccupation.name }}</h3>
                         <h3>{{ teamOccupation.occupation }}</h3>
                         <h3>Tasks begun: {{ teamOccupation.number_of_tasks_begun }}</h3>
                         <h3>Ongoing Tasks: {{ teamOccupation.number_of_ongoing_tasks }}</h3>
@@ -41,12 +41,12 @@
                         <a class="item item-thumbnail-left"
                            ng-repeat="nextMeeting in nextMeetingsTab"
                            ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
-                            <img ng-src="{{ nextMeeting.project_logo }}" />
-                            <h2>{{ nextMeeting.event_type }}: {{ nextMeeting.event_title }}</h2>
-                            <p><strong>Project: </strong> {{ nextMeeting.project_name }}</p>
-                            <p>"{{ nextMeeting.event_description }}"</p>
-                            <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.event_begin_date.date }}</p>
-                            <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.event_end_date.date }}</p>
+                            <img ng-src="{{ nextMeeting.projects.logo }}" />
+                            <h2>{{ nextMeeting.type }}: {{ nextMeeting.title }}</h2>
+                            <p><strong>Project: </strong> {{ nextMeeting.projects.name }}</p>
+                            <p>"{{ nextMeeting.description }}"</p>
+                            <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.begin_date.date }}</p>
+                            <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.end_date.date }}</p>
                         </a>
                     </ion-item>
                 </ion-list>

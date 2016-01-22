@@ -24,7 +24,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Get profile info successful !');
-                $scope.profileInfo = data;
+                $scope.profileInfo = data.data;
             })
             .then(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -42,18 +42,19 @@ angular.module('GrappBox.controllers')
     $scope.EditProfile = function () {
         $rootScope.showLoading();
         EditProfile.update({
-            token: $rootScope.userDatas.token,
-            first_name: $scope.profileInfo.first_name,
-            last_name: $scope.profileInfo.last_name,
-            birthday: $scope.profileInfo.birthday,
-            avatar: $scope.profileInfo.avatar,
-            email: $scope.profileInfo.email,
-            password: $scope.profileInfo.password,
-            phone: $scope.profileInfo.phone,
-            country: $scope.profileInfo.country,
-            linkedin: $scope.profileInfo.linkedIn,
-            viadeo: $scope.profileInfo.viadeo,
-            twitter: $scope.profileInfo.twitter,
+            data: {
+                firstname: $scope.profileInfo.first_name,
+                lastname: $scope.profileInfo.last_name,
+                birthday: $scope.profileInfo.birthday,
+                avatar: $scope.profileInfo.avatar,
+                email: $scope.profileInfo.email,
+                password: $scope.profileInfo.password,
+                phone: $scope.profileInfo.phone,
+                country: $scope.profileInfo.country,
+                linkedin: $scope.profileInfo.linkedIn,
+                viadeo: $scope.profileInfo.viadeo,
+                twitter: $scope.profileInfo.twitter
+            }
         }).$promise
             .then(function (data) {
                 console.log('Edit profile successful !');
@@ -66,5 +67,5 @@ angular.module('GrappBox.controllers')
             .finally(function () {
                 $rootScope.hideLoading();
             })
-    }    
+    }
 })

@@ -102,8 +102,7 @@ angular.module('GrappBox.api', ['ngResource'])
 
 // Edit profile
 .factory('EditProfile', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'user/basicinformations/:token',
-        { token: "@token" },
+    return $resource($rootScope.API + 'user/basicinformations/:token', { token: $rootScope.userDatas.token },
         { 'update': { method: 'PUT' } }
         );
 })

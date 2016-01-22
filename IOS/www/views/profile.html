@@ -15,8 +15,8 @@
         <ion-list>
             <ion-item class="item-body">
                 <img class="full-image" ng-src="#" />
-                <p><strong>First Name: </strong> {{ profileInfo.first_name }}</p>
-                <p><strong>Last Name: </strong> {{ profileInfo.last_name }}</p>
+                <p><strong>First Name: </strong> {{ profileInfo.firstname }}</p>
+                <p><strong>Last Name: </strong> {{ profileInfo.lastname }}</p>
                 <p><strong>birthday: </strong> {{ profileInfo.birthday.date }}</p>
                 <p><strong>Phone: </strong> {{ profileInfo.phone }}</p>
                 <p><strong>Email: </strong> {{ profileInfo.email }}</p>
@@ -45,18 +45,19 @@
         <div class="item item-divider">Next Meetings</div>
         <ion-list>
             <ion-item class="item-body">
-                {{ nextMeetingsError }}
-                <a class="item item-thumbnail-left"
-                   ng-repeat="nextMeeting in nextMeetingsTab"
-                   ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
-                    <img ng-src="{{ nextMeeting.project_logo }}" />
-                    <h2>{{ nextMeeting.event_type }}: {{ nextMeeting.event_title }}</h2>
-                    <p><strong>Project: </strong> {{ nextMeeting.project_name }}</p>
-                    <p>"{{ nextMeeting.event_description }}"</p>
-                    <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.event_begin_date.date }}</p>
-                    <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.event_end_date.date }}</p>
-                </a>
-            </ion-item>
+                <ion-item class="item-body">
+                    {{ nextMeetingsError }}
+                    <a class="item item-thumbnail-left"
+                       ng-repeat="nextMeeting in nextMeetingsTab"
+                       ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
+                        <img ng-src="{{ nextMeeting.projects.logo }}" />
+                        <h2>{{ nextMeeting.type }}: {{ nextMeeting.title }}</h2>
+                        <p><strong>Project: </strong> {{ nextMeeting.projects.name }}</p>
+                        <p>"{{ nextMeeting.description }}"</p>
+                        <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.begin_date.date }}</p>
+                        <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.end_date.date }}</p>
+                    </a>
+                </ion-item>
         </ion-list>
 
         <!-- Current and next tasks -->
@@ -78,7 +79,8 @@
         <div class="item item-divider">My roles</div>
         <ion-list>
             {{ userConnectedRolesError }}
-            <ion-item ng-repeat="role in userConnectedRoles.user_role">
+            <ion-item ng-repeat="role in userConnectedRoles"
+                      ui-sref="app.project({projectId: role.project.id})">
                 {{ role.role.name }} on {{ role.project.name }}
             </ion-item>
         </ion-list>

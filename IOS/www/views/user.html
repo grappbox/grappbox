@@ -4,7 +4,7 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">User</ion-nav-title>
-    <ion-content class="has-header">
+    <ion-content class="has-header" overflow-scroll="false">
 
         <!-- Refresher -->
         <ion-refresher pulling-text="Pull to refresh..."
@@ -17,13 +17,13 @@
         <ion-list class="card">
             <ion-item class="item-body">
                 <img class="full-image" ng-src="#" />
-                <p><strong>First Name: </strong> {{ userInfo.first_name }}</p>
-                <p><strong>Last Name: </strong> {{ userInfo.last_name }}</p>
+                <p><strong>First Name: </strong> {{ userInfo.firstname }}</p>
+                <p><strong>Last Name: </strong> {{ userInfo.lastname }}</p>
                 <p><strong>birthday: </strong> {{ userInfo.birthday.date }}</p>
                 <p><strong>Phone: </strong> {{ userInfo.phone }}</p>
                 <p><strong>Email: </strong> {{ userInfo.email }}</p>
                 <p><strong>Country: </strong> {{ userInfo.country }}</p>
-                <p><strong>LinkedIn: </strong> {{ userInfo.linkedIn }}</p>
+                <p><strong>LinkedIn: </strong> {{ userInfo.linkedin }}</p>
                 <p><strong>Twitter: </strong> {{ userInfo.twitter }}</p>
                 <p><strong>Viadeo: </strong> {{ userInfo.viadeo }}</p>
             </ion-item>
@@ -31,8 +31,8 @@
 
         <div class="item item-divider">Roles</div>
         <ion-list>
-            <ion-item ng-repeat="role in memberRoles.user_role">
-                <h2>{{ role.role.name }}</h2> on <h2>{{ role.project.name }}</h2>
+            <ion-item ng-repeat="role in memberRoles">
+                {{ role.role.name }} on {{ role.project.name }}
             </ion-item>
         </ion-list>
     </ion-content>
