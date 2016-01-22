@@ -1,5 +1,6 @@
 #include <QDebug>
 #include <QScrollArea>
+#include "Calendar/CalendarEventForm.h"
 #include "BodyCalendar.h"
 
 BodyCalendar::BodyCalendar()
@@ -168,6 +169,8 @@ BodyCalendar::BodyCalendar()
 
     QObject::connect(_NextDate, SIGNAL(clicked(bool)), this, SLOT(OnNext()));
     QObject::connect(_PreviousDate, SIGNAL(clicked(bool)), this, SLOT(OnPrev()));
+
+    QObject::connect(_NewEvent, SIGNAL(clicked(bool)), this, SLOT(OnCreate()));
 }
 
 void BodyCalendar::OnWeekCheckedChange(bool value)
@@ -274,6 +277,12 @@ void BodyCalendar::OnProjectCheckChange()
             }
         }
     }
+}
+
+void BodyCalendar::OnCreate()
+{
+    CalendarEventForm *form = new CalendarEventForm(NULL);
+    form->exec();
 }
 
 void BodyCalendar::UpdateType()

@@ -73,7 +73,8 @@ SOURCES += main.cpp \
     Body/Calendar/CalendarViewMonth.cpp \
     Body/Calendar/CalendarEventMonth.cpp \
     Body/BodyCalendar.cpp \
-    Body/Calendar/CalendarViewWeek.cpp
+    Body/Calendar/CalendarViewWeek.cpp \
+    Body/Calendar/CalendarEventForm.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -135,7 +136,8 @@ HEADERS  += MainWindow.h \
     Body/Calendar/CalendarViewMonth.h \
     Body/Calendar/CalendarEventMonth.h \
     Body/BodyCalendar.h \
-    Body/Calendar/CalendarViewWeek.h
+    Body/Calendar/CalendarViewWeek.h \
+    Body/Calendar/CalendarEventForm.h
 
 RESOURCES += \
     temporaryressources.qrc \

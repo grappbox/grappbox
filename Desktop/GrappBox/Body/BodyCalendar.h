@@ -38,6 +38,8 @@ public slots:
 
     void OnProjectCheckChange();
 
+    void OnCreate();
+
 private:
     enum ViewType
     {
