@@ -10,16 +10,18 @@ angular.module('GrappBox.controllers')
     $scope.CreateProject = function () {
         $rootScope.showLoading();
         CreateProject.save({
-            token: $rootScope.userDatas.token,
-            name: $scope.project.name,
-            description: $scope.project.description,
-            logo: $scope.project.logo,
-            phone: $scope.project.phone,
-            company: $scope.project.company,
-            email: $scope.project.email,
-            facebook: $scope.project.facebook,
-            twitter: $scope.project.twitter,
-            password: $scope.project.password
+            data: {
+                token: $rootScope.userDatas.token,
+                name: $scope.project.name,
+                description: $scope.project.description,
+                logo: $scope.project.logo,
+                phone: $scope.project.phone,
+                company: $scope.project.company,
+                email: $scope.project.email,
+                facebook: $scope.project.facebook,
+                twitter: $scope.project.twitter,
+                password: $scope.project.password
+            }
         }).$promise
             .then(function (data) {
                 console.log('Create project successful !');

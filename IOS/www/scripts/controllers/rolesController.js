@@ -29,7 +29,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Get project roles successful !');
-                $scope.projectRoles = data;
+                $scope.projectRoles = data.data.array;
             })
             .catch(function (error) {
                 console.error('Get project roles failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -50,22 +50,24 @@ angular.module('GrappBox.controllers')
         $rootScope.showLoading();
         console.log($scope.roleType.teamTimeline);
         AddNewRole.save({
-            _token: $rootScope.userDatas.token,
-            projectId: $scope.projectId,
-            name: $scope.roleType.name,
-            teamTimeline: $scope.roleType.teamTimeline,
-            customerTimeline: $scope.roleType.customerTimeline,
-            gantt: $scope.roleType.gantt,
-            whiteboard: $scope.roleType.whiteboard,
-            bugtracker: $scope.roleType.bugtracker,
-            event: $scope.roleType.event,
-            task: $scope.roleType.task,
-            projectSettings: $scope.roleType.projectSettings,
-            cloud: $scope.roleType.cloud
+            data: {
+                token: $rootScope.userDatas.token,
+                projectId: $scope.projectId,
+                name: $scope.roleType.name,
+                teamTimeline: $scope.roleType.teamTimeline,
+                customerTimeline: $scope.roleType.customerTimeline,
+                gantt: $scope.roleType.gantt,
+                whiteboard: $scope.roleType.whiteboard,
+                bugtracker: $scope.roleType.bugtracker,
+                event: $scope.roleType.event,
+                task: $scope.roleType.task,
+                projectSettings: $scope.roleType.projectSettings,
+                cloud: $scope.roleType.cloud
+            }
         }).$promise
             .then(function (data) {
                 console.log('Add new role successful !');
-                $scope.roleAddedData = data;
+                $scope.roleAddedData = data.data;
                 $scope.GetProjectRoles();
             })
             .catch(function (error) {

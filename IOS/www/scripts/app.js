@@ -17,7 +17,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
             StatusBar.styleDefault();
         }
     });
-    $rootScope.API_VERSION = '0.11'; //actual API's version
+    $rootScope.API_VERSION = '0.2'; //actual API's version
     $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
 
     $rootScope.showLoading = function () {

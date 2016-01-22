@@ -13,31 +13,21 @@ angular.module('GrappBox.controllers')
 
     $scope.login = function () {
         $rootScope.showLoading();
-        Login.save({ login: $scope.user.email, password: $scope.user.password }).$promise
+        Login.save({
+            data: {
+                login: $scope.user.email,
+                password: $scope.user.password
+            }
+        }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
                 console.log(data);
-                $rootScope.userDatas = data.user;
+                $rootScope.userDatas = data.data;
                 $state.go('app.dashboard');
             })
             .catch(function (error) {
                 console.error('Connexion failed ! Reason: ' + error.status + ' ' + error.statusText);
-            })
-            .finally(function () {
-                $rootScope.hideLoading();
-            })
-    }
-
-    $scope.loginWithToken = function () {
-        $rootScope.showLoading();
-        Login.save({ token: $rootScope.userDatas.token }).$promise
-            .then(function (data) {
-                console.log('Connexion successful !');
-                $rootScope.userDatas = data.user;
-                $state.go('app.dashboard');
-            })
-            .catch(function (error) {
-                console.error('Connexion failed ! Reason: ' + error);
+                console.error(error);
             })
             .finally(function () {
                 $rootScope.hideLoading();

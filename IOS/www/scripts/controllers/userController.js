@@ -20,13 +20,14 @@ angular.module('GrappBox.controllers')
     $scope.userInfo = {};
     $scope.GetUserInfo = function () {
         $rootScope.showLoading();
+        console.log("userId: " + $stateParams.userId);
         GetUserInfo.get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
         }).$promise
             .then(function (data) {
                 console.log('Get user info successful !');
-                $scope.userInfo = data;
+                $scope.userInfo = data.data;
             })
             .catch(function (error) {
                 console.error('Get user info failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -51,7 +52,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Get member roles successful !');
-                $scope.memberRoles = data;
+                $scope.memberRoles = data.data.array;
                 console.log(data);
             })
             .catch(function (error) {

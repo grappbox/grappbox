@@ -21,8 +21,8 @@ TeamOccupation, NextMeetings, GlobalProgress) {
         TeamOccupation.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get team occupation list successful !');
-                console.log(data);
-                $scope.teamOccupationTab = data;
+                console.log(data.data);
+                $scope.teamOccupationTab = data.data.array;
                 if (data.length == 0)
                     $scope.noTeam = "You don't have team right now.";
             })
@@ -44,8 +44,8 @@ TeamOccupation, NextMeetings, GlobalProgress) {
         NextMeetings.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
-                console.log(data);
-                $scope.nextMeetingsTab = data;
+                console.log(data.data);
+                $scope.nextMeetingsTab = data.data.array;
                 if (Object.keys(data.toJSON()).length < 1)
                     $scope.nextMeetingsError = "You don't have meeting.";
             })
@@ -66,8 +66,8 @@ TeamOccupation, NextMeetings, GlobalProgress) {
         GlobalProgress.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get global progress list successful !');
-                console.log(data);
-                $scope.globalProgressTab = data;
+                console.log(data.data);
+                $scope.globalProgressTab = data.data.array;
                 if (data.length == 0)
                     $scope.noProject = "You don't have project now.";
             })

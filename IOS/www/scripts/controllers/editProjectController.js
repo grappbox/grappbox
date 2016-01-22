@@ -25,7 +25,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Get project info successful !');
-                $scope.project = data;
+                $scope.project = data.data;
             })
             .then(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -44,17 +44,19 @@ angular.module('GrappBox.controllers')
     $scope.EditProject = function () {
         $rootScope.showLoading();
         EditProject.update({
-            token: $rootScope.userDatas.token,
-            projectId: $stateParams.projectId,
-            name: $scope.project.name,
-            description: $scope.project.description,
-            logo: $scope.project.logo,
-            phone: $scope.project.phone,
-            company: $scope.project.company,
-            email: $scope.project.email,
-            facebook: $scope.project.facebook,
-            twitter: $scope.project.twitter,
-            password: $scope.project.password
+            data: {
+                token: $rootScope.userDatas.token,
+                projectId: $stateParams.projectId,
+                name: $scope.project.name,
+                description: $scope.project.description,
+                logo: $scope.project.logo,
+                phone: $scope.project.phone,
+                company: $scope.project.company,
+                email: $scope.project.email,
+                facebook: $scope.project.facebook,
+                twitter: $scope.project.twitter,
+                password: $scope.project.password
+            }
         }).$promise
             .then(function (data) {
                 console.log('Edit project successful !');

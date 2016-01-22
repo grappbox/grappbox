@@ -21,7 +21,7 @@ angular.module('GrappBox.controllers')
         ProjectsList.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
-                $scope.projectsTab = data;
+                $scope.projectsTab = data.data.array;
             })
             .catch(function (error) {
                 console.error('Get projects list failed ! Reason: ' + error.status + ' ' + error.statusText);

@@ -28,7 +28,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Get profile info successful !');
-                $scope.profileInfo = data;
+                $scope.profileInfo = data.data;
             })
             .catch(function (error) {
                 console.error('Get profile info failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -50,7 +50,7 @@ angular.module('GrappBox.controllers')
         ProjectsList.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
-                $scope.projectsTab = data;
+                $scope.projectsTab = data.data.array;
             })
             .catch(function (error) {
                 console.error('Get projects list failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -74,9 +74,9 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get next meetings list successful !');
                 console.log(data);
-                $scope.nextMeetingsTab = data;
-                if (Object.keys(data.toJSON()).length < 1)
-                    $scope.nextMeetingsError = "You don't have meeting.";
+                $scope.nextMeetingsTab = data.data.array;
+                /*if (Object.keys(data.toJSON()).length < 1)
+                    $scope.nextMeetingsError = "You don't have meeting.";*/
             })
             .catch(function (error) {
                 console.error('Get next meetings list failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -100,9 +100,9 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get current tasks list successful !');
                 console.log(data);
-                $scope.currentTasksTab = data;
-                if (Object.keys(data.toJSON()).length < 1)
-                    $scope.currentTasksError = "You don't have task.";
+                $scope.currentTasksTab = data.data.array;
+                /*if (Object.keys(data.toJSON()).length < 1)
+                    $scope.currentTasksError = "You don't have task.";*/
             })
             .catch(function (error) {
                 console.error('Get current tasks list failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -126,9 +126,9 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get user connected roles successful !');
                 console.log(data);
-                $scope.userConnectedRoles = data;
-                if (Object.keys(data.toJSON()).length < 1)
-                    $scope.userConnectedRolesError = "You don't have role.";
+                $scope.userConnectedRoles = data.data.array;
+                /*if (Object.keys(data.toJSON()).length < 1)
+                    $scope.userConnectedRolesError = "You don't have role.";*/
             })
             .catch(function (error) {
                 console.error('Get user connected roles failed ! Reason: ' + error.status + ' ' + error.statusText);

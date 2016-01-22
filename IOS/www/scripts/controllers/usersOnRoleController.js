@@ -53,9 +53,10 @@ angular.module('GrappBox.controllers')
         $rootScope.showLoading();
         $http.delete($rootScope.API + 'roles/delprojectroles', {
             data: {
-                _token: $rootScope.userDatas.token,
-                projectId: $scope.projectId,
-                roleId: $scope.roleId
+                data: {
+                    token: $rootScope.userDatas.token,
+                    id: $scope.roleId
+                }
             }
         })
         .then(function (data) {
@@ -84,7 +85,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Get users for role successful !');
-                $scope.usersForRole = data;
+                $scope.usersForRole = data.data;
                 console.log(data);
             })
             .catch(function (error) {
@@ -108,14 +109,15 @@ angular.module('GrappBox.controllers')
         $rootScope.showLoading();
         console.log($scope.userToAdd.userId);
         AssignToRole.save({
-            _token: $rootScope.userDatas.token,
-            projectId: $scope.projectId,
-            userId: $scope.userToAdd.userId,
-            roleId: $scope.roleId
+            data: {
+                token: $rootScope.userDatas.token,
+                userId: $scope.userToAdd.userId,
+                roleId: $scope.roleId
+            }
         }).$promise
             .then(function (data) {
                 console.log('Assign user on role successful !');
-                $scope.userAssignedData = data;
+                $scope.userAssignedData = data.data;
                 $scope.GetUsersForRole();
                 console.log(data);
             })
@@ -173,15 +175,17 @@ angular.module('GrappBox.controllers')
         $rootScope.showLoading();
         $http.delete($rootScope.API + 'roles/delpersonrole', {
             data: {
-                _token: $rootScope.userDatas.token,
-                projectId: $scope.projectId,
-                userId: $scope.user_id,
-                roleId: $scope.roleId
+                data: {
+                    token: $rootScope.userDatas.token,
+                    projectId: $scope.projectId,
+                    userId: $scope.user_id,
+                    roleId: $scope.roleId
+                }
             }
         })
         .then(function (data) {
             console.log('Remove user from project successful !');
-            $scope.userRemoveRoleData = data;
+            $scope.userRemoveRoleData = data.data;
             $scope.GetUsersForRole();
         })
         .catch(function (error) {
@@ -202,23 +206,25 @@ angular.module('GrappBox.controllers')
     $scope.UpdateProjectRole = function () {
         $rootScope.showLoading();
         UpdateProjectRole.update({
-            _token: $rootScope.userDatas.token,
-            roleId: $scope.roleId,
-            projectId: $scope.projectId,
-            name: $scope.role.name,
-            teamTimeline: $scope.role.team_timeline,
-            customerTimeline: $scope.role.customer_timeline,
-            gantt: $scope.role.gantt,
-            whiteboard: $scope.role.whiteboard,
-            bugtracker: $scope.role.bugtracker,
-            event: $scope.role.event,
-            task: $scope.role.task,
-            projectSettings: $scope.role.project_settings,
-            cloud: $scope.role.cloud
+            data: {
+                token: $rootScope.userDatas.token,
+                roleId: $scope.roleId,
+                projectId: $scope.projectId,
+                name: $scope.role.name,
+                teamTimeline: $scope.role.team_timeline,
+                customerTimeline: $scope.role.customer_timeline,
+                gantt: $scope.role.gantt,
+                whiteboard: $scope.role.whiteboard,
+                bugtracker: $scope.role.bugtracker,
+                event: $scope.role.event,
+                task: $scope.role.task,
+                projectSettings: $scope.role.project_settings,
+                cloud: $scope.role.cloud
+            }
         }).$promise
             .then(function (data) {
                 console.log('Update project role successful !');
-                $scope.updatedRoleData = data;
+                $scope.updatedRoleData = data.data;
                 console.log(data);
             })
             .catch(function (error) {
