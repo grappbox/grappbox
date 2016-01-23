@@ -23,6 +23,11 @@ class Event
      * @var string
      */
     private $description;
+    
+    /**
+     * @var string
+     */
+    private $icon;
 
     /**
      * @var \DateTime
@@ -90,10 +95,12 @@ class Event
                 'fullname' => $this->creator_user->getFirstName()." ".$this->creator_user->getLastName()
             ),
             'type' => array(
-              'id' => $this->eventtypes->getId(),
-              'name' => $this->eventtypes->getName()),
+                'id' => $this->eventtypes->getId(),
+                'name' => $this->eventtypes->getName()
+            ),
             'title' => $this->title,
             'description' => $this->description,
+            'icon' => $this->icon,
             'beginDate' => $this->beginDate,
             'endDate' => $this->endDate,
             'createdAt' => $this->createdAt,
@@ -373,5 +380,28 @@ class Event
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Set icon
+     *
+     * @param string $icon
+     * @return Event
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * Get icon
+     *
+     * @return string 
+     */
+    public function getIcon()
+    {
+        return $this->icon;
     }
 }
