@@ -146,42 +146,6 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V0.11/cloud/stream Open a new stream in order to upload file
-	* @apiVersion 0.11.0
-	* @apiDescription This method is here to create an upload process between API and Cloud.
-	* @apiGroup Cloud
-	* @apiName Stream opening
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {string} [session_infos.safe_password] The password of the project safe. Use it only if the future file will be in the safe.
-	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
-	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
-	* @apiParam {string} stream_infos.filename The filename of the future file with extension
-	* @apiParam {string} stream_infos.path The path where the future file will be uploaded
-	* @apiParam {string} [stream_infos.password] The password to protect the file. Use it only if password protected required.
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d",
-	*			"safe_password" : "satan"
-	*		},
-	*		"stream_infos": {
-	*			"project_id": 42,
-	*			"path" : "/LabEIP/Golum",
-	*			"password" : "My Precious!"
-	*			"filename" : "The ring.worldDomination"
-	*		}
-	* 	}
-	* @apiSuccess (200) {string} stream_id The id of the stream newly created.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"stream_id" : 1
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
 	* @api {post} /V0.2/cloud/stream/:token/:project_id/[:safe_password] Open a new stream in order to upload file
 	* @apiVersion 0.2.0
 	* @apiDescription This method is here to create an upload process between API and Cloud.
@@ -202,16 +166,16 @@ class CloudController extends Controller
 	*			"filename" : "The ring.worldDomination"
 	*		}
 	* }
-	* @apiSuccess (200) {Object} infos Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiSuccess (200) {Object} info Informations about the request
+	* @apiSuccess (200) {string} info.return_code Request end state code
+	* @apiSuccess (200) {string} info.return_message Request end state message (text formated return_code)
 	* @apiSuccess (200) {Object} data All informations about response will be here.
 	* @apiSuccess (200) {Number} data.stream_id The id of the stream newly created.
 	*
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*				"return_code" : "1.3.1",
 	*				"return_message" : "Cloud - openStreamAction - Complete success"
 	*		},
@@ -219,14 +183,14 @@ class CloudController extends Controller
 	*			"stream_id" : 1
 	*		}
 	*	}
-	* @apiError (206) {Object} infos Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {Object} info Informations about the request
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	* HTTP/1.1 206 Partial Content
 	* {
-	*		"infos" : {
+	*		"info" : {
 	*				"return_code" : "3.1.9",
 	*				"return_message" : "Cloud - openStreamAction - Insufficient Right"
 	*		}
@@ -283,38 +247,6 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.11/cloud/stream Close a stream in order to complete an upload
-	* @apiVersion 0.11.0
-	* @apiDescription This method is here to finalize an upload and make the file downloadable.
-	* @apiGroup Cloud
-	* @apiName Stream closing
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {string} [session_infos.safe_password] The password of the project safe. Use it only if the future file will be in the safe.
-	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
-	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
-	* @apiParam {Number} stream_infos.stream_id The id of the stream to close.
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d",
-	*			"safe_password" : "satan"
-	*		},
-	*		"stream_infos": {
-	*			"project_id": 42,
-	*			"stream_id" : 1
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos. This will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
 	* @api {delete} /V0.2/cloud/stream/:token/:projectId/:streamId Close a stream in order to complete an upload
 	* @apiVersion 0.2.0
 	* @apiDescription This method is here to finalize an upload and make the file downloadable.
@@ -327,26 +259,26 @@ class CloudController extends Controller
 	*	curl -X DELETE http://api.grappbox.com/api_dev.php/V0.2/cloud/stream/myToken/42/1
 	*
 	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiSuccess (200) {string} info.return_code Request end state code
+	* @apiSuccess (200) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 1.2.1,
 	*			"return_message" : "Cloud - closeStreamAction - Complete Success"
 	*		}
 	*	}
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.2.9,
 	*			"return_message" : "Cloud - closeStreamAction - Insufficient Right"
 	*		}
@@ -396,42 +328,6 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {put} /V0.11/cloud/sendfile send a file chunk.
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
-	* @apiGroup Cloud
-	* @apiName Send file
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
-	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
-	* @apiParam {Number} stream_infos.stream_id The stream id which contains the uploaded file metadata (use POST stream action route to open one)
-	* @apiParam {Number} stream_infos.chunk_numbers The numbers of chunk you will upload for this file.
-	* @apiParam {Number} stream_infos.current_chunk The index of current chunk. This start to 0 and end to (chunk_numbers - 1)
-	* @apiParam {string} stream_infos.file_chunk The file chunk encoded in base64
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"stream_infos": {
-	*			"stream_id" : 21,
-	*			"project_id": 42,
-	*			"chunk_numbers" : 2,
-	*			"current_chunk" : 1,
-	*			"file_chunk" : "Here put your chunk encoded in base 64"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
 	* @api {put} /V0.2/cloud/file send a file chunk.
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
@@ -457,26 +353,26 @@ class CloudController extends Controller
 	*	}
 	*
 	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiSuccess (200) {string} info.return_code Request end state code
+	* @apiSuccess (200) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 1.3.1,
 	*			"return_message" : "Cloud - closeStreamAction - Complete Success"
 	*		}
 	*	}
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.3.9,
 	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
 	*		}
@@ -510,27 +406,6 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.11/cloud/getlist/:token/:idProject/:path/[:passwordSafe] Cloud LS
-	* @apiVersion 0.11.0
-	* @apiDescription Get the list of a given directory.
-	* @apiGroup Cloud
-	* @apiName List directory
-	* @apiParam {string} token The token of authenticated user.
-	* @apiParam {Number} idProject The project id to execute the command.
-	* @apiParam {string} path The path to the file with coma instead of slash. This have to start with a coma
-	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the user want the safe content
-	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V0.6/cloud/getlist/minus5percent/1/,Sauron/satan
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
 	* @api {get} /V0.2/cloud/list/:token/:idProject/:path/[:passwordSafe] Cloud LS
 	* @apiVersion 0.2.0
 	* @apiDescription Get the list of a given directory.
@@ -544,8 +419,8 @@ class CloudController extends Controller
 	*	curl http://api.grappbox.com/V0.2/cloud/list/minus5percent/1/,Sauron/satan
 	*
 	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiSuccess (200) {string} info.return_code Request end state code
+	* @apiSuccess (200) {string} info.return_message Request end state message (text formated return_code)
 	* @apiSuccess (200) {Object} data All informations about response will be here.
 	* @apiSuccess (200) {Object[]} data.array List of all entity found by owncloud
 	*	@apiSuccess (200) {string} data.array.type The entity's type
@@ -558,7 +433,7 @@ class CloudController extends Controller
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 1.4.1,
 	*			"return_message" : "Cloud - closeStreamAction - Complete Success"
 	*		},
@@ -580,13 +455,13 @@ class CloudController extends Controller
 	*	}
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.4.9,
 	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
 	*		}
@@ -652,13 +527,13 @@ class CloudController extends Controller
 	* @apiSuccess (203) {string} Header HTTP/1.1 203 Redirect (You will be redirected on the file URL in GET method (for download))
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.5.9,
 	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
 	*		}
@@ -727,13 +602,13 @@ class CloudController extends Controller
 	* @apiSuccess (203) {string} Header HTTP/1.1 203 Redirect (You will be redirected on the file URL in GET method (for download))
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.5.9,
 	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
 	*		}
@@ -786,36 +661,6 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /v0.11/cloud/setsafepass Set the safe password
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to change the safe password for a given project.
-	* @apiGroup Cloud
-	* @apiName Set Safe Password
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} safe_infos All informations about the core request have to be here
-	* @apiParam {Number} safe_infos.project_id The project id to execute the command.
-	* @apiParam {string} safe_infos.password The password hashed in SHA-1 512
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"safe_infos": {
-	*			"project_id": 42,
-	*			"password": "6q8d4zq68d"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
 	* @api {put} /v0.2/cloud/safepass Set the safe password
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to change the safe password for a given project.
@@ -835,27 +680,27 @@ class CloudController extends Controller
 	*	}
 	*
 	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiSuccess (200) {string} info.return_code Request end state code
+	* @apiSuccess (200) {string} info.return_message Request end state message (text formated return_code)
 	* @apiSuccess (200) {Object} data All informations about response will be here.
 	*
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 1.4.1,
 	*			"return_message" : "Cloud - setSafePassAction - Complete Success"
 	*		}
 	*	}
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.6.9,
 	*			"return_message" : "Cloud - setSafePassAction - Insufficient Right"
 	*		}
@@ -887,38 +732,6 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.11/cloud/del Delete a file or a directory
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to delete something in the cloud
-	* @apiGroup Cloud
-	* @apiName Delete
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} deletion_infos All informations about the core request have to be here
-	* @apiParam {Number} deletion_infos.project_id The project id to execute the command.
-	* @apiParam {string} deletion_infos.path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
-	* @apiParam {string} [deletion_infos.password] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"deletion_infos": {
-	*			"project_id": 42,
-	*			"path": "/Gandalf le gris"
-	*			"password" : "Ajax"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-	*/
-	/**
-	*
 	* @api {delete} /V0.2/cloud/file/:token/:project_id/:path/:password Delete a file or a directory
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to delete something in the cloud
@@ -934,20 +747,20 @@ class CloudController extends Controller
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 1.4.1,
 	*			"return_message" : "Cloud - delAction - Complete Success"
 	*		}
 	*	}
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.7.9,
 	*			"return_message" : "Cloud - delAction - Insufficient Right"
 	*		}
@@ -1013,20 +826,20 @@ class CloudController extends Controller
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 1.4.1,
 	*			"return_message" : "Cloud - delAction - Complete Success"
 	*		}
 	*	}
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.7.9,
 	*			"return_message" : "Cloud - delAction - Insufficient Right"
 	*		}
@@ -1079,39 +892,6 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V0.11/cloud/createdir create a directory
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to create a directory in the cloud
-	* @apiGroup Cloud
-	* @apiName Create Directory
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} creation_infos All informations about the core request have to be here
-	* @apiParam {Number} creation_infos.project_id The project id to execute the command.
-	* @apiParam {string} creation_infos.path The path of the directory in the cloud where the new directory have to be created (absolute path from the root of the project's cloud)
-	* @apiParam {string} creation_infos.dir_name The new directory's name.
-	* @apiParam {string} [creation_infos.password] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
-	* @apiParamExample {json} Request Example:
-	* 	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"creation_infos": {
-	*			"project_id": 42,
-	*			"path": "/Gandalf le gris"
-	*			"dir_name" : "Beard"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-	*/
-	/**
-	*
 	* @api {post} /V0.2/cloud/createdir create a directory
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to create a directory in the cloud
@@ -1136,20 +916,20 @@ class CloudController extends Controller
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 1.4.1,
 	*			"return_message" : "Cloud - createDirAction - Complete Success"
 	*		}
 	*	}
 	*
 	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
+	* @apiError (206) {string} info.return_code Request end state code
+	* @apiError (206) {string} info.return_message Request end state message (text formated return_code)
 	*
 	* @apiErrorExample {json} Error Response:
 	*	HTTP/1.1 206 Partial Content
 	*	{
-	*		"infos" : {
+	*		"info" : {
 	*			"return_code" : 3.8.9,
 	*			"return_message" : "Cloud - createDirAction - Insufficient Right"
 	*		}
