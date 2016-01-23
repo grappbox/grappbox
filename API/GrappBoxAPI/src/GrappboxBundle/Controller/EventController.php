@@ -118,6 +118,7 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} type.name Event type name
 	*	@apiSuccess {string} title event title
 	*	@apiSuccess {string} description event description
+	*	@apiSuccess {Text} icon Icon of the event
 	*	@apiSuccess {DateTime} beginDate beginning date of the event
 	*	@apiSuccess {DateTime} endDate ending date of the event
 	*	@apiSuccess {DateTime} createAt event creation date
@@ -140,7 +141,9 @@ class EventController extends RolesAndTokenVerificationController
 	*			"id": 12, "projectId": 21,
 	*			"creator": {"id": 15, "fullname": "John Doe"},
 	*			"type": {"id": 1, "name": "Event"},
-	*			"title": "Brainstorming", "description": "blablabla",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
 	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -439,6 +442,7 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {int}	[projectId] project's id (if related to a project)
 	*	@apiParam {string} title event title
 	*	@apiParam {string} description event description
+	*	@apiParam {Text} icon Icon of the event
 	*	@apiParam {int} typeId event type id
 	*	@apiParam {DateTime} begin beginning date & hour of the event
 	*	@apiParam {DateTime} end ending date & hour of the event
@@ -448,10 +452,12 @@ class EventController extends RolesAndTokenVerificationController
 	*		"data":
 	*		{
 	*			"token": "ThisIsMyToken",
-	*			"title": "Brainstorming", "description": "blablabla",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
 	*			"typeId":  1,
-	*			"begin":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"end":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			"begin": "1945-06-18 06:00:00",
+	*			"end": "1945-06-18 08:00:00"
 	*		}
 	* 	}
 	* @apiParamExample {json} Request-Exemple With project:
@@ -460,7 +466,9 @@ class EventController extends RolesAndTokenVerificationController
 	*		{
 	*			"token": "ThisIsMyToken",
 	*			"projectId": 21,
-	*			"title": "Brainstorming", "description": "blablabla",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
 	*			"typeId":  1,
 	*			"begin":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"end":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
@@ -477,6 +485,7 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} type.name Event type name
 	*	@apiSuccess {string} title event title
 	*	@apiSuccess {string} description event description
+	*	@apiSuccess {Text} icon Icon of the event
 	*	@apiSuccess {DateTime} beginDate beginning date of the event
 	*	@apiSuccess {DateTime} endDate ending date of the event
 	*	@apiSuccess {DateTime} createAt event creation date
@@ -499,7 +508,9 @@ class EventController extends RolesAndTokenVerificationController
 	*			"id": 12, "projectId": 21,
 	*			"creator": {"id": 15, "fullname": "John Doe"},
 	*			"type": {"id": 1, "name": "Event"},
-	*			"title": "Brainstorming", "description": "blablabla",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
 	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -515,7 +526,7 @@ class EventController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "5.4.6",
 	*			"return_message": "Calendar - postEvent - Missing Parameter"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Bad Id
 	* 	HTTP/1.1 400 Bad Request
@@ -531,7 +542,7 @@ class EventController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "5.4.9",
 	*			"return_message": "Calendar - postEvent - Insufficient Rights"
-  *		}
+	*		}
 	* 	}
 	*
 	*/
@@ -541,8 +552,8 @@ class EventController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content) || !array_key_exists("typeId", $content)
-			|| !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
+		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content) || !array_key_exists("icon", $content)
+			|| !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
 			return $this->setBadRequest("5.4.6", "Calendar", "postEvent", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -565,6 +576,7 @@ class EventController extends RolesAndTokenVerificationController
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
+		$event->setIcon($content->icon);
 		$event->setBeginDate(new DateTime($content->begin));
 		$event->setEndDate(new DateTime($content->end));
 		$event->setCreatedAt(new DateTime('now'));
@@ -602,6 +614,7 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {int}	[projectId] project's id (if related to a project)
 	*	@apiParam {string} title event title
 	*	@apiParam {string} description event description
+	*	@apiParam {Text} icon Icon of the event
 	*	@apiParam {int} typeId event type id
 	*	@apiParam {DateTime} begin beginning date & hour of the event
 	*	@apiParam {DateTime} end ending date & hour of the event
@@ -612,10 +625,12 @@ class EventController extends RolesAndTokenVerificationController
 	*		{
 	*			"token": "ThisIsMyToken",
 	*			"eventId": 15,
-	*			"title": "Brainstorming", "description": "blablabla",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
 	*			"typeId":  1,
-	*			"begin":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"end":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			"begin": "1945-06-18 06:00:00",
+	*			"end": "1945-06-18 08:00:00"
 	*		}
 	* 	}
 	* @apiParamExample {json} Request-Exemple With project:
@@ -625,10 +640,12 @@ class EventController extends RolesAndTokenVerificationController
 	*			"token": "ThisIsMyToken",
 	*			"projectId": 21,
 	*			"eventId": 15,
-	*			"title": "Brainstorming", "description": "blablabla",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
 	*			"typeId":  1,
-	*			"begin":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"end":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*			"begin": "1945-06-18 06:00:00",
+	*			"end": "1945-06-18 08:00:00"
 	*		}
 	* 	}
 	*
@@ -642,6 +659,7 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} type.name Event type name
 	*	@apiSuccess {string} title event title
 	*	@apiSuccess {string} description event description
+	*	@apiSuccess {Text} icon Icon of the event
 	*	@apiSuccess {DateTime} beginDate beginning date of the event
 	*	@apiSuccess {DateTime} endDate ending date of the event
 	*	@apiSuccess {DateTime} createAt event creation date
@@ -664,7 +682,9 @@ class EventController extends RolesAndTokenVerificationController
 	*			"id": 12, "projectId": 21,
 	*			"creator": {"id": 15, "fullname": "John Doe"},
 	*			"type": {"id": 1, "name": "Event"},
-	*			"title": "Brainstorming", "description": "blablabla",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
 	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -714,8 +734,8 @@ class EventController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
+		if (!array_key_exists("token", $content) || !array_key_exists("eventId", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content)
+			|| !array_key_exists("icon", $content) || !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
 			return $this->setBadRequest("5.5.6", "Calendar", "editEvent", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -754,6 +774,7 @@ class EventController extends RolesAndTokenVerificationController
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
+		$event->setIcon($content->icon);
 		$event->setBeginDate(new DateTime($content->begin));
 		$event->setEndDate(new DateTime($content->end));
 		$event->setEditedAt(new DateTime('now'));

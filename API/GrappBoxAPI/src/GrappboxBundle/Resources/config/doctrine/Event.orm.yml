@@ -15,6 +15,9 @@ GrappboxBundle\Entity\Event:
         description:
             type: text
             nullable: TRUE
+        icon:
+            type: text
+            nullable: TRUE
         beginDate:
             type: datetime
             column: begin_date
