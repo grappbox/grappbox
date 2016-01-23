@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use GrappBundle\Entity\Event;
+use GrappBundle\Entity\Task;
 use DateTime;
 use DateInterval;
 
@@ -37,14 +38,19 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiParam {string} token user authentication token
 	* @apiParam {string} date date of event to list (into YYYY-MM-DD format)
 	*
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {Object} type Event type object
-	* @apiSuccess {int} type.id Event type id
-	* @apiSuccess {string} type.name Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {DateTime} beginDate beginning date of the event
-	*	@apiSuccess {DateTime} endDate ending date of the event
+	* @apiSuccess {Object[]} events list of events
+	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {Object} events.type Event type object
+	* @apiSuccess {int} events.type.id Event type id
+	* @apiSuccess {string} events.type.name Event type name
+	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	* @apiSuccess {Object[]} tasks list of tasks
+	* @apiSuccess {int} tasks.id task id
+	*	@apiSuccess {string} tasks.title event title
+	*	@apiSuccess {DateTime} tasks.startedAt date when the task started
+	*	@apiSuccess {DateTime} tasks.dueDate deadline date of the task
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -55,15 +61,26 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		"data":
 	*		{
 	*			"array": [
-	*				{
-	*				"id": 12,
-	*				"type": {"id": 1, "name": "Event"},
-	*				"title": "Brainstorming",
-	*				"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*				"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				},
-	*				...
-	*			]
+	*				"events": [
+	*					{
+	*					"id": 12,
+	*					"type": {"id": 1, "name": "Event"},
+	*					"title": "Brainstorming",
+	*					"icon": "100011001010...",
+	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					},
+	*					...
+	*				],
+	*			"tasks": [
+	*					{
+	*					"id": 12,
+	*					"title": "Brainstorming",
+	*					"startedAt":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					},
+	*					...
+	*				]
 	*		}
 	* 	}
 	* @apiSuccessExample Success But No Data:
@@ -117,12 +134,36 @@ class PlanningController extends RolesAndTokenVerificationController
 					"name" => $value->getEventtypes()->getName()
 				),
 				"title" => $value->getTitle(),
+				"icon" => $value->getIcon(),
 				"beginDate" => $value->getBeginDate(),
 				"endDate" => $value->getEndDate()
 			);
 		}
 
-		return $this->setSuccess("1.5.1", "Calendar", "getDayPlanning", "Complete Success", array("array" => $events));
+		$repository = $em->getRepository('GrappboxBundle:Task');
+		$query = $repository->createQueryBuilder('t')
+					->join('t.users', 'u')
+					->where('u.id = :user_id')
+					->andWhere('t.deletedAt IS NULL')
+					->andWhere('t.finishedAt IS NULL')
+					->andWhere('t.startedAt IS NOT NULL')
+		    	->setParameters(array('user_id' => $user->getId()))
+					->getQuery()->getResult();
+
+		$tasks = array();
+		foreach ($query as $key => $value) {
+			$events[] = array(
+				"id" => $value->getId(),
+				"title" => $value->getTitle(),
+				"startedAt" => $value->getStartedAt(),
+				"dueDate" => $value->getDueDate()
+			);
+		}
+
+		if (count($events) <= 0 && count($tasks) <= 0)
+			return $this->setNoDataSuccess("1.5.3", "Calendar", "getDayPlanning");
+
+		return $this->setSuccess("1.5.1", "Calendar", "getDayPlanning", "Complete Success", array("array" => array("events" => $events, "tasks" => $tasks)));
 	}
 
 	/**
@@ -135,14 +176,19 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiParam {string} token user authentication token
 	* @apiParam {string} date date of the first day of the week (into YYYY-MM-DD format)
 	*
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {Object} type Event type object
-	* @apiSuccess {int} type.id Event type id
-	* @apiSuccess {string} type.name Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {DateTime} beginDate beginning date of the event
-	*	@apiSuccess {DateTime} endDate ending date of the event
+	* @apiSuccess {Object[]} events list of events
+	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {Object} events.type Event type object
+	* @apiSuccess {int} events.type.id Event type id
+	* @apiSuccess {string} events.type.name Event type name
+	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	* @apiSuccess {Object[]} tasks list of tasks
+	* @apiSuccess {int} tasks.id task id
+	*	@apiSuccess {string} tasks.title event title
+	*	@apiSuccess {DateTime} tasks.startedAt date when the task started
+	*	@apiSuccess {DateTime} tasks.dueDate deadline date of the task
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -153,15 +199,26 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		"data":
 	*		{
 	*			"array": [
-	*				{
-	*				"id": 12,
-	*				"type": {"id": 1, "name": "Event"},
-	*				"title": "Brainstorming",
-	*				"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*				"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				},
-	*				...
-	*			]
+	*				"events": [
+	*					{
+	*					"id": 12,
+	*					"type": {"id": 1, "name": "Event"},
+	*					"title": "Brainstorming",
+	*					"icon": "100011001010...",
+	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					},
+	*					...
+	*				],
+	*			"tasks": [
+	*					{
+	*					"id": 12,
+	*					"title": "Brainstorming",
+	*					"startedAt":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					},
+	*					...
+	*				]
 	*		}
 	* 	}
 	* @apiSuccessExample Success But No Data:
@@ -220,7 +277,30 @@ class PlanningController extends RolesAndTokenVerificationController
 			);
 		}
 
-		return $this->setSuccess("1.5.1", "Calendar", "getWeekPlanning", "Complete Success", array("array" => $events));
+		$repository = $em->getRepository('GrappboxBundle:Task');
+		$query = $repository->createQueryBuilder('t')
+					->join('t.users', 'u')
+					->where('u.id = :user_id')
+					->andWhere('t.deletedAt IS NULL')
+					->andWhere('t.finishedAt IS NULL')
+					->andWhere('t.startedAt IS NOT NULL')
+					->setParameters(array('user_id' => $user->getId()))
+					->getQuery()->getResult();
+
+		$tasks = array();
+		foreach ($query as $key => $value) {
+			$events[] = array(
+				"id" => $value->getId(),
+				"title" => $value->getTitle(),
+				"startedAt" => $value->getStartedAt(),
+				"dueDate" => $value->getDueDate()
+			);
+		}
+
+		if (count($events) <= 0 && count($tasks) <= 0)
+			return $this->setNoDataSuccess("1.5.3", "Calendar", "getWeekPlanning");
+
+		return $this->setSuccess("1.5.1", "Calendar", "getWeekPlanning", "Complete Success", array("array" => array("events" => $events, "tasks" => $tasks)));
 	}
 
 	/**
@@ -228,19 +308,24 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiName getMonthPlanning
 	* @apiGroup Planning
 	* @apiDescription Get planning of a month
-	* @apiVersion 0.22.0
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {string} token user authentication token
 	* @apiParam {string} date date of the first day of the month (into YYYY-MM-DD format)
 	*
-	* @apiSuccess {int} id Event id
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {Object} type Event type object
-	* @apiSuccess {int} type.id Event type id
-	* @apiSuccess {string} type.name Event type name
-	*	@apiSuccess {string} title event title
-	*	@apiSuccess {DateTime} beginDate beginning date of the event
-	*	@apiSuccess {DateTime} endDate ending date of the event
+	* @apiSuccess {Object[]} events list of events
+	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {Object} events.type Event type object
+	* @apiSuccess {int} events.type.id Event type id
+	* @apiSuccess {string} events.type.name Event type name
+	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	* @apiSuccess {Object[]} tasks list of tasks
+	* @apiSuccess {int} tasks.id task id
+	*	@apiSuccess {string} tasks.title event title
+	*	@apiSuccess {DateTime} tasks.startedAt date when the task started
+	*	@apiSuccess {DateTime} tasks.dueDate deadline date of the task
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -251,15 +336,26 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		"data":
 	*		{
 	*			"array": [
-	*				{
-	*				"id": 12,
-	*				"type": {"id": 1, "name": "Event"},
-	*				"title": "Brainstorming",
-	*				"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*				"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				},
-	*				...
-	*			]
+	*				"events": [
+	*					{
+	*					"id": 12,
+	*					"type": {"id": 1, "name": "Event"},
+	*					"title": "Brainstorming",
+	*					"icon": "100011001010...",
+	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					},
+	*					...
+	*				],
+	*			"tasks": [
+	*					{
+	*					"id": 12,
+	*					"title": "Brainstorming",
+	*					"startedAt":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					},
+	*					...
+	*				]
 	*		}
 	* 	}
 	* @apiSuccessExample Success But No Data:
@@ -318,6 +414,29 @@ class PlanningController extends RolesAndTokenVerificationController
 			);
 		}
 
-		return $this->setSuccess("1.5.1", "Calendar", "getMonthPlanning", "Complete Success", array("array" => $events));
+		$repository = $em->getRepository('GrappboxBundle:Task');
+		$query = $repository->createQueryBuilder('t')
+					->join('t.users', 'u')
+					->where('u.id = :user_id')
+					->andWhere('t.deletedAt IS NULL')
+					->andWhere('t.finishedAt IS NULL')
+					->andWhere('t.startedAt IS NOT NULL')
+					->setParameters(array('user_id' => $user->getId()))
+					->getQuery()->getResult();
+
+		$tasks = array();
+		foreach ($query as $key => $value) {
+			$events[] = array(
+				"id" => $value->getId(),
+				"title" => $value->getTitle(),
+				"startedAt" => $value->getStartedAt(),
+				"dueDate" => $value->getDueDate()
+			);
+		}
+
+		if (count($events) <= 0 && count($tasks) <= 0)
+			return $this->setNoDataSuccess("1.5.3", "Calendar", "getMonthPlanning");
+
+		return $this->setSuccess("1.5.1", "Calendar", "getMonthPlanning", "Complete Success", array("array" => array("events" => $events, "tasks" => $tasks)));
 	}
 }
