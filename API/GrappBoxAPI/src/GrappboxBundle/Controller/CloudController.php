@@ -132,11 +132,16 @@ class CloudController extends Controller
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
 		$db = $this->getDoctrine();
-		$role = $db->getRepository("GrappboxBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
-		if (is_null($role))
-			return (-1);
-		$roleTable = $db->getRepository("GrappboxBundle:Role")->findOneById($role->getRoleId());
-		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
+		$roles = $db->getRepository("GrappboxBundle:ProjectUserRole")->findBy(array("projectId" => $idProject, "userId" => $userId));
+		foreach($roles as $role)
+		{
+			if (is_null($role))
+				continue;
+			$roleTable = $db->getRepository("GrappboxBundle:Role")->findOneById($role->getRoleId());
+			if (!is_null($roleTable) && $roleTable->getCloud() > 0)
+				return $roleTable->getCloud();
+		}
+		return (-1);
 	}
 
 	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
