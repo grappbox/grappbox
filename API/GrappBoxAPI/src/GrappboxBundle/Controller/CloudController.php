@@ -576,7 +576,6 @@ class CloudController extends Controller
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
 		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox|Projects/".(string)($idProject).$cloudPath);
-		var_dump($path);
 		$searchRequest = new CurlRequest();
 		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
 		if ($searchResult->meta->statuscode != 100 ||
