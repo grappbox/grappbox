@@ -116,7 +116,7 @@ section { margin: 0 0 60px 0; }
 .app-data.empty p i,
 .app-data.error p i { margin-right: 10px; }
 
-.lead-help { padding: 20px; border: 1px solid #e0e0e0; margin: 0 10px; }
+.lead-help { padding: 20px; border: 1px solid #e0e0e0; }
 
 
 /* ==================== Common laytout (sections) ==================== */
@@ -191,14 +191,14 @@ section { margin: 0 0 60px 0; }
 
 /* ==================== Section: Cloud (content) ==================== */
 
-#cloud-content-view .app-section-content { margin: 0 -5px; }
-#cloud-content-view .app-data-labels { background: #e0e0e0; padding: 10px; }
-#cloud-content-view .app-data-labels div { font-size: 16px; }
+#cloud-content-view .app-section-content { margin: 0 15px; border: 1px solid #e0e0e0; }
 
+#cloud-content-view .app-data-labels { background: #e0e0e0; padding: 10px; margin: 0; }
 #cloud-content-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
-#cloud-content-view .app-data .app-data-list {  }
 
-#cloud-content-view .each-object-data { border-bottom: 1px solid #e0e0e0; padding: 5px 10px; font-size: 16px; }
+#cloud-content-view .each-object-data { border-top: 1px solid #e0e0e0; padding: 5px 10px; background: #fff; margin: 0; }
+#cloud-content-view .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
+#cloud-content-view .each-object-data .object-type { margin: 0 -10px 0 10px; }
 
 
 /* ==================== Section: whiteboard (list) ==================== */

@@ -13,7 +13,7 @@ app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookie
 	// Get current team occupation
 	$http.get($rootScope.apiBaseURL + '/dashboard/getteamoccupation/' + $cookies.get('USERTOKEN'))
 		.then(function successCallback(response) {
-			$scope.teamOccupationList = (response.data && Object.keys(response.data).length ? response.data : null);
+			$scope.teamOccupationList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
 			$scope.teamOccupationList_isValid = true;
 		},
 		function errorCallback(response) {
@@ -24,7 +24,7 @@ app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookie
 	// Get user's next mettings
 	$http.get($rootScope.apiBaseURL + '/dashboard/getnextmeetings/' + $cookies.get('USERTOKEN'))
 		.then(function successCallback(response) {
-			$scope.nextMeetingsList = (response.data && Object.keys(response.data).length ? response.data : null);
+			$scope.nextMeetingsList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
 			$scope.nextMeetingsList_isValid = true;
 			$scope.formatDate = function(dateToFormat) { return dateToFormat.substring(0, dateToFormat.lastIndexOf(':')); }
 		},
@@ -36,7 +36,7 @@ app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookie
 	// Get user's current projects (and progress)
 	$http.get($rootScope.apiBaseURL + '/dashboard/getprojectsglobalprogress/' + $cookies.get('USERTOKEN'))
 		.then(function successCallback(response) {
-			$scope.globalProgressList = (response.data && Object.keys(response.data).length ? response.data : null);
+			$scope.globalProgressList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
 			$scope.globalProgressList_isValid = true;
 		},
 		function errorCallback(response) {
@@ -44,3 +44,5 @@ app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookie
 			$scope.globalProgressList_isValid = false;
 		});
 }]);
+
+// API V0.2 UPDATE MISSING

@@ -4,8 +4,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div class="view view-content" id="cloud-list-view" ng-controller="cloudListController">
 
-    <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}" close="closeAlert($index)">{[{ alert.message }]}</uib-alert>
-
     <section class="app-section" id="cloud-list">
         <div class="container app-container">
             <div class="row">
@@ -20,25 +18,25 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <div ng-if="userProjects_isValid && userProjects" panhandler>
                                 <div class="app-data" ng-repeat="project in userProjects">
                                     <ul class="app-data-list each-project-data btn-float">
-                                        <li class="project-picture" ng-show="project.project_logo === null">
+                                        <li class="project-picture" ng-show="project.logo === null">
                                             <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
-                                        <li class="project-picture" ng-show="project.project_logo !== null">
-                                            <img data-ng-src="data:image/png;base64,{[{ project.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                                        <li class="project-picture" ng-show="project.logo !== null">
+                                            <img data-ng-src="data:image/png;base64,{[{ project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
                                         <li class="project-details">
-                                            <div class="project-name">{[{ project.project_name }]}</div>
-                                            <div class="project-client">{[{ project.project_company }]}</div>
+                                            <div class="project-name">{[{ project.name }]}</div>
+                                            <div class="project-client">{[{ project.company }]}</div>
                                             <div class="clearfix"></div>
                                         </li>
                                         <li class="client-details">
-                                            <div class="client-phone">{[{ project.project_phone }]}</div>
+                                            <div class="client-phone">{[{ project.phone }]}</div>
                                             <div class="client-mail">{[{ project.contact_mail }]}</div>
                                             <div class="clearfix"></div>
                                         </li>
                                         <li class="clearfix"></li>
                                         <li class="project-cloud-link">
-                                            <a ng-href="cloud/{[{ project.project_id }]}" title="Go to '{[{ project.project_name }]}' dedicated Cloud storage"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
+                                            <a ng-href="cloud/{[{ project.id }]}" title="Go to '{[{ project.project_name }]}' dedicated Cloud storage"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
                                         </li>
                                     </ul>
                                 </div>

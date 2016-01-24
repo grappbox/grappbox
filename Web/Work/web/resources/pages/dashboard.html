@@ -15,12 +15,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="section-content app-section-content">
                         <div id="team-occupation-data">
                             <div ng-if="teamOccupationList_isValid && teamOccupationList" panhandler>
-                                <div class="app-data" ng-repeat="member in teamOccupationList">
+                                <div class="app-data" ng-repeat="object in teamOccupationList">
                                     <ul class="app-data-list each-member-data btn-float">
-                                        <li class="team-member-picture"><img data-ng-src="{[{ member.picture === undefined ? '../resources/images/default-avatar.min.png' : member.picture }]}" class="{[{ member.occupation == 'free' ? 'member-available' : 'member-busy' }]}" height="120" width="120"></li>
-                                        <li class="team-member-name">{[{ member.first_name }]} {[{ member.last_name }]}<br>({[{ member.project_name }]})</li>
-                                        <li class="team-member-status {[{ member.occupation == 'free' ? 'member-available' : 'member-busy' }]}">
-                                            <i class="fa {[{ member.occupation == 'free' ? 'fa-check' : 'fa-times' }]}"></i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}
+                                        <li class="team-member-picture"><img data-ng-src="{[{ member.picture === undefined ? '../resources/images/default-avatar.min.png' : member.picture }]}" class="{[{ object.occupation == 'free' ? 'member-available' : 'member-busy' }]}" height="120" width="120"></li>
+                                        <li class="team-member-name">{[{ object.users.firstname }]} {[{ object.users.lastname }]}<br>({[{ object.name }]})</li>
+                                        <li class="team-member-status {[{ object.occupation == 'free' ? 'member-available' : 'member-busy' }]}">
+                                            <i class="fa {[{ object.occupation == 'free' ? 'fa-check' : 'fa-times' }]}"></i>{[{ object.occupation == 'free' ? 'Available' : 'Busy' }]}
                                         </li>
                                     </ul>
                                 </div>

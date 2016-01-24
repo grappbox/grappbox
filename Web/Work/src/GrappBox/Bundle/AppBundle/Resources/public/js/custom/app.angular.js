@@ -9,15 +9,30 @@
 * APP and main controller definition
 *
 */
-var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'panhandler']).config(['$interpolateProvider', function($interpolateProvider) {
-	// TWIG template conflict fix
+var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'panhandler', 'ui-notification']);
+
+// TWIG template conflict fix
+app.config(['$interpolateProvider', function($interpolateProvider) {
 	$interpolateProvider.startSymbol('{[{').endSymbol('}]}');
 }]);
 
+// Cross-domain URLs calls fix
 app.config(['$httpProvider', function($httpProvider) {
-	// Cross-domain URLs calls fix
 	$httpProvider.defaults.useXDomain = true;
 	delete $httpProvider.defaults.headers.common['X-Requested-With'];
+}]);
+
+// Bootstrap notifications settings
+app.config(['NotificationProvider', function(NotificationProvider) {
+	NotificationProvider.setOptions({
+		delay: 10000,
+		startTop: 20,
+		startRight: 10,
+		verticalSpacing: 20,
+		horizontalSpacing: 20,
+		positionX: 'right',
+		positionY: 'top'
+	});
 }]);
 
 app.controller('grappboxController', ['$scope', '$location', function($scope, $location) {
@@ -46,7 +61,7 @@ app.controller('grappboxController', ['$scope', '$location', function($scope, $l
 */
 app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($rootScope, $location, $cookies, $http, $window) {
 	// ROOTSCOPE variables
-	$rootScope.apiVersion = 'V0.11'
+	$rootScope.apiVersion = 'V0.2'
 	$rootScope.apiBaseURL = 'http://api.grappbox.com/app_dev.php/' + $rootScope.apiVersion;
 
 	// On route change (start)

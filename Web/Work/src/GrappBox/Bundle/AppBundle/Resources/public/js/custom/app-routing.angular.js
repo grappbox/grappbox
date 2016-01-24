@@ -79,7 +79,6 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	})
 	.otherwise(
 	{
-		title: 'Error',
 		templateUrl : '../resources/pages/404.html'
 	})
 

@@ -20,7 +20,7 @@ class HomeController extends Controller
 {
 	private function setLoginRedirectResponse($apiContent)
 	{
-		$apiBaseURL = "http://api.grappbox.com/app_dev.php/V0.11";
+		$apiBaseURL = "http://api.grappbox.com/app_dev.php/V0.2";
 		$apiCurl = curl_init();
 
 		curl_setopt($apiCurl, CURLOPT_URL, $apiBaseURL."/accountadministration/login");
@@ -36,9 +36,11 @@ class HomeController extends Controller
 
 		curl_close($apiCurl);
 
-		$apiResult = json_decode($apiJSONResult, true);			
+		$apiResult = json_decode($apiJSONResult, true);
 		switch ($apiResult) {
-			case 'Bad Login':
+
+			// API V0.2 UPDATE
+/*			case 'Bad Login':
 			$redirectResponse = new RedirectResponse("/");
 			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE', hash('sha256', '_badlogin'), 0, '/', null, false, false));
 			break;
@@ -47,11 +49,11 @@ class HomeController extends Controller
 			$redirectResponse = new RedirectResponse("/");
 			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE', hash('sha256', '_badpassword'), 0, '/', null, false, false));
 			break;
-
+*/
 			default:
 			$redirectResponse = new RedirectResponse("/app");
 			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE', hash('sha256', '_success'), 0, '/', null, false, false));
-			$redirectResponse->headers->setCookie(new Cookie('USERTOKEN', $apiResult['user']['token'], 0, '/', null, false, false));
+			$redirectResponse->headers->setCookie(new Cookie('USERTOKEN', $apiResult['data']['token'], 0, '/', null, false, false));
 			break;
 		}
 
@@ -73,9 +75,13 @@ class HomeController extends Controller
 
 		if ($loginForm->isValid())
 		{
-			$apiContent = json_encode(array(
-				"login" => $loginForm["email"]->getData(),
-				"password" => $loginForm["password"]->getData()
+			$apiContent = json_encode(
+				array(
+					"data" =>
+				array(
+					"login" => $loginForm["email"]->getData(),
+					"password" => $loginForm["password"]->getData()
+					)
 				));
 
 			return $this->setLoginRedirectResponse($apiContent);
