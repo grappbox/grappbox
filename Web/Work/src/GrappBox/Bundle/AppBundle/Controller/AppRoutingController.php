@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AppRoutingController extends Controller
 {
-    public function enableAngularRouteManagementAction(Request $request)
+    public function angularRouteManagementAction(Request $request)
     {
         $pathInfo = $request->getPathInfo();
 

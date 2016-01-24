@@ -36,13 +36,13 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     form_themes:
-        - 'ShowcaseBundle:Form:form_div_layout.html.twig'
+        - 'HomeBundle:Form:form_div_layout.html.twig'
 
 # Assetic Configuration
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
-    bundles:        [ ShowcaseBundle, AppBundle ]
+    bundles:        [ HomeBundle, AppBundle ]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~

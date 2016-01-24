@@ -1,5 +1,0 @@
-services:
-    showcase.form_extention.icon:
-        class: GrappBox\Bundle\ShowcaseBundle\Form\Extension\ButtonTypeIconExtension
-        tags:
-            - { name: form.type_extension, alias: button }

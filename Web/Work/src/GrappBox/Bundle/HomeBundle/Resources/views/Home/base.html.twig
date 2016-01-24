@@ -1,0 +1,64 @@
+{# This file is subject to the terms and conditions defined in
+ # file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+ # COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. #}
+
+{% spaceless %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+        <meta http-equiv="content-language" content="en-us" />
+        <meta name="description" content="GrappBox" />
+        <meta name="author" content="GrappBox" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charset="UTF-8" />
+        <title>{% block title %}{% endblock %}</title>
+        <!-- Google Fonts -->
+        <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' />
+        <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Oswald:400,700' />
+
+        {% block child_fonts %}{% endblock %}
+
+        {% stylesheets
+        '@HomeBundle/Resources/public/css/vendor/bootstrap.css'
+        '@HomeBundle/Resources/public/css/vendor/font-awesome.css'
+        '@HomeBundle/Resources/public/css/custom/home.css'
+        filter='?uglifycss' output='resources/css/home.min.css' %}
+        <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+        {% endstylesheets %}
+
+        {% block child_stylesheets %}{% endblock %}
+
+        {% block child_javascript_head %}{% endblock %}
+
+        <!-- Responsive for IE8 -->
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div id="showcase-wrapper">
+            {% block body %}{% endblock %}
+
+            {% javascripts
+            '@HomeBundle/Resources/public/js/vendor/jquery.js'
+            '@HomeBundle/Resources/public/js/vendor/bootstrap.js'
+            '@HomeBundle/Resources/public/js/vendor/cookie.js'
+            '@HomeBundle/Resources/public/js/vendor/sha256.js'
+            '@HomeBundle/Resources/public/js/vendor/smooth-scroll.js'
+            '@HomeBundle/Resources/public/js/custom/home.js'
+            filter='?uglifyjs2' output='resources/js/home.min.js' %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+
+            {% block child_javascripts_bottom %}{% endblock %}
+        </div>
+    </body>
+</html>
+
+{% endspaceless %}

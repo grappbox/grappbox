@@ -1,0 +1,10 @@
+home_index:
+    path:     /
+    defaults: { _controller: HomeBundle:Home:index }
+
+home_resource:
+    path: /{url}
+    defaults: { _controller: HomeBundle:Resource:trailingSlashRemoval }
+    requirements:
+        url: .*/$
+    methods: [GET]

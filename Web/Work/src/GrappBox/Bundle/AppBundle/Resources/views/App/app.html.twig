@@ -1,0 +1,120 @@
+{# This file is subject to the terms and conditions defined in
+# file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+# COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. #}
+
+{% spaceless %}
+
+<!DOCTYPE html>
+<html lang="en" ng-app="grappbox">
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+		<meta http-equiv="content-language" content="en-us" />
+		<meta name="description" content="GrappBox" />
+		<meta name="author" content="GrappBox" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta charset="UTF-8" />
+		<base href="/app/">
+		<title>GrappBox</title>
+		<!-- Google Fonts -->
+		<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' />
+		<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Oswald:400,700' />
+
+		{% stylesheets
+		'@HomeBundle/Resources/public/css/vendor/bootstrap.css'
+		'@HomeBundle/Resources/public/css/vendor/font-awesome.css'
+		'@HomeBundle/Resources/public/css/custom/home.css'
+		'@AppBundle/Resources/public/css/vendor/angular-ui-notification.css'
+		'@AppBundle/Resources/public/css/custom/app.css'
+		filter='?uglifycss' output='resources/css/app.min.css' %}
+		<link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+		{% endstylesheets %}
+
+		{% javascripts
+		'@AppBundle/Resources/public/js/vendor/angular.js'
+		'@AppBundle/Resources/public/js/vendor/angular-cookies.js'
+		'@AppBundle/Resources/public/js/vendor/angular-panhandler.js'
+		'@AppBundle/Resources/public/js/vendor/angular-route.js'
+		'@AppBundle/Resources/public/js/vendor/angular-ui-bootstrap.js'
+		'@AppBundle/Resources/public/js/vendor/angular-ui-notification.js'
+		'@AppBundle/Resources/public/js/custom/_app.angular.js'
+		'@AppBundle/Resources/public/js/custom/login.js'
+		'@AppBundle/Resources/public/js/custom/routing.js'
+		'@AppBundle/Resources/public/js/custom/cloud/cloud.js'
+		'@AppBundle/Resources/public/js/custom/cloud/cloud-list.js'
+		'@AppBundle/Resources/public/js/custom/dashboard/dashboard.js'
+		'@AppBundle/Resources/public/js/custom/notifications/notifications.js'
+		'@AppBundle/Resources/public/js/custom/profile/profile.js'
+		'@AppBundle/Resources/public/js/custom/projects/projects.js'
+		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard.js'
+		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard-factory.js'
+		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard-list.js'
+		filter='?uglifyjs2' output='resources/js/app-angular.min.js' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+		{% endjavascripts %}
+
+		<!-- Responsive for IE8 -->
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+	<body ng-controller="grappboxController">
+		<span ng-cloak ng-show="show"></span>
+		<div id="app-wrapper">
+			<!-- Navigation content -->
+			<div id="sidebar-wrapper">
+				<ul class="sidebar-nav">
+					<li class="sidebar-brand"><a href="./" title="Return to GrappBox dashboard">GrappBox</a></li>
+					<li><a href="notifications" title="See all your notifications" class="ng-class:{ 'active' : isPageActive('/notifications') };">Notifications</a></li>
+					<li><a href="./" title="Go to your dashboard" class="ng-class:{ 'active' : isPageActive('/') };">Dashboard</a></li>
+					<li><a href="cloud" title="Access your online files and folders" class="ng-class:{ 'active' : isPageActive('/cloud') };">Cloud</a></li>
+					<li><a href="whiteboard" title="Go to the collaborative whiteboard" class="ng-class:{ 'active' : isPageActive('/whiteboard') };">Whiteboard</a></li>
+					<li><a href="profile" title="Manage your profile" class="ng-class:{ 'active' : isPageActive('/profile') };">Profile</a></li>
+					<li><a href="settings" title="Manage your account settings" class="ng-class:{ 'active' : isPageActive('/settings') };">Settings</a></li>
+					<li><a href="logout" title="Sign out of GrappBox">Logout</a></li>
+				</ul>
+				<div class="legal-nav">
+					<p class="divider"></p>
+					<p class="copyright">Copyright &copy; GrappBox 2016.<br>All rights reserved.</p>
+				</div>
+			</div>
+			<!-- Page content -->
+			<div id="page-content-wrapper">
+				<div class="page-header">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="app-page-title">{[{ title }]}</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="page-content">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="app-page">
+								<!-- Dynamic view -->
+								<div ng-view></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{% javascripts
+		'@HomeBundle/Resources/public/js/vendor/jquery.js'
+		'@HomeBundle/Resources/public/js/vendor/bootstrap.js'
+		'@HomeBundle/Resources/public/js/vendor/sha256.js'
+		'@HomeBundle/Resources/public/js/vendor/smooth-scroll.js'
+		'@AppBundle/Resources/public/js/custom/_app.jquery.js'
+		filter='?uglifyjs2' output='resources/js/app-jquery.min.js' %}
+		<script type="text/javascript" src="{{ asset_url }}"></script>
+		{% endjavascripts %}
+
+	</body>
+</html>
+
+{% endspaceless %}
