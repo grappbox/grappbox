@@ -37,6 +37,8 @@ html { background: #fafafa; }
     #page-content-wrapper { padding: 0 20px; position: relative; }
 }
 
+.ui-notification.info { background: #26C6DA; }
+
 
 /* ==================== General layout (navigation) ==================== */
 
@@ -192,8 +194,31 @@ section { margin: 0 0 60px 0; }
 /* ==================== Section: Cloud (content) ==================== */
 
 #cloud-content-view .app-section-content { margin: 0 15px; border: 1px solid #e0e0e0; }
+#cloud-content-view .app-section-content.loading { cursor: progress; }
 
-#cloud-content-view .app-data-labels { background: #e0e0e0; padding: 10px; margin: 0; }
+#cloud-content-view .app-data-actions,
+#cloud-content-view .app-data-labels { padding: 10px; margin: 0; }
+
+#cloud-content-view .app-data-actions a { color: #e0e0e0; }
+#cloud-content-view .app-data-actions a:active,
+#cloud-content-view .app-data-actions a:focus,
+#cloud-content-view .app-data-actions a:hover { color: #fff; }
+
+#cloud-content-view .app-data-actions a.disabled { cursor: not-allowed; }
+#cloud-content-view .app-data-actions a.disabled:active,
+#cloud-content-view .app-data-actions a.disabled:focus,
+#cloud-content-view .app-data-actions a.disabled:hover { color: #e0e0e0; }
+
+#cloud-content-view .app-data-actions { background: #26A69A; }
+#cloud-content-view .app-data-labels { background: #e0e0e0; }
+
+#cloud-content-view .app-data .app-data-list { cursor: pointer; }
+#cloud-content-view .app-data .app-data-list#selected { background: #E0F2F1; }
+
+#cloud-content-view .app-data .app-data-list:active,
+#cloud-content-view .app-data .app-data-list:focus,
+#cloud-content-view .app-data .app-data-list:hover { background: #B2DFDB; }
+
 #cloud-content-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
 
 #cloud-content-view .each-object-data { border-top: 1px solid #e0e0e0; padding: 5px 10px; background: #fff; margin: 0; }
