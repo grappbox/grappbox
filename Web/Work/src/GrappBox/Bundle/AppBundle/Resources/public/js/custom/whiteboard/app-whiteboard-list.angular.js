@@ -16,6 +16,11 @@ app.controller('whiteboardListController', ['$scope', '$routeParams', '$http', f
     $scope.alertList.splice(index, 1);
   };
 
+  $scope.alertList.push({
+    type: 'warning',
+    message: 'This section is under construction.'
+  });
+
   if ($routeParams.id)
     $scope.alertList.push({
       type: 'danger',

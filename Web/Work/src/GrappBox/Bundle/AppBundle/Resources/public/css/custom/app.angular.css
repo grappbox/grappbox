@@ -16,15 +16,16 @@
 
 /* ==================== General layout ==================== */
 
+html { background: #fafafa; }
 #app-wrapper { padding-left: 0; background: #fff; transition: all .3s ease; }
 
 #app-wrapper.toggled { padding-left: 250px; }
 #app-wrapper.toggled #sidebar-wrapper { width: 250px; }
 #app-wrapper.toggled #page-content-wrapper { position: absolute; margin-right: -250px; }
 
-#page-content-wrapper { width: 100%; position: absolute; padding: 15px; }
+#page-content-wrapper { width: 100%; position: absolute; padding: 15px; background: #fafafa; }
 #page-content-wrapper .page-header { margin: 0; padding: 0; border: 0; }
-#page-content-wrapper .page-header .app-page-title { height: 59px; margin: 0 -20px; padding: 10px 35px; font-family: 'Oswald', Helvetica, Arial, sans-serif; font-size: 28px; color: #616161; border: 1px solid #e0e0e0; border-left: none; }
+#page-content-wrapper .page-header .app-page-title { height: 60px; margin: 0 -20px; padding: 15px 35px; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-size: 24px; background: #e05e52; color: #fafafa; border-bottom: 1px solid #e0e0e0; text-transform: uppercase; }
 
 @media (min-width: 768px) {
 	#app-wrapper { padding-left: 250px; }
@@ -39,12 +40,12 @@
 
 /* ==================== General layout (navigation) ==================== */
 
-#sidebar-wrapper { z-index: 1000; position: fixed; left: 250px; height: 100%; margin-left: -250px; overflow-y: auto; transition: all .3s ease; background: #f5f5f5; border-right: 1px solid #e0e0e0; overflow: hidden; }
+#sidebar-wrapper { z-index: 1000; position: fixed; left: 250px; height: 100%; margin-left: -250px; overflow-y: auto; transition: all .3s ease; background: #fff; border-right: 1px solid #e0e0e0; overflow: hidden; }
 
 .sidebar-nav { position: absolute; top: 0; width: 250px; margin: 0; padding: 0; list-style: none; }
-.sidebar-nav li a { font-size: 16px; display: block; padding: 20px; color: #212121; }
-.sidebar-nav li a:before { transition-duration: .2s; background: #616161; }
-.sidebar-nav li a.active { background: #616161; }
+.sidebar-nav li a { display: block; padding: 15px 25px; }
+
+.sidebar-nav li:nth-child(2) a { margin-top: 15px; }
 
 .sidebar-nav li a.active,
 .sidebar-nav li a:active,
@@ -52,18 +53,18 @@
 .sidebar-nav li a:focus,
 .sidebar-nav li a.active:active,
 .sidebar-nav li a.active:hover,
-.sidebar-nav li a.active:focus { color: #f5f5f5; }
+.sidebar-nav li a.active:focus { font-weight: 700; }
 
-.sidebar-nav .sidebar-brand a { padding: 10px 20px; font-size: 32px; text-transform: uppercase; height: 58px; }
+.sidebar-nav .sidebar-brand a { padding: 13px 25px; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-size: 28px; text-transform: uppercase; height: 60px; border-bottom: 1px solid #e0e0e0; color: #616161; }
 .sidebar-nav .sidebar-brand a:active,
 .sidebar-nav .sidebar-brand a:focus,
-.sidebar-nav .sidebar-brand a:hover { color: #9e9e9e; }
+.sidebar-nav .sidebar-brand a:hover { color: #e05e52; font-weight: 400; }
 
 .legal-nav .divider,
 .sidebar-nav .divider { height: 1px; background: #e0e0e0; }
 
 .legal-nav { position: absolute; bottom: 0; width: 100%; }
-.legal-nav .copyright { padding: 5px 20px 20px 20px; margin: 0; }
+.legal-nav .copyright { padding: 5px 20px 20px 20px; margin: 0; font-size: 12px; }
 
 @media (min-width:768px) {
 	.sidebar-nav { z-index: 1; position: absolute; }
@@ -72,8 +73,7 @@
 
 /* ==================== General layout (animations) ==================== */
 
-.alert { margin: 30px 0 0 0; border-radius: 0; }
-.alert span { font-size: 16px; }
+.alert { margin: 30px 15px 0 15px; border-radius: 0; }
 
 .btn-float { display: inline-block; vertical-align: middle; transform: translateZ(0); box-shadow: 0 0 1px rgba(0, 0, 0, 0); backface-visibility: hidden; transition-duration: .3s; transition-property: transform; transition-timing-function: ease-out; }
 
@@ -82,23 +82,26 @@
 .btn-float:hover { transform: translateY(-8px); }
 
 
+/* ==================== General layout (error and secondary pages) ==================== */
+
+#error-view .app-section-content .contact-us { font-weight: bold; text-decoration: underline; }
+
+
 /* ==================== General laytout (sections) ==================== */
 
 .app-section { margin: 0 0 50px 0; padding: 0; border: none; box-shadow: none; }
 .app-section .col-lg-12 { padding: 0; }
 .app-section .app-container { width: 100%; }
 
-.app-section .app-section-heading { margin: 0 0 0 15px; }
-.app-section .app-section-heading h2 { margin: 0; padding: 15px 0; letter-spacing: 0; font-size: 24px; color: #212121; }
+.app-section .app-section-heading { margin: 0 15px; }
+.app-section .app-section-heading h2 { margin: 0; padding: 15px 0; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
 
 .app-section .app-section-heading .lead,
 .app-section .app-section-heading ul,
-.app-section .app-section-heading li { font-size: 16px; line-height: initial; font-weight: 400; }
-
+.app-section .app-section-heading li,
 .app-section .app-section-content ul,
 .app-section .app-section-content li,
-.app-section .app-section-content p,
-.app-section .app-section-content strong { font-size: 16px; line-height: initial; }
+.app-section .app-section-content strong { font-size: 14px; line-height: initial; font-weight: 400; }
 
 section:nth-of-type(1) { min-height: auto; margin: 15px 0; }
 section { margin: 0 0 60px 0; }
@@ -108,42 +111,55 @@ section { margin: 0 0 60px 0; }
 	section { margin: 0 0 60px 0; }
 }
 
+.app-data.empty p,
+.app-data.error p { width: 100%; text-align: center; position: absolute; top: 65%; }
+.app-data.empty p i,
+.app-data.error p i { margin-right: 10px; }
 
-/* ==================== General layout (error and secondary pages) ==================== */
+.lead-help { padding: 20px; border: 1px solid #e0e0e0; margin: 0 10px; }
 
-#error-view .app-section-content .contact-us { font-weight: bold; text-decoration: underline; }
+
+/* ==================== Common laytout (sections) ==================== */
+
+#dashboard-view .app-section-content,
+#cloud-list-view .app-section-content,
+#whiteboard-list-view .app-section-content { margin: 0 -20px; min-height: 230px; background: #e0e0e0; }
+
+#dashboard-view .app-data,
+#cloud-list-view .app-data,
+#whiteboard-list-view .app-data { display: table-cell; }
+
+#dashboard-view .app-data .app-data-list i,
+#cloud-list-view .app-data .app-data-list i,
+#whiteboard-list-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
+
+#dashboard-view .app-data .app-data-list,
+#cloud-list-view .app-data .app-data-list,
+#whiteboard-list-view .app-data .app-data-list { margin: 20px 10px 20px 10px; padding: 0; list-style: none; transition-duration: .1s; text-align: center; color: #fafafa; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
+
+#dashboard-view .app-data:first-child > .app-data-list,
+#cloud-list-view .app-data:first-child > .app-data-list,
+#whiteboard-list-view .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
+
+#dashboard-view .app-data:last-child > .app-data-list,
+#cloud-list-view .app-data:last-child > .app-data-list,
+#whiteboard-list-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
 
 
 /* ==================== Section: dashboard ==================== */
 
-#dashboard-view .app-section-content { margin: 0 -20px; min-height: 230px; background: #e0e0e0; }
-#dashboard-view .app-data { display: table-cell; }
-
-#dashboard-view .app-data.empty p,
-#dashboard-view .app-data.error p { width: 100%; text-align: center; position: absolute; top: 65%; }
-
-#dashboard-view .app-data.empty p i,
-#dashboard-view .app-data.error p i { margin-right: 10px; font-size: 18px; }
-
-#dashboard-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
-#dashboard-view .app-data .app-data-list { margin: 20px 10px 20px 10px; padding: 0; list-style: none; transition-duration: .1s; text-align: center; color: #f5f5f5; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-
-#dashboard-view .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
-#dashboard-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
-
 #dashboard-view .each-member-data .team-member-picture { padding: 15px 15px 10px 15px; background: #fff; }
 #dashboard-view .each-member-data .team-member-picture img { max-width: 120px; border: 5px solid; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-
-#dashboard-view .each-member-data .team-member-picture img.member-available { border-color: #8bc34a; }
+#dashboard-view .each-member-data .team-member-picture img.member-available { border-color: #9CCC65; }
 #dashboard-view .each-member-data .team-member-picture img.member-busy { border-color: #9e9e9e; }
 
 #dashboard-view .each-member-data .team-member-name { padding: 5px 0 10px 0; background: #fff; color: #212121; }
-#dashboard-view .each-member-data .team-member-status { padding: 10px 0; text-transform: capitalize; color: #f5f5f5; }
-#dashboard-view .each-member-data .team-member-status.member-available { cursor: pointer; background: #8bc34a; }
+#dashboard-view .each-member-data .team-member-status { padding: 10px 0; text-transform: capitalize; color: #fafafa; }
+#dashboard-view .each-member-data .team-member-status.member-available { cursor: pointer; background: #9CCC65; }
 #dashboard-view .each-member-data .team-member-status.member-busy { cursor: not-allowed; background: #9e9e9e; }
 
 #dashboard-view .each-meeting-data { width: 350px; }
-#dashboard-view .each-meeting-data .meeting-title { padding: 15px 0; border-bottom: 1px solid #f5f5f5; background-color: #745548; }
+#dashboard-view .each-meeting-data .meeting-title { padding: 15px 0; border-bottom: 1px solid #fafafa; background-color: #e05e52; }
 #dashboard-view .each-meeting-data .meeting-type { padding: 30px 0 10px 0; background-color: #fff; color: #212121; }
 #dashboard-view .each-meeting-data .meeting-schedule { padding: 0 0 40px 0; background-color: #fff; color: #212121; }
 
@@ -152,48 +168,30 @@ section { margin: 0 0 60px 0; }
 #dashboard-view .each-progress-data .project-picture { float: left; padding: 10px; }
 #dashboard-view .each-progress-data .project-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
 #dashboard-view .each-progress-data .project-details { float: left; min-width: 50%; padding: 15px 0 0 10px; text-align: left; color: #212121; }
-#dashboard-view .each-progress-data .project-details .project-name { font-size: 18px; }
+#dashboard-view .each-progress-data .project-details .project-name { font-weight: 700; }
 #dashboard-view .each-progress-data .client-details { float: left; min-width: 50%; padding: 10px 0 0 10px; text-align: left; color: #212121; }
-#dashboard-view .each-progress-data .progress-details { padding: 15px 0; background: #745548; }
+#dashboard-view .each-progress-data .progress-details { padding: 15px 0; background: #e05e52; }
 #dashboard-view .each-progress-data .progress-details div { display: inline-block; padding: 0 40px 0 0; }
 #dashboard-view .each-progress-data .progress-details div:last-child { display: inline-block; padding: 0; }
 
 
 /* ==================== Section: Cloud (list and help) ==================== */
 
-#cloud-list-view .app-section-content { margin: 0 -20px; min-height: 230px; background: #e0e0e0; }
-#cloud-list-view .app-data { display: table-cell; }
-
-#cloud-list-view .app-data.empty p,
-#cloud-list-view .app-data.error p { width: 100%; font-size: 18px; font-weight: 400; text-align: center; position: absolute; top: 65%; }
-
-#cloud-list-view .app-data.empty p i,
-#cloud-list-view .app-data.error p i { margin-right: 10px; font-size: 18px; }
-
-#cloud-list-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
-#cloud-list-view .app-data .app-data-list { margin: 20px 10px 20px 10px; padding: 0; list-style: none; transition-duration: .1s; text-align: center; color: #f5f5f5; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-
-#cloud-list-view .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
-#cloud-list-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
-
 #cloud-list-view .each-project-data { width: 350px; }
 #cloud-list-view .each-project-data .clearfix { background: #fff; }
 #cloud-list-view .each-project-data .project-picture { float: left; padding: 10px; }
 #cloud-list-view .each-project-data .project-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
 #cloud-list-view .each-project-data .project-details { float: left; min-width: 50%; padding: 15px 0 0 10px; text-align: left; color: #212121; }
-#cloud-list-view .each-project-data .project-details .project-name { font-size: 20px; color: #212121; }
+#cloud-list-view .each-project-data .project-details .project-name { color: #212121; font-weight: 700; }
 #cloud-list-view .each-project-data .client-details { float: left; min-width: 50%; padding: 10px 0 0 10px; text-align: left; color: #212121; }
 
-#cloud-list-view .each-project-data .project-cloud-link a { display: block; padding: 15px; text-align: center; color: #f5f5f5; }
-#cloud-list-view .each-project-data .project-cloud-link a { border-top: 1px solid #f5f5f5; background-color: #0097a7; }
-
-#cloud-list-view .lead-help { padding: 20px; border: 1px solid #e0e0e0; margin: 0 0 0 10px; }
+#cloud-list-view .each-project-data .project-cloud-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
+#cloud-list-view .each-project-data .project-cloud-link a { border-top: 1px solid #fafafa; background-color: #26A69A; }
 
 
 /* ==================== Section: Cloud (content) ==================== */
 
 #cloud-content-view .app-section-content { margin: 0 -5px; }
-
 #cloud-content-view .app-data-labels { background: #e0e0e0; padding: 10px; }
 #cloud-content-view .app-data-labels div { font-size: 16px; }
 
@@ -205,16 +203,6 @@ section { margin: 0 0 60px 0; }
 
 /* ==================== Section: whiteboard (list) ==================== */
 
-#whiteboard-list-view .app-section-content { margin: 0 -20px; background: #e0e0e0; }
-
-#whiteboard-list-view .app-data { display: table-cell; }
-#whiteboard-list-view .app-data .app-data-list li { display: block; }
-#whiteboard-list-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
-#whiteboard-list-view .app-data .app-data-list { display: block; margin: 20px 10px 20px 10px; padding: 0; list-style: none; transition-duration: .1s; text-align: left; color: #212121; background: #f5f5f5; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-
-#whiteboard-list-view .app-data:first-child > .app-data-list { margin: 20px 10px 20px 30px; }
-#whiteboard-list-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
-
 #whiteboard-list-view .each-available-whiteboard { min-width: 17vw; background: #bdbdbd; }
 #whiteboard-list-view .each-available-whiteboard .whiteboard-id { padding: 15px 15px 5px 15px; }
 #whiteboard-list-view .each-available-whiteboard .whiteboard-project-name { padding: 5px 15px 5px 15px; }
@@ -224,13 +212,13 @@ section { margin: 0 0 60px 0; }
 #whiteboard-list-view .each-available-whiteboard .whiteboard-link { padding: 0; }
 
 #whiteboard-list-view .each-available-whiteboard .whiteboard-name a,
-#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { display: block; padding: 15px; text-align: center; color: #f5f5f5; }
-#whiteboard-list-view .each-available-whiteboard .whiteboard-name a { border-bottom: 1px solid #f5f5f5; background-color: #0097a7; }
-#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { border-top: 1px solid #f5f5f5; background-color: #8bc34a; }
+#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
+#whiteboard-list-view .each-available-whiteboard .whiteboard-name a { border-bottom: 1px solid #fafafa; background-color: #26A69A; }
+#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { border-top: 1px solid #fafafa; background-color: #9CCC65; }
 
 #whiteboard-list-view .app-actions { display: block; }
 #whiteboard-list-view .app-actions .whiteboard-action-link { width: 20%; margin: 0 auto; }
-#whiteboard-list-view .app-actions .whiteboard-action-link a { font-size: 18px; display: block; padding: 20px; text-align: center; color: #f5f5f5; background: #0097a7; }
+#whiteboard-list-view .app-actions .whiteboard-action-link a { font-size: 18px; display: block; padding: 20px; text-align: center; color: #fafafa; background: #26A69A; }
 #whiteboard-list-view .app-actions .whiteboard-action-link a i { margin: 0 10px 0 -10px; }
 
 
@@ -264,4 +252,4 @@ section { margin: 0 0 60px 0; }
 #whiteboard-view .app-actions .app-actions-list ul { padding: 0; margin: 0; }
 
 #whiteboard-view .app-data { overflow: scroll; max-height: 75vh; border: 1px solid #e0e0e0; transition: .2s ease all; transition-delay: .2s; }
-#whiteboard-view .app-data canvas { background: #f5f5f5; cursor: crosshair; }
+#whiteboard-view .app-data canvas { background: #fafafa; cursor: crosshair; }
