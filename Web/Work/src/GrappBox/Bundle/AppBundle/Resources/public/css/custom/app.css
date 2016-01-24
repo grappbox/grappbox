@@ -233,23 +233,23 @@ section { margin: 0 0 60px 0; }
 #app-wrapper.hide-menu #whiteboard-data { transform: translateY(-130px) !important; transform: translate3d(0, -130px, 0) !important; }
 #app-wrapper.hide-menu #whiteboard-data .app-data { max-height: 88vh; }
 
-#whiteboard-view #whiteboard { margin: 0 0 30px 0; }
-#whiteboard-view .app-section-content { position: relative; }
+#whiteboard-content-view #whiteboard { margin: 0 0 30px 0; }
+#whiteboard-content-view .app-section-content { position: relative; }
 
-#whiteboard-view .app-actions { position: absolute; width: 100%; bottom: 0; border: 1px solid #e0e0e0; background: #fff; }
-#whiteboard-view .app-actions .app-actions-list { display: inline-block; margin: 0; padding: 20px; border-left: 1px solid #e0e0e0 }
-#whiteboard-view .app-actions .app-actions-list:first-child { border: none; }
+#whiteboard-content-view .app-actions { position: absolute; width: 100%; bottom: 0; border: 1px solid #e0e0e0; background: #fff; }
+#whiteboard-content-view .app-actions .app-actions-list { display: inline-block; margin: 0; padding: 20px; border-left: 1px solid #e0e0e0 }
+#whiteboard-content-view .app-actions .app-actions-list:first-child { border: none; }
 
-#whiteboard-view .app-actions .app-actions-list .left-offset { margin-left: 5px; }
-#whiteboard-view .app-actions .app-actions-list .right-offset { margin-right: 5px; }
+#whiteboard-content-view .app-actions .app-actions-list .left-offset { margin-left: 5px; }
+#whiteboard-content-view .app-actions .app-actions-list .right-offset { margin-right: 5px; }
 
-#whiteboard-view .app-actions .app-actions-list input,
-#whiteboard-view .app-actions .app-actions-list label,
-#whiteboard-view .app-actions .app-actions-list select { font-size: 18px; }
+#whiteboard-content-view .app-actions .app-actions-list input,
+#whiteboard-content-view .app-actions .app-actions-list label,
+#whiteboard-content-view .app-actions .app-actions-list select { font-size: 18px; }
 
-#whiteboard-view .app-actions .app-actions-list label { font-weight: 400; cursor: pointer; }
-#whiteboard-view .app-actions .app-actions-list li { display: inline; }
-#whiteboard-view .app-actions .app-actions-list ul { padding: 0; margin: 0; }
+#whiteboard-content-view .app-actions .app-actions-list label { font-weight: 400; cursor: pointer; }
+#whiteboard-content-view .app-actions .app-actions-list li { display: inline; }
+#whiteboard-content-view .app-actions .app-actions-list ul { padding: 0; margin: 0; }
 
-#whiteboard-view .app-data { overflow: scroll; max-height: 75vh; border: 1px solid #e0e0e0; transition: .2s ease all; transition-delay: .2s; }
-#whiteboard-view .app-data canvas { background: #fafafa; cursor: crosshair; }
+#whiteboard-content-view .app-data { overflow: scroll; max-height: 75vh; border: 1px solid #e0e0e0; transition: .2s ease all; transition-delay: .2s; }
+#whiteboard-content-view .app-data canvas { background: #fafafa; cursor: crosshair; }

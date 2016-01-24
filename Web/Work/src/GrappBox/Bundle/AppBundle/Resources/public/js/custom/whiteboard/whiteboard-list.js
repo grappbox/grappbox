@@ -38,7 +38,7 @@ app.controller('whiteboardListController', ['$scope', '$routeParams', '$http', f
 * Check if requested whiteboard ID is accessible
 *
 */
-var isWhiteboardAccessible = function($http, $route, $q, $location) {
+var whiteboard_isAccessible = function($http, $route, $q, $location) {
   var whiteboardsListContent = "";
   var isAccessible = false;
   var deferred = $q.defer();
@@ -64,4 +64,4 @@ var isWhiteboardAccessible = function($http, $route, $q, $location) {
   });
 };
 
-isWhiteboardAccessible['$inject'] = ['$http', '$route', '$q', '$location'];
+whiteboard_isAccessible['$inject'] = ['$http', '$route', '$q', '$location'];

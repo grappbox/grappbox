@@ -6,13 +6,13 @@
 
 /**
 * Controller definition
-* APP profile page content
+* APP project page
 *
 */
-app.controller('profileController', ['$scope', function($scope) {
-	$scope.alertList = [];
-	$scope.alertList.push({
-		type: 'warning',
-		message: 'This section is under construction.'
-	});
+app.controller('projectController', ['$scope', function($scope) {
+  $scope.alertList = [];
+  $scope.alertList.push({
+    type: 'warning',
+    message: 'This section is under construction.'
+  });
 }]);

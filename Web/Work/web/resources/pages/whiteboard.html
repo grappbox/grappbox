@@ -2,12 +2,13 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="whiteboard-view" ng-controller="whiteboardController" data-ng-init="initializeWhiteboardControls()">
+<div class="view view-content" id="whiteboard-content-view" ng-controller="whiteboardController" data-ng-init="initializeWhiteboardControls()">
 
-  <section class="app-section" id="whiteboard-header">
+  <section class="app-section" id="whiteboard-content-header">
     <div class="container app-container">
       <div class="row">
         <div class="col-lg-12">
+          <!-- grappbox.data : whiteboard content (header) -->
           <div class="section-heading app-section-heading">
             <h2>Whiteboard #{[{ whiteboardID }]}</h2>
             <p class="lead">Use the toolbox below the whiteboard to draw and share your ideas.
@@ -18,11 +19,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>
     </section>
 
-    <section class="app-section" id="whiteboard">
+    <section class="app-section" id="whiteboard-content">
       <div class="container app-container">
         <div class="row">
           <div class="col-lg-12">
-            <!-- grappbox.data : whiteboard -->
+            <!-- grappbox.data : whiteboard content -->
             <div class="section-content app-section-content">
               <div id="whiteboard-data">
 

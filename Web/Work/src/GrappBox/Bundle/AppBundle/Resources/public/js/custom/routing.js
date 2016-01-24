@@ -6,11 +6,12 @@
 
 /**
 * GRAPPBOX
-* APP global routing definition
+* APP routing definition
 *
 */
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 	$routeProvider
+	// Homepage
 	.when('/', {
 		title: 'Dashboard',
 		templateUrl : '../resources/pages/dashboard.html',
@@ -20,17 +21,34 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 	.when('/login', {
 		caseInsensitiveMatch : true,
 		resolve: {
-			factory: redirectAfterLogin
+			factory: login_onSuccessRedirect
 		}
 	})
-	.when('/notifications', {
-		title: 'Notifications',
-		templateUrl : '../resources/pages/notifications.html',
-		controller  : 'grappboxController',
+	.when('/logout', {
+		caseInsensitiveMatch : true,
+		resolve: {
+			factory: logout_onSuccessRedirect
+		}
+	})
+	// Bugtracker-related pages
+	.when('/bugtracker', {
+		title: 'Bugtracker list',
+		templateUrl : '../resources/pages/bugtracker-list.html',
+		controller  : 'bugtrackerListController',
 		caseInsensitiveMatch : true
 	})
+	.when('/bugtracker/:id', {
+		title: 'Bugtracker',
+		templateUrl : '../resources/pages/bugtracker.html',
+		controller  : 'bugtrackerController',
+		caseInsensitiveMatch : true,
+		resolve: {
+			factory: bugtracker_isAccessible
+		}
+	})
+	// Cloud-related pages
 	.when('/cloud', {
-		title: 'Cloud',
+		title: 'Cloud list',
 		templateUrl : '../resources/pages/cloud-list.html',
 		controller  : 'cloudListController',
 		caseInsensitiveMatch : true
@@ -41,11 +59,58 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		controller  : 'cloudController',
 		caseInsensitiveMatch : true,
 		resolve: {
-			factory: isCloudAccessible
+			factory: cloud_isAccessible
 		}
 	})
+	// Notifications-related pages
+	.when('/notification', {
+		title: 'Notifications',
+		templateUrl : '../resources/pages/notification.html',
+		controller  : 'notificationController',
+		caseInsensitiveMatch : true
+	})
+	// User-related pages
+	.when('/profile', {
+		title: 'Profile',
+		templateUrl : '../resources/pages/profile.html',
+		controller  : 'profileController',
+		caseInsensitiveMatch : true
+	})
+	// Project-related pages
+	.when('/project', {
+		title: 'Project list',
+		templateUrl : '../resources/pages/project-list.html',
+		controller  : 'projectListController',
+		caseInsensitiveMatch : true
+	})
+	.when('/project/:id', {
+		title: 'Project',
+		templateUrl : '../resources/pages/project.html',
+		controller  : 'projectController',
+		caseInsensitiveMatch : true,
+		resolve: {
+			factory: project_isAccessible
+		}
+	})
+	// Timeline-related pages
+	.when('/timeline', {
+		title: 'Timeline list',
+		templateUrl : '../resources/pages/timeline-list.html',
+		controller  : 'timelineListController',
+		caseInsensitiveMatch : true
+	})
+	.when('/timeline/:id', {
+		title: 'Timeline',
+		templateUrl : '../resources/pages/timeline.html',
+		controller  : 'timelineController',
+		caseInsensitiveMatch : true,
+		resolve: {
+			factory: timeline_isAccessible
+		}
+	})
+	// Whiteboard-related pages
 	.when('/whiteboard', {
-		title: 'Whiteboard',
+		title: 'Whiteboard list',
 		templateUrl : '../resources/pages/whiteboard-list.html',
 		controller  : 'whiteboardListController',
 		caseInsensitiveMatch : true
@@ -56,27 +121,10 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		controller  : 'whiteboardController',
 		caseInsensitiveMatch : true,
 		resolve: {
-			factory: isWhiteboardAccessible
+			factory: whiteboard_isAccessible
 		}
 	})
-	.when('/profile', {
-		title: 'Profile',
-		templateUrl : '../resources/pages/profile.html',
-		controller  : 'grappboxController',
-		caseInsensitiveMatch : true
-	})
-	.when('/settings', {
-		title: 'Settings',
-		templateUrl : '../resources/pages/settings.html',
-		controller  : 'grappboxController',
-		caseInsensitiveMatch : true
-	})
-	.when('/logout', {
-		caseInsensitiveMatch : true,
-		resolve: {
-			factory: redirectAfterLogout
-		}
-	})
+	// Error page (default behavior)
 	.otherwise(
 	{
 		templateUrl : '../resources/pages/404.html'

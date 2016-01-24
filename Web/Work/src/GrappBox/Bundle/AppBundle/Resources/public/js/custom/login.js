@@ -11,7 +11,7 @@
 */
 
 // Redirect user after successful login
-var redirectAfterLogin = function($q, $location) {
+var login_onSuccessRedirect = function($q, $location) {
 	var deferred = $q.defer();
 	$location.path("/");
 	deferred.resolve(true);
@@ -19,10 +19,10 @@ var redirectAfterLogin = function($q, $location) {
 	return deferred.promise;
 };
 
-redirectAfterLogin['$inject'] = ['$q', '$location'];
+login_onSuccessRedirect['$inject'] = ['$q', '$location'];
 
 // Redirect user after successful logout
-var redirectAfterLogout = function($q, $http, $rootScope, $cookies, $window) {
+var logout_onSuccessRedirect = function($q, $http, $rootScope, $cookies, $window) {
 	var deferred = $q.defer();
 
 	$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN')).success(function(data) {
@@ -34,4 +34,4 @@ var redirectAfterLogout = function($q, $http, $rootScope, $cookies, $window) {
 	return deferred.promise;
 };
 
-redirectAfterLogout['$inject'] = ['$q', '$http', '$rootScope', '$cookies', '$window'];
+logout_onSuccessRedirect['$inject'] = ['$q', '$http', '$rootScope', '$cookies', '$window'];

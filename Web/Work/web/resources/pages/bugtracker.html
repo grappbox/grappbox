@@ -2,15 +2,15 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="notifications-view" ng-controller="notificationsController">
+<div class="view view-content" id="bugtracker-content-view" ng-controller="bugtrackerController">
 
     <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}">{[{ alert.message }]}</uib-alert>
 
-    <section class="app-section" id="notifications">
+    <section class="app-section" id="bugtracker-content">
         <div class="container app-container">
             <div class="row">
                 <div class="col-lg-12">
-                    <!-- grappbox.data : notifications -->
+                    <!-- grappbox.data : bugtracker content -->
                     <div class="section-heading app-section-heading"><h2></h2></div>
                     <div class="section-content app-section-content"></div>
                 </div>

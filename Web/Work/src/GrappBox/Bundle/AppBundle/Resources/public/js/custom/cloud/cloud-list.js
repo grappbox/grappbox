@@ -11,7 +11,7 @@
 */
 app.controller('cloudListController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', function($rootScope, $scope, $routeParams, $http, $cookies, Notification) {
   if ($routeParams.id)
-    Notification.warning({ message: 'Project #' + $routeParams.id + ' doesn\'t exist, or you might not have sufficient rights. Please try again.', delay: null });
+    Notification.warning({ message: 'Project #' + $routeParams.id + ' doesn\'t exist, or you don\'t have sufficient rights. Please try again.', delay: null });
 
   // Get all user's current projects (with information)
   $http.get($rootScope.apiBaseURL + '/user/getprojects/' + $cookies.get('USERTOKEN'))
@@ -32,7 +32,7 @@ app.controller('cloudListController', ['$rootScope', '$scope', '$routeParams', '
 * Check if requested Cloud is accessible
 *
 */
-var isCloudAccessible = function($rootScope, $http, $cookies, $route, $q, $location) {
+var cloud_isAccessible = function($rootScope, $http, $cookies, $route, $q, $location) {
   var deferred = $q.defer();
 
   $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
@@ -49,4 +49,4 @@ var isCloudAccessible = function($rootScope, $http, $cookies, $route, $q, $locat
     return deferred.promise;
 };
 
-isCloudAccessible['$inject'] = ['$rootScope', '$http', '$cookies', '$route', '$q', '$location'];
+cloud_isAccessible['$inject'] = ['$rootScope', '$http', '$cookies', '$route', '$q', '$location'];
