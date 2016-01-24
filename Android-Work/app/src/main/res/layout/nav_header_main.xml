@@ -20,4 +20,35 @@
         android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lay_current_project"
+        android:clickable="false">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/no_proj_selected_str"
+            android:id="@+id/txt_current_project"
+            android:layout_gravity="left|center_vertical"
+            android:layout_weight="100"
+            android:ellipsize="end"
+            android:enabled="true" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgbtn_current_project"
+            android:layout_weight="1"
+            android:src="@drawable/ic_arrow_down"
+            android:background="#00ffffff"
+            android:layout_marginBottom="10dp"
+            android:clickable="false"
+            android:contentDescription="Arrow descripted" />
+
+    </LinearLayout>
+
 </LinearLayout>

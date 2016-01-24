@@ -166,4 +166,26 @@
     <string name="cloud_file_import_notification">File importation in progress</string>
     <string name="cloudexplorer_import_pending_text">Prepare the system for uploading</string>
     <string name="cloudexplorer_import">We are importing your file, please wait</string>
+    <string name="no_proj_selected_str">No project selected</string>
+    <string name="str_project_settings">Manage project settings</string>
+    <string name="str_modif_project_settings">Modify project settings</string>
+    <string name="title_activity_project_settings">Project Settings</string>
+    <string name="str_project_settings_title">Project Settings</string>
+    <string name="str_project_settings_footer">" Settings"</string>
+    <string name="str_placeholder_project_name">Enter project name here...</string>
+    <string name="str_project_name">Project Name</string>
+    <string name="str_project_desc">Project description</string>
+    <string name="str_placeholder_project_desc">Enter your project description here...</string>
+    <string name="str_placeholder_project_phone">Enter the project contact phone here...</string>
+    <string name="str_project_phone">Project contact phone</string>
+    <string name="str_project_company_name">Enter the company name here...</string>
+    <string name="str_company_name">Company name</string>
+    <string name="str_placeholder_project_contact_mail">Enter the project\'s contact mail</string>
+    <string name="str_project_contact_mail">Contact E-Mail address</string>
+    <string name="str_placeholder_facebook_url">Enter the project\'s facebook page URL here...</string>
+    <string name="str_placeholder_twitter_url">Enter the project\'s twitter profile url here...</string>
+    <string name="str_project_facebook_url">Facebook page</string>
+    <string name="str_project_twitter_url">Twitter page</string>
+    <string name="str_project_logo">Change the project\'s logo</string>
+    <string name="str_project_basic_info">Basic informations</string>
 </resources>
