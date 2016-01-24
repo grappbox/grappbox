@@ -142,32 +142,32 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	*/
 	public function loginAction(Request $request)
 	{
-			$content = $request->getContent();
-			$content = json_decode($content);
-			$content = $content->data;
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-		  $em = $this->getDoctrine()->getManager();
-		  $user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->login));
-			if (!$user)
-				return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: login");
+		$em = $this->getDoctrine()->getManager();
+		$user = $em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->login));
+		if (!$user)
+			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: login");
 
-			if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
-				return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
+		if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
+			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
-			$secureUtils = $this->get('security.secure_random');
-			$tmpToken = $secureUtils->nextBytes(25);
-			$token = md5($tmpToken);
-			$user->setToken($token);
+		$secureUtils = $this->get('security.secure_random');
+		$tmpToken = $secureUtils->nextBytes(25);
+		$token = md5($tmpToken);
+		$user->setToken($token);
 
-			$now = new DateTime('now');
-			$user->setTokenValidity($now->add(new DateInterval("P1D")));
+		$now = new DateTime('now');
+		$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
-			$em->persist($user);
-      $em->flush();
+		$em->persist($user);
+		$em->flush();
 
-      $this->checkProjectsDeletedTime($user);
+		$this->checkProjectsDeletedTime($user);
 
-			return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
+		return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
 	}
 
 	private function checkProjectsDeletedTime($user)
@@ -275,7 +275,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em->persist($user);
 		$em->flush();
 
-		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", array("message" => "Successfully Logout"));
+		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
  	}
 
 	/**
@@ -391,36 +391,36 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			return $this->setBadRequest("14.3.7", "AccountAdministration", "register", "Already in Database");
 
 		$user = new User();
-    $user->setFirstname($content->firstname);
-    $user->setLastname($content->lastname);
+		$user->setFirstname($content->firstname);
+		$user->setLastname($content->lastname);
 		$user->setEmail($content->email);
 
 		$encoder = $this->container->get('security.password_encoder');
-    $encoded = $encoder->encodePassword($user, $content->password);
-    $user->setPassword($encoded);
+		$encoded = $encoder->encodePassword($user, $content->password);
+		$user->setPassword($encoded);
 
 		if (array_key_exists('avatar', $content))
 			$user->setAvatar(date_create($content->avatar));
 		if (array_key_exists('birthday', $content))
 			$user->setBirthday(date_create($content->birthday));
 		if (array_key_exists('phone', $content))
-    	$user->setPhone($content->phone);
+			$user->setPhone($content->phone);
 		if (array_key_exists('country', $content))
-      $user->setCountry($content->country);
+			$user->setCountry($content->country);
 		if (array_key_exists('linkedin', $content))
-      $user->setLinkedin($content->linkedin);
+			$user->setLinkedin($content->linkedin);
 		if (array_key_exists('viadeo', $content))
-      $user->setViadeo($content->viadeo);
+			$user->setViadeo($content->viadeo);
 		if (array_key_exists('twitter', $content))
-      $user->setTwitter($content->twitter);
+			$user->setTwitter($content->twitter);
 
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
 		$token = md5($tmpToken);
 		$user->setToken($token);
 
-    $em->persist($user);
-    $em->flush();
+		$em->persist($user);
+		$em->flush();
 
 		return $this->setCreated("1.14.1", "AccountAdministration", "register", "Complete Success", $user->objectToArray());
 	}
