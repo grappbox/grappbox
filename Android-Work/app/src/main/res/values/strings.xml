@@ -188,4 +188,10 @@
     <string name="str_project_twitter_url">Twitter page</string>
     <string name="str_project_logo">Change the project\'s logo</string>
     <string name="str_project_basic_info">Basic informations</string>
+    <string name="str_project_safe_password">Change your project\'s safe password</string>
+    <string name="str_password_confirm_label">Confirm password:</string>
+    <string name="str_new_password_label">New password:</string>
+    <string name="str_retreive_explaination">You can retreive the project during 7 days after deletion</string>
+    <string name="str_project_delete">Delete the project</string>
+    <string name="str_retreive_project">Retreive the project</string>
 </resources>

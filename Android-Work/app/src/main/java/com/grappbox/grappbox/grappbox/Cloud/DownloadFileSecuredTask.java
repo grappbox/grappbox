@@ -15,11 +15,13 @@ import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by wieser_m on 20/01/2016.
@@ -65,7 +67,13 @@ public class DownloadFileSecuredTask extends AsyncTask<String, Void, String> {
         String password = params[1];
         String filename = params[3];
         cloudPath = cloudPath.replace("/", ",").replace(" ", "|");
-
+        try {
+            cloudPath = URLEncoder.encode(cloudPath, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (cloudPath.startsWith(",,"))
+            cloudPath = cloudPath.substring(1);
         try {
             URL url = new URL("http://api.grappbox.com/app_dev.php/V0.2/cloud/filesecured/" + cloudPath + "/" + token + "/" + projectId + "/" + password + (safePassword.equals("") ? "" : "/" + safePassword));
             Log.e("URL", url.toString());

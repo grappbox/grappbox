@@ -113,9 +113,7 @@ public class UserProjectTask extends AsyncTask<String, Void, String> {
                 JSONObject obj = array.getJSONObject(i);
                 receivedData.add(new ProjectModel(obj));
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
         if (_context instanceof MainActivity)

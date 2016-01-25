@@ -11,9 +11,11 @@ import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by wieser_m on 20/01/2016.
@@ -42,6 +44,13 @@ public class DownloadFileTask extends AsyncTask<String, Void, String> {
         String filename = params[2];
         _api = APIConnectAdapter.getInstance(true);
         cloudPath = cloudPath.replace("/", ",").replace(" ", "|");
+        if (cloudPath.startsWith(",,"))
+            cloudPath = cloudPath.substring(1);
+        try {
+            cloudPath = URLEncoder.encode(cloudPath, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         try {
             URL url = new URL("http://api.grappbox.com/app_dev.php/V0.2/cloud/file/" + cloudPath + "/" + token + "/" + projectId + (safePassword.equals("") ? "" : "/" + safePassword));
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

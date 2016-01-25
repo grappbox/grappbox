@@ -60,5 +60,18 @@
             android:title="@string/str_project_logo"
             android:icon="@mipmap/icon_launcher"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="Danger Zone">
+        <com.grappbox.grappbox.grappbox.Model.SafePasswordPreference
+            android:key="project_safe_password"
+            android:title="@string/str_project_safe_password"
+            android:dialogTitle="@string/str_project_safe_password"
+            android:positiveButtonText="@string/positive_response"
+            android:negativeButtonText="@string/negative_response"
+            android:dialogLayout="@layout/layout_set_password"/>
+        <Preference
+            android:key="project_delete"
+            android:title="@string/str_project_delete"
+            android:summary="@string/str_retreive_explaination" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

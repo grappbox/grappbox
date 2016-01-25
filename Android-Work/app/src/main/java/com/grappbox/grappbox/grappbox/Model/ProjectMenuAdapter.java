@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.grappbox.Model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
@@ -42,18 +43,24 @@ public class ProjectMenuAdapter extends ArrayAdapter<ProjectModel> {
 
         if (file != null) {
             TextView name = (TextView) v.findViewById(R.id.txt_name);
-            ImageView img = (ImageView) v.findViewById(R.id.img_project_logo);
+            //ImageView img = (ImageView) v.findViewById(R.id.img_project_logo);
 
             if (name != null) {
                 name.setText(file.getName());
             }
-            if (img != null)
+            /*if (img != null)
             {
-                if (file.getLogo() != null)
-                    img.setImageDrawable(new BitmapDrawable(v.getResources(), file.getLogo()));
+                Bitmap projLogo = file.getLogo(getContext().getApplicationContext());
+                Drawable defaultLogo = ResourcesCompat.getDrawable(getContext().getResources(), R.mipmap.icon_launcher, getContext().getTheme());
+                if (projLogo != null) {
+                    Drawable proj = new BitmapDrawable(v.getResources(), projLogo);
+                    assert defaultLogo != null;
+                    proj.setBounds(defaultLogo.getBounds());
+                    img.setImageDrawable(proj);
+                }
                 else
-                    img.setImageDrawable(ResourcesCompat.getDrawable(getContext().getResources(), R.mipmap.icon_launcher, getContext().getTheme()));
-            }
+                    img.setImageDrawable(defaultLogo);
+            }*/
         }
 
         return v;

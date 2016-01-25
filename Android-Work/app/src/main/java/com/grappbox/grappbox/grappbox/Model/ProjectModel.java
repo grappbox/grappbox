@@ -1,9 +1,11 @@
 package com.grappbox.grappbox.grappbox.Model;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -26,7 +28,7 @@ public class ProjectModel implements Serializable {
     private String contact_mail;
     private String facebookURL;
     private String twitterURL;
-
+    private String deletedAt;
 
     public ProjectModel()
     {
@@ -45,6 +47,8 @@ public class ProjectModel implements Serializable {
         contact_mail = data.getString("contact_mail");
         facebookURL = data.getString("facebook");
         twitterURL = data.getString("twitter");
+        JSONObject date = data.isNull("delete_at") ? null : data.getJSONObject("deleted_at");
+        deletedAt = date == null ? null : date.getString("date");
     }
 
     public boolean isValid()
@@ -55,6 +59,8 @@ public class ProjectModel implements Serializable {
     public int getId() {
         return id;
     }
+
+    public boolean isDeleted() { return deletedAt != null; }
 
     public String getName() {
         return name;
@@ -72,7 +78,13 @@ public class ProjectModel implements Serializable {
         return company;
     }
 
-    public Bitmap getLogo() {
+    public Bitmap getLogo(Context context) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        opt.inScreenDensity = metrics.densityDpi;
+        opt.inTargetDensity =  metrics.densityDpi;
+        opt.inDensity = DisplayMetrics.DENSITY_DEFAULT;
         return BitmapFactory.decodeByteArray(logo, 0, logo.length, new BitmapFactory.Options());
     }
 

@@ -157,7 +157,7 @@ public class CloudExplorerFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK)
             return;
-        Log.e("WATCH ME", "ACTIVITY RESULT : " + String.valueOf(requestCode));
+
         switch (requestCode)
         {
             case MainActivity.PICK_DOCUMENT_FROM_SYSTEM:
