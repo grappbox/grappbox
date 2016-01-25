@@ -37,9 +37,11 @@
     #page-content-wrapper { padding: 0 20px; position: relative; }
 }
 
+input[type='file'] { cursor: pointer!important; }
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
 .clearfix { background: #fff; }
 .lead-help { padding: 20px; border: 1px solid #e0e0e0; }
+.ui-notification > .message { overflow: hidden!important; text-overflow: ellipsis; }
 .ui-notification.info { background: #29B6F6; color: #fafafa; }
 
 
@@ -177,28 +179,32 @@ section { margin: 0 0 60px 0; }
 
 #cloud-content-view .center { margin-top: 4px; }
 #cloud-content-view .app-section-content { margin: 0 15px; border: 1px solid #e0e0e0; }
-#cloud-content-view .app-section-content.loading { cursor: progress; }
 #cloud-content-view .app-data-actions,
 #cloud-content-view .app-data-labels { padding: 10px; margin: 0; }
 #cloud-content-view .app-data-labels { background: #e0e0e0; }
 #cloud-content-view .app-data-actions { background: #616161; }
 #cloud-content-view .app-data-actions a:active,
 #cloud-content-view .app-data-actions a:focus,
-#cloud-content-view .app-data-actions a:hover { color: #4FC3F7; }
+#cloud-content-view .app-data-actions a:hover,
+#cloud-content-view #cloud_uploadObjectWrapper:active,
+#cloud-content-view #cloud_uploadObjectWrapper:focus,
+#cloud-content-view #cloud_uploadObjectWrapper:hover { color: #4FC3F7; }
 #cloud-content-view .app-data-actions a.disabled { cursor: not-allowed; }
 #cloud-content-view .app-data-actions a.disabled:active,
 #cloud-content-view .app-data-actions a.disabled:focus,
 #cloud-content-view .app-data-actions a.disabled:hover { color: #e0e0e0; }
 
 #cloud-content-view .app-data-actions a,
+#cloud-content-view #cloud_uploadObjectWrapper,
 #cloud-content-view #cloud_newObjectWrapper { color: #e0e0e0; }
 #cloud-content-view #cloud_newObjectWrapper { margin-top: 1px; }
-#cloud-content-view #cloud_newObjectWrapper input { margin-left: 5px; color: #212121; }
-#cloud-content-view #cloud_newObjectWrapper a { padding: 5px 10px; border: 1px solid #e0e0e0; }
+#cloud-content-view #cloud_newObjectWrapper input { margin-left: 10px; padding: 2px 5px; border: 1px solid #e0e0e0; color: #212121; }
+#cloud-content-view #cloud_uploadObjectWrapper input { display: inline; position: absolute; left: 0; opacity: 0; }
+#cloud-content-view #cloud_newObjectWrapper a { padding: 2px 10px; border: 1px solid #e0e0e0; margin-left: -5px; }
 #cloud-content-view #cloud_newObjectWrapper a:active,
 #cloud-content-view #cloud_newObjectWrapper a:focus,
 #cloud-content-view #cloud_newObjectWrapper a:hover { background: #fafafa; color: #29B6F6; }
-
+#cloud-content-view #cloud_uploadObjectWrapper,
 #cloud-content-view .app-data-list { cursor: pointer; }
 #cloud-content-view .app-data-list#selected { background: #29B6F6; color: #fafafa; }
 #cloud-content-view .app-data-list:active,

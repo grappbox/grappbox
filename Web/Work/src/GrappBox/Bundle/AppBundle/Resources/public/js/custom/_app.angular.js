@@ -9,7 +9,7 @@
 * APP and main controller definition
 *
 */
-var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'panhandler', 'ui-notification']);
+var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'panhandler', 'ui-notification', 'naif.base64']);
 
 // TWIG template conflict fix
 app.config(['$interpolateProvider', function($interpolateProvider) {

@@ -22,11 +22,11 @@ h3 { font-size: 40px; margin: 20px 0; }
 footer { background-color: #212121; }
 section { box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
 
-::selection { color: #fafafa; background-color: #edae9b; }
+::selection { color: #fafafa; background-color: #e05e52; }
 img.img-round-radius { border-radius: 50%; }
 img.img-reduced { max-width: 85%; margin: auto; }
 .list-inline > li { padding-right: 0; }
-.red { color: #d32f2f; }
+.red { color: #e05e52; }
 .text-center { text-align: center!important; }
 
 
