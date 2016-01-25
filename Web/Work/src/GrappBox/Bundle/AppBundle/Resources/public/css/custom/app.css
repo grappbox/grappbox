@@ -4,7 +4,7 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/* ==================== Angular preloader ==================== */
+/* ==================== ANGULAR PRELOADER ==================== */
 
 [ng\:cloak],
 [ng-cloak],
@@ -14,9 +14,9 @@
 .x-ng-cloak { display: none!important; }
 
 
-/* ==================== General layout ==================== */
 
-html { background: #fafafa; }
+/* ==================== GENERAL LAYOUT ==================== */
+
 #app-wrapper { padding-left: 0; background: #fff; transition: all .3s ease; }
 
 #app-wrapper.toggled { padding-left: 250px; }
@@ -37,17 +37,16 @@ html { background: #fafafa; }
     #page-content-wrapper { padding: 0 20px; position: relative; }
 }
 
-.ui-notification.info { background: #26C6DA; }
+.alert { margin: 30px 15px 0 15px; border-radius: 0; }
+.clearfix { background: #fff; }
+.lead-help { padding: 20px; border: 1px solid #e0e0e0; }
+.ui-notification.info { background: #29B6F6; color: #fafafa; }
 
 
-/* ==================== General layout (navigation) ==================== */
+
+/* ==================== GENERAL LAYOUT (NAVIGATION) ==================== */
 
 #sidebar-wrapper { z-index: 1000; position: fixed; left: 250px; height: 100%; margin-left: -250px; overflow-y: auto; transition: all .3s ease; background: #fff; border-right: 1px solid #e0e0e0; overflow: hidden; }
-
-.sidebar-nav { position: absolute; top: 0; width: 250px; margin: 0; padding: 0; list-style: none; }
-.sidebar-nav li a { display: block; padding: 15px 25px; }
-
-.sidebar-nav li:nth-child(2) a { margin-top: 15px; }
 
 .sidebar-nav li a.active,
 .sidebar-nav li a:active,
@@ -56,47 +55,39 @@ html { background: #fafafa; }
 .sidebar-nav li a.active:active,
 .sidebar-nav li a.active:hover,
 .sidebar-nav li a.active:focus { font-weight: 700; }
-
-.sidebar-nav .sidebar-brand a { padding: 13px 25px; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-size: 28px; text-transform: uppercase; height: 60px; border-bottom: 1px solid #e0e0e0; color: #616161; }
+.sidebar-nav li a { display: block; padding: 15px 25px; }
+.sidebar-nav li:nth-child(2) a { margin-top: 15px; }
+.sidebar-nav { position: absolute; top: 0; width: 250px; margin: 0; padding: 0; list-style: none; }
 .sidebar-nav .sidebar-brand a:active,
 .sidebar-nav .sidebar-brand a:focus,
 .sidebar-nav .sidebar-brand a:hover { color: #e05e52; font-weight: 400; }
-
-.legal-nav .divider,
-.sidebar-nav .divider { height: 1px; background: #e0e0e0; }
+.sidebar-nav .sidebar-brand a { padding: 13px 25px; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-size: 28px; text-transform: uppercase; height: 60px; border-bottom: 1px solid #e0e0e0; color: #616161; }
 
 .legal-nav { position: absolute; bottom: 0; width: 100%; }
 .legal-nav .copyright { padding: 5px 20px 20px 20px; margin: 0; font-size: 12px; }
+.legal-nav .divider,
+.sidebar-nav .divider { height: 1px; background: #e0e0e0; }
 
 @media (min-width:768px) {
 	.sidebar-nav { z-index: 1; position: absolute; }
 }
 
 
-/* ==================== General layout (animations) ==================== */
 
-.alert { margin: 30px 15px 0 15px; border-radius: 0; }
-
-.btn-float { display: inline-block; vertical-align: middle; transform: translateZ(0); box-shadow: 0 0 1px rgba(0, 0, 0, 0); backface-visibility: hidden; transition-duration: .3s; transition-property: transform; transition-timing-function: ease-out; }
+/* ==================== GENERAL LAYOUT (ANIMATIONS) ==================== */
 
 .btn-float:active,
 .btn-float:focus,
 .btn-float:hover { transform: translateY(-8px); }
+.btn-float { display: inline-block; vertical-align: middle; transform: translateZ(0); box-shadow: 0 0 1px rgba(0, 0, 0, 0); backface-visibility: hidden; transition-duration: .3s; transition-property: transform; transition-timing-function: ease-out; }
 
 
-/* ==================== General layout (error and secondary pages) ==================== */
 
-#error-view .app-section-content .contact-us { font-weight: bold; text-decoration: underline; }
-
-
-/* ==================== General laytout (sections) ==================== */
+/* ==================== GENERAL LAYOUT (SECTIONS) ==================== */
 
 .app-section { margin: 0 0 50px 0; padding: 0; border: none; box-shadow: none; }
 .app-section .col-lg-12 { padding: 0; }
 .app-section .app-container { width: 100%; }
-
-.app-section .app-section-heading { margin: 0 15px; }
-.app-section .app-section-heading h2 { margin: 0; padding: 15px 0; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
 
 .app-section .app-section-heading .lead,
 .app-section .app-section-heading ul,
@@ -104,6 +95,8 @@ html { background: #fafafa; }
 .app-section .app-section-content ul,
 .app-section .app-section-content li,
 .app-section .app-section-content strong { font-size: 14px; line-height: initial; font-weight: 400; }
+.app-section .app-section-heading { margin: 0 15px; }
+.app-section .app-section-heading h2 { margin: 0; padding: 15px 0; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
 
 section:nth-of-type(1) { min-height: auto; margin: 15px 0; }
 section { margin: 0 0 60px 0; }
@@ -117,11 +110,6 @@ section { margin: 0 0 60px 0; }
 .app-data.error p { width: 100%; text-align: center; position: absolute; top: 65%; }
 .app-data.empty p i,
 .app-data.error p i { margin-right: 10px; }
-
-.lead-help { padding: 20px; border: 1px solid #e0e0e0; }
-
-
-/* ==================== Common laytout (sections) ==================== */
 
 #dashboard-view .app-section-content,
 #cloud-list-view .app-section-content,
@@ -148,109 +136,101 @@ section { margin: 0 0 60px 0; }
 #whiteboard-list-view .app-data:last-child > .app-data-list { margin: 20px 30px 20px 10px; }
 
 
-/* ==================== Section: dashboard ==================== */
 
-#dashboard-view .each-member-data .team-member-picture { padding: 15px 15px 10px 15px; background: #fff; }
-#dashboard-view .each-member-data .team-member-picture img { max-width: 120px; border: 5px solid; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-#dashboard-view .each-member-data .team-member-picture img.member-available { border-color: #9CCC65; }
-#dashboard-view .each-member-data .team-member-picture img.member-busy { border-color: #9e9e9e; }
-
-#dashboard-view .each-member-data .team-member-name { padding: 5px 0 10px 0; background: #fff; color: #212121; }
-#dashboard-view .each-member-data .team-member-status { padding: 10px 0; text-transform: capitalize; color: #fafafa; }
-#dashboard-view .each-member-data .team-member-status.member-available { cursor: pointer; background: #9CCC65; }
-#dashboard-view .each-member-data .team-member-status.member-busy { cursor: not-allowed; background: #9e9e9e; }
+/* ==================== SECTION: DASHBOARD ==================== */
 
 #dashboard-view .each-meeting-data { width: 350px; }
-#dashboard-view .each-meeting-data .meeting-title { padding: 15px 0; border-bottom: 1px solid #fafafa; background-color: #e05e52; }
-#dashboard-view .each-meeting-data .meeting-type { padding: 30px 0 10px 0; background-color: #fff; color: #212121; }
-#dashboard-view .each-meeting-data .meeting-schedule { padding: 0 0 40px 0; background-color: #fff; color: #212121; }
-
 #dashboard-view .each-progress-data { width: 350px; background: #bdbdbd; }
-#dashboard-view .each-progress-data .clearfix { background: #fff; }
-#dashboard-view .each-progress-data .project-picture { float: left; padding: 10px; }
-#dashboard-view .each-progress-data .project-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-#dashboard-view .each-progress-data .project-details { float: left; min-width: 50%; padding: 15px 0 0 10px; text-align: left; color: #212121; }
-#dashboard-view .each-progress-data .project-details .project-name { font-weight: 700; }
-#dashboard-view .each-progress-data .client-details { float: left; min-width: 50%; padding: 10px 0 0 10px; text-align: left; color: #212121; }
-#dashboard-view .each-progress-data .progress-details { padding: 15px 0; background: #e05e52; }
-#dashboard-view .each-progress-data .progress-details div { display: inline-block; padding: 0 40px 0 0; }
-#dashboard-view .each-progress-data .progress-details div:last-child { display: inline-block; padding: 0; }
+
+#dashboard-view .team-member-picture { padding: 15px 15px 10px 15px; background: #fff; }
+#dashboard-view .team-member-picture img { max-width: 120px; border: 5px solid; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
+#dashboard-view .team-member-picture img.member-available { border-color: #9CCC65; }
+#dashboard-view .team-member-picture img.member-busy { border-color: #9e9e9e; }
+#dashboard-view .team-member-name { padding: 5px 0 10px 0; background: #fff; color: #212121; }
+#dashboard-view .team-member-status { padding: 10px 0; text-transform: capitalize; color: #fafafa; }
+#dashboard-view .team-member-status.member-available { cursor: pointer; background: #9CCC65; }
+#dashboard-view .team-member-status.member-busy { cursor: not-allowed; background: #9e9e9e; }
+#dashboard-view .meeting-title { padding: 15px 0; border-bottom: 1px solid #fafafa; background-color: #e05e52; }
+#dashboard-view .meeting-type { padding: 30px 0 10px 0; background-color: #fff; color: #212121; }
+#dashboard-view .meeting-schedule { padding: 0 0 40px 0; background-color: #fff; color: #212121; }
+#dashboard-view .project-picture { float: left; padding: 10px; }
+#dashboard-view .project-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
+#dashboard-view .project-details { float: left; min-width: 50%; padding: 15px 0 0 10px; text-align: left; color: #212121; }
+#dashboard-view .project-details .project-name { font-weight: 700; }
+#dashboard-view .client-details { float: left; min-width: 50%; padding: 10px 0 0 10px; text-align: left; color: #212121; }
+#dashboard-view .progress-details { padding: 15px 0; background: #e05e52; }
+#dashboard-view .progress-details div { display: inline-block; padding: 0 40px 0 0; }
+#dashboard-view .progress-details div:last-child { display: inline-block; padding: 0; }
 
 
-/* ==================== Section: Cloud (list and help) ==================== */
+
+/* ==================== SECTION: CLOUD ==================== */
 
 #cloud-list-view .each-project-data { width: 350px; }
-#cloud-list-view .each-project-data .clearfix { background: #fff; }
-#cloud-list-view .each-project-data .project-picture { float: left; padding: 10px; }
-#cloud-list-view .each-project-data .project-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
-#cloud-list-view .each-project-data .project-details { float: left; min-width: 50%; padding: 15px 0 0 10px; text-align: left; color: #212121; }
-#cloud-list-view .each-project-data .project-details .project-name { color: #212121; font-weight: 700; }
-#cloud-list-view .each-project-data .client-details { float: left; min-width: 50%; padding: 10px 0 0 10px; text-align: left; color: #212121; }
+#cloud-list-view .project-picture { float: left; padding: 10px; }
+#cloud-list-view .project-picture img { max-width: 120px; border-radius: 50%; box-shadow: 0 2px 2px rgba(33, 33, 33, .35); }
+#cloud-list-view .project-details { float: left; min-width: 50%; padding: 15px 0 0 10px; text-align: left; color: #212121; }
+#cloud-list-view .project-details .project-name { color: #212121; font-weight: 700; }
+#cloud-list-view .client-details { float: left; min-width: 50%; padding: 10px 0 0 10px; text-align: left; color: #212121; }
+#cloud-list-view .project-cloud-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
+#cloud-list-view .project-cloud-link a { border-top: 1px solid #fafafa; background-color: #616161; }
 
-#cloud-list-view .each-project-data .project-cloud-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
-#cloud-list-view .each-project-data .project-cloud-link a { border-top: 1px solid #fafafa; background-color: #26A69A; }
-
-
-/* ==================== Section: Cloud (content) ==================== */
-
+#cloud-content-view .center { margin-top: 4px; }
 #cloud-content-view .app-section-content { margin: 0 15px; border: 1px solid #e0e0e0; }
 #cloud-content-view .app-section-content.loading { cursor: progress; }
-
 #cloud-content-view .app-data-actions,
 #cloud-content-view .app-data-labels { padding: 10px; margin: 0; }
-
-#cloud-content-view .app-data-actions a { color: #e0e0e0; }
+#cloud-content-view .app-data-labels { background: #e0e0e0; }
+#cloud-content-view .app-data-actions { background: #616161; }
 #cloud-content-view .app-data-actions a:active,
 #cloud-content-view .app-data-actions a:focus,
-#cloud-content-view .app-data-actions a:hover { color: #fff; }
-
+#cloud-content-view .app-data-actions a:hover { color: #4FC3F7; }
 #cloud-content-view .app-data-actions a.disabled { cursor: not-allowed; }
 #cloud-content-view .app-data-actions a.disabled:active,
 #cloud-content-view .app-data-actions a.disabled:focus,
 #cloud-content-view .app-data-actions a.disabled:hover { color: #e0e0e0; }
 
-#cloud-content-view .app-data-actions { background: #26A69A; }
-#cloud-content-view .app-data-labels { background: #e0e0e0; }
+#cloud-content-view .app-data-actions a,
+#cloud-content-view #cloud_newObjectWrapper { color: #e0e0e0; }
+#cloud-content-view #cloud_newObjectWrapper { margin-top: 1px; }
+#cloud-content-view #cloud_newObjectWrapper input { margin-left: 5px; color: #212121; }
+#cloud-content-view #cloud_newObjectWrapper a { padding: 5px 10px; border: 1px solid #e0e0e0; }
+#cloud-content-view #cloud_newObjectWrapper a:active,
+#cloud-content-view #cloud_newObjectWrapper a:focus,
+#cloud-content-view #cloud_newObjectWrapper a:hover { background: #fafafa; color: #29B6F6; }
 
-#cloud-content-view .app-data .app-data-list { cursor: pointer; }
-#cloud-content-view .app-data .app-data-list#selected { background: #E0F2F1; }
-
-#cloud-content-view .app-data .app-data-list:active,
-#cloud-content-view .app-data .app-data-list:focus,
-#cloud-content-view .app-data .app-data-list:hover { background: #B2DFDB; }
-
-#cloud-content-view .app-data .app-data-list i { margin: 0 10px 0 -10px; }
+#cloud-content-view .app-data-list { cursor: pointer; }
+#cloud-content-view .app-data-list#selected { background: #29B6F6; color: #fafafa; }
+#cloud-content-view .app-data-list:active,
+#cloud-content-view .app-data-list:focus,
+#cloud-content-view .app-data-list:hover { background: #4FC3F7; }
+#cloud-content-view .app-data-list i { margin: 0 10px 0 -10px; }
 
 #cloud-content-view .each-object-data { border-top: 1px solid #e0e0e0; padding: 5px 10px; background: #fff; margin: 0; }
 #cloud-content-view .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
 #cloud-content-view .each-object-data .object-type { margin: 0 -10px 0 10px; }
 
 
-/* ==================== Section: whiteboard (list) ==================== */
+
+/* ==================== SECTION: WHITEBOARD ==================== */
+
+#whiteboard-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
+#whiteboard-data { transition: .2s ease all; transition-delay: .2s; }
 
 #whiteboard-list-view .each-available-whiteboard { min-width: 17vw; background: #bdbdbd; }
-#whiteboard-list-view .each-available-whiteboard .whiteboard-id { padding: 15px 15px 5px 15px; }
-#whiteboard-list-view .each-available-whiteboard .whiteboard-project-name { padding: 5px 15px 5px 15px; }
-#whiteboard-list-view .each-available-whiteboard .whiteboard-information { padding: 5px 25px 15px 25px; }
-
-#whiteboard-list-view .each-available-whiteboard .whiteboard-name,
-#whiteboard-list-view .each-available-whiteboard .whiteboard-link { padding: 0; }
-
-#whiteboard-list-view .each-available-whiteboard .whiteboard-name a,
-#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
-#whiteboard-list-view .each-available-whiteboard .whiteboard-name a { border-bottom: 1px solid #fafafa; background-color: #26A69A; }
-#whiteboard-list-view .each-available-whiteboard .whiteboard-link a { border-top: 1px solid #fafafa; background-color: #9CCC65; }
-
+#whiteboard-list-view .whiteboard-id { padding: 15px 15px 5px 15px; }
+#whiteboard-list-view .whiteboard-project-name { padding: 5px 15px 5px 15px; }
+#whiteboard-list-view .whiteboard-information { padding: 5px 25px 15px 25px; }
+#whiteboard-list-view .whiteboard-name,
+#whiteboard-list-view .whiteboard-link { padding: 0; }
+#whiteboard-list-view .whiteboard-name a,
+#whiteboard-list-view .whiteboard-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
+#whiteboard-list-view .whiteboard-name a { border-bottom: 1px solid #fafafa; background-color: #26A69A; }
+#whiteboard-list-view .whiteboard-link a { border-top: 1px solid #fafafa; background-color: #9CCC65; }
 #whiteboard-list-view .app-actions { display: block; }
 #whiteboard-list-view .app-actions .whiteboard-action-link { width: 20%; margin: 0 auto; }
 #whiteboard-list-view .app-actions .whiteboard-action-link a { font-size: 18px; display: block; padding: 20px; text-align: center; color: #fafafa; background: #26A69A; }
 #whiteboard-list-view .app-actions .whiteboard-action-link a i { margin: 0 10px 0 -10px; }
-
-
-/* ==================== Section: whiteboard (draw) ==================== */
-
-#whiteboard-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
-#whiteboard-data { transition: .2s ease all; transition-delay: .2s; }
 
 #app-wrapper.hide-menu #page-wrapper { margin: 0; }
 #app-wrapper.hide-menu #menu-wrapper { transform: translateX(-250px) !important; transform: translate3d(-250px, 0, 0) !important; }
@@ -260,21 +240,13 @@ section { margin: 0 0 60px 0; }
 
 #whiteboard-content-view #whiteboard { margin: 0 0 30px 0; }
 #whiteboard-content-view .app-section-content { position: relative; }
-
-#whiteboard-content-view .app-actions { position: absolute; width: 100%; bottom: 0; border: 1px solid #e0e0e0; background: #fff; }
-#whiteboard-content-view .app-actions .app-actions-list { display: inline-block; margin: 0; padding: 20px; border-left: 1px solid #e0e0e0 }
-#whiteboard-content-view .app-actions .app-actions-list:first-child { border: none; }
-
-#whiteboard-content-view .app-actions .app-actions-list .left-offset { margin-left: 5px; }
-#whiteboard-content-view .app-actions .app-actions-list .right-offset { margin-right: 5px; }
-
-#whiteboard-content-view .app-actions .app-actions-list input,
-#whiteboard-content-view .app-actions .app-actions-list label,
-#whiteboard-content-view .app-actions .app-actions-list select { font-size: 18px; }
-
-#whiteboard-content-view .app-actions .app-actions-list label { font-weight: 400; cursor: pointer; }
-#whiteboard-content-view .app-actions .app-actions-list li { display: inline; }
-#whiteboard-content-view .app-actions .app-actions-list ul { padding: 0; margin: 0; }
-
 #whiteboard-content-view .app-data { overflow: scroll; max-height: 75vh; border: 1px solid #e0e0e0; transition: .2s ease all; transition-delay: .2s; }
 #whiteboard-content-view .app-data canvas { background: #fafafa; cursor: crosshair; }
+#whiteboard-content-view .app-actions { position: absolute; width: 100%; bottom: 0; border: 1px solid #e0e0e0; background: #fff; }
+#whiteboard-content-view .app-actions-list { display: inline-block; margin: 0; padding: 20px; border-left: 1px solid #e0e0e0 }
+#whiteboard-content-view .app-actions-list:first-child { border: none; }
+#whiteboard-content-view .app-actions-list .left-offset { margin-left: 5px; }
+#whiteboard-content-view .app-actions-list .right-offset { margin-right: 5px; }
+#whiteboard-content-view .app-actions-list label { font-weight: 400; cursor: pointer; }
+#whiteboard-content-view .app-actions-list li { display: inline; }
+#whiteboard-content-view .app-actions-list ul { padding: 0; margin: 0; }

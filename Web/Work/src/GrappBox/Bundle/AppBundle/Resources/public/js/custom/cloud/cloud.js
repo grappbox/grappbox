@@ -10,48 +10,66 @@
 *
 */
 app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', '$window', 'Notification', function($rootScope, $scope, $routeParams, $http, $cookies, $window, Notification) {
-  $scope.currentProjectID = $routeParams.id;
 
+  // Scope variables initialization
+  $scope.projectID = $routeParams.id;
   $scope.button = { previous: false, delete: false, }
   $scope.path = { current: ',', old: '', new: '' };
   $scope.selected = { element: '', filename: '', isSecured: '' };
+  $scope.newObject = { name: '', isSecured: '' };
 
-  // Cloud default root path
+  // HTTP callback routines definition
+  var cloudObjects_setOnSuccess = function(response) {
+    $scope.cloudObjects = (response.data && response.data.data ? (Object.keys(response.data.data).length ? response.data.data.array : null) : null);
+    $scope.cloudObjects_isValid = true;
+  }
+  var cloudObjects_setOnError = function() {
+    $scope.cloudObjects = null;
+    $scope.cloudObjects_isValid = false;
+  }
+
+  // Scope array 'selectedObject' routine definition
+  var selectedObject_reset = function() {
+    $scope.selected.element = '';
+    $scope.selected.filename = '';
+    $scope.selected.isSecured = '';
+  }
+
+  // START
+  // Cloud root folder content get
   $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id + '/' + $scope.path.current)
     .then(function successCallback(response) {
-      $scope.cloudObjects = (response.data && response.data.data ? (Object.keys(response.data.data).length ? response.data.data.array : null) : null);
-      $scope.cloudObjects_isValid = true;
+      cloudObjects_setOnSuccess(response);
     },
     function errorCallback(response) {
-      $scope.cloudObjects = null;
-      $scope.cloudObjects_isValid = false;
+      cloudObjects_setOnError();
     });
 
     // Single clic handler (file/folder)
     $scope.cloud_selectObject = function($event, object) {
       angular.element(document.querySelector('#selected')).removeAttr('id');
       if ($scope.selected.element === $event.currentTarget) {
-        $scope.selected.element = '';
-        $scope.selected.filename = '';
-        $scope.selected.isSecured = '';
         $scope.button.delete = false;
+        selectedObject_reset();
       }
       else {
+        $scope.button.delete = true;
         angular.element($event.currentTarget).attr('id', 'selected');
         $scope.selected.element = $event.currentTarget;
         $scope.selected.filename = angular.element(document.querySelector('#selected')).attr('data-id');
         $scope.selected.isSecured = angular.element(document.querySelector('#selected')).attr('data-secured');
-        $scope.button.delete = true;
       }
     };
 
     // Double clic handler (file/folder)
     $scope.cloud_accessObject = function(object) {
+      var local_objectURL = $rootScope.apiBaseURL + '/cloud/file/' + $scope.path.current + object.filename + '/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id;
+
       Notification.info({ message: 'Loading...', delay: 2000 });
       if (object.type === 'file') {
-        $http.get($rootScope.apiBaseURL + '/cloud/file/' + $scope.path.current + object.filename + '/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id)
+        $http.get(local_objectURL)
           .then(function successCallback(response) {
-            $window.open($rootScope.apiBaseURL + '/cloud/file/' + $scope.path.current + object.filename + '/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id);
+            $window.open(local_objectURL);
             Notification.success({ message: 'Downloaded: ' + object.filename, delay: 10000 });
         },
         function errorCallback(response) {
@@ -62,11 +80,9 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
         $scope.path.new = $scope.path.current + ($scope.path.current === ',' ? '' : '/') + object.filename;
         $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id + '/' + $scope.path.new)
           .then(function successCallback(response) {
-            $scope.cloudObjects = (response.data && response.data.data ? (Object.keys(response.data.data).length ? response.data.data.array : null) : null);
-            $scope.cloudObjects_isValid = true;
+            cloudObjects_setOnSuccess(response);
             $scope.path.old = $scope.path.current;
             $scope.path.current = $scope.path.new + '/';
-
             $scope.button.previous = true;
           },
           function errorCallback(response) {
@@ -81,11 +97,9 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
         Notification.info({ message: 'Loading...', delay: 2000 });
         $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id + '/' + $scope.path.old)
           .then(function successCallback(response) {
-            $scope.cloudObjects = (response.data && response.data.data ? (Object.keys(response.data.data).length ? response.data.data.array : null) : null);
-            $scope.cloudObjects_isValid = true;
+            cloudObjects_setOnSuccess(response);
             $scope.path.new = $scope.path.current;
             $scope.path.current = $scope.path.old;
-
             $scope.button.previous = false;
           },
           function errorCallback(response) {
@@ -98,24 +112,20 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
     $scope.cloud_deleteObject = function(object) {
       if ($scope.selected.filename) {
         if ($scope.selected.filename === "Safe")
-          Notification.info({ message: 'You can\'t delete the \'Safe\' folder.', delay: 10000 });          
+          Notification.info({ message: 'You cannot delete the \'Safe\' folder.', delay: 10000 });          
         else {
           Notification.info({ message: 'Loading...', delay: 2000 });
           $http.delete($rootScope.apiBaseURL + '/cloud/file/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id + '/' + $scope.path.current + $scope.selected.filename)
             .then(function successCallback(response) {
               $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id + '/' + $scope.path.current)
                 .then(function successCallback(response) {
-                  $scope.cloudObjects = (response.data && response.data.data ? (Object.keys(response.data.data).length ? response.data.data.array : null) : null);
-                  $scope.cloudObjects_isValid = true;
+                  cloudObjects_setOnSuccess(response);
                   Notification.success({ message: 'Deleted: ' + $scope.selected.filename, delay: 10000 });
-                  $scope.selected.element = '';
-                  $scope.selected.filename = '';
-                  $scope.selected.isSecured = '';
                   $scope.button.delete = false;
+                  selectedObject_reset();
                 },
                 function errorCallback(response) {
-                  $scope.cloudObjects = null;
-                  $scope.cloudObjects_isValid = false;
+                  cloudObjects_setOnError();
                 });
             },
             function errorCallback(response) {
@@ -123,6 +133,39 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
             });
         }
       }
+    }
+
+    // 'Add folder' button handler
+    $scope.cloud_addNewObject = function(object) {
+      $scope.newObject.name = angular.element(document.querySelector('#cloud_newObjectInput')).val();
+      if ($scope.newObject.name) {
+        Notification.info({ message: 'Loading...' + $scope.newObject.name, delay: 2000 });
+        $http.post($rootScope.apiBaseURL + '/cloud/createdir', {
+          data: {
+            token: $cookies.get('USERTOKEN'),
+            project_id: $routeParams.id,
+            path: $scope.path.current,
+            dir_name: $scope.newObject.name
+          }})
+          .then(function successCallback(response) {
+            $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $routeParams.id + '/' + $scope.path.current)
+              .then(function successCallback(response) {
+                cloudObjects_setOnSuccess(response);
+                Notification.success({ message: 'Created: ' + $scope.newObject.name, delay: 10000 });
+                $scope.newObject.name = '';
+                $scope.newObject.isSecured = '';
+                angular.element(document.querySelector('#cloud_newObjectInput')).text();
+              },
+              function errorCallback(response) {
+                cloudObjects_setOnError();
+              });
+          },
+          function errorCallback(response) {
+            Notification.warning({ message: 'Unable to create ' + $scope.newObject.name + '. Please try again.', delay: 10000 });
+          });
+      }
+      else
+        Notification.warning({ message: 'You must provide a valid folder name. Please try again.', delay: 10000 });
     }
 
 }]);
