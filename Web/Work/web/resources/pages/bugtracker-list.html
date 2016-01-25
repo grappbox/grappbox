@@ -4,15 +4,34 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div class="view view-content" id="bugtracker-list-view" ng-controller="bugtrackerListController">
 
-    <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}">{[{ alert.message }]}</uib-alert>
+    <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}" close="closeAlert($index)">{[{ alert.message }]}</uib-alert>
 
     <section class="app-section" id="bugtracker-list">
         <div class="container app-container">
             <div class="row">
                 <div class="col-lg-12">
                     <!-- grappbox.data : bugtracker list -->
-                    <div class="section-heading app-section-heading"><h2></h2></div>
-                    <div class="section-content app-section-content"></div>
+                    <div class="section-heading app-section-heading">
+                      <h2>Bug ticket list</h2>
+                    </div>
+                    <div class="section-content app-section-content">
+                      <div id="all-butrackers-data" panhandler>
+                          <div class="app-data" ng-repeat="bugtracker in bugtrackerListContent">
+                              <ul class="app-data-list each-available-bugtracker btn-float">
+                                  <li class="bugtracker-title"><a ng-href="bugtracker/{[{ bugtracker.id }]}" title="Edit bugtracker #{[{ bugtracker.id }]}">{[{ bugtracker.title }]}</a></li>
+                                  <li class="bugtracker-id">bugtracker #{[{ bugtracker.id }]}</li>
+                                  <li class="bugtracker-project-name">Project: {[{ bugtracker.project }]}</li>
+                                  <li class="bugtracker-information">
+                                      <div class="bugtracker-information-data bugtracker-date"><i class="fa fa-calendar"></i>{[{ bugtracker.date }]}</div>
+                                      <div class="bugtracker-information-data bugtracker-time"><i class="fa fa-clock-o"></i>{[{ bugtracker.time }]}</div>
+                                  </li>
+                                  <li class="bugtracker-link">
+                                      <a ng-href="bugtracker/{[{ bugtracker.id }]}" title="Edit bugtracker #{[{ bugtracker.id }]}"><i class="fa fa-edit fa-fw"></i>Edit</a>
+                                  </li>
+                              </ul>
+                          </div>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>
