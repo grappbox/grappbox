@@ -825,17 +825,11 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {int} id event id
 	* @apiParam {string} token user authentication token
 	*
-	* @apiSuccess {string} id deleted event's id
-	*
 	* @apiSuccessExample Complete Success:
 	* 	{
 	*		"info": {
 	*			"return_code": "1.5.1",
 	*			"return_message": "Calendar - delEvent - Complete success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 12
 	*		}
 	* 	}
 	*
@@ -891,7 +885,9 @@ class EventController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		return $this->setSuccess("1.5.1", "Calendar", "delEvent", "Complete Success", array("id" => $event->getId()));
+		$response["info"]["return_code"] = "1.5.1";
+		$response["info"]["return_message"] = "Calendar - delEvent - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	// public function addAlertAction(Request $request, $id)
