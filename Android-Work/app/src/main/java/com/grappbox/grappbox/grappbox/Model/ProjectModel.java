@@ -48,7 +48,10 @@ public class ProjectModel implements Serializable {
         facebookURL = data.getString("facebook");
         twitterURL = data.getString("twitter");
         JSONObject date = data.isNull("delete_at") ? null : data.getJSONObject("deleted_at");
-        deletedAt = date == null ? null : date.getString("date");
+        if (date != null)
+            Log.e("WATCH", date.toString());
+
+        deletedAt = (date == null || date.isNull("date") ? null : date.getString("date"));
     }
 
     public boolean isValid()
@@ -60,8 +63,14 @@ public class ProjectModel implements Serializable {
         return id;
     }
 
-    public boolean isDeleted() { return deletedAt != null; }
+    public boolean isDeleted() {
+        return (deletedAt != null);
+    }
 
+    public void setDeletedAt(String date)
+    {
+        deletedAt = date;
+    }
     public String getName() {
         return name;
     }

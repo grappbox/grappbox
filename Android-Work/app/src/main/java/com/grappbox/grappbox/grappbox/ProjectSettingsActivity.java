@@ -318,6 +318,12 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 if (_modelBasicInfos.isDeleted())
                 {
                     findPreference(prefKey).setEnabled(false);
+                    if (prefKey.equals("customer_zone"))
+                    {
+                        RetreiveCustomersAccessesTask task = new RetreiveCustomersAccessesTask(_childrenParent, (PreferenceCategory) findPreference(prefKey));
+
+                        task.execute();
+                    }
                     continue;
                 }
                 if (prefKey.equals("project_safe_password"))
@@ -589,21 +595,14 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            JSONObject json, data;
-
             _api = APIConnectAdapter.getInstance(true);
-            data = new JSONObject();
-            json = new JSONObject();
+
             try {
-                data.put("token", SessionAdapter.getInstance().getToken());
-                data.put("projectId", _projectId);
-                json.put("data", data);
                 _api.setVersion("V0.2");
-                _api.startConnection("projects/delproject");
+                _api.startConnection("projects/delproject/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(_projectId));
                 _api.setRequestConnection("DELETE");
-                _api.sendJSON(json);
                 return _api.getInputSream();
-            } catch (JSONException | IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
@@ -680,6 +679,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 deletePref.setSummary(R.string.str_retreive_explaination);
                 deletePref.setTitle(R.string.str_project_delete);
                 deletePref.setOnPreferenceClickListener(sBindPreferenceToDeleteProjectListener);
+                _modelBasicInfos.setDeletedAt(null);
             } catch (JSONException | IOException e) {
                 e.printStackTrace();
             }

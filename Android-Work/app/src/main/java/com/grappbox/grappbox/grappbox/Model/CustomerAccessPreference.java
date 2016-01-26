@@ -93,6 +93,9 @@ public class CustomerAccessPreference extends DialogPreference {
                             task.execute(_customer.getName());
                             break;
                         case "delete_access":
+                            DeleteCustomerAccessTask taskDelete = new DeleteCustomerAccessTask(pref, getContext());
+
+                            taskDelete.execute();
                             break;
                         default:
                             break;
@@ -352,6 +355,102 @@ public class CustomerAccessPreference extends DialogPreference {
             try {
                 _api.setVersion("V0.2");
                 _api.startConnection("projects/getcustomeraccessbyid/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(_customerId));
+                return _api.getInputSream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public class DeleteCustomerAccessTask extends AsyncTask<String, Void, String>
+    {
+        Context _context;
+        APIConnectAdapter _api;
+        Preference _pref;
+
+        DeleteCustomerAccessTask(Preference pref, Context context)
+        {
+            _context = context;
+            _pref = pref;
+        }
+
+        private boolean handleAPIError(JSONObject infos) throws JSONException {
+            if (!infos.getString("return_code").startsWith("1."))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + infos.getString("return_code"));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                if (_context instanceof MainActivity)
+                {
+                    ((MainActivity) _context).logoutUser();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private boolean disconnectAPI() throws IOException {
+            int responseCode = 500;
+
+            responseCode = _api.getResponseCode();
+            if (responseCode < 300) {
+                APIConnectAdapter.getInstance().closeConnection();
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + String.valueOf(responseCode));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                if (_context instanceof MainActivity)
+                    ((MainActivity) _context).logoutUser();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            assert s != null;
+            JSONObject json, info;
+
+            try {
+                json = new JSONObject(s);
+                info = json.getJSONObject("info");
+                if (disconnectAPI())
+                    return;
+                assert info != null;
+                if (handleAPIError(info))
+                    return;
+                _customer_zone.removePreference(_pref);
+                return;
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            _api = APIConnectAdapter.getInstance(true);
+            try {
+                _api.setVersion("V0.2");
+                _api.startConnection("projects/delcustomeraccess/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(_projectId) + "/" + String.valueOf(_customer.getId()));
+                _api.setRequestConnection("DELETE");
                 return _api.getInputSream();
             } catch (IOException e) {
                 e.printStackTrace();
