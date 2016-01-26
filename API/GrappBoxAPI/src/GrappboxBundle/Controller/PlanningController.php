@@ -60,7 +60,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		},
 	*		"data":
 	*		{
-	*			"array": [
+	*			"array": {
 	*				"events": [
 	*					{
 	*					"id": 12,
@@ -81,6 +81,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					},
 	*					...
 	*				]
+	*			}
 	*		}
 	* 	}
 	* @apiSuccessExample Success But No Data:
@@ -198,7 +199,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		},
 	*		"data":
 	*		{
-	*			"array": [
+	*			"array": {
 	*				"events": [
 	*					{
 	*					"id": 12,
@@ -219,6 +220,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					},
 	*					...
 	*				]
+	*			}
 	*		}
 	* 	}
 	* @apiSuccessExample Success But No Data:
@@ -335,7 +337,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		},
 	*		"data":
 	*		{
-	*			"array": [
+	*			"array": {
 	*				"events": [
 	*					{
 	*					"id": 12,
@@ -356,6 +358,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					},
 	*					...
 	*				]
+	*			}
 	*		}
 	* 	}
 	* @apiSuccessExample Success But No Data:
