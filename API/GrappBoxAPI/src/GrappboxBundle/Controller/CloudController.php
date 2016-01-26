@@ -132,11 +132,16 @@ class CloudController extends Controller
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
 		$db = $this->getDoctrine();
-		$role = $db->getRepository("GrappboxBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
-		if (is_null($role))
-			return (-1);
-		$roleTable = $db->getRepository("GrappboxBundle:Role")->findOneById($role->getRoleId());
-		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
+		$roles = $db->getRepository("GrappboxBundle:ProjectUserRole")->findBy(array("projectId" => $idProject, "userId" => $userId));
+		foreach($roles as $role)
+		{
+			if (is_null($role))
+				continue;
+			$roleTable = $db->getRepository("GrappboxBundle:Role")->findOneById($role->getRoleId());
+			if (!is_null($roleTable) && $roleTable->getCloud() > 0)
+				return $roleTable->getCloud();
+		}
+		return (-1);
 	}
 
 	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
@@ -234,7 +239,7 @@ class CloudController extends Controller
 		$stream->setCreatorId($userId)
 					 ->setFilename($receivedData["filename"])
 					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
-					 ->setPassword(isset($receivedData["password"]) ? $receivedData["password"] : null)
+					 ->setPassword(isset($receivedData["password"]) && !empty($receivedData["password"]) ? $receivedData["password"] : null)
 					 ->setCreationDate(new DateTime("now"))
 					 ->setDeletionDate(null);
 		$em->persist($stream);
@@ -571,7 +576,6 @@ class CloudController extends Controller
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
 		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox|Projects/".(string)($idProject).$cloudPath);
-		var_dump($path);
 		$searchRequest = new CurlRequest();
 		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
 		if ($searchResult->meta->statuscode != 100 ||
