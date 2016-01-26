@@ -854,18 +854,12 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
 	*
-	* @apiSuccess {Number} id Id of the task delete
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
 	*			"return_message": "Task - taskdelete - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id" : 3
 	*		}
 	*	}
 	*
@@ -912,7 +906,9 @@ class TaskController extends RolesAndTokenVerificationController
 		$em->remove($task);
 
 		$em->flush();
-		return $this->setSuccess("1.12.1", "Task", "taskdelete", "Complete Success", array("id" => $taskId));
+		$response["info"]["return_code"] = "1.12.1";
+		$response["info"]["return_message"] = "Task - taskdelete - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -1074,17 +1070,12 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Number} taskId Id of the task
 	* @apiParam {Number} userId Id of the user
 	*
-	* @apiSuccess {Number} id Id of the user removed
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
 	*			"return_message": "Task - removeusertotask - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -1171,7 +1162,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setSuccess("1.12.1", "Task", "removeusertotask", "Complete Success", array("id" => $userId));
+		$response["info"]["return_code"] = "1.12.1";
+		$response["info"]["return_message"] = "Task - removeusertotask - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -1448,17 +1441,12 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
   	*
-  	* @apiSuccess {Number} id Id of the deleted tag
-  	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
 	*			"return_message": "Task - deletetag - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -1504,7 +1492,9 @@ class TaskController extends RolesAndTokenVerificationController
 		$em->remove($tag);
 		$em->flush();
 
-		return $this->setSuccess("1.12.1", "Task", "deletetag", "Complete Success", array("id" => $tagId));
+		$response["info"]["return_code"] = "1.12.1";
+		$response["info"]["return_message"] = "Task - deletetag - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -1647,8 +1637,6 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
 	* @apiParam {Number} tagId Id of the tag
-  	*
-	* @apiSuccess {Number} id Id of the tag removed
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -1656,9 +1644,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.12.1",
 	*			"return_message": "Task - removetagtotask - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -1729,7 +1714,9 @@ class TaskController extends RolesAndTokenVerificationController
 		$task->removeTag($tagToRemove);
 		$em->flush();
 
-		return $this->setSuccess("1.12.1", "Task", "removetagtotask", "Complete Success", array("id" => $tagId));
+		$response["info"]["return_code"] = "1.12.1";
+		$response["info"]["return_message"] = "Task - removetagtotask - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**

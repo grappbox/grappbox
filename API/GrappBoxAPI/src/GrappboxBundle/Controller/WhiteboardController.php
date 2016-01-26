@@ -639,18 +639,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} id Id of the whiteboard
 	*
-	* @apiSuccess {String} id Id of the whiteboard deleted
-	*
 	* @apiSuccessExample {json} Success-Response:
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.10.1",
 	*			"return_message": "Whiteboard - delete - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -701,6 +695,8 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$em->flush();
 		}
 
-		return $this->setSuccess("1.10.1", "Whiteboard", "delete", "Complete Success", array('id' => $id));
+		$response["info"]["return_code"] = "1.10.1";
+		$response["info"]["return_message"] = "Whiteboard - delete - Complete Success";
+		return new JsonResponse($response);
 	}
 }

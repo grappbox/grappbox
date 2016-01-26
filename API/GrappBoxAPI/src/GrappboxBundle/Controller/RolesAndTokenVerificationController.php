@@ -286,18 +286,12 @@ class RolesAndTokenVerificationController extends Controller
 	*		}
 	*	}
 	*
-	* @apiSuccess {Number} id Id of the role deleted
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.13.1",
 	*			"return_message": "Role - delprojectroles - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -370,7 +364,9 @@ class RolesAndTokenVerificationController extends Controller
 		$em->remove($role);
 		$em->flush();
 
-		return $this->setSuccess("1.13.1", "Role", "delprojectroles", "Complete Success", array("id" => $content->id));
+		$response["info"]["return_code"] = "1.13.1";
+		$response["info"]["return_message"] = "Role - delprojectroles - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -1013,18 +1009,12 @@ class RolesAndTokenVerificationController extends Controller
 	*		}
 	*	}
 	*
-	* @apiSuccess {Number} id Id of the project user role
-	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.13.1",
 	*			"return_message": "Role - delpersonrole - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -1126,7 +1116,9 @@ class RolesAndTokenVerificationController extends Controller
 		$em->remove($pur);
 		$em->flush();
 
-		return $this->setSuccess("1.13.1", "Role", "delpersonrole", "Complete Success", array("id" => $purId));
+		$response["info"]["return_code"] = "1.13.1";
+		$response["info"]["return_message"] = "Role - delpersonrole - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**

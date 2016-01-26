@@ -153,11 +153,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (array_key_exists('twitter', $content))
 			$project->setTwitter($content->twitter);
 		if (array_key_exists('password', $content))
-		{
-			$encoder = $this->container->get('security.password_encoder');
-			$encoded = $encoder->encodePassword($user, $content->password);
-			$project->setSafePassword($encoded);
-		}
+			$project->setSafePassword($content->password);
 
 		$em->persist($project);
 
@@ -419,11 +415,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (array_key_exists('twitter', $content))
 			$project->setTwitter($content->twitter);
 		if (array_key_exists('password', $content))
-		{
-			$encoder = $this->container->get('security.password_encoder');
-			$encoded = $encoder->encodePassword($user, $content->password);
-			$project->setSafePassword($encoded);
-		}
+			$project->setSafePassword($content->password);
 
 		$em->flush();
 
@@ -548,22 +540,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccess {DateTime} deletion_date Date of deletion of the project
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.6.1",
 	*			"return_message": "Project - delproject - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"deletion_date": {
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
 	*		}
 	*	}
 	*
@@ -628,7 +610,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "delproject", "Complete Success", array("deletion_date" => $project->getDeletedAt()));
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - delproject - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -1026,18 +1010,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccess {Number} id Id of the customer access deleted
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.6.1",
 	*			"return_message": "Project - delcustomeraccess - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -1099,7 +1077,9 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->remove($customerAccess);
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "delcustomeraccess", "Complete Success", array("id" => $content->customerAccessId));
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - delcustomeraccess - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -1266,17 +1246,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccess {Number} id Id of the user removed
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.6.1",
 	*			"return_message": "Project - removeusertoproject - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 18
 	*		}
 	*	}
 	*
@@ -1384,7 +1359,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setSuccess("1.6.1", "Project", "removeusertoproject", "Complete Success", array("id" => $userToRemove->getId()));
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - removeusertoproject - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**

@@ -147,8 +147,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.15.3",
 	*			"return_message": "Notification - unregisterDevice - Complete Success"
-	*		},
-	*		"data": {}
+	*		}
 	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -181,11 +180,13 @@ class NotificationController extends RolesAndTokenVerificationController
 
 		$em->remove($device);
 		$em->flush();
-		return $this->setSuccess("1.15.3", "Notification", "unregisterDevice", "Complete Success", (Object)array());
+		$response["info"]["return_code"] = "1.15.1";
+		$response["info"]["return_message"] = "Notification - unregisterDevice - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
-	* @api {delete} /V0.2/notification/getuserdevices/:token Get user registered devices
+	* @api {get} /V0.2/notification/getuserdevices/:token Get user registered devices
 	* @apiName getuserDevices
 	* @apiGroup Notification
 	* @apiDescription Get user registered devices informations
@@ -269,7 +270,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/notification/getnotifications/:token/:read/offset/limit Get user notifications
+	* @api {get} /V0.2/notification/getnotifications/:token/:read/offset/limit Get user notifications
 	* @apiName getNotifications
 	* @apiGroup Notification
 	* @apiDescription Get user notifications

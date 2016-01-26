@@ -1108,16 +1108,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} id id of the ticket/comment
 	* @apiParam {String} token client authentification token
 	*
-	* @apiSuccess {String} id id of the deleted object
-	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
 	*		"info": {
 	*			"return_code": "1.4.1",
 	*			"return_message": "Bugtracker - closeTicket - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 15
 	*		}
 	* 	}
 	*
@@ -1184,7 +1179,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setSuccess("1.4.1", "Bugtracker", "closeTicket", "Complete Success", array("id" => $bug));
+		$response["info"]["return_code"] = "1.4.1";
+		$response["info"]["return_message"] = "Bugtracker - closeTicket - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -2364,17 +2361,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} tagId Id of the tag
 	*
-	* @apiSuccess {Number} id Id of the deleted tag
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.4.1",
 	*			"return_message": "Bugtracker - deleteTag - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -2420,7 +2412,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->remove($tag);
 		$em->flush();
 
-		return $this->setSuccess("1.4.1", "Bugtracker", "deleteTag", "Complete Success", array("id" => $tagId));
+		$response["info"]["return_code"] = "1.4.1";
+		$response["info"]["return_message"] = "Bugtracker - deleteTag - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -2565,17 +2559,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {Number} bugId Id of the bug
 	* @apiParam {Number} tagId Id of the tag
 	*
-	* @apiSuccess {Number} id Id of the tag removed
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.4.1",
 	*			"return_message": "Bugtracker - removeTagToBug - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 1
 	*		}
 	*	}
 	*
@@ -2646,7 +2635,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->removeTag($tagToRemove);
 
 		$em->flush();
-			return $this->setSuccess("1.4.1", "Bugtracker", "removeTagToBug", "Complete Success", array("id" => $tagId));
+		$response["info"]["return_code"] = "1.4.1";
+		$response["info"]["return_message"] = "Bugtracker - removeTagToBug - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
