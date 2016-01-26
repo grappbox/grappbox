@@ -523,7 +523,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/projects/delproject Delete a project 7 days after the call
+	* @api {delete} /V0.2/projects/delproject/:token/:projectId Delete a project 7 days after the call
 	* @apiName delProject
 	* @apiGroup Project
 	* @apiDescription Set the deleted at of the given project to 7 days after the call of the function
@@ -531,14 +531,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1
-	*		}
-	*	}
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -555,14 +547,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "6.4.3",
 	*			"return_message": "Project - delproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.4.6",
-	*			"return_message": "Project - delproject - Missing Parameter"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -582,24 +566,17 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delProjectAction(Request $request)
+	public function delProjectAction(Request $request, $token, $projectId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content))
-			return $this->setBadRequest("6.4.6", "Project", "delproject", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.4.3", "Project", "delproject"));
 
-		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.4.4", "Project", "delproject", "Bad Parameter: projectId");
@@ -991,7 +968,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/projects/delcustomeraccess Delete a customer access
+	* @api {delete} /V0.2/projects/delcustomeraccess/:token/:projectId/:customerAccessId Delete a customer access
 	* @apiName delCustomerAccess
 	* @apiGroup Project
 	* @apiDescription Delete the given customer access
@@ -1000,15 +977,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {Number} customerAccessId Id of the customer access
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1,
-	*			"customerAccessId": 3
-	*		}
-	*	}
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -1025,14 +993,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "6.9.3",
 	*			"return_message": "Project - delcustomeraccess - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.9.6",
-	*			"return_message": "Project - delcustomeraccess - Missing Parameter"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1052,24 +1012,17 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delCustomerAccessAction(Request $request)
+	public function delCustomerAccessAction(Request $request, $token, $projectId, $customerAccessId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('customerAccessId', $content))
-			return $this->setBadRequest("6.9.6", "Project", "delcustomeraccess", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.9.3", "Project", "delcustomeraccess"));
 
-		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.9.9", "Project", "delcustomeraccess"));
 
 		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->find($content->customerAccessId);
+		$customerAccess = $em->getRepository('GrappboxBundle:CustomerAccess')->find($customerAccessId);
 
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.9.4", "Project", "delcustomeraccess", "Bad Parameter: customerAccessId");
@@ -1227,7 +1180,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/projects/removeusertoproject Remove a user from the project
+	* @api {delete} /V0.2/projects/removeusertoproject/:token/:projectId/:userId Remove a user from the project
 	* @apiName removeUserToProject
 	* @apiGroup Project
 	* @apiDescription Remove a given user to the project wanted
@@ -1236,15 +1189,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {Number} userId Id of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1,
-	*			"userId": 3
-	*		}
-	*	}
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -1261,14 +1205,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "6.11.3",
 	*			"return_message": "Project - removeusertoproject - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.11.6",
-	*			"return_message": "Project - removeusertoproject - Missing Parameter"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1304,29 +1240,22 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function removeUserToProjectAction(Request $request)
+	public function removeUserToProjectAction(Request $request, $token, $projectId, $userId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('userId', $content))
-			return $this->setBadRequest("6.11.6", "Project", "removeusertoproject", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.11.3", "Project", "removeusertoproject"));
 
-		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: projectId");
 
-		$userToRemove = $em->getRepository('GrappboxBundle:User')->find($content->userId);
+		$userToRemove = $em->getRepository('GrappboxBundle:User')->find($userId);
 		if ($userToRemove === null)
 			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: userId");
 

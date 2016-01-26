@@ -568,8 +568,10 @@ v2_project_getInformations:
     methods: [GET]
 
 v2_project_delProject:
-    path:       projects/delproject
+    path:       projects/delproject/{token}/{projectId}
     defaults:   { _controller: GrappboxBundle:Project:delProject, _format: json }
+    requirements:
+        projectId: \d+
     methods: [DELETE]
 
 v2_project_retrieveProject:
@@ -599,8 +601,11 @@ v2_project_getCustomerAccessByProject:
     methods: [GET]
 
 v2_project_delCustomerAccess:
-    path:       projects/delcustomeraccess
+    path:       projects/delcustomeraccess/{token}/{projectId}/{customerAccessId}
     defaults:   { _controller: GrappboxBundle:Project:delCustomerAccess, _format: json }
+    requirements:
+        projectId: \d+
+        customerAccessId: \d+
     methods: [DELETE]
 
 v2_project_addUserToProject:
@@ -609,8 +614,11 @@ v2_project_addUserToProject:
     methods: [POST]
 
 v2_project_removeUserToProject:
-    path:       projects/removeusertoproject
+    path:       projects/removeusertoproject/{token}/{projectId}/{userId}
     defaults:   { _controller: GrappboxBundle:Project:removeUserToProject, _format: json }
+    requirements:
+        projectId: \d+
+        userId: \d+
     methods: [DELETE]
 
 v2_project_getUserToProject:
@@ -632,8 +640,10 @@ v2_role_addProjectRoles:
     methods: [POST]
 
 v2_role_delProjectRoles:
-    path:       roles/delprojectroles
+    path:       roles/delprojectroles/{token}/{id}
     defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:delProjectRoles, _format: json }
+    requirements:
+        id: \d+
     methods: [DELETE]
 
 v2_role_putProjectRoles:
@@ -664,8 +674,12 @@ v2_role_getUserRoles:
     methods: [GET]
 
 v2_role_delPersonRole:
-    path:       roles/delpersonrole
+    path:       roles/delpersonrole/{token}/{projectId}/{userId}/{roleId}
     defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:delPersonRole, _format: json }
+    requirements:
+        projectId: \d+
+        userId: \d+
+        roleId: \d+
     methods: [DELETE]
 
 v2_role_getRoleByProjectAndUser:

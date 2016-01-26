@@ -133,14 +133,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiParam {String} token user authentication token
 	* @apiParam {String} id device id in DB
 	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"id": 15
-	*		}
-	*	}
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
