@@ -9,41 +9,41 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Xml;
 import android.view.MenuItem;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
+import com.grappbox.grappbox.grappbox.Model.CustomerAccessModel;
+import com.grappbox.grappbox.grappbox.Model.CustomerAccessPreference;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SafePasswordPreference;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,7 +65,6 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
     public static final String EXTRA_PROJECT_NAME = "ProjectSettingsActivity.extra.project_name";
     public static final String EXTRA_PROJECT_MODEL = "ProjectSettingsActivity.extra.project_model";
     public static final int PICK_PNG_FROM_SYSTEM = 21;
-    public static final int SYSTEM_CHUNK_SIZE = 1048576;
 
 
     private static ProjectModel _modelBasicInfos;
@@ -79,7 +78,8 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             "project_facebook_url",
             "project_twitter_url",
             "project_logo",
-            "project_safe_password"
+            "project_safe_password",
+            "customer_zone"
     };
     private GeneralPreferenceFragment _project_settings_fragment;
 
@@ -175,19 +175,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 }
                 return true;
             }
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-
-            } else {
+            else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 if (!preference.getKey().equals("project_logo"))
@@ -209,24 +197,41 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         }
     };
 
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
+    private static Preference.OnPreferenceClickListener sBindPreferenceToRetreiveProjectListener = new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            RetreiveProjectTask task = new RetreiveProjectTask(_childrenParent.getBaseContext());
+            task.execute();
+            return false;
+        }
+    };
+
+    private static Preference.OnPreferenceClickListener sBindPreferenceToDeleteProjectListener = new Preference.OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            DeleteProjectTask task = new DeleteProjectTask(_childrenParent.getBaseContext());
+            task.execute();
+            return false;
+        }
+    };
+
+    public void setPreferencesEnabled(boolean enabled)
+    {
+        for (String prefKey : PreferenceKeys)
+            _project_settings_fragment.findPreference(prefKey).setEnabled(enabled);
+    }
+
+    public GeneralPreferenceFragment getProjectSettingsFragment()
+    {
+        return _project_settings_fragment;
+    }
+
+
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
     private static void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
@@ -243,7 +248,6 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
         assert (intent != null);
         _childrenParent = this;
-
         _projectId = intent.getIntExtra(EXTRA_PROJECT_ID, 0);
         title = intent.getStringExtra(EXTRA_PROJECT_NAME);
 
@@ -254,9 +258,6 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         setupActionBar();
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -277,27 +278,17 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         return super.onMenuItemSelected(featureId, item);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
-    /**
-     * This method stops fragment injection in malicious applications.
-     * Make sure to deny any unknown fragments here.
-     */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName);
@@ -308,13 +299,9 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         _project_settings_fragment = frag;
     }
 
-    /**
-     * This fragment shows general preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
-
+        static GeneralPreferenceFragment _baseFragment;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -322,6 +309,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             setHasOptionsMenu(true);
 
             _childrenParent.setProjectPreferenceFragment(this);
+            _baseFragment = this;
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
@@ -333,13 +321,10 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                     continue;
                 }
                 if (prefKey.equals("project_safe_password"))
-                {
                     ((SafePasswordPreference)findPreference(prefKey)).setProjectId(_projectId);
-                }
                 super.getActivity().getSharedPreferences("", Context.MODE_PRIVATE).edit().remove(prefKey).commit();
                 bindPreferenceSummaryToValue(findPreference(prefKey));
                 if (Objects.equals(prefKey, "project_logo"))
-                {
                     findPreference(prefKey).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference preference) {
@@ -350,15 +335,11 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                             return false;
                         }
                     });
-                }
-                else if (prefKey.equals("project_delete"))
+                else if (prefKey.equals("customer_zone"))
                 {
-                    findPreference(prefKey).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                        @Override
-                        public boolean onPreferenceClick(Preference preference) {
-                            return false;
-                        }
-                    });
+                    RetreiveCustomersAccessesTask task = new RetreiveCustomersAccessesTask(_childrenParent, (PreferenceCategory) findPreference(prefKey));
+
+                    task.execute();
                 }
             }
             if (_modelBasicInfos.isDeleted())
@@ -367,6 +348,13 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
                 pref.setSummary("");
                 pref.setTitle(R.string.str_retreive_project);
+                pref.setOnPreferenceClickListener(sBindPreferenceToRetreiveProjectListener);
+            }
+            else
+            {
+                Preference pref = findPreference("project_delete");
+
+                pref.setOnPreferenceClickListener(sBindPreferenceToDeleteProjectListener);
             }
         }
 
@@ -515,6 +503,309 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 _api.sendJSON(json);
                 return _api.getInputSream();
             } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
+
+    public static class DeleteProjectTask extends AsyncTask<String, Void, String>
+    {
+        Context _context;
+        APIConnectAdapter _api;
+
+        DeleteProjectTask(Context context)
+        {
+            _context = context;
+        }
+
+        private boolean handleAPIError(JSONObject infos) throws JSONException {
+            if (!infos.getString("return_code").startsWith("1."))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + infos.getString("return_code"));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+            return false;
+        }
+
+        private boolean disconnectAPI() throws IOException {
+            int responseCode = 500;
+
+            responseCode = _api.getResponseCode();
+            if (responseCode < 300) {
+                APIConnectAdapter.getInstance().closeConnection();
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + String.valueOf(responseCode));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            assert s != null;
+            JSONObject json, info;
+
+            try {
+                json = new JSONObject(s);
+                info = json.getJSONObject("info");
+                if (disconnectAPI())
+                    return;
+                assert info != null;
+                if (handleAPIError(info))
+                    return;
+                _childrenParent.setPreferencesEnabled(false);
+                Preference deletePref = _childrenParent._project_settings_fragment.findPreference("project_delete");
+                deletePref.setSummary("");
+                deletePref.setTitle(R.string.str_retreive_project);
+                deletePref.setOnPreferenceClickListener(sBindPreferenceToRetreiveProjectListener);
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            JSONObject json, data;
+
+            _api = APIConnectAdapter.getInstance(true);
+            data = new JSONObject();
+            json = new JSONObject();
+            try {
+                data.put("token", SessionAdapter.getInstance().getToken());
+                data.put("projectId", _projectId);
+                json.put("data", data);
+                _api.setVersion("V0.2");
+                _api.startConnection("projects/delproject");
+                _api.setRequestConnection("DELETE");
+                _api.sendJSON(json);
+                return _api.getInputSream();
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public static class RetreiveProjectTask extends AsyncTask<String, Void, String>
+    {
+        Context _context;
+        APIConnectAdapter _api;
+
+        RetreiveProjectTask(Context context)
+        {
+            _context = context;
+        }
+
+        private boolean handleAPIError(JSONObject infos) throws JSONException {
+            if (!infos.getString("return_code").startsWith("1."))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + infos.getString("return_code"));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+            return false;
+        }
+
+        private boolean disconnectAPI() throws IOException {
+            int responseCode = 500;
+
+            responseCode = _api.getResponseCode();
+            if (responseCode < 300) {
+                APIConnectAdapter.getInstance().closeConnection();
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + String.valueOf(responseCode));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            assert s != null;
+            JSONObject json, info;
+
+            try {
+                json = new JSONObject(s);
+                info = json.getJSONObject("info");
+                if (disconnectAPI())
+                    return;
+                assert info != null;
+                if (handleAPIError(info))
+                    return;
+                _childrenParent.setPreferencesEnabled(true);
+                Preference deletePref = _childrenParent._project_settings_fragment.findPreference("project_delete");
+                deletePref.setSummary(R.string.str_retreive_explaination);
+                deletePref.setTitle(R.string.str_project_delete);
+                deletePref.setOnPreferenceClickListener(sBindPreferenceToDeleteProjectListener);
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            _api = APIConnectAdapter.getInstance(true);
+            try {
+                _api.setVersion("V0.2");
+                _api.startConnection("projects/retrieveproject/" + SessionAdapter.getInstance().getToken() + "/" + _projectId);
+                _api.setRequestConnection("GET");
+                return _api.getInputSream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public static class RetreiveCustomersAccessesTask extends AsyncTask<String, Void, String>
+    {
+        PreferenceCategory _customer_zone;
+        Context _context;
+        APIConnectAdapter _api;
+
+        RetreiveCustomersAccessesTask(Context context, PreferenceCategory customer_zone)
+        {
+            _context = context;
+            _customer_zone = customer_zone;
+        }
+
+        private boolean handleAPIError(JSONObject infos) throws JSONException {
+            if (!infos.getString("return_code").startsWith("1."))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + infos.getString("return_code"));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+            return false;
+        }
+
+        private boolean disconnectAPI() throws IOException {
+            int responseCode = 500;
+
+            responseCode = _api.getResponseCode();
+            if (responseCode < 300) {
+                APIConnectAdapter.getInstance().closeConnection();
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + String.valueOf(responseCode));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            assert s != null;
+            JSONObject json, info, data;
+            JSONArray array;
+
+            try {
+                json = new JSONObject(s);
+                info = json.getJSONObject("info");
+                if (disconnectAPI())
+                    return;
+                assert info != null;
+                if (handleAPIError(info))
+                    return;
+                data = json.getJSONObject("data");
+                assert data != null;
+                array = data.getJSONArray("array");
+                assert array != null;
+                for (int i = 0; i < array.length(); ++i)
+                {
+                    JSONObject current = array.getJSONObject(i);
+                    CustomerAccessPreference customerAccess = new CustomerAccessPreference(_context, Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_customer_access_pref)));
+                    customerAccess.setProjectId(_projectId);
+                    assert current != null;
+                    customerAccess.setCustomerAccess(new CustomerAccessModel(current));
+                    customerAccess.setCustomerZone(_customer_zone);
+                    _customer_zone.addPreference(customerAccess);
+                }
+                CustomerAccessPreference creator = new CustomerAccessPreference(_context, Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_customer_access_pref)));
+
+                creator.setCustomerAccess(new CustomerAccessModel());
+                creator.setProjectId(_projectId);
+                creator.setCustomerZone(_customer_zone);
+                _customer_zone.addPreference(creator);
+
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            _api = APIConnectAdapter.getInstance(true);
+            try {
+                _api.setVersion("V0.2");
+                _api.startConnection("projects/getcustomeraccessbyproject/" + SessionAdapter.getInstance().getToken() + "/" + _projectId);
+                _api.setRequestConnection("GET");
+                return _api.getInputSream();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;

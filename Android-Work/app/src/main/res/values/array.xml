@@ -7,4 +7,14 @@
     <string-array name="cloudExplorer_dirAction">
         <item>Delete folder</item>
     </string-array>
+    <string-array name="dialog_customer_access_pref_choices">
+        <item>Copy to clipboard</item>
+        <item>Renew access</item>
+        <item>Delete access</item>
+    </string-array>
+    <string-array name="dialog_customer_access_pref_choices_enum">
+        <item>copy_clipboard</item>
+        <item>renew_access</item>
+        <item>delete_access</item>
+    </string-array>
 </resources>

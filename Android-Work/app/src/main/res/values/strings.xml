@@ -194,4 +194,17 @@
     <string name="str_retreive_explaination">You can retreive the project during 7 days after deletion</string>
     <string name="str_project_delete">Delete the project</string>
     <string name="str_retreive_project">Retreive the project</string>
+    <string name="clipboard_copied">Copied to clipboard!</string>
+    <string name="str_customer_name_label">Customer name :</string>
+    <string name="str_customer_access_creation_title">Create a customer access</string>
+    <string name="str_error_customer_access_empty">You have to name your customer access</string>
+    <string name="str_loading_text">Loading...</string>
+    <string name="str_team_timeline_title">Team timeline</string>
+    <string name="str_customer_timeline_title">Customer timeline</string>
+    <string name="str_gantt_title">GANTT</string>
+    <string name="str_cloud_title">Cloud</string>
+    <string name="str_task_title">Task</string>
+    <string name="str_event_title">Event</string>
+    <string name="str_bugtracker_title">Bug Tracker</string>
+    <string name="str_whiteboard_title">Whiteboard</string>
 </resources>

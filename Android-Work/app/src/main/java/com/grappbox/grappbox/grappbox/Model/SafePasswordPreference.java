@@ -1,16 +1,13 @@
 package com.grappbox.grappbox.grappbox.Model;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.grappbox.grappbox.grappbox.MainActivity;
