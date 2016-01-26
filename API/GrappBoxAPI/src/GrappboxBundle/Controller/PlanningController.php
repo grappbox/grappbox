@@ -72,7 +72,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					},
 	*					...
 	*				],
-	*			"tasks": [
+	*				"tasks": [
 	*					{
 	*					"id": 12,
 	*					"title": "Brainstorming",
@@ -210,7 +210,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					},
 	*					...
 	*				],
-	*			"tasks": [
+	*				"tasks": [
 	*					{
 	*					"id": 12,
 	*					"title": "Brainstorming",
@@ -347,7 +347,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					},
 	*					...
 	*				],
-	*			"tasks": [
+	*				"tasks": [
 	*					{
 	*					"id": 12,
 	*					"title": "Brainstorming",
