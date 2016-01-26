@@ -269,7 +269,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {delete} /V0.2/roles/delprojectroles Delete a project role
+	* @api {delete} /V0.2/roles/delprojectroles/:token/:id Delete a project role
 	* @apiName delProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Delete the given role of the project wanted
@@ -277,14 +277,6 @@ class RolesAndTokenVerificationController extends Controller
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} id Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"id": 1
-	*		}
-	*	}
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -301,14 +293,6 @@ class RolesAndTokenVerificationController extends Controller
 	*		"info": {
 	*			"return_code": "13.2.3",
 	*			"return_message": "Role - delprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.6",
-	*			"return_message": "Role - delprojectroles - Missing Parameter"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -336,21 +320,14 @@ class RolesAndTokenVerificationController extends Controller
 	*		}
 	*	}
 	*/
-	public function delProjectRolesAction(Request $request)
+	public function delProjectRolesAction(Request $request, $token, $id)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('id', $content) || !array_key_exists('token', $content))
-			return $this->setBadRequest("13.2.6", "Role", "delprojectroles", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("13.2.3", "Role", "delprojectroles"));
 
 		$em = $this->getDoctrine()->getManager();
-		$role = $em->getRepository('GrappboxBundle:Role')->find($content->id);
+		$role = $em->getRepository('GrappboxBundle:Role')->find($id);
 
 		if ($role === null)
 			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: id");
@@ -988,7 +965,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {delete} /V0.2/roles/delpersonrole Delete a person role
+	* @api {delete} /V0.2/roles/delpersonrole/:token/:projectId/:userId/:roleId Delete a person role
 	* @apiName delPersonRole
 	* @apiGroup Roles
 	* @apiDescription Delete a person role
@@ -998,16 +975,6 @@ class RolesAndTokenVerificationController extends Controller
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {Number} userd Id of the user
 	* @apiParam {Number} roleId Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 5,
-	*			"userId": 1,
-	*			"roleId": 3
-	*		}
-	*	}
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -1032,14 +999,6 @@ class RolesAndTokenVerificationController extends Controller
 	*		"info": {
 	*			"return_code": "13.8.9",
 	*			"return_message": "Role - delpersonrole - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameter
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.8.6",
-	*			"return_message": "Role - delpersonrole - Missing Parameter"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: roleId
@@ -1075,38 +1034,31 @@ class RolesAndTokenVerificationController extends Controller
 	*		}
 	*	}
 	*/
-	public function delPersonRoleAction(Request $request)
+	public function delPersonRoleAction(Request $request, $token, $projectId, $userId, $roleId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!$content->projectId && !$content->userId && !$content->roleId)
-			return $this->setBadRequest("13.8.6", "Role", "delpersonrole", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("13.8.3", "Role", "delpersonrole"));
 
-		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
-		$role = $em->getRepository('GrappboxBundle:Role')->find($content->roleId);
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		$role = $em->getRepository('GrappboxBundle:Role')->find($roleId);
 
 		if ($project === null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: projectId");
 		if ($role === null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: roleId");
 
-		if ($project->getCreatorUser()->getId() == $content->userId && $role->getName() == "Admin")
+		if ($project->getCreatorUser()->getId() == $userId && $role->getName() == "Admin")
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't remove the creator from the Admin role");
 
 		$repository = $em->getRepository('GrappboxBundle:ProjectUserRole');
 
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
-		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->roleId)->getQuery();
+		->setParameter('projectId', $projectId)->setParameter('userId', $userId)->setParameter('roleId', $roleId)->getQuery();
 		$pur = $qb->setMaxResults(1)->getOneOrNullResult();
 
 		if ($pur == null)
