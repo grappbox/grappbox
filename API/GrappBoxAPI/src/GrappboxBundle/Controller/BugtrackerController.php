@@ -1185,10 +1185,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/bugtracker/gettickets/:token/:id Get tickets
+	* @api {get} /V0.2/bugtracker/gettickets/:token/:id Get open tickets
 	* @apiName getTickets
 	* @apiGroup Bugtracker
-	* @apiDescription Get all tickets of a project
+	* @apiDescription Get all open tickets of a project
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id id of the project
@@ -1346,6 +1346,173 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($ticketsArray) <= 0)
 			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getTickets");
 		return $this->setSuccess("1.4.1", "Bugtracker", "getTickets", "Commplete Success", array("array" => $ticketsArray));
+	}
+
+	/**
+	* @api {get} /V0.2/bugtracker/getclosedtickets/:token/:id Get closed tickets
+	* @apiName getClosedTickets
+	* @apiGroup Bugtracker
+	* @apiDescription Get all closed tickets of a project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getClosedTickets - Complete Success"
+	*  },
+	*  "data": {
+	*    "array": [
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "fullname": "John Doe" },
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		{ "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "fullname": "John Doe" },
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		{ "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	...
+	*    ]
+	*  }
+	* }
+	* @apiSuccessExample {json} Success-No Data:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getClosedTickets - No Data Success"
+	*  },
+	*  "data": {
+	*    "array": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.22.3",
+	*			"return_message": "Bugtracker - getClosedTickets - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.22.4",
+	*			"return_message": "Bugtracker - getClosedTickets - Bad Parameter: id"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.22.9",
+	*			"return_message": "Bugtracker - getClosedTickets - Insufficient Rights"
+  *		}
+	* 	}
+	*
+	*/
+	public function getClosedTicketsAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("4.22.3", "Bugtracker", "getClosedTickets"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository("GrappboxBundle:Project")->find($id);
+		if (!($project instanceof Project))
+			return $this->setBadRequest("4.22.4", "Bugtracker", "getClosedTickets", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
+			return ($this->setNoRightsError("4.22.9", "Bugtracker", "getClosedTickets"));
+
+		$tickets = $em->getRepository("GrappboxBundle:Bug")->createQueryBuilder('b')
+						->where("b.projects = :bug_project")->andWhere("b.deletedAt IS NOT NULL")->andWhere("b.parentId IS NULL")
+						->setParameter("bug_project", $project)->getQuery()->getResult();
+						//->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$object = $value->objectToArray();
+			$object['state'] = $em->getRepository("GrappboxBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['tags'] = array();
+			foreach ($value->getTags() as $key => $tag_value) {
+				$object['tags'][] = $tag_value->objectToArray();
+			}
+
+			$participants = array();
+			foreach ($value->getUsers() as $key => $user_value) {
+				$participants[] = array(
+					"id" => $user_value->getId(),
+					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"email" => $user_value->getEmail(),
+					"avatar" => $user_value->getAvatar()
+				);
+			}
+			$object["users"] = $participants;
+
+			$ticketsArray[] = $object;
+		}
+
+		if (count($ticketsArray) <= 0)
+			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getClosedTickets");
+		return $this->setSuccess("1.4.1", "Bugtracker", "getClosedTickets", "Commplete Success", array("array" => $ticketsArray));
 	}
 
 	/**

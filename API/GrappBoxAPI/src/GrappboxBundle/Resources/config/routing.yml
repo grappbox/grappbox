@@ -183,6 +183,13 @@ v2_bugtracker_getProjectTags:
         projectId:  \d+
     methods: [GET]
 
+v2_bugtracker_getClosedTickets:
+    path:       /bugtracker/getclosedtickets/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:getClosedTickets, _format: json }
+    requirements:
+        token:  "[a-zA-Z0-9]+"
+        id:     \d+
+    methods:  [GET]
 
 
 
