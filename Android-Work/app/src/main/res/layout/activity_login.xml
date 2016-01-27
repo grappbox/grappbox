@@ -32,7 +32,8 @@
         android:singleLine="true"
         android:hint="@string/login_hint"
         android:textSize="@dimen/login_input_size"
-        android:layout_marginTop="15dip"/>
+        android:layout_marginTop="15dip"
+        android:inputType="textEmailAddress" />
 
     <TextView
         android:layout_width="match_parent"

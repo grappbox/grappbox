@@ -50,12 +50,14 @@ public class CustomerAccessPreference extends DialogPreference {
         {
             setDialogLayoutResource(R.layout.dialog_customer_access_create_pref);
             setTitle(R.string.str_customer_access_creation_title);
+            setDialogTitle(R.string.str_create_customer_access);
             setSummary("");
         }
         else
         {
             setDialogLayoutResource(R.layout.dialog_customer_access_pref);
             setTitle(_customer.getName());
+            setDialogTitle("");
             setSummary(_customer.getCustomerLoginUrl());
         }
 
@@ -341,6 +343,7 @@ public class CustomerAccessPreference extends DialogPreference {
                 _customer.setName(data.getString("name"));
                 _customer.setCustomerToken(data.getString("customer_token"));
                 ((CustomerAccessPreference)_pref).setDialogLayoutResource(R.layout.dialog_customer_access_pref);
+                ((CustomerAccessPreference) _pref).setDialogTitle("");
                 _pref.setSummary(_customer.getCustomerLoginUrl());
                 _pref.setTitle(_customer.getName());
             } catch (JSONException | IOException e) {

@@ -207,4 +207,12 @@
     <string name="str_event_title">Event</string>
     <string name="str_bugtracker_title">Bug Tracker</string>
     <string name="str_whiteboard_title">Whiteboard</string>
+    <string name="str_add_team_member">Add a team member</string>
+    <string name="add_team_member_placeholder">Enter team member email here...</string>
+    <string name="str_create_customer_access">Create the customer access</string>
+    <string name="str_error_remove_project_creator">You can\'t remove the project\'s creator</string>
+    <string name="str_loading">Loading...</string>
+    <string name="str_role_create_placeholder">Enter the role name here...</string>
+    <string name="str_role_create_title">Role creation</string>
+    <string name="str_error_empty">You have to fill this field</string>
 </resources>
