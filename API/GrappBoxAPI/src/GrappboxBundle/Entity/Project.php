@@ -118,6 +118,16 @@ class Project
      * @var \Doctrine\Common\Collections\Collection
      */
     private $customers_access;
+    
+    /**
+     * @var string
+     */
+    private $color;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $colors;
 
     /**
      * Constructor
@@ -753,5 +763,61 @@ class Project
     public function getTags()
     {
         return $this->tags;
+    }
+    
+    /**
+     * Set color
+     *
+     * @param string $color
+     * @return Project
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * Get color
+     *
+     * @return string 
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * Add colors
+     *
+     * @param \GrappboxBundle\Entity\Color $colors
+     * @return Project
+     */
+    public function addColor(\GrappboxBundle\Entity\Color $colors)
+    {
+        $this->colors[] = $colors;
+
+        return $this;
+    }
+
+    /**
+     * Remove colors
+     *
+     * @param \GrappboxBundle\Entity\Color $colors
+     */
+    public function removeColor(\GrappboxBundle\Entity\Color $colors)
+    {
+        $this->colors->removeElement($colors);
+    }
+
+    /**
+     * Get colors
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getColors()
+    {
+        return $this->colors;
     }
 }

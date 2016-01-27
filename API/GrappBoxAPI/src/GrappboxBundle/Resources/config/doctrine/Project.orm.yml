@@ -48,6 +48,9 @@ GrappboxBundle\Entity\Project:
             type: string
             column: safe_password
             nullable: TRUE
+        color:
+            type: string
+            length: 255
     manyToMany:
         users:
           targetEntity: User
@@ -102,6 +105,10 @@ GrappboxBundle\Entity\Project:
           cascade: [remove]
         tags:
           targetEntity: Tag
+          mappedBy: project
+          cascade: [remove]
+        colors:
+          targetEntity: Color
           mappedBy: project
           cascade: [remove]
     lifecycleCallbacks: {  }

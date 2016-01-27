@@ -94,4 +94,8 @@ GrappboxBundle\Entity\User:
         task_creator:
           targetEntity: Task
           mappedBy: creator_user
+        colors:
+          targetEntity: Color
+          mappedBy: user
+          cascade: [remove]
     lifecycleCallbacks: {  }
