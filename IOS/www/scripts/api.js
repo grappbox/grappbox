@@ -61,6 +61,11 @@ angular.module('GrappBox.api', ['ngResource'])
     });
 })
 
+// Delete project after 7 days
+.factory('DeleteProject', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'projects/delproject/:token/:projectId', { token: "@token", projectId: "@projectId" });
+})
+
 // Retreive Project
 .factory('RetreiveProject', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'projects/retrieveproject/:token/:projectId', { token: "@token", projectId: "@projectId" });
@@ -69,6 +74,11 @@ angular.module('GrappBox.api', ['ngResource'])
 // Add user to project
 .factory('AddUserToProject', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'projects/addusertoproject');
+})
+
+// Remove user from project
+.factory('RemoveUserFromProject', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'projects/removeusertoproject/:token/:projectId/:userId', { token: "@token", projectId: "@projectId", userId: "@userId" });
 })
 
 // Get Users on project
@@ -86,6 +96,10 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'projects/generatecustomeraccess');
 })
 
+// Delete a customer access
+.factory('DeleteCustomerAccess', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'projects/delcustomeraccess/:token/:projectId/:customerAccessId', { token: "@token", projectId: "@projectId", customerAccessId: "@customerAccessId" });
+})
 
 /*
 ********************* USERS *********************
@@ -146,6 +160,16 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'roles/addprojectroles');
 })
 
+// Delete a role on project
+.factory('DeleteProjectRole', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/delprojectroles/:token/:id', { token: "@token", id: "@id"});
+})
+
+// Remove user from role
+.factory('RemoveUserFromRole', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'roles/delpersonrole/:token/:projectId/:userId/:roleId', { token: "@token", projectId: "@projectId", userId: "@userId", roleId: "@roleId" });
+})
+
 // Assign a member to a role
 .factory('AssignToRole', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'roles/assignpersontorole');
@@ -166,14 +190,19 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'bugtracker/postticket/:id', { id: "@id" });
 })
 
+// Close ticket
+.factory('CloseTicket', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/closeticket/:token/:id', { id: "@id", token: "@token" });
+})
+
 // Edit a ticket
 .factory('EditTicket', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'bugtracker/editticket/:id', { id: "@id" });
+    return $resource($rootScope.API + 'bugtracker/editticket');
 })
 
 // Edit comment on ticket
 .factory('EditCommentOnTicket', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'bugtracker/editticket/:id', { id: "@id" });
+    return $resource($rootScope.API + 'bugtracker/editcomment/:id', { id: "@id" });
 })
 
 // Assign users to ticket
@@ -186,14 +215,24 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'bugtracker/getstates/:token', { token: "@token" });
 })
 
-// Get all tickets information
-.factory('GetAllTickets', function ($rootScope, $resource) {
+// Get all open tickets information
+.factory('GetOpenTickets', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'bugtracker/gettickets/:token/:id', { id: "@id", token: "@token" });
 })
 
 // Get specific ticket information
 .factory('GetTicketInfo', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'bugtracker/getticket/:token/:id', { id: "@id", token: "@token" });
+})
+
+// Get last tickets information
+.factory('GetLastOpenTickets', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/getlasttickets/:token/:id/:offset/:limit', { id: "@id", token: "@token", offset: "@offset", limit: "@limit" });
+})
+
+// Get last closed ticket information
+.factory('GetLastClosedTickets', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/getlastclosedtickets/:token/:id/:offset/:limit', { id: "@id", token: "@token", offset: "@offset", limit: "@limit" });
 })
 
 // Get all tickets assigned to a user
@@ -216,7 +255,7 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'bugtracker/getprojecttags/:token/:projectId', { token: "@token", projectId: "@projectId" });
 })
 
-// Assign a tag to a member
+// Assign a tag to a ticket
 .factory('AssignTag', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'bugtracker/assigntag', null, {
         'update': { method: 'PUT' }

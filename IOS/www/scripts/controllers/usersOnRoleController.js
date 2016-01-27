@@ -5,7 +5,7 @@
 angular.module('GrappBox.controllers')
 
 .controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $http,
-    GetUsersForRole, AssignToRole, UpdateProjectRole) {
+    GetUsersForRole, AssignToRole, UpdateProjectRole, DeleteProjectRole, RemoveUserFromRole) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -37,7 +37,7 @@ angular.module('GrappBox.controllers')
         })
         .then(function (res) {
             if (res) {
-                $scope.deleteRole();
+                $scope.DeleteProjectRole();
                 console.log("Chose to delete role");
             } else {
                 console.log("Chose to keep role");
@@ -49,16 +49,13 @@ angular.module('GrappBox.controllers')
     ** Delete role
     ** Method: DELETE
     */
-    $scope.deleteRole = function () {
+    $scope.deleteRoleData = {};
+    $scope.DeleteProjectRole = function () {
         $rootScope.showLoading();
-        $http.delete($rootScope.API + 'roles/delprojectroles', {
-            data: {
-                data: {
-                    token: $rootScope.userDatas.token,
-                    id: $scope.roleId
-                }
-            }
-        })
+        DeleteProjectRole.delete({
+            token: $rootScope.userDatas.token,
+            id: $scope.roleId
+        }).$promise
         .then(function (data) {
             console.log('Delete role successful !');
             $scope.deleteRoleData = data;
@@ -171,18 +168,15 @@ angular.module('GrappBox.controllers')
     ** Remove member from current role
     ** Method: DELETE
     */
+    $userRemoveRoleData = {};
     $scope.RemoveUserFromRole = function () {
         $rootScope.showLoading();
-        $http.delete($rootScope.API + 'roles/delpersonrole', {
-            data: {
-                data: {
-                    token: $rootScope.userDatas.token,
-                    projectId: $scope.projectId,
-                    userId: $scope.user_id,
-                    roleId: $scope.roleId
-                }
-            }
-        })
+        RemoveUserFromRole.delete({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId,
+            userId: $scope.user_id,
+            roleId: $scope.roleId
+        }).$promise
         .then(function (data) {
             console.log('Remove user from project successful !');
             $scope.userRemoveRoleData = data.data;

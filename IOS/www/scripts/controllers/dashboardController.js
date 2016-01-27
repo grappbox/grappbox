@@ -7,9 +7,17 @@ angular.module('GrappBox.controllers')
 .controller('DashboardCtrl', function ($scope, $rootScope, $state,
 TeamOccupation, NextMeetings, GlobalProgress) {
 
-    $scope.doRefresh = function () {
+    $scope.doRefreshTeamOccupation = function () {
         $scope.GetTeamOccupation();
+        console.log("View refreshed !");
+    }
+
+    $scope.doRefreshNextMeetings = function () {
         $scope.GetNextMeetings();
+        console.log("View refreshed !");
+    }
+
+    $scope.doRefreshGlobalProgress = function () {
         $scope.GetGlobalProgress();
         console.log("View refreshed !");
     }

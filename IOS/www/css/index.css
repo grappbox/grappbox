@@ -1,3 +1,12 @@
 ﻿body {
-  cursor: url('http://ionicframework.com/img/finger.png'), auto;
+    cursor: url('http://ionicframework.com/img/finger.png'), auto;
+}
+
+.ticket_title {
+    font-size: 16px;
+}
+
+textarea {
+    width: 100%;
+    height: auto;
 }

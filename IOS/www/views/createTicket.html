@@ -1,0 +1,35 @@
+﻿<!--
+    Summary: Create ticket on bugtracker view
+-->
+
+<ion-view>
+    <ion-nav-title class="item-text-wrap">Create Ticket</ion-nav-title>
+    <ion-content overflow-scroll="false">
+
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <form name="createTicket_form">
+            <ion-input class="item item-input">
+                <ion-label>Title</ion-label>
+                <input type="text"
+                       placeholder="Bug when I..."
+                       name="createTicket_title"
+                       ng-model="ticket.title" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Description</ion-label>
+                <textarea name="createTicket_description"
+                          placeholder="Here is exactly how I can reproduce the bug, and where it is"
+                          ng-model="ticket.description">
+                </textarea>
+            </ion-input>
+            <button class="button button-block button-dark"
+                    ng-click="CreateTicket()">
+                Add
+            </button>
+        </form>
+    </ion-content>
+</ion-view>

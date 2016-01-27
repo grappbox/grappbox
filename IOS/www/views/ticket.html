@@ -1,0 +1,59 @@
+﻿<!--
+    Summary: Ticket view
+-->
+
+<ion-view>
+    <ion-nav-title>Project</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <div class="item item-divider">Ticket</div>
+        
+        <h1 class="ticket_title">{{ticket.title}}</h1>
+        <p>
+            {{ticket.creator.fullname}} opened this issue<br />
+            {{ticket.createdAt.date}}
+        </p>
+        {{ticket.description}}
+        <div class="item item-divider">Comment on issue</div>
+        <form name="comment_form">
+            <ion-item>
+                <textarea name="comment_form_description"
+                          rows="5"
+                          placeholder="Leave a comment"
+                          ng-model="comment.description">
+                </textarea>
+            </ion-item>
+            <div class="button-bar">
+                <a ng-show="ticket.deletedAt == null && comment.description == null"
+                   class="button button-block button-assertive"
+                   ng-click="CloseTicket()">
+                    Close issue
+                </a>
+                <a ng-show="ticket.deletedAt == null && comment.description != null"
+                   class="button button-block button-assertive"
+                   ng-click="CloseTicketAndComment()">
+                    Close and comment
+                </a>
+                <a ng-show="ticket.deletedAt != null && comment.description == null"
+                   class="button button-block button-assertive"
+                   ng-click="ReopenTicket()">
+                    Reopen issue
+                </a>
+                <a ng-show="ticket.deletedAt != null && comment.description != null"
+                   class="button button-block button-assertive"
+                   ng-click="ReopenTicketAndComment()">
+                    Reopen and comment
+                </a>
+                <a class="button button-block button-dark"
+                   ng-click="PostComment()">
+                    Comment
+                </a>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,86 @@
+﻿<!--
+    Summary: Bugtracker view
+-->
+
+<ion-view>
+    <ion-nav-title class="item-text-wrap">BugTracker</ion-nav-title>
+    <ion-tabs class="tabs-dark">
+
+        <ion-tab title="Open">
+            <!-- Tab 1 content -->
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshOpenTickets()">
+                    </ion-refresher>
+
+                    <button class="button button-block button-dark"
+                            ui-sref="app.createTicket({projectId: projectId})">
+                        Create ticket
+                    </button>
+                    <ion-list>
+                        <ion-item ng-repeat="ticket in lastOpenTickets"
+                                  ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
+                                  ng-if="ticket.deletedAt === null">
+                            {{ticket.title}}<br />
+                            By {{ticket.creator.fullname}}
+                        </ion-item>
+                    </ion-list>
+                    <button class="button button-block button-dark"
+                            ng-click="GetLastOpenTickets()">
+                        More
+                    </button>
+                </ion-content>
+            </ion-pane>
+
+        </ion-tab>
+
+        <ion-tab title="Closed">
+            <!-- Tab 2 content -->
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshClosedTickets()">
+                    </ion-refresher>
+
+                    <ion-list>
+                        <ion-item ng-repeat="ticket in lastClosedTickets"
+                                  ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})">
+                            {{ticket.title}}<br />
+                            By {{ticket.creator.fullname}}
+                        </ion-item>
+                    </ion-list>
+                    <button class="button button-block button-dark"
+                            ng-click="GetLastClosedTickets()">
+                        More
+                    </button>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+
+        <ion-tab title="Yours">
+            <!-- Tab 3 content -->
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshOpenTickets()">
+                    </ion-refresher>
+                    <ion-list>
+                        <ion-item ng-repeat="ticket in lastOpenTickets"
+                                  ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
+                                  ng-if="ticket.creator.id == userDatas.id">
+                            {{ticket.title}}<br />
+                            By {{ticket.creator.fullname}}
+                        </ion-item>
+                    </ion-list>
+                    <button class="button button-block button-dark"
+                            ng-click="GetLastOpenTickets()">
+                        More
+                    </button>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+
+    </ion-tabs>
+</ion-view>

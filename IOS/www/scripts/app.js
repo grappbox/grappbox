@@ -248,6 +248,43 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
         })
 
         /*
+        ** BUGTRACKER
+        */
+
+        // bugtracker view
+        .state('app.bugtracker', {
+            url: "/projects/:projectId/bugtracker",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/bugtracker.html",
+                    controller: 'BugtrackerCtrl'
+                }
+            }
+        })
+
+        // create ticket view
+        .state('app.createTicket', {
+            url: "/projects/:projectId/bugtracker/createTicket",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/createTicket.html",
+                    controller: 'CreateTicketCtrl'
+                }
+            }
+        })
+
+        // ticket view
+        .state('app.ticket', {
+            url: "/projects/:projectId/bugtracker/ticket/:ticketId",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/ticket.html",
+                    controller: 'TicketCtrl'
+                }
+            }
+        })
+
+        /*
         ** GANTT
         */
 

@@ -6,7 +6,7 @@ angular.module('GrappBox.controllers')
 
 .controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $http,
     ProjectView, AddUserToProject, UsersOnProjectList, GenCustomerAccess, GetCustomersAccessOnProject, RetreiveProject,
-    GetProjectRoles) {
+    GetProjectRoles, RemoveUserFromProject, DeleteCustomerAccess, DeleteProject) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -128,7 +128,7 @@ angular.module('GrappBox.controllers')
         })
         .then(function (res) {
             if (res) {
-                $scope.removeUserFromProject();
+                $scope.RemoveUserFromProject();
                 console.log("Chose to remove member");
             } else {
                 console.log("Chose to keep member");
@@ -140,21 +140,18 @@ angular.module('GrappBox.controllers')
     ** Remove member from current project
     ** Method: DELETE
     */
-    $scope.removeUserFromProject = function () {
+    $scope.userRemoveData = {};
+    $scope.RemoveUserFromProject = function () {
         $rootScope.showLoading();
         console.log($rootScope.userDatas.token + " " + $scope.projectId + " " + $scope.user_id);
-        $http.delete($rootScope.API + 'projects/removeusertoproject', {
-            data: {
-                data: {
-                    token: $rootScope.userDatas.token,
-                    projectId: $scope.projectId,
-                    userId: $scope.user_id
-                }
-            }
-        })
+        RemoveUserFromProject.delete({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId,
+            userId: $scope.user_id
+        }).$promise
         .then(function (data) {
             console.log('Remove user from project successful !');
-            $scope.userRemoveData = data;
+            $scope.userRemoveData = data.data;
             $scope.GetUsersOnProject();
         })
         .catch(function (error) {
@@ -250,7 +247,7 @@ angular.module('GrappBox.controllers')
         })
         .then(function (res) {
             if (res) {
-                $scope.deleteCustomerAccess();
+                $scope.DeleteCustomerAccess();
                 console.log("Chose to delete access");
             } else {
                 console.log("Chose to keep access");
@@ -262,18 +259,15 @@ angular.module('GrappBox.controllers')
     ** Delete customer access from current project
     ** Method: DELETE
     */
-    $scope.deleteCustomerAccess = function () {
+    $scope.deleteCustomerAccessData = {};
+    $scope.DeleteCustomerAccess = function () {
         $rootScope.showLoading();
         console.log("token: " + $rootScope.userDatas.token + " projectId: " + $scope.projectId + " customerId: " + $scope.customer_id);
-        $http.delete($rootScope.API + 'projects/delcustomeraccess', {
-            data: {
-                data: {
-                    token: $rootScope.userDatas.token,
-                    projectId: $scope.projectId,
-                    customerAccessId: $scope.customer_id
-                }
-            }
-        })
+        DeleteCustomerAccess.delete({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId,
+            customerAccessId: $scope.customer_id
+        }).$promise
         .then(function (data) {
             console.log('Delete customer access from project successful !');
             $scope.deleteCustomerAccessData = data.data;
@@ -298,7 +292,7 @@ angular.module('GrappBox.controllers')
         })
         .then(function (res) {
             if (res) {
-                $scope.deleteProject();
+                $scope.DeleteProject();
                 console.log("Chose to delete project");
             } else {
                 console.log("Chose to keep project");
@@ -310,16 +304,12 @@ angular.module('GrappBox.controllers')
     ** Delete project
     ** Method: DELETE
     */
-    $scope.deleteProject = function () {
+    $scope.DeleteProject = function () {
         $rootScope.showLoading();
-        $http.delete($rootScope.API + 'projects/delproject', {
-            data: {
-                data: {
-                    token: $rootScope.userDatas.token,
-                    projectId: $scope.projectId
-                }
-            }
-        })
+        DeleteProject.delete({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
         .then(function (data) {
             console.log('Delete project successful !');
             $scope.deleteProjectData = data;
