@@ -12,50 +12,41 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use GrappBox\Bundle\HomeBundle\Form\Extension;
 
 
 class HomeController extends Controller
 {
-	private function loginRedirectAction($apiContent)
+	private function index_callLoginAPI($formData)
 	{
-		$apiBaseURL = "http://api.grappbox.com/app_dev.php/V0.2";
-		$apiCurl = curl_init();
+		$APIBaseURL = 'http://api.grappbox.com/app_dev.php/';
+		$APIBaseVersion = 'V0.2';
 
-		curl_setopt($apiCurl, CURLOPT_URL, $apiBaseURL."/accountadministration/login");
-		curl_setopt($apiCurl, CURLOPT_POST, 1);
-		curl_setopt($apiCurl, CURLOPT_TIMEOUT, 30);
-		curl_setopt($apiCurl, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($apiCurl, CURLOPT_POSTFIELDS, $apiContent);
+		$curlData = curl_init();
 
-		$apiJSONResult = curl_exec($apiCurl);
+		curl_setopt($curlData, CURLOPT_URL, $APIBaseURL.$APIBaseVersion.'/accountadministration/login');
+		curl_setopt($curlData, CURLOPT_POST, 1);
+		curl_setopt($curlData, CURLOPT_TIMEOUT, 30);
+		curl_setopt($curlData, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curlData, CURLOPT_POSTFIELDS, $formData);
 
-		if (curl_error($apiCurl))
-			die("div class='alert alert-danger alert-dismissible fade in' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>×</span></button><h4>SURPRISE, MOTHERFUCKER !</h4 <p> Unable to connect: ".curl_errno($apiCurl)." - ".curl_error($apiCurl)."</p></div>");
+		$curlJSONResponse = curl_exec($curlData);
 
-		curl_close($apiCurl);
+		if (curl_error($curlData))
+			throw new HttpException(500, 'Unable to fetch data from GRAPPBOX API.');
+		curl_close($curlData);
 
-		$apiResult = json_decode($apiJSONResult, true);
-		switch ($apiResult) {
-
-			// API V0.2 UPDATE
-/*			case 'Bad Login':
-			$redirectResponse = new RedirectResponse("/");
-			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE', hash('sha256', '_badlogin'), 0, '/', null, false, false));
-			break;
-
-			case 'Bad Password':
-			$redirectResponse = new RedirectResponse("/");
-			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE', hash('sha256', '_badpassword'), 0, '/', null, false, false));
-			break;
-*/
-			default:
-			$redirectResponse = new RedirectResponse("/app");
-			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE', hash('sha256', '_success'), 0, '/', null, false, false));
-			$redirectResponse->headers->setCookie(new Cookie('USERTOKEN', $apiResult['data']['token'], 0, '/', null, false, false));
-			break;
+		$curlResponse = json_decode($curlJSONResponse, true);
+		if ($curlResponse['info']['return_code']) {
+			$redirectResponse = new RedirectResponse($curlResponse['info']['return_code'] == '1.14.1' ? '/app' : '/');
+			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE',
+				hash('sha256', ($curlResponse['info']['return_code'] == '1.14.1' ? '_success' : (strpos($curlResponse['info']['return_message'], 'password') ? '_badpassword' : '_badlogin'))), 0, '/', null, false, false));
+			$redirectResponse->headers->setCookie(new Cookie('USERTOKEN', ($curlResponse['info']['return_code'] == '1.14.1' ? $curlResponse['data']['token'] : ''), 0, '/', null, false, false));
 		}
+		else
+			throw new HttpException(500, 'Invalid JSON data format from GRAPPBOX API.');
 
 		return $redirectResponse;
 	}
@@ -74,18 +65,7 @@ class HomeController extends Controller
 		$loginForm->handleRequest($request);
 
 		if ($loginForm->isValid())
-		{
-			$apiContent = json_encode(
-				array(
-					"data" =>
-				array(
-					"login" => $loginForm["email"]->getData(),
-					"password" => $loginForm["password"]->getData()
-					)
-				));
-
-			return $this->loginRedirectAction($apiContent);
-		}
+			return $this->index_callLoginAPI(json_encode(array('data' => array('login' => $loginForm['email']->getData(), 'password' => $loginForm['password']->getData()))));
 
 		return $this->render('HomeBundle:Home:index.html.twig', array('loginForm' => $loginForm->createView()));
 	}
