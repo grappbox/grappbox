@@ -628,6 +628,16 @@ v2_project_getUserToProject:
         projectId: \d+
     methods: [GET]
 
+v2_project_changeProjectColor:
+    path:       projects/changeprojectcolor
+    defaults:   { _controller: 'GrappboxBundle:Project:changeProjectColor', _format: json }
+    methods: [PUT]
+
+v2_project_resetProjectColor:
+    path:       projects/resetprojectcolor/{token}/{projectId}
+    defaults:   { _controller: 'GrappboxBundle:Project:resetProjectColor', _format: json }
+    methods: [DELETE]
+
 
 
 

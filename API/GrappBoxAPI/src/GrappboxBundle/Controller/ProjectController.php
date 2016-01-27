@@ -16,6 +16,7 @@ use GrappboxBundle\Entity\Role;
 use GrappboxBundle\Entity\ProjectUserRole;
 use GrappboxBundle\Entity\Tag;
 use GrappboxBundle\Entity\Timeline;
+use GrappboxBundle\Entity\Color;
 
 /**
 *  @IgnoreAnnotation("apiName")
@@ -138,6 +139,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->setName($content->name);
 		$project->setCreatedAt(new \DateTime);
 		$project->setCreatorUser($user);
+		$project->setColor(dechex(rand(0x000000, 0xFFFFFF)));
 		if (array_key_exists('description', $content))
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
@@ -440,6 +442,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} contact_mail for the project
 	* @apiSuccess {String} facebook Facebook for the project
 	* @apiSuccess {String} twitter Twitter for the project
+	* @apiSuccess {String} color Color of the project
 	* @apiSuccess {Datetime} creation_date Date of creation of the project
 	* @apiSuccess {Datetime} deleted_at Date when the project will be deleted
 	*
@@ -515,11 +518,16 @@ class ProjectController extends RolesAndTokenVerificationController
 		$contactMail = $project->getContactEmail();
 		$facebook = $project->getFacebook();
 		$twitter = $project->getTwitter();
+		$color = $em->getRepository('GrappboxBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		if ($color === null)
+			$color = $project->getColor();
+		else
+			$color = $color->getColor();
 		$creation = $project->getCreatedAt();
 		$deletedAt = $project->getDeletedAt();
 
 		return $this->setSuccess("1.6.1", "Project", "getinformations", "Complete Success", array("name" => $name, "description" => $description, "logo" => $logo, "phone" => $phone,
-			"company" => $company , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "creation_date" => $creation, "deleted_at" => $deletedAt));
+			"company" => $company , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "color" => $color, "creation_date" => $creation, "deleted_at" => $deletedAt));
 	}
 
 	/**
@@ -1319,8 +1327,8 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"array": [
 	*				{
 	*					"id": 3,
-	*					"first_name": "John",
-	*					"last_name": "Doe"
+	*					"firstname": "John",
+	*					"lastname": "Doe"
 	*				}
 	*			]
 	*		}
@@ -1390,5 +1398,163 @@ class ProjectController extends RolesAndTokenVerificationController
 		}
 
 		return $this->setSuccess("1.6.1", "Project", "getusertoproject", "Complete Success", array("array" => $arr));
+	}
+
+	/**
+	* @api {put} /V0.2/projects/changeprojectcolor Change the color of a project
+	* @apiName changeProjectColor
+	* @apiGroup Project
+	* @apiDescription Change the color of a project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {String} color Color of the project, in hexadecimal
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "nfeq34efbfkqf54",
+	*			"projectId": 2,
+	*			"color": "bd2487"
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - changeprojectcolor - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.3",
+	*			"return_message": "Project - changeprojectcolor - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.6",
+	*			"return_message": "Project - changeprojectcolor - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.4",
+	*			"return_message": "Project - changeprojectcolor - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
+	public function changeProjectColorAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('color', $content))
+			return $this->setBadRequest("6.13.6", "Project", "changeprojectcolor", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("6.13.3", "Project", "changeprojectcolor"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($content->projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("6.13.4", "Project", "changeprojectcolor", "Bad Parameter: projectId");
+
+		$color = $em->getRepository('GrappboxBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		if ($color === null)
+		{
+			$color = new Color();
+			$color->setUser($user);
+			$color->setProject($project);
+			$em->persist($color);
+		}
+
+		$color->setColor($content->color);
+		$em->flush();
+
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - changeprojectcolor - Complete Success";
+		return new JsonResponse($response);
+	}
+
+	/**
+	* @api {delete} /V0.2/projects/resetprojectcolor/:token/:projectId Reset the color of the project
+	* @apiName resetProjectColor
+	* @apiGroup Project
+	* @apiDescription Reset the color of the given project to the default one
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - resetprojectcolor - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.3",
+	*			"return_message": "Project - resetprojectcolor - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.4",
+	*			"return_message": "Project - resetprojectcolor - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: No color for the user
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.4",
+	*			"return_message": "Project - resetprojectcolor - Bad Parameter: No color for the user"
+	*		}
+	*	}
+	*/
+	public function resetProjectColorAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("6.10.3", "Project", "resetprojectcolor"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: projectId");
+
+		$color = $em->getRepository('GrappboxBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		if ($color === null)
+			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: No color for the user");
+
+		$em->remove($color);
+		$em->flush();
+
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - resetprojectcolor - Complete Success";
+		return new JsonResponse($response);
 	}
 }

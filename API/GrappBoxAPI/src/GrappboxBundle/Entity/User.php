@@ -851,4 +851,42 @@ class User implements UserInterface
     {
         return $this->task_creator;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $colors;
+
+
+    /**
+     * Add colors
+     *
+     * @param \GrappboxBundle\Entity\Color $colors
+     * @return User
+     */
+    public function addColor(\GrappboxBundle\Entity\Color $colors)
+    {
+        $this->colors[] = $colors;
+
+        return $this;
+    }
+
+    /**
+     * Remove colors
+     *
+     * @param \GrappboxBundle\Entity\Color $colors
+     */
+    public function removeColor(\GrappboxBundle\Entity\Color $colors)
+    {
+        $this->colors->removeElement($colors);
+    }
+
+    /**
+     * Get colors
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getColors()
+    {
+        return $this->colors;
+    }
 }
