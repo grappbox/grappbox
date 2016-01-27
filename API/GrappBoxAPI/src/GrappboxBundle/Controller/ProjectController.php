@@ -463,6 +463,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"contact_mail": "contact@grappbox.com",
 	*			"facebook": "https://facebook.com/Grappbox",
 	*			"twitter": "https://twitter.com/Grappbox",
+	*			"color": "12ff52",
 	*			"creation_date":
 	*			{
 	*				"date":"2015-10-15 11:00:00",
