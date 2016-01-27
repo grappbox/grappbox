@@ -40,17 +40,29 @@ class PlanningController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} events list of events
 	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {int} events.projectId project id of the event (could be null)
+	* @apiSuccess {Object} events.creator Event type object
+	* @apiSuccess {int} events.creator.id creator id
+	* @apiSuccess {string} events.creator.fullname creator fullname
 	* @apiSuccess {Object} events.type Event type object
 	* @apiSuccess {int} events.type.id Event type id
 	* @apiSuccess {string} events.type.name Event type name
 	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {string} events.description event description
 	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
 	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	*	@apiSuccess {DateTime} events.createdAt date of creation of the event
+	*	@apiSuccess {DateTime} events.editedAt date of edition of the event
+	*	@apiSuccess {DateTime} events.deletedAt date of deletion of the event
 	* @apiSuccess {Object[]} tasks list of tasks
 	* @apiSuccess {int} tasks.id task id
+	* @apiSuccess {int} tasks.creatorId creator id
 	*	@apiSuccess {string} tasks.title event title
-	*	@apiSuccess {DateTime} tasks.startedAt date when the task started
+	*	@apiSuccess {string} tasks.description task description
+	*	@apiSuccess {DateTime} tasks.startedAt date when the task was started
 	*	@apiSuccess {DateTime} tasks.dueDate deadline date of the task
+	*	@apiSuccess {DateTime} tasks.finishedAt date when the task was finished
+	*	@apiSuccess {int} tasks.projectId project's id
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -64,20 +76,30 @@ class PlanningController extends RolesAndTokenVerificationController
 	*				"events": [
 	*					{
 	*					"id": 12,
+	*					"projectId": 1,
+	*					"creator": {"id": 1, "fullname": "John Doe"},
 	*					"type": {"id": 1, "name": "Event"},
 	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
 	*					"icon": "100011001010...",
 	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"createdAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"editedAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"deletedAt": null
 	*					},
 	*					...
 	*				],
 	*				"tasks": [
 	*					{
 	*					"id": 12,
+	*					"creatorId": 10,
 	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
 	*					"startedAt":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"finishedAt": null,
+	*					"projectId": 1
 	*					},
 	*					...
 	*				]
@@ -128,17 +150,18 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$events = array();
 		foreach ($query as $key => $value) {
-			$events[] = array(
-				"id" => $value->getId(),
-				"type" => array(
-					"id" => $value->getEventtypes()->getId(),
-					"name" => $value->getEventtypes()->getName()
-				),
-				"title" => $value->getTitle(),
-				"icon" => $value->getIcon(),
-				"beginDate" => $value->getBeginDate(),
-				"endDate" => $value->getEndDate()
-			);
+			$events[] = $value->objectToArray();
+			// $events[] = array(
+			// 	"id" => $value->getId(),
+			// 	"type" => array(
+			// 		"id" => $value->getEventtypes()->getId(),
+			// 		"name" => $value->getEventtypes()->getName()
+			// 	),
+			// 	"title" => $value->getTitle(),
+			// 	"icon" => $value->getIcon(),
+			// 	"beginDate" => $value->getBeginDate(),
+			// 	"endDate" => $value->getEndDate()
+			// );
 		}
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
@@ -153,12 +176,13 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$tasks = array();
 		foreach ($query as $key => $value) {
-			$events[] = array(
-				"id" => $value->getId(),
-				"title" => $value->getTitle(),
-				"startedAt" => $value->getStartedAt(),
-				"dueDate" => $value->getDueDate()
-			);
+			$tasks[] = $value->objectToArray();
+			// $tasks[] = array(
+			// 	"id" => $value->getId(),
+			// 	"title" => $value->getTitle(),
+			// 	"startedAt" => $value->getStartedAt(),
+			// 	"dueDate" => $value->getDueDate()
+			// );
 		}
 
 		if (count($events) <= 0 && count($tasks) <= 0)
@@ -179,17 +203,29 @@ class PlanningController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} events list of events
 	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {int} events.projectId project id of the event (could be null)
+	* @apiSuccess {Object} events.creator Event type object
+	* @apiSuccess {int} events.creator.id creator id
+	* @apiSuccess {string} events.creator.fullname creator fullname
 	* @apiSuccess {Object} events.type Event type object
 	* @apiSuccess {int} events.type.id Event type id
 	* @apiSuccess {string} events.type.name Event type name
 	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {string} events.description event description
 	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
 	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	*	@apiSuccess {DateTime} events.createdAt date of creation of the event
+	*	@apiSuccess {DateTime} events.editedAt date of edition of the event
+	*	@apiSuccess {DateTime} events.deletedAt date of deletion of the event
 	* @apiSuccess {Object[]} tasks list of tasks
 	* @apiSuccess {int} tasks.id task id
+	* @apiSuccess {int} tasks.creatorId creator id
 	*	@apiSuccess {string} tasks.title event title
-	*	@apiSuccess {DateTime} tasks.startedAt date when the task started
+	*	@apiSuccess {string} tasks.description task description
+	*	@apiSuccess {DateTime} tasks.startedAt date when the task was started
 	*	@apiSuccess {DateTime} tasks.dueDate deadline date of the task
+	*	@apiSuccess {DateTime} tasks.finishedAt date when the task was finished
+	*	@apiSuccess {int} tasks.projectId project's id
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -203,20 +239,30 @@ class PlanningController extends RolesAndTokenVerificationController
 	*				"events": [
 	*					{
 	*					"id": 12,
+	*					"projectId": 1,
+	*					"creator": {"id": 1, "fullname": "John Doe"},
 	*					"type": {"id": 1, "name": "Event"},
 	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
 	*					"icon": "100011001010...",
 	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"createdAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"editedAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"deletedAt": null
 	*					},
 	*					...
 	*				],
 	*				"tasks": [
 	*					{
 	*					"id": 12,
+	*					"creatorId": 10,
 	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
 	*					"startedAt":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"finishedAt": null,
+	*					"projectId": 1
 	*					},
 	*					...
 	*				]
@@ -267,16 +313,17 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$events = array();
 		foreach ($query as $key => $value) {
-			$events[] = array(
-				"id" => $value->getId(),
-				"type" => array(
-					"id" => $value->getEventtypes()->getId(),
-					"name" => $value->getEventtypes()->getName()
-				),
-				"title" => $value->getTitle(),
-				"beginDate" => $value->getBeginDate(),
-				"endDate" => $value->getEndDate()
-			);
+			$events[] = $value->objectToArray();
+			// $events[] = array(
+			// 	"id" => $value->getId(),
+			// 	"type" => array(
+			// 		"id" => $value->getEventtypes()->getId(),
+			// 		"name" => $value->getEventtypes()->getName()
+			// 	),
+			// 	"title" => $value->getTitle(),
+			// 	"beginDate" => $value->getBeginDate(),
+			// 	"endDate" => $value->getEndDate()
+			// );
 		}
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
@@ -291,12 +338,13 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$tasks = array();
 		foreach ($query as $key => $value) {
-			$events[] = array(
-				"id" => $value->getId(),
-				"title" => $value->getTitle(),
-				"startedAt" => $value->getStartedAt(),
-				"dueDate" => $value->getDueDate()
-			);
+			$tasks[] = $value->objectToArray();
+			// $tasks[] = array(
+			// 	"id" => $value->getId(),
+			// 	"title" => $value->getTitle(),
+			// 	"startedAt" => $value->getStartedAt(),
+			// 	"dueDate" => $value->getDueDate()
+			// );
 		}
 
 		if (count($events) <= 0 && count($tasks) <= 0)
@@ -317,17 +365,29 @@ class PlanningController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} events list of events
 	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {int} events.projectId project id of the event (could be null)
+	* @apiSuccess {Object} events.creator Event type object
+	* @apiSuccess {int} events.creator.id creator id
+	* @apiSuccess {string} events.creator.fullname creator fullname
 	* @apiSuccess {Object} events.type Event type object
 	* @apiSuccess {int} events.type.id Event type id
 	* @apiSuccess {string} events.type.name Event type name
 	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {string} events.description event description
 	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
 	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	*	@apiSuccess {DateTime} events.createdAt date of creation of the event
+	*	@apiSuccess {DateTime} events.editedAt date of edition of the event
+	*	@apiSuccess {DateTime} events.deletedAt date of deletion of the event
 	* @apiSuccess {Object[]} tasks list of tasks
 	* @apiSuccess {int} tasks.id task id
+	* @apiSuccess {int} tasks.creatorId creator id
 	*	@apiSuccess {string} tasks.title event title
-	*	@apiSuccess {DateTime} tasks.startedAt date when the task started
+	*	@apiSuccess {string} tasks.description task description
+	*	@apiSuccess {DateTime} tasks.startedAt date when the task was started
 	*	@apiSuccess {DateTime} tasks.dueDate deadline date of the task
+	*	@apiSuccess {DateTime} tasks.finishedAt date when the task was finished
+	*	@apiSuccess {int} tasks.projectId project's id
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -341,20 +401,30 @@ class PlanningController extends RolesAndTokenVerificationController
 	*				"events": [
 	*					{
 	*					"id": 12,
+	*					"projectId": 1,
+	*					"creator": {"id": 1, "fullname": "John Doe"},
 	*					"type": {"id": 1, "name": "Event"},
 	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
 	*					"icon": "100011001010...",
 	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"createdAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"editedAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"deletedAt": null
 	*					},
 	*					...
 	*				],
 	*				"tasks": [
 	*					{
 	*					"id": 12,
+	*					"creatorId": 10,
 	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
 	*					"startedAt":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
+	*					"dueDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"finishedAt": null,
+	*					"projectId": 1
 	*					},
 	*					...
 	*				]
@@ -405,16 +475,17 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$events = array();
 		foreach ($query as $key => $value) {
-			$events[] = array(
-				"id" => $value->getId(),
-				"type" => array(
-					"id" => $value->getEventtypes()->getId(),
-					"name" => $value->getEventtypes()->getName()
-				),
-				"title" => $value->getTitle(),
-				"beginDate" => $value->getBeginDate(),
-				"endDate" => $value->getEndDate()
-			);
+			$events[] = $value->objectToArray();
+			// $events[] = array(
+			// 	"id" => $value->getId(),
+			// 	"type" => array(
+			// 		"id" => $value->getEventtypes()->getId(),
+			// 		"name" => $value->getEventtypes()->getName()
+			// 	),
+			// 	"title" => $value->getTitle(),
+			// 	"beginDate" => $value->getBeginDate(),
+			// 	"endDate" => $value->getEndDate()
+			// );
 		}
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
@@ -429,12 +500,13 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$tasks = array();
 		foreach ($query as $key => $value) {
-			$events[] = array(
-				"id" => $value->getId(),
-				"title" => $value->getTitle(),
-				"startedAt" => $value->getStartedAt(),
-				"dueDate" => $value->getDueDate()
-			);
+			$tasks[] = $value->objectToArray();
+			// $tasks[] = array(
+			// 	"id" => $value->getId(),
+			// 	"title" => $value->getTitle(),
+			// 	"startedAt" => $value->getStartedAt(),
+			// 	"dueDate" => $value->getDueDate()
+			// );
 		}
 
 		if (count($events) <= 0 && count($tasks) <= 0)

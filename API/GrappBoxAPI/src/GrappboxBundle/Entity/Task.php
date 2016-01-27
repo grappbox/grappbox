@@ -88,15 +88,14 @@ class Task
         'dueDate' => $this->dueDate ,
         'startedAt' => $this->startedAt ,
         'finishedAt' => $this->finishedAt ,
-        'projectId' => $this->projects->id ,
-        //'users' => $this-> ,  TODO: array of users_id and/or user_name assigned to this tasks
+        'projectId' => $this->projects->id
       );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -119,7 +118,7 @@ class Task
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -142,7 +141,7 @@ class Task
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -165,7 +164,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDueDate()
     {
@@ -188,7 +187,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStartedAt()
     {
@@ -211,7 +210,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFinishedAt()
     {
@@ -234,7 +233,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -257,7 +256,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -280,7 +279,7 @@ class Task
     /**
      * Get projects
      *
-     * @return \GrappboxBundle\Entity\Project 
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -303,7 +302,7 @@ class Task
     /**
      * Get creator_user
      *
-     * @return \GrappboxBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getCreatorUser()
     {
@@ -336,7 +335,7 @@ class Task
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -369,7 +368,7 @@ class Task
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTags()
     {
