@@ -98,25 +98,27 @@ $(document).ready(function() {
     function getLoginState() {
         var loginState = Cookies.get("LASTLOGINMESSAGE");
 
-        if (loginState != undefined && loginState != sha256('_success')) {
+        if (loginState != undefined && loginState != sha512('_success')) {
             switch(loginState) {
-                case sha256("_badlogin"):
+                case sha512("_BADLOGIN"):
                 $('#form_alert p').text("Sorry, GrappBox didn't recognize the email you entered.");
                 break;
 
-                case sha256("_badpassword"):
+                case sha512("_BADPASSWORD"):
                 $('#form_alert p').text("The email and password you entered don't match.");
                 break;
 
-                case sha256("_missing"):
+                case sha512("_DENIED"):
                 $('#form_alert p').text("Sign in to continue to Grappbox.");
                 break;
 
                 default:
                 break;
             }
+            Cookies.remove("LASTLOGINMESSAGE", { path: '/' });
+            Cookies.remove("USERTOKEN", { path: '/' });
+
             $('#form_alert').addClass('show');
-            Cookies.remove("LASTLOGINMESSAGE");                
         }
     }
 

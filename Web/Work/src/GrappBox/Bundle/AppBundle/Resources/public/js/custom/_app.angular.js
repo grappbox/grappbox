@@ -66,12 +66,13 @@ app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($ro
 	$rootScope.apiBaseURL = 'http://api.grappbox.com/app_dev.php/' + $rootScope.apiVersion;
 
 	// On route change (start)
+	// NOTE: angular.cookies.remove not 1.4.9+ conflicting with server-side cookies (Symfony), using angular.cookie.put('') instead.
 	$rootScope.$on('$routeChangeStart', function() {
-		if (!$cookies.get('USERTOKEN') || !$cookies.get('LASTLOGINMESSAGE')) {
+		if (!$cookies.get('LASTLOGINMESSAGE')) {
 			if ($cookies.get('USERTOKEN'))
 				$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN'));
-			_removeUserCookies($cookies);
-			$cookies.put('LASTLOGINMESSAGE', sha256('_missing'), { path: '/' });
+			$cookies.put('LASTLOGINMESSAGE', sha512('_DENIED'), { path: '/' });
+			$cookies.remove('USERTOKEN', { path: '/' });
 			$window.location.href='/#login';
 		}
 	});
@@ -82,18 +83,3 @@ app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($ro
 	// On route change (error)
 	$rootScope.$on('$routeChangeError', function() { });
 }]);
-
-
-/**
-* Routine definition
-* Clean all cookies
-*
-*/
-var _removeUserCookies = function($cookies) {
-	var cookies = $cookies.getAll();
-	for (var key in cookies) {
-		$cookies.remove(key, { path: '/' });
-	};
-};
-
-_removeUserCookies['$inject'] = ['$cookies'];

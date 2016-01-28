@@ -9,17 +9,17 @@
 namespace GrappBox\Bundle\HomeBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use GrappBox\Bundle\HomeBundle\Form\Extension;
 
 
 class HomeController extends Controller
 {
-	private function index_callLoginAPI($formData)
+	private function index_setLoginAPI($formData)
 	{
 		$APIBaseURL = 'http://api.grappbox.com/app_dev.php/';
 		$APIBaseVersion = 'V0.2';
@@ -36,14 +36,15 @@ class HomeController extends Controller
 
 		if (curl_error($curlData))
 			throw new HttpException(500, 'Unable to fetch data from GRAPPBOX API.');
-		curl_close($curlData);
 
+		curl_close($curlData);
 		$curlResponse = json_decode($curlJSONResponse, true);
+
 		if ($curlResponse['info']['return_code']) {
 			$redirectResponse = new RedirectResponse($curlResponse['info']['return_code'] == '1.14.1' ? '/app' : '/');
 			$redirectResponse->headers->setCookie(new Cookie('LASTLOGINMESSAGE',
-				hash('sha256', ($curlResponse['info']['return_code'] == '1.14.1' ? '_success' : (strpos($curlResponse['info']['return_message'], 'password') ? '_badpassword' : '_badlogin'))), 0, '/', null, false, false));
-			$redirectResponse->headers->setCookie(new Cookie('USERTOKEN', ($curlResponse['info']['return_code'] == '1.14.1' ? $curlResponse['data']['token'] : ''), 0, '/', null, false, false));
+				hash('sha512', ($curlResponse['info']['return_code'] == '1.14.1' ? '_SUCCESS' : (strpos($curlResponse['info']['return_message'], 'password') ? '_BADPASSWORD' : '_BADLOGIN'))), 0, '/', null, false, false));
+			$redirectResponse->headers->setCookie(new Cookie('USERTOKEN', ($curlResponse['info']['return_code'] == '1.14.1' ? $curlResponse['data']['token'] : null), 0, '/', null, false, false));
 		}
 		else
 			throw new HttpException(500, 'Invalid JSON data format from GRAPPBOX API.');
@@ -65,7 +66,7 @@ class HomeController extends Controller
 		$loginForm->handleRequest($request);
 
 		if ($loginForm->isValid())
-			return $this->index_callLoginAPI(json_encode(array('data' => array('login' => $loginForm['email']->getData(), 'password' => $loginForm['password']->getData()))));
+			return $this->index_setLoginAPI(json_encode(array('data' => array('login' => $loginForm['email']->getData(), 'password' => $loginForm['password']->getData()))));
 
 		return $this->render('HomeBundle:Home:index.html.twig', array('loginForm' => $loginForm->createView()));
 	}

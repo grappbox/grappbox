@@ -2,12 +2,12 @@ app_home:
     path:     /
     defaults: { _controller: AppBundle:App:index }
 
-app_angular:
+app_routing:
     path: /{url}
-    defaults: { _controller: AppBundle:AppRouting:angularRouteManagement }
+    defaults: { _controller: AppBundle:App:index_setAngularRouteManagement }
 
-app_angular_advanced:
+app_routing_advanced:
     path: /{url}/{parameters}
-    defaults: { _controller: AppBundle:AppRouting:angularRouteManagement }
+    defaults: { _controller: AppBundle:App:index_setAngularRouteManagement }
     requirements:
       parameters: ".+"
