@@ -117,7 +117,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	* @api {get} /V0.2/dashboard/getnextmeetings/:token Get next meetings
 	* @apiName getNextMeetings
 	* @apiGroup Dashboard
-	* @apiDescription Get all next meetings of the connected user
+	* @apiDescription Get all next meetings, in 7 days, of the connected user
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
