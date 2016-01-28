@@ -620,7 +620,9 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$firstName = $user->getFirstname();
 		$lastName = $user->getLastname();
-		$birthday = $user->getBirthday()->format('Y-m-d');
+		$birthday = $user->getBirthday();
+		if ($birthday != null)
+			$birthday = $birthday->format('Y-m-d');
 		$avatar = $user->getAvatar();
 		$mail = $user->getEmail();
 		$phone = $user->getPhone();
