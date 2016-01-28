@@ -5,7 +5,9 @@
 #include <QLabel>
 #include <QStyle>
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QDateTime>
+#include "PushButtonImage.h"
 
 struct Event
 {
@@ -68,11 +70,19 @@ class CalendarEvent : public QWidget
 public:
     explicit CalendarEvent(Event event, QWidget *parent = 0);
 
-    const Event &GetEvent() const;
+	const Event &GetEvent() const;
+
+protected:
+	void enterEvent(QEvent *event);
+	void leaveEvent(QEvent *event);
+	void mousePressEvent(QMouseEvent * event);
 
 signals:
 
-public slots:
+public slots :
+	void OnEdit();
+	void OnDelete();
+	void OnQuit();
 
 private:
     Event _Event;
@@ -80,6 +90,16 @@ private:
     QHBoxLayout *_MainLayout;
 
     QLabel *_Label;
+
+	QWidget *_Popup;
+	QGridLayout *_MainLayoutPopup;
+	QLabel *_Title;
+	QLabel *_Description;
+	QLabel *_Date;
+	QLabel *_ProjectLinked;
+	QPushButton *_Edit;
+	QPushButton *_Delete;
+	PushButtonImage *_Quit;
 };
 
 #endif // CALENDAREVENT_H

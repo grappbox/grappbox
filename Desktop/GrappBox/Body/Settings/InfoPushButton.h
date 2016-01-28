@@ -2,6 +2,7 @@
 #define INFOPUSHBUTTON_H
 
 #include <QPushButton>
+#include <QWidget>
 
 class InfoPushButton : public QPushButton
 {

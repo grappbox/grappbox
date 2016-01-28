@@ -1,5 +1,5 @@
 #ifndef BODYWHITEBOARD_H
-#define BODYWHIT
+#define BODYWHITEBOARD_H
 
 #include "WhiteboardButtonChoice.h"
 #include "whiteboardcanvas.h"

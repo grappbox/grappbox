@@ -143,7 +143,7 @@ const QList<int> BugViewCategoryWidget::GetAllAssignee() const
     return idAssigned;
 }
 
-void BugViewCategoryWidget::TriggerCreateSuccess(int UNUSED id, QByteArray data)
+void BugViewCategoryWidget::TriggerCreateSuccess(int  id, QByteArray data)
 {
     QJsonObject json = QJsonDocument::fromJson(data).object();
     BugCheckableLabel *newItem;
@@ -158,7 +158,7 @@ void BugViewCategoryWidget::TriggerCreateSuccess(int UNUSED id, QByteArray data)
     this->update();
 }
 
-void BugViewCategoryWidget::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
+void BugViewCategoryWidget::TriggerAPIFailure(int  id, QByteArray  data)
 {
     QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
     _creationCategory->setEnabled(true);
@@ -200,7 +200,7 @@ QLabel *BugViewCategoryWidget::SearchLabel(int id)
     return nullptr;
 }
 
-void BugViewCategoryWidget::TriggerAssignSuccess(int id, QByteArray UNUSED data)
+void BugViewCategoryWidget::TriggerAssignSuccess(int id, QByteArray  data)
 {
     BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignationWait[id]);
     QLabel *newLabel = new QLabel(checkbox->GetName());
@@ -209,7 +209,7 @@ void BugViewCategoryWidget::TriggerAssignSuccess(int id, QByteArray UNUSED data)
     _apiAssignationWait.remove(id);
 }
 
-void BugViewCategoryWidget::TriggerAssignFailure(int id, QByteArray UNUSED data)
+void BugViewCategoryWidget::TriggerAssignFailure(int id, QByteArray  data)
 {
     BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignationWait[id]);
 
@@ -218,7 +218,7 @@ void BugViewCategoryWidget::TriggerAssignFailure(int id, QByteArray UNUSED data)
     TriggerAPIFailure(id, data);
 }
 
-void BugViewCategoryWidget::TriggerUnAssignSuccess(int id, QByteArray UNUSED data)
+void BugViewCategoryWidget::TriggerUnAssignSuccess(int id, QByteArray  data)
 {
     QLabel *lbl = SearchLabel(_apiAssignationWait[id]);
     QLayoutItem *item;
@@ -236,7 +236,7 @@ void BugViewCategoryWidget::TriggerUnAssignSuccess(int id, QByteArray UNUSED dat
     _apiAssignationWait.remove(id);
 }
 
-void BugViewCategoryWidget::TriggerUnAssignFailure(int id, QByteArray UNUSED data)
+void BugViewCategoryWidget::TriggerUnAssignFailure(int id, QByteArray  data)
 {
     BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignationWait[id]);
 

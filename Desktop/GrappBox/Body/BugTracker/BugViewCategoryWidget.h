@@ -18,7 +18,6 @@
 #include <QMap>
 #include <QDebug>
 
-#define UNUSED __attribute__((unused))
 #define ITEM_ID         "id"
 #define ITEM_ASSIGNED   "assigned"
 #define ITEM_NAME       "name"

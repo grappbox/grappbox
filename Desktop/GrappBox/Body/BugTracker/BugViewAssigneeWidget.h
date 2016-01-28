@@ -18,7 +18,6 @@
 #include <QMessageBox>
 #include <QMap>
 
-#define UNUSED __attribute__((unused))
 #define ITEM_ID         "id"
 #define ITEM_ASSIGNED   "assigned"
 #define ITEM_FIRSTNAME  "first_name"

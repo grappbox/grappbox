@@ -16,14 +16,14 @@
 
 enum GraphicsType
 {
-    LINE = 0,
-    RECT = 1,
-    CIRCLE = 2,
-    LOZENGE = 3,
-    HAND_WRITE = 5,
-    TEXT = 6,
-    ERASER = 8,
-    NONE = -1
+    GT_LINE = 0,
+    GT_RECT = 1,
+    GT_CIRCLE = 2,
+	GT_LOZENGE = 3,
+	GT_HAND_WRITE = 5,
+	GT_TEXT = 6,
+	GT_ERASER = 8,
+	GT_NONE = -1
 };
 
 class WhiteboardCanvas : public QGraphicsScene

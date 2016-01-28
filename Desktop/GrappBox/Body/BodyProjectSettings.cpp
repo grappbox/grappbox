@@ -164,16 +164,16 @@ void BodyProjectSettings::PassToStaticMode()
     }
     else
         data.append("");
-    _api->Put(API::DP_PROJECT, API::PUTR_ProjectSettings, data, this, "SetProjectSuccess", "Failure");
+    _api->Put(API::DP_PROJECT, API::PUTR_PROJECTSETTINGS, data, this, "SetProjectSuccess", "Failure");
 }
 
-void BodyProjectSettings::Failure(int UNUSED id , QByteArray data)
+void BodyProjectSettings::Failure(int  id , QByteArray data)
 {
     QMessageBox::critical(this, "Internal Error", "Fail to retreive data from internet");
     qDebug() << data;
 }
 
-void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
+void BodyProjectSettings::GetSettingsSuccess(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
@@ -230,7 +230,7 @@ void BodyProjectSettings::GetSettingsSuccess(int UNUSED id, QByteArray data)
     _api->Get(API::DP_PROJECT, API::GR_CUSTOMER_ACCESSES, dataRole, this, "GetCustomerAccessSuccess", "Failure");
 }
 
-void BodyProjectSettings::GetRolesSuccess(int UNUSED id, QByteArray data)
+void BodyProjectSettings::GetRolesSuccess(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
@@ -249,7 +249,7 @@ void BodyProjectSettings::GetRolesSuccess(int UNUSED id, QByteArray data)
     }
 }
 
-void BodyProjectSettings::GetUsersSuccess(int UNUSED id, QByteArray data)
+void BodyProjectSettings::GetUsersSuccess(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
@@ -302,12 +302,12 @@ void BodyProjectSettings::RetreiveProject()
     _api->Get(API::DP_PROJECT, API::GR_PROJECT_CANCEL_DELETE, data, this, "RetreiveProjectSuccess", "Failure");
 }
 
-void BodyProjectSettings::DeleteProjectSuccess(int UNUSED id, QByteArray UNUSED data)
+void BodyProjectSettings::DeleteProjectSuccess(int  id, QByteArray  data)
 {
     QMessageBox::information(this, tr("Project deleted"), tr("Project successfully deleted, you have 7 days to retreive it."));
 }
 
-void BodyProjectSettings::RetreiveProjectSuccess(int UNUSED id, QByteArray UNUSED data)
+void BodyProjectSettings::RetreiveProjectSuccess(int  id, QByteArray  data)
 {
     QMessageBox::information(this, tr("Project retreived"), tr("Project successfully retreived."));
 }

@@ -168,12 +168,12 @@ void BugViewAssigneeWidget::SetBugId(int bugId)
     _bugId = bugId;
 }
 
-void BugViewAssigneeWidget::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
+void BugViewAssigneeWidget::TriggerAPIFailure(int  id, QByteArray  data)
 {
     QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
 }
 
-void BugViewAssigneeWidget::TriggerAssignFailure(int id, QByteArray UNUSED data)
+void BugViewAssigneeWidget::TriggerAssignFailure(int id, QByteArray  data)
 {
     BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignWaiting[id]);
 
@@ -182,7 +182,7 @@ void BugViewAssigneeWidget::TriggerAssignFailure(int id, QByteArray UNUSED data)
     TriggerAPIFailure(id, data);
 }
 
-void BugViewAssigneeWidget::TriggerAssignSuccess(int id, QByteArray UNUSED data)
+void BugViewAssigneeWidget::TriggerAssignSuccess(int id, QByteArray  data)
 {
     BugCheckableLabel *checkbox = nullptr;
     QLabel *newLabel = new QLabel();
@@ -194,7 +194,7 @@ void BugViewAssigneeWidget::TriggerAssignSuccess(int id, QByteArray UNUSED data)
     _apiAssignWaiting.remove(id);
 }
 
-void BugViewAssigneeWidget::TriggerUnAssignFailure(int id, QByteArray UNUSED data)
+void BugViewAssigneeWidget::TriggerUnAssignFailure(int id, QByteArray  data)
 {
     BugCheckableLabel *checkbox = SearchCheckbox(_apiAssignWaiting[id]);
 
@@ -203,7 +203,7 @@ void BugViewAssigneeWidget::TriggerUnAssignFailure(int id, QByteArray UNUSED dat
     TriggerAPIFailure(id, data);
 }
 
-void BugViewAssigneeWidget::TriggerUnAssignSuccess(int id, QByteArray UNUSED data)
+void BugViewAssigneeWidget::TriggerUnAssignSuccess(int id, QByteArray  data)
 {
     QLabel *lbl = SearchLabel(_apiAssignWaiting[id]);
     QLayoutItem *item;

@@ -196,12 +196,12 @@ void BodyBugVisualize::AddCommentsAtStart(const QList<QJsonObject> &comments)
 
 }
 
-void BodyBugVisualize::TriggerIssueClosed(int UNUSED bugId)
+void BodyBugVisualize::TriggerIssueClosed(int  bugId)
 {
     _mainApp->TriggerChangePage(BodyBugTracker::BUGLIST, nullptr);
 }
 
-void BodyBugVisualize::TriggerGotComments(int UNUSED id, QByteArray data)
+void BodyBugVisualize::TriggerGotComments(int  id, QByteArray data)
 {
     QJsonObject json = QJsonDocument::fromJson(data).object();
     QJsonArray comments = json["comments"].toArray();
@@ -244,7 +244,7 @@ void BodyBugVisualize::TriggerCommentButtonReleased(BugViewPreviewWidget *previe
     previewWidget->SetCommentTitle("");
 }
 
-void BodyBugVisualize::TriggerPushCommentSuccess(int UNUSED id, QByteArray data)
+void BodyBugVisualize::TriggerPushCommentSuccess(int  id, QByteArray data)
 {
     QJsonObject com = QJsonDocument::fromJson(data).object()["comment"].toObject();
     QDateTime editedAt = QDateTime::fromString(com["editedAt"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
@@ -262,12 +262,12 @@ void BodyBugVisualize::TriggerPushCommentSuccess(int UNUSED id, QByteArray data)
     this->AddCommentsAtStart(comList);
 }
 
-void BodyBugVisualize::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
+void BodyBugVisualize::TriggerAPIFailure(int  id, QByteArray  data)
 {
     QMessageBox::critical(this, tr("Connexion to Grappbox server failed"), tr("We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com"));
 }
 
-void BodyBugVisualize::TriggerGotBug(int UNUSED id, QByteArray data)
+void BodyBugVisualize::TriggerGotBug(int  id, QByteArray data)
 {
     QVector<QString> userProjectData;
     QDateTime date;
@@ -288,7 +288,7 @@ void BodyBugVisualize::TriggerGotBug(int UNUSED id, QByteArray data)
     API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL, userProjectData, this, "TriggerGotTagProject", "TriggerAPIFailure");
 }
 
-void BodyBugVisualize::TriggerGotUserProject(int UNUSED id, QByteArray data)
+void BodyBugVisualize::TriggerGotUserProject(int  id, QByteArray data)
 {
     QJsonObject json = QJsonDocument::fromJson(data).object();
     QJsonArray users = _bugData["users"].toArray();
@@ -329,7 +329,7 @@ void BodyBugVisualize::TriggerGotUserProject(int UNUSED id, QByteArray data)
     _assignees->SetBugId(_bugId);
 }
 
-void BodyBugVisualize::TriggerGotTagProject(int UNUSED id, QByteArray data)
+void BodyBugVisualize::TriggerGotTagProject(int  id, QByteArray data)
 {
     QJsonObject json = QJsonDocument::fromJson(data).object();
     QList<QJsonObject> tagProjects;
@@ -380,7 +380,7 @@ void BodyBugVisualize::TriggerSaveTitle(int bugId)
     API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_EDIT_BUG, data, this, "TriggerDoNothing", "TriggerAPIFailure");
 }
 
-void BodyBugVisualize::TriggerDoNothing(int UNUSED id, QByteArray UNUSED data)
+void BodyBugVisualize::TriggerDoNothing(int  id, QByteArray  data)
 {
 
 }

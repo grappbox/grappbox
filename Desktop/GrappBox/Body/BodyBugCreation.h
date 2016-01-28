@@ -15,7 +15,6 @@
 #include <QList>
 #include <QJsonObject>
 
-#define UNUSED __attribute__((unused))
 #define PH_ASSIGNATION  tr("Assign")
 #define PH_BACK         tr("Back")
 

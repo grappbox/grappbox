@@ -38,7 +38,7 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
     this->setStyleSheet(style);
 }
 
-void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *dataPage)
+void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject  *dataPage)
 {
     QVector<QString> data;
 
@@ -120,7 +120,7 @@ void BodyBugList::TriggerNewIssue()
 }
 
 //API Slots
-void BodyBugList::OnGetBugListClosedSuccess(int UNUSED id, QByteArray data)
+void BodyBugList::OnGetBugListClosedSuccess(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
@@ -141,7 +141,7 @@ void BodyBugList::OnGetBugListClosedSuccess(int UNUSED id, QByteArray data)
     emit OnLoadingDone(BodyBugTracker::BUGLIST);
 }
 
-void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
+void BodyBugList::OnGetBugListSuccess(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
@@ -162,13 +162,13 @@ void BodyBugList::OnGetBugListSuccess(int UNUSED id, QByteArray data)
     emit OnLoadingDone(BodyBugTracker::BUGLIST);
 }
 
-void BodyBugList::OnRequestFailure(int UNUSED id, QByteArray UNUSED data)
+void BodyBugList::OnRequestFailure(int  id, QByteArray  data)
 {
     QMessageBox::critical(this, "Connexion to Grappbox server failed", "We can't contact the GrappBox server, check your internet connexion and retry. If the problem persist, please contact grappbox team at the address problem@grappbox.com");
     emit OnLoadingDone(BodyBugTracker::BUGLIST);
 }
 
-void BodyBugList::TriggerFilterChange(BugListTitleWidget::BugState UNUSED state)
+void BodyBugList::TriggerFilterChange(BugListTitleWidget::BugState  state)
 {
     this->DeleteListElements();
     this->CreateList();
@@ -185,7 +185,7 @@ void BodyBugList::TriggerCloseBug(int bugId)
     _waitingAPIIDBugId[APIID] = bugId;
 }
 
-void BodyBugList::TriggerCloseSuccess(int id, QByteArray UNUSED data)
+void BodyBugList::TriggerCloseSuccess(int id, QByteArray  data)
 {
     int bugId = _waitingAPIIDBugId[id];
     QList<BugEntity>::iterator bugIt;

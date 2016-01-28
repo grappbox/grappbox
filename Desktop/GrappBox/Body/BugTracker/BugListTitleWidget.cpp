@@ -16,7 +16,7 @@ BugListTitleWidget::BugListTitleWidget(QWidget *parent) : QWidget(parent)
 
     QObject::connect(_btnOpenState, SIGNAL(toggled(bool)), this, SLOT(triggerOpenStateButtonToogled(bool)));
     QObject::connect(_btnClosedState, SIGNAL(toggled(bool)), this, SLOT(triggerClosedStateButtonToogled(bool)));
-    QObject::connect(_btnNewIssue, QPushButton::released, [=] { emit OnNewIssue(); });
+    QObject::connect(_btnNewIssue, &QPushButton::released, [=] { emit OnNewIssue(); });
 
     _mainLayout->addWidget(lblTitle);
     _mainLayout->addWidget(_btnOpenState);

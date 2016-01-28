@@ -12,7 +12,8 @@
 
 #include "IDataConnector.h"
 
-#define URL_API QString("http://api.grappbox.com/app_dev.php/V0.11/")
+#define OLD_URL_API QString("http://api.grappbox.com/app_dev.php/V0.11/")
+#define URL_API QString("http://api.grappbox.com/app_dev.php/V0.2/")
 
 namespace API
 {
@@ -51,6 +52,7 @@ namespace API
         QNetworkReply *PutUserSettings(QVector<QString> &data);
         QNetworkReply *PutProjectSettings(QVector<QString> &data);
         QNetworkReply *AssignTagToBug(QVector<QString> &data);
+		QNetworkReply *EditEvent(QVector<QString> &data);
 
         // Post
     private:
@@ -72,6 +74,8 @@ namespace API
         QNetworkReply *EditMessageTimeline(QVector<QString> &data);
         QNetworkReply *PostMessageTimeline(QVector<QString> &data);
 
+		QNetworkReply *PostEvent(QVector<QString> &data);
+
         // Delete
     private:
         QNetworkReply *DeleteProjectRole(QVector<QString> &data);
@@ -84,7 +88,8 @@ namespace API
         // Get
     private:
         QNetworkReply *Logout(QVector<QString> &data);
-        QNetworkReply *GetAction(QString urlIn, QVector<QString> &data);
+		QNetworkReply *GetAction(QString urlIn, QVector<QString> &data);
+        QNetworkReply *GetActionOld(QString urlIn, QVector<QString> &data);
     };
 
 }

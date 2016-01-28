@@ -15,6 +15,15 @@
 #include <QDate>
 #include <QMap>
 
+struct Task
+{
+	int TaskId;
+	QString Title;
+	QDateTime Start;
+	QDateTime End;
+	int ProjectId;
+};
+
 class BodyCalendar : public QWidget, public IBodyContener
 {
     Q_OBJECT
@@ -29,6 +38,12 @@ signals:
     void OnLoadingDone(int);
 
 public slots:
+	void OnEventLoadingDone(int, QByteArray data);
+	void OnEventLoadingFail(int, QByteArray data);
+
+	void OnProjectLoadingDone(int requestId, QByteArray data);
+	void OnProjectLoadingFail(int, QByteArray data);
+
     void OnDayCheckedChange(bool value);
     void OnMonthCheckedChange(bool value);
     void OnWeekCheckedChange(bool value);
@@ -54,11 +69,16 @@ private:
     MainWindow *_MainApp;
     int _WidgetId;
     ViewType _View;
+	bool _IsLoaded;
+
+	QMap<int, QDate> _LoadingDates;
+	QMap<int, int> _LoadingProjects;
 
     QDate _LastDrawingDate;
     QDate _CurrentDrawingDate;
 
     QMap<QDate, QList<Event*> > _MapMonthEvent;
+	QMap<QDate, QList<Task*> > _MapMonthTask;
     QMap<int, QString> _Projects;
 
     QHBoxLayout *_MainLayout;
@@ -86,7 +106,7 @@ private:
 
     CalendarViewMonth *_ViewMonth;
     CalendarViewWeek *_ViewWeek;
-    CalendarViewDay *_ViewDay;
+	CalendarViewDay *_ViewDay;
 };
 
 #endif // BODYCALENDAR_H

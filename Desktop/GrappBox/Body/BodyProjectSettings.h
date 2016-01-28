@@ -17,7 +17,6 @@
 #include <QList>
 #include <QScrollArea>
 
-#define UNUSED __attribute__((unused))
 #define PH_PROJECT_NAME     tr("Enter your project name here...")
 #define PH_PROJECT_DESC     tr("Enter your project description here...")
 #define PH_COMPANY_NAME     tr("Enter the company who order the project...")

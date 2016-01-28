@@ -13,15 +13,15 @@
 
 BodyWhiteboard::BodyWhiteboard(QWidget *parent) : QWidget(parent)
 {
-    _MapId[0] = LINE;
-    _MapId[1] = RECT;
-    _MapId[2] = CIRCLE;
-    _MapId[3] = LOZENGE;
-    _MapId[4] = NONE;
-    _MapId[5] = HAND_WRITE;
-    _MapId[6] = TEXT;
-    _MapId[7] = NONE;
-    _MapId[8] = ERASER;
+    _MapId[0] = GT_LINE;
+    _MapId[1] = GT_RECT;
+    _MapId[2] = GT_CIRCLE;
+    _MapId[3] = GT_LOZENGE;
+    _MapId[4] = GT_NONE;
+    _MapId[5] = GT_HAND_WRITE;
+    _MapId[6] = GT_TEXT;
+    _MapId[7] = GT_NONE;
+    _MapId[8] = GT_ERASER;
 
     _MainLayout = new QStackedLayout();
     _View = new WhiteboardGraphicsView();
@@ -113,7 +113,7 @@ void BodyWhiteboard::InitializeColorPen()
     }
     _ColorPenChoice->setCurrentIndex(0);
     _Whiteboard->SetBrushColor(QColor(_HexaList.begin()->second));
-    connect(_ColorPenChoice->view(),&QAbstractItemView::pressed, this, OnColorPenChange);
+    connect(_ColorPenChoice->view(),&QAbstractItemView::pressed, this, &BodyWhiteboard::OnColorPenChange);
 }
 
 void BodyWhiteboard::InitializeBackground()
@@ -154,7 +154,7 @@ void BodyWhiteboard::InitializeBackground()
     it = _HexaList.begin();
     ++it;
     _Whiteboard->SetBackgroundColor(QColor(it->second));
-    connect(_ColorBackgroundChoice->view(),&QAbstractItemView::pressed, this, OnColorBackgroudChange);
+    connect(_ColorBackgroundChoice->view(),&QAbstractItemView::pressed, this, &BodyWhiteboard::OnColorBackgroudChange);
 }
 
 void BodyWhiteboard::InitializePenWidth()

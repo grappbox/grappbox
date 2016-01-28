@@ -18,7 +18,6 @@
 #include <QPair>
 #include <QMap>
 
-#define UNUSED __attribute__((unused))
 #define LIST_ELEM_HEIGHT    50
 #define LIST_TITLE_HEIGHT   50
 

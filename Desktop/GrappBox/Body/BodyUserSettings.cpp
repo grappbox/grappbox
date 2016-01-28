@@ -79,7 +79,7 @@ void BodyUserSettings::Show(int ID, MainWindow *mainApp)
     _id = ID;
 }
 
-void BodyUserSettings::GetUserData(int UNUSED id, QByteArray data)
+void BodyUserSettings::GetUserData(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject json = doc.object();
@@ -126,7 +126,7 @@ void BodyUserSettings::GetUserData(int UNUSED id, QByteArray data)
     emit OnLoadingDone(_id);
 }
 
-void BodyUserSettings::Failure(int UNUSED id, QByteArray UNUSED data)
+void BodyUserSettings::Failure(int  id, QByteArray  data)
 {
     QMessageBox::critical(this, "Connexion Error", "Failure to retreive data from internet");
     qDebug() << data;
@@ -201,7 +201,7 @@ void BodyUserSettings::PassToStaticMode()
     else
         data.append("");
     data.append(API::SDataManager::GetDataManager()->GetToken());
-    _dataManager->Put(API::DP_USER_DATA, API::PUTR_UserSettings, data, this, "SaveUserData", "Failure");
+    _dataManager->Put(API::DP_USER_DATA, API::PUTR_USERSETTINGS, data, this, "SaveUserData", "Failure");
 }
 
 void BodyUserSettings::SaveUserData(int, QByteArray)

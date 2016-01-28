@@ -75,6 +75,7 @@ namespace API
         PR_MESSAGE_TIMELINE,
         PR_EDIT_MESSAGE_TIMELINE,
         PR_EDIT_COMMENTBUG,
+		PR_POST_EVENT
     };
 
     enum DeleteRequest
@@ -90,10 +91,11 @@ namespace API
 
     enum PutRequest
     {
-        PUTR_UserSettings,
-        PUTR_ProjectSettings,
+        PUTR_USERSETTINGS,
+        PUTR_PROJECTSETTINGS,
         PUTR_INVITE_USER,
-        PUTR_ASSIGNTAG
+        PUTR_ASSIGNTAG,
+		PUTR_EDIT_EVENT
     };
 
     class IDataConnector

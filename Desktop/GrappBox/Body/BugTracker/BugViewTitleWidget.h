@@ -9,8 +9,6 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 
-#define UNUSED __attribute__((unused))
-
 class BugViewTitleWidget : public QWidget
 {
     Q_OBJECT

@@ -3,6 +3,7 @@
 #include <QMovie>
 #include "SDataManager.h"
 
+#include "Body/BodyCalendar.h"
 #include "Body/BodyDashboard.h"
 #include "BodyWhiteboard.h"
 #include "Body/BodyUserSettings.h"
@@ -63,15 +64,18 @@ MainWindow::MainWindow(QWidget *parent)
     BodyUserSettings *userSettings = new BodyUserSettings();
     BodyProjectSettings *projectSettings = new BodyProjectSettings();
     BodyTimeline *timeline = new BodyTimeline();
+	BodyCalendar *calendar = new BodyCalendar();
 
     connect(dashboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     connect(userSettings, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     connect(projectSettings, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     connect(timeline, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
+	connect(calendar, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
 
     _CurrentCanvas = _StackedLayout->addWidget(dashboard);
     _MainPageId = _CurrentCanvas;
     _MenuWidget->AddMenuItem("Dashboard", _CurrentCanvas, false, false);
+	_MenuWidget->AddMenuItem("Calendar", _StackedLayout->addWidget(calendar), false, false);
     BodyWhiteboard *whiteboard = new BodyWhiteboard();
     connect(whiteboard, SIGNAL(OnLoadingDone(int)), this, SLOT(OnLoadingFinished(int)));
     _MenuWidget->AddMenuItem("Whiteboard", _StackedLayout->addWidget(whiteboard));
@@ -234,6 +238,7 @@ void MainWindow::OnMenuChange(int id)
 
 void MainWindow::OnLoadingFinished(int canvas)
 {
+	qDebug() << canvas << " : " << _CurrentCanvas;
     if (canvas == _CurrentCanvas)
     {
         _StackedLayout->setCurrentIndex(_CurrentCanvas);

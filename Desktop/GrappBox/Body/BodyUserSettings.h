@@ -13,7 +13,6 @@
 #include <QLocale>
 #include <QDebug>
 
-#define UNUSED __attribute__((unused))
 #define PH_FIRSTNAME "Enter your firstname here"
 #define PH_LASTNAME "Enter your lastname here"
 #define PH_EMAIL "Enter your email here"

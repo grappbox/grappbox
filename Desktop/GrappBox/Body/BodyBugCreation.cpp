@@ -103,7 +103,7 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
     this->setStyleSheet(style);
 }
 
-void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject UNUSED *data)
+void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject  *data)
 {
     QVector<QString> tagsAndUsersData;
     QString token;
@@ -192,7 +192,7 @@ void BodyBugCreation::TriggerComment(BugViewPreviewWidget* previewWid)
     API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_CREATE_BUG, data, this, "TriggerBugCreated", "TriggerAPIFailure");
 }
 
-void BodyBugCreation::TriggerBugCreated(int UNUSED id, QByteArray data)
+void BodyBugCreation::TriggerBugCreated(int  id, QByteArray data)
 {
     QVector<QString> commentData;
     QJsonObject json = QJsonDocument::fromJson(data).object();
@@ -232,7 +232,7 @@ void BodyBugCreation::TriggerBugCreated(int UNUSED id, QByteArray data)
     API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_COMMENT_BUG, commentData, this, "TriggerBugCommented", "TriggerAPIFailure");
 }
 
-void BodyBugCreation::TriggerGotProjectTags(int UNUSED id, QByteArray data)
+void BodyBugCreation::TriggerGotProjectTags(int  id, QByteArray data)
 {
     QList<QJsonObject> categoriesObjects;
     QJsonObject json = QJsonDocument::fromJson(data).object();
@@ -247,7 +247,7 @@ void BodyBugCreation::TriggerGotProjectTags(int UNUSED id, QByteArray data)
     _categories->CreateAssignPageItems(categoriesObjects);
 }
 
-void BodyBugCreation::TriggerGotProjectUsers(int UNUSED id, QByteArray data)
+void BodyBugCreation::TriggerGotProjectUsers(int  id, QByteArray data)
 {
     QList<QJsonObject> usersObjects;
     QJsonObject json = QJsonDocument::fromJson(data).object();
@@ -262,7 +262,7 @@ void BodyBugCreation::TriggerGotProjectUsers(int UNUSED id, QByteArray data)
     _assignees->CreateAssignPageItems(usersObjects);
 }
 
-void BodyBugCreation::TriggerBugCommented(int UNUSED id, QByteArray UNUSED data)
+void BodyBugCreation::TriggerBugCommented(int  id, QByteArray  data)
 {
     QJsonObject *intent = new QJsonObject();
 
@@ -272,7 +272,7 @@ void BodyBugCreation::TriggerBugCommented(int UNUSED id, QByteArray UNUSED data)
     _mainApp->TriggerChangePage(BodyBugTracker::BugTrackerPage::BUGVIEW, intent);
 }
 
-void BodyBugCreation::TriggerAPIFailure(int UNUSED id, QByteArray UNUSED data)
+void BodyBugCreation::TriggerAPIFailure(int  id, QByteArray  data)
 {
     --_waitingPageCreated;
     if (_waitingPageCreated == 0)
@@ -300,4 +300,4 @@ void BodyBugCreation::TriggerCategoryPageCreated(BugViewCategoryWidget::BugCateg
     }
 }
 
-void BodyBugCreation::DoNothing(int UNUSED id, QByteArray UNUSED data){}
+void BodyBugCreation::DoNothing(int  id, QByteArray  data){}

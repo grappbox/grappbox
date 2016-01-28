@@ -102,7 +102,7 @@ QString BugViewTitleWidget::GetTitle()
     return QString(_title->text());
 }
 
-void BugViewTitleWidget::TriggerCloseSuccess(int UNUSED id, QByteArray data)
+void BugViewTitleWidget::TriggerCloseSuccess(int  id, QByteArray data)
 {
     emit OnIssueClosed(_bugID);
 }
