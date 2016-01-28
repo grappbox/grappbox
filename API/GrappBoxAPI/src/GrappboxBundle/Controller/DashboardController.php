@@ -536,10 +536,9 @@ class DashboardController extends RolesAndTokenVerificationController
 		$tasks = $em->getRepository('GrappboxBundle:Task')->findByprojects($id);
 
 		$arr = array();
-		$i = 1;
 
-    if (count($tasks) == 0)
-    	return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectTasks");
+    	if (count($tasks) == 0)
+    		return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectTasks");
 
 		foreach ($tasks as $task) {
 			$creatorId = $task->getCreatorId();
@@ -551,9 +550,8 @@ class DashboardController extends RolesAndTokenVerificationController
 			$createdAt = $task->getCreatedAt();
 			$deletedAt = $task->getDeletedAt();
 
-			$arr["Task ".$i] = array("creator_id" => $creatorId, "title" => $title, "description" => $description, "due_date" => $dueDate,
+			$arr[] = array("creator_id" => $creatorId, "title" => $title, "description" => $description, "due_date" => $dueDate,
 				"started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt, "deleted_at" => $deletedAt);
-			$i++;
 		}
 
 		return $this->setSuccess("1.2.1", "Dashboard", "getProjectTasks", "Complete Success", array("array" => $arr));
@@ -704,7 +702,6 @@ class DashboardController extends RolesAndTokenVerificationController
 			return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectPersons");
 
 		$arr = array();
-		$i = 0;
 
 		foreach ($users as $us) {
 			$userId = $us->getId();
@@ -712,7 +709,6 @@ class DashboardController extends RolesAndTokenVerificationController
 			$lastName = $us->getLastName();
 
 			$arr[] = array("user_id" => $userId, "first_name" => $firstName, "last_name" => $lastName);
-			$i++;
 		}
 
 		return $this->setSuccess("1.2.1", "Dashboard", "getProjectPersons", "Complete Success", array("array" => $arr));
@@ -815,14 +811,12 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$typeName = $type->getName();
 		$users_array = array();
-		$i = 1;
 
 		foreach ($users as $us) {
 			$userId = $us->getId();
 			$userFirstName = $us->getFirstname();
 			$userLastName = $us->getLastname();
 			$users_array[] = array("id" => $userId, "first_name" => $userFirstName, "last_name" => $userLastName);
-			$i++;
 		}
 
 		return $this->setSuccess("1.2.1", "Dashboard", "getMeetingBasicInformations", "Complete Success", array("creator_id" => $creatorId, "creator_first_name" => $creatorFirstName, "creator_last_name" => $creatorLastName, "project_name" => $projectName,
@@ -894,17 +888,15 @@ class DashboardController extends RolesAndTokenVerificationController
 		$projects = $qb->getResult();
 
 		$arr = array();
-		$i = 0;
 
-    if (count($projects) == 0)
+    	if (count($projects) == 0)
 			return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectList");
 
 		foreach ($projects as $project) {
 			$projectId = $project->getId();
 			$name = $project->getName();
 
-			$arr["Project ".$i] = array("project_id" => $projectId, "name" => $name);
-			$i++;
+			$arr[] = array("project_id" => $projectId, "name" => $name);
 		}
 
 		return $this->setSuccess("1.2.1", "Dashboard", "getProjectList", "Complete Success", array("array" => $arr));
@@ -973,10 +965,9 @@ class DashboardController extends RolesAndTokenVerificationController
 		$tasks = $em->getRepository('GrappboxBundle:Task')->findByprojects($id);
 
 		$arr = array();
-		$i = 1;
 
-    if (count($tasks) == 0)
-	  	return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectTasksStatus");
+	    if (count($tasks) == 0)
+			return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectTasksStatus");
 
 		foreach ($tasks as $task) {
 			$taskId = $task->getId();
@@ -989,7 +980,6 @@ class DashboardController extends RolesAndTokenVerificationController
 			}
 
 			$arr[] = array("task_id" => $taskId, "status" => $tagNames);
-			$i++;
 		}
 		return $this->setSuccess("1.2.1", "Dashboard", "getProjectTasksStatus", "Complete Success", array("array" => $arr));
 	}
