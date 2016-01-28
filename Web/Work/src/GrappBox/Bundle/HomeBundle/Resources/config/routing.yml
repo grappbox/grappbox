@@ -4,7 +4,7 @@ home_index:
 
 home_resource:
     path: /{url}
-    defaults: { _controller: HomeBundle:Resource:trailingSlashRemoval }
+    defaults: { _controller: HomeBundle:Home:removeTailingSlash }
     requirements:
         url: .*/$
     methods: [GET]

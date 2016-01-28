@@ -4,10 +4,10 @@ app_home:
 
 app_routing:
     path: /{url}
-    defaults: { _controller: AppBundle:App:index_setAngularRouteManagement }
+    defaults: { _controller: AppBundle:App:setAngularRouteManagement }
 
 app_routing_advanced:
     path: /{url}/{parameters}
-    defaults: { _controller: AppBundle:App:index_setAngularRouteManagement }
+    defaults: { _controller: AppBundle:App:setAngularRouteManagement }
     requirements:
       parameters: ".+"

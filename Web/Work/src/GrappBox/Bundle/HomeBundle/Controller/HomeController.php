@@ -70,4 +70,12 @@ class HomeController extends Controller
 
 		return $this->render('HomeBundle:Home:index.html.twig', array('loginForm' => $loginForm->createView()));
 	}
+
+	public function removeTailingSlashAction(Request $request)
+	{
+	    $pathInfo = $request->getPathInfo();
+	    $requestUri = $request->getRequestUri();
+
+	    return $this->redirect($str_replace($pathInfo, rtrim($pathInfo, ' /'), $requestUri), 301);
+	}
 }

@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class AppController extends Controller
 {
-	public function index_setAngularRouteManagementAction(Request $request)
+	public function setAngularRouteManagementAction(Request $request)
 	{
 		$pathData = $request->getpathInfo();
 
