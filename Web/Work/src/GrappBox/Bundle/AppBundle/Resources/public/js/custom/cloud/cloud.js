@@ -35,7 +35,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
     $scope.selected.isSecured = '';
   }
 
-  // Cloud root folder content get
+  // Cloud ROOT folder content getter
   var cloud_updateCurrentFolderContent = function() {
     $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID + '/' + $scope.path.current)
     .then(function successCallback(response) {
@@ -123,7 +123,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
         Notification.info({ message: 'You cannot delete the \'Safe\' folder.', delay: 10000 });          
       else {
         Notification.info({ message: 'Loading...', delay: 2000 });
-        $http.delete($rootScope.apiBaseURL + '/cloud/file/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID + '/' + $scope.path.current + $scope.selected.filename)
+        $http.delete($rootScope.apiBaseURL + '/cloud/file/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID + '/' + $scope.path.current + ($scope.path.current === ',' ? '' : ',') + $scope.selected.filename)
           .then(function successCallback(response) {
             $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID + '/' + $scope.path.current)
               .then(function successCallback(response) {
