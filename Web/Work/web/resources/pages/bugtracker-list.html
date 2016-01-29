@@ -14,19 +14,19 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="section-heading app-section-heading">
                       <h2>{[{project.name}]}</h2>
                     </div>
+                    <div class="app-data" ng-if="!bugtracker_noRights[project.name]">
+                        <ul class="app-data-list btn-float">
+                          <li class="bugtracker-new-ticket">
+                            <a ng-href="bugtracker/{[{ project.project_id }]}/0" title="Report Bug"><i class="fa fa-plus fa-fw"></i>Create new ticket</a>
+                          </li>
+                        </ul>
+                    </div>
                     <div class="section-content app-section-content">
                         <div id="all-bugtrackers-data" panhandler>
                             <div ng_if="bugtracker_isValid[project.name] && bugtrackerListContent[project.name]">
-                                <div class="app-data">
-                                    <ul class="app-data-list btn-float">
-                                      <li class="bugtracker-new-ticket">
-                                        <a ng-href="bugtracker/{[{ bugtracker.id }]}" title="Report Bug"><i class="fa fa-plus fa-fw"></i>Create new ticket</a>
-                                      </li>
-                                    </ul>
-                                </div>
                                 <div class="app-data" ng-repeat="bugtracker in bugtrackerListContent[project.name]">
                                     <ul class="app-data-list each-available-bugtracker btn-float">
-                                        <li class="bugtracker-title"><a ng-href="bugtracker/{[{ bugtracker.id }]}" title="Open ticket #{[{ bugtracker.id }]} page">{[{ bugtracker.title }]}</a></li>
+                                        <li class="bugtracker-title"><a ng-href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open ticket #{[{ bugtracker.id }]} page">{[{ bugtracker.title }]}</a></li>
                                         <li class="bugtracker-id">Ticket #{[{ bugtracker.id }]}</li>
                                         <!-- <li class="bugtracker-project-name">Project: {[{ bugtracker.project }]}</li> -->
                                         <li class="bugtracker-information">
@@ -35,19 +35,19 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                             <!-- <div class="bugtracker-information-data bugtracker-time"><i class="fa fa-clock-o"></i>{[{ bugtracker.createdAt.time }]}</div> -->
                                         </li>
                                         <li class="bugtracker-link">
-                                            <a ng-href="bugtracker/{[{ bugtracker.id }]}" title="Open ticket #{[{ bugtracker.id }]} page"><i class="fa fa-file-text-o fa-fw"></i>Details</a>
+                                            <a ng-href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open ticket #{[{ bugtracker.id }]} page"><i class="fa fa-file-text-o fa-fw"></i>Details</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                             <div ng-if="bugtracker_isValid[project.name] && !bugtrackerListContent[project.name]">
                                 <div class="app-data error">
-                                    <p><i class="fa fa-drown-o"></i>There is no bug ticket.</p>
+                                    <p><i class="fa fa-drown-o"></i>There is no bug ticket for this project.</p>
                                 </div>
                             </div>
                             <div ng-if="bugtracker_noRights[project.name]">
                                 <div class="app-data error">
-                                    <p><i class="fa fa-times"></i>You have no rights on bug tickets of this project. Please try again.</p>
+                                    <p><i class="fa fa-times"></i>You have no rights on the bugtracker of this project.</p>
                                 </div>
                             </div>
                             <div ng-if="!bugtracker_noRights[project.name] && !bugtracker_isValid[project.name]">

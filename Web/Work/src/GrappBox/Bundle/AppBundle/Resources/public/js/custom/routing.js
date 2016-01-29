@@ -37,7 +37,7 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		controller  : 'bugtrackerListController',
 		caseInsensitiveMatch : true
 	})
-	.when('/bugtracker/:id', {
+	.when('/bugtracker/:projectId/:id', {
 		title: 'Bugtracker',
 		templateUrl : '../resources/pages/bugtracker.html',
 		controller  : 'bugtrackerController',

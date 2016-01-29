@@ -10,10 +10,56 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div class="container app-container">
             <div class="row">
                 <div class="col-lg-12">
-                    <!-- grappbox.data : bugtracker content -->
-                    <div class="section-heading app-section-heading"><h2></h2></div>
-                    <div class="section-content app-section-content"></div>
+                  <div ng-if="bugtracker_new">
+                      <div class="section-heading app-section-heading"><h2>New ticket</h2></div>
+                  </div>
+                  <div ng-if="!bugtracker_new && !bugtracker_error ">
+                      <div class="section-heading app-section-heading"><h2>Ticket #{[{bugtrackerContent.id + " : " + bugtrackerContent.title}]}</h2></div>
+                  </div>
+                  <div ng-if="!bugtracker_new && bugtracker_error">
+                      <div class="app-data error">
+                          <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                      </div>
+                  </div>
                 </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-8">
+                  <!-- grappbox.data : bugtracker content -->
+                  <div ng-if="bugtracker_new">
+                      <div class="section-content app-section-content">
+                          <p>{[{projectName}]}</p>
+                          <p>create new ticket</p>
+                      </div>
+                  </div>
+                  <div ng-if="!bugtracker_new && !bugtracker_error ">
+                      <div class="section-heading app-section-heading"><h4>Informations</h4></div>
+                      <div class="section-content app-section-content">
+                          <textarea>{[{bugtrackerContent}]}</textarea>
+                      </div>
+                  </div>
+                  <div ng-if="!bugtracker_new && bugtracker_error">
+                      <div class="app-data error">
+                          <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-4" ng-if="!bugtracker_new">
+                  <div class="section-heading app-section-heading"><h4>User(s) assigned</h4></div>
+                  <div class="section-content app-section-content">
+                      <div ng-if="bugtrackerContent.users.length">
+                          <div ng-repeat="user in bugtrackerContent.users">
+                              <p>{[{user.name}]}</p>
+                              <p>+ avatar + email + id</p>
+                          </div>
+                      </div>
+                      <div ng-if="!bugtrackerContent.users.length">
+                        <div class="error">
+                            <p><i class="fa fa-times"></i>No user assigned to this ticket.</p>
+                        </div>
+                      </div>
+                  </div>
+              </diV>
             </div>
         </div>
     </section>
