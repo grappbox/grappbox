@@ -455,7 +455,7 @@ class CloudController extends Controller
 	*			{
 	*				"type" : "dir",
 	*				"filename" : "Safe",
-	*				is_secured : false,
+	*				is_secured : true,
 	*			}]
 	*		}
 	*	}
@@ -509,7 +509,7 @@ class CloudController extends Controller
 			$filename = str_replace('|', ' ', urldecode($filename));
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
-			$content[$i]["is_secured"] = !($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null);
+			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
 		}
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - getListAction - Complete Success";
