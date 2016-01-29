@@ -9,10 +9,20 @@
 * APP bugtracker page
 *
 */
-app.controller('bugtrackerController', ['$scope', function($scope) {
+app.controller('bugtrackerController', ['$rootScope', '$scope', '$routePamras', '$http', '$cookies', function($rootScope, $scope, $routeParams, $http, $cookies) {
+
+  //Scope variables initialization
+  $scope.projectID = $routeParams.id;
+
   $scope.alertList = [];
   $scope.alertList.push({
     type: 'warning',
     message: 'This section is under construction.'
   });
+
+
+  var bugtracker = function() {
+
+  };
+  
 }]);

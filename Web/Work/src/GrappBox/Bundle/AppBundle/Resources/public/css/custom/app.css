@@ -121,7 +121,7 @@ section { margin: 0 0 60px 0; }
 #dashboard-view .app-data,
 #cloud-list-view .app-data,
 #whiteboard-list-view .app-data,
-#bugtracker-list-view .app_data { display: table-cell; }
+#bugtracker-list-view .app-data { display: table-cell; }
 
 #dashboard-view .app-data .app-data-list i,
 #cloud-list-view .app-data .app-data-list i,
@@ -270,6 +270,8 @@ section { margin: 0 0 60px 0; }
 #bugtracker-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
 #bugtracker-data { transition: .2s ease all; transition-delay: .2s; }
 
+#bugtracker-list-view .bugtracker-new-ticket {  padding: 0; }
+#bugtracker-list-view .bugtracker-new-ticket a { background-color: #26A69A; display: block; padding: 15px; text-align: center; color: #fafafa;}
 #bugtracker-list-view .each-available-bugtracker { min-width: 17vw; background: #bdbdbd; }
 #bugtracker-list-view .bugtracker-id { padding: 15px 15px 5px 15px; }
 #bugtracker-list-view .bugtracker-project-title { padding: 5px 15px 5px 15px; }
