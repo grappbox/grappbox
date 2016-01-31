@@ -226,7 +226,7 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0./event/setparticipants Set participants
+	* @api {put} /V0.2/event/setparticipants Set participants
 	* @apiName setParticipants
 	* @apiGroup Event
 	* @apiDescription Add/remove users to the event
@@ -234,7 +234,7 @@ class EventController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {string} token user authentication token
 	* @apiParam {int} eventId event id
-	* @apiParam {string[]} toAdd list of users' email to add
+	* @apiParam {int[]} toAdd list of users' id to add
 	* @apiParam {int[]} toRemove list of users' id to remove
 	*
 	* @apiParamExample {json} Request-Example:
@@ -728,7 +728,7 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function editEventAction(Request $request, $id)
+	public function editEventAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
