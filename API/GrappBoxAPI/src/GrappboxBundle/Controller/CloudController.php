@@ -14,6 +14,7 @@ use GrappboxBundle\Entity\CloudSecuredFileMetadata;
 use Sabre\DAV\Client;
 use League\Flysystem\WebDAV\WebDAVAdapter;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FileNotFoundException;
 
 class CurlRequest {
 	protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
@@ -454,7 +455,7 @@ class CloudController extends Controller
 	*			{
 	*				"type" : "dir",
 	*				"filename" : "Safe",
-	*				is_secured : false,
+	*				is_secured : true,
 	*			}]
 	*		}
 	*	}
@@ -508,7 +509,7 @@ class CloudController extends Controller
 			$filename = str_replace('|', ' ', urldecode($filename));
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
-			$content[$i]["is_secured"] = !($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null);
+			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
 		}
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - getListAction - Complete Success";
@@ -806,7 +807,15 @@ class CloudController extends Controller
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
-		$flysystem->delete($path);
+		try{
+				$flysystem->delete($path);
+		} catch (FileNotFoundException $e)
+		{
+			$response["info"]["return_code"] = "3.7.10";
+			$response["info"]["return_message"] = "Cloud - delAction - File not found";
+			return new JsonResponse($response);
+		}
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
 		return new JsonResponse($response);

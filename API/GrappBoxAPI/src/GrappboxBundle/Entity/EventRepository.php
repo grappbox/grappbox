@@ -84,7 +84,9 @@ class EventRepository extends EntityRepository
 	public function findNextMeetingsV2($id, $code, $part, $function)
 	{
 		$defaultDate = new \DateTime;
-		$qb = $this->createQueryBuilder('e')->where('e.endDate > :defaultDate')->setParameter('defaultDate', $defaultDate);
+		$date_end = new \DateTime($defaultDate->format('Y-m-d'));
+		$date_end->add(new \DateInterval('P7D'));
+		$qb = $this->createQueryBuilder('e')->where('e.beginDate < :end_day AND e.endDate > :begin_day')->setParameter('begin_day', $defaultDate)->setParameter('end_day', $date_end)->andWhere('e.deletedAt IS NULL')->orderBy('e.beginDate', 'ASC');;
 		$meetings = $qb->getQuery()->getResult();
 
 		$resp = new JsonResponse();
