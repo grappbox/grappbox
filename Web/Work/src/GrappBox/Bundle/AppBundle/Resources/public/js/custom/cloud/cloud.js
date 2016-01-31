@@ -35,7 +35,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
     $scope.selected.isSecured = '';
   }
 
-  // Cloud ROOT folder content getter
+  // Cloud current folder content getter
   var cloud_updateCurrentFolderContent = function() {
     $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID + '/' + $scope.path.current)
     .then(function successCallback(response) {
@@ -65,20 +65,35 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
     }
   };
 
-  // Double clic handler (file/folder)
+  // Object path format
+  $scope.cloud_formatObjectPath = function(pathToFormat) {
+    return ('ROOT').concat((pathToFormat).split(',').join(' / ')) ;
+  };
+
+  // Object size format
+  $scope.cloud_formatObjectSize = function(sizeToFormat) {
+    return (sizeToFormat ? (sizeToFormat > 1000000 ? (sizeToFormat / 1048576).toFixed(2) + ' MB' : (sizeToFormat / 1024).toFixed(2) + ' KB') : 'N/A');
+  };
+
+  // Double clic handler (file/folder) [1/2]
+  var local_retrieveSelectedFile = function(selectedFileURL, selectedFilename) {
+    $http.get(selectedFileURL)
+      .then(function successCallback(response) {
+        $window.open(selectedFileURL);
+        Notification.success({ message: 'Downloaded: ' + selectedFilename, delay: 10000 });
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: 'Unable to download ' + selectedFilename + '. Please try again.', delay: 10000 });
+      });
+  };
+
+  // Double clic handler (file/folder) [2/2]
   $scope.cloud_accessObject = function(object) {
     var local_objectURL = $rootScope.apiBaseURL + '/cloud/file/' + $scope.path.current + ($scope.path.current === ',' ? '' : ',') + object.filename + '/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID;
 
     Notification.info({ message: 'Loading...', delay: 2000 });
     if (object.type === 'file') {
-      $http.get(local_objectURL)
-        .then(function successCallback(response) {
-          $window.open(local_objectURL);
-          Notification.success({ message: 'Downloaded: ' + object.filename, delay: 10000 });
-      },
-      function errorCallback(response) {
-        Notification.warning({ message: 'Unable to download ' + object.filename + '. Please try again.', delay: 10000 });
-      });
+      local_retrieveSelectedFile(local_objectURL, object.filename);
     }
     else if (object.type === 'dir') {
       $scope.path.child = $scope.path.current + ($scope.path.current === ',' ? '' : ',') + object.filename;
@@ -96,7 +111,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
     }
   };
 
-  // 'parent' button handler
+  // 'Parent' button handler
   $scope.cloud_accessParentObject = function() {
     if ($scope.path.parent) {
       Notification.info({ message: 'Loading...', delay: 2000 });
@@ -177,7 +192,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
                 if (local_fileDataChunkSent === local_fileData.length) {
                   $http.delete($rootScope.apiBaseURL + '/cloud/stream/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID + '/' + local_fileStreamID)
                     .then(function successCallback(response) {
-                      Notification.success({ message: 'Closed stream for ' + $scope.cloud_uploadObject.filename, delay: 10000 });
+                      Notification.info({ message: 'Closed stream for ' + $scope.cloud_uploadObject.filename, delay: 10000 });
                       cloud_updateCurrentFolderContent();                 
                     },
                     function errorCallback(response) {
@@ -215,7 +230,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
               Notification.success({ message: 'Created: ' + $scope.newObject.name, delay: 10000 });
               $scope.newObject.name = '';
               $scope.newObject.isSecured = '';
-              angular.element(document.querySelector('#cloud_newObjectInput')).text();
+              angular.element(document.querySelector('#cloud_newObjectInput')).val('');
             },
             function errorCallback(response) {
               cloudObjects_setOnError();
