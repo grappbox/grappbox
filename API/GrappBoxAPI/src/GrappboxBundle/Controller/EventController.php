@@ -381,7 +381,7 @@ class EventController extends RolesAndTokenVerificationController
 			if ($toAddUser instanceof User)
 			{
 				foreach ($event->getUsers() as $key => $value) {
-					if ($user->getId() == $toAddUser->getId())
+					if ($user->getId() == $value->getId())
 						return $this->setBadRequest("5.3.7", "Calendar", "setParticipants", "Already in Database");
 				}
 
