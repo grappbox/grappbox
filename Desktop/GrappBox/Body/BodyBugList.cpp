@@ -20,7 +20,7 @@ BodyBugList::BodyBugList(QWidget *parent) : QWidget(parent)
     _mainLayout->addWidget(_listScrollView);
     this->setLayout(_mainLayout);
 
-    //Design
+    // [STYLE]
     _listAdapter->setMargin(0);
     _mainLayout->setMargin(0);
     style = "*{"

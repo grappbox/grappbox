@@ -74,7 +74,7 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
     _categories->DisableAPIAssignation(true);
     _assignees->DisableAPIAssignation(true);
 
-    //Design
+    // [STYLE]
     style = "QPushButton{"
             "background-color: #595959;"
             "color : #ffffff;"

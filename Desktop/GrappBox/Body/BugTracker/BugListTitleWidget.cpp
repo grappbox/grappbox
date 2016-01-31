@@ -24,7 +24,7 @@ BugListTitleWidget::BugListTitleWidget(QWidget *parent) : QWidget(parent)
     _mainLayout->addWidget(_btnNewIssue);
     this->setLayout(_mainLayout);
 
-    //Design
+    // [STYLE]
     _mainLayout->setMargin(0);
     _btnOpenState->setObjectName("OpenFilter");
     _btnClosedState->setObjectName("CloseFilter");

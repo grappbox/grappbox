@@ -21,7 +21,7 @@ BugListElement::BugListElement(BodyBugTracker *pageManager, const QString &bugTi
     this->setLayout(_mainLayout);
 
 
-    //Design
+    // [STYLE]
     _mainLayout->setMargin(0);
     _btnViewBug->setObjectName("Open");
     _btnCloseBug->setObjectName("Close");

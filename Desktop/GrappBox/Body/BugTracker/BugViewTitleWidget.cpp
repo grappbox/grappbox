@@ -24,7 +24,7 @@ BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *pa
 
     this->setLayout(_mainLayout);
 
-    //Design
+    // [STYLE]
     _title->setPlaceholderText(tr("Enter the issue name here..."));
     style = "QLineEdit{"
             "max-height: 50px;"

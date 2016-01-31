@@ -54,7 +54,7 @@ BugViewPreviewWidget::BugViewPreviewWidget(int userId, bool isCreation, bool cre
 
     this->setLayout(_mainLayout);
 
-    //Design
+    // [STYLE]
     widTitleBar->setObjectName("TitleBar");
     widStatusBar->setObjectName("StatusBar");
     _titleBar->setSpacing(0);

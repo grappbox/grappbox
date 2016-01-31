@@ -119,6 +119,7 @@ void RoleTableWidget::refresh(bool reset)
     _colLayout->append(new QHBoxLayout());
     _rowLayout->addLayout(_colLayout->back());
     _colLayout->back()->addWidget(new QLabel(""));
+    // [STYLE]
     for (rolesIT = _roles->begin(); rolesIT != _roles->end(); rolesIT++)
     {
         QLabel *newLabel = new QLabel(rolesIT.value());

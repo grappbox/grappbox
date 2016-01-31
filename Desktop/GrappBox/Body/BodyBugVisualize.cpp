@@ -66,7 +66,7 @@ BodyBugVisualize::BodyBugVisualize(QWidget *parent) : QWidget(parent)
     _mainLayout->addLayout(_bodyLayout);
     this->setLayout(_mainLayout);
 
-    //Design
+    // [STYLE]
     _issueLayout->setObjectName("Issues");
     widgetTitleAssignee->setObjectName("Title");
     widgetTitleCategory->setObjectName("Title");
