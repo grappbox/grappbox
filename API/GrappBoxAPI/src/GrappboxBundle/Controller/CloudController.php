@@ -604,7 +604,7 @@ class CloudController extends Controller
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
-	* @apiName Download file
+	* @apiName Download secured file
 	* @apiParam {string} CloudPath The path to the file with coma instead of slash. This have to start with a coma
 	* @apiParam {string} token The token of authenticated user.
 	* @apiParam {Number} idProject The project id to execute the command.
@@ -745,7 +745,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.2/cloud/file/:token/:project_id/:path/:password Delete a file or a directory
+	* @api {delete} /V0.2/cloud/file/:token/:project_id/:path/:password Delete a file or directory
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
@@ -831,11 +831,11 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.2/cloud/file/:token/:project_id/:path/:password/:safe_password Delete a file or a directory
+	* @api {delete} /V0.2/cloud/filesecured/:token/:project_id/:path/:password/:safe_password Delete a secured file or directory
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
-	* @apiName Delete
+	* @apiName Delete secured
 	* @apiParam {string} token The token of authenticated user.
 	* @apiParam {Number} project_id The project id to execute the command.
 	* @apiParam {string} path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
