@@ -89,7 +89,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
       angular.element($event.currentTarget).attr('id', 'selected');
       $scope.selected.current.element = $event.currentTarget;
       $scope.selected.current.name = angular.element(document.querySelector('#selected')).attr('data-id');
-      $scope.selected.current.isSecured = angular.element(document.querySelector('#selected')).attr('data-secured');
+      $scope.selected.current.isSecured = (angular.element(document.querySelector('#selected')).attr('data-secured') === 'true');
     }
   };
 
@@ -327,11 +327,11 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
             else {
               $scope.newFile.isSecured = false;
               $scope.newFile.password = '';
-              Notification.warning({ message: 'The two passwords are differents.', delay: 5000 });
+              Notification.warning({ message: 'Passwords don\'t match. Please try again.', delay: 5000 });
             }
           },
           function fileSecondPasswordNotEntered() {
-            Notification.warning({ message: 'You need to provide your password two times to ensure its correctness.', delay: 5000 });
+            Notification.warning({ message: 'You have to provide your password two times in order to confirm it. Please try again.', delay: 5000 });
             Notification.warning({ message: 'Upload cancelled.', delay: 5000 });
           })
         },
