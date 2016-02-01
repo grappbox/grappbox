@@ -34,7 +34,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 </div>
                             </div>
                             <div class="row app-data-breadcrumb">
-                                <div class="col-md-12"><i class="fa fa-list-ul"></i> {[{ data.formatObjectPath(path.current) }]}</div>
+                                <div class="col-md-12"><i class="fa fa-list-ul"></i>{[{ data.formatObjectPath(path.current) }]}</div>
                             </div>
                             <div class="row app-data-labels">
                                 <div class="col-md-6">Name</div>
@@ -65,7 +65,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                         <div class="col-md-12 text-center"><i class="fa fa-times"></i>An error has occurred. Please try again.</div>
                                     </div>
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <h3 class="modal-title">File security</h3>
             </div>
             <div class="modal-body">
-                <p>Do you want to set a password for this file?</p>
+                <p>Do you want to set a password on this file?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" ng-click="view_newFileIsProtected()"><i class="fa fa-check"></i>Yes</button>
@@ -95,11 +95,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
             <div class="modal-body">
                 <p>Please set your password:</p>
-                <input type="password" id="view_newFileFirstPassword">
+                <input type="password" placeholder="Password..." id="view_newFileFirstPassword">
             </div>
             <div class="modal-footer">
-                <button type="button" ng-click="view_newFileFirstPasswordSuccess()">OK</button>
-                <button type="button" ng-click="view_newFileFirstPasswordFailure()">Cancel</button>
+                <button type="button" ng-click="view_newFileFirstPasswordSuccess()"><i class="fa fa-check"></i>OK</button>
+                <button type="button" ng-click="view_newFileFirstPasswordFailure()"><i class="fa fa-ban"></i>Cancel</button>
             </div>
         </script>
     </div>
@@ -111,11 +111,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
             <div class="modal-body">
                 <p>Please set your password (confirm):</p>
-                <input type="password" id="view_newFileSecondPassword">
+                <input type="password" placeholder="Password..." id="view_newFileSecondPassword">
             </div>
             <div class="modal-footer">
-                <button type="button" ng-click="view_newFileSecondPasswordSuccess()">OK</button>
-                <button type="button" ng-click="view_newFileSecondPasswordFailure()">Cancel</button>
+                <button type="button" ng-click="view_newFileSecondPasswordSuccess()"><i class="fa fa-check"></i>OK</button>
+                <button type="button" ng-click="view_newFileSecondPasswordFailure()"><i class="fa fa-ban"></i>Cancel</button>
             </div>
         </script>
     </div>
@@ -127,11 +127,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
             <div class="modal-body">
                 <p>Please enter your password:</p>
-                <input type="password" id="view_filePassword">
+                <input type="password" placeholder="Password..." id="view_filePassword">
             </div>
             <div class="modal-footer">
-                <button type="button" ng-click="view_filePasswordCheckSuccess()">OK</button>
-                <button type="button" ng-click="view_filePasswordCheckFailure()">Cancel</button>
+                <button type="button" ng-click="view_filePasswordCheckSuccess()"><i class="fa fa-check"></i>OK</button>
+                <button type="button" ng-click="view_filePasswordCheckFailure()"><i class="fa fa-ban"></i>Cancel</button>
             </div>
         </script>
     </div>
@@ -143,11 +143,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
             <div class="modal-body">
                 <p>Please enter the current 'Safe' folder password:</p>
-                <input type="password" id="view_safePassword">
+                <input type="password" placeholder="Password..." id="view_safePassword">
             </div>
             <div class="modal-footer">
-                <button type="button" ng-click="view_safePasswordCheckSuccess()">OK</button>
-                <button type="button" ng-click="view_safePasswordCheckFailure()">Cancel</button>
+                <button type="button" ng-click="view_safePasswordCheckSuccess()"><i class="fa fa-check"></i>OK</button>
+                <button type="button" ng-click="view_safePasswordCheckFailure()"><i class="fa fa-ban"></i>Cancel</button>
             </div>
         </script>
     </div>
@@ -159,11 +159,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
             <div class="modal-body">
                 <p>Please enter the new 'Safe' folder password:</p>
-                <input type="password" id="view_newSafePassword">
+                <input type="password" placeholder="Password..." id="view_newSafePassword">
             </div>
             <div class="modal-footer">
-                <button type="button" ng-click="view_setNewSafePasswordSuccess()">OK</button>
-                <button type="button" ng-click="view_setNewSafePasswordFailure()">Cancel</button>
+                <button type="button" ng-click="view_setNewSafePasswordSuccess()"><i class="fa fa-check"></i>OK</button>
+                <button type="button" ng-click="view_setNewSafePasswordFailure()"><i class="fa fa-ban"></i>Cancel</button>
             </div>
         </script>
     </div>

@@ -236,7 +236,7 @@ section { margin: 0 0 60px 0; }
 .modal-content .modal-body p,
 .modal-content .modal-footer { text-align: center; }
 .modal-content .modal-footer { padding: 0 15px 15px 15px; border: none; }
-.modal-content .modal-footer button { width: 25%; padding: 10px 45px; border: 1px solid #e0e0e0; color: #e0e0e0; background: #616161; }
+.modal-content .modal-footer button { width: 30%; padding: 10px 45px; border: 1px solid #e0e0e0; color: #e0e0e0; background: #616161; }
 .modal-content .modal-footer button:active,
 .modal-content .modal-footer button:focus,
 .modal-content .modal-footer button:hover { background: #29B6F6; color: #fafafa; }
