@@ -412,7 +412,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.2/cloud/list/:token/:idProject/:path/[:passwordSafe] Cloud LS
+	* @api {get} /V0.2/cloud/list/:token/:idProject/:path[/:passwordSafe] Cloud LS
 	* @apiVersion 0.2.0
 	* @apiDescription Get the list of a given directory.
 	* @apiGroup Cloud
@@ -450,7 +450,7 @@ class CloudController extends Controller
 	*				"is_secured" : false,
 	*				"size" : "18",
 	*				"mimetype" : "text/plain",
-	*				"last_modified" : {"date" : ""}
+	*				"last_modified" : {"date" : "2016-01-31 21:56:00.000000", "timezone_type" : 3, "timezone" : "Europe/Paris" }
 	*			},
 	*			{
 	*				"type" : "dir",
