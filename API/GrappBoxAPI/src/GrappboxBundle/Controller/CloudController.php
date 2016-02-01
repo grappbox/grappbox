@@ -511,7 +511,8 @@ class CloudController extends Controller
 			unset($content[$i]["path"]);
 			if ($content[$i]["type"] == "file")
 			{
-					$content[$i]["last_modified"] = new DateTime()->setTimestamp($content[$i]["timestamp"]);
+					$content[$i]["last_modified"] = new DateTime();
+					$content[$i]["last_modified"]->setTimestamp($content[$i]["timestamp"]);
 					unset($content[$i]["timestamp"]);
 			}
 
