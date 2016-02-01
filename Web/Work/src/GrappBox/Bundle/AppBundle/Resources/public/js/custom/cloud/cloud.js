@@ -19,7 +19,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
   $scope.data       = { objects: '', isValid: false };
 
   $scope.path       = { current: ',', parent: '', child: '' };
-  $scope.selected   = { isSecured: '', element: '', name: '' };
+  $scope.selected   = { current: { isSecured: '', element: '', name: '' }, previous: { isSecured: '', element: '', name: '' } };
   $scope.newFolder  = { isSecured: '', password: '', name: '' };
   $scope.newFile    = { isSecured: '', password: '' };
 
@@ -28,31 +28,36 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
   var setDataOnSuccess = function(response) {
     $scope.data.objects = (response.data && response.data.data ? (Object.keys(response.data.data.array).length ? response.data.data.array : null) : null);
     $scope.data.isValid = true;
-  }
+  };
+
   var setDataOnFailure = function() {
     $scope.data.objects = null;
     $scope.data.isValid = false;
-  }
+  };
 
   // Routine definition
   // Reset scope variable 'selected'
   var resetSelected = function() {
-    $scope.selected.isSecured = '';
-    $scope.selected.element = '';
-    $scope.selected.name = '';
-  }
+    $scope.selected.previous.isSecured = $scope.selected.current.isSecured;
+    $scope.selected.previous.element = $scope.selected.current.element;
+    $scope.selected.previous.name = $scope.selected.current.name;
+
+    $scope.selected.current.isSecured = '';
+    $scope.selected.current.element = '';
+    $scope.selected.current.name = '';
+  };
 
   // Routine definition
   // Toggle scope variable 'button.parent' state
   var toggleParentButton = function(state) {
     $scope.button.parent = state;
-  }
+  };
 
   // Routine definition
   // Toggle scope variable 'button.delete' state
   var toggleDeleteButton = function(state) {
     $scope.button.delete = state;
-  }
+  };
 
   // Routine definition
   // Get current folder content 
@@ -64,7 +69,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
     function errorCallback(response) {
       setDataOnFailure();
     });
-  }
+  };
 
 
   /* ==================== START ==================== */
@@ -75,16 +80,16 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
   // Single clic handler (file/folder)
   $scope.view_selectObject = function($event) {
     angular.element(document.querySelector('#selected')).removeAttr('id');
-    if ($scope.selected.element === $event.currentTarget) {
+    if ($scope.selected.current.element === $event.currentTarget) {
       toggleDeleteButton(false);
       resetSelected();
     }
     else {
       toggleDeleteButton(true);
       angular.element($event.currentTarget).attr('id', 'selected');
-      $scope.selected.element = $event.currentTarget;
-      $scope.selected.name = angular.element(document.querySelector('#selected')).attr('data-id');
-      $scope.selected.isSecured = angular.element(document.querySelector('#selected')).attr('data-secured');
+      $scope.selected.current.element = $event.currentTarget;
+      $scope.selected.current.name = angular.element(document.querySelector('#selected')).attr('data-id');
+      $scope.selected.current.isSecured = angular.element(document.querySelector('#selected')).attr('data-secured');
     }
   };
 
@@ -95,37 +100,58 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
 
   // Object size format
   $scope.data.formatObjectSize = function(sizeToFormat) {
-    return (sizeToFormat ? (sizeToFormat > 100000 ? (sizeToFormat / 1048576).toFixed(2) + ' MB' : (sizeToFormat / 1024).toFixed(2) + ' KB') : 'N/A');
+    return (sizeToFormat ? (sizeToFormat > 1000000 ? (sizeToFormat / 1048576).toFixed(2) + ' MB' : (sizeToFormat / 1024).toFixed(2) + ' KB') : 'N/A');
   };
 
 
   /* ==================== ACCESS OBJECT (DOWNLOAD FILE/LIST FOLDER CONTENT) ==================== */
 
-  // Double clic handler (file/folder) [1/2]
-  // FILE DOWNLOAD
+  // Double clic handler (file/folder) [2/2]
   var local_retrieveSelectedFile = function(selectedFilename) {
-    var local_selectedFileURL = $rootScope.apiBaseURL + '/cloud/file/'
+    var local_selectedFileURL = $rootScope.apiBaseURL
+    + '/cloud/' + ($scope.selected.previous.isSecured ? 'filesecured/' : 'file/')
     + $scope.path.current + ($scope.path.current === ',' ? '' : ',') + selectedFilename + '/'
-    + $cookies.get('USERTOKEN') + '/' + $scope.project.id;
+    + $cookies.get('USERTOKEN') + '/' + $scope.project.id
+    + ($scope.selected.previous.isSecured ? '/' + $scope.selected.previous.password : '');
 
+    Notification.info({ message: 'Loading...', delay: 5000 });
     $http.get(local_selectedFileURL)
-    .then(function downloadFileSuccess(response) {
-      $window.open(local_selectedFileURL);
-      Notification.success({ message: 'Downloaded: ' + selectedFilename, delay: 5000 });
-    },
-    function downloadFileError(response) {
-      Notification.warning({ message: 'Unable to download ' + selectedFilename + '. Please try again.', delay: 5000 });
-    });
+      .then(function downloadFileSuccess(response) {
+        if (!response.data.info) {
+          $window.open(local_selectedFileURL);
+          Notification.success({ message: 'Downloaded: ' + selectedFilename, delay: 5000 });
+        }
+        else
+          Notification.warning({ message: 'Unable to download \'' + selectedFilename + '\'. Please check the password you entered is valid, and try again.', delay: 5000 });
+      },
+      function downloadFileError(response) {
+        Notification.warning({ message: 'Unable to download \'' + selectedFilename + '\'. Please try again.', delay: 5000 });
+      });
   };
 
-  // Double clic handler (file/folder) [2/2]
-  // FILE DOWNLOAD / FOLDER CONTENT LIST
+  // Double clic handler (file/folder) [1/2]
   $scope.view_accessObject = function(object) {
-    Notification.info({ message: 'Loading...', delay: 5000 });
     if (object.type === 'file') {
-      local_retrieveSelectedFile(object.filename);
+      if ($scope.selected.previous.isSecured) {
+        var local_passwordAskModalInstance = $uibModal.open({
+          animation: true,
+          templateUrl: 'view_filePasswordCheck.html',
+          controller: 'view_filePasswordCheck',
+        });
+        local_passwordAskModalInstance.result.then(function passwordHasBeenEntered(data) {
+          $scope.selected.previous.password = data;
+          local_retrieveSelectedFile(object.filename);
+        },
+        function passwordHasNotBeenEntered() {
+          Notification.warning({ message: 'You need to provide a password to access \'' + $scope.selected.previous.name + '\'. Please try again.', delay: 5000 });
+        });
+      }
+      else {
+        local_retrieveSelectedFile(object.filename);
+      }
     }
     else if (object.type === 'dir') {
+      Notification.info({ message: 'Loading...', delay: 5000 });
       $scope.path.child = $scope.path.current + ($scope.path.current === ',' ? '' : ',') + object.filename;
       $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $scope.project.id + '/' + $scope.path.child)
       .then(function getNewFolderContentSuccess(response) {
@@ -142,7 +168,6 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
   };
 
   // 'Parent' button handler
-  // PREVIOUS FOLDER CONTENT LIST
   $scope.view_accessParentObject = function() {
     if ($scope.path.parent && $scope.button.parent) {
       Notification.info({ message: 'Loading...', delay: 5000 });
@@ -165,29 +190,52 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
 
   /* ==================== DELETE OBJECT (FILE/FOLDER) ==================== */
 
-  // 'Delete' button handler
+  // 'Delete' button handler (file/folder) [2/2]
+  var local_deleteSelectedObject = function() {
+    Notification.info({ message: 'Loading...', delay: 5000 });
+    $http.delete($rootScope.apiBaseURL
+      + '/cloud/' + ($scope.selected.current.isSecured ? 'filesecured/' : 'file/')
+      + $cookies.get('USERTOKEN') + '/' + $scope.project.id + '/'
+      + $scope.path.current + ($scope.path.current === ',' ? '' : ',') + $scope.selected.current.name
+      + ($scope.selected.current.isSecured ? '/' + $scope.selected.current.password : ''))
+    .then(function successCallback(response) {
+      $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $scope.project.id + '/' + $scope.path.current)
+      .then(function successCallback(response) {
+        Notification.success({ message: 'Deleted: ' + $scope.selected.current.name, delay: 5000 });
+        setDataOnSuccess(response);
+        toggleDeleteButton();
+        resetSelected();
+      },
+      function errorCallback(response) {
+        setDataOnFailure();
+      });
+    },
+    function errorCallback(response) {
+      Notification.warning({ message: 'Unable to delete \'' + $scope.selected.current.name + '\'. Please try again.', delay: 5000 });
+    });
+  };
+
+  // 'Delete' button handler (file/folder) [1/2]
   $scope.view_deleteObject = function() {
-    if ($scope.selected.name) {
-      if ($scope.selected.name === "Safe")
+    if ($scope.selected.current.name) {
+      if ($scope.selected.current.name === "Safe")
         Notification.info({ message: 'You cannot delete the \'Safe\' folder.', delay: 5000 });          
-      else {
-        Notification.info({ message: 'Loading...', delay: 5000 });
-        $http.delete($rootScope.apiBaseURL + '/cloud/file/' + $cookies.get('USERTOKEN') + '/' + $scope.project.id + '/' + $scope.path.current + ($scope.path.current === ',' ? '' : ',') + $scope.selected.name)
-        .then(function successCallback(response) {
-          $http.get($rootScope.apiBaseURL + '/cloud/list/' + $cookies.get('USERTOKEN') + '/' + $scope.project.id + '/' + $scope.path.current)
-          .then(function successCallback(response) {
-            Notification.success({ message: 'Deleted: ' + $scope.selected.name, delay: 5000 });
-            setDataOnSuccess(response);
-            toggleDeleteButton();
-            resetSelected();
-          },
-          function errorCallback(response) {
-            setDataOnFailure();
+      else if ($scope.selected.current.isSecured) {
+          var local_passwordAskModalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'view_filePasswordCheck.html',
+            controller: 'view_filePasswordCheck',
           });
-        },
-        function errorCallback(response) {
-          Notification.warning({ message: 'Unable to delete ' + $scope.selected.name + '. Please try again.', delay: 5000 });
-        });
+          local_passwordAskModalInstance.result.then(function passwordHasBeenEntered(data) {
+            $scope.selected.current.password = data;
+            local_deleteSelectedObject();
+          },
+          function passwordHasNotBeenEntered() {
+            Notification.warning({ message: 'You need to provide a password to delete \'' + $scope.selected.current.name + '\'. Please try again.', delay: 5000 });
+          });
+        }
+      else {
+        local_deleteSelectedObject();
       }
     }
   };
@@ -207,7 +255,6 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
         filename: $scope.view_newFile.filename,
         path: $scope.path.current.split(',').join('/'),
         password: ($scope.newFile.isSecured ? $scope.newFile.password : '')
-        /*password: ($scope.newFile.isSecured ? sha512($scope.newFile.password) : '')*/
         /*safe_password:*/
       }})
     .then(function streamOpeningSuccess(response) {
@@ -234,7 +281,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
               getCurrentFolderContent();
             },
             function streamClosingFailure(response) {
-              Notification.warning({ message: 'Unable to close stream for ' + $scope.view_newFile.filename + '. Please try again.', delay: 5000 });  
+              Notification.warning({ message: 'Unable to close stream for \'' + $scope.view_newFile.filename + '\'. Please try again.', delay: 5000 });  
             });
           }
         },
@@ -244,9 +291,9 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
       }
     },
     function streamOpeningFailure(response) {
-      Notification.warning({ message: 'Unable to open stream for ' + $scope.view_newFile.filename + '. Please try again.', delay: 5000 });
+      Notification.warning({ message: 'Unable to open stream for \'' + $scope.view_newFile.filename + '\'. Please try again.', delay: 5000 });
     });
-  }
+  };
 
   // 'Upload file' button handler [2/2]
   $scope.view_onNewFile = function() {
@@ -328,12 +375,20 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
         });
       },
       function errorCallback(response) {
-        Notification.warning({ message: 'Unable to create ' + $scope.newFolder.name + '. Please try again.', delay: 5000 });
+        Notification.warning({ message: 'Unable to create \'' + $scope.newFolder.name + '\' folder.<br>Please try again.', delay: 5000 });
       });
     }
     else
       Notification.warning({ message: 'You must provide a valid folder name. Please try again.', delay: 5000 });
-  }
+  };
+
+
+  /* ==================== CHANGE SAFE PASSWORD ==================== */
+
+  // 'Change 'Safe' folder password' button handler
+  $scope.view_onNewSafePassword = function() {
+
+  };
 
 }]);
 
@@ -404,7 +459,12 @@ app.controller('view_setNewFileSecondPassword', ['$scope', '$uibModalInstance', 
 */
 app.controller('view_filePasswordCheck', ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
   $scope.view_filePasswordCheckSuccess = function() {
-    $uibModalInstance.close(angular.element(document.querySelector('#view_filePassword')).val());
+    var data = angular.element(document.querySelector('#view_filePassword'));
+    angular.element(data).removeAttr('class');
+    if (data && data.val() !== '')
+      $uibModalInstance.close(data.val());
+    else
+      angular.element(data).attr('class', 'input-error');
   };
   $scope.view_filePasswordCheckFailure = function() {
     $uibModalInstance.dismiss();
@@ -415,14 +475,34 @@ app.controller('view_filePasswordCheck', ['$scope', '$uibModalInstance', functio
 
 /**
 * Controller definition
-* SAFE ACCESS => get password for 'Safe' folder.
+* SAFE ACCESS => get password for the 'Safe' folder.
 *
 */
-app.controller('cloud_safePasswordCheck', ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
+app.controller('view_safePasswordCheck', ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
   $scope.view_safePasswordCheckSuccess = function() {
-    $uibModalInstance.close(angular.element(document.querySelector('#view_safePassword')).val());
+    var data = angular.element(document.querySelector('#view_safePassword'));
+    angular.element(data).removeAttr('class');
+    if (data && data.val() !== '')
+      $uibModalInstance.close(data.val());
+    else
+      angular.element(data).attr('class', 'input-error');
   };
   $scope.view_safePasswordCheckFailure = function() {
+    $uibModalInstance.dismiss();
+  };
+}]);
+
+
+/**
+* Controller definition
+* SAFE ACCESS => set new password for the 'Safe' folder.
+*
+*/
+app.controller('view_setNewSafePassword', ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
+  $scope.view_setNewSafePasswordSuccess = function() {
+    $uibModalInstance.close(angular.element(document.querySelector('#view_newSafePassword')).val());
+  };
+  $scope.view_setNewSafePasswordFalure = function() {
     $uibModalInstance.dismiss();
   };
 }]);

@@ -66,7 +66,6 @@ app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($ro
 	$rootScope.apiBaseURL = 'http://api.grappbox.com/app_dev.php/' + $rootScope.apiVersion;
 
 	// On route change (start)
-	// NOTE: angular.cookies.remove not 1.4.9+ conflicting with server-side cookies (Symfony), using angular.cookie.put('') instead.
 	$rootScope.$on('$routeChangeStart', function() {
 		if (!$cookies.get('LASTLOGINMESSAGE')) {
 			if ($cookies.get('USERTOKEN'))
