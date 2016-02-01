@@ -239,7 +239,7 @@ class CloudController extends Controller
 		$stream = new CloudTransfer();
 		$receivedData["filename"] = str_replace(',', '', $receivedData["filename"]);
 		$stream->setCreatorId($userId)
-					 ->setFilename($receivedData["filename"])
+					 ->setFilename(str_replace(',', '', $receivedData["filename"]))
 					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
 					 ->setPassword(isset($receivedData["password"]) && !empty($receivedData["password"]) ? $receivedData["password"] : null)
 					 ->setCreationDate(new DateTime("now"))
