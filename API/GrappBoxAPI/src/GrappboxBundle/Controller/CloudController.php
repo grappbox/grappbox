@@ -600,7 +600,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.2/cloud/filesecured/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
+	* @api {get} /V0.2/cloud/filesecured/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a secured file
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
