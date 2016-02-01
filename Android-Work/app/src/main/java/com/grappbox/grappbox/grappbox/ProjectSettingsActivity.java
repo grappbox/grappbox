@@ -1379,8 +1379,6 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
-
-
     public static class EditRoleTask extends AsyncTask<String, Void, String>
     {
         Context _context;

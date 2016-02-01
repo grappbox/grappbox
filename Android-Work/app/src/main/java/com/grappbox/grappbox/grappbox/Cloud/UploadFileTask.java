@@ -10,9 +10,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import com.github.tibolte.agendacalendarview.utils.Utils;
 import com.grappbox.grappbox.grappbox.MainActivity;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
@@ -206,6 +208,7 @@ public class UploadFileTask {
                 if (!filePassword.equals(""))
                     data.put("password", filePassword);
                 data.put("filename", _filename);
+                _filename = _filename.replace(",", "");
                 json.put("data", data);
 
                 api.setVersion("V0.2");
@@ -448,7 +451,6 @@ public class UploadFileTask {
                 Notification.Builder builder = buildNotifBase();
                 builder.setProgress(_chunkNumbers, _passedChunk, false);
                 _notifManager.notify(_notifId, builder.build());
-                //TODO : update notif upload (google drive like)
                 if (_passedChunk == _chunkNumbers)
                 {
                     CloseStreamTask task = new CloseStreamTask();
