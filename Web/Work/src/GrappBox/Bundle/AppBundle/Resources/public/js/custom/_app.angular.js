@@ -72,6 +72,7 @@ app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($ro
 				$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN'));
 			$cookies.put('LASTLOGINMESSAGE', sha512('_DENIED'), { path: '/' });
 			$cookies.remove('USERTOKEN', { path: '/' });
+			$cookies.remove('CLOUDSAFE', { path: '/' });			
 			$window.location.href='/#login';
 		}
 	});

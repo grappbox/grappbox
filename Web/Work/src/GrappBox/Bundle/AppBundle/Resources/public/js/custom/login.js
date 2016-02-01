@@ -28,6 +28,7 @@ var logout_onSuccessRedirect = function($q, $http, $rootScope, $cookies, $window
 	$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN')).success(function(data) {
 		$cookies.remove('LASTLOGINMESSAGE', { path: '/' });
 		$cookies.remove('USERTOKEN', { path: '/' });
+		$cookies.remove('CLOUDSAFE', { path: '/' });
 		$window.location.href = "/";
 		deferred.resolve(true);
 	});
