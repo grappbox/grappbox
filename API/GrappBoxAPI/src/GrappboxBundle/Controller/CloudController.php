@@ -450,7 +450,7 @@ class CloudController extends Controller
 	*				"is_secured" : false,
 	*				"size" : "18",
 	*				"mimetype" : "text/plain",
-	*				"timestamp" : 1452833750
+	*				"last_modified" : {"date" : ""}
 	*			},
 	*			{
 	*				"type" : "dir",
@@ -509,6 +509,12 @@ class CloudController extends Controller
 			$filename = str_replace('|', ' ', urldecode($filename));
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
+			if ($content[$i]["type"] == "file")
+			{
+					$content[$i]["last_modified"] = new DateTime()->setTimestamp($content[$i]["timestamp"]);
+					unset($content[$i]["timestamp"]);
+			}
+
 			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
 		}
 		$response["info"]["return_code"] = "1.3.1";
