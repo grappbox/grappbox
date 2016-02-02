@@ -762,7 +762,7 @@ class CloudController extends Controller
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info" : {
-	*			"return_code" : 1.4.1,
+	*			"return_code" : 1.3.1,
 	*			"return_message" : "Cloud - delAction - Complete Success"
 	*		}
 	*	}
@@ -849,7 +849,7 @@ class CloudController extends Controller
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info" : {
-	*			"return_code" : 1.4.1,
+	*			"return_code" : 1.3.1,
 	*			"return_message" : "Cloud - delAction - Complete Success"
 	*		}
 	*	}
@@ -939,7 +939,7 @@ class CloudController extends Controller
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info" : {
-	*			"return_code" : 1.4.1,
+	*			"return_code" : 1.3.1,
 	*			"return_message" : "Cloud - createDirAction - Complete Success"
 	*		}
 	*	}
