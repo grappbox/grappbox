@@ -37,7 +37,6 @@
     #page-content-wrapper { padding: 0 20px; position: relative; }
 }
 
-input[type='file'] { cursor: pointer!important; }
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
 .clearfix { background: #fff; }
 .lead-help { padding: 20px; border: 1px solid #e0e0e0; }
@@ -183,13 +182,11 @@ section { margin: 0 0 60px 0; }
 #cloud-list-view .project-cloud-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
 #cloud-list-view .project-cloud-link a { border-top: 1px solid #fafafa; background-color: #616161; }
 
-#cloud-content-view .center { margin-top: 4px; }
 #cloud-content-view .app-section-content { margin: 0 15px; border: 1px solid #e0e0e0; }
-#cloud-content-view .app-data-actions,
 #cloud-content-view .app-data-breadcrumb,
 #cloud-content-view .app-data-labels { padding: 10px; margin: 0; }
 #cloud-content-view .app-data-labels { background: #e0e0e0; }
-#cloud-content-view .app-data-actions { background: #616161; }
+#cloud-content-view .app-data-actions { padding: 15px 10px; margin: 0; background: #616161; }
 #cloud-content-view .app-data-actions a:active,
 #cloud-content-view .app-data-actions a:focus,
 #cloud-content-view .app-data-actions a:hover,
@@ -200,18 +197,10 @@ section { margin: 0 0 60px 0; }
 #cloud-content-view .app-data-actions a.disabled:active,
 #cloud-content-view .app-data-actions a.disabled:focus,
 #cloud-content-view .app-data-actions a.disabled:hover { color: #e0e0e0; }
-
+#cloud-content-view .app-data-actions a { padding: 15px 5px; }
 #cloud-content-view .app-data-actions a,
-#cloud-content-view #view_newFileWrapper,
-#cloud-content-view #view_newFolderWrapper { color: #e0e0e0; }
-#cloud-content-view #view_newFolderWrapper { margin-top: 1px; }
-#cloud-content-view #view_newFolderWrapper input { margin-left: 10px; padding: 2px 5px; border: 1px solid #e0e0e0; color: #212121; }
-#cloud-content-view #view_newFileWrapper input { display: inline; position: absolute; left: 0; opacity: 0; }
-#cloud-content-view #view_newFolderWrapper a { padding: 2px 10px; border: 1px solid #e0e0e0; margin-left: -5px; }
-#cloud-content-view #view_newFolderWrapper a:active,
-#cloud-content-view #view_newFolderWrapper a:focus,
-#cloud-content-view #view_newFolderWrapper a:hover { background: #fafafa; color: #29B6F6; }
-#cloud-content-view #view_newFileWrapper,
+#cloud-content-view #view_newFileWrapper { color: #e0e0e0; }
+#cloud-content-view #view_newFileWrapper input { display: inline; position: absolute; left: 0; top: 0; opacity: 0; width: 100%; padding: 10px 0; margin: -15px 0 0 0; }
 #cloud-content-view .app-data-list { cursor: pointer; }
 #cloud-content-view .app-data-list#selected { background: #29B6F6; }
 #cloud-content-view .app-data-list#selected,
@@ -222,7 +211,7 @@ section { margin: 0 0 60px 0; }
 #cloud-content-view .app-data-list i { margin: 0 10px 0 -10px; }
 #cloud-content-view .app-data-list i:not(.disabled) { color: #616161; }
 #cloud-content-view .app-data-list i.disabled { color: #e0e0e0; }
-#cloud-content-view .app-data-list .object-security i { margin: 0; padding: 0 10px; }
+#cloud-content-view .app-data-list .object-security i { margin: 0; padding: 0 2px; }
 
 #cloud-content-view .each-object-data { border-top: 1px solid #e0e0e0; padding: 5px 10px; background: #fff; margin: 0; }
 #cloud-content-view .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
@@ -240,6 +229,7 @@ section { margin: 0 0 60px 0; }
 .modal-content .modal-footer button:active,
 .modal-content .modal-footer button:focus,
 .modal-content .modal-footer button:hover { background: #29B6F6; color: #fafafa; }
+
 
 
 /* ==================== SECTION: WHITEBOARD ==================== */
@@ -288,7 +278,7 @@ section { margin: 0 0 60px 0; }
 #bugtracker-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
 #bugtracker-data { transition: .2s ease all; transition-delay: .2s; }
 
-#bugtracker-list-view .bugtracker-new-ticket {  padding: 0; }
+#bugtracker-list-view .bugtracker-new-ticket { padding: 0; }
 #bugtracker-list-view .bugtracker-new-ticket a { background-color: #26A69A; display: block; padding: 15px; text-align: center; color: #fafafa;}
 #bugtracker-list-view .each-available-bugtracker { min-width: 17vw; background: #bdbdbd; }
 #bugtracker-list-view .bugtracker-id { padding: 15px 15px 5px 15px; }
