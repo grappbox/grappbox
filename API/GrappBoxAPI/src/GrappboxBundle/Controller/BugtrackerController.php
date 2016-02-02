@@ -2660,7 +2660,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($tag instanceof Tag))
 			return $this->setBadRequest("4.18.4", "Bugtracker", "deleteTag", "Bad Parameter: tagId");
 
-		if ($this->checkRoles($user, $tag->getProjects()->getId(), "bugtracker") < 2)
+		if ($this->checkRoles($user, $tag->getProject()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.18.9", "Bugtracker", "deleteTag"));
 
 		$em->remove($tag);
