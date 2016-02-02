@@ -334,6 +334,15 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
+	// * apiErrorExample Bad Parameter: toRemove-id
+	// * 	HTTP/1.1 400 Bad Request
+	// * 	{
+	// *		"info": {
+	// *			"return_code": "5.3.4",
+	// *			"return_message": "Calendar - setParticipants - Bad Parameter: toRemove-id"
+  // *		}
+	// * 	}
 	public function setParticipantsAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -380,9 +389,9 @@ class EventController extends RolesAndTokenVerificationController
 			$toAddUser = $em->getRepository("GrappboxBundle:User")->find($value);
 			if ($toAddUser instanceof User)
 			{
-				foreach ($event->getUsers() as $key => $value) {
-					if ($user->getId() == $value->getId())
-						return $this->setBadRequest("5.3.7", "Calendar", "setParticipants", "Already in Database");
+				foreach ($event->getUsers() as $key => $event_value) {
+					if ($toAddUser->getId() == $event_value->getId())
+						return $this->setBadRequest("5.3.4", "Calendar", "setParticipants", "Already in Database");
 				}
 
 				$event->addUser($toAddUser);
@@ -403,8 +412,8 @@ class EventController extends RolesAndTokenVerificationController
 			$toRemoveUser = $em->getRepository("GrappboxBundle:User")->find($value);
 			if ($toRemoveUser instanceof User)
 			{
-				if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
-					return $this->setBadRequest("Try to remove creator");
+				// if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
+				// 	return $this->setBadRequest("5.3.7", "Calendar", "setParticipants", "Bad Parameter: toRemove-id");
 
 				$event->removeUser($toRemoveUser);
 

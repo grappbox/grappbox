@@ -1043,8 +1043,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$toAddUser = $em->getRepository("GrappboxBundle:User")->find($value);
 			if ($toAddUser instanceof User)
 			{
-				foreach ($bug->getUsers() as $key => $value) {
-					if (($user->getId()) == $toAddUser->getId())
+				foreach ($bug->getUsers() as $key => $bug_value) {
+					if (($bug_value->getId()) == $toAddUser->getId())
 						return $this->setBadRequest("4.7.7", "Bugtracker", "setParticipants", "Already in Database");
 					}
 
@@ -2246,6 +2246,93 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($states_array) <= 0)
 			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getStates");
 		return $this->setSuccess("1.4.1", "Bugtracker", "getStates", "Commplete Success", array("array" => $states_array));
+	}
+
+
+	/**
+	* @api {put} /V0.2/bugtracker/reopenticket/:token/:id Reopen closed ticket
+	* @apiName reopenTicket
+	* @apiGroup Bugtracker
+	* @apiDescription Reopen a closed ticket
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {int} id id of the ticket
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - reopenTicket - Complete Success"
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.23.3",
+	*			"return_message": "Bugtracker - reopenTicket - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.23.4",
+	*			"return_message": "Bugtracker - reopenTicket - Bad Parameter: id"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.23.9",
+	*			"return_message": "Bugtracker - reopenTicket - Insufficient Rights"
+  *		}
+	* 	}
+	*
+	*/
+	public function reopenTicketAction(Request $request, $token, $id)
+	{
+		$em = $this->getDoctrine()->getManager();
+
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("4.23.3", "Bugtracker", "reopenTicket"));
+
+		$bug = $em->getRepository("GrappboxBundle:Bug")->find($id);
+		if (!($bug instanceof Bug))
+			return $this->setBadRequest("4.23.4", "Bugtracker", "reopenTicket", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
+			return ($this->setNoRightsError("4.23.9", "Bugtracker", "reopenTicket"));
+
+		$bug->setDeletedAt(null);
+
+		$em->persist($bug);
+		$em->flush();
+
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Bugtracker - Ticket reopen";
+		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been reopen";
+
+		$wdata['type'] = "Bugtracker";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = "The ticket ".$bug->getTitle()." has been reopen";
+
+		$userNotif = array();
+		foreach ($bug->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+
+		if (count($userNotif) > 0)
+			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		$response["info"]["return_code"] = "1.4.1";
+		$response["info"]["return_message"] = "Bugtracker - reopenTicket - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/*

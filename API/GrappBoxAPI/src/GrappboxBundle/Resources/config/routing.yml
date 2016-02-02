@@ -191,6 +191,13 @@ v2_bugtracker_getClosedTickets:
         id:     \d+
     methods:  [GET]
 
+v2_bugtracker_reopenTicket:
+    path:       /bugtracker/reopenticket/{token}/{id}
+    defaults:   { _controller: GrappboxBundle:Bugtracker:reopenTicket, _format: json }
+    requirements:
+        token:  "[a-zA-Z0-9]+"
+        id:     \d+
+    methods:  [PUT]
 
 
 # -----------------------------------------------------------------------
