@@ -378,6 +378,11 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
 
   // Load order (for file)   : view_onNewFile() =>  local_setFileSecurity() =>  local_uploadFile();
 
+  var resetUploadFileField = function() {
+    angular.element(document.querySelector('#view_newFileInput')).val('');
+    $scope.view_newFile = '';
+  };
+
   // 'Upload file' button handler [3/3]
   var local_uploadFile = function(isNewFileInSafeFolder) {
     var local_fileData = "";
@@ -414,17 +419,25 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
               $http.delete($rootScope.apiBaseURL + '/cloud/stream/' + $cookies.get('USERTOKEN') + '/' + $scope.project.id + '/' + local_fileStreamID)
               .then(function streamClosingSuccess(response) {
                 Notification.success({ message: 'Sent: ' + $scope.view_newFile.filename, delay: 5000 });
+                resetUploadFileField();
                 getCurrentFolderContent();
               },
-              function streamClosingFailure(response) { Notification.warning({ message: 'Unable to close stream for \'' + $scope.view_newFile.filename + '\'. Please try again.', delay: 5000 }); });
+              function streamClosingFailure(response) {
+                Notification.warning({ message: 'Unable to close stream for \'' + $scope.view_newFile.filename + '\'. Please try again.', delay: 5000 });
+                resetUploadFileField();
+              });
             }
           },
-          function chunkSendingFailure(response) { Notification.warning({ message: 'Chunk #' + i + ' has failed', delay: 5000 }); });
+          function chunkSendingFailure(response) {
+            Notification.warning({ message: 'Chunk #' + i + ' has failed', delay: 5000 });
+            resetUploadFileField();
+          });
         }
       }
       else {
         Notification.warning({ message: 'Unable to upload \'' + $scope.view_newFile.filename + '\'. Please try again.', delay: 5000 });
-        resetSafePassword();        
+        resetSafePassword();
+        resetUploadFileField();
       }
     },
     function streamOpeningFailure(response) { Notification.warning({ message: 'Unable to open stream for \'' + $scope.view_newFile.filename + '\'. Please try again.', delay: 5000 }); });
@@ -453,15 +466,20 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
           }
           else {
             Notification.warning({ message: 'Passwords don\'t match. Please try again.', delay: 5000 });
+            resetUploadFileField();
           }
         },
         function fileSecondPasswordNotEntered() {
           Notification.warning({ message: 'You must provide your password two times in order to confirm it. Please try again.', delay: 5000 });
           Notification.warning({ message: 'Upload cancelled.', delay: 5000 });
+          resetUploadFileField();
         })
       },
-      function fileFirstPasswordNotEntered() { Notification.warning({ message: 'Upload cancelled.', delay: 5000 }); })
-      },
+      function fileFirstPasswordNotEntered() {
+        Notification.warning({ message: 'Upload cancelled.', delay: 5000 });
+        resetUploadFileField();
+      })
+    },
     function fileWontHavePassword() {
       $scope.newFile.isSecured = false;
       local_uploadFile(isNewFileInSafeFolder);
@@ -531,7 +549,7 @@ app.controller('cloudController', ['$rootScope', '$scope', '$routeParams', '$htt
       },
       function safeCheckFailure() { Notification.warning({ message: 'You must provide the \'Safe\' password in order to create any \'Safe\'-based file or folder. Please try again.', delay: 5000 }); });
     },
-    function folderNameNotProvided() { Notification.warning({ message: 'You must provide a valid folder name. Please try again.', delay: 5000 }); });
+    function folderNameNotProvided() { });
   }
 
 }]);
