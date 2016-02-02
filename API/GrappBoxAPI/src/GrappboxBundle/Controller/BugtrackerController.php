@@ -1043,8 +1043,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$toAddUser = $em->getRepository("GrappboxBundle:User")->find($value);
 			if ($toAddUser instanceof User)
 			{
-				foreach ($bug->getUsers() as $key => $value) {
-					if (($user->getId()) == $toAddUser->getId())
+				foreach ($bug->getUsers() as $key => $bug_value) {
+					if (($bug_value->getId()) == $toAddUser->getId())
 						return $this->setBadRequest("4.7.7", "Bugtracker", "setParticipants", "Already in Database");
 					}
 
