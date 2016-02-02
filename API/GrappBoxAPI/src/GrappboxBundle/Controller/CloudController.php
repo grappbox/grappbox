@@ -803,7 +803,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if (!is_null($file) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($path == "" || $path == "/" || !is_null($file) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.7.9";
@@ -882,7 +882,7 @@ class CloudController extends Controller
 		else if (!isset($apath[0])) {
 			$apath = "/";
 		}
-		
+
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
 
 		$file = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
@@ -896,7 +896,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if (is_null($file) || (!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($path == "/" || $path == "" || is_null($file) || (!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
 				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.9.9";
