@@ -16,7 +16,7 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
   // Scope variables initialization
   $scope.project    = { id: $routeParams.id };
   $scope.button     = { parent: false, delete: false };
-  $scope.data       = { objects: "", isValid: false };
+  $scope.data       = { onLoad: true, objects: "", isValid: false };
 
   $scope.path       = { current: ",", parent: "", child: "" };
   $scope.selected   = { current: { isSecured: "", element: "", name: "" }, previous: { isSecured: "", element: "", name: "" } };
@@ -29,6 +29,7 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
   var setDataOnSuccess  = function(response) {
     $scope.data.objects = (response.data && response.data.data ? (Object.keys(response.data.data.array).length ? response.data.data.array : null) : null);
     $scope.data.isValid = true;
+    $scope.data.onLoad = false;
   };
 
   // Routine definition
@@ -36,6 +37,7 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
   var setDataOnFailure  = function() {
     $scope.data.objects = null;
     $scope.data.isValid = false;
+    $scope.data.onLoad = false;
   };
 
   // Routine definition
@@ -122,6 +124,8 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     isCurrentFolderInSafeFolder = isPathInSafeFolder($scope.path.current);
     promise = (isCurrentFolderInSafeFolder ? getSafePassword() : $q.when(true) );
     promise.then(function safeCheckSuccess() {
+      $scope.data.onLoad = true;
+
       $http.get($rootScope.apiBaseURL + "/cloud/list/"
         + $cookies.get("USERTOKEN") + "/"
         + $scope.project.id + "/"
@@ -144,7 +148,10 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
       resetSafePassword();
     });
     },
-    function safeCheckFailure() { Notification.warning({ message: "You must provide the \"Safe\" password in order to access any \"Safe\"-based file or folder. Please try again.", delay: 5000 }); });
+    function safeCheckFailure() {
+      $scope.data.onLoad = false;
+      Notification.warning({ message: "You must provide the \"Safe\" password in order to access any \"Safe\"-based file or folder. Please try again.", delay: 5000 });
+    });
   };
 
 

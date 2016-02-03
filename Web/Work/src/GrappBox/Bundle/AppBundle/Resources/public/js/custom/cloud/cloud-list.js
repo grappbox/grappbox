@@ -12,17 +12,19 @@
 app.controller("cloudListController", ["$scope", "$http", "$rootScope", "$cookies", function($scope, $http, $rootScope, $cookies) {
 
   // Scope variables initialization
-  $scope.data = { userProjects: "", isValid: false };
+  $scope.data = { onLoad: true, userProjects: "", isValid: false };
 
   // Get all user"s current projects (with information)
   $http.get($rootScope.apiBaseURL + "/user/getprojects/" + $cookies.get("USERTOKEN"))
     .then(function userProjectsReceived(response) {
       $scope.data.userProjects = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
       $scope.data.isValid = true;
+      $scope.data.onLoad = false;
     },
     function userProjectsNotReceived(response) {
       $scope.data.userProjects = null;
       $scope.data.isValid = false;
+      $scope.data.onLoad = false;
     });
 
 }]);

@@ -4,164 +4,167 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div class="view view-content" id="cloud-content-view" ng-controller="cloudController">
 
-    <section class="app-section" id="cloud-content">
-        <div class="container app-container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <!-- grappbox.data : cloud content -->
-                    <div class="section-heading app-section-heading">
-                        <h2>Cloud for project #{[{ project.id }]}</h2>
-                        <p class="lead">Use your mouse to navigate between all your current project files: use <strong>one-clic</strong> to select a file or folder, and <strong>double-clic</strong> to download or enter it.<br>Use the cross-button to delete any selected file or folder, and the key-up button to upload a new file.</p>
-                    </div>
-                    <div class="section-content app-section-content">
-                        <div id="all-cloud-objects">
-                            <div class="row app-data-actions">
-                                <div class="col-md-1 object-action">
-                                    <a href="" ng-click="view_accessParentObject()" class="{[{ button.parent ? '' : 'disabled' }]}"><i class="fa fa-arrow-left"></i>Parent</a>
-                                </div>
-                                <div class="col-md-1 object-action">
-                                    <a href="" ng-click="view_deleteObject()" class="{[{ button.delete ? '' : 'disabled' }]}"><i class="fa fa-times"></i>Delete [...]</a>
-                                </div>
-                                <div class="col-md-1 object-action">
-                                    <a href="" ng-click="view_onNewFolder()"><i class="fa fa-plus"></i>Add folder</a>
-                                </div>
-                                <div class="col-md-1 object-action" id="view_newFileWrapper">
-                                    <i class="fa fa-cloud-upload"></i>Upload file<input id="view_newFileInput" type="file" data-ng-model="view_newFile" ng-change="view_onNewFile()" base-sixty-four-input>
-                                </div>
-                            </div>
-                            <div class="row app-data-breadcrumb">
-                                <div class="col-md-12"><i class="fa fa-list-ul"></i>{[{ data.formatObjectPath(path.current) }]}</div>
-                            </div>
-                            <div class="row app-data-labels">
-                                <div class="col-md-6">Name</div>
-                                <div class="col-md-2">Security</div>
-                                <div class="col-md-2">Last modification</div>
-                                <div class="col-md-2">Size</div>
-                            </div>
-                            <div ng-if="data.isValid && data.objects">
-                                <div class="app-data" ng-repeat="object in data.objects">
-                                    <div class="row app-data-list each-object-data" data-id="{[{ object.filename }]}" data-secured="{[{ object.is_secured }]}" ng-click="view_selectObject($event)" ng-dblClick="view_accessObject(object)">
-                                        <div class="col-md-6 object-name"><i class="fa {[{ object.type == 'file' ? 'fa-file' : 'fa-folder' }]}"></i>{[{ object.filename }]}</div>
-                                        <div class="col-md-2 object-security"><i class="fa {[{ object.is_secured ? 'fa-lock' : 'fa-unlock disabled' }]}"></i></div>
-                                        <div class="col-md-2 object-data">{[{ data.formatObjectDate(object.last_modified.date) }]}</div>
-                                        <div class="col-md-2 object-size">{[{ data.formatObjectSize(object.size) }]}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div ng-if="data.isValid && !data.objects">
-                                <div class="app-data">
-                                    <div class="row app-data-list each-object-data">
-                                        <div class="col-md-12 text-center">This folder is empty.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div ng-if="!data.isValid">
-                                <div class="app-data">
-                                    <div class="row app-data-list each-object-data">
-                                        <div class="col-md-12 text-center"><i class="fa fa-times"></i>An error has occurred. Please try again.</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  <section class="app-section" id="cloud-content">
+    <div class="container app-container">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- grappbox.data : cloud content -->
+          <div class="section-heading app-section-heading">
+            <h2>Cloud for project #{[{ project.id }]}</h2>
+            <p class="lead">Use your mouse to navigate between all your current project files: use <strong>one-clic</strong> to select a file or folder, and <strong>double-clic</strong> to download or enter it.<br>Use the cross-button to delete any selected file or folder, and the key-up button to upload a new file.</p>
+          </div>
+          <div class="section-content app-section-content">
+            <div id="all-cloud-objects">
+              <div class="row app-data-actions">
+                <div class="col-md-1 object-action">
+                  <a href="" ng-click="view_accessParentObject()" class="{[{ button.parent ? '' : 'disabled' }]}"><i class="fa fa-arrow-left"></i>Parent</a>
                 </div>
+                <div class="col-md-1 object-action">
+                  <a href="" ng-click="view_deleteObject()" class="{[{ button.delete ? '' : 'disabled' }]}"><i class="fa fa-times"></i>Delete [...]</a>
+                </div>
+                <div class="col-md-1 object-action">
+                  <a href="" ng-click="view_onNewFolder()"><i class="fa fa-plus"></i>Add folder</a>
+                </div>
+                <div class="col-md-1 object-action" id="view_newFileWrapper">
+                  <i class="fa fa-cloud-upload"></i>Upload file<input id="view_newFileInput" type="file" data-ng-model="view_newFile" ng-change="view_onNewFile()" base-sixty-four-input>
+                </div>
+              </div>
+              <div class="row app-data-breadcrumb">
+                <div class="col-md-12"><i class="fa fa-list-ul"></i>{[{ data.formatObjectPath(path.current) }]}</div>
+              </div>
+              <div class="row app-data-labels">
+                <div class="col-md-6">Name</div>
+                <div class="col-md-2">Security</div>
+                <div class="col-md-2">Last modification</div>
+                <div class="col-md-2">Size</div>
+              </div>
+              <div class="loading-content data" ng-show="data.onLoad"><div></div></div>
+              <div class="data-content" ng-if="!data.onLoad">
+                <div ng-if="data.isValid && data.objects">
+                  <div class="app-data" ng-repeat="object in data.objects">
+                    <div class="row app-data-list each-object-data" data-id="{[{ object.filename }]}" data-secured="{[{ object.is_secured }]}" ng-click="view_selectObject($event)" ng-dblClick="view_accessObject(object)">
+                      <div class="col-md-6 object-name"><i class="fa {[{ object.type == 'file' ? 'fa-file' : 'fa-folder' }]}"></i>{[{ object.filename }]}</div>
+                      <div class="col-md-2 object-security"><i class="fa {[{ object.is_secured ? 'fa-lock' : 'fa-unlock disabled' }]}"></i></div>
+                      <div class="col-md-2 object-data">{[{ data.formatObjectDate(object.last_modified.date) }]}</div>
+                      <div class="col-md-2 object-size">{[{ data.formatObjectSize(object.size) }]}</div>
+                    </div>
+                  </div>
+                </div>
+                <div ng-if="data.isValid && !data.objects">
+                  <div class="app-data">
+                    <div class="row app-data-list each-object-data">
+                      <div class="col-md-12 text-center">This folder is empty.</div>
+                    </div>
+                  </div>
+                </div>
+                <div ng-if="!data.isValid">
+                  <div class="app-data">
+                    <div class="row app-data-list each-object-data">
+                      <div class="col-md-12 text-center"><i class="fa fa-times"></i>An error has occurred. Please try again.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </section>
-
-    <div>
-        <script type="text/ng-template" id="view_setNewFolder.html">
-            <div class="modal-header">
-                <h3 class="modal-title">Folder creation</h3>
-            </div>
-            <div class="modal-body">
-                <p>Enter the name of your new folder.</p>
-                <input type="text" placeholder="Folder name..." id="view_newFolder" autofocus>
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="view_setNewFolderSuccess()"><i class="fa fa-check"></i>OK</button>
-                <button type="button" ng-click="view_setNewFolderFailure()"><i class="fa fa-ban"></i>Cancel</button>
-            </div>
-        </script>
+      </div>
     </div>
+  </section>
 
-    <div>
-        <script type="text/ng-template" id="view_isNewFileProtected.html">
-            <div class="modal-header">
-                <h3 class="modal-title">File security</h3>
-            </div>
-            <div class="modal-body">
-                <p>Do you want to set a password on this file?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="view_newFileIsProtected()"><i class="fa fa-check"></i>Yes</button>
-                <button type="button" ng-click="view_newFileIsNotProtected()"><i class="fa fa-times"></i>No</button>
-            </div>
-        </script>
-    </div>
+  <div>
+    <script type="text/ng-template" id="view_setNewFolder.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Folder creation</h3>
+      </div>
+      <div class="modal-body">
+        <p>Enter the name of your new folder.</p>
+        <input type="text" placeholder="Folder name..." id="view_newFolder" autofocus>
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="view_setNewFolderSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" ng-click="view_setNewFolderFailure()"><i class="fa fa-ban"></i>Cancel</button>
+      </div>
+    </script>
+  </div>
 
-    <div>
-        <script type="text/ng-template" id="view_setNewFileFirstPassword.html">
-            <div class="modal-header">
-                <h3 class="modal-title">File security</h3>
-            </div>
-            <div class="modal-body">
-                <p>Please set a password for this file.</p>
-                <input type="password" placeholder="Password..." id="view_newFileFirstPassword">
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="view_newFileFirstPasswordSuccess()"><i class="fa fa-check"></i>OK</button>
-                <button type="button" ng-click="view_newFileFirstPasswordFailure()"><i class="fa fa-ban"></i>Cancel</button>
-            </div>
-        </script>
-    </div>
+  <div>
+    <script type="text/ng-template" id="view_isNewFileProtected.html">
+      <div class="modal-header">
+        <h3 class="modal-title">File security</h3>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to set a password on this file?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="view_newFileIsProtected()"><i class="fa fa-check"></i>Yes</button>
+        <button type="button" ng-click="view_newFileIsNotProtected()"><i class="fa fa-times"></i>No</button>
+      </div>
+    </script>
+  </div>
 
-    <div>
-        <script type="text/ng-template" id="view_setNewFileSecondPassword.html">
-            <div class="modal-header">
-                <h3 class="modal-title">File security</h3>
-            </div>
-            <div class="modal-body">
-                <p>Retype your password to confirm it.</p>
-                <input type="password" placeholder="Password (same)..." id="view_newFileSecondPassword">
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="view_newFileSecondPasswordSuccess()"><i class="fa fa-check"></i>OK</button>
-                <button type="button" ng-click="view_newFileSecondPasswordFailure()"><i class="fa fa-ban"></i>Cancel</button>
-            </div>
-        </script>
-    </div>
+  <div>
+    <script type="text/ng-template" id="view_setNewFileFirstPassword.html">
+      <div class="modal-header">
+        <h3 class="modal-title">File security</h3>
+      </div>
+      <div class="modal-body">
+        <p>Please set a password for this file.</p>
+        <input type="password" placeholder="Password..." id="view_newFileFirstPassword">
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="view_newFileFirstPasswordSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" ng-click="view_newFileFirstPasswordFailure()"><i class="fa fa-ban"></i>Cancel</button>
+      </div>
+    </script>
+  </div>
 
-    <div>
-        <script type="text/ng-template" id="view_filePasswordCheck.html">
-            <div class="modal-header">
-                <h3 class="modal-title">File security</h3>
-            </div>
-            <div class="modal-body">
-                <p>This file is protected.</p>
-                <input type="password" placeholder="File password..." id="view_filePassword">
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="view_filePasswordCheckSuccess()"><i class="fa fa-check"></i>OK</button>
-                <button type="button" ng-click="view_filePasswordCheckFailure()"><i class="fa fa-ban"></i>Cancel</button>
-            </div>
-        </script>
-    </div>
+  <div>
+    <script type="text/ng-template" id="view_setNewFileSecondPassword.html">
+      <div class="modal-header">
+        <h3 class="modal-title">File security</h3>
+      </div>
+      <div class="modal-body">
+        <p>Retype your password to confirm it.</p>
+        <input type="password" placeholder="Password (same)..." id="view_newFileSecondPassword">
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="view_newFileSecondPasswordSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" ng-click="view_newFileSecondPasswordFailure()"><i class="fa fa-ban"></i>Cancel</button>
+      </div>
+    </script>
+  </div>
 
-    <div>
-        <script type="text/ng-template" id="view_safePasswordCheck.html">
-            <div class="modal-header">
-                <h3 class="modal-title">File security</h3>
-            </div>
-            <div class="modal-body">
-                <p>The "Safe" folder is protected.</p>
-                <input type="password" placeholder="Safe password..." id="view_safePassword">
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="view_safePasswordCheckSuccess()"><i class="fa fa-check"></i>OK</button>
-                <button type="button" ng-click="view_safePasswordCheckFailure()"><i class="fa fa-ban"></i>Cancel</button>
-            </div>
-        </script>
-    </div>
+  <div>
+    <script type="text/ng-template" id="view_filePasswordCheck.html">
+      <div class="modal-header">
+        <h3 class="modal-title">File security</h3>
+      </div>
+      <div class="modal-body">
+        <p>This file is protected.</p>
+        <input type="password" placeholder="File password..." id="view_filePassword">
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="view_filePasswordCheckSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" ng-click="view_filePasswordCheckFailure()"><i class="fa fa-ban"></i>Cancel</button>
+      </div>
+    </script>
+  </div>
+
+  <div>
+    <script type="text/ng-template" id="view_safePasswordCheck.html">
+      <div class="modal-header">
+        <h3 class="modal-title">File security</h3>
+      </div>
+      <div class="modal-body">
+        <p>The "Safe" folder is protected.</p>
+        <input type="password" placeholder="Safe password..." id="view_safePassword">
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="view_safePasswordCheckSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" ng-click="view_safePasswordCheckFailure()"><i class="fa fa-ban"></i>Cancel</button>
+      </div>
+    </script>
+  </div>
 
 </div>
