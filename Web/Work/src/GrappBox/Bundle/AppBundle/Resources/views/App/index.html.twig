@@ -1,5 +1,5 @@
 {# This file is subject to the terms and conditions defined in
-# file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+# file "LICENSE.txt", which is part of the GRAPPBOX source code package.
 # COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. #}
 
 {% spaceless %}
@@ -16,8 +16,8 @@
 		<base href="/app/">
 		<title>GrappBox</title>
 		<!-- Google Fonts -->
-		<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700' />
-		<link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Oswald:400,700' />
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700" />
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Oswald:400,700" />
 
 		{% stylesheets
 		'@HomeBundle/Resources/public/css/vendor/bootstrap.css'
@@ -69,7 +69,6 @@
 	</head>
 
 	<body ng-controller="grappboxController">
-		<span ng-cloak ng-show="show"></span>
 		<div id="app-wrapper">
 			<!-- Navigation content -->
 			<div id="sidebar-wrapper">
@@ -79,9 +78,9 @@
 					<li><a href="./" title="Go to your dashboard" class="ng-class:{ 'active' : isPageActive('/') };">Dashboard</a></li>
 					<li><a href="project" title="Get an overview of all your currents projects" class="ng-class:{ 'active' : isPageActive('/project') };">Projects</a></li>
 					<li><a href="cloud" title="Access your online files and folders" class="ng-class:{ 'active' : isPageActive('/cloud') };">Cloud</a></li>
-					<li><a href="timeline" title="Go to your projects' timelines" class="ng-class:{ 'active' : isPageActive('/timeline') };">Timeline</a></li>
+					<li><a href="timeline" title="Go to your projects timelines" class="ng-class:{ 'active' : isPageActive('/timeline') };">Timeline</a></li>
 					<li><a href="bugtracker" title="Go to the bugtracker section" class="ng-class:{ 'active' : isPageActive('/bugtracker') };">Bugtracker</a></li>
-					<li><a href="whiteboard" title="Use your projects' collaborative whiteboards" class="ng-class:{ 'active' : isPageActive('/whiteboard') };">Whiteboard</a></li>
+					<li><a href="whiteboard" title="Use your projects collaborative whiteboards" class="ng-class:{ 'active' : isPageActive('/whiteboard') };">Whiteboard</a></li>
 					<li><a href="profile" title="View and edit your profile information" class="ng-class:{ 'active' : isPageActive('/profile') };">Profile</a></li>
 					<li><a href="logout" title="Sign out of GrappBox">Logout</a></li>
 				</ul>
@@ -95,7 +94,7 @@
 				<div class="page-header">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="app-page-title">{[{ title }]}</div>
+							<div class="app-page-title" ng-cloak>{[{ title }]}</div>
 						</div>
 					</div>
 				</div>
@@ -105,7 +104,8 @@
 						<div class="col-md-12">
 							<div class="app-page">
 								<!-- Dynamic view -->
-								<div ng-view></div>
+								<div class="loading-content master" ng-show="onLoad"><div></div></div>
+								<div class="view-content" ng-view ng-show="!onLoad"></div>
 							</div>
 						</div>
 					</div>

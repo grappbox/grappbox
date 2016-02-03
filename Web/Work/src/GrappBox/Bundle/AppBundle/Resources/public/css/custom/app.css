@@ -15,6 +15,23 @@
 
 
 
+/* ==================== GENERAL LAYOUT (LOADING) ==================== */
+
+.loading-content,
+.loading-content > div { position: relative; box-sizing: border-box; }
+.loading-content { display: block; font-size: 0; color: #fff; top: 30px; margin: 0 auto; border: none!important; }
+.loading-content > div { display: inline-block; float: none; border: 0 solid #616161; }
+.loading-content { width: 32px; height: 32px; }
+.loading-content > div { width: 32px; height: 32px; background: transparent; border-width: 2px; border-bottom-color: transparent; border-radius: 100%; animation: ball-clip-rotate .75s linear infinite; }
+.loading-content.master { width: 40px; height: 40px; top: 50px; margin: 0 auto; }
+.loading-content.master > div { width: 40px; height: 40px; border-width: 3px; }
+.loading-content.section { top: 100px; }
+.loading-content.data { top: 30px; }
+
+@keyframes ball-clip-rotate { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+
+
+
 /* ==================== GENERAL LAYOUT ==================== */
 
 #app-wrapper { padding-left: 0; background: #fff; transition: all .3s ease; }
@@ -28,13 +45,13 @@
 #page-content-wrapper .page-header .app-page-title { height: 60px; margin: 0 -20px; padding: 15px 35px; font-family: "Roboto Condensed", Helvetica, Arial, sans-serif; font-size: 24px; background: #e05e52; color: #fafafa; border-bottom: 1px solid #e0e0e0; text-transform: uppercase; }
 
 @media (min-width: 768px) {
-	#app-wrapper { padding-left: 250px; }
-	#app-wrapper.toggled { padding-left: 0; }
-    #app-wrapper.toggled #sidebar-wrapper { width: 0; }
-    #app-wrapper.toggled #page-content-wrapper { position: relative; margin-right: 0; }
+  #app-wrapper { padding-left: 250px; }
+  #app-wrapper.toggled { padding-left: 0; }
+  #app-wrapper.toggled #sidebar-wrapper { width: 0; }
+  #app-wrapper.toggled #page-content-wrapper { position: relative; margin-right: 0; }
 
-    #sidebar-wrapper { width: 250px; }
-    #page-content-wrapper { padding: 0 20px; position: relative; }
+  #sidebar-wrapper { width: 250px; }
+  #page-content-wrapper { padding: 0 20px; position: relative; }
 }
 
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
@@ -70,7 +87,7 @@
 .sidebar-nav .divider { height: 1px; background: #e0e0e0; }
 
 @media (min-width:768px) {
-	.sidebar-nav { z-index: 1; position: absolute; }
+  .sidebar-nav { z-index: 1; position: absolute; }
 }
 
 
@@ -103,8 +120,8 @@ section:nth-of-type(1) { min-height: auto; margin: 15px 0; }
 section { margin: 0 0 60px 0; }
 
 @media (max-width: 767px) {
-	section:nth-of-type(1) { min-height: auto; }
-	section { margin: 0 0 60px 0; }
+  section:nth-of-type(1) { min-height: auto; }
+  section { margin: 0 0 60px 0; }
 }
 
 .app-data.empty p,
@@ -182,11 +199,12 @@ section { margin: 0 0 60px 0; }
 #cloud-list-view .project-cloud-link a { display: block; padding: 15px; text-align: center; color: #fafafa; }
 #cloud-list-view .project-cloud-link a { border-top: 1px solid #fafafa; background-color: #616161; }
 
-#cloud-content-view .app-section-content { margin: 0 15px; border: 1px solid #e0e0e0; }
+#cloud-content-view #all-cloud-objects > div { border: 1px solid #e0e0e0; }
+#cloud-content-view .app-section-content { margin: 0 15px; }
 #cloud-content-view .app-data-breadcrumb,
 #cloud-content-view .app-data-labels { padding: 10px; margin: 0; }
 #cloud-content-view .app-data-labels { background: #e0e0e0; }
-#cloud-content-view .app-data-actions { padding: 15px 10px; margin: 0; background: #616161; }
+#cloud-content-view .app-data-actions { padding: 15px 10px; margin: 0; background: #616161; border: none!important; }
 #cloud-content-view .app-data-actions a:active,
 #cloud-content-view .app-data-actions a:focus,
 #cloud-content-view .app-data-actions a:hover,
@@ -213,7 +231,7 @@ section { margin: 0 0 60px 0; }
 #cloud-content-view .app-data-list i.disabled { color: #e0e0e0; }
 #cloud-content-view .app-data-list .object-security i { margin: 0; padding: 0 2px; }
 
-#cloud-content-view .each-object-data { border-top: 1px solid #e0e0e0; padding: 5px 10px; background: #fff; margin: 0; }
+#cloud-content-view .each-object-data { border-bottom: 1px solid #e0e0e0; padding: 5px 10px; background: #fff; margin: 0; }
 #cloud-content-view .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
 #cloud-content-view .each-object-data .object-type { margin: 0 -10px 0 10px; }
 
