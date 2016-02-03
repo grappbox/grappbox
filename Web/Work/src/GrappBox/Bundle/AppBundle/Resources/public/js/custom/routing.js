@@ -112,7 +112,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		resolve: { factory: isWhiteboardAccessible }
 	})
 	// Error page (default behavior)
-	.otherwise({ templateUrl : "../resources/pages/404.html" }
+	.otherwise({ templateUrl : "../resources/pages/404.html" });
 
 	$locationProvider.html5Mode(true);
 }]);
