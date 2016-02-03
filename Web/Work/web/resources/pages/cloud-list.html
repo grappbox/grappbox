@@ -15,39 +15,39 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                     <div class="section-content app-section-content">
                         <div id="all-clouds-data">
-                            <div ng-if="userProjects_isValid && userProjects" panhandler>
-                                <div class="app-data" ng-repeat="project in userProjects">
+                            <div ng-if="data.isValid && data.userProjects" panhandler>
+                                <div class="app-data" ng-repeat="userProject in data.userProjects">
                                     <ul class="app-data-list each-project-data btn-float">
-                                        <li class="project-picture" ng-show="project.logo === null">
+                                        <li class="project-picture" ng-show="userProject.logo === null">
                                             <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
-                                        <li class="project-picture" ng-show="project.logo !== null">
-                                            <img data-ng-src="data:image/png;base64,{[{ project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                                        <li class="project-picture" ng-show="userProject.logo !== null">
+                                            <img data-ng-src="data:image/png;base64,{[{ userProject.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                                         </li>
                                         <li class="project-details">
-                                            <div class="project-name">{[{ project.name }]}</div>
-                                            <div class="project-client">{[{ project.company }]}</div>
+                                            <div class="project-name">{[{ userProject.name }]}</div>
+                                            <div class="project-client">{[{ userProject.company }]}</div>
                                             <div class="clearfix"></div>
                                         </li>
                                         <li class="client-details">
-                                            <div class="client-phone">{[{ project.phone }]}</div>
-                                            <div class="client-mail">{[{ project.contact_mail }]}</div>
+                                            <div class="client-phone">{[{ userProject.phone }]}</div>
+                                            <div class="client-mail">{[{ userProject.contact_mail }]}</div>
                                             <div class="clearfix"></div>
                                         </li>
                                         <li class="clearfix"></li>
                                         <li class="project-cloud-link">
-                                            <a ng-href="cloud/{[{ project.id }]}" title="Go to '{[{ project.project_name }]}' dedicated Cloud storage"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
+                                            <a ng-href="cloud/{[{ userProject.id }]}" title="Go to '{[{ userProject.project_name }]}' dedicated Cloud storage"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
 
-                            <div ng-if="userProjects_isValid && !userProjects">
+                            <div ng-if="data.isValid && !data.userProjects">
                                 <div class="app-data error">
-                                    <p><i class="fa fa-drown-o"></i>You don't have any project.</p>
+                                    <p><i class="fa fa-drown-o"></i>You don't have any userProject.</p>
                                 </div>
                             </div>
-                            <div ng-if="!userProjects_isValid">
+                            <div ng-if="!data.isValid">
                                 <div class="app-data error">
                                     <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                                 </div>

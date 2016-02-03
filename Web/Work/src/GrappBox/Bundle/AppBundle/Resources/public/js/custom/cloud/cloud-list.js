@@ -1,6 +1,6 @@
 /*
 * This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+* file "LICENSE.txt", which is part of the GRAPPBOX source code package.
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
@@ -9,44 +9,76 @@
 * APP Cloud list page (one per project)
 *
 */
-app.controller('cloudListController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', function($rootScope, $scope, $routeParams, $http, $cookies, Notification) {
-  if ($routeParams.id)
-    Notification.warning({ message: 'Project #' + $routeParams.id + ' doesn\'t exist, or you don\'t have sufficient rights. Please try again.', delay: null });
+app.controller("cloudListController", ["$scope", "$http", "$rootScope", "$cookies", function($scope, $http, $rootScope, $cookies) {
 
-  // Get all user's current projects (with information)
-  $http.get($rootScope.apiBaseURL + '/user/getprojects/' + $cookies.get('USERTOKEN'))
-    .then(function successCallback(response) {
-      $scope.userProjects = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
-      $scope.userProjects_isValid = true;
+  // Scope variables initialization
+  $scope.data = { userProjects: "", isValid: false };
+
+  // Get all user"s current projects (with information)
+  $http.get($rootScope.apiBaseURL + "/user/getprojects/" + $cookies.get("USERTOKEN"))
+    .then(function userProjectsReceived(response) {
+      $scope.data.userProjects = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
+      $scope.data.isValid = true;
     },
-    function errorCallback(response) {
-      $scope.userProjects = null;
-      $scope.userProjects_isValid = false;
+    function userProjectsNotReceived(response) {
+      $scope.data.userProjects = null;
+      $scope.data.isValid = false;
     });
 
 }]);
 
 
-/**
-* Routine definition
-* Check if requested Cloud is accessible
-*
-*/
-var cloud_isAccessible = function($rootScope, $http, $cookies, $route, $q, $location) {
-  var deferred = $q.defer();
-
-  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
-    .then(function successCallback(response) {
-      deferred.resolve(true);
-    },
-    function errorCallback(response) {
-      deferred.reject();
-      $location.path('cloud').search({
-        'id': $route.current.params.id
-      });
-    });
-
-    return deferred.promise;
+// Routine definition [3/3]
+// Common behavior for isCloudAccessible
+var isCloudAccessible_commonBehavior = function(deferred, $location) {
+  deferred.reject();
+  $location.path("cloud");
 };
 
-cloud_isAccessible['$inject'] = ['$rootScope', '$http', '$cookies', '$route', '$q', '$location'];
+// Routine definition [2/3]
+// Default behavior for isCloudAccessible
+var isCloudAccessible_defaultBehavior = function(deferred, $location) {
+  isCloudAccessible_commonBehavior(deferred, $location);
+  Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+};
+
+// Routine definition [1/3]
+// Check if requested Cloud is accessible
+var isCloudAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
+  var deferred = $q.defer();
+
+  $http.get($rootScope.apiBaseURL + "/projects/getinformations/" + $cookies.get("USERTOKEN") + "/" + $route.current.params.id)
+  .then(function projectInformationsReceived(response) {
+    deferred.resolve();
+  },
+  function projectInformationsNotReceived(response) {
+    if (response.data.info.return_code) {
+      switch(response.data.info.return_code) {
+        case "6.3.3":
+        deferred.reject();
+        $rootScope.onUserTokenError();
+        break;
+
+        case "6.3.4":
+        isCloudAccessible_commonBehavior(deferred, $location);
+        Notification.warning({ message: "Project not found. Please try again.", delay: 10000 });
+        break;
+
+        case "6.3.9":
+        isCloudAccessible_commonBehavior(deferred, $location);
+        Notification.warning({ message: "You don\'t have access to this project. Please try again.", delay: 10000 });
+        break;
+
+        default:
+        isCloudAccessible_defaultBehavior(deferred, $location);
+        break;
+      }
+    }
+    else { isCloudAccessible_defaultBehavior(deferred, $location); }
+  });
+
+  return deferred.promise;
+};
+
+// "isCloudAccessible" routine injection
+isCloudAccessible["$inject"] = ["$q", "$http", "$rootScope", "$cookies", "$route", "$location", "Notification"];
