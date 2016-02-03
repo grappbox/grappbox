@@ -1,6 +1,6 @@
 /*
 * This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+* file "LICENSE.txt", which is part of the GRAPPBOX source code package.
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
@@ -25,7 +25,7 @@
 
 #page-content-wrapper { width: 100%; position: absolute; padding: 15px; background: #fafafa; }
 #page-content-wrapper .page-header { margin: 0; padding: 0; border: 0; }
-#page-content-wrapper .page-header .app-page-title { height: 60px; margin: 0 -20px; padding: 15px 35px; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-size: 24px; background: #e05e52; color: #fafafa; border-bottom: 1px solid #e0e0e0; text-transform: uppercase; }
+#page-content-wrapper .page-header .app-page-title { height: 60px; margin: 0 -20px; padding: 15px 35px; font-family: "Roboto Condensed", Helvetica, Arial, sans-serif; font-size: 24px; background: #e05e52; color: #fafafa; border-bottom: 1px solid #e0e0e0; text-transform: uppercase; }
 
 @media (min-width: 768px) {
 	#app-wrapper { padding-left: 250px; }
@@ -62,7 +62,7 @@
 .sidebar-nav .sidebar-brand a:active,
 .sidebar-nav .sidebar-brand a:focus,
 .sidebar-nav .sidebar-brand a:hover { color: #e05e52; font-weight: 400; }
-.sidebar-nav .sidebar-brand a { padding: 13px 25px; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; font-size: 28px; text-transform: uppercase; height: 60px; border-bottom: 1px solid #e0e0e0; color: #616161; }
+.sidebar-nav .sidebar-brand a { padding: 13px 25px; font-family: "Roboto Condensed", Helvetica, Arial, sans-serif; font-size: 28px; text-transform: uppercase; height: 60px; border-bottom: 1px solid #e0e0e0; color: #616161; }
 
 .legal-nav { position: absolute; bottom: 0; width: 100%; }
 .legal-nav .copyright { padding: 5px 20px 20px 20px; margin: 0; font-size: 12px; }
@@ -97,7 +97,7 @@
 .app-section .app-section-content li,
 .app-section .app-section-content strong { font-size: 14px; line-height: initial; font-weight: 400; }
 .app-section .app-section-heading { margin: 0 15px; }
-.app-section .app-section-heading h2 { margin: 0; padding: 15px 0; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
+.app-section .app-section-heading h2 { margin: 0; padding: 15px 0; font-family: "Roboto Condensed", Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
 
 section:nth-of-type(1) { min-height: auto; margin: 15px 0; }
 section { margin: 0 0 60px 0; }
@@ -219,7 +219,7 @@ section { margin: 0 0 60px 0; }
 
 .modal-dialog { margin: 100px auto; }
 .modal-content { border-radius: 0; } 
-.modal-content .modal-title { margin: 0 10px; padding: 5px 0; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
+.modal-content .modal-title { margin: 0 10px; padding: 5px 0; font-family: "Roboto Condensed", Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
 .modal-content .modal-body input { display: block; width: 80%; padding: 2px 5px; margin: 15px auto 5px auto; }
 .modal-content .modal-body input.input-error { border: 2px solid #e05e52; }
 .modal-content .modal-body p,
