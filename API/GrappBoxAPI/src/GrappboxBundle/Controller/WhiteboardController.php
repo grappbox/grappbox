@@ -210,6 +210,14 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			"return_message": "Whiteboard - new - Missing Parameter"
 	*		}
 	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "10.2.4",
+	*			"return_message": "Whiteboard - new - Bad Parameter: projectId"
+	*		}
+	*	}
 	*/
 	public function newWhiteboardAction(Request $request)
 	{
@@ -229,6 +237,8 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository("GrappboxBundle:Project")->find($content->projectId);
+		if ($project instanceof Project)
+			$this->setBadRequest("10.2.4", "Whiteboard", "new", "Bad Parameter: projectId");
 
 		$whiteboard = new Whiteboard();
 		$whiteboard->setProjects($project);
@@ -241,7 +251,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$em->persist($whiteboard);
 		$em->flush();
 
-		return $this->setCreated("1.10.1", "Whiteboard", "list", "Complete Success", $whiteboard->objectToArray());
+		return $this->setCreated("1.10.1", "Whiteboard", "new", "Complete Success", $whiteboard->objectToArray());
 	}
 
 	/**
@@ -466,7 +476,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
 			return ($this->setNoRightsError("10.4.9", "Whiteboard", "push"));
-		
+
 		if ($content->modification == "add")
 		{
 			if (!array_key_exists('object', $content))
