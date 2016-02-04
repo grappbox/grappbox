@@ -9,7 +9,7 @@
 * APP and main controller definition
 *
 */
-var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ngAnimate', 'ui.bootstrap', 'panhandler', 'ui-notification', 'naif.base64']);
+var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ngAnimate', 'ui.bootstrap', 'panhandler', 'ui-notification', 'naif.base64', 'ngTagsInput']);
 
 // TWIG template conflict fix
 app.config(['$interpolateProvider', function($interpolateProvider) {
@@ -72,7 +72,7 @@ app.run(['$rootScope', '$location', '$cookies', '$http', '$window', function($ro
 				$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN'));
 			$cookies.put('LASTLOGINMESSAGE', sha512('_DENIED'), { path: '/' });
 			$cookies.remove('USERTOKEN', { path: '/' });
-			$cookies.remove('CLOUDSAFE', { path: '/' });			
+			$cookies.remove('CLOUDSAFE', { path: '/' });
 			$window.location.href='/#login';
 		}
 	});

@@ -218,7 +218,7 @@ section { margin: 0 0 60px 0; }
 #cloud-content-view .each-object-data .object-type { margin: 0 -10px 0 10px; }
 
 .modal-dialog { margin: 100px auto; }
-.modal-content { border-radius: 0; } 
+.modal-content { border-radius: 0; }
 .modal-content .modal-title { margin: 0 10px; padding: 5px 0; font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif; letter-spacing: 0; font-size: 18px; font-weight: 700; color: #212121; text-transform: uppercase; }
 .modal-content .modal-body input { display: block; width: 80%; padding: 2px 5px; margin: 15px auto 5px auto; }
 .modal-content .modal-body input.input-error { border: 2px solid #e05e52; }
@@ -313,3 +313,14 @@ section { margin: 0 0 60px 0; }
 #bugtracker-content-view .app-actions-list label { font-weight: 400; cursor: pointer; }
 #bugtracker-content-view .app-actions-list li { display: inline; }
 #bugtracker-content-view .app-actions-list ul { padding: 0; margin: 0; }
+
+/*#bugtracker-content-view #existing-ticket {}
+#bugtracker-content-view #existing-ticket #editable-data-list {}
+#bugtracker-content-view #editable-data-list .app-data {}
+#bugtracker-content-view #editable-data-list .app-data label {}
+#bugtracker-content-view #editable-data-list .app-data input {}
+
+#bugtracker-content-view #existing-ticket #static-data-list {}
+#bugtracker-content-view #static-data-list .app-data {}
+#bugtracker-content-view #static-data-list .app-data .label {}
+#bugtracker-content-view #static-data-list .app-data .data {}*/
