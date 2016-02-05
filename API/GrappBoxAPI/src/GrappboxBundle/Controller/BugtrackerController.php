@@ -887,6 +887,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setDescription($content->description);
 		$bug->setEditedAt(new DateTime('now'));
 
+		$em->persist($bug);
+		$em->flush();
+
 		$ticket = $bug->objectToArray();
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $bug);
