@@ -190,24 +190,35 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'bugtracker/postticket/:id', { id: "@id" });
 })
 
-// Close ticket
-.factory('CloseTicket', function ($rootScope, $resource) {
+// Close ticket or comment
+.factory('CloseTicketOrComment', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'bugtracker/closeticket/:token/:id', { id: "@id", token: "@token" });
+})
+
+// Reopen ticket
+.factory('ReopenTicket', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/reopenticket/:token/:id', { id: "@id", token: "@token" },
+    { 'update': { method: 'PUT' } });
 })
 
 // Edit a ticket
 .factory('EditTicket', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'bugtracker/editticket');
+    return $resource($rootScope.API + 'bugtracker/editticket', null, {
+        'update': { method: 'PUT' }
+    });
 })
 
 // Edit comment on ticket
 .factory('EditCommentOnTicket', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'bugtracker/editcomment/:id', { id: "@id" });
+    return $resource($rootScope.API + 'bugtracker/editcomment', null, {
+        'update': { method: 'PUT' }
+    });
 })
 
-// Assign users to ticket
+// (Un)Assign users to ticket
 .factory('SetUsersToTicket', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'bugtracker/setparticipants/:id', { id: "@id" });
+    return $resource($rootScope.API + 'bugtracker/setparticipants', null, 
+        { 'update': { method: 'PUT' } });
 })
 
 // Get all tickets status
@@ -277,6 +288,16 @@ angular.module('GrappBox.api', ['ngResource'])
     return $resource($rootScope.API + 'bugtracker/tagupdate', null, {
         'update': { method: 'PUT' }
     });
+})
+
+// Remove tag from ticket
+.factory('RemoveTagFromTicket', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/removetag/:token/:bugId/:tagId', { token: "@token", bugId: "@bugId", tagId: "@tagId" });
+})
+
+// Delete tag from project
+.factory('DeleteTagFromProject', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'bugtracker/deletetag/:token/:tagId', { token: "@token", tagId: "@tagId" });
 })
 
 /*

@@ -3,53 +3,99 @@
 -->
 
 <ion-view>
-    <ion-nav-title>Project</ion-nav-title>
+    <ion-nav-title>Ticket</ion-nav-title>
     <ion-content overflow-scroll="false">
-        
+
         <!-- Refresher -->
         <ion-refresher pulling-text="Pull to refresh..."
                        on-refresh="doRefresh()">
         </ion-refresher>
 
+        <!-- Tags on ticket -->
         <div class="item item-divider">Ticket</div>
-        
+        <p>
+            <span ng-repeat="tag in ticket.tags">{{ tag.name }}&nbsp;</span>
+        </p>
+        <p>
+            <span ng-repeat="user in ticket.users">{{ user.name }}&nbsp;</span>
+        </p>
+
+        <!-- Ticket's title, description, creator's name -->
         <h1 class="ticket_title">{{ticket.title}}</h1>
         <p>
             {{ticket.creator.fullname}} opened this issue<br />
             {{ticket.createdAt.date}}
         </p>
-        {{ticket.description}}
+        <textarea ng-readonly="true"
+                  rows="5"
+                  ng-model="ticket.description">
+        </textarea>
+        <a class="button button-block button-positive"
+           ui-sref="app.editTicket({projectId: projectId, ticketId: ticketId})">
+            Edit
+        </a>
+
+        <!-- Comments on ticket-->
+        <div class="item item-divider">Comments</div>
+        <ion-item ng-repeat="com in comments">
+            <textarea rows="5"
+                      ng-readonly="com.creator.id != userConnectedId"
+                      ng-model="com.description">
+            </textarea>
+            <p>By {{com.creator.fullname}}</p>
+            <div class="button-bar" ng-show="com.creator.id == userConnectedId">
+                <a class="button button-block button-assertive"
+                   ng-click="CloseComment(com)">
+                    Remove
+                </a>
+                <a class="button button-block button-positive"
+                   ng-click="EditCommentOnTicket(com)">
+                    Edit
+                </a>
+            </div>
+        </ion-item>
+
+        <!-- No comment error -->
+        <p ng-show="comments[0] == null">There is no comment.</p>
         <div class="item item-divider">Comment on issue</div>
+
+        <!-- Commenting form -->
         <form name="comment_form">
+            <!-- Comment's description -->
             <ion-item>
-                <textarea name="comment_form_description"
+                <textarea name="comment_description"
                           rows="5"
                           placeholder="Leave a comment"
                           ng-model="comment.description">
                 </textarea>
             </ion-item>
             <div class="button-bar">
+                <!-- If ticket is open & Comment is empty -->
                 <a ng-show="ticket.deletedAt == null && comment.description == null"
                    class="button button-block button-assertive"
                    ng-click="CloseTicket()">
                     Close issue
                 </a>
+                <!-- If ticket is open & Comment isn't empty -->
                 <a ng-show="ticket.deletedAt == null && comment.description != null"
                    class="button button-block button-assertive"
                    ng-click="CloseTicketAndComment()">
                     Close and comment
                 </a>
+                <!-- If ticket is closed & Comment is empty -->
                 <a ng-show="ticket.deletedAt != null && comment.description == null"
                    class="button button-block button-assertive"
                    ng-click="ReopenTicket()">
                     Reopen issue
                 </a>
+                <!-- If ticket is closed & Comment isn't empty -->
                 <a ng-show="ticket.deletedAt != null && comment.description != null"
                    class="button button-block button-assertive"
                    ng-click="ReopenTicketAndComment()">
                     Reopen and comment
                 </a>
-                <a class="button button-block button-dark"
+                <!-- Comment button -->
+                <a class="button button-block button-positive"
                    ng-click="PostComment()">
                     Comment
                 </a>

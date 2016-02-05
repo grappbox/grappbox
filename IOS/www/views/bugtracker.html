@@ -4,7 +4,7 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">BugTracker</ion-nav-title>
-    <ion-tabs class="tabs-dark">
+    <ion-tabs class="tabs-dark tabs-striped">
 
         <ion-tab title="Open">
             <!-- Tab 1 content -->
@@ -15,19 +15,31 @@
                                    on-refresh="doRefreshOpenTickets()">
                     </ion-refresher>
 
-                    <button class="button button-block button-dark"
+                    <!-- Create & Tags buttons -->
+                    <div class="button-bar">
+                        <a class="button button-block button-positive"
                             ui-sref="app.createTicket({projectId: projectId})">
-                        Create ticket
-                    </button>
+                            Create
+                        </a>
+                        <a class="button button-block button-positive"
+                           ui-sref="app.tags({projectId: projectId})">
+                            Tags
+                        </a>
+                    </div>
+
+                    <!-- Open ticket list -->
                     <ion-list>
                         <ion-item ng-repeat="ticket in lastOpenTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
                                   ng-if="ticket.deletedAt === null">
                             {{ticket.title}}<br />
-                            By {{ticket.creator.fullname}}
+                            By {{ticket.creator.fullname}}<br />
+                            <!-- Show tags if they are there -->
+                            <span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>
                         </ion-item>
                     </ion-list>
-                    <button class="button button-block button-dark"
+                    <!-- Button "More" open tickets -->
+                    <button class="button button-block button-positive"
                             ng-click="GetLastOpenTickets()">
                         More
                     </button>
@@ -40,10 +52,12 @@
             <!-- Tab 2 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
                     <ion-refresher pulling-text="Pull to refresh..."
                                    on-refresh="doRefreshClosedTickets()">
                     </ion-refresher>
 
+                    <!-- Closed ticket list -->
                     <ion-list>
                         <ion-item ng-repeat="ticket in lastClosedTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})">
@@ -51,7 +65,9 @@
                             By {{ticket.creator.fullname}}
                         </ion-item>
                     </ion-list>
-                    <button class="button button-block button-dark"
+
+                    <!-- Button "More" closed tickets -->
+                    <button class="button button-block button-positive"
                             ng-click="GetLastClosedTickets()">
                         More
                     </button>
@@ -63,9 +79,12 @@
             <!-- Tab 3 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
                     <ion-refresher pulling-text="Pull to refresh..."
                                    on-refresh="doRefreshOpenTickets()">
                     </ion-refresher>
+
+                    <!-- User connected tickets and open tickets list -->
                     <ion-list>
                         <ion-item ng-repeat="ticket in lastOpenTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
@@ -74,7 +93,9 @@
                             By {{ticket.creator.fullname}}
                         </ion-item>
                     </ion-list>
-                    <button class="button button-block button-dark"
+
+                    <!-- Button "More" user connected and open tickets -->
+                    <button class="button button-block button-positive"
                             ng-click="GetLastOpenTickets()">
                         More
                     </button>

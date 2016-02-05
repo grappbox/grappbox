@@ -8,8 +8,8 @@
 
         <!-- Project information -->
         <div class="item item-divider"></div>
-        <p>Type your project informations</p>
-        <form>
+        <p>Type your new project information</p>
+        <form name="project_form">
             <ion-input class="item item-input">
                 <ion-label>Name</ion-label>
                 <input type="text"
@@ -73,7 +73,7 @@
                        name="project_password"
                        ng-model="project.password" />
             </ion-input>
-            <a class="button button-block button-dark" ng-click="EditProject()">
+            <a class="button button-block button-positive" ng-click="EditProject()">
                 Save
             </a>
         </form>

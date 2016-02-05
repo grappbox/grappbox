@@ -14,7 +14,7 @@
         <div class="item item-divider">Project information</div>
         <ion-list class="card">
             <ion-item class="item-body">
-                <img class="full-image" ng-src="#" />
+                <img class="full-image" data-ng-src="data:image/png;base64, {{projectInfo.logo}}" />
                 <p><strong>Name: </strong> {{ projectInfo.name }}</p>
                 <p><strong>Description: </strong> {{ projectInfo.description }}</p>
                 <p><strong>Phone: </strong> {{ projectInfo.phone }}</p>
@@ -26,17 +26,20 @@
                 <p ng-show="projectInfo.deleted_at != null"><strong style="color:red">IN DELETION :(</strong></p>
 
                 <div class="button-bar">
-                    <a class="button button-block button-dark"
+                    <!-- Edit project button -->
+                    <a class="button button-block button-positive"
                             ui-sref="app.editProject({projectId: projectId})">
                         Edit
                     </a>
-                    <a class="button button-block button-dark"
+                    <!-- Roles on project button -->
+                    <a class="button button-block button-positive"
                        ui-sref="app.roles({projectId: projectId})">
                         Roles
                     </a>
-                    <a class="button button-block button-dark"
+                    <!-- Bugtracker button -->
+                    <a class="button button-block button-positive"
                        ui-sref="app.bugtracker({projectId: projectId})">
-                        Issues
+                        Tickets
                     </a>
                 </div>
             </ion-item>
@@ -59,7 +62,7 @@
                     <input type="text" placeholder="User email"
                            name="userToAdd_email" ng-model="userToAdd.userEmail" required>
                 </label>
-                <button class="button button-small button-dark"
+                <button class="button button-small button-positive"
                         ng-click="AddUserToProject()">
                     Add
                 </button>
@@ -78,7 +81,7 @@
         <!-- Add a role on project -->
         <form>
             <ion-item class="item-input-inset">
-                <button class="button button-block button-dark"
+                <button class="button button-block button-positive"
                         ui-sref="app.roles({projectId: projectId})">
                     Add
                 </button>
@@ -107,7 +110,7 @@
                     <input type="text" placeholder="Customer access name"
                            name="customerAccessToAdd_email" ng-model="customerAccessToAdd.accessName" required />
                 </label>
-                <button class="button button-small button-dark"
+                <button class="button button-small button-positive"
                         ng-click="GenerateAccess()">
                     Generate
                 </button>

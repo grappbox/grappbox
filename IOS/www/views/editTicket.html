@@ -1,0 +1,97 @@
+﻿<!--
+    Summary: Edit ticket view
+-->
+
+<ion-view>
+    <ion-nav-title>Edit ticket</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Project information -->
+        <div class="item item-divider">Ticket information</div>
+        <p>Type your new ticket information</p>
+        <form name="ticket_form">
+            <ion-input class="item item-input">
+                <ion-label>Title</ion-label>
+                <input type="text"
+                       placeholder="My Ticket's title"
+                       name="ticket_title"
+                       ng-model="ticket.title" required />
+            </ion-input>
+            <ion-item>
+                <textarea name="ticket_form_description"
+                          rows="5"
+                          placeholder="Leave a comment"
+                          ng-model="ticket.description"></textarea>
+            </ion-item>
+
+            <!-- Edit ticket button -->
+            <a class="button button-block button-positive" ng-click="EditTicket()">
+                Save
+            </a>
+        </form>
+
+        <!-- Tags information -->
+        <div class="item item-divider">Tags</div>
+        <!-- Tags on project -->
+        <p>
+            <span ng-repeat="tag in ticket.tags" style="color: blue"
+                  ng-click="showRemoveTagActionSheet(tag.id)">{{ tag.name }}&nbsp;
+            </span>
+        </p>
+        <p>Choose your tag(s)</p>
+        <div ng-show="tagsOnProject[0] != null">
+            <ion-list>
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Tags available
+                    </div>
+                    <select ng-model="tagToAdd.id">
+                        <option ng-repeat="tag in tagsOnProject"
+                                value="{{ tag.id }}">
+                            {{ tag.name }}
+                        </option>
+                    </select>
+                </label>
+            </ion-list>
+
+            <!-- Assign tag to ticket -->
+            <button class="button button-block button-positive"
+                    ng-click="AssignTag()">
+                Assign tag
+            </button>
+        </div>
+        <div>
+            <form name="createTag_form">
+                <ion-input class="item item-input">
+                    <ion-label>Name</ion-label>
+                    <input type="text"
+                           placeholder="My Tag's title"
+                           name="createTag_name"
+                           ng-model="createTag.name" required />
+                </ion-input>
+
+                <!-- Create Tag -->
+                <button class="button button-block button-positive"
+                        ng-click="CreateTag()">
+                    Create
+                </button>
+            </form>
+        </div>
+        <!-- Member list -->
+        <div class="item item-divider">Assign members</div>
+        <ion-list>
+            <ion-checkbox ng-repeat="user in usersOnTicket"
+                          ng-model="user.checked"
+                          ng-change="AddOrRemoveUser(user.id, user.checked, $index)">
+                {{ user.name }}
+            </ion-checkbox>
+        </ion-list>
+        <a class="button button-block button-positive" ng-click="SetUsersToTicket()">
+            Assign to member(s)
+        </a>
+    </ion-content>
+</ion-view>

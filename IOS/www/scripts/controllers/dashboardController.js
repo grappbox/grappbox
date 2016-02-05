@@ -29,7 +29,7 @@ TeamOccupation, NextMeetings, GlobalProgress) {
         TeamOccupation.get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get team occupation list successful !');
-                console.log(data.data);
+                console.log(data.data.array);
                 $scope.teamOccupationTab = data.data.array;
                 if (data.length == 0)
                     $scope.noTeam = "You don't have team right now.";

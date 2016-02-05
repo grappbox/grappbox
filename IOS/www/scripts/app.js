@@ -33,6 +33,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
 
 .config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
 
+    $ionicConfigProvider.views.maxCache(0);
     $ionicConfigProvider.views.transition('platform');          // transition between views
     $ionicConfigProvider.backButton.icon('ion-ios-arrow-back'); // iOS back icon
     $ionicConfigProvider.backButton.text('');                   // default is 'Back'
@@ -280,6 +281,39 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
                 'menuContent': {
                     templateUrl: "views/ticket.html",
                     controller: 'TicketCtrl'
+                }
+            }
+        })
+
+        // edit ticket view
+        .state('app.editTicket', {
+            url: "/projects/:projectId/bugtracker/ticket/:ticketId/edit",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/editTicket.html",
+                    controller: 'EditTicketCtrl'
+                }
+            }
+        })
+
+        // tag view
+        .state('app.tags', {
+            url: "/projects/:projectId/bugtracker/tags",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/tags.html",
+                    controller: 'TagsCtrl'
+                }
+            }
+        })
+
+        // edit tag view
+        .state('app.editTag', {
+            url: "/projects/:projectId/bugtracker/tags/:tagId/edit",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/editTag.html",
+                    controller: 'EditTagCtrl'
                 }
             }
         })

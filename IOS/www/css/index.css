@@ -10,3 +10,8 @@ textarea {
     width: 100%;
     height: auto;
 }
+
+.item-divider i {
+    position: absolute;
+    right: 10px;
+}

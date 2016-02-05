@@ -4,7 +4,8 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams, ProjectView, EditProject) {
+.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams,
+    ProjectView, EditProject) {
 
     //Refresher
     $scope.doRefresh = function () {

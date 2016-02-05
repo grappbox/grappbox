@@ -33,6 +33,8 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get project info successful !');
                 $scope.projectInfo = data.data;
+                console.log("LOGO = ");
+                console.log(data.data.logo);
             })
             .catch(function (error) {
                 console.error('Get project info failed ! Reason: ' + error.status + ' ' + error.statusText);
