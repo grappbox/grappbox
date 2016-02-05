@@ -38,7 +38,7 @@ img.img-reduced { max-width: 85%; margin: auto; }
 #error { min-height: 50vh !important; }
 #error .home-title { padding: 5% 0; }
 #message .content-section { min-height: 70vh; }
-section:nth-of-type(1) { margin-bottom: -5px; }
+#home section:nth-of-type(1) { margin-bottom: -5px; }
 
 .content-section p,
 .content-section ul { font-size: 20px; line-height: 28px; text-align: justify; }
@@ -47,15 +47,15 @@ section:nth-of-type(1) { margin-bottom: -5px; }
 .content-section.odd-section { background-color: #fafafa; }
 
 @media (max-width: 767px) {
-	section:nth-of-type(1) { min-height: 90vh; }
-	section:nth-of-type(2) { margin-top: 80px; }
+	#home section:nth-of-type(1) { min-height: 90vh; }
+	#home section:nth-of-type(2) { margin-top: 80px; }
 
 	h2,
 	h3 { text-align: center; }
 }
 @media (min-width: 768px) {
-	section:nth-of-type(1) { min-height: 94vh; }
-	section:nth-of-type(2) { margin-top: 60px; }
+	#home section:nth-of-type(1) { min-height: 94vh; }
+	#home section:nth-of-type(2) { margin-top: 60px; }
 }
 
 

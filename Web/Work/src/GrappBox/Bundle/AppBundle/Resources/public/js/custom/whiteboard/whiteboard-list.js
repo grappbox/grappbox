@@ -9,10 +9,77 @@
 * APP whiteboard list page (several per project)
 *
 */
-app.controller("whiteboardListController", ["$scope", "$routeParams", "$http", function($scope, $routeParams, $http) {
-  $http.get("../resources/_temp/whiteboards.json").success(function(data) { $scope.whiteboardListContent = data; });
+app.controller("whiteboardListController", ["$scope", "$rootScope", "$http", "$cookies", function($scope, $rootScope, $http, $cookies) {
+
+  var context = "";
+
+  // Scope variables initialization
+  $scope.data = { onLoad: true, projects: { }, isValid: false }
+
+  // Get all user's current project(s)
+  $http.get($rootScope.apiBaseURL + "/user/getprojects/" + $cookies.get("USERTOKEN"))
+  .then(function projectsReceived(response) {
+    $scope.data.projects = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
+    $scope.data.isValid = true;
+    $scope.data.onLoad = false;
+
+    // Get current projet whiteboard(s)
+    $scope.data.projectsWhiteboards_onLoad = {};
+    $scope.data.projectsWhiteboards_content = {};
+    $scope.data.projectsWhiteboards_message = {};
+
+    context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
+    angular.forEach($scope.data.projects, function(project) {
+      context.scope.data.projectsWhiteboards_onLoad[project.name] = true;
+
+      $http.get(context.rootScope.apiBaseURL + "/whiteboard/list/" + context.cookies.get("USERTOKEN") + "/" + project.id)
+      .then(function projectWhiteboardsReceived(response) {
+        context.scope.data.projectsWhiteboards_onLoad[project.name] = false;
+        context.scope.data.projectsWhiteboards_content[project.name] = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
+        context.scope.data.projectsWhiteboards_message[project.name] = (response.data.info && response.data.info.return_code == "1.10.1" ? "_valid" : "_empty");
+      },
+      function projectWhiteboardsNotReceived(response) {
+        context.scope.data.projectsWhiteboards_onLoad[project.name] = false;
+        context.scope.data.projectsWhiteboards_content[project.name] = null;
+        context.scope.data.projectsWhiteboards_message[project.name] = "_invalid";
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "10.1.3":
+            context.rootScope.onUserTokenError();
+            break;
+
+            case "10.1.9":
+            context.scope.data.projectsWhiteboards_message[project.name] = "_denied";
+            break;
+
+            default:
+            context.scope.data.projectsWhiteboards_message[project.name] = "_invalid";
+            break;
+          }
+        });
+    }, context);
+  },
+  function userProjectsNotReceived(response) {
+    $scope.data.projects = null;
+    $scope.data.isValid = false;
+    $scope.data.onLoad = false;
+  });
+
+  // Date format
+  $scope.formatObjectDate = function(dateToFormat) {
+    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
+  };
+
 }]);
 
+
+
+/**
+* Routine definition
+* APP whiteboard page access
+*
+*/
 
 // Routine definition [3/3]
 // Common behavior for isWhiteboardAccessible
