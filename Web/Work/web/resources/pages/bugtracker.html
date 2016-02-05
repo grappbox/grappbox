@@ -35,16 +35,26 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 <div>Edited at</div>
                                 <div>{[{ticket.editedAt.date}]}</div>
                             </div>
+                            <div>
+                              <div ng-if="ticket.deletedAt" class="">
+                                <div>Closed at</div>
+                                <div>{[{ticket.deletedAt.date}]}</div>
+                              </div>
+                              <div class="">
+                                <a ng-if="!ticket.deletedAt" href="" ng-click="bugtracker_close_ticket()"><i class="fa fa-times"></i>Close</a>
+                                <a ng-if="ticket.deletedAt" href="" ng-click="bugtracker_reopen_ticket()"><i class="fa fa-undo"></i>Reopen</a>
+                              </div>
+                            </div>
                           </div>
                           <div id="editable-data-list">
                               <form novalidate>
                                   <div class="">
                                       <h4>Title</h4>
-                                      <input type="text" ng-disabled="!editMode['ticket']" ng-model="ticket.title"/>
+                                      <input type="text" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.title"/>
                                   </div>
                                   <div class="">
                                       <h4>Description</h4>
-                                      <textarea ng-disabled="!editMode['ticket']" ng-model="ticket.description"/></textarea>
+                                      <textarea ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.description"/></textarea>
                                   </div>
 
                                   <div class="">
@@ -55,7 +65,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                                     replace-spaces-with-dashes="false"
                                                     on-tag-added="tagAdded($tag)"
                                                     on-tag-removed="tagRemoved($tag)"
-                                                    ng-disabled="!editMode['ticket']">
+                                                    ng-disabled="!editMode['ticket'] || ticket.deletedAt">
                                           <auto-complete source="tagsList"></auto-complete>
                                         </tags-input>
                                         <p>To Add: {[{tagToAdd}]}</p>
@@ -72,15 +82,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                                     add-from-autocomplete-only="true"
                                                     on-tag-added="userAdded($tag)"
                                                     on-tag-removed="userRemoved($tag)"
-                                                    ng-disabled="!editMode['ticket']">
+                                                    ng-disabled="!editMode['ticket'] || ticket.deletedAt">
                                           <auto-complete source="usersList"></auto-complete>
                                         </tags-input>
                                         <p>To Add: {[{userToAdd}]}</p>
                                         <p>To Remove: {[{userToRemove}]}</p>
+                                        <p>Index: {[{index}]}</p>
+                                        <p>User: {[{usertoFind}]}</p>
                                       </div>
                                   </div>
 
-                                  <div ng-switch="editMode['ticket']">
+                                  <div ng-if="!ticket.deletedAt" ng-switch="editMode['ticket']">
                                       <div ng-switch-default >
                                         <a class="button edit-button" href="" ng-click="bugtracker_switchEditMode('ticket')"><i class="fa fa-pencil-square-o"></i>Edit</a>
                                       </div>
@@ -99,18 +111,19 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   <form novalidate>
                                       <div class="">
                                           <h4>Title</h4>
-                                          <input type="text" ng-disabled="!editMode[comment.id]" ng-model="comment.title"/>
+                                          <input type="text" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.title"/>
                                       </div>
                                       <div class="">
                                           <h4>Description</h4>
-                                          <textarea ng-disabled="!editMode[comment.id]" ng-model="comment.description"/></textarea>
+                                          <textarea ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.description"/></textarea>
                                       </div>
                                       <div>{[{"Posted by " + comment.creator.fullname}]}</div>
                                       <div>{[{"At " + (comment.editedAt ? comment.editedAt.date : comment.createdAt.date)}]}</div>
 
-                                      <div ng-switch="editMode[comment.id]">
+                                      <div ng-if="!ticket.deletedAt" ng-switch="editMode[comment.id]">
                                           <div ng-switch-default >
                                             <a href="" ng-click="bugtracker_switchEditMode(comment.id)"><i class="fa fa-pencil-square-o"></i>Edit</a>
+                                            <a href="" ng-click="bugtracker_delete_comment(comment.id)"><i class="fa fa-trash-o"></i>Delete</a>
                                           </div>
                                           <div ng-switch-when="true">
                                             <a href="" ng-click="bugtracker_switchEditMode(comment.id)"><i class=" fa fa-close"></i>Cancel</a>
@@ -125,7 +138,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   <p><i class="fa fa-times"></i>No comment for the moment.</p>
                               </div>
                             </div>
-                            <div class="form-new-comment">
+                            <div class="form-new-comment" ng-if="!ticket.deletedAt">
                               <form novalidate>
                                   <div class="">
                                       <h4>Title</h4>

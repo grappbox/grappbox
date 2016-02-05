@@ -9,7 +9,7 @@
 * APP bugtracker page
 *
 */
-app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', function($rootScope, $scope, $routeParams, $http, $cookies, Notification) {
+app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', '$window', function($rootScope, $scope, $routeParams, $http, $cookies, Notification, $window) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
@@ -90,25 +90,64 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   $scope.tagToRemove = [];
 
   $scope.tagAdded = function(tag) {
-    //if in list of to remove
-    //then remove of toremove list
-    //else
-    $scope.tagToAdd.push(tag);
+    var index = -1;
+    for (var i = 0; i < $scope.tagToRemove.length && index < 0; i++) {
+      if ($scope.tagToRemove[i].id == tag.id)
+        index = i;
+    }
+
+    if (index >= 0)
+      $scope.tagToRemove.splice(index, 1);
+    else
+      $scope.tagToAdd.push(tag);
   };
 
   $scope.tagRemoved = function(tag) {
-    // if in list of to add
-    // then remove from toadd list
-    // else
-    $scope.tagToRemove.push(tag);
+    var index = -1;
+    for (var i = 0; i < $scope.tagToAdd.length && index < 0; i++) {
+      if ($scope.tagToAdd[i].id == tag.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.tagToAdd.splice(index, 1);
+    else
+      $scope.tagToRemove.push(tag);
   };
 
   var memorizeTags = function() {
-      //in to add list
-      //if object don't have id
-      //create new tag
-      //then attached tag
-      //attach all tags from toadd list with an id
+    var context = {"rootScope": $rootScope, "http": $http, "Notification": Notification, "cookies": $cookies, "scope": $scope};
+
+    angular.forEach($scope.userToAdd, function(tag) {
+      if (!tag.id) {
+        var data = {"data": {"token": context.cookies.get('USERTOKEN'), "projectId": context.scope.projectID, "name": tag.name}};
+        context.http.post(context.rootScope.apiBaseURL + '/bugtracker/tagcreation', data)
+          .then(function successCallback(response) {
+              tag.id = (response.data.data.id);
+          },
+          function errorCallback(resposne) {
+              Notification.warning({ message: 'Unable to create tag: ' + tag.name + '. Please try again.', delay: 5000 });
+          });
+      }
+
+      var data = {"data": {"token": context.cookies.get('USERTOKEN'), "bugId": context.scope.ticketID, "tagId": tag.id}};
+      context.http.put(context.rootScope.apiBaseURL + '/bugtracker/assigntag', data)
+        .then(function successCallback(response) {
+
+        },
+        function errorCallback(resposne) {
+            Notification.warning({ message: 'Unable to assign tag: ' + tag.name + '. Please try again.', delay: 5000 });
+        });
+    }, context);
+
+    angular.forEach($scope.userToRemove, function(tag) {
+      context.http.delete(context.rootScope.apiBaseURL + '/bugtracker/removetag/' + context.cookies.get('USERTOKEN') + '/' + context.scope.ticketID + '/' + tag.id)
+        .then(function successCallback(response) {
+
+        },
+        function errorCallback(resposne) {
+            Notification.warning({ message: 'Unable to remove tag: ' + tag.name + '. Please try again.', delay: 5000 });
+        });
+    }, context);
   };
 
   // ------------------------------------------------------
@@ -118,17 +157,33 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   $scope.userToRemove = [];
 
   $scope.userAdded = function(user) {
-    $scope.userToAdd.push(user);
+    var index = -1;
+    for (var i = 0; i < $scope.userToRemove.length && index < 0; i++) {
+      if ($scope.userToRemove[i].user_id == user.user_id || $scope.userToRemove[i].id == user.user_id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.userToRemove.splice(index, 1);
+    else
+      $scope.userToAdd.push(user);
   };
 
   $scope.userRemoved = function(user) {
-    $scope.userToRemove.push(user);
+    var index = -1;
+    for (var i = 0; i < $scope.userToAdd.length && index < 0; i++) {
+      if ($scope.userToAdd[i].user_id == user.user_id || $scope.userToAdd[i].user_id == user.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.userToAdd.splice(index, 1);
+    else
+      $scope.userToRemove.push(user);
   };
 
   var memorizeUsers = function() {
     var toAdd = [];
     angular.forEach($scope.userToAdd, function(user) {
-      toAdd.push(user.id);
+      toAdd.push(user.user_id);
     }, toAdd);
     var toRemove = [];
     angular.forEach($scope.userToRemove, function(user) {
@@ -209,6 +264,27 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       }, $scope);
   };
 
+  $scope.bugtracker_close_ticket = function() {
+    $http.delete($rootScope.apiBaseURL + '/bugtracker/closeticket/' + $cookies.get('USERTOKEN') + '/' + $scope.ticketID)
+      .then(function successCallback(response) {
+          Notification.info({ message: 'Closing ticket ...', delay: 5000 });
+          $window.location.reload();
+      },
+      function errorCallback(resposne) {
+          Notification.warning({ message: 'Unable to close ticket. Please try again.', delay: 5000 });
+      });
+  };
+
+  $scope.bugtracker_reopen_ticket = function() {
+    $http.put($rootScope.apiBaseURL + '/bugtracker/reopenticket/' + $cookies.get('USERTOKEN') + '/' + $scope.ticketID)
+      .then(function successCallback(response) {
+          Notification.info({ message: 'Reopening ticket ...', delay: 5000 });
+          $window.location.reload();
+      },
+      function errorCallback(resposne) {
+          Notification.warning({ message: 'Unable to reopen ticket. Please try again.', delay: 5000 });
+      });
+  };
 
   // ------------------------------------------------------
   //                    COMMENTS
@@ -226,12 +302,15 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
     $http.put($rootScope.apiBaseURL + '/bugtracker/editcomment', data)
       .then(function successCallback(response) {
         Notification.success({ message: 'Comment saved', delay: 5000 });
+        $scope.editMode[comment.id] = false;
+        getComments();
       },
       function errorCallback(response) {
         Notification.warning({ message: 'Unable to save comment. Please try again.', delay: 5000 });
+        $scope.editMode[comment.id] = false;
+        getComments();
       });
-      $scope.editMode[comment.id] = false;
-      getComments();
+
   };
 
   $scope.bugtracker_post_comment = function(new_comment) {
@@ -254,6 +333,17 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       function errorCallback(response) {
         Notification.warning({ message: 'Unable to post comment. Please try again.', delay: 5000 });
       }, new_comment);
+  };
+
+  $scope.bugtracker_delete_comment = function(comment_id) {
+    $http.delete($rootScope.apiBaseURL + '/bugtracker/closeticket/' + $cookies.get('USERTOKEN') + '/' + comment_id)
+      .then(function successCallback(response) {
+          Notification.success({ message: 'Comment deleted', delay: 5000 });
+          getComments();
+      },
+      function errorCallback(resposne) {
+          Notification.warning({ message: 'Unable to delete comment. Please try again.', delay: 5000 });
+      });
   };
 
 }]);
