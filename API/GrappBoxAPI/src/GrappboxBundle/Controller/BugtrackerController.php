@@ -523,7 +523,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {String} token client authentification token
 	* @apiParam {int} ticketId commented ticket id
 	*
-	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {int} id comment id
 	* @apiSuccess {Object} creator author
 	* @apiSuccess {int} creator.id author id
 	* @apiSuccess {String} creator.fullname author fullname
