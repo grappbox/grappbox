@@ -9,7 +9,7 @@
 * APP bugtracker page
 *
 */
-app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', '$window', function($rootScope, $scope, $routeParams, $http, $cookies, Notification, $window) {
+app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', '$route', '$location', function($rootScope, $scope, $routeParams, $http, $cookies, Notification, $route, $location) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
@@ -39,6 +39,8 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
     $scope.bugtracker_error = false;
     $scope.ticket = null;
     $scope.bugtracker_new = true;
+    $scope.tags = [];
+    $scope.users = [];
   }
 
   // Get ticket related comments
@@ -60,7 +62,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         $scope.tagsList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
       },
       function errorCallback(response) {
-        $scope.tagsList = null;
+        $scope.tagsList = [];
       });
   };
   getProjectTags();
@@ -77,7 +79,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         });
       },
       function errorCallback(response) {
-        $scope.usersList = null;
+        $scope.usersList = [];
       });
   };
   getProjectUsers();
@@ -117,7 +119,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   var memorizeTags = function() {
     var context = {"rootScope": $rootScope, "http": $http, "Notification": Notification, "cookies": $cookies, "scope": $scope};
 
-    angular.forEach($scope.userToAdd, function(tag) {
+    angular.forEach($scope.tagToAdd, function(tag) {
       if (!tag.id) {
         var data = {"data": {"token": context.cookies.get('USERTOKEN'), "projectId": context.scope.projectID, "name": tag.name}};
         context.http.post(context.rootScope.apiBaseURL + '/bugtracker/tagcreation', data)
@@ -139,7 +141,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         });
     }, context);
 
-    angular.forEach($scope.userToRemove, function(tag) {
+    angular.forEach($scope.tagToRemove, function(tag) {
       context.http.delete(context.rootScope.apiBaseURL + '/bugtracker/removetag/' + context.cookies.get('USERTOKEN') + '/' + context.scope.ticketID + '/' + tag.id)
         .then(function successCallback(response) {
 
@@ -190,10 +192,10 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       toRemove.push(user.id);
     }, toRemove);
 
-    var data = {"data": {"toAdd": toAdd, "toRemove": toRemove}};
+    var data = {"data": {"token": $cookies.get('USERTOKEN'), "bugId": $scope.ticketID, "toAdd": toAdd, "toRemove": toRemove}};
 
     Notification.info({ message: 'Saving users...', delay: 5000 });
-    $http.put($rootScope.apiBaseURL + '/bugtracker/setparticipants/', data)
+    $http.put($rootScope.apiBaseURL + '/bugtracker/setparticipants', data)
       .then(function successCallback(response) {
           Notification.success({ message: 'Users saved', delay: 5000 });
       },
@@ -251,13 +253,14 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
     Notification.info({ message: 'Posting ticket...', delay: 5000 });
     $http.post($rootScope.apiBaseURL + '/bugtracker/postticket', data)
       .then(function successCallback(response) {
-        Notification.success({ message: 'Ticket posted', delay: 5000 });
-        memorizeTags();
-        memorizeUsers();
         $scope.bugtracker_error = false;
         $scope.bugtracker_new = false;
         $scope.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
         $scope.ticketID = $scope.ticket.id;
+        memorizeTags();
+        memorizeUsers();
+        Notification.success({ message: 'Ticket posted', delay: 5000 });
+        $location.path('/bugtracker/' + $scope.projectID + '/' + $scope.ticketID);
       },
       function errorCallback(response) {
         Notification.warning({ message: 'Unable to post comment. Please try again.', delay: 5000 });
@@ -265,10 +268,12 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   };
 
   $scope.bugtracker_close_ticket = function() {
+    Notification.info({ message: 'Closing ticket ...', delay: 5000 });
     $http.delete($rootScope.apiBaseURL + '/bugtracker/closeticket/' + $cookies.get('USERTOKEN') + '/' + $scope.ticketID)
       .then(function successCallback(response) {
-          Notification.info({ message: 'Closing ticket ...', delay: 5000 });
-          $window.location.reload();
+          Notification.success({ message: 'Ticket closed', delay: 5000 });
+          //$location.reload();
+          $route.reload();
       },
       function errorCallback(resposne) {
           Notification.warning({ message: 'Unable to close ticket. Please try again.', delay: 5000 });
@@ -276,10 +281,12 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   };
 
   $scope.bugtracker_reopen_ticket = function() {
+    Notification.info({ message: 'Reopening ticket ...', delay: 5000 });
     $http.put($rootScope.apiBaseURL + '/bugtracker/reopenticket/' + $cookies.get('USERTOKEN') + '/' + $scope.ticketID)
       .then(function successCallback(response) {
-          Notification.info({ message: 'Reopening ticket ...', delay: 5000 });
-          $window.location.reload();
+          Notification.success({ message: 'Ticket reopened', delay: 5000 });
+          //$location.reload();
+          $route.reload();
       },
       function errorCallback(resposne) {
           Notification.warning({ message: 'Unable to reopen ticket. Please try again.', delay: 5000 });
