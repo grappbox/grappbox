@@ -8,6 +8,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
     <section class="app-section" id="bugtracker-list">
         <div class="container app-container">
+          <div>
+            <a href="" ng-click="getOpenTickets()">Opened tickets</a>
+            <a href="" ng-click="getClosedTickets()">Closed tickets</a>
+          </div>
             <div class="row" ng-repeat="project in projectListContent">
                 <div class="col-lg-12">
                     <!-- grappbox.data : bugtracker list -->
