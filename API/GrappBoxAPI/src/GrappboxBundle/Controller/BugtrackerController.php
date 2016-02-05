@@ -772,14 +772,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/bugtracker/editcomment/:id Edit comment
+	* @api {put} /V0.2/bugtracker/editcomment Edit comment
 	* @apiName EditComment
 	* @apiGroup Bugtracker
 	* @apiDescription Edit a comment
 	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} projectId id of the project
 	* @apiParam {String} token client authentification token
+	* @apiParam {int} projectId id of the project
 	*	@apiParam {int} commentId comment id to edit
 	* @apiParam {String} title Comment title
 	* @apiParam {String} description Comment content
