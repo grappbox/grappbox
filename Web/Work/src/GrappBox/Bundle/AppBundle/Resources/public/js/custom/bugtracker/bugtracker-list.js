@@ -11,85 +11,123 @@
 */
 app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', function($rootScope, $scope, $routeParams, $http, $cookies, Notification) {
 
+  var content = "";
+
+  // Scope variables initialization
+  $scope.data = { onLoad: true, projects: { }, isValid: false };
+
   // Get all projects where the user is associate with
   var getOpenTicketsContent = function() {
-    $http.get($rootScope.apiBaseURL + '/dashboard/getprojectlist/' + $cookies.get('USERTOKEN'))
-      .then(function successCallback(response) {
-        $scope.projectListContent = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-        $scope.bugtrackerProjects_isValid = true;
+    // Get current projet bugtracker(s)
+    $scope.data.projectsBugtracker_onLoad = {};
+    $scope.data.projectsBugtracker_content = {};
+    $scope.data.projectsBugtracker_message = {};
 
-        if (!Object.keys($scope.projectListContent).length)
-          Notification.warning({ message: 'You\'re not linked to any projects, or you might not have the rights to see their bugtracker. Please try again.', delay: null });
+    // Get all tickets for each project
+    context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
+    angular.forEach($scope.data.projects, function(project){
+      context.scope.data.projectsBugtracker_onLoad[project.name] = true;
 
-        $scope.bugtrackerListContent = {};
-        $scope.bugtracker_isValid = {};
-        $scope.bugtracker_noRights = {};
+      $http.get(context.rootScope.apiBaseURL + '/bugtracker/gettickets/' + context.cookies.get('USERTOKEN') + '/' + project.project_id)
+        .then(function successCallback(response) {
+          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
+          context.scope.data.projectsBugtracker_content[project.name] = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+          context.scope.data.projectsBugtracker_message[project.name] = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
+        },
+        function errorCallback(response) {
+          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
+          context.scope.data.projectsBugtracker_content[project.name] = null;
+          context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
 
-        // Get all tickets for each project
-        var context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
-        angular.forEach($scope.projectListContent, function(project){
+          if (response.data.info && response.data.info.return_code)
+            switch(response.data.info.return_code) {
+              case "4.9.3":
+              context.rootScope.onUserTokenError();
+              break;
 
-          $http.get(context.rootScope.apiBaseURL + '/bugtracker/gettickets/' + context.cookies.get('USERTOKEN') + '/' + project.project_id)
-            .then(function successCallback(response) {
-              context.scope.bugtrackerListContent[project.name] = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-              context.scope.bugtracker_isValid[project.name] = true;
-            },
-            function errorCallback(response) {
-              if (response.data.info.return_code == "4.9.9")
-                context.scope.bugtracker_noRights[project.name] = true;
-              context.scope.bugtrackerListContent[project.name] = null;
-              context.scope.bugtracker_isValid[project.name] = false;
+              case "4.9.9":
+              context.scope.data.projectsBugtracker_message[project.name] = "_denied";
+              break;
+
+              default:
+              context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
+              break;
             }
-          );
-
-        }, context);
-
-      },
-      function errorCallback(response) {
-        $scope.projectListContent = null;
-        $scope.bugtrackerProjects_isValid = false;
-      }
-    );
+        });
+    }, context);
   };
 
   var getClosedTicketsContent = function() {
-    $http.get($rootScope.apiBaseURL + '/dashboard/getprojectlist/' + $cookies.get('USERTOKEN'))
-      .then(function successCallback(response) {
-        $scope.projectListContent = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-        $scope.bugtrackerProjects_isValid = true;
+    // Get current projet bugtracker(s)
+    $scope.data.projectsBugtracker_onLoad = {};
+    $scope.data.projectsBugtracker_content = {};
+    $scope.data.projectsBugtracker_message = {};
 
-        if (!Object.keys($scope.projectListContent).length)
-          Notification.warning({ message: 'You\'re not linked to any projects, or you might not have the rights to see their bugtracker. Please try again.', delay: null });
+    // Get all  closed tickets for each project
+    context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
+    angular.forEach($scope.data.projects, function(project){
+      context.scope.data.projectsBugtracker_onLoad[project.name] = true;
 
-        $scope.bugtrackerListContent = {};
-        $scope.bugtracker_isValid = {};
-        $scope.bugtracker_noRights = {};
+      $http.get(context.rootScope.apiBaseURL + '/bugtracker/getclosedtickets/' + context.cookies.get('USERTOKEN') + '/' + project.project_id)
+        .then(function successCallback(response) {
+          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
+          context.scope.data.projectsBugtracker_content[project.name] = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+          context.scope.data.projectsBugtracker_message[project.name] = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
+        },
+        function errorCallback(response) {
+          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
+          context.scope.data.projectsBugtracker_content[project.name] = null;
+          context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
 
-        // Get all tickets for each project
-        var context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
-        angular.forEach($scope.projectListContent, function(project){
+          if (response.data.info && response.data.info.return_code)
+            switch(response.data.info.return_code) {
+              case "4.22.3":
+              context.rootScope.onUserTokenError();
+              break;
 
-          $http.get(context.rootScope.apiBaseURL + '/bugtracker/getclosedtickets/' + context.cookies.get('USERTOKEN') + '/' + project.project_id)
-            .then(function successCallback(response) {
-              context.scope.bugtrackerListContent[project.name] = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-              context.scope.bugtracker_isValid[project.name] = true;
-            },
-            function errorCallback(response) {
-              if (response.data.info.return_code == "4.9.9")
-                context.scope.bugtracker_noRights[project.name] = true;
-              context.scope.bugtrackerListContent[project.name] = null;
-              context.scope.bugtracker_isValid[project.name] = false;
+              case "4.22.9":
+              context.scope.data.projectsBugtracker_message[project.name] = "_denied";
+              break;
+
+              default:
+              context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
+              break;
             }
-          );
+        });
+    }, context);
+  };
 
-        }, context);
 
-      },
-      function errorCallback(response) {
-        $scope.projectListContent = null;
-        $scope.bugtrackerProjects_isValid = false;
-      }
-    );
+  $http.get($rootScope.apiBaseURL + '/dashboard/getprojectlist/' + $cookies.get('USERTOKEN'))
+    .then(function projectsReceived(response) {
+      $scope.data.projects = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+      $scope.data.isValid = true;
+      $scope.data.onLoad = false;
+
+      getOpenTicketsContent();
+    },
+    function projectsNotReceived(response) {
+      $scope.data.projects = null;
+      $scope.data.isValid = false;
+      $scope.data.onLoad = false;
+    });
+
+
+  // Date format
+  $scope.formatObjectDate = function(dateToFormat) {
+    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
+  };
+
+  // Tags in string format
+  $scope.formatTagsinString = function(tags) {
+    var tagsInString = "";
+
+    for(var i = 0; i < tags.length; ++i) {
+      tagsInString += (i != 0 ? ", " : "") + tags[i].name;
+    }
+    if (tags.length <= 0)
+      tagsInString = "N/A";
+    return tagsInString;
   };
 
   $scope.getOpenTickets = function() {
@@ -100,34 +138,66 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
     getClosedTicketsContent();
   };
 
-  // Initial content loaded
-  getOpenTicketsContent();
-
 }]);
 
 
 /**
 * Routine definition
-* Check if requested bugtracker is accessible
+* APP bugtracker page access
 *
 */
-var bugtracker_isAccessible = function($rootScope, $http, $cookies, $route, $q, $location) {
+
+// Routine definition [3/3]
+// Common behavior for isBugtrackerAccessible
+var isBugtrackerAccessible_commonBehavior = function(deferred, $location) {
+  deferred.reject();
+  $location.path("bugtracker");
+};
+
+// Routine definition [2/3]
+// Default behavior for isWBugtrackerAccessible
+var isBugtrackerAccessible_defaultBehavior = function(deferred, $location) {
+  isBugtrackerAccessible_commonBehavior(deferred, $location);
+  Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+};
+
+// Routine definition [1/3]
+// Check if requested bugtracker is accessible
+var isBugtrackerAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
   var deferred = $q.defer();
 
-  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.projectId)
+  $http.get($rootScope.apiBaseURL + '/bugtracker/getticket/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
     .then(function successCallback(response) {
-      deferred.resolve(true);
+      deferred.resolve();
     },
     function errorCallback(response) {
-      deferred.reject();
-      $location.path('bugtracker').search({
-        'projectId': $route.current.params.projectId,
-        'projectName': $route.current.params.projectName,
-        'id': $route.current.params.id
-      });
+      if (response.data.info.return_code) {
+        switch(response.data.info.return_code) {
+          case "4.1.3":
+          deferred.reject();
+          $rootScope.onUserTokenError();
+          break;
+
+          case "4.1.4":
+          isBugtrackerAccessible_commonBehavior(deferred, $location);
+          Notification.warning({ message: "Ticket not found.", delay: 10000 });
+          break;
+
+          case "4.1.9":
+          isBugtrackerAccessible_commonBehavior(deferred, $location);
+          Notification.warning({ message: "You don\'t have access to this ticekt.", delay: 10000 });
+          break;
+
+          default:
+          isBugtrackerAccessible_defaultBehavior(deferred, $location);
+          break;
+        }
+      }
+      else { isBugtrackerAccessible_defaultBehaviorv(deferred, $location); }
     });
 
     return deferred.promise;
 };
 
-bugtracker_isAccessible['$inject'] = ['$rootScope', '$http', '$cookies', '$route', '$q', '$location'];
+// "isBugtrackerAccessible" routine injection
+isBugtrackerAccessible["$inject"] = ["$q", "$http", "$rootScope", "$cookies", "$route", "$location", "Notification"];

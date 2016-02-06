@@ -39,7 +39,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		templateUrl : "../resources/pages/bugtracker.html",
 		controller  : "bugtrackerController",
 		caseInsensitiveMatch : true,
-		resolve: { factory: bugtracker_isAccessible }
+		resolve: { factory: isBugtrackerAccessible }
 	})
 	// Cloud-related pages
 	.when("/cloud", {

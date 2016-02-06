@@ -4,63 +4,83 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div class="view view-content" id="bugtracker-list-view" ng-controller="bugtrackerListController">
 
-    <section class="app-section" id="bugtracker-list">
-        <div class="container app-container">
-          <div>
-            <a href="" ng-click="getOpenTickets()">Opened tickets</a>
-            <a href="" ng-click="getClosedTickets()">Closed tickets</a>
+  <section class="app-section" id="bugtracker-help">
+    <div class="container app-container">
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- grappbox.data : bugtracker information -->
+          <div class="section-heading">
+            <h2>Choose a project bugtracker</h2>
+            <p>Scroll down to see all your projects. On each, hold to navigate between all bug tickets.<br>For each bug ticket card, you'll find useful information such as creation date.</p>
           </div>
-            <div class="row" ng-repeat="project in projectListContent">
-                <div class="col-lg-12">
-                    <!-- grappbox.data : bugtracker list -->
-                    <div class="section-heading">
-                      <h2>{[{project.name}]}</h2>
-                    </div>
-                    <div class="data-wrapper" ng-if="!bugtracker_noRights[project.name]">
-                        <ul class="data-content btn-float">
-                          <li class="bugtracker-new-ticket">
-                            <a ng-href="bugtracker/{[{ project.project_id }]}/0" title="Report Bug"><i class="fa fa-plus fa-fw"></i>Create new ticket</a>
-                          </li>
-                        </ul>
-                    </div>
-                    <div class="section-content tiles">
-                        <div id="all-bugtrackers-data" panhandler>
-                            <div ng_if="bugtracker_isValid[project.name] && bugtrackerListContent[project.name]">
-                                <div class="data-wrapper" ng-repeat="bugtracker in bugtrackerListContent[project.name]">
-                                    <ul class="data-content each-available-bugtracker btn-float">
-                                        <li class="bugtracker-title"><a ng-href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open ticket #{[{ bugtracker.id }]} page">{[{ bugtracker.title }]}</a></li>
-                                        <li class="bugtracker-id">Ticket #{[{ bugtracker.id }]}</li>
-                                        <!-- <li class="bugtracker-project-name">Project: {[{ bugtracker.project }]}</li> -->
-                                        <li class="bugtracker-information">
-                                          {[{ console.log(bugtracker.createdAt) }]}
-                                            <div class="bugtracker-information-data bugtracker-date"><i class="fa fa-calendar"></i>{[{ bugtracker.createdAt.date | date:'yyyy/MM/dd HH:mm' }]}</div>
-                                            <!-- <div class="bugtracker-information-data bugtracker-time"><i class="fa fa-clock-o"></i>{[{ bugtracker.createdAt.time }]}</div> -->
-                                        </li>
-                                        <li class="bugtracker-link">
-                                            <a ng-href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open ticket #{[{ bugtracker.id }]} page"><i class="fa fa-file-text-o fa-fw"></i>Details</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div ng-if="bugtracker_isValid[project.name] && !bugtrackerListContent[project.name]">
-                                <div class="data-wrapper error">
-                                    <p><i class="fa fa-drown-o"></i>There is no bug ticket for this project.</p>
-                                </div>
-                            </div>
-                            <div ng-if="bugtracker_noRights[project.name]">
-                                <div class="data-wrapper error">
-                                    <p><i class="fa fa-times"></i>You have no rights on the bugtracker of this project.</p>
-                                </div>
-                            </div>
-                            <div ng-if="!bugtracker_noRights[project.name] && !bugtracker_isValid[project.name]">
-                                <div class="data-wrapper error">
-                                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="app-section" id="bugtracker-list">
+    <div class="container">
+      <div class="row">
+        <div ng-show="data.onLoad">
+          <div class="loading-content section"><div></div></div>
+        </div>
+        <div ng-repeat="project in data.projects" class="each-object" ng-show="!data.onLoad">
+          <div class="col-lg-12">
+            <!-- grappbox.data : bugtracker list (per project) -->
+            <div class="section-heading">
+              <h3>{[{ project.name }]}</h3>
+            </div>
+            <div class="section-content tiles">
+              <div id="all-bugtracker-data">
+                <div ng-show="data.projectsBugtracker_onLoad[project.name]">
+                  <div class="loading-content section"><div></div></div>
+                </div>
+                <div ng-show="!data.projectsBugtracker_onLoad[project.name]">
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_valid'" panhandler>
+                    <div class="data-wrapper" ng-repeat="bugtracker in data.projectsBugtracker_content[project.name]">
+                      <ul class="data-content each-available-bugtracker btn-float">
+                        <li>
+                          <span class="title">{[{ bugtracker.title }]}</span>
+                        </li>
+                        <li>
+                          <span><i class="fa fa-tags"></i>{[{ formatTagsinString(bugtracker.tags) }]}</span>
+                        </li>
+                        <li>
+                          <span><i class="fa fa-clock-o"></i>Created: {[{ formatObjectDate(bugtracker.createdAt.date) }]}</span>
+                        </li>
+                        <li>
+                          <span><i class="fa fa-clock-o"></i>Updated: {[{ formatObjectDate(bugtracker.updatedAt.date) }]}</span>
+                        </li>
+                        <li>
+                          <a href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open Ticket #{[{ bugtracker.id }]}"><i class="fa fa-edit fa-fw"></i>Open</a>
+                        </li>
+                      </ul>
+                    </div><!-- data-wrapper-->
+                  </div><!-- panhandler -->
+
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_empty'">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no bug ticket for this project.</p>
+                    </div>
+                  </div>
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_denied'">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+                    </div>
+                  </div>
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_invalid'">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div><!-- allbugtracker-data -->
+            </div><!-- section-content tiles-->
+          </div>
+        </div>
+
+      </div><!-- row -->
+    </div><!-- container -->
+  </section><!-- bugtracker-list -->
 </div>
