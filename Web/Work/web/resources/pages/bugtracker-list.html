@@ -4,8 +4,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div class="view view-content" id="bugtracker-list-view" ng-controller="bugtrackerListController">
 
-    <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}" close="closeAlert($index)">{[{ alert.message }]}</uib-alert>
-
     <section class="app-section" id="bugtracker-list">
         <div class="container app-container">
           <div>
@@ -15,21 +13,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="row" ng-repeat="project in projectListContent">
                 <div class="col-lg-12">
                     <!-- grappbox.data : bugtracker list -->
-                    <div class="section-heading app-section-heading">
+                    <div class="section-heading">
                       <h2>{[{project.name}]}</h2>
                     </div>
-                    <div class="app-data" ng-if="!bugtracker_noRights[project.name]">
-                        <ul class="app-data-list btn-float">
+                    <div class="data-wrapper" ng-if="!bugtracker_noRights[project.name]">
+                        <ul class="data-content btn-float">
                           <li class="bugtracker-new-ticket">
                             <a ng-href="bugtracker/{[{ project.project_id }]}/0" title="Report Bug"><i class="fa fa-plus fa-fw"></i>Create new ticket</a>
                           </li>
                         </ul>
                     </div>
-                    <div class="section-content app-section-content">
+                    <div class="section-content tiles">
                         <div id="all-bugtrackers-data" panhandler>
                             <div ng_if="bugtracker_isValid[project.name] && bugtrackerListContent[project.name]">
-                                <div class="app-data" ng-repeat="bugtracker in bugtrackerListContent[project.name]">
-                                    <ul class="app-data-list each-available-bugtracker btn-float">
+                                <div class="data-wrapper" ng-repeat="bugtracker in bugtrackerListContent[project.name]">
+                                    <ul class="data-content each-available-bugtracker btn-float">
                                         <li class="bugtracker-title"><a ng-href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open ticket #{[{ bugtracker.id }]} page">{[{ bugtracker.title }]}</a></li>
                                         <li class="bugtracker-id">Ticket #{[{ bugtracker.id }]}</li>
                                         <!-- <li class="bugtracker-project-name">Project: {[{ bugtracker.project }]}</li> -->
@@ -45,17 +43,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 </div>
                             </div>
                             <div ng-if="bugtracker_isValid[project.name] && !bugtrackerListContent[project.name]">
-                                <div class="app-data error">
+                                <div class="data-wrapper error">
                                     <p><i class="fa fa-drown-o"></i>There is no bug ticket for this project.</p>
                                 </div>
                             </div>
                             <div ng-if="bugtracker_noRights[project.name]">
-                                <div class="app-data error">
+                                <div class="data-wrapper error">
                                     <p><i class="fa fa-times"></i>You have no rights on the bugtracker of this project.</p>
                                 </div>
                             </div>
                             <div ng-if="!bugtracker_noRights[project.name] && !bugtracker_isValid[project.name]">
-                                <div class="app-data error">
+                                <div class="data-wrapper error">
                                     <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                                 </div>
                             </div>

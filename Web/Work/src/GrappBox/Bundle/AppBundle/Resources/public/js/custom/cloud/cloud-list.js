@@ -14,7 +14,7 @@ app.controller("cloudListController", ["$scope", "$http", "$rootScope", "$cookie
   // Scope variables initialization
   $scope.data = { onLoad: true, userProjects: "", isValid: false };
 
-  // Get all user"s current projects (with information)
+  // Get all user's current projects
   $http.get($rootScope.apiBaseURL + "/user/getprojects/" + $cookies.get("USERTOKEN"))
     .then(function userProjectsReceived(response) {
       $scope.data.userProjects = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
