@@ -13,7 +13,7 @@ SFontLoader::~SFontLoader()
 
 QFont       SFontLoader::GetFont(SFontLoader::Font font)
 {
-    if (__INSTANCE__SFontLoader == NULL)
+    if (__INSTANCE__SFontLoader == nullptr)
         __INSTANCE__SFontLoader = new SFontLoader();
     return QFont(QFontDatabase::applicationFontFamilies(__INSTANCE__SFontLoader->_Fonts[font]).at(0));
 }

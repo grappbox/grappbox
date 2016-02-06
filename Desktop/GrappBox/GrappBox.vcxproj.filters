@@ -594,6 +594,21 @@
     <ClCompile Include="WhiteboardGraphicsView.cpp">
       <Filter>Source Files\Body\Whiteboard</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_CalendarView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CalendarView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ListAddRemoveSelection.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_ListAddRemoveSelection.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_ListAddRemoveSelection.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Body\BodyBugTracker.h">
@@ -692,9 +707,6 @@
     <CustomBuild Include="Body\Calendar\CalendarEventForm.h">
       <Filter>Header Files\Body\Calendar</Filter>
     </CustomBuild>
-    <ClInclude Include="Body\Calendar\CalendarView.h">
-      <Filter>Header Files\Body\Calendar</Filter>
-    </ClInclude>
     <ClInclude Include="CalendarViewDay.h">
       <Filter>Header Files\Body\Calendar</Filter>
     </ClInclude>
@@ -719,12 +731,15 @@
     <ClInclude Include="WidgetCommon\utils.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <CustomBuild Include="Body\Calendar\CalendarView.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ListAddRemoveSelection.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="Ressources\Icon\Accept.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\ConfigurationFiles\Base.qss">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Ressources\Temporary\GlobalProgressIcon\Bug.png">
@@ -866,6 +881,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <None Include="Ressources\Temporary\Profils\valentin_mougenot.jpg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Ressources\ConfigurationFiles\Base.css">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

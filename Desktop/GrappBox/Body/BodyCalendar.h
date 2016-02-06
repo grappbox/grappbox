@@ -55,6 +55,20 @@ public slots:
 
     void OnCreate();
 
+	void OnMoveToday();
+
+	void OnEditEvent(Event *event);
+	void OnDeleteEvent(Event *event);
+
+	void OnDeleteDone(int id, QByteArray data);
+	void OnDeleteFail(int id, QByteArray data);
+
+	void OnLoadingProjectsDone(int id, QByteArray data);
+	void OnLoadingProjectsFail(int id, QByteArray data);
+
+	void OnEventEditDone(int id, QByteArray data);
+	void OnEventEditFail(int id, QByteArray data);
+
 private:
     enum ViewType
     {
@@ -70,9 +84,14 @@ private:
     int _WidgetId;
     ViewType _View;
 	bool _IsLoaded;
+	bool _IsProjectsLoaded;
 
 	QMap<int, QDate> _LoadingDates;
 	QMap<int, int> _LoadingProjects;
+
+	QMap<int, QString> _AllProjects;
+
+	QMap<int, int> _DeleteEvent;
 
     QDate _LastDrawingDate;
     QDate _CurrentDrawingDate;
@@ -103,6 +122,7 @@ private:
     QPushButton *_ToDay;
     QPushButton *_ToWeek;
     QPushButton *_ToMonth;
+	QPushButton *_ToToday;
 
     CalendarViewMonth *_ViewMonth;
     CalendarViewWeek *_ViewWeek;

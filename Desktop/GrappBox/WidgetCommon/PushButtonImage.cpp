@@ -7,7 +7,7 @@ PushButtonImage::PushButtonImage(QWidget *parent) : QAbstractButton(parent)
     _NormalColor = QColor(80, 80, 80);
     _PressedColor = QColor(60, 60, 60);
     _HoverColor = QColor(120, 0, 120);
-    _LastPixmap = NULL;
+    _LastPixmap = nullptr;
     _IsHover = false;
     setMouseTracking(true);
     setAttribute(Qt::WA_Hover, true);
@@ -31,7 +31,7 @@ void PushButtonImage::leaveEvent(QEvent * event)
 void PushButtonImage::paintEvent(QPaintEvent *e)
 {
     _LastRect = e->rect();
-    if (_LastPixmap == NULL)
+    if (_LastPixmap == nullptr)
         return;
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing, true);

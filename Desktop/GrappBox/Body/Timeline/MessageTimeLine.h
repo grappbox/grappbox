@@ -36,7 +36,7 @@ public:
         }
         MessageTimeLineInfo()
         {
-            MessageTimeLineInfo(-1, false, "", "", QDateTime(), -1, NULL, "", "");
+            MessageTimeLineInfo(-1, false, "", "", QDateTime(), -1, nullptr, "", "");
         }
 
         bool operator==(MessageTimeLineInfo const& b)

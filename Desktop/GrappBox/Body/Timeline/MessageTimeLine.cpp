@@ -42,7 +42,7 @@ MessageTimeLine::MessageTimeLine(MessageTimeLineInfo data, int IdTimeline, QWidg
     _LoadingImage->hide();
 
     _Avatar = new QLabel();
-    if (data.Avatar != NULL)
+    if (data.Avatar != nullptr)
         _Avatar->setPixmap(QPixmap::fromImage(*data.Avatar).scaled(QSize(64, 64)));
     else
         _Avatar->setText("Cannot retrieve avatar");

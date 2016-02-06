@@ -46,7 +46,7 @@ void CustomGraphicsHandWriteItem::paint(QPainter *painter, const QStyleOptionGra
 {
     if (_Points.size() <= 1)
         return;
-    QList<QPointF>::iterator lastIterator = NULL;
+    QList<QPointF>::iterator lastIterator = nullptr;
     painter->setPen(_Pen);
     for (QList<QPointF>::iterator it = _Points.begin(); it != _Points.end(); ++it)
     {

@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     // Basic MainWindow Configuration
-    QFile file(":/Configuration/Ressources/ConfigurationFiles/Base.qss");
+    QFile file(":/Configuration/Ressources/ConfigurationFiles/Base.css");
     file.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(file.readAll());
     setStyleSheet(styleSheet);
@@ -185,7 +185,7 @@ void MainWindow::OnLogout()
 {
     QVector<QString> data;
     data.push_back(API::SDataManager::GetDataManager()->GetToken());
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_USER_DATA, API::GR_LOGOUT, data, NULL, NULL, NULL);
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_USER_DATA, API::GR_LOGOUT, data, nullptr, nullptr, nullptr);
     API::SDataManager::GetDataManager()->LogoutUser();
     _Login->show();
     hide();
@@ -223,7 +223,7 @@ void MainWindow::OnMenuChange(int id)
 {
     QWidget *currentWidget = _StackedLayout->itemAt(_CurrentCanvas)->widget();
     QWidget *nextWidget = _StackedLayout->itemAt(id)->widget();
-    if (nextWidget == NULL)
+    if (nextWidget == nullptr)
     {
         _MenuWidget->ForceChangeMenu(_CurrentCanvas);
         QMessageBox::information(this, "Not implemented", "Sorry but this functionality is not implemented yet.", "Close");

@@ -37,6 +37,6 @@
     </qresource>
     <qresource prefix="/Configuration">
         <file>Ressources/ConfigurationFiles/WhiteboardColors.xml</file>
-        <file>Ressources/ConfigurationFiles/Base.qss</file>
+        <file>Ressources/ConfigurationFiles/Base.css</file>
     </qresource>
 </RCC>

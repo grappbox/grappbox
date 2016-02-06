@@ -11,6 +11,7 @@
 
 class CalendarView : public QWidget
 {
+	Q_OBJECT
 public:
     CalendarView();
     virtual void LoadEvents(QList<Event*> events, QDate date);
@@ -18,8 +19,12 @@ public:
     virtual void ShowProject(int id);
 
 signals:
+	void NeedEdit(Event *);
+	void NeedDelete(Event *);
 
 public slots:
+	void EventEdit(Event *event);
+	void EventDelete(Event *event);
 
 protected:
     QList<Event*> _Events;

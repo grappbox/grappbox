@@ -33,7 +33,7 @@ namespace API
         virtual int Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
         virtual int Get(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
         virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
-        virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
+		virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
 
     signals:
         void responseAPISuccess(int, QByteArray);
@@ -53,6 +53,7 @@ namespace API
         QNetworkReply *PutProjectSettings(QVector<QString> &data);
         QNetworkReply *AssignTagToBug(QVector<QString> &data);
 		QNetworkReply *EditEvent(QVector<QString> &data);
+		QNetworkReply *EditEventParticipant(QVector<QString> &data);
 
         // Post
     private:
@@ -84,6 +85,7 @@ namespace API
         QNetworkReply *DeleteProject(QVector<QString> &data);
         QNetworkReply *DeleteCustomerAccess(QVector<QString> &data);
         QNetworkReply *RESTDelete(QVector<QString> &data, QString baseURL);
+		QNetworkReply *DeleteAction(QString urlIn, QVector<QString> &data);
 
         // Get
     private:

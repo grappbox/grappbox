@@ -137,19 +137,19 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
 void BodyDashboard::DeleteLayout()
 {
     QLayoutItem *wItem;
-    while ((wItem = _GlobalProgress->takeAt(0)) != NULL)
+    while ((wItem = _GlobalProgress->takeAt(0)) != nullptr)
     {
         if (wItem->widget())
             wItem->widget()->setParent(NULL);
         delete wItem;
     }
-    while ((wItem = _MemberAvaible->takeAt(0)) != NULL)
+    while ((wItem = _MemberAvaible->takeAt(0)) != nullptr)
     {
         if (wItem->widget())
             wItem->widget()->setParent(NULL);
         delete wItem;
     }
-    while ((wItem = _NextMeeting->takeAt(0)) != NULL)
+    while ((wItem = _NextMeeting->takeAt(0)) != nullptr)
     {
         if (wItem->widget())
             wItem->widget()->setParent(NULL);
@@ -210,7 +210,7 @@ void BodyDashboard::GetNextMeeting(int, QByteArray byte)
     for (QJsonValueRef ref : objmain)
     {
         QJsonObject obj = ref.toObject();
-        NextMeetingInfo *info = new NextMeetingInfo(NextMeetingInfo::Personnal, "", "", "", NULL);
+        NextMeetingInfo *info = new NextMeetingInfo(NextMeetingInfo::Personnal, "", "", "", nullptr);
         info->MeetingName = obj["event_title"].toString();
         QJsonObject date = obj["event_begin_date"].toObject();
         QStringList l = date["date"].toString().split(' ');
@@ -235,12 +235,12 @@ void BodyDashboard::GetMemberProject(int, QByteArray byte)
         int userId = obj["user_id"].toInt();
         bool exist = false;
         QLayoutItem *item;
-        for (int i = 0; (item = _MemberAvaible->itemAt(i)) != NULL; ++i)
+        for (int i = 0; (item = _MemberAvaible->itemAt(i)) != nullptr; ++i)
         {
             if (item->widget())
             {
                 DashboardMember *member = dynamic_cast<DashboardMember*>(item->widget());
-                if (member != NULL)
+                if (member != nullptr)
                 {
                     if (member->GetMemberInfo()->Id == userId)
                     {
@@ -252,7 +252,7 @@ void BodyDashboard::GetMemberProject(int, QByteArray byte)
         }
         if (exist)
             continue;
-        MemberAvaiableInfo *info = new MemberAvaiableInfo("", false, NULL);
+        MemberAvaiableInfo *info = new MemberAvaiableInfo("", false, nullptr);
         info->MemberName = obj["first_name"].toString() + QString(" ") + obj["last_name"].toString();
         info->IsBusy = obj["occupation"].toBool();
         info->Id = userId;

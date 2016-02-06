@@ -10,7 +10,7 @@
 class CustomGraphicsHandWriteItem : public QGraphicsItem
 {
 public:
-    CustomGraphicsHandWriteItem(const QPen &pen, QGraphicsItem *parent = NULL);
+    CustomGraphicsHandWriteItem(const QPen &pen, QGraphicsItem *parent = nullptr);
 
     virtual QRectF boundingRect() const;
     void Append(qreal x, qreal y);

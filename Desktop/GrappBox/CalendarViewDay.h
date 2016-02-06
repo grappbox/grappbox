@@ -17,7 +17,7 @@
 class CalendarViewDay : public CalendarView
 {
 public:
-    CalendarViewDay();
+    CalendarViewDay(bool viewHour = true);
     void LoadEvents(QList<Event *> events, QDate date);
     virtual void HideProject(int id);
     virtual void ShowProject(int id);
@@ -36,6 +36,8 @@ private:
     QGridLayout     *_MainLayout;
 
     QList<CalendarEvent*>   _EventsWidget;
+
+	bool _ViewHour;
 };
 
 #endif // CALENDARVIEWDAY_H

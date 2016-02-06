@@ -25,7 +25,7 @@ ConversationTimeline::ConversationTimeline(int timelineId, MessageTimeLine::Mess
     _ScrollAnim->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     _MainMessage = new MessageTimeLine(data, timelineId);
-    _CommentMessageNew = new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(-1, data.IdTimeline, "", "", QDateTime(), 1, NULL, "", ""), timelineId);
+    _CommentMessageNew = new MessageTimeLine(MessageTimeLine::MessageTimeLineInfo(-1, data.IdTimeline, "", "", QDateTime(), 1, nullptr, "", ""), timelineId);
 
     _CommentLayout->addWidget(_CommentMessageNew);
     _MainCommentWidget->setLayout(_CommentLayout);
@@ -162,7 +162,7 @@ void ConversationTimeline::FinishedLoad()
     while (QLayoutItem* item = _CommentLayout->takeAt(0))
     {
         QWidget* widget = item->widget();
-        if (widget != NULL && widget != _CommentMessageNew)
+        if (widget != nullptr && widget != _CommentMessageNew)
             delete widget;
         delete item;
     }

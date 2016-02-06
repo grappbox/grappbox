@@ -8,7 +8,7 @@ namespace DashboardInformation
 {
     struct MemberAvaiableInfo
     {
-        MemberAvaiableInfo(QString memberName, bool isBusy, QPixmap *memberPicture = NULL);
+        MemberAvaiableInfo(QString memberName, bool isBusy, QPixmap *memberPicture = nullptr);
 
         QString     MemberName;
         bool        IsBusy;
@@ -26,7 +26,7 @@ namespace DashboardInformation
             Company
         };
 
-        NextMeetingInfo(NextMeetingTypeInfo type, QString meetingName, QString date, QString hours, QPixmap *projectIcon = NULL);
+        NextMeetingInfo(NextMeetingTypeInfo type, QString meetingName, QString date, QString hours, QPixmap *projectIcon = nullptr);
 
         NextMeetingTypeInfo Type;
         QString             MeetingName;
@@ -39,7 +39,7 @@ namespace DashboardInformation
     {
         GlobalProgressInfo(QString projectTitle, QString projectCompany, QString projectTel,
                            QString projectMail, int numberMaxTask, int numberTask, int numberMsg,
-                           int numberProblem, QPixmap *projectPicture = NULL);
+                           int numberProblem, QPixmap *projectPicture = nullptr);
 
         QString ProjectTitle;
         QString ProjectCompany;

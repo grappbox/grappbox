@@ -14,7 +14,7 @@ class WhiteboardButtonChoice : public QWidget
 private:
     Q_OBJECT
 public:
-    WhiteboardButtonChoice(int whiteboardId, BodyDashboard *mainApp, QWidget *parent = NULL);
+    WhiteboardButtonChoice(int whiteboardId, BodyDashboard *mainApp, QWidget *parent = nullptr);
 
 signals:
     void OnEdit(int);

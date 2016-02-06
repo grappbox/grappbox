@@ -23,6 +23,6 @@ private:
     QMap<SFontLoader::Font, int>      _Fonts;
 };
 
-static SFontLoader *__INSTANCE__SFontLoader = NULL;
+static SFontLoader *__INSTANCE__SFontLoader = nullptr;
 
 #endif // SFONTLOADER_H

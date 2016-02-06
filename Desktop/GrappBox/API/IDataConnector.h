@@ -58,6 +58,7 @@ namespace API
         GR_PROJECTBUGTAG_ALL,
         GR_PROJECT_USERS_ALL,
         GR_BUG,
+		GR_EVENT,
     };
 
     enum PostRequest
@@ -87,6 +88,7 @@ namespace API
         DR_CUSTOMER_ACCESS,
         DR_CLOSE_TICKET_OR_COMMENT,
         DR_REMOVE_BUGTAG,
+		DR_REMOVE_EVENT
     };
 
     enum PutRequest
@@ -95,7 +97,8 @@ namespace API
         PUTR_PROJECTSETTINGS,
         PUTR_INVITE_USER,
         PUTR_ASSIGNTAG,
-		PUTR_EDIT_EVENT
+		PUTR_EDIT_EVENT,
+		PUTR_SET_PARTICIPANT
     };
 
     class IDataConnector

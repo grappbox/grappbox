@@ -70,10 +70,19 @@ BodyCalendar::BodyCalendar()
 	_ToMonth->setCheckable(true);
 	_ToMonth->setChecked(true);
 	_ToMonth->setDisabled(true);
+	_ToToday = new QPushButton("Today");
+	_ToToday->setMaximumWidth(90);
 
 	_ViewMonth = new CalendarViewMonth();
 	_ViewWeek = new CalendarViewWeek();
 	_ViewDay = new CalendarViewDay();
+
+	connect(_ViewMonth, SIGNAL(NeedEdit(Event*)), this, SLOT(OnEditEvent(Event*)));
+	connect(_ViewMonth, SIGNAL(NeedDelete(Event*)), this, SLOT(OnDeleteEvent(Event*)));
+	connect(_ViewWeek, SIGNAL(NeedEdit(Event*)), this, SLOT(OnEditEvent(Event*)));
+	connect(_ViewWeek, SIGNAL(NeedDelete(Event*)), this, SLOT(OnDeleteEvent(Event*)));
+	connect(_ViewDay, SIGNAL(NeedEdit(Event*)), this, SLOT(OnEditEvent(Event*)));
+	connect(_ViewDay, SIGNAL(NeedDelete(Event*)), this, SLOT(OnDeleteEvent(Event*)));
 
 	QScrollArea *_WeekScrollArea = new QScrollArea();
 	_WeekScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -116,6 +125,7 @@ BodyCalendar::BodyCalendar()
 	_TopBarLayout->addWidget(_ToDay);
 	_TopBarLayout->addWidget(_ToWeek);
 	_TopBarLayout->addWidget(_ToMonth);
+	_TopBarLayout->addWidget(_ToToday);
 
 	setLayout(_MainLayout);
 
@@ -124,6 +134,8 @@ BodyCalendar::BodyCalendar()
 	QObject::connect(_ToDay, SIGNAL(clicked(bool)), this, SLOT(OnDayCheckedChange(bool)));
 	QObject::connect(_ToWeek, SIGNAL(clicked(bool)), this, SLOT(OnWeekCheckedChange(bool)));
 	QObject::connect(_ToMonth, SIGNAL(clicked(bool)), this, SLOT(OnMonthCheckedChange(bool)));
+
+	QObject::connect(_ToToday, SIGNAL(clicked(bool)), this, SLOT(OnMoveToday()));
 
 	QObject::connect(_NextDate, SIGNAL(clicked(bool)), this, SLOT(OnNext()));
 	QObject::connect(_PreviousDate, SIGNAL(clicked(bool)), this, SLOT(OnPrev()));
@@ -199,6 +211,10 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 		}
 	}
 	_LoadingDates.remove(id);
+	qDebug() << "Dates Loading !";
+	qDebug() << "Project : " << _LoadingProjects.size();
+	qDebug() << "Dates : " << _LoadingDates.size();
+	qDebug() << "Projects loaded : " << _IsProjectsLoaded;
 	if (_LoadingDates.size() == 0)
 	{
 		for (int id : projectToLoad)
@@ -209,6 +225,7 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 			int requestId = API::SDataManager::GetCurrentDataConnector()->Get(API::DP_PROJECT, API::GR_PROJECT, data, this, "OnProjectLoadingDone", "OnProjectLoadingFail");
 			_LoadingProjects[requestId] = id;
 		}
+		qDebug() << "Loading projects : " << projectToLoad.size();
 	}
 }
 
@@ -224,7 +241,6 @@ void BodyCalendar::OnProjectLoadingDone(int requestId, QByteArray data)
 	int id = _LoadingProjects[requestId];
 	QString name = obj["name"].toString();
 	QString color = obj["color"].toString();
-	qDebug() << color;
 	color = "#" + color.toUpper();
 
 	_Projects[id] = name;
@@ -247,7 +263,11 @@ void BodyCalendar::OnProjectLoadingDone(int requestId, QByteArray data)
 	}
 
 	_LoadingProjects.remove(requestId);
-	if (_LoadingProjects.size() == 0 && _LoadingDates.size() == 0)
+	qDebug() << "Project Loading !";
+	qDebug() << "Project : " << _LoadingProjects.size();
+	qDebug() << "Dates : " << _LoadingDates.size();
+	qDebug() << "Projects loaded : " << _IsProjectsLoaded;
+	if (_LoadingProjects.size() == 0 && _LoadingDates.size() == 0 && _IsProjectsLoaded)
 	{
 		if (_IsLoaded)
 			emit OnLoadingDone(_WidgetId);
@@ -311,7 +331,7 @@ void BodyCalendar::OnPrev()
 void BodyCalendar::OnProjectCheckChange()
 {
 	QCheckBox *sender = dynamic_cast<QCheckBox*>(QObject::sender());
-	if (sender == NULL)
+	if (sender == nullptr)
 		return;
 	for (QMap<int, QCheckBox*>::iterator it = _ProjectChoiceCheckBox.begin(); it != _ProjectChoiceCheckBox.end(); ++it)
 	{
@@ -335,8 +355,89 @@ void BodyCalendar::OnProjectCheckChange()
 
 void BodyCalendar::OnCreate()
 {
-	CalendarEventForm *form = new CalendarEventForm(NULL);
+	CalendarEventForm *form = new CalendarEventForm(nullptr, _AllProjects, this);
 	form->exec();
+	qDebug() << "Form finish execution";
+}
+
+void BodyCalendar::OnMoveToday()
+{
+	_CurrentDrawingDate = QDate::currentDate();
+	UpdateType();
+}
+
+void BodyCalendar::OnEditEvent(Event *event)
+{
+	CalendarEventForm *form = new CalendarEventForm(event, _AllProjects, this);
+	form->exec();
+	qDebug() << "Form finish execution";
+}
+
+void BodyCalendar::OnDeleteEvent(Event *event)
+{
+	qDebug() << "Delete event " + event->EventId;
+	QVector<QString> data;
+	data.push_back(USER_TOKEN);
+	data.push_back(TO_STRING(event->EventId));
+	int requestId = DATA_CONNECTOR->Delete(API::DP_CALENDAR, API::DR_REMOVE_EVENT, data, this, "OnDeleteDone", "OnDeleteFail");
+	_DeleteEvent[requestId] = event->EventId;
+}
+
+void BodyCalendar::OnDeleteDone(int id, QByteArray data)
+{
+	for (QMap<QDate, QList<Event*> >::iterator it = _MapMonthEvent.begin(); it != _MapMonthEvent.end(); ++it)
+	{
+		QList<Event*> toDelete;
+		QList<Event*> &currentList = it.value();
+		for (Event *event : currentList)
+		{
+			if (event->EventId == _DeleteEvent[id])
+				toDelete.push_back(event);
+		}
+		for (Event *event : toDelete)
+		{
+			currentList.removeAll(event);
+		}
+	}
+	UpdateType();
+}
+
+void BodyCalendar::OnDeleteFail(int id, QByteArray data)
+{
+
+}
+
+void BodyCalendar::OnLoadingProjectsDone(int id, QByteArray data)
+{
+	QJsonDocument doc = QJsonDocument::fromJson(data);
+	QJsonArray projectList = doc.object()["data"].toObject()["array"].toArray();
+	for (QJsonValueRef ref : projectList)
+	{
+		QJsonObject obj = ref.toObject();
+		_AllProjects[obj["project_id"].toInt()] = obj["project_name"].toString();
+	}
+	_IsProjectsLoaded = true;
+	if (_LoadingProjects.size() == 0 && _LoadingDates.size() == 0 && _IsProjectsLoaded)
+	{
+		if (_IsLoaded)
+			emit OnLoadingDone(_WidgetId);
+		_IsLoaded = false;
+		UpdateType();
+	}
+}
+
+void BodyCalendar::OnLoadingProjectsFail(int id, QByteArray data)
+{
+}
+
+void BodyCalendar::OnEventEditDone(int id, QByteArray data)
+{
+	// Here do the recup of a new event with all data
+	qDebug() << "On Event edit done";
+}
+
+void BodyCalendar::OnEventEditFail(int id, QByteArray data)
+{
 }
 
 void BodyCalendar::UpdateType()
@@ -411,6 +512,7 @@ void BodyCalendar::Show(int ID, MainWindow *mainApp)
 	_WidgetId = ID;
 	_MainApp = mainApp;
 	_IsLoaded = true;
+	_IsProjectsLoaded = false;
 
 	while (QLayoutItem *item = _ProjectChoiceLayout->takeAt(0))
 	{
@@ -431,6 +533,9 @@ void BodyCalendar::Show(int ID, MainWindow *mainApp)
 	date = date.addMonths(-2);
 	data[1] = date.toString("yyyy-MM-dd");
 	_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+	data.clear();
+	data.push_back(USER_TOKEN);
+	DATA_CONNECTOR->Get(API::DP_PROJECT, API::GR_LIST_PROJECT, data, this, "OnLoadingProjectsDone", "OnLoadingProjectsFail");
 }
 
 void BodyCalendar::Hide()

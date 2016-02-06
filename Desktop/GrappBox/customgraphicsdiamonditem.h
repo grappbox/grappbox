@@ -7,7 +7,7 @@
 class CustomGraphicsDiamondItem : public QGraphicsItem
 {
 public:
-    CustomGraphicsDiamondItem(qreal x, qreal y, qreal width, qreal height, const QPen &pen, const QBrush &background, QGraphicsItem *parent = NULL);
+    CustomGraphicsDiamondItem(qreal x, qreal y, qreal width, qreal height, const QPen &pen, const QBrush &background, QGraphicsItem *parent = nullptr);
 
     virtual QRectF boundingRect() const;
     void SetRect(const QRectF &rect);

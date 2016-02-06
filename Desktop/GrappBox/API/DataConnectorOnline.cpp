@@ -97,45 +97,6 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 	return maxInt;
 }
 
-int DataConnectorOnline::Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char *slotSuccess, const char *slotFailure)
-{
-	QNetworkReply *reply = nullptr;
-	switch (request)
-	{
-	case PUTR_USERSETTINGS:
-		reply = PutUserSettings(data);
-		break;
-	case PUTR_PROJECTSETTINGS:
-		reply = PutProjectSettings(data);
-		break;
-	case PUTR_INVITE_USER:
-		reply = ProjectInvite(data);
-		break;
-	case PUTR_ASSIGNTAG:
-		reply = AssignTagToBug(data);
-		break;
-	case PUTR_EDIT_EVENT:
-		reply = EditEvent(data);
-		break;
-	}
-	if (reply == nullptr)
-		throw QException();
-	_CallBack[reply] = DataConnectorCallback();
-	_CallBack[reply]._Request = requestResponseObject;
-	_CallBack[reply]._SlotFailure = slotFailure;
-	_CallBack[reply]._SlotSuccess = slotSuccess;
-	int maxInt = 1;
-	for (QMap<QNetworkReply*, int>::const_iterator it = _Request.constBegin(); it != _Request.constEnd(); ++it)
-	{
-		if (it.value() >= maxInt)
-		{
-			maxInt = it.value() + 1;
-		}
-	}
-	_Request[reply] = maxInt;
-	return maxInt;
-}
-
 int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
 	QNetworkReply *reply = nullptr;
@@ -146,7 +107,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 		break;
 
 	case GR_LIST_PROJECT:
-		reply = GetActionOld("dashboard/getprojectsglobalprogress", data);
+		reply = GetAction("dashboard/getprojectsglobalprogress", data);
 		break;
 
 	case GR_PROJECT:
@@ -228,13 +189,16 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 		reply = GetActionOld("bugtracker/getprojecttags", data);
 		break;
 	case GR_PROJECT_USERS_ALL:
-		reply = GetActionOld("projects/getusertoproject", data);
+		reply = GetAction("projects/getusertoproject", data);
 		break;
 	case GR_BUG:
 		reply = GetActionOld("bugtracker/getticket", data);
 		break;
 	case GR_CALENDAR:
 		reply = GetAction("planning/getmonth", data);
+		break;
+	case GR_EVENT:
+		reply = GetAction("event/getevent", data);
 		break;
 	}
 	if (reply == nullptr)
@@ -280,6 +244,51 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
 		break;
 	case DR_REMOVE_BUGTAG:
 		reply = RESTDelete(data, "bugtracker/removetag");
+		break;
+	case DR_REMOVE_EVENT:
+		reply = DeleteAction("event/delevent", data);
+		break;
+	}
+	if (reply == nullptr)
+		throw QException();
+	_CallBack[reply] = DataConnectorCallback();
+	_CallBack[reply]._Request = requestResponseObject;
+	_CallBack[reply]._SlotFailure = slotFailure;
+	_CallBack[reply]._SlotSuccess = slotSuccess;
+	int maxInt = 1;
+	for (QMap<QNetworkReply*, int>::const_iterator it = _Request.constBegin(); it != _Request.constEnd(); ++it)
+	{
+		if (it.value() >= maxInt)
+		{
+			maxInt = it.value() + 1;
+		}
+	}
+	_Request[reply] = maxInt;
+	return maxInt;
+}
+
+int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
+{
+	QNetworkReply *reply = nullptr;
+	switch (request)
+	{
+	case PUTR_USERSETTINGS:
+		reply = PutUserSettings(data);
+		break;
+	case PUTR_PROJECTSETTINGS:
+		reply = PutProjectSettings(data);
+		break;
+	case PUTR_INVITE_USER:
+		reply = ProjectInvite(data);
+		break;
+	case PUTR_ASSIGNTAG:
+		reply = AssignTagToBug(data);
+		break;
+	case PUTR_EDIT_EVENT:
+		reply = EditEvent(data);
+		break;
+	case PUTR_SET_PARTICIPANT:
+		reply = EditEventParticipant(data);
 		break;
 	}
 	if (reply == nullptr)
@@ -730,7 +739,7 @@ QNetworkReply * API::DataConnectorOnline::PostEvent(QVector<QString>& data)
 	json["data"] = dataJson;
 
 	qDebug() << "Data : " << json;
-		 
+
 	QJsonDocument doc(json);
 	QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
 	QNetworkRequest requestSend(QUrl(URL_API + QString("event/postevent")));
@@ -758,6 +767,45 @@ QNetworkReply *API::DataConnectorOnline::EditEvent(QVector<QString>& data)
 	QJsonDocument doc(json);
 	QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
 	QNetworkRequest requestSend(QUrl(URL_API + QString("event/editevent")));
+	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+	QNetworkReply *request = _Manager->put(requestSend, *jsonba);
+	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+	return request;
+}
+
+QNetworkReply * API::DataConnectorOnline::EditEventParticipant(QVector<QString>& data)
+{
+	QJsonObject json;
+
+	QJsonObject dataObj;
+
+	QJsonArray toAdd;
+	QJsonArray toRemove;
+
+	json["data"] = dataObj;
+
+	dataObj["token"] = data[0];
+	dataObj["eventId"] = data[1];
+	bool AddMod = true;
+	for (size_t i = 2; i < data.size(); i++)
+	{
+		if (data[i] == "#")
+		{
+			AddMod = false;
+			continue;
+		}
+		if (AddMod)
+			toAdd.push_back(data[i]);
+		else
+			toRemove.push_back(data[i]);
+	}
+	dataObj["toAdd"] = toAdd;
+	dataObj["toRemove"] = toRemove;
+
+	QJsonDocument doc(json);
+	QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+	QNetworkRequest requestSend(QUrl(URL_API + QString("event/setparticipants")));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
 	QNetworkReply *request = _Manager->put(requestSend, *jsonba);
@@ -876,6 +924,20 @@ QNetworkReply *DataConnectorOnline::RESTDelete(QVector<QString> &data, QString b
 		URL += "/" + *dataIt;
 
 	QNetworkRequest requestSend(QUrl(OLD_URL_API + URL));
+	QNetworkReply *request = _Manager->deleteResource(requestSend);
+	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+	return request;
+}
+
+QNetworkReply *DataConnectorOnline::DeleteAction(QString urlIn, QVector<QString> &data)
+{
+	QString URL = urlIn;
+	QVector<QString>::iterator dataIt;
+
+	for (QString item : data)
+		URL += "/" + item;
+
+	QNetworkRequest requestSend(QUrl(URL_API + URL));
 	QNetworkReply *request = _Manager->deleteResource(requestSend);
 	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;

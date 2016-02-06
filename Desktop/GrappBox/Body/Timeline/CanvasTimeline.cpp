@@ -150,7 +150,7 @@ void CanvasTimeline::FinishedLoad()
     while (QLayoutItem *item = _MainTimelineLayout->takeAt(0))
     {
         QWidget *widget = item->widget();
-        if (widget != NULL && widget != _ContenerAddMessage && widget != _LoadMore)
+        if (widget != nullptr && widget != _ContenerAddMessage && widget != _LoadMore)
             delete widget;
         delete item;
     }

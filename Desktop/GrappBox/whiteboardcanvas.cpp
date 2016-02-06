@@ -4,11 +4,11 @@
 WhiteboardCanvas::WhiteboardCanvas(QWidget *parent) : QGraphicsScene(parent)
 {
 	_CurrentType = GT_RECT;
-	_CurrentLine = NULL;
-	_CurrentEllipse = NULL;
-	_CurrentRect = NULL;
-	_CurrentDiamond = NULL;
-	_CurrentHandWriting = NULL;
+	_CurrentLine = nullptr;
+	_CurrentEllipse = nullptr;
+	_CurrentRect = nullptr;
+	_CurrentDiamond = nullptr;
+	_CurrentHandWriting = nullptr;
 	_BrushColor = QColor(0, 0, 0);
 	_BrushWidth = 5;
 	_BackgroundColor = QColor(128, 100, 0, 255);
@@ -157,11 +157,11 @@ void WhiteboardCanvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 		_ItemStacked.append(_CurrentHandWriting);
 		//Send here to API
 	}
-	_CurrentLine = NULL;
-	_CurrentEllipse = NULL;
-	_CurrentRect = NULL;
-	_CurrentDiamond = NULL;
-	_CurrentHandWriting = NULL;
+	_CurrentLine = nullptr;
+	_CurrentEllipse = nullptr;
+	_CurrentRect = nullptr;
+	_CurrentDiamond = nullptr;
+	_CurrentHandWriting = nullptr;
 }
 
 void WhiteboardCanvas::drawBackground(QPainter *painter, const QRectF &rect)

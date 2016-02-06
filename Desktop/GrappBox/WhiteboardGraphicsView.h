@@ -13,7 +13,7 @@ class WhiteboardGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
-    WhiteboardGraphicsView(QWidget *parent = NULL);
+    WhiteboardGraphicsView(QWidget *parent = nullptr);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);

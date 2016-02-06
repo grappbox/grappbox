@@ -68,9 +68,9 @@ class CalendarEvent : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CalendarEvent(Event event, QWidget *parent = 0);
+    explicit CalendarEvent(Event *event, QWidget *parent = 0);
 
-	const Event &GetEvent() const;
+	const Event *GetEvent() const;
 
 protected:
 	void enterEvent(QEvent *event);
@@ -78,6 +78,8 @@ protected:
 	void mousePressEvent(QMouseEvent * event);
 
 signals:
+	void NeedEdit(Event *);
+	void NeedDelete(Event *);
 
 public slots :
 	void OnEdit();
@@ -85,7 +87,7 @@ public slots :
 	void OnQuit();
 
 private:
-    Event _Event;
+    Event *_Event;
 
     QHBoxLayout *_MainLayout;
 
