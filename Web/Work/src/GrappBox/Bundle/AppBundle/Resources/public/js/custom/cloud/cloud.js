@@ -24,9 +24,10 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
   $scope.newFile    = { isSecured: "", password: "" };
   $scope.safe       = { password: "", isSet: false };
 
+
   // Routine definition
   // Set scope variables with API return data (file/folder list)
-  var setDataOnSuccess  = function(response) {
+  var setDataOnSuccess = function(response) {
     $scope.data.objects = (response.data && response.data.data ? (Object.keys(response.data.data.array).length ? response.data.data.array : null) : null);
     $scope.data.isValid = true;
     $scope.data.onLoad = false;
@@ -34,7 +35,7 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
 
   // Routine definition
   // Set scope variables with load fail message (file/folder list)
-  var setDataOnFailure  = function() {
+  var setDataOnFailure = function() {
     $scope.data.objects = null;
     $scope.data.isValid = false;
     $scope.data.onLoad = false;
@@ -68,7 +69,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
   // Check if given path is located inside the "Safe" folder
   var isPathInSafeFolder = function(path) { return (path.indexOf(",Safe") == 0); };
 
-
   // Routine definition
   // Get "Safe" folder password
   var getSafePassword = function() {
@@ -91,7 +91,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     return deferred.promise;
   };
 
-
   // Routine definition
   // Store "Safe" folder password for current session
   var storeSafePassword = function() {
@@ -102,7 +101,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
       $scope.safe.isSet = true;
     }
   };
-
 
   // Routine definition
   // Remove "Safe" folder password from current session storage
@@ -154,10 +152,8 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     });
   };
 
-
   // START
   getCurrentFolderContent();
-
 
   // Single clic handler (file/folder)
   $scope.view_selectObject = function($event) {
@@ -174,7 +170,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
       $scope.selected.current.isSecured = (angular.element(document.querySelector("#selected")).attr("data-secured") === "true");
     }
   };
-
 
   // Object path format
   $scope.data.formatObjectPath = function(pathToFormat) { return ("ROOT").concat((pathToFormat).split(",").join(" / ")); };
@@ -220,7 +215,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
       function downloadFileFailure() { Notification.warning({ message: "Unable to download \"" + selectedFilename + "\". Please try again.", delay: 5000 }); });
   };
 
-
   // Double clic handler (file/folder)
   // FILE DOWNLOAD [2/3]
   var local_accessFile = function(object) {
@@ -246,7 +240,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     function safeCheckFailure() { Notification.warning({ message: "You must provide the \"Safe\" password in order to access any \"Safe\"-based file or folder. Please try again.", delay: 5000 }); });
   };
 
-
   // Double clic handler (file/folder)
   // FILE DOWNLOAD [1/3]
   // FOLDER ACCESS [1/2]
@@ -256,7 +249,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     else if (object.type === "dir")
       local_accessFolder(object);
   };
-
 
   // Double clic handler (file/folder)
   // FOLDER ACCESS [2/2]
@@ -358,7 +350,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     }),
     function objectDeletionFailure(response) { Notification.warning({ message: "Unable to delete \"" + $scope.selected.current.name + "\". Please try again.", delay: 5000 }) }
   };
-
 
   // "Delete" button handler (file/folder) [1/2]
   $scope.view_deleteObject = function() {
@@ -464,7 +455,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     function streamOpeningFailure(response) { Notification.warning({ message: "Unable to open stream for \"" + $scope.view_newFile.filename + "\". Please try again.", delay: 5000 }); });
   };
 
-
   // "Upload file" button handler [2/3]
   var local_setFileSecurity = function(isNewFileInSafeFolder) {
     var modalInstance_askIfNewFileIsProtected = "";
@@ -506,7 +496,6 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
       local_uploadFile(isNewFileInSafeFolder);
     })
   };
-
 
   // "Upload file" button handler [1/3]
   $scope.view_onNewFile = function() {
