@@ -6,10 +6,10 @@
 
 /**
 * Controller definition
-* APP notification page content
+* APP notifications page content
 *
 */
-app.controller('notificationController', ['$scope', function($scope) {
+app.controller('notificationsController', ['$scope', function($scope) {
 	$scope.alertList = [];
 	$scope.alertList.push({
 		type: 'warning',

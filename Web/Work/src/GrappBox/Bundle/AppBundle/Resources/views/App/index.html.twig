@@ -49,7 +49,7 @@
 		'@AppBundle/Resources/public/js/custom/cloud/cloud.js'
 		'@AppBundle/Resources/public/js/custom/cloud/cloud-list.js'
 		'@AppBundle/Resources/public/js/custom/dashboard/dashboard.js'
-		'@AppBundle/Resources/public/js/custom/notification/notification.js'
+		'@AppBundle/Resources/public/js/custom/notifications/notifications.js'
 		'@AppBundle/Resources/public/js/custom/profile/profile.js'
 		'@AppBundle/Resources/public/js/custom/project/project.js'
 		'@AppBundle/Resources/public/js/custom/project/project-list.js'
@@ -76,7 +76,7 @@
 			<div id="sidebar-wrapper">
 				<ul class="sidebar-nav">
 					<li class="sidebar-brand"><a href="./" title="Return to GrappBox dashboard">GrappBox</a></li>
-					<li><a href="notification" title="See all your notifications" class="data-ng-class:{ 'active' : isPageActive('/notifications') };">Notifications</a></li>
+					<li><a href="notifications" title="See all your notifications" class="data-ng-class:{ 'active' : isPageActive('/notifications') };">Notifications</a></li>
 					<li><a href="./" title="Go to your dashboard" class="data-ng-class:{ 'active' : isPageActive('/') };">Dashboard</a></li>
 					<li><a href="project" title="Get an overview of all your currents projects" class="data-ng-class:{ 'active' : isPageActive('/project') };">Projects</a></li>
 					<li><a href="cloud" title="Access your online files and folders" class="data-ng-class:{ 'active' : isPageActive('/cloud') };">Cloud</a></li>
@@ -96,7 +96,7 @@
 				<div class="page-header">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="app-page-title" data-ng-cloak>{[{ title }]}</div>
+							<div class="app-page-title" data-ng-cloak>{[{ title ? title : 'Error' }]}</div>
 						</div>
 					</div>
 				</div>

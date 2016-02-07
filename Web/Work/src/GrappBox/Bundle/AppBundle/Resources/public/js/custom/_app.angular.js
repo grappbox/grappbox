@@ -95,8 +95,10 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", function($ro
 
   // On route change (success)
   $rootScope.$on("$routeChangeSuccess", function(event, current, previous) {
-    $rootScope.title = current.$$route.title;
     $rootScope.onLoad = false;
+
+    if (current.$$route)
+      $rootScope.title = current.$$route.title;
   });
 
   // On route change (error)

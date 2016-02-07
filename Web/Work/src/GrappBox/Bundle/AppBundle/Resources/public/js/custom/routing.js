@@ -56,10 +56,10 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		resolve: { factory: isCloudAccessible }
 	})
 	// Notifications-related pages
-	.when("/notification", {
+	.when("/notifications", {
 		title: "Notifications",
-		templateUrl : "../resources/pages/notification.html",
-		controller  : "notificationController",
+		templateUrl : "../resources/pages/notifications.html",
+		controller  : "notificationsController",
 		caseInsensitiveMatch : true
 	})
 	// User-related pages
