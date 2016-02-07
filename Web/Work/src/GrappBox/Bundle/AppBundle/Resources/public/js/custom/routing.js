@@ -104,7 +104,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		controller  : "whiteboardListController",
 		caseInsensitiveMatch : true
 	})
-	.when("/whiteboard/:id", {
+	.when("/whiteboard/:project_id/:id", {
 		title: "Whiteboard",
 		templateUrl : "../resources/pages/whiteboard.html",
 		controller  : "whiteboardController",
