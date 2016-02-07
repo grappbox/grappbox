@@ -16,16 +16,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="section-content list">
             <div id="all-cloud-objects">
               <div class="row data-actions">
-                <div class="col-md-1 object-action">
+                <div class="col-md-1">
                   <a href="" ng-click="view_accessParentObject()" class="{[{ button.parent ? '' : 'disabled' }]}"><i class="fa fa-arrow-left"></i>Parent</a>
                 </div>
-                <div class="col-md-1 object-action">
+                <div class="col-md-1">
                   <a href="" ng-click="view_deleteObject()" class="{[{ button.delete ? '' : 'disabled' }]}"><i class="fa fa-times"></i>Delete [...]</a>
                 </div>
-                <div class="col-md-1 object-action">
+                <div class="col-md-1">
                   <a href="" ng-click="view_onNewFolder()"><i class="fa fa-plus"></i>Add folder</a>
                 </div>
-                <div class="col-md-1 object-action" id="view_newFileWrapper">
+                <div class="col-md-1" id="view_newFileWrapper">
                   <i class="fa fa-cloud-upload"></i>Upload file<input id="view_newFileInput" type="file" data-ng-model="view_newFile" ng-change="view_onNewFile()" base-sixty-four-input>
                 </div>
               </div>

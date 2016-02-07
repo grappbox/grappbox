@@ -28,7 +28,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="col-lg-12">
             <!-- grappbox.data : whiteboard list (per project) -->
             <div class="section-heading">
-              <h3>Project: "{[{ project.name }]}"</h3>
+              <h3>"{[{ project.name }]}"</h3>
             </div>
             <div class="section-content tiles">
               <div id="all-whiteboards-data">
@@ -40,10 +40,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="data-wrapper" ng-repeat="whiteboard in data.projectsWhiteboards_content[project.name]">
                       <ul class="data-content each-available-whiteboard btn-float">
                         <li>
-                          <span class="title">Title: "{[{ whiteboard.name }]}"</span>
+                          <span class="title">"{[{ whiteboard.name }]}"</span>
                         </li>
                         <li>
-                          <span><i class="fa fa-list"></i>Project: "{[{ project.name }]}" (project #{[{ project.id }]})</span>
+                          <span><i class="fa fa-list"></i>From "{[{ project.name }]}" (project #{[{ project.id }]})</span>
                         </li>
                         <li>
                           <span><i class="fa fa-clock-o"></i>Created: {[{ formatObjectDate(whiteboard.createdAt.date) }]}</span>
