@@ -2,7 +2,7 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="dashboard-view" ng-controller="dashboardController">
+<div class="view view-content" id="dashboard-view" data-ng-controller="dashboardController">
 
   <section class="app-section" id="dashboard-help">
     <div class="container app-container">
@@ -29,7 +29,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
           <div class="section-content tiles">
             <div id="team-occupation-data">
-              <div ng-if="teamOccupationList_isValid && teamOccupationList" panhandler>
+              <div data-ng-if="teamOccupationList_isValid && teamOccupationList" panhandler>
                 <div class="data-wrapper" ng-repeat="object in teamOccupationList">
                   <ul class="data-content each-member-data btn-float">
                     <li class="team-member-picture">
@@ -44,12 +44,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div ng-if="teamOccupationList_isValid && !teamOccupationList">
+              <div data-ng-if="teamOccupationList_isValid && !teamOccupationList">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-frown-o"></i>You don't have any collaborator.</p>
                 </div>
               </div>
-              <div ng-if="!teamOccupationList_isValid">
+              <div data-ng-if="!teamOccupationList_isValid">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                 </div>
@@ -72,7 +72,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
           <div class="section-content tiles">
             <div id="next-meetings-data">
-              <div ng-if="nextMeetingsList_isValid && nextMeetingsList" panhandler>
+              <div data-ng-if="nextMeetingsList_isValid && nextMeetingsList" panhandler>
                 <div class="data-wrapper" ng-repeat="meeting in nextMeetingsList">
                   <ul class="data-content each-meeting-data btn-float">
                     <li class="meeting-title">{[{ meeting.event_title }]}</li>
@@ -84,12 +84,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div ng-if="nextMeetingsList_isValid && !nextMeetingsList">
+              <div data-ng-if="nextMeetingsList_isValid && !nextMeetingsList">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-frown-o"></i>You don't have any meeting.</p>
                 </div>
               </div>
-              <div ng-if="!nextMeetingsList_isValid">
+              <div data-ng-if="!nextMeetingsList_isValid">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                 </div>
@@ -112,7 +112,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
           <div class="section-content tiles">
             <div id="global-progress-data">
-              <div ng-if="globalProgressList_isValid && globalProgressList" panhandler>
+              <div data-ng-if="globalProgressList_isValid && globalProgressList" panhandler>
                 <div class="data-wrapper" ng-repeat="progress in globalProgressList">
                   <ul class="data-content each-progress-data btn-float">
                     <li class="project-picture" ng-show="progress.project_logo === null">
@@ -141,12 +141,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div ng-if="globalProgressList_isValid && !globalProgressList">
+              <div data-ng-if="globalProgressList_isValid && !globalProgressList">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-frown-o"></i>You don't have any project.</p>
                 </div>
               </div>
-              <div ng-if="!globalProgressList_isValid">
+              <div data-ng-if="!globalProgressList_isValid">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                 </div>

@@ -2,7 +2,7 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="cloud-list-view" ng-controller="cloudListController">
+<div class="view view-content" id="cloud-list-view" data-ng-controller="cloudListController">
 
   <section class="app-section" id="cloud-list">
     <div class="container app-container">
@@ -18,7 +18,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
           <div class="section-content tiles" ng-show="!data.onLoad">
             <div id="all-clouds-data">
-              <div ng-if="data.isValid && data.userProjects" panhandler>
+              <div data-ng-if="data.isValid && data.userProjects" panhandler>
                 <div class="data-wrapper" ng-repeat="userProject in data.userProjects">
                   <ul class="data-content each-project-data btn-float">
                     <li class="project-picture" ng-show="userProject.logo === null">
@@ -45,12 +45,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div ng-if="data.isValid && !data.userProjects">
+              <div data-ng-if="data.isValid && !data.userProjects">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-drown-o"></i>You don't have any project.</p>
                 </div>
               </div>
-              <div ng-if="!data.isValid">
+              <div data-ng-if="!data.isValid">
                 <div class="data-wrapper error">
                   <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                 </div>
