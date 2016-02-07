@@ -11,7 +11,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <!-- grappbox.data : whiteboard information -->
           <div class="section-heading">
             <h2>Choose a project whiteboard</h2>
-            <p>Scroll down to see all your projects. On each, hold to navigate between all your collaborative whiteboards (sorted by name).<br>For each whiteboard card, you'll find useful information such as creation date and time or the project which it's associated to.</p>
+            <p>Scroll down to see all your projects. On each, hold to navigate between all your collaborative whiteboards (sorted by name).
+              <br>For each whiteboard card, you'll find useful information such as creation date and time or the project which it's associated to.</p>
           </div>
         </div>
       </div>
@@ -22,7 +23,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="container">
       <div class="row">
         <div ng-show="data.onLoad">
-          <div class="loading-content section"><div></div></div>
+          <div class="loading-content section">
+            <div></div>
+          </div>
         </div>
         <div ng-repeat="project in data.projects" class="each-object" ng-show="!data.onLoad">
           <div class="col-lg-12">
@@ -33,7 +36,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="section-content tiles">
               <div id="all-whiteboards-data">
                 <div ng-show="data.projectsWhiteboards_onLoad[project.name]">
-                  <div class="loading-content section"><div></div></div>
+                  <div class="loading-content section">
+                    <div></div>
+                  </div>
                 </div>
                 <div ng-show="!data.projectsWhiteboards_onLoad[project.name]">
                   <div ng-if="data.projectsWhiteboards_message[project.name] == '_valid'" panhandler>
@@ -78,5 +83,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
+
+</div>
