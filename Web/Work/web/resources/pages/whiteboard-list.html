@@ -2,7 +2,7 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="whiteboard-list-view" ng-controller="whiteboardListController">
+<div class="view view-content" id="whiteboard-list-view" data-ng-controller="whiteboardListController">
 
   <section class="app-section" id="whiteboard-help">
     <div class="container app-container">
@@ -22,12 +22,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <section class="app-section" id="whiteboard-list">
     <div class="container">
       <div class="row">
-        <div ng-show="data.onLoad">
+        <div data-ng-if="data.onLoad">
           <div class="loading-content section">
             <div></div>
           </div>
         </div>
-        <div ng-repeat="project in data.projects" class="each-object" ng-show="!data.onLoad">
+        <div data-ng-repeat="project in data.projects" class="each-object" data-ng-if="!data.onLoad">
           <div class="col-lg-12">
             <!-- grappbox.data : whiteboard list (per project) -->
             <div class="section-heading">
@@ -35,14 +35,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
             <div class="section-content tiles">
               <div id="all-whiteboards-data">
-                <div ng-show="data.projectsWhiteboards_onLoad[project.name]">
+                <div data-ng-if="data.projectsWhiteboards_onLoad[project.name]">
                   <div class="loading-content section">
                     <div></div>
                   </div>
                 </div>
-                <div ng-show="!data.projectsWhiteboards_onLoad[project.name]">
-                  <div ng-if="data.projectsWhiteboards_message[project.name] == '_valid'" panhandler>
-                    <div class="data-wrapper" ng-repeat="whiteboard in data.projectsWhiteboards_content[project.name]">
+                <div data-ng-if="!data.projectsWhiteboards_onLoad[project.name]">
+                  <div data-ng-if="data.projectsWhiteboards_message[project.name] == '_valid'" panhandler>
+                    <div class="data-wrapper" data-ng-repeat="whiteboard in data.projectsWhiteboards_content[project.name]">
                       <ul class="data-content each-available-whiteboard btn-float">
                         <li>
                           <span class="title">"{[{ whiteboard.name }]}"</span>
@@ -62,17 +62,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       </ul>
                     </div>
                   </div>
-                  <div ng-if="data.projectsWhiteboards_message[project.name] == '_empty'">
+                  <div data-ng-if="data.projectsWhiteboards_message[project.name] == '_empty'">
                     <div class="data-wrapper error">
                       <p><i class="fa fa-frown-o"></i>There is no whiteboard for this project.</p>
                     </div>
                   </div>
-                  <div ng-if="data.projectsWhiteboards_message[project.name] == '_denied'">
+                  <div data-ng-if="data.projectsWhiteboards_message[project.name] == '_denied'">
                     <div class="data-wrapper error">
                       <p><i class="fa fa-times"></i>You don't have access to the whiteboards of this project.</p>
                     </div>
                   </div>
-                  <div ng-if="data.projectsWhiteboards_message[project.name] == '_invalid'">
+                  <div data-ng-if="data.projectsWhiteboards_message[project.name] == '_invalid'">
                     <div class="data-wrapper error">
                       <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                     </div>

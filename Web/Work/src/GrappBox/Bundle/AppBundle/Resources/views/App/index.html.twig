@@ -56,7 +56,6 @@
 		'@AppBundle/Resources/public/js/custom/timeline/timeline.js'
 		'@AppBundle/Resources/public/js/custom/timeline/timeline-list.js'
 		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard.js'
-		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard-factory.js'
 		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard-list.js'
 		filter='?uglifyjs2' output='resources/js/app-angular.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
@@ -71,20 +70,20 @@
 		<![endif]-->
 	</head>
 
-	<body ng-controller="grappboxController">
+	<body data-ng-controller="grappboxController">
 		<div id="app-wrapper">
 			<!-- Navigation content -->
 			<div id="sidebar-wrapper">
 				<ul class="sidebar-nav">
 					<li class="sidebar-brand"><a href="./" title="Return to GrappBox dashboard">GrappBox</a></li>
-					<li><a href="notification" title="See all your notifications" class="ng-class:{ 'active' : isPageActive('/notifications') };">Notifications</a></li>
-					<li><a href="./" title="Go to your dashboard" class="ng-class:{ 'active' : isPageActive('/') };">Dashboard</a></li>
-					<li><a href="project" title="Get an overview of all your currents projects" class="ng-class:{ 'active' : isPageActive('/project') };">Projects</a></li>
-					<li><a href="cloud" title="Access your online files and folders" class="ng-class:{ 'active' : isPageActive('/cloud') };">Cloud</a></li>
-					<li><a href="timeline" title="Go to your projects timelines" class="ng-class:{ 'active' : isPageActive('/timeline') };">Timeline</a></li>
-					<li><a href="bugtracker" title="Go to the bugtracker section" class="ng-class:{ 'active' : isPageActive('/bugtracker') };">Bugtracker</a></li>
-					<li><a href="whiteboard" title="Use your projects collaborative whiteboards" class="ng-class:{ 'active' : isPageActive('/whiteboard') };">Whiteboard</a></li>
-					<li><a href="profile" title="View and edit your profile information" class="ng-class:{ 'active' : isPageActive('/profile') };">Profile</a></li>
+					<li><a href="notification" title="See all your notifications" class="data-ng-class:{ 'active' : isPageActive('/notifications') };">Notifications</a></li>
+					<li><a href="./" title="Go to your dashboard" class="data-ng-class:{ 'active' : isPageActive('/') };">Dashboard</a></li>
+					<li><a href="project" title="Get an overview of all your currents projects" class="data-ng-class:{ 'active' : isPageActive('/project') };">Projects</a></li>
+					<li><a href="cloud" title="Access your online files and folders" class="data-ng-class:{ 'active' : isPageActive('/cloud') };">Cloud</a></li>
+					<li><a href="timeline" title="Go to your projects timelines" class="data-ng-class:{ 'active' : isPageActive('/timeline') };">Timeline</a></li>
+					<li><a href="bugtracker" title="Go to the bugtracker section" class="data-ng-class:{ 'active' : isPageActive('/bugtracker') };">Bugtracker</a></li>
+					<li><a href="whiteboard" title="Use your projects collaborative whiteboards" class="data-ng-class:{ 'active' : isPageActive('/whiteboard') };">Whiteboard</a></li>
+					<li><a href="profile" title="View and edit your profile information" class="data-ng-class:{ 'active' : isPageActive('/profile') };">Profile</a></li>
 					<li><a href="logout" title="Sign out of GrappBox">Logout</a></li>
 				</ul>
 				<div class="legal-nav">
@@ -97,7 +96,7 @@
 				<div class="page-header">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="app-page-title" ng-cloak>{[{ title }]}</div>
+							<div class="app-page-title" data-ng-cloak>{[{ title }]}</div>
 						</div>
 					</div>
 				</div>
@@ -107,8 +106,8 @@
 						<div class="col-md-12">
 							<div class="app-page">
 								<!-- Dynamic view -->
-								<div class="loading-content master" ng-show="onLoad"><div></div></div>
-								<div class="view-content" ng-view ng-show="!onLoad"></div>
+								<div class="loading-content master" data-ng-if="onLoad"><div></div></div>
+								<div class="view-content" data-ng-view data-ng-if="!onLoad"></div>
 							</div>
 						</div>
 					</div>

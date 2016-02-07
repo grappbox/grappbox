@@ -2,7 +2,7 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="whiteboard-content-view" ng-controller="whiteboardController" data-ng-init="initializeWhiteboardControls()">
+<div class="view view-content" id="whiteboard-content-view" data-ng-controller="whiteboardController" data-ng-init="setWhiteboard()">
 
   <section class="app-section" id="whiteboard-content">
     <div class="container">
@@ -10,37 +10,37 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div class="col-lg-12">
           <!-- grappbox.data : whiteboard content -->
           <div class="section-heading">
-            <h2>Whiteboard #{[{ whiteboardID }]}</h2>
+            <h2>Whiteboard #{[{ id.whiteboard }]}</h2>
             <p>Use the toolbox below the whiteboard to draw and share your ideas.<br>If you or one of your team members have trouble connecting to this whiteboard, please check your access rights using the project settings page.</p>
           </div>
           <div class="section-content">
             <div id="all-whiteboard-objects">
               <div class="row data-actions">
                 <div class="col-md-3">
-                  <label for="tool-pencil" class="right-offset">
-                    <input type="radio" data-ng-model="whiteboardTools" id="tool-pencil" value="pencil">
+                  <label for="tool-pencil">
+                    <input type="radio" data-ng-model="selectedTool" id="tool-pencil" value="pencil">
                     <span><i class="fa fa-pencil"></i>Pencil</span>
                   </label>
-                  <label for="tool-line" class="right-offset">
-                    <input type="radio" data-ng-model="whiteboardTools" id="tool-line" value="line">
+                  <label for="tool-line">
+                    <input type="radio" data-ng-model="selectedTool" id="tool-line" value="line">
                     <span><i class="fa fa-minus"></i>Line</span>
                   </label>
-                  <label for="tool-rectangle" class="right-offset">
-                    <input type="radio" data-ng-model="whiteboardTools" id="tool-rectangle" value="rectangle">
+                  <label for="tool-rectangle">
+                    <input type="radio" data-ng-model="selectedTool" id="tool-rectangle" value="rectangle">
                     <span><i class="fa fa-square-o"></i>Rectangle</span>
                   </label>
                   <label for="tool-circle">
-                    <input type="radio" data-ng-model="whiteboardTools" id="tool-circle" value="circle">
+                    <input type="radio" data-ng-model="selectedTool" id="tool-circle" value="circle">
                     <span><i class="fa fa-circle-o"></i>Circle</span>
                   </label>
                 </div>
                 <div class="col-md-3">
-                  <label for="tool-text" class="right-offset">
-                    <input type="radio" data-ng-model="whiteboardTools" id="tool-text" value="text">
+                  <label for="tool-text">
+                    <input type="radio" data-ng-model="selectedTool" id="tool-text" value="text">
                     <span><i class="fa fa-font"></i>Text</span>
                   </label>
-                  <input type="text" class="right-offset" data-ng-model="text.textValue">
-                  <label for="text-italic" class="left-offset">
+                  <input type="text" data-ng-model="text.textValue">
+                  <label for="text-italic">
                     <input type="checkbox" id="text-italic" data-ng-model="text.isItalicEnabled">
                     <span><i class="fa fa-italic"></i>Italic</span>
                   </label>
@@ -53,18 +53,18 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <label for="draw-color" class="no-select">
                     <span><i class="fa fa-paint-brush"></i>Draw color</span>
                   </label>
-                  <select id="draw-color" ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" ng-model="color.selectedDrawColor"></select>
+                  <select id="draw-color" data-ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" data-ng-model="color.selectedDrawColor"></select>
                   <label for="fill-color" class="no-select">
                     <span><i class="fa fa-tint"></i>Fill color</span>
                   </label>
-                  <select id="fill-color" ng-options="fillColor.name  for fillColor in color.availableColors track by fillColor.value" ng-model="color.selectedFillColor"></select>
+                  <select id="fill-color" data-ng-options="fillColor.name  for fillColor in color.availableColors track by fillColor.value" data-ng-model="color.selectedFillColor"></select>
                   <label for="line-width" class="no-select">
                     <span><i class="fa fa-expand"></i>Line width</span>
                   </label>
-                  <select id="line-width" ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" ng-model="line.selectedLineWidth"></select>
+                  <select id="line-width" data-ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" data-ng-model="line.selectedLineWidth"></select>
                 </div>
                 <div class="col-md-1">
-                  <a href="" ng-click="undoLastCanvasAction()"><i class="fa fa-undo"></i>Undo</a>
+                  <a href="" data-ng-click="undoLastCanvasAction()"><i class="fa fa-undo"></i>Undo</a>
                 </div>
               </div>
               <div class="data-content">
