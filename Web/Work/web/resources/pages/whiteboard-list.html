@@ -42,10 +42,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <div data-ng-if="!data.projectsWhiteboards_onLoad[project.name]">
                   <div data-ng-if="data.projectsWhiteboards_message[project.name] == '_valid'" panhandler>
-                    <div class="data-wrapper" data-ng-repeat="whiteboard in data.projectsWhiteboards_content[project.name]">
+                    <div class="data-wrapper" data-ng-repeat="whiteboard in data.projectsWhiteboards_content[project.name]" data-ng-if="!whiteboard.deletedAt">
                       <ul class="data-content each-available-whiteboard btn-float">
-                        <li>
+                        <li class="data-content-header">
                           <span class="title">"{[{ whiteboard.name }]}"</span>
+                          <a href="" title="Delete this whiteboard" data-id="{[{ whiteboard.id }]}" data-name="{[{ whiteboard.name }]}" data-project-name="{[{ project.name }]}" data-project-id="{[{ project.id }]}" data-ng-click="view_deleteWhiteboard($event)" class="standalone"><i class="fa fa-times"></i></a>
                         </li>
                         <li>
                           <span><i class="fa fa-list"></i>From "{[{ project.name }]}" (project #{[{ project.id }]})</span>
@@ -85,5 +86,36 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>
     </div>
   </section>
+
+  <div>
+    <script type="text/ng-template" id="view_createWhiteboard.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Whiteboard creation</h3>
+      </div>
+      <div class="modal-body">
+        <p>Please enter a name for your new whiteboard.</p>
+        <input type="text" placeholder="Whiteboard name..." id="view_newWhiteboardName" autofocus>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-ng-click="view_createWhiteboardSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" data-ng-click="view_createWhiteboardFailure()"><i class="fa fa-ban"></i>Cancel</button>
+      </div>
+    </script>
+  </div>
+
+  <div>
+    <script type="text/ng-template" id="view_deleteWhiteboard.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Whiteboard deletion</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this whiteboard?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-ng-click="view_deleteWhiteboardActionConfirmed()"><i class="fa fa-check"></i>Yes</button>
+        <button type="button" data-ng-click="view_deleteWhiteboardActionCancelled()"><i class="fa fa-times"></i>No</button>
+      </div>
+    </script>
+  </div>
 
 </div>

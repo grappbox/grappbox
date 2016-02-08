@@ -9,8 +9,7 @@
 * APP and main controller definition
 *
 */
-var app = angular.module('grappbox', ['ngRoute', 'ngCookies', 'ngAnimate', 'ui.bootstrap', 'panhandler', 'ui-notification', 'naif.base64', 'ngTagsInput']);
-
+var app = angular.module("grappbox", ["ngRoute", "ngCookies", "ngAnimate", "ui.bootstrap", "panhandler", "ui-notification", "naif.base64", "ngTagsInput"]);
 
 // TWIG template conflict fix
 app.config(["$interpolateProvider", function($interpolateProvider) {
@@ -59,12 +58,12 @@ app.controller("grappboxController", ["$scope", "$location", function($scope, $l
 }]);
 
 
+
 /**
 * ROOTSCOPE definition
 * "layout, loading, apiVersion, apiBaseURL"
 *
 */
-
 app.run(["$rootScope", "$location", "$cookies", "$http", "$window", function($rootScope, $location, $cookies, $http, $window) {
 
   // ROOTSCOPE variables
