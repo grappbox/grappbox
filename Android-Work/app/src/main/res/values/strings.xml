@@ -167,6 +167,7 @@
     <string name="cloudexplorer_import_pending_text">Prepare the system for uploading</string>
     <string name="cloudexplorer_import">We are importing your file, please wait</string>
 
+
     <string name="event_header">Event</string>
     <string name="event_title">Title</string>
     <string name="event_title_hint">Title event</string>
@@ -178,4 +179,55 @@
     <string name="event_end_date_hint">Event end date</string>
     <string name="event_button_update">Update event information</string>
     <string name="event_button_add_user">Add user</string>
+
+    <string name="no_proj_selected_str">No project selected</string>
+    <string name="str_project_settings">Manage project settings</string>
+    <string name="str_modif_project_settings">Modify project settings</string>
+    <string name="title_activity_project_settings">Project Settings</string>
+    <string name="str_project_settings_title">Project Settings</string>
+    <string name="str_project_settings_footer">" Settings"</string>
+    <string name="str_placeholder_project_name">Enter project name here...</string>
+    <string name="str_project_name">Project Name</string>
+    <string name="str_project_desc">Project description</string>
+    <string name="str_placeholder_project_desc">Enter your project description here...</string>
+    <string name="str_placeholder_project_phone">Enter the project contact phone here...</string>
+    <string name="str_project_phone">Project contact phone</string>
+    <string name="str_project_company_name">Enter the company name here...</string>
+    <string name="str_company_name">Company name</string>
+    <string name="str_placeholder_project_contact_mail">Enter the project\'s contact mail</string>
+    <string name="str_project_contact_mail">Contact E-Mail address</string>
+    <string name="str_placeholder_facebook_url">Enter the project\'s facebook page URL here...</string>
+    <string name="str_placeholder_twitter_url">Enter the project\'s twitter profile url here...</string>
+    <string name="str_project_facebook_url">Facebook page</string>
+    <string name="str_project_twitter_url">Twitter page</string>
+    <string name="str_project_logo">Change the project\'s logo</string>
+    <string name="str_project_basic_info">Basic informations</string>
+    <string name="str_project_safe_password">Change your project\'s safe password</string>
+    <string name="str_password_confirm_label">Confirm password:</string>
+    <string name="str_new_password_label">New password:</string>
+    <string name="str_retreive_explaination">You can retreive the project during 7 days after deletion</string>
+    <string name="str_project_delete">Delete the project</string>
+    <string name="str_retreive_project">Retreive the project</string>
+    <string name="clipboard_copied">Copied to clipboard!</string>
+    <string name="str_customer_name_label">Customer name :</string>
+    <string name="str_customer_access_creation_title">Create a customer access</string>
+    <string name="str_error_customer_access_empty">You have to name your customer access</string>
+    <string name="str_loading_text">Loading...</string>
+    <string name="str_team_timeline_title">Team timeline</string>
+    <string name="str_customer_timeline_title">Customer timeline</string>
+    <string name="str_gantt_title">GANTT</string>
+    <string name="str_cloud_title">Cloud</string>
+    <string name="str_task_title">Task</string>
+    <string name="str_event_title">Event</string>
+    <string name="str_bugtracker_title">Bug Tracker</string>
+    <string name="str_whiteboard_title">Whiteboard</string>
+    <string name="str_add_team_member">Add a team member</string>
+    <string name="add_team_member_placeholder">Enter team member email here...</string>
+    <string name="str_create_customer_access">Create the customer access</string>
+    <string name="str_error_remove_project_creator">You can\'t remove the project\'s creator</string>
+    <string name="str_loading">Loading...</string>
+    <string name="str_role_create_placeholder">Enter the role name here...</string>
+    <string name="str_role_create_title">Role creation</string>
+    <string name="str_error_empty">You have to fill this field</string>
+
 </resources>
