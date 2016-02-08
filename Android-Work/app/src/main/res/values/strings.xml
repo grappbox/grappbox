@@ -166,4 +166,16 @@
     <string name="cloud_file_import_notification">File importation in progress</string>
     <string name="cloudexplorer_import_pending_text">Prepare the system for uploading</string>
     <string name="cloudexplorer_import">We are importing your file, please wait</string>
+
+    <string name="event_header">Event</string>
+    <string name="event_title">Title</string>
+    <string name="event_title_hint">Title event</string>
+    <string name="event_description">Description</string>
+    <string name="event_description_hint">Event description</string>
+    <string name="event_begin_date">Begin date:</string>
+    <string name="event_begin_date_hint">Event begin date</string>
+    <string name="event_end_date">End date:</string>
+    <string name="event_end_date_hint">Event end date</string>
+    <string name="event_button_update">Update event information</string>
+    <string name="event_button_add_user">Add user</string>
 </resources>

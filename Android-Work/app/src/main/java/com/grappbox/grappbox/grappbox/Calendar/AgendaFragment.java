@@ -51,23 +51,18 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
 
         ButterKnife.bind(this.getActivity());
 
-
-        _minDate.add(Calendar.YEAR, -3);
+        _minDate.add(Calendar.YEAR, -1);
         _minDate.set(Calendar.DAY_OF_MONTH, 1);
         _maxDate.add(Calendar.YEAR, 3);
 
-        //List<CalendarEvent> eventList = new ArrayList<>();
-
         _AgendaCalendarView = (AgendaCalendarView)_rootView.findViewById(R.id.agenda_calendar_view);
-/*        _AgendaCalendarView.init(eventList, _minDate, _maxDate, Locale.getDefault(), this);
-        _AgendaCalendarView.addEventRenderer(new DrawableEventRenderer());*/
 
         FloatingActionButton fab = (FloatingActionButton) _rootView.findViewById(R.id.add_event_float_button);
         fab.setOnClickListener((View v)-> {
-            DialogFragment addEvent = new AddEventDialogFragment();
-            addEvent.show(getActivity().getFragmentManager(), "AddEvent");
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
+            Fragment eventDetail = new AddEventFragment();
+            android.support.v4.app.FragmentManager fragManager = getFragmentManager();
+            android.support.v4.app.FragmentTransaction ft = fragManager.beginTransaction();
+            ft.replace(R.id.content_frame, eventDetail).commit();
         });
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -129,34 +124,6 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
         }
         _AgendaCalendarView.init(calendarEventList, _minDate, _maxDate, Locale.getDefault(), this);
         _AgendaCalendarView.addEventRenderer(new DrawableEventRenderer());
-    }
-
-    private void mockList(List<CalendarEvent> eventList) {
-        Calendar startTime1 = Calendar.getInstance();
-        startTime1.add(Calendar.DAY_OF_YEAR, 1);
-        Calendar endTime1 = Calendar.getInstance();
-        endTime1.add(Calendar.DAY_OF_YEAR, 1);
-        BaseCalendarEvent event1 = new BaseCalendarEvent("Meeting Client 16h00 - 19h00", "A wonderful journey!", "Bordeaux",
-                ContextCompat.getColor(this.getContext(), R.color.Brown), startTime1, endTime1, false);
-        eventList.add(event1);
-
-        Calendar startTime2 = Calendar.getInstance();
-        startTime2.add(Calendar.DAY_OF_YEAR, 1);
-        Calendar endTime2 = Calendar.getInstance();
-        endTime2.add(Calendar.DAY_OF_YEAR, 3);
-        BaseCalendarEvent event2 = new BaseCalendarEvent("Visit to Paris", "A beautiful small town", "Paris",
-                ContextCompat.getColor(this.getContext(), R.color.Light_Green), startTime2, endTime2, true);
-        eventList.add(event2);
-
-        Calendar startTime3 = Calendar.getInstance();
-        Calendar endTime3 = Calendar.getInstance();
-        startTime3.set(Calendar.HOUR_OF_DAY, 14);
-        startTime3.set(Calendar.MINUTE, 0);
-        endTime3.set(Calendar.HOUR_OF_DAY, 15);
-        endTime3.set(Calendar.MINUTE, 0);
-        DrawableCalendarEvent event3 = new DrawableCalendarEvent("Meeting 15h00 - 17h00", "", "Bordeaux",
-                ContextCompat.getColor(this.getContext(), R.color.Blue_Grey), startTime3, endTime3, false, R.mipmap.icon_launcher);
-        eventList.add(event3);
     }
 
     public class APIRequestCalendarEvent extends AsyncTask<String, Void, List<ContentValues>> {

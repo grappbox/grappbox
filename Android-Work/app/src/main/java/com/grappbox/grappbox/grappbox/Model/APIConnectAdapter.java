@@ -277,9 +277,8 @@ public class APIConnectAdapter  {
     {
         List<ContentValues> listResult = new Vector<ContentValues>();
 
-
         JSONObject forecastJSON = new JSONObject(resultAPI).getJSONObject("data");
-        JSONArray arrayJSON = forecastJSON.getJSONArray("array");
+        JSONArray arrayJSON = forecastJSON.getJSONObject("array").getJSONArray("events");
         Log.v("JSON ARRAY :", arrayJSON.toString());
         for (int i = 0; i < arrayJSON.length(); ++i)
         {
@@ -297,6 +296,8 @@ public class APIConnectAdapter  {
         }
         return listResult;
     }
+
+
 
     public void printContentValues(ContentValues values)
     {
