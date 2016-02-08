@@ -11,6 +11,8 @@
 */
 app.controller("whiteboardListController", ["$scope", "$rootScope", "$http", "$cookies", "$uibModal", "Notification", function($scope, $rootScope, $http, $cookies, $uibModal, Notification) {
 
+  /* ==================== INITIALIZATION ==================== */
+
   var context = "";
 
   // Scope variables initialization
@@ -66,59 +68,115 @@ app.controller("whiteboardListController", ["$scope", "$rootScope", "$http", "$c
     $scope.data.onLoad = false;
   });
 
+  // Routine definition
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {
     return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
+  };
+
+  // Routine definition
+  // Refresh whiteboard list for given project
+  var refreshProjectWhiteboardList = function(projectID, projectName) {
+    $scope.data.projectsWhiteboards_onLoad[projectName] = true;
+    $http.get($rootScope.apiBaseURL + "/whiteboard/list/" + $cookies.get("USERTOKEN") + "/" + projectID)
+      .then(function projectWhiteboardsReceived(response) {
+        $scope.data.projectsWhiteboards_onLoad[projectName] = false;
+        $scope.data.projectsWhiteboards_content[projectName] = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
+        $scope.data.projectsWhiteboards_message[projectName] = (response.data.info && response.data.info.return_code == "1.10.1" ? "_valid" : "_empty");
+      },
+      function projectWhiteboardsNotReceived(response) {
+        $scope.data.projectsWhiteboards_onLoad[projectName] = false;
+        $scope.data.projectsWhiteboards_content[projectName] = null;
+        $scope.data.projectsWhiteboards_message[projectName] = "_invalid";
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "10.1.3":
+            $rootScope.onUserTokenError();
+            break;
+
+            case "10.1.9":
+            $scope.data.projectsWhiteboards_message[projectName] = "_denied";
+            break;
+
+            default:
+            $scope.data.projectsWhiteboards_message[projectName] = "_invalid";
+            break;
+          }
+      });
+  };  
+
+
+
+  /* ==================== ADD OBJECT (WHITEBOARD) ==================== */
+
+  // "Add" button handler (whiteboard)
+  $scope.view_addWhiteboard = function($event) {
+    var modalInstance_askForFolderName = "";
+    var projectID = "";
+    var projectName = "";
+
+    projectID = angular.element($event.currentTarget).attr("data-project-id");    
+    projectName = angular.element($event.currentTarget).attr("data-project-name");
+    modalInstance_askForFolderName = $uibModal.open({ animation: true, templateUrl: "view_createWhiteboard.html", controller: "view_createWhiteboard" });
+    modalInstance_askForFolderName.result.then(function creationConfirmed(response) {
+      Notification.info({ message: "Loading...", delay: 5000 });
+      $http.post($rootScope.apiBaseURL + "/whiteboard/new", {
+        data: {
+          token: $cookies.get("USERTOKEN"),
+          projectId: projectID,
+          whiteboardName: response
+      }})
+      .then(function creationConfirmationReceived(response) {
+        Notification.success({ message: "Whiteboard created.", delay: 5000 });
+        refreshProjectWhiteboardList(projectID, projectName);
+      },
+      function creationConfirmationNotReceived(response) {
+        if (response.data.info && response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+            case "10.2.3":
+            context.rootScope.onUserTokenError();
+            break;
+
+            case "10.2.9":
+            Notification.warning({ message: "You don't have permission to create whiteboards on this project. Please try again.", delay: 5000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
+            break;
+          }
+        }
+        else
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
+      });
+    },
+    function creationNotConfirmed() { });
   };
 
 
 
   /* ==================== DELETE OBJECT (WHITEBOARD) ==================== */
 
+  // "Delete" button handler (whiteboard)
   $scope.view_deleteWhiteboard = function($event) {
     var modalInstance_askForDeletionConfirmation = "";
-    var whiteboardName = "";
-    var whiteboardID = "";
-    var projectName = "";
     var projectID = "";
+    var projectName = "";
+    var whiteboardID = "";
+    var whiteboardName = "";
 
+    projectID =  angular.element($event.currentTarget).attr("data-project-id");
+    projectName = angular.element($event.currentTarget).attr("data-project-name");
     whiteboardID = angular.element($event.currentTarget).attr("data-id");
     whiteboardName = angular.element($event.currentTarget).attr("data-name");
-    projectName = angular.element($event.currentTarget).attr("data-project-name");
-    projectID = angular.element($event.currentTarget).attr("data-project-id");
     modalInstance_askForDeletionConfirmation = $uibModal.open({ animation: true, templateUrl: "view_deleteWhiteboard.html", controller: "view_deleteWhiteboard" });
     modalInstance_askForDeletionConfirmation.result.then(function deletionConfirmed(response) {
+      Notification.info({ message: "Loading...", delay: 5000 });
       $http.delete($rootScope.apiBaseURL + "/whiteboard/delete/" + $cookies.get("USERTOKEN") + "/" + whiteboardID)
       .then(function deletionConfirmationReceived(response) {
         Notification.success({ message: "Deleted: \"" + whiteboardName + "\"", delay: 5000 });
-
-        $scope.data.projectsWhiteboards_onLoad[projectName] = true;
-        $http.get($rootScope.apiBaseURL + "/whiteboard/list/" + $cookies.get("USERTOKEN") + "/" + projectID)
-        .then(function projectWhiteboardsReceived(response) {
-          $scope.data.projectsWhiteboards_onLoad[projectName] = false;
-          $scope.data.projectsWhiteboards_content[projectName] = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
-          $scope.data.projectsWhiteboards_message[projectName] = (response.data.info && response.data.info.return_code == "1.10.1" ? "_valid" : "_empty");
-        },
-        function projectWhiteboardsNotReceived(response) {
-          $scope.data.projectsWhiteboards_onLoad[projectName] = false;
-          $scope.data.projectsWhiteboards_content[projectName] = null;
-          $scope.data.projectsWhiteboards_message[projectName] = "_invalid";
-
-          if (response.data.info && response.data.info.return_code)
-            switch(response.data.info.return_code) {
-              case "10.1.3":
-              $rootScope.onUserTokenError();
-              break;
-
-              case "10.1.9":
-              $scope.data.projectsWhiteboards_message[projectName] = "_denied";
-              break;
-
-              default:
-              $scope.data.projectsWhiteboards_message[projectName] = "_invalid";
-              break;
-            }
-          });
+        refreshProjectWhiteboardList(projectID, projectName);
       },
       function deletionConfirmationNotReceived(response) {
         if (response.data.info && response.data.info.return_code) {
@@ -132,7 +190,7 @@ app.controller("whiteboardListController", ["$scope", "$rootScope", "$http", "$c
             break;
 
             default:
-            Notification.warning({ message: "This whiteboard doesn't exist. Please try again.", delay: 5000 });
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
             break;
           }
         }
@@ -140,7 +198,7 @@ app.controller("whiteboardListController", ["$scope", "$rootScope", "$http", "$c
           Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
       });
     },
-    function deletionNotConfirmed() { Notification.warning({ message: "Deletion cancelled.", delay: 5000 }); });
+    function deletionNotConfirmed() { });
   };
 
 }]);

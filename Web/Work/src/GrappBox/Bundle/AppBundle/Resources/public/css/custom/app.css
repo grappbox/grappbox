@@ -230,6 +230,11 @@ section { margin: 0 0 60px 0; }
 /* ==================== SECTION: WHITEBOARD ==================== */
 
 #whiteboard-list .title { background: #009688; }
+#whiteboard-list .section-heading h3 { display: inline-block; width: 80%; }
+#whiteboard-list .section-heading a { display: inline-block; padding: 15px; border: 1px solid #e0e0e0; background: #616161; color: #fafafa; }
+#whiteboard-list .section-heading a:active,
+#whiteboard-list .section-heading a:focus,
+#whiteboard-list .section-heading a:hover { color: #4FC3F7; }
 #whiteboard-list .section-content .data-content-header { position: relative; }
 #whiteboard-list .section-content .data-content-header a { position: absolute; top: 0; right: 0; padding: 15px 5px 15px 15px; color: #fafafa; }
 #whiteboard-list .section-content .data-content-header a:active,
