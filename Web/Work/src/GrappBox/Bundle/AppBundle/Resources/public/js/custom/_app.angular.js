@@ -18,6 +18,7 @@ app.config(["$interpolateProvider", function($interpolateProvider) {
 
 // Cross-domain URLs calls fix
 app.config(["$httpProvider", function($httpProvider) {
+  $httpProvider.useApplyAsync(true);
   $httpProvider.defaults.useXDomain = true;
   delete $httpProvider.defaults.headers.common["X-Requested-With"];
 }]);

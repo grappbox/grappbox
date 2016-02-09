@@ -16,8 +16,9 @@ app.controller("whiteboardListController", ["$scope", "$rootScope", "$http", "$c
   var context = "";
 
   // Scope variables initialization
-  $scope.data = { onLoad: true, projects: { }, isValid: false }
+  $scope.data = { onLoad: true, projects: { }, isValid: false };
 
+  // START
   // Get all user's current project(s)
   $http.get($rootScope.apiBaseURL + "/user/getprojects/" + $cookies.get("USERTOKEN"))
   .then(function projectsReceived(response) {
