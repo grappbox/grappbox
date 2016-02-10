@@ -2,7 +2,7 @@
     Summary: Single project view
 -->
 
-<ion-view>
+<ion-view cache-view="false">
     <ion-nav-title>Project</ion-nav-title>
     <ion-content overflow-scroll="false">
         <!-- Refresher -->
@@ -40,6 +40,10 @@
                     <a class="button button-block button-positive"
                        ui-sref="app.bugtracker({projectId: projectId})">
                         Tickets
+                    </a>
+                    <a class="button button-block button-positive"
+                       ui-sref="app.gantt({projectId: projectId})">
+                        Gantt
                     </a>
                 </div>
             </ion-item>

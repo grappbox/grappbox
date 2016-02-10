@@ -301,6 +301,39 @@ angular.module('GrappBox.api', ['ngResource'])
 })
 
 /*
+********************* TIMELINE *********************
+*/
+// List timelines of a project
+.factory('GetTimelines', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/gettimelines/:token/:id', { token: "@token", id: "@id" });
+})
+
+// List all messages from a timeline
+.factory('GetMessages', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/getmessages/:token/:id', { token: "@token", id: "@id" });
+})
+
+// List X last messages from Y offset from a timeline
+.factory('GetLastMessages', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/getlastmessages/:token/:id/:offset/:limit', { token: "@token", id: "@id", offset: "@offset", limit: "@limit" });
+})
+
+// Post message on a timeline
+.factory('PostMessage', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/postmessage/:id', { id: "@id" });
+})
+
+// Edit message on a timeline
+.factory('EditMessage', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/editmessage/:id', { id: "@id" });
+})
+
+// Archive message on a timeline
+.factory('ArchiveMessage', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/archivemessage/:token/:id/:messageId', { token: "@token", id: "@id", messageId: "@messageId" });
+})
+
+/*
 ********************* GANTT *********************
 */
 // Get current and next tasks

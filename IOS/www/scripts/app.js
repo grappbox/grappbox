@@ -3,7 +3,7 @@
     Every pages mentionned here are stocked in Templates folder
 */
 
-angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives'])
+angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives'])
 
 // on starting
 .run(function ($ionicPlatform, $rootScope, $ionicLoading) {
@@ -33,7 +33,7 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
 
 .config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
 
-    $ionicConfigProvider.views.maxCache(0);
+    //$ionicConfigProvider.views.maxCache(0);
     $ionicConfigProvider.views.transition('platform');          // transition between views
     $ionicConfigProvider.backButton.icon('ion-ios-arrow-back'); // iOS back icon
     $ionicConfigProvider.backButton.text('');                   // default is 'Back'
@@ -167,20 +167,6 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
                 'menuContent': {
                     templateUrl: "views/nextMeeting.html",
                     controller: 'NextMeetingCtrl'
-                }
-            }
-        })
-
-        /*
-        ** TIMELINE
-        */
-        // timeline view
-        .state('app.timelines', {
-            url: "/timelines",
-            views: {
-                'menuContent': {
-                    templateUrl: "views/timelines.html",
-                    controller: 'TimelinesCtrl'
                 }
             }
         })
@@ -322,13 +308,27 @@ angular.module('GrappBox', ['ionic', 'GrappBox.controllers', 'GrappBox.api', 'Gr
         ** GANTT
         */
 
-        // user settings view
+        // Gantt view
         .state('app.gantt', {
-            url: "/gantt/:projectId/:taskId",
+            url: "/projects/:projectId/gantt/",
             views: {
                 'menuContent': {
                     templateUrl: "views/gantt.html",
                     controller: 'GanttCtrl'
+                }
+            }
+        })
+
+        /*
+        ** TIMELINE
+        */
+        // timeline view
+        .state('app.timelines', {
+            url: "/timelines",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/timelines.html",
+                    controller: 'TimelinesCtrl'
                 }
             }
         })

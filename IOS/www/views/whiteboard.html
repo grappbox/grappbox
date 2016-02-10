@@ -2,9 +2,9 @@
     Summary: Here is the whiteboard
 -->
 
-<ion-view>
+<ion-view cache-view="false">
     <ion-nav-title>Whiteboard</ion-nav-title>
-    <ion-content>
+    <ion-content overflow-scroll="false" cache-view="false">
         <ion-scroll zooming="true" direction="xy" locking="false" style="width: 100%; height: 100%" overflow-scroll="false">
             <canvas id="canvasWhiteboard"></canvas>
         </ion-scroll>

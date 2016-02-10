@@ -2,12 +2,14 @@
     Summary: Gantt of a project view
 -->
 
-<ion-view>
+<ion-view cache-view="false">
     <ion-nav-title class="item-text-wrap">Gantt</ion-nav-title>
-    <ion-content>
-        <div class="item item-divider">
-            Gantt
+    <ion-content overflow-scroll="false">
+        <div gantt data=data>
+            <gantt-tree enabled="true" header="Header">
+            </gantt-tree>
+            <gantt-dependencies enabled="true">
+            </gantt-dependencies>
         </div>
-        <p>Under construction.</p>
     </ion-content>
 </ion-view>

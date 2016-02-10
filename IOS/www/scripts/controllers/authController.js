@@ -11,6 +11,8 @@ angular.module('GrappBox.controllers')
         $ionicHistory.clearCache();
     });
 
+    $scope.user.email = "pierre.hofman@epitech.eu";
+    $scope.user.password = "hofman_p";
     $scope.login = function () {
         $rootScope.showLoading();
         Login.save({

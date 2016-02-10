@@ -7,17 +7,28 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Security-Policy" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>GrappBox</title>
 
     <!-- CSS -->
-    <link href="css/ionic.css" rel="stylesheet" />
-    <link href="css/index.css" rel="stylesheet" />
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href="css/ionic.css" rel="stylesheet" /> <!-- Ionic CSS -->
+    <link href="css/angular-gantt.css" rel="stylesheet" /> <!-- Angular-Gantt CSS -->
+    <link href="css/angular-ui-tree.min.css" rel="stylesheet" /> <!-- Angular-ui-tree dependancy for Angular-Gantt plugin 'tree' -->
+    <link href="css/angular-gantt-plugins.css" rel="stylesheet" /> <!-- Angular-Gantt plugin (table, tree...) -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'> <!-- Roboto Font -->
+    <link href="css/index.css" rel="stylesheet" /> <!-- My CSS-->
 
     <!-- Libraries -->
     <script src="scripts/lib/ionic.bundle.js"></script> <!-- Ionic encapsulates Angular.js -->
     <script src="scripts/lib/angular-resource.js"></script> <!-- Angular's ngResource are used for the RESTful API -->
+    <script src="scripts/lib/moment-with-locales.js"></script> <!-- Moment.js used in angular-moment and for all dates & localization dates in GrappBox -->
+    <script src="scripts/lib/angular-moment.min.js"></script> <!-- Angular-moment.js used in angular-gantt -->
+    <script src="scripts/lib/angular-gantt.js"></script> <!-- Angular-gantt -->
+    <script src="scripts/lib/jsPlumb-2.0.6.js"></script> <!-- Jsplumb.js For dependencies in gantt-dependencies in plugins -->
+    <script src="scripts/lib/angular-ui-tree.min.js"></script> <!-- Angular-ui-tree used in angular-gantt-plugin -->
+    <script src="scripts/lib/angular-gantt-plugins.js"></script> <!-- Angular-gantt-plugin include all plugins for the gantt (like table or tree) -->
+    <script src="scripts/lib/ng-cordova.js"></script> <!-- ngCordova to access native functions on phone -->
     <script src="scripts/lib/fabric.js"></script> <!-- fabric.js is a library used for the whiteboard -->
     <script src="scripts/lib/fastclick.js"></script> <!-- fastclick.js is a library used to avoid 300ms click lag -->
     <script>
