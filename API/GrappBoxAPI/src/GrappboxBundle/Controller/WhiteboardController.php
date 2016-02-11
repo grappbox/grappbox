@@ -136,7 +136,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (count($whiteboards) == 0)
 			return $this->setNoDataSuccess("1.10.3", "Whiteboard", "list");
 
-		return $this->setSuccess("1.10.1", "Whiteboard", "list", "Complete Success", $this->serializeInArray($whiteboards));
+		return $this->setSuccess("1.10.1", "Whiteboard", "list", "Complete Success", array("array" => $this->serializeInArray($whiteboards)));
 	}
 
 	/**
