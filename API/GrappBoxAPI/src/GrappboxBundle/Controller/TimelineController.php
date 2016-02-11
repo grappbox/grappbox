@@ -104,8 +104,8 @@ class TimelineController extends RolesAndTokenVerificationController
 		$timeline_array = array();
 		foreach ($timelines as $key => $value) {
 			$type = $em->getRepository('GrappboxBundle:TimelineType')->find($value->getTypeId());
-			if (($this->checkRoles($user, $id, "customerTimeline") < 1 && strcmp($type->getName(), "customerTimeline") == 0)
-					|| ($this->checkRoles($user, $id, "teamTimeline") < 1 && strcmp($type->getName(), "teamTimeline") == 0))
+			if (($this->checkRoles($user, $id, "customerTimeline") > 1 && strcmp($type->getName(), "customerTimeline") == 0)
+					|| ($this->checkRoles($user, $id, "teamTimeline") > 1 && strcmp($type->getName(), "teamTimeline") == 0))
 			{
 				$tmp = $value->objectToArray();
 				$tmp["typeName"] = $type->getName();
