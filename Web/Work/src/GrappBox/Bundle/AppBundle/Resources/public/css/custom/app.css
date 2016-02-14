@@ -57,6 +57,11 @@ i { padding: 0 10px 0 0; }
 .ui-notification > .message { overflow: hidden!important; text-overflow: ellipsis; }
 .ui-notification.info { background: #29B6F6; color: #fafafa; }
 
+.btn-default { padding: 8px 35px; border: 1px solid #e0e0e0; color: #e0e0e0; background: #616161; }
+.btn-default:active,
+.btn-default:focus,
+.btn-default:hover { color: #fafafa; }
+
 
 
 /* ==================== GENERAL LAYOUT (LOADING) ==================== */
@@ -240,6 +245,43 @@ section { margin: 0 0 60px 0; }
 
 
 
+/* ==================== SECTION: BUGTRACKER ==================== */
+
+#bugtracker-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
+#bugtracker-data { transition: .2s ease all; transition-delay: .2s; }
+
+#bugtracker-list .title { background: #009688; }
+#app-wrapper.hide-menu #page-wrapper { margin: 0; }
+#app-wrapper.hide-menu #menu-wrapper { transform: translateX(-250px) !important; transform: translate3d(-250px, 0, 0) !important; }
+#app-wrapper.hide-menu #bugtracker-header { transform: translateY(-150px) !important; transform: translate3d(0, -150px, 0) !important; }
+#app-wrapper.hide-menu #bugtracker-data { transform: translateY(-130px) !important; transform: translate3d(0, -130px, 0) !important; }
+#app-wrapper.hide-menu #bugtracker-data .data-wrapper { max-height: 88vh; }
+#bugtracker-content #bugtracker { margin: 0 0 30px 0; }
+#bugtracker-content .app-section-content { position: relative; }
+#bugtracker-content .data-wrapper { overflow: scroll; max-height: 75vh; border: 1px solid #e0e0e0; transition: .2s ease all; transition-delay: .2s; }
+#bugtracker-content .data-wrapper canvas { background: #fafafa; cursor: crosshair; }
+#bugtracker-content .app-actions { position: absolute; width: 100%; bottom: 0; border: 1px solid #e0e0e0; background: #fff; }
+#bugtracker-content .app-actions-list { display: inline-block; margin: 0; padding: 20px; border-left: 1px solid #e0e0e0 }
+#bugtracker-content .app-actions-list:first-child { border: none; }
+#bugtracker-content .app-actions-list .left-offset { margin-left: 5px; }
+#bugtracker-content .app-actions-list .right-offset { margin-right: 5px; }
+#bugtracker-content .app-actions-list label { font-weight: 400; cursor: pointer; }
+#bugtracker-content .app-actions-list li { display: inline; }
+#bugtracker-content .app-actions-list ul { padding: 0; margin: 0; }
+
+/*#bugtracker-content #existing-ticket {}
+#bugtracker-content #existing-ticket #editable-data-list {}
+#bugtracker-content #editable-data-list .data-wrapper {}
+#bugtracker-content #editable-data-list .data-wrapper label {}
+#bugtracker-content #editable-data-list .data-wrapper input {}
+
+#bugtracker-content #existing-ticket #static-data-list {}
+#bugtracker-content #static-data-list .data-wrapper {}
+#bugtracker-content #static-data-list .data-wrapper .label {}
+#bugtracker-content #static-data-list .data-wrapper .data {}*/
+
+
+
 /* ==================== SECTION: WHITEBOARD ==================== */
 
 #whiteboard-list .title { background: #7CB342; }
@@ -278,37 +320,14 @@ section { margin: 0 0 60px 0; }
 
 
 
-/* ==================== SECTION: BUGTRACKER ==================== */
+/* ==================== SECTION: PROFILE ==================== */
 
-#bugtracker-header { min-height: auto; margin: 30px 0 0 0; transition: .2s ease all; transition-delay: .2s; }
-#bugtracker-data { transition: .2s ease all; transition-delay: .2s; }
-
-#bugtracker-list .title { background: #009688; }
-#app-wrapper.hide-menu #page-wrapper { margin: 0; }
-#app-wrapper.hide-menu #menu-wrapper { transform: translateX(-250px) !important; transform: translate3d(-250px, 0, 0) !important; }
-#app-wrapper.hide-menu #bugtracker-header { transform: translateY(-150px) !important; transform: translate3d(0, -150px, 0) !important; }
-#app-wrapper.hide-menu #bugtracker-data { transform: translateY(-130px) !important; transform: translate3d(0, -130px, 0) !important; }
-#app-wrapper.hide-menu #bugtracker-data .data-wrapper { max-height: 88vh; }
-#bugtracker-content #bugtracker { margin: 0 0 30px 0; }
-#bugtracker-content .app-section-content { position: relative; }
-#bugtracker-content .data-wrapper { overflow: scroll; max-height: 75vh; border: 1px solid #e0e0e0; transition: .2s ease all; transition-delay: .2s; }
-#bugtracker-content .data-wrapper canvas { background: #fafafa; cursor: crosshair; }
-#bugtracker-content .app-actions { position: absolute; width: 100%; bottom: 0; border: 1px solid #e0e0e0; background: #fff; }
-#bugtracker-content .app-actions-list { display: inline-block; margin: 0; padding: 20px; border-left: 1px solid #e0e0e0 }
-#bugtracker-content .app-actions-list:first-child { border: none; }
-#bugtracker-content .app-actions-list .left-offset { margin-left: 5px; }
-#bugtracker-content .app-actions-list .right-offset { margin-right: 5px; }
-#bugtracker-content .app-actions-list label { font-weight: 400; cursor: pointer; }
-#bugtracker-content .app-actions-list li { display: inline; }
-#bugtracker-content .app-actions-list ul { padding: 0; margin: 0; }
-
-/*#bugtracker-content #existing-ticket {}
-#bugtracker-content #existing-ticket #editable-data-list {}
-#bugtracker-content #editable-data-list .data-wrapper {}
-#bugtracker-content #editable-data-list .data-wrapper label {}
-#bugtracker-content #editable-data-list .data-wrapper input {}
-
-#bugtracker-content #existing-ticket #static-data-list {}
-#bugtracker-content #static-data-list .data-wrapper {}
-#bugtracker-content #static-data-list .data-wrapper .label {}
-#bugtracker-content #static-data-list .data-wrapper .data {}*/
+#profile .section-content .data-wrapper { margin: 30px 15px; }
+#profile .section-content .data-wrapper .row { margin: 15px -15px; }
+#profile .section-content .data-wrapper .row input { padding-left: 2px; }
+#profile .section-content .data-wrapper .row input,
+#profile .section-content .data-wrapper .row select { width: 100%; }
+#profile .section-content .data-wrapper .btn-default { position: absolute; right: 15px; top: 15px; }
+#profile .section-content .data-wrapper .btn-default:active,
+#profile .section-content .data-wrapper .btn-default:focus,
+#profile .section-content .data-wrapper .btn-default:hover { background: #7CB342; }
