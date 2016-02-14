@@ -38,7 +38,7 @@ app.controller("whiteboardListController", ["$scope", "$rootScope", "$http", "$c
       $http.get(context.rootScope.apiBaseURL + "/whiteboard/list/" + context.cookies.get("USERTOKEN") + "/" + project.id)
       .then(function projectWhiteboardsReceived(response) {
         context.scope.data.projectsWhiteboards_onLoad[project.name] = false;
-        context.scope.data.projectsWhiteboards_content[project.name] = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
+        context.scope.data.projectsWhiteboards_content[project.name] = (response.data && response.data.data ? (Object.keys(response.data.data.array).length ? response.data.data.array : null) : null);
         context.scope.data.projectsWhiteboards_message[project.name] = (response.data.info && response.data.info.return_code == "1.10.1" ? "_valid" : "_empty");
       },
       function projectWhiteboardsNotReceived(response) {

@@ -1,6 +1,6 @@
 /*
 * This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+* file "LICENSE.txt", which is part of the GRAPPBOX source code package.
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
@@ -9,7 +9,7 @@
 * APP whiteboard page content
 *
 */
-app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'drawFactory', function($scope, $http, $routeParams, drawFactory) {
+app.controller("whiteboardController", ["$scope", "$http", "$routeParams", "drawFactory", function($scope, $http, $routeParams, drawFactory) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -21,20 +21,20 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'draw
   $scope.text = { textValue: "", isItalicEnabled: false, isBoldEnabled: false };
 
   $scope.color = {
-    availableColors: [ { name: '-None-', value: 'none' }, { name: 'Red', value: '#F44336' }, { name: 'Pink', value: '#E91E63' }, { name: 'Purple', value: '#9C27B0' },
-                       { name: 'Deep Purple', value: '#673AB7' }, { name: 'Indigo', value: '#3F51B5' }, { name: 'Blue', value: '#2196F3' }, { name: 'Light Blue', value: '#03A9F4' },
-                       { name: 'Cyan', value: '#00BCD4' }, { name: 'Teal', value: '#009688' }, { name: 'Green', value: '#4CAF50' }, { name: 'Light Green', value: '#8BC34A' },
-                       { name: 'Lime', value: '#CDDC39' }, { name: 'Yellow', value: '#FFEB3B' }, { name: 'Amber', value: '#FFC107' }, { name: 'Orange', value: '#FF9800' },
-                       { name: 'Deep Orange', value: '#FF5722' }, { name: 'Brown', value: '#795548' }, { name: 'Blue Grey', value: '#607D8B' }, { name: 'White', value: '#FFFFFF' },
-                       { name: 'Grey 20%', value: '#EEEEEE' }, { name: 'Grey 40%', value: '#BDBDBD' }, { name: 'Grey 50%', value: '#9E9E9E' }, { name: 'Grey 60%', value: '#757575' },
-                       { name: 'Grey 80%', value: '#424242' }, { name: 'Black', value: '#000000' } ],
-    selectedDrawColor: { name: 'Black', value: '#000000' },
-    selectedFillColor: { name: '-None-', value: 'none' } };
+    availableColors: [ { name: "-None-", value: "none" }, { name: "Red", value: "#F44336" }, { name: "Pink", value: "#E91E63" }, { name: "Purple", value: "#9C27B0" },
+                       { name: "Deep Purple", value: "#673AB7" }, { name: "Indigo", value: "#3F51B5" }, { name: "Blue", value: "#2196F3" }, { name: "Light Blue", value: "#03A9F4" },
+                       { name: "Cyan", value: "#00BCD4" }, { name: "Teal", value: "#009688" }, { name: "Green", value: "#4CAF50" }, { name: "Light Green", value: "#8BC34A" },
+                       { name: "Lime", value: "#CDDC39" }, { name: "Yellow", value: "#FFEB3B" }, { name: "Amber", value: "#FFC107" }, { name: "Orange", value: "#FF9800" },
+                       { name: "Deep Orange", value: "#FF5722" }, { name: "Brown", value: "#795548" }, { name: "Blue Grey", value: "#607D8B" }, { name: "White", value: "#FFFFFF" },
+                       { name: "Grey 20%", value: "#EEEEEE" }, { name: "Grey 40%", value: "#BDBDBD" }, { name: "Grey 50%", value: "#9E9E9E" }, { name: "Grey 60%", value: "#757575" },
+                       { name: "Grey 80%", value: "#424242" }, { name: "Black", value: "#000000" } ],
+    selectedDrawColor: { name: "Black", value: "#000000" },
+    selectedFillColor: { name: "-None-", value: "none" } };
 
   $scope.line = {
-    availableWidths: [ { label: '0.5 pt', value: '0.5' }, { label: '1 pt', value: '1' }, { label: '1.5 pt', value: '1.5' }, { label: '2 pt', value: '2' },
-                       { label: '2.5 pt', value: '2.5' }, { label: '3 pt', value: '3' }, { label: '4 pt', value: '4' }, { label: '5 pt', value: '5' } ],
-    selectedLineWidth: { label: '1 pt', value: '1' } };
+    availableWidths: [ { label: "0.5 pt", value: "0.5" }, { label: "1 pt", value: "1" }, { label: "1.5 pt", value: "1.5" }, { label: "2 pt", value: "2" },
+                       { label: "2.5 pt", value: "2.5" }, { label: "3 pt", value: "3" }, { label: "4 pt", value: "4" }, { label: "5 pt", value: "5" } ],
+    selectedLineWidth: { label: "1 pt", value: "1" } };
 
 
   // Routine definition
@@ -65,7 +65,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'draw
       break;
 
       case "text":
-      canvasData = { tool: "text", font: '32pt Roboto Condensed', isItalicEnabled: $scope.text.isItalicEnabled, isBoldEnabled: $scope.text.isBoldEnabled,
+      canvasData = { tool: "text", font: "32pt Roboto Condensed", isItalicEnabled: $scope.text.isItalicEnabled, isBoldEnabled: $scope.text.isBoldEnabled,
         content: $scope.text.textValue, startX: $scope.draw.mouseStartPosition.x, startY: $scope.draw.mouseStartPosition.y, drawColor: $scope.color.selectedDrawColor.value };
       break;
 
@@ -76,6 +76,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'draw
 
     return canvasData;
   };
+
 
   // Routine definition
   // Render/display canvasData using drawFactory
@@ -91,7 +92,7 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'draw
   /* ==================== START ==================== */
 
   // Routine definition
-  // Handle 'Undo' button
+  // Handle "Undo" button
   $scope.undoLastCanvasAction = function() {
     drawFactory.undoLastCanvasAction();
     drawFactory.renderAll();
@@ -102,10 +103,6 @@ app.controller('whiteboardController', ['$scope', '$http', '$routeParams', 'draw
     $scope.draw.mouseEndPosition.x = 0;
     $scope.draw.mouseEndPosition.y = 0;
   };
-
-  // Routine definition
-  // Handle 'Expand' button
-  $scope.expandWhiteboard = function() { angular.element(document.querySelector('#app-wrapper')).toggleClass('hide-menu'); };
 
 
   // START
@@ -185,7 +182,7 @@ app.factory("drawFactory", function() {
       canvasContext.beginPath();
       canvasContext.strokeStyle = data.drawColor;
       canvasContext.lineWidth = data.lineWidth;
-      canvasContext.lineCap = 'round';
+      canvasContext.lineCap = "round";
       canvasContext.moveTo(data.points[0].x, data.points[0].y);
 
       for (var i = 0; i < data.points.length; ++i) {
@@ -202,7 +199,7 @@ app.factory("drawFactory", function() {
       canvasContext.beginPath();
       canvasContext.strokeStyle = data.drawColor;
       canvasContext.lineWidth = data.lineWidth;
-      canvasContext.lineCap = 'round';
+      canvasContext.lineCap = "round";
       canvasContext.moveTo(data.startX, data.startY);
       canvasContext.lineTo(data.endX, data.endY);
       canvasContext.stroke();
@@ -248,7 +245,7 @@ app.factory("drawFactory", function() {
   var renderText = function(data) {
     if (data.drawColor != "none") {
       canvasContext.beginPath();
-      canvasContext.font = (data.isItalicEnabled ? "italic " : '') + (data.isBoldEnabled ? "bold " : '') + data.font;
+      canvasContext.font = (data.isItalicEnabled ? "italic " : "") + (data.isBoldEnabled ? "bold " : "") + data.font;
       canvasContext.fillStyle = data.drawColor;
       canvasContext.fillText(data.content, data.startX, data.startY);
       canvasContext.stroke();
