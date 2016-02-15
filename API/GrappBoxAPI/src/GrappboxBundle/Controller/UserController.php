@@ -299,9 +299,9 @@ class UserController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if (array_key_exists('firstname', $content))
-			$user->setFirstname($content->first_name);
+			$user->setFirstname($content->firstname);
 		if (array_key_exists('lastname', $content))
-			$user->setLastname($content->last_name);
+			$user->setLastname($content->lastname);
 		if (array_key_exists('birthday', $content))
 		{
 			$birthday = date_create($content->birthday);
@@ -469,8 +469,8 @@ class UserController extends RolesAndTokenVerificationController
 	*		},
 	*		"data": {
 	*			"id": 2,
-	*			"first_name": "John",
-	*			"last_name": "Doe"
+	*			"firstname": "John",
+	*			"lastname": "Doe"
 	*		}
 	* 	}
 	*
