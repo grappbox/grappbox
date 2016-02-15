@@ -24,16 +24,16 @@ app.controller('profileController', ["$scope", "$http", "$rootScope", "$cookies"
 		$scope.data.isValid = true;
 		$scope.data.onLoad = false;
 
-	// Bind existing data to view
-	$scope.data.toUpdate.firstname = ($scope.data.userInformation.firstname != "" ? $scope.data.userInformation.firstname : "");
-	$scope.data.toUpdate.lastname = ($scope.data.userInformation.lastname != "" ? $scope.data.userInformation.lastname : "");
-	$scope.data.toUpdate.birthday = ($scope.data.userInformation.birthday != "" ? $scope.data.userInformation.birthday : "");
-	$scope.data.toUpdate.email = ($scope.data.userInformation.email != "" ? $scope.data.userInformation.email : "");
-	$scope.data.toUpdate.phone = ($scope.data.userInformation.phone != "" ? $scope.data.userInformation.phone : "");
-	$scope.data.toUpdate.country = ($scope.data.userInformation.country != "" ? $scope.data.userInformation.country : "");
-	$scope.data.toUpdate.linkedin = ($scope.data.userInformation.linkedin != "" ? $scope.data.userInformation.linkedin : "");
-	$scope.data.toUpdate.viadeo = ($scope.data.userInformation.viadeo != "" ? $scope.data.userInformation.viadeo : "");
-	$scope.data.toUpdate.twitter = ($scope.data.userInformation.twitter != "" ? $scope.data.userInformation.twitter : "");
+		// Bind existing data to view
+		$scope.data.toUpdate.firstname = ($scope.data.userInformation.firstname != "" ? $scope.data.userInformation.firstname : "");
+		$scope.data.toUpdate.lastname = ($scope.data.userInformation.lastname != "" ? $scope.data.userInformation.lastname : "");
+		$scope.data.toUpdate.birthday = ($scope.data.userInformation.birthday != "" ? new Date($scope.data.userInformation.birthday) : "");
+		$scope.data.toUpdate.email = ($scope.data.userInformation.email != "" ? $scope.data.userInformation.email : "");
+		$scope.data.toUpdate.phone = ($scope.data.userInformation.phone != "" ? $scope.data.userInformation.phone : "");
+		$scope.data.toUpdate.country = ($scope.data.userInformation.country != "" ? $scope.data.userInformation.country : "");
+		$scope.data.toUpdate.linkedin = ($scope.data.userInformation.linkedin != "" ? $scope.data.userInformation.linkedin : "");
+		$scope.data.toUpdate.viadeo = ($scope.data.userInformation.viadeo != "" ? $scope.data.userInformation.viadeo : "");
+		$scope.data.toUpdate.twitter = ($scope.data.userInformation.twitter != "" ? $scope.data.userInformation.twitter : "");
 	},
 	function userInformationNotReceived(response) {
 		$scope.data.userInformation = null;
