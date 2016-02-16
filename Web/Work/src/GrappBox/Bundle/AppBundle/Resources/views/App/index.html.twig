@@ -45,6 +45,7 @@
 		'@AppBundle/Resources/public/js/custom/routing.js'
 		'@AppBundle/Resources/public/js/custom/bugtracker/bugtracker.js'
 		'@AppBundle/Resources/public/js/custom/bugtracker/bugtracker-list.js'
+		'@AppBundle/Resources/public/js/custom/calendar/calendar.js'
 		'@AppBundle/Resources/public/js/custom/cloud/cloud.js'
 		'@AppBundle/Resources/public/js/custom/cloud/cloud-list.js'
 		'@AppBundle/Resources/public/js/custom/dashboard/dashboard.js'
@@ -75,14 +76,15 @@
 			<div id="sidebar-wrapper">
 				<ul class="sidebar-nav">
 					<li class="sidebar-brand"><a href="./" title="Return to GrappBox dashboard">GrappBox</a></li>
-					<li><a href="notifications" title="See all your notifications" class="data-ng-class:{ 'active' : isPageActive('/notifications') };">Notifications</a></li>
-					<li><a href="./" title="Go to your dashboard" class="data-ng-class:{ 'active' : isPageActive('/') };">Dashboard</a></li>
-					<li><a href="project" title="Get an overview of all your currents projects" class="data-ng-class:{ 'active' : isPageActive('/project') };">Projects</a></li>
-					<li><a href="cloud" title="Access your online files and folders" class="data-ng-class:{ 'active' : isPageActive('/cloud') };">Cloud</a></li>
-					<li><a href="timeline" title="Go to your projects timelines" class="data-ng-class:{ 'active' : isPageActive('/timeline') };">Timeline</a></li>
-					<li><a href="bugtracker" title="Go to the bugtracker section" class="data-ng-class:{ 'active' : isPageActive('/bugtracker') };">Bugtracker</a></li>
-					<li><a href="whiteboard" title="Use your projects collaborative whiteboards" class="data-ng-class:{ 'active' : isPageActive('/whiteboard') };">Whiteboard</a></li>
-					<li><a href="profile" title="View and edit your profile information" class="data-ng-class:{ 'active' : isPageActive('/profile') };">Profile</a></li>
+					<li><a href="notifications" title="See all your notifications" class="{[{ routeActiveList['/notifications'] ? 'active' : '' }]}">Notifications</a></li>
+					<li><a href="./" title="Go to your dashboard" class="{[{ routeActiveList['/'] ? 'active' : '' }]}">Dashboard</a></li>
+					<li><a href="project" title="Get an overview of all your currents projects" class="{[{ routeActiveList['/project'] ? 'active' : '' }]}">Projects</a></li>
+					<li><a href="calendar" title="Go to your calendar" class="{[{ routeActiveList['/calendar'] ? 'active' : '' }]}">Calendar</a></li>
+					<li><a href="cloud" title="Access your online files and folders" class="{[{ routeActiveList['/cloud'] ? 'active' : '' }]}">Cloud</a></li>
+					<li><a href="timeline" title="Go to your projects timelines" class="{[{ routeActiveList['/timeline'] ? 'active' : '' }]}">Timeline</a></li>
+					<li><a href="bugtracker" title="Go to the bugtracker section" class="{[{ routeActiveList['/bugtracker'] ? 'active' : '' }]}">Bugtracker</a></li>
+					<li><a href="whiteboard" title="Use your projects collaborative whiteboards" class="{[{ routeActiveList['/whiteboard'] ? 'active' : '' }]}">Whiteboard</a></li>
+					<li><a href="profile" title="View and edit your profile information" class="{[{ routeActiveList['/profile'] ? 'active' : '' }]}">Profile</a></li>
 					<li><a href="logout" title="Sign out of GrappBox">Logout</a></li>
 				</ul>
 				<div class="legal-nav">
@@ -95,7 +97,13 @@
 				<div class="page-header">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="app-page-title" data-ng-cloak>{[{ title ? title : 'Error' }]}</div>
+							<div class="app-page-title shadow" data-ng-cloak>
+								<span class="fa-stack fa-lg">
+									<i class="fa fa-circle fa-stack-2x"></i>
+									<i class="fa fa-stack-1x fa-inverse {[{ onLoad ? 'fa-ellipsis-h' : (routeCurrentIcon ? routeCurrentIcon : 'fa-times') }]}"></i>
+								</span>
+								<span class="title">{[{ onLoad ? "Loading..." : (title ? title : "Error") }]}</span>
+							</div>
 						</div>
 					</div>
 				</div>

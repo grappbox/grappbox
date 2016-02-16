@@ -11,6 +11,8 @@
 */
 var app = angular.module("grappbox", ["ngRoute", "ngCookies", "ngAnimate", "ui.bootstrap", "panhandler", "ui-notification", "naif.base64", "ngTagsInput"]);
 
+/* ==================== INITIALIZATION ==================== */
+
 // TWIG template conflict fix
 app.config(["$interpolateProvider", function($interpolateProvider) {
   $interpolateProvider.startSymbol("{[{").endSymbol("}]}");
@@ -35,27 +37,54 @@ app.config(["NotificationProvider", function(NotificationProvider) {
   });
 }]);
 
-// Main controller definition
+// Controller definition
+// GrappBox (main)
 app.controller("grappboxController", ["$scope", "$location", function($scope, $location) {
 
-  $scope.isPageActive = function(route) {
-    var isPageActive = false;
-    switch (route) {
-      case "/cloud":
-      isPageActive = ($location.path().indexOf("cloud") > -1);
-      break;
-      case "/bugtracker":
-      isPageActive = ($location.path().indexOf("bugtracker") > -1);
-      break;
-      case "/whiteboard":
-      isPageActive = ($location.path().indexOf("whiteboard") > -1);
-      break;
-      default:
-      isPageActive = (route === $location.path());
-      break;
-    };
-    return isPageActive;
-  }
+  $scope.routeActiveList  = { "/": false, "/bugtracker": false, "/calendar": false, "/cloud": false, "/notifications": false, "/profile": false, "/project": false, "/timeline": false, "/whiteboard": false };
+  $scope.routeIconList    = { "/": "fa-bolt", "/bugtracker": "fa-code", "/calendar": "fa-calendar", "/cloud": "fa-upload", "/notifications": "fa-exclamation", '/profile': "fa-sliders", "/project": "fa-folder", "/timeline": "fa-sort-amount-asc", "/whiteboard": "fa-pencil" };
+  $scope.routeCurrentIcon = "";
+
+  // On route change (start)
+  $scope.$on("$routeChangeStart", function() {
+    var isKnown = false;
+    var newRoute = $location.path();
+
+    $scope.routeCurrentIcon = "";
+    angular.forEach($scope.routeActiveList, function(isCurrentPathActive, currentPath) {
+      if (currentPath === newRoute) {
+        isKnown = true;
+        $scope.routeActiveList[currentPath] = true;
+        $scope.routeCurrentIcon = $scope.routeIconList[currentPath];
+      }
+      else
+        $scope.routeActiveList[currentPath] = false;
+    });
+    if (!isKnown) {
+       switch (newRoute) {
+        case (newRoute.indexOf("cloud") > -1):
+          $scope.routeActiveList["/cloud"] = true;
+          $scope.routeCurrentIcon = $scope.routeIconList["/cloud"];
+          isKnown = true;
+          break;
+        case (newRoute.indexOf("bugtracker") > -1):
+          $scope.routeActiveList["/bugtracker"] = true;
+          $scope.routeCurrentIcon = $scope.routeIconList["/bugtracker"];
+          isKnown = true;
+          break;
+        case (newRoute.indexOf("whiteboard") > -1):
+          $scope.routeActiveList["/whiteboard"] = true;
+          $scope.routeCurrentIcon = $scope.routeIconList["/whiteboard"];
+          isKnown = true;
+          break;
+        default:
+          break;
+      };
+    }
+    if (!isKnown)
+      $scope.routeCurrentIcon = $scope.routeIconList["error"];
+  });
+
 }]);
 
 
@@ -95,10 +124,9 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", function($ro
 
   // On route change (success)
   $rootScope.$on("$routeChangeSuccess", function(event, current, previous) {
-    $rootScope.onLoad = false;
-
     if (current.$$route)
       $rootScope.title = current.$$route.title;
+    $rootScope.onLoad = false;
   });
 
   // On route change (error)
