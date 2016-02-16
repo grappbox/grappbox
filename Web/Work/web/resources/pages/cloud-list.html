@@ -21,26 +21,25 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div data-ng-if="data.isValid && data.userProjects" panhandler>
                 <div class="data-wrapper" ng-repeat="userProject in data.userProjects">
                   <ul class="data-content each-project-data shadow">
-                    <li class="project-picture" ng-show="userProject.logo === null">
-                      <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                    <li class="project-picture left" ng-show="userProject.logo === null">
+                      <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                     </li>
-                    <li class="project-picture" ng-show="userProject.logo !== null">
-                      <img data-ng-src="data:image/png;base64,{[{ userProject.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                    <li class="project-picture left" ng-show="userProject.logo !== null">
+                      <img class="shadow" data-ng-src="data:image/png;base64,{[{ userProject.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                     </li>
-                    <li class="project-details">
-                      <div class="project-name">{[{ userProject.name }]}</div>
-                      <div class="project-client">{[{ userProject.company }]}</div>
+                    <li class="project-data left">
+                      <div class="upper bold">"{[{ userProject.name }]}"</div>
                       <div class="clearfix"></div>
                     </li>
-                    <li class="client-details">
-                      <div class="client-phone">{[{ userProject.phone }]}</div>
-                      <div class="client-mail">{[{ userProject.contact_mail }]}</div>
+                    <li class="project-data left">
+                      <div>{[{ userProject.company ? 'Company: ' + userProject.company : '' }]}</div>
+                      <div>{[{ userProject.phone ? 'Phone: ' + userProject.phone : '' }]}</div>
+                      <div>{[{ userProject.contact_mail ? 'Email: ' + userProject.contact_mail : '' }]}</div>
                       <div class="clearfix"></div>
                     </li>
                     <li class="clearfix"></li>
                     <li>
-                      <a ng-href="cloud/{[{ userProject.id }]}" title="Go to '{[{ userProject.name }]}' dedicated Cloud storage" class="btn-default btn-access">
-                        <i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
+                      <a ng-href="cloud/{[{ userProject.id }]}" title="Go to '{[{ userProject.name }]}' dedicated Cloud storage" class="btn-default btn-submit"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
                     </li>
                   </ul>
                 </div>
