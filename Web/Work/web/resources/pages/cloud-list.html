@@ -20,7 +20,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div id="all-clouds-data">
               <div data-ng-if="data.isValid && data.userProjects" panhandler>
                 <div class="data-wrapper" ng-repeat="userProject in data.userProjects">
-                  <ul class="data-content each-project-data btn-float">
+                  <ul class="data-content each-project-data shadow">
                     <li class="project-picture" ng-show="userProject.logo === null">
                       <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                     </li>
@@ -38,8 +38,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="clearfix"></div>
                     </li>
                     <li class="clearfix"></li>
-                    <li class="project-cloud-link">
-                      <a ng-href="cloud/{[{ userProject.id }]}" title="Go to '{[{ userProject.project_name }]}' dedicated Cloud storage"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
+                    <li>
+                      <a ng-href="cloud/{[{ userProject.id }]}" title="Go to '{[{ userProject.name }]}' dedicated Cloud storage" class="btn-default btn-access">
+                        <i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
                     </li>
                   </ul>
                 </div>

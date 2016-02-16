@@ -44,7 +44,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="!data.projectsWhiteboards_onLoad[project.name]">
                   <div data-ng-if="data.projectsWhiteboards_message[project.name] == '_valid'" panhandler>
                     <div class="data-wrapper" data-ng-repeat="whiteboard in data.projectsWhiteboards_content[project.name]" data-ng-if="!whiteboard.deletedAt">
-                      <ul class="data-content each-available-whiteboard btn-float">
+                      <ul class="data-content each-available-whiteboard shadow">
                         <li class="data-content-header">
                           <span class="title">"{[{ whiteboard.name }]}"</span>
                           <a href="" title="Delete this whiteboard" data-id="{[{ whiteboard.id }]}" data-name="{[{ whiteboard.name }]}" data-project-name="{[{ project.name }]}" data-project-id="{[{ project.id }]}" data-ng-click="view_deleteWhiteboard($event)" class="standalone"><i class="fa fa-times"></i></a>
@@ -59,7 +59,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <span><i class="fa fa-clock-o"></i>Updated: {[{ formatObjectDate(whiteboard.updatedAt.date) }]}</span>
                         </li>
                         <li>
-                          <a href="whiteboard/{[{ project.id }]}/{[{ whiteboard.id }]}" title="Open whiteboard #{[{ whiteboard.id }]}"><i class="fa fa-edit fa-fw"></i>Open</a>
+                          <a href="whiteboard/{[{ project.id }]}/{[{ whiteboard.id }]}" title="Open whiteboard #{[{ whiteboard.id }]}" class="btn-default btn-access">
+                            <i class="fa fa-edit fa-fw"></i>Open</a>
                         </li>
                       </ul>
                     </div>
@@ -98,8 +99,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <input type="text" placeholder="Whiteboard name..." id="view_newWhiteboardName" autofocus>
       </div>
       <div class="modal-footer">
-        <button type="button" data-ng-click="view_createWhiteboardSuccess()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" data-ng-click="view_createWhiteboardFailure()"><i class="fa fa-ban"></i>Cancel</button>
+        <button type="button" class="btn-default btn-submit" data-ng-click="view_createWhiteboardSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="view_createWhiteboardFailure()"><i class="fa fa-ban"></i>Cancel</button>
       </div>
     </script>
   </div>
@@ -113,8 +114,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <p>Are you sure you want to delete this whiteboard?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" data-ng-click="view_deleteWhiteboardActionConfirmed()"><i class="fa fa-check"></i>Yes</button>
-        <button type="button" data-ng-click="view_deleteWhiteboardActionCancelled()"><i class="fa fa-times"></i>No</button>
+        <button type="button" class="btn-default btn-submit" data-ng-click="view_deleteWhiteboardActionConfirmed()"><i class="fa fa-check"></i>Yes</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="view_deleteWhiteboardActionCancelled()"><i class="fa fa-times"></i>No</button>
       </div>
     </script>
   </div>

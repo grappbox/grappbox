@@ -28,7 +28,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="col-lg-12">
             <!-- grappbox.data : bugtracker list (per project) -->
             <div class="section-heading">
-              <h3>{[{ project.name }]}</h3>
+              <h3>"{[{ project.name }]}"</h3>
             </div>
             <div class="section-content tiles">
               <div id="all-bugtracker-data">
@@ -38,9 +38,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div ng-show="!data.projectsBugtracker_onLoad[project.name]">
                   <div ng-if="data.projectsBugtracker_message[project.name] == '_valid'" panhandler>
                     <div class="data-wrapper" ng-repeat="bugtracker in data.projectsBugtracker_content[project.name]">
-                      <ul class="data-content each-available-bugtracker btn-float">
+                      <ul class="data-content each-available-bugtracker shadow">
                         <li>
-                          <span class="title">{[{ bugtracker.title }]}</span>
+                          <span class="title">"{[{ bugtracker.title }]}"</span>
                         </li>
                         <li>
                           <span><i class="fa fa-tags"></i>{[{ formatTagsinString(bugtracker.tags) }]}</span>
@@ -52,7 +52,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <span><i class="fa fa-clock-o"></i>Updated: {[{ formatObjectDate(bugtracker.updatedAt.date) }]}</span>
                         </li>
                         <li>
-                          <a href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open Ticket #{[{ bugtracker.id }]}"><i class="fa fa-edit fa-fw"></i>Open</a>
+                          <a href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open Ticket #{[{ bugtracker.id }]}" class="btn-default btn-access">
+                            <i class="fa fa-edit fa-fw"></i>Open</a>
                         </li>
                       </ul>
                     </div><!-- data-wrapper-->
