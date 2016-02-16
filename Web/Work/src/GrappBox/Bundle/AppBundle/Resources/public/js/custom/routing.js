@@ -41,6 +41,13 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		caseInsensitiveMatch : true,
 		resolve: { factory: isBugtrackerAccessible }
 	})
+	// Calendar-related pages
+	.when("/calendar", {
+		title: "Calendar",
+		templateUrl : "../resources/pages/calendar.html",
+		controller  : "calendarController",
+		caseInsensitiveMatch : true
+	})	
 	// Cloud-related pages
 	.when("/cloud", {
 		title: "Cloud list",
