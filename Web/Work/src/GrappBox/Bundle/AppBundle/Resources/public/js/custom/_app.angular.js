@@ -45,43 +45,37 @@ app.controller("grappboxController", ["$scope", "$location", function($scope, $l
   $scope.routeIconList    = { "/": "fa-bolt", "/bugtracker": "fa-code", "/calendar": "fa-calendar", "/cloud": "fa-upload", "/notifications": "fa-exclamation", '/profile': "fa-sliders", "/project": "fa-folder", "/timeline": "fa-sort-amount-asc", "/whiteboard": "fa-pencil" };
   $scope.routeCurrentIcon = "";
 
+  // Routine definition
+  // Check if the request route is not a subsection of another one
+  var isSubRouteOf = function(routeToTest, newRoute) {
+    var isRouteKnown = false;
+
+    if (newRoute.indexOf(routeToTest) > -1) { 
+      $scope.routeActiveList["/" + routeToTest] = true;
+      $scope.routeCurrentIcon = $scope.routeIconList["/" + routeToTest];
+      isRouteKnown = true;
+    }
+    return isRouteKnown;
+  };
+
   // On route change (start)
   $scope.$on("$routeChangeStart", function() {
-    var isKnown = false;
     var newRoute = $location.path();
+    var isRouteKnown = false;
 
     $scope.routeCurrentIcon = "";
     angular.forEach($scope.routeActiveList, function(isCurrentPathActive, currentPath) {
       if (currentPath === newRoute) {
-        isKnown = true;
+        isRouteKnown = true;
         $scope.routeActiveList[currentPath] = true;
         $scope.routeCurrentIcon = $scope.routeIconList[currentPath];
       }
       else
         $scope.routeActiveList[currentPath] = false;
     });
-    if (!isKnown) {
-       switch (newRoute) {
-        case (newRoute.indexOf("cloud") > -1):
-          $scope.routeActiveList["/cloud"] = true;
-          $scope.routeCurrentIcon = $scope.routeIconList["/cloud"];
-          isKnown = true;
-          break;
-        case (newRoute.indexOf("bugtracker") > -1):
-          $scope.routeActiveList["/bugtracker"] = true;
-          $scope.routeCurrentIcon = $scope.routeIconList["/bugtracker"];
-          isKnown = true;
-          break;
-        case (newRoute.indexOf("whiteboard") > -1):
-          $scope.routeActiveList["/whiteboard"] = true;
-          $scope.routeCurrentIcon = $scope.routeIconList["/whiteboard"];
-          isKnown = true;
-          break;
-        default:
-          break;
-      };
-    }
-    if (!isKnown)
+    if (!isRouteKnown)
+      isRouteKnown = (isSubRouteOf("bugtracker", newRoute) ? true : (isSubRouteOf("cloud", newRoute) ? true : (isSubRouteOf("whiteboard", newRoute) ? true : false)));
+    if (!isRouteKnown)
       $scope.routeCurrentIcon = $scope.routeIconList["error"];
   });
 

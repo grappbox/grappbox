@@ -100,7 +100,7 @@
 							<div class="app-page-title shadow" data-ng-cloak>
 								<span class="fa-stack fa-lg">
 									<i class="fa fa-circle fa-stack-2x"></i>
-									<i class="fa fa-stack-1x fa-inverse {[{ onLoad ? 'fa-ellipsis-h' : (routeCurrentIcon ? routeCurrentIcon : 'fa-times') }]}"></i>
+									<i class="fa fa-stack-1x fa-inverse {[{ !onLoad ? (routeCurrentIcon ? routeCurrentIcon : 'fa-times') : 'fa-ellipsis-h' }]}"></i>
 								</span>
 								<span class="title">{[{ onLoad ? "Loading..." : (title ? title : "Error") }]}</span>
 							</div>
