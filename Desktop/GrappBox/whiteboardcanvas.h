@@ -68,7 +68,7 @@ private:
     BodyWhiteboardWritingText *_Popup;
     QPointF _MouseRightClickPoint;
     QMap<int, QGraphicsItem*>   _ItemMap;
-    QStack<QGraphicsItem*> _ItemStacked;
+    QMap<int, QGraphicsItem*> _ItemStacked;
 };
 
 #endif // WHITEBOARDCANVAS_H

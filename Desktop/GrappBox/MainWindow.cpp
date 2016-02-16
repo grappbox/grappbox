@@ -3,6 +3,8 @@
 #include <QMovie>
 #include "SDataManager.h"
 
+#include "SStyleLoader.h"
+
 #include "Body/BodyCalendar.h"
 #include "Body/BodyDashboard.h"
 #include "BodyWhiteboard.h"
@@ -18,10 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     // Basic MainWindow Configuration
-    QFile file(":/Configuration/Ressources/ConfigurationFiles/Base.css");
-    file.open(QFile::ReadOnly);
-    QString styleSheet = QLatin1String(file.readAll());
-    setStyleSheet(styleSheet);
     this->layout()->setSpacing(0);
     this->layout()->setMargin(0);
     this->setWindowTitle("Grappbox");

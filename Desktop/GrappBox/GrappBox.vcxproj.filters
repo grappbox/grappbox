@@ -133,6 +133,15 @@
     <Filter Include="Source Files\Body\BugTracker\Body">
       <UniqueIdentifier>{9731fe19-0cc7-4b7d-8aa8-13ab9b797d34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Images">
+      <UniqueIdentifier>{e5514b6d-069c-4686-ad62-a9ece5ebb690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Css">
+      <UniqueIdentifier>{747bdf43-ce3b-43ce-94f6-e9e175cadeed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Fonts">
+      <UniqueIdentifier>{175b70bc-dcb6-4955-a61f-9e82cf69b678}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -609,6 +618,21 @@
     <ClCompile Include="Release\moc_ListAddRemoveSelection.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="SStyleLoader.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CreateWhiteboardDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CreateWhiteboardDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateWhiteboardDialog.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="FlowLayout.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Body\BodyBugTracker.h">
@@ -737,154 +761,157 @@
     <CustomBuild Include="ListAddRemoveSelection.h">
       <Filter>Header Files\Body\Calendar</Filter>
     </CustomBuild>
+    <CustomBuild Include="CreateWhiteboardDialog.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Ressources\Icon\Accept.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\GlobalProgressIcon\Bug.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\MeetingIcon\Calendar.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Mask\CircleMaskMemberPicture.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\MeetingIcon\ClientMeeting.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\MeetingIcon\Clock.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Delete.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\DropDown.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Edit.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\Projects\GameSphere.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Loading.gif">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Loading2.gif">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Logout-Icon.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\MeetingDefault.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Message.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\GlobalProgressIcon\Message.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Notification.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-Bold.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-BoldItalic.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-ExtraBold.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-ExtraBoldItalic.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-Italic.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-Light.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-LightItalic.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-Regular.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-Semibold.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Font\OpenSans-SemiboldItalic.ttf">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\MeetingIcon\Other.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\ProjectDefault.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Return.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\Settings.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\SettingsIcon.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\GlobalProgressIcon\Task.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\MeetingIcon\TeamMeeting.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Title.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\UserDefault.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Icon\V-CardIcon.png">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Ressources\ConfigurationFiles\WhiteboardColors.xml">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\Profils\allyriane_launois.jpg">
       <Filter>Resource Files</Filter>
     </None>
     <CustomBuild Include="finalressources.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <None Include="Ressources\Temporary\Profils\frederic_tan.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\Profils\leo_nadeau.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\Profils\marc_wieser.jpeg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\Profils\pierre_feytout.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\Profils\pierre_hofman.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Ressources\Temporary\Profils\roland_hemmer.jpg">
-      <Filter>Resource Files</Filter>
-    </None>
     <CustomBuild Include="temporaryressources.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+    <None Include="Ressources\Icon\Accept.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\allyriane_launois.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\GlobalProgressIcon\Bug.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\Calendar.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Mask\CircleMaskMemberPicture.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\ClientMeeting.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\Clock.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Delete.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\DropDown.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Edit.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\frederic_tan.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Projects\GameSphere.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\leo_nadeau.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Loading.gif">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Loading2.gif">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Logout-Icon.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\marc_wieser.jpeg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\MeetingDefault.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\GlobalProgressIcon\Message.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Message.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Notification.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\Other.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\pierre_feytout.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\pierre_hofman.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\ProjectDefault.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Return.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\roland_hemmer.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Settings.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\SettingsIcon.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\GlobalProgressIcon\Task.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\TeamMeeting.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Title.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\UserDefault.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
     <None Include="Ressources\Temporary\Profils\valentin_mougenot.jpg">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\V-CardIcon.png">
+      <Filter>Resource Files\Images</Filter>
     </None>
     <None Include="Ressources\ConfigurationFiles\Base.css">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Css</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Bold.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-BoldItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-ExtraBold.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-ExtraBoldItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Italic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Light.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-LightItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Regular.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Semibold.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-SemiboldItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -919,6 +946,15 @@
     </ClInclude>
     <ClInclude Include="API\SDataManager.h">
       <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="SStyleLoader.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlowLayout.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -958,5 +994,8 @@
     <CustomBuild Include="SliderMenu.h">
       <Filter>Header Files\MainApplication</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GrappBox.rc" />
   </ItemGroup>
 </Project>

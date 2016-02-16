@@ -9,7 +9,13 @@
 #include <QPair>
 #include <QMap>
 #include <QtWidgets/QStackedLayout>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include "SDataManager.h"
+#include "utils.h"
 #include "BodyWhiteboard.h"
+#include "SStyleLoader.h"
 
 BodyWhiteboard::BodyWhiteboard(QWidget *parent) : QWidget(parent)
 {
@@ -27,7 +33,15 @@ BodyWhiteboard::BodyWhiteboard(QWidget *parent) : QWidget(parent)
     _View = new WhiteboardGraphicsView();
     _Whiteboard = new WhiteboardCanvas();
     _MainLayoutWhiteboard = new QVBoxLayout();
+	_WhiteboardChoice = new FlowLayout();
     _MenuLayout = new QHBoxLayout();
+
+	_WhiteboardChoice->setContentsMargins(5, 5, 5, 5);
+	_WhiteboardChoice->setSpacing(5);
+
+	_CreateWhiteboard = new QPushButton("Create");
+	_CreateWhiteboard->setObjectName("create");
+	_CreateWhiteboard->setFixedSize(90, 30);
 
     InitializeComboBox();
 
@@ -38,12 +52,33 @@ BodyWhiteboard::BodyWhiteboard(QWidget *parent) : QWidget(parent)
     _MainLayoutWhiteboard->addWidget(_View);
     QWidget *whiteboardFrame = new QWidget;
     whiteboardFrame->setLayout(_MainLayoutWhiteboard);
-    //_MainLayout->addWidget(_WhiteboardChoice);
+	QWidget *whiteboardChoiceFrame = new QWidget;
+	QVBoxLayout *choiceMainLayout = new QVBoxLayout();
+	QHBoxLayout *mainBar = new QHBoxLayout();
+	QLabel *choiceTitle = new QLabel("Choose a whiteboard or create one");
+	choiceTitle->setFixedHeight(50);
+	choiceTitle->setObjectName("title");
+	choiceTitle->setAlignment(Qt::AlignLeft);
+	mainBar->addWidget(choiceTitle);
+	mainBar->addWidget(_CreateWhiteboard);
+	mainBar->setAlignment(_CreateWhiteboard, Qt::AlignRight);
+	mainBar->setContentsMargins(0, 0, 0, 0);
+	mainBar->setSpacing(0);
+	choiceMainLayout->setAlignment(Qt::AlignTop | Qt::AlignJustify);
+	choiceMainLayout->setContentsMargins(0, 0, 0, 0);
+	choiceMainLayout->setSpacing(0);
+	choiceMainLayout->addLayout(mainBar);
+	choiceMainLayout->addLayout(_WhiteboardChoice);
+	whiteboardChoiceFrame->setLayout(choiceMainLayout);
+    _MainLayout->addWidget(whiteboardChoiceFrame);
     _MainLayout->addWidget(whiteboardFrame);
     _View->setScene(_Whiteboard);
 
+	setStyleSheet(SStyleLoader::LoadStyleSheet(WHITEBOARD));
+
     setLayout(_MainLayout);
     connect(_View, SIGNAL(OnMenuAction(int)), this, SLOT(OnActionWhiteboard(int)));
+	connect(_CreateWhiteboard, SIGNAL(clicked(bool)), this, SLOT(OpenNewProjectPopup()));
 }
 
 void BodyWhiteboard::InitializeComboBox()
@@ -183,8 +218,11 @@ void BodyWhiteboard::Show(int ID, MainWindow *mainApp)
 {
     _WhiteboardId = ID;
     _MainApplication = mainApp;
-    //show();
     emit OnLoadingDone(ID);
+	QVector<QString> data;
+	data.push_back(USER_TOKEN);
+	data.push_back(TO_STRING(CURRENT_PROJECT));
+	DATA_CONNECTOR->Get(API::DP_WHITEBOARD, API::GR_WHITEBOARD, data, this, "OnLoadedWhiteboardDone", "OnLoadedWhiteboardFail");
 }
 
 void BodyWhiteboard::Hide()
@@ -199,7 +237,8 @@ void BodyWhiteboard::OnQuitWhiteboard()
 
 void BodyWhiteboard::OnEditWhiteboard(int id)
 {
-    //_MainLayout->setCurrentIndex();
+    _MainLayout->setCurrentIndex(1);
+
 }
 
 void BodyWhiteboard::OnActionWhiteboard(int id)
@@ -242,4 +281,49 @@ void BodyWhiteboard::OnPenSizeChange(int index)
 {
     float value = (index < 6) ? (float)index * 0.5f : index - 2;
     _Whiteboard->SetBrushWidth(value);
+}
+
+void BodyWhiteboard::OnLoadedWhiteboardDone(int, QByteArray data)
+{
+	while (QLayoutItem *item = _WhiteboardChoice->takeAt(0))
+	{
+		if (item->widget())
+			delete item->widget();
+		delete item;
+	}
+	QJsonDocument doc = QJsonDocument::fromJson(data);
+	//QJsonArray array = doc.object()["data"].toObject()["array"].toArray();
+	QJsonArray array = doc.object()["data"].toArray(); // REPLACE THIS BY THE COMMENT ON TOP
+	for (QJsonValueRef ref : array)
+	{
+		QJsonObject obj = ref.toObject();
+		Whiteboard w;
+		w.id = obj["id"].toInt();
+		w.projectId = CURRENT_PROJECT;
+		w.name = obj["name"].toString();
+		w.lastModification = QDateTime::fromString(obj["updatedAt"].toObject()["date"].toString(), FORMAT_DATE);
+		w.creation = QDateTime::fromString(obj["createdAt"].toObject()["date"].toString(), FORMAT_DATE);
+		WhiteboardButtonChoice *newChoice = new WhiteboardButtonChoice(w);
+		_WhiteboardChoice->addWidget(newChoice);
+	}
+}
+
+void BodyWhiteboard::OnLoadedWhiteboardFail(int, QByteArray data)
+{
+}
+
+void BodyWhiteboard::NewProjectDone()
+{
+	QVector<QString> data;
+	data.push_back(USER_TOKEN);
+	data.push_back(TO_STRING(CURRENT_PROJECT));
+	DATA_CONNECTOR->Get(API::DP_WHITEBOARD, API::GR_WHITEBOARD, data, this, "OnLoadedWhiteboardDone", "OnLoadedWhiteboardFail");
+}
+
+void BodyWhiteboard::OpenNewProjectPopup()
+{
+	CreateWhiteboardDialog *dial = new CreateWhiteboardDialog(this);
+	connect(dial, SIGNAL(NewWhiteboard()), this, SLOT(NewProjectDone()));
+	dial->exec();
+	delete dial;
 }

@@ -35,6 +35,8 @@ namespace API
         virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
 		virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
 
+		virtual int Post(DataPart part, API::PostRequest, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char *slotFailure);
+
     signals:
         void responseAPISuccess(int, QByteArray);
         void responseAPIFailure(int, QByteArray);
@@ -47,6 +49,14 @@ namespace API
         QMap<QNetworkReply*, DataConnectorCallback> _CallBack;
         QNetworkAccessManager *_Manager;
 
+		QMap<API::GetRequest, QString> _GetMap;
+		QMap<API::PostRequest, QString> _PostMap;
+		QMap<API::PutRequest, QString> _PutMap;
+		QMap<API::DeleteRequest, QString> _DeleteMap;
+
+	private:
+		QJsonObject ParseMap(QMap<QString, QVariant> &data);
+
         //Put
     private:
         QNetworkReply *PutUserSettings(QVector<QString> &data);
@@ -57,13 +67,14 @@ namespace API
 
         // Post
     private:
+		QNetworkReply *PostAction(QString urlIn, QMap<QString, QVariant> &data);
+
         QNetworkReply *Login(QVector<QString> &data);
         QNetworkReply *AddRole(QVector<QString> &data);
         QNetworkReply *AttachRole(QVector<QString> &data);
         QNetworkReply *ProjectInvite(QVector<QString> &data);
         QNetworkReply *CustomerGenerateAccess(QVector<QString> &data);
 
-        QNetworkReply *CloseBug(QVector<QString> &data);
         QNetworkReply *EditBug(QVector<QString> &data);
         QNetworkReply *OpenBug(QVector<QString> &data);
         QNetworkReply *CommentBug(QVector<QString> &data);
@@ -76,6 +87,8 @@ namespace API
         QNetworkReply *PostMessageTimeline(QVector<QString> &data);
 
 		QNetworkReply *PostEvent(QVector<QString> &data);
+
+		QNetworkReply *PostNewWhiteboard(QVector<QString> &data);
 
         // Delete
     private:

@@ -11,6 +11,8 @@
 #include <QtWidgets/QStackedLayout>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QTableView>
+#include "FlowLayout.h"
+#include "CreateWhiteboardDialog.h"
 
 #include <QMap>
 
@@ -33,6 +35,12 @@ public slots:
     void OnColorBackgroudChange();
     void OnPenSizeChange(int index);
 
+	void OnLoadedWhiteboardDone(int, QByteArray data);
+	void OnLoadedWhiteboardFail(int, QByteArray data);
+
+	void NewProjectDone();
+	void OpenNewProjectPopup();
+
 private:
     void InitializeComboBox();
     void InitializeColorPen();
@@ -45,7 +53,8 @@ private:
     MainWindow  *_MainApplication;
 
     QStackedLayout *_MainLayout;
-    QVBoxLayout *_WhiteboardChoice;
+    FlowLayout *_WhiteboardChoice;
+	QPushButton *_CreateWhiteboard;
     QScrollArea *_Area;
 
     QVBoxLayout *_MainLayoutWhiteboard;

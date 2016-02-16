@@ -132,30 +132,27 @@ void WhiteboardCanvas::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void WhiteboardCanvas::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	int request;
+	QVector<QString> data;
 	if (_CurrentLine)
 	{
-		_ItemStacked.append(_CurrentLine);
-		//Send here to API
+		_ItemStacked[request] = _CurrentLine;
 	}
 	if (_CurrentEllipse)
 	{
-		_ItemStacked.append(_CurrentLine);
-		//Send here to API
+		_ItemStacked[request] = _CurrentEllipse;
 	}
 	if (_CurrentRect)
 	{
-		_ItemStacked.append(_CurrentRect);
-		//Send here to API
+		_ItemStacked[request] = _CurrentRect;
 	}
 	if (_CurrentDiamond)
 	{
-		_ItemStacked.append(_CurrentDiamond);
-		//Send here to API
+		_ItemStacked[request] = _CurrentDiamond;
 	}
 	if (_CurrentHandWriting)
 	{
-		_ItemStacked.append(_CurrentHandWriting);
-		//Send here to API
+		_ItemStacked[request] = _CurrentHandWriting;
 	}
 	_CurrentLine = nullptr;
 	_CurrentEllipse = nullptr;
@@ -229,7 +226,8 @@ void WhiteboardCanvas::OnTextPopupAdd(QString str, bool italic, bool bold, int s
 	text->setFont(font);
 	text->setPos(_MouseRightClickPoint - QPointF(text->document()->size().width() / 2, text->document()->size().height() / 2));
 	this->addItem(text);
-	_ItemStacked.append(text);
+	int request = 0;
+	_ItemStacked[request] = text;
 	//Send here to API
 	OnTextPopupCancel();
 }

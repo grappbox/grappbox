@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJSonArray>
 #include <QJsonValueRef>
 #include "API/SDataManager.h"
 #include "SliderMenu.h"
@@ -42,7 +43,7 @@ void SliderMenu::ProjectLoaded(int id, QByteArray data)
     QJsonObject objMain = doc.object();
     _ComboBoxProject->clear();
     _ComboBoxProject->addItem("No project selected", -1);
-    for (QJsonValueRef ref : objMain)
+    for (QJsonValueRef ref : objMain["data"].toObject()["array"].toArray())
     {
         QJsonObject obj = ref.toObject();
         _ComboBoxProject->addItem(obj["project_name"].toString(), obj["project_id"].toInt());
@@ -79,10 +80,7 @@ void SliderMenu::AddMenuItem(QString name, int id, bool hided, bool needProject)
 {
     QPushButton *newItem = new QPushButton(name);
     newItem->setMaximumHeight(40);
-    newItem->setStyleSheet("QPushButton {"
-                           "background-color: #f0f3f7;"
-                           "border-style: none;"
-                           "}");
+	newItem->setObjectName("menu");
     newItem->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     if (hided)
         newItem->hide();
@@ -109,18 +107,9 @@ void SliderMenu::ForceChangeMenu(int menu)
     _CurrentIndex = menu;
     for (QMap<int, QPushButton*>::iterator it = _ListButton.begin(); it != _ListButton.end(); ++it)
     {
-        (it.value())->setStyleSheet("QPushButton {"
-                               "background-color: #f0f3f7;"
-                               "border-style: none;"
-                               "}");
+		(it.value())->setObjectName("menu");
     }
-    _ListButton[menu]->setStyleSheet("QPushButton {"
-                                     "background-color: #f4f6f9;"
-                                     "border-style: none;"
-                                     "border-right-style: solid;"
-                                       "border-width: 4px;"
-                                       "border-color: #af2d2e;"
-                                     "}");
+	_ListButton[menu]->setObjectName("menu-selected");
 }
 
 void SliderMenu::ButtonChangeMenu()

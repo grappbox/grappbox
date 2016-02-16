@@ -170,6 +170,7 @@
     <ClCompile Include="Body\Timeline\ConversationTimeline.cpp" />
     <ClCompile Include="Body\Settings\CreateNewCustomerAccessWindow.cpp" />
     <ClCompile Include="Body\Settings\CreateNewRole.cpp" />
+    <ClCompile Include="CreateWhiteboardDialog.cpp" />
     <ClCompile Include="CustomGraphicsHandWriteItem.cpp" />
     <ClCompile Include="Body\Settings\CustomerAccessSettings.cpp" />
     <ClCompile Include="Body\Dashboard\DashboardGlobalProgress.cpp" />
@@ -262,6 +263,9 @@
     <ClCompile Include="Debug\moc_CreateNewRole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Debug\moc_CreateWhiteboardDialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Debug\moc_CustomerAccessSettings.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -325,6 +329,7 @@
     <ClCompile Include="Debug\moc_WhiteboardGraphicsView.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="FlowLayout.cpp" />
     <ClCompile Include="GeneratedFiles\qrc_finalressources.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </PrecompiledHeader>
@@ -423,6 +428,9 @@
     <ClCompile Include="Release\moc_CreateNewRole.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Release\moc_CreateWhiteboardDialog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Release\moc_CustomerAccessSettings.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -486,6 +494,7 @@
     <ClCompile Include="Release\moc_WhiteboardGraphicsView.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="SStyleLoader.cpp" />
     <ClCompile Include="WidgetCommon\PushButtonImage.cpp" />
     <ClCompile Include="Body\Settings\RoleTableWidget.cpp" />
     <ClCompile Include="API\SDataManager.cpp" />
@@ -1035,6 +1044,16 @@ endlocal
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
+    <CustomBuild Include="CreateWhiteboardDialog.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing CreateWhiteboardDialog.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB "-I." "-I.\Body" "-I.\Body\Dashboard" "-I.\API" "-I.\WidgetCommon" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtCore" "-I.\debug" "-I$(QTDIR)\mkspecs\win32-msvc2013"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing CreateWhiteboardDialog.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\Body" "-I.\Body\Dashboard" "-I.\API" "-I.\WidgetCommon" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I$(QTDIR)\mkspecs\win32-msvc2013"</Command>
+    </CustomBuild>
     <ClInclude Include="CustomGraphicsHandWriteItem.h" />
     <CustomBuild Include="Body\Settings\CustomerAccessSettings.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
@@ -1137,6 +1156,7 @@ endlocal
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
+    <ClInclude Include="FlowLayout.h" />
     <ClInclude Include="IBodyContener.h" />
     <ClInclude Include="Body\BugTracker\IBugPage.h" />
     <ClInclude Include="API\IDataConnector.h" />
@@ -1351,6 +1371,7 @@ endlocal
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\Body" "-I.\Body\Dashboard" "-I.\API" "-I.\WidgetCommon" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I$(QTDIR)\mkspecs\win32-msvc2013"</Command>
     </CustomBuild>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SFontLoader.h" />
     <CustomBuild Include="SliderMenu.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
@@ -1433,6 +1454,7 @@ endlocal
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="customgraphicsdiamonditem.h" />
+    <ClInclude Include="SStyleLoader.h" />
     <ClInclude Include="WidgetCommon\utils.h" />
     <CustomBuild Include="whiteboardcanvas.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
@@ -1669,6 +1691,9 @@ endlocal
   </ItemGroup>
   <ItemGroup>
     <None Include="BaseStyle.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GrappBox.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

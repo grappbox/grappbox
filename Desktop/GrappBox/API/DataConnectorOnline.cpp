@@ -4,11 +4,19 @@
 #include "DataConnectorOnline.h"
 #include <QDebug>
 
+#define LARGE_DEBUG
+
+#ifdef LARGE_DEBUG
+#include <QJsonDocument>
+#include <QJsonObject>
+#endif
+
 using namespace API;
 
 DataConnectorOnline::DataConnectorOnline()
 {
 	_Manager = new QNetworkAccessManager();
+	_PostMap[PR_LOGIN] = "accountadministration/login";
 }
 
 void DataConnectorOnline::OnResponseAPI()
@@ -24,7 +32,18 @@ void DataConnectorOnline::OnResponseAPI()
 	QByteArray req = request->readAll();
 	if (request->error())
 	{
+#ifdef LARGE_DEBUG
 		qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString();
+		if (request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString()[0] == '4')
+		{
+			QJsonDocument doc = QJsonDocument::fromJson(req);
+			QJsonObject info = doc.object()["info"].toObject();
+			qDebug() << "[DataConnectorOnline] Error code : " << info["return_code"].toString();
+			qDebug() << "[DataConnectorOnline] Error message : " << info["return_message"].toString();
+		}
+#elif
+		qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString();
+#endif
 		QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
 	}
 	else
@@ -77,6 +96,9 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 		break;
 	case PR_POST_EVENT:
 		reply = PostEvent(data);
+		break;
+	case PR_NEW_WHITEBOARD:
+		reply = PostNewWhiteboard(data);
 		break;
 	}
 	if (reply == nullptr)
@@ -200,6 +222,12 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 	case GR_EVENT:
 		reply = GetAction("event/getevent", data);
 		break;
+	case GR_TYPE_EVENT:
+		reply = GetAction("event/gettypes", data);
+		break;
+	case GR_WHITEBOARD:
+		reply = GetAction("whiteboard/list", data);
+		break;
 	}
 	if (reply == nullptr)
 		throw QException();
@@ -307,6 +335,69 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 	}
 	_Request[reply] = maxInt;
 	return maxInt;
+}
+
+int API::DataConnectorOnline::Post(DataPart part, PostRequest request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
+{
+	QNetworkReply *reply = nullptr;
+	reply = PostAction(_PostMap[request], data);
+	if (reply == nullptr)
+		throw QException();
+	_CallBack[reply] = DataConnectorCallback();
+	_CallBack[reply]._Request = requestResponseObject;
+	_CallBack[reply]._SlotFailure = slotFailure;
+	_CallBack[reply]._SlotSuccess = slotSuccess;
+	qDebug() << slotSuccess;
+	qDebug() << requestResponseObject;
+	qDebug() << slotFailure;
+	int maxInt = 1;
+	for (QMap<QNetworkReply*, int>::const_iterator it = _Request.constBegin(); it != _Request.constEnd(); ++it)
+	{
+		if (it.value() >= maxInt)
+		{
+			maxInt = it.value() + 1;
+		}
+	}
+	_Request[reply] = maxInt;
+	return maxInt;
+}
+
+QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
+{
+	QJsonObject ret;
+	for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
+	{
+		if (it.value().canConvert<QString>())
+			ret[it.key()] = it.value().toString();
+		else if (it.value().canConvert<QList<QString> >())
+		{
+			QJsonArray arr;
+			QList<QString> strList;
+			for (QString str : strList)
+				arr.append(str);
+			ret[it.key()] = arr;
+		}
+		else
+			ret[it.key()] = ParseMap(it.value().toMap());
+	}
+	return ret;
+}
+
+QNetworkReply * API::DataConnectorOnline::PostAction(QString urlIn, QMap<QString, QVariant>& data)
+{
+	QJsonObject json;
+	QJsonObject objData = ParseMap(data);
+	json["data"] = objData;
+
+	QJsonDocument doc(json);
+	QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
+
+	QNetworkRequest requestSend(QUrl(URL_API + urlIn));
+	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+	QNetworkReply *request = _Manager->post(requestSend, jsonba);
+	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+	return request;
 }
 
 QNetworkReply *DataConnectorOnline::Login(QVector<QString> &data)
@@ -750,21 +841,47 @@ QNetworkReply * API::DataConnectorOnline::PostEvent(QVector<QString>& data)
 	return request;
 }
 
+QNetworkReply * API::DataConnectorOnline::PostNewWhiteboard(QVector<QString>& data)
+{
+	QJsonObject json;
+
+	QJsonObject dataJson;
+	dataJson["token"] = data[0];
+	dataJson["projectId"] = data[1];
+	dataJson["whiteboardName"] = data[2];
+
+	json["data"] = dataJson;
+
+	QJsonDocument doc(json);
+	QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
+	QNetworkRequest requestSend(QUrl(URL_API + QString("whiteboard/new")));
+	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba->size());
+	QNetworkReply *request = _Manager->post(requestSend, *jsonba);
+	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+	return request;
+}
+
 QNetworkReply *API::DataConnectorOnline::EditEvent(QVector<QString>& data)
 {
 	QJsonObject json;
 
-	json["data"] = QJsonObject();
-	json["data"].toObject()["token"] = data[0];
-	json["data"].toObject()["eventId"] = data[1];
-	json["data"].toObject()["title"] = data[2];
-	json["data"].toObject()["description"] = data[3];
-	json["data"].toObject()["icon"] = data[4];
-	json["data"].toObject()["typeId"] = data[5];
-	json["data"].toObject()["begin"] = data[6];
-	json["data"].toObject()["end"] = data[7];
+	QJsonObject objData;
+	objData["token"] = data[0];
+	objData["eventId"] = data[1];
+	objData["title"] = data[2];
+	objData["description"] = data[3];
+	objData["icon"] = data[4];
+	objData["typeId"] = data[5];
+	objData["begin"] = data[6];
+	objData["end"] = data[7];
+
+	json["data"] = objData;
 
 	QJsonDocument doc(json);
+	
+	qDebug() << doc.toJson();
+
 	QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
 	QNetworkRequest requestSend(QUrl(URL_API + QString("event/editevent")));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -782,8 +899,6 @@ QNetworkReply * API::DataConnectorOnline::EditEventParticipant(QVector<QString>&
 
 	QJsonArray toAdd;
 	QJsonArray toRemove;
-
-	json["data"] = dataObj;
 
 	dataObj["token"] = data[0];
 	dataObj["eventId"] = data[1];
@@ -803,7 +918,10 @@ QNetworkReply * API::DataConnectorOnline::EditEventParticipant(QVector<QString>&
 	dataObj["toAdd"] = toAdd;
 	dataObj["toRemove"] = toRemove;
 
+	json["data"] = dataObj;
+
 	QJsonDocument doc(json);
+
 	QByteArray *jsonba = new QByteArray(doc.toJson(QJsonDocument::Compact));
 	QNetworkRequest requestSend(QUrl(URL_API + QString("event/setparticipants")));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");

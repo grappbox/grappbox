@@ -22,6 +22,11 @@ struct Task
 	QDateTime Start;
 	QDateTime End;
 	int ProjectId;
+
+	bool operator==(const Task &task) const
+	{
+		return (TaskId == task.TaskId);
+	}
 };
 
 class BodyCalendar : public QWidget, public IBodyContener
@@ -66,9 +71,6 @@ public slots:
 	void OnLoadingProjectsDone(int id, QByteArray data);
 	void OnLoadingProjectsFail(int id, QByteArray data);
 
-	void OnEventEditDone(int id, QByteArray data);
-	void OnEventEditFail(int id, QByteArray data);
-
 private:
     enum ViewType
     {
@@ -90,6 +92,7 @@ private:
 	QMap<int, int> _LoadingProjects;
 
 	QMap<int, QString> _AllProjects;
+	QMap<int, QString> _ProjectsColors;
 
 	QMap<int, int> _DeleteEvent;
 
@@ -97,7 +100,8 @@ private:
     QDate _CurrentDrawingDate;
 
     QMap<QDate, QList<Event*> > _MapMonthEvent;
-	QMap<QDate, QList<Task*> > _MapMonthTask;
+	QList<Task*> _MapMonthTask;
+
     QMap<int, QString> _Projects;
 
     QHBoxLayout *_MainLayout;
@@ -107,6 +111,7 @@ private:
     QStackedLayout *_ViewCalendarLayout;
 
     QVBoxLayout *_ProjectChoiceLayout;
+	QVBoxLayout *_TaskChoiceLayout;
 
     QPushButton *_NewEvent;
 
@@ -115,6 +120,8 @@ private:
 
     QLabel *_ProjectChoice;
     QMap<int, QCheckBox*> _ProjectChoiceCheckBox;
+
+	QLabel *_TaskChoice;
 
     QPushButton *_PreviousDate;
     QPushButton *_NextDate;

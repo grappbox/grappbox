@@ -9,6 +9,7 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QTableView>
 #include <QHeaderView>
@@ -17,6 +18,7 @@
 #include <QByteArray>
 #include <QScrollArea>
 #include "Calendar/CalendarEvent.h"
+#include "Body/Settings/ImageUploadWidget.h"
 
 class CalendarEventForm : public QDialog
 {
@@ -25,10 +27,14 @@ public:
     CalendarEventForm(Event *event, QMap<int, QString> &project, QWidget *callBackEvent);
 
 signals:
+	void Remove(Event*);
 
 public slots:
     void OnSave();
     void OnRemove();
+
+	void OnEventTypeLoadDone(int id, QByteArray data);
+	void OnEventTypeLoadFail(int id, QByteArray data);
 
 	void OnLoadProjectUserDone(int id, QByteArray data);
 	void OnLoadProjectUserFail(int id, QByteArray data);
@@ -52,6 +58,7 @@ private:
 	void EndLoad(bool checkAPILoad = true);
 
 	bool _EventLoaded;
+	bool _TypeLoaded;
 
     Event *_CurrentEvent;
 	QWidget *_CallBackWidget;
@@ -61,7 +68,9 @@ private:
 
 	QMap<int, QList<QPair<int, QString> > > _UserProjectsList;
 	QMap<int, QList<int> > _AssociatedUserForProject;
+	QMap<int, QString> _Type;
 
+	QList<int> _IdsAtStart;
 
     QFormLayout *_MainLayout;
 
@@ -77,10 +86,16 @@ private:
 
     QTextEdit *_DescriptionEdit;
 
+	QComboBox *_SelectionType;
+	QCheckBox *_UseTypeIcon;
+	ImageUploadWidget *_UploadWidget;
+
 	QComboBox *_SelectionProject;
 
-	QScrollArea *_Area;
+	QScrollArea *_AreaAssociated;
 	QVBoxLayout *_UserAssociated;
+	QScrollArea *_AreaNotAssociated;
+	QVBoxLayout *_UserNotAssociated;
 
     QHBoxLayout *_Buttons;
     QPushButton *_Save;

@@ -59,6 +59,7 @@ namespace API
         GR_PROJECT_USERS_ALL,
         GR_BUG,
 		GR_EVENT,
+		GR_TYPE_EVENT
     };
 
     enum PostRequest
@@ -76,7 +77,8 @@ namespace API
         PR_MESSAGE_TIMELINE,
         PR_EDIT_MESSAGE_TIMELINE,
         PR_EDIT_COMMENTBUG,
-		PR_POST_EVENT
+		PR_POST_EVENT,
+		PR_NEW_WHITEBOARD
     };
 
     enum DeleteRequest
@@ -113,6 +115,7 @@ namespace API
         virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
         virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
 
+		virtual int Post(DataPart part, PostRequest request, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char *slotFailure) = 0;
     };
 
     struct UserInformation

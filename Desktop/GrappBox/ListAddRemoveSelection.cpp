@@ -11,6 +11,9 @@ ListAddRemoveSelection::ListAddRemoveSelection(int id, bool isAdd, QString name,
 	_MainLayout->addWidget(_Label);
 	_MainLayout->addWidget(_Button);
 
+	_MainLayout->setSpacing(0);
+	_MainLayout->setContentsMargins(0, 0, 0, 0);
+
 	setLayout(_MainLayout);
 
 	setFixedHeight(50);

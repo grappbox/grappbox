@@ -32,7 +32,7 @@ QRectF CustomGraphicsHandWriteItem::boundingRect() const
 
 void CustomGraphicsHandWriteItem::Append(qreal x, qreal y)
 {
-    static const float MinimumDistance = 0.5f;
+    static const float MinimumDistance = 3.0f;
     if (_Points.size() == 0 || (QPointF(x, y) - _Points.last()).manhattanLength() >= MinimumDistance)
         _Points.append(QPointF(x, y));
 }

@@ -14,6 +14,7 @@ struct Event
     int EventId;
     int ProjectId;
     int CreatorId;
+	int EventTypeId;
 
     QDateTime Start;
     QDateTime End;
@@ -22,6 +23,7 @@ struct Event
     QString EventTypeName;
     QColor Color;
     QString Project;
+	QString Icon;
 
     Event()
     {
@@ -60,6 +62,11 @@ struct Event
     {
         return (this->Start < eventb.Start);
     }
+
+	bool operator==(const Event &eventb) const
+	{
+		return (EventId == eventb.EventId && Start == eventb.Start && End == eventb.End);
+	}
 
 };
 

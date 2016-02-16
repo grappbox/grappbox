@@ -6,30 +6,43 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
+#include <QDateTime>
+#include "PushButtonImage.h"
 
 class BodyDashboard;
+
+struct Whiteboard
+{
+	int id;
+	int projectId;
+	QDateTime lastModification;
+	QDateTime creation;
+	QString name;
+};
 
 class WhiteboardButtonChoice : public QWidget
 {
 private:
     Q_OBJECT
 public:
-    WhiteboardButtonChoice(int whiteboardId, BodyDashboard *mainApp, QWidget *parent = nullptr);
+    WhiteboardButtonChoice(Whiteboard w, QWidget *parent = nullptr);
 
 signals:
     void OnEdit(int);
+	void OnDelete(int);
 
 public slots:
     void Edit();
+	void Delete();
 
 private:
     QVBoxLayout     *_MainLayout;
     QPushButton     *_EditButton;
     QLabel          *_NameWhiteboard;
-    QLabel          *_EditTime;
+    QLabel          *_CreateDate;
     QLabel          *_EditDate;
 
-    int             _WhiteboardID;
+    Whiteboard      _WhiteboardID;
 };
 
 #include "BodyDashboard.h"

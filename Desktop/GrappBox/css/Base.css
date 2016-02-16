@@ -40,9 +40,33 @@ QLabel#Strong
 	font-weight: bold;
 }
 
+QLabel#title
+{
+	font-size: 24px;
+	font-weight: bold;
+}
+
 QTextEdit:focus
 {
     border-color: #2980b9;
+}
+
+QPushButton#menu
+{
+    border-style: none;
+    background-color: #f0f3f7;
+    color: black;
+}
+
+QPushButton#menu-selected
+{
+	background-color: #f4f6f9;
+	border-style: none;
+	border-right-style: solid;
+	border-width: 4px;
+	border-color: #af2d2e;
+    color: black;
+    font-weight: bold;
 }
 
 QPushButton

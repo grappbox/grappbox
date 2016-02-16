@@ -32,6 +32,10 @@ BodyCalendar::BodyCalendar()
 	_ProjectChoiceLayout->setContentsMargins(0, 0, 0, 0);
 	_ProjectChoiceLayout->setSpacing(0);
 
+	_TaskChoiceLayout = new QVBoxLayout();
+	_TaskChoiceLayout->setContentsMargins(0, 0, 0, 0);
+	_TaskChoiceLayout->setSpacing(0);
+
 	_TopBarLayout = new QHBoxLayout();
 	_TopBarLayout->setContentsMargins(0, 0, 0, 0);
 	_TopBarLayout->setSpacing(0);
@@ -51,6 +55,7 @@ BodyCalendar::BodyCalendar()
 	_MonthCalendarFixed->setFirstDayOfWeek(Qt::Monday);
 
 	_ProjectChoice = new QLabel("Projects");
+	_TaskChoice = new QLabel("Tasks");
 
 	_PreviousDate = new QPushButton("<");
 	_PreviousDate->setMaximumWidth(60);
@@ -106,6 +111,8 @@ BodyCalendar::BodyCalendar()
 	_SideBarLayout->addWidget(_MonthCalendarFixed);
 	_SideBarLayout->addWidget(_ProjectChoice);
 	_SideBarLayout->addLayout(_ProjectChoiceLayout);
+	_SideBarLayout->addWidget(_TaskChoice);
+	_SideBarLayout->addLayout(_TaskChoiceLayout);
 	_SideBarLayout->addSpacing(1080);
 
 	QWidget *wTopBarLayout = new QWidget();
@@ -178,6 +185,7 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 	QJsonDocument doc = QJsonDocument::fromJson(data);
 	QJsonArray arrayEvent = doc.object()["data"].toObject()["array"].toObject()["events"].toArray();
 	QJsonArray taskEvent = doc.object()["data"].toObject()["array"].toObject()["task"].toArray();
+	QString format = "yyyy-MM-dd HH:mm:ss.zzzz";
 	QList<int> projectToLoad;
 	for (QJsonValueRef ref : arrayEvent)
 	{
@@ -185,13 +193,13 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 		Event *eve = new Event();
 		QString dateStart = obj["beginDate"].toObject()["date"].toString();
 		QString dateEnd = obj["endDate"].toObject()["date"].toString();
-		QString format = "yyyy-MM-dd HH:mm:ss.zzzz";
 		QDateTime startDate = QDateTime::fromString(dateStart, format);
 		QDateTime endDate = QDateTime::fromString(dateEnd, format);
 		eve->Start = startDate;
 		eve->End = endDate;
 		eve->CreatorId = obj["creator"].toObject()["id"].toInt();
 		eve->ProjectId = obj["projectId"].toInt();
+		eve->Icon = obj["icon"].toString();
 		if (!projectToLoad.contains(eve->ProjectId))
 		{
 			qDebug() << "Loading " << eve->ProjectId;
@@ -199,6 +207,7 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 		}
 		eve->EventId = obj["id"].toInt();
 		eve->EventTypeName = obj["type"].toObject()["name"].toString();
+		eve->EventTypeId = obj["type"].toObject()["id"].toInt();
 		eve->Title = obj["title"].toString();
 		eve->Color = QColor(128, 50, 235);
 		eve->Description = obj["description"].toString();
@@ -208,6 +217,23 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 		{
 			_MapMonthEvent[monthStart].push_back(eve);
 			monthStart = monthStart.addMonths(1);
+		}
+	}
+	for (QJsonValueRef ref : taskEvent)
+	{
+		Task *task = new Task();
+		QJsonObject obj = ref.toObject();
+		task->TaskId = obj["id"].toInt();
+		task->ProjectId = obj["projectId"].toInt();
+		task->Title = obj["title"].toString();
+		QString dateStart = obj["startedAt"].toObject()["date"].toString();
+		task->Start = QDateTime::fromString(dateStart, format);
+		QString dateEnd = obj["dueDate"].toObject()["date"].toString();
+		task->End = QDateTime::fromString(dateEnd, format);
+		_MapMonthTask.push_back(task);
+		if (!projectToLoad.contains(task->ProjectId))
+		{
+			projectToLoad.push_back(task->ProjectId);
 		}
 	}
 	_LoadingDates.remove(id);
@@ -242,13 +268,25 @@ void BodyCalendar::OnProjectLoadingDone(int requestId, QByteArray data)
 	QString name = obj["name"].toString();
 	QString color = obj["color"].toString();
 	color = "#" + color.toUpper();
+	qDebug() << "Color for project " << name << " is " << color;
+
+	bool exist = _Projects.contains(id);
 
 	_Projects[id] = name;
-	QCheckBox *checkbox = new QCheckBox(name);
-	_ProjectChoiceLayout->addWidget(checkbox);
-	checkbox->setChecked(true);
-	connect(checkbox, SIGNAL(clicked(bool)), this, SLOT(OnProjectCheckChange()));
-	_ProjectChoiceCheckBox[id] = checkbox;
+	_ProjectsColors[id] = color;
+	if (exist)
+	{
+		_ProjectChoiceCheckBox[id]->setText(name);
+	}
+	else
+	{
+		QCheckBox *checkbox = new QCheckBox(name);
+		_ProjectChoiceLayout->addWidget(checkbox);
+		checkbox->setChecked(true);
+		connect(checkbox, SIGNAL(clicked(bool)), this, SLOT(OnProjectCheckChange()));
+		_ProjectChoiceCheckBox[id] = checkbox;
+		checkbox->setStyleSheet("color: " + color + ";");
+	}
 
 	for (QList<Event*> list : _MapMonthEvent)
 	{
@@ -370,7 +408,17 @@ void BodyCalendar::OnEditEvent(Event *event)
 {
 	CalendarEventForm *form = new CalendarEventForm(event, _AllProjects, this);
 	form->exec();
-	qDebug() << "Form finish execution";
+	QVector<QString> data;
+	data.push_back(USER_TOKEN);
+	QDate date = event->Start.date();
+	date.setDate(date.year(), date.month(), 01);
+	data.push_back(date.toString("yyyy-MM-dd"));
+	while (date.year() != event->End.date().year() && date.month() != event->End.date().month())
+	{
+		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+		date = date.addMonths(1);
+		data[1] = date.toString("yyyy-MM-dd");
+	}
 }
 
 void BodyCalendar::OnDeleteEvent(Event *event)
@@ -430,29 +478,55 @@ void BodyCalendar::OnLoadingProjectsFail(int id, QByteArray data)
 {
 }
 
-void BodyCalendar::OnEventEditDone(int id, QByteArray data)
-{
-	// Here do the recup of a new event with all data
-	qDebug() << "On Event edit done";
-}
-
-void BodyCalendar::OnEventEditFail(int id, QByteArray data)
-{
-}
-
 void BodyCalendar::UpdateType()
 {
+	qDebug() << "Update type !";
+	QList<Event> presentEvent;
+	for (QMap<QDate, QList<Event*> >::iterator it = _MapMonthEvent.begin(); it != _MapMonthEvent.end(); ++it)
+	{
+		QList<Event*> toRemove;
+		for (Event *item : it.value())
+		{
+			if (presentEvent.contains(*item))
+			{
+				toRemove.push_back(item);
+			}
+			else
+				presentEvent.push_back(*item);
+		}
+		for (Event *item : toRemove)
+		{
+			it.value().removeAll(item);
+		}
+	}
+	QList<Task> presentTask;
+	QList<Task*> toRemove;
+	for (Task *item : _MapMonthTask)
+	{
+		if (presentTask.contains(*item))
+		{
+			toRemove.push_back(item);
+		}
+		else
+			presentTask.push_back(*item);
+	}
+	for (Task *item : toRemove)
+	{
+		_MapMonthTask.removeAll(item);
+	}
 	if (_LastDrawingDate.month() != _CurrentDrawingDate.month())
 	{
-		QDate keyDate = QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month(), 1);
-		if (!_MapMonthEvent.contains(keyDate))
-		{
-			// Do call API for loading a new month and recall UpdateType
-			//TO_DELETE
-			_LastDrawingDate = _CurrentDrawingDate;
-			//END TO_DELETE
-			//return;
-		}
+		QDate keyDate = QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month() + 1, 1);
+		QVector<QString> data;
+		data.push_back(USER_TOKEN);
+		data.push_back(keyDate.toString("yyyy-MM-dd"));
+		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = keyDate;
+		keyDate = QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month() - 1, 1);
+		data.clear();
+		data.push_back(USER_TOKEN);
+		data.push_back(keyDate.toString("yyyy-MM-dd"));
+		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = keyDate;
+		_LastDrawingDate = _CurrentDrawingDate;
 		_ViewMonth->LoadEvents(_MapMonthEvent[keyDate], _CurrentDrawingDate);
 		_MonthCalendarFixed->setCurrentPage(_CurrentDrawingDate.year(), _CurrentDrawingDate.month());
 	}
@@ -489,22 +563,46 @@ void BodyCalendar::UpdateType()
 		currentEvents.append(_MapMonthEvent[QDate(_CurrentDrawingDate.year() + 1, 1, 1)]);
 	else
 		currentEvents.append(_MapMonthEvent[QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month() + 1, 1)]);
+	QDate start;
+	QDate end;
 	switch (_View)
 	{
 	case DAY:
+		start = _CurrentDrawingDate;
+		end = _CurrentDrawingDate;
 		_ViewDay->LoadEvents(currentEvents, _CurrentDrawingDate);
 		_ViewCalendarLayout->setCurrentIndex(2);
 		break;
 	case MONTH:
+		start = QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month(), 1);
+		end = start.addMonths(1).addDays(-1);
 		_ViewMonth->LoadEvents(currentEvents, _CurrentDrawingDate);
 		_ViewCalendarLayout->setCurrentIndex(0);
 		break;
 	case WEEK:
+		start = _CurrentDrawingDate;
+		while (start.dayOfWeek() != 1)
+			start = start.addDays(-1);
+		end = start.addDays(6);
 		_ViewWeek->LoadEvents(currentEvents, _CurrentDrawingDate);
 		_ViewCalendarLayout->setCurrentIndex(1);
 		break;
 	}
-
+	while (QLayoutItem *item = _TaskChoiceLayout->takeAt(0))
+	{
+		if (item->widget())
+			delete item->widget();
+		delete item;
+	}
+	for (Task *task : _MapMonthTask)
+	{
+		if (task->Start.date() <= end && start <= task->End.date())
+		{
+			QLabel *lab = new QLabel(task->Title);
+			lab->setStyleSheet("color: " + _ProjectsColors[task->ProjectId] + ";");
+			_TaskChoiceLayout->addWidget(lab);
+		}
+	}
 }
 
 void BodyCalendar::Show(int ID, MainWindow *mainApp)
