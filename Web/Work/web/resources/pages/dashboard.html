@@ -44,7 +44,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </li>
                   <li class="content-view left">
                     <div class="ellipsis"><i class="fa fa-folder-o"></i>Project: "{[{ team.name }]}"</div>
-                    <div class="bold"><i class="fa fa-bar-chart"></i>Status: {[{ team.occupation == 'free' ? 'Available' : 'Busy' }]}</div>
+                    <div><i class="fa fa-bar-chart"></i>Status: {[{ team.occupation == 'free' ? 'Available' : 'Busy' }]}</div>
                   </li>
                   <li class="content-view left even">
                     <div><i class="fa fa-play-circle-o"></i>Started tasks: {[{ team.number_of_tasks_begun }]}</div>
@@ -115,7 +115,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
             </div>
           </div>
-        </div>        
+        </div>
       </div>
     </div>
   </section>
@@ -133,7 +133,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="loading-content section">
               <div></div>
             </div>
-          </div>          
+          </div>
           <div class="section-content tiles" data-ng-if="!data.globalProgress.onLoad">
             <div data-ng-if="data.globalProgress.isValid && data.globalProgress.list" panhandler>
               <div class="data-wrapper" ng-repeat="progress in data.globalProgress.list">

@@ -27,7 +27,7 @@ h3 { font-size: 40px; margin: 20px 0; }
 
 label { display: inline; margin: 0; font-weight: 400; }
 
-a { color: #212121; transition: all .2s ease-out; }
+a { color: #212121; transition: all .1s ease-out; }
 a:active,
 a:focus,
 a:hover { text-decoration: none; color: #e05e52; }
@@ -112,8 +112,10 @@ i { padding: 0 10px 0 0; }
 .sidebar-nav li a.active,
 .sidebar-nav li a.active:active,
 .sidebar-nav li a.active:hover,
-.sidebar-nav li a.active:focus { font-weight: 500; color: #212121; background: #fafafa; border-right: 2px solid #fff; }
-.sidebar-nav li a { display: block; padding: 15px 25px; color: #616161; text-transform: uppercase; }
+.sidebar-nav li a.active:focus { font-weight: 500; color: #212121; background: #eee; }
+.sidebar-nav li a:active,
+.sidebar-nav li a.active { border-right: 5px solid #e05e52; }
+.sidebar-nav li a { font-family: "Roboto Condensed", Helvetica, Arial, sans-serif; font-size: 16px; display: block; padding: 15px 25px; color: #616161; text-transform: uppercase; transition: none; }
 .sidebar-nav li:nth-child(2) a { margin-top: 15px; }
 .sidebar-nav { position: absolute; top: 0; width: 250px; margin: 0; padding: 0; list-style: none; }
 .sidebar-nav .sidebar-brand a:active,
