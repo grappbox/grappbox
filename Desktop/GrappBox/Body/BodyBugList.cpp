@@ -46,18 +46,33 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject  *dataPage)
 
     _bugListOpen.clear();
     _bugListClosed.clear();
-    data.append(API::SDataManager::GetDataManager()->GetToken());
-    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
-    data.append(QString::number(1));
-    data.append(QString::number(0));
-    data.append(QString::number(std::numeric_limits<int>::max()));
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_BY_STATE, data, this, "OnGetBugListSuccess", "OnRequestFailure");
-    data.clear();
-    data.append(API::SDataManager::GetDataManager()->GetToken());
-    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
-    data.append(QString::number(0));
-    data.append(QString::number(std::numeric_limits<int>::max()));
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_CLOSED, data, this, "OnGetBugListClosedSuccess", "OnRequestFailure");
+
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("OnGetBugListSuccess");
+		SET_ON_FAIL("OnRequestFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_FIELD("id", API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_FIELD("state", 1);
+		ADD_FIELD("offset", 0);
+		ADD_FIELD("limit", std::numeric_limits<int>::max());
+		GET(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_BY_STATE);
+	}
+	END_REQUEST;
+	
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("OnGetBugListClosedSuccess");
+		SET_ON_FAIL("OnRequestFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_FIELD("id", API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_FIELD("offset", 0);
+		ADD_FIELD("limit", std::numeric_limits<int>::max());
+		GET(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_CLOSED);
+	}
+	END_REQUEST;
 }
 
 void BodyBugList::Hide()
@@ -123,8 +138,8 @@ void BodyBugList::TriggerNewIssue()
 void BodyBugList::OnGetBugListClosedSuccess(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonObject json = doc.object();
-    QJsonArray tickets = json["tickets"].toArray();
+    QJsonObject json = doc.object()["data"].toObject();
+    QJsonArray tickets = json["array"].toArray();
     QJsonArray::iterator ticketIt = tickets.begin();
 
     for (ticketIt = tickets.begin(); ticketIt != tickets.end(); ticketIt++)
@@ -144,8 +159,8 @@ void BodyBugList::OnGetBugListClosedSuccess(int  id, QByteArray data)
 void BodyBugList::OnGetBugListSuccess(int  id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonObject json = doc.object();
-    QJsonArray tickets = json["tickets"].toArray();
+	QJsonObject json = doc.object()["data"].toObject();
+    QJsonArray tickets = json["array"].toArray();
     QJsonArray::iterator ticketIt = tickets.begin();
 
     for (ticketIt = tickets.begin(); ticketIt != tickets.end(); ticketIt++)
@@ -176,12 +191,18 @@ void BodyBugList::TriggerFilterChange(BugListTitleWidget::BugState  state)
 
 void BodyBugList::TriggerCloseBug(int bugId)
 {
-    QVector<QString> closeData;
     int APIID;
 
-    closeData.append(API::SDataManager::GetDataManager()->GetToken());
-    closeData.append(QString::number(bugId));
-    APIID = API::SDataManager::GetCurrentDataConnector()->Delete(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT, closeData, this, "TriggerCloseSuccess", "OnRequestFailure");
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("TriggerCloseSuccess");
+		SET_ON_FAIL("OnRequestFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_FIELD("id", bugId);
+		APIID = DELETE(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
+	}
+	END_REQUEST;
     _waitingAPIIDBugId[APIID] = bugId;
 }
 

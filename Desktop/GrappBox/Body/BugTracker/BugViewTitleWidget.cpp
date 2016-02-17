@@ -62,11 +62,16 @@ BugViewTitleWidget::BugViewTitleWidget(QString title, bool creation, QWidget *pa
 
 void BugViewTitleWidget::TriggerCloseIssue()
 {
-    QVector<QString> closeData;
-
-    closeData.append(API::SDataManager::GetDataManager()->GetToken());
-    closeData.append(QString::number(_bugID));
-    API::SDataManager::GetCurrentDataConnector()->Delete(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT, closeData, this, "TriggerCloseSuccess", "TriggerAPIFailure");
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("TriggerCloseSuccess");
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_FIELD("ticketId", _bugID);
+		DELETE(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
+	}
+	END_REQUEST;
 }
 
 void BugViewTitleWidget::SetTitle(const QString &title)

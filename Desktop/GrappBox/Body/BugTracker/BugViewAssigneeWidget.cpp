@@ -85,18 +85,32 @@ void BugViewAssigneeWidget::TriggerOpenPage(const BugAssigneePage page)
 
 void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString name)
 {
-    QVector<QString> data;
     int assignId;
 
     if (_isAPIAssignActivated)
     {
-        data.append(QString::number(_bugId));
-        data.append(API::SDataManager::GetDataManager()->GetToken());
-        data.append(QString::number(id));
-        if (checked)
-            assignId = API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_ASSIGNUSER_BUG, data, this, "TriggerAssignSuccess", "TriggerAssignFailure");
-        else
-            assignId = API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_DELETEUSER_BUG, data, this, "TriggerUnAssignSuccess", "TriggerUnAssignFailure");
+		BEGIN_REQUEST;
+		{
+			SET_CALL_OBJECT(this);
+			ADD_FIELD("bugId", _bugId);
+			ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+			ADD_ARRAY("toAdd");
+			ADD_ARRAY("toRemove");
+			if (checked)
+			{
+				ADD_FIELD_ARRAY(id, "toAdd");
+				SET_ON_DONE("TriggerAssignSuccess");
+				SET_ON_FAIL("TriggerAssignFailure");
+			}
+			else
+			{
+				ADD_FIELD_ARRAY(id, "toRemove");
+				SET_ON_DONE("TriggerUnAssignSuccess");
+				SET_ON_FAIL("TriggerUnAssignFailure");
+			}
+			assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
+		}
+		END_REQUEST;
         _apiAssignWaiting[assignId] = id;
     }
     if (checked)

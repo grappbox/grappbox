@@ -17,6 +17,9 @@ DataConnectorOnline::DataConnectorOnline()
 {
 	_Manager = new QNetworkAccessManager();
 	_PostMap[PR_LOGIN] = "accountadministration/login";
+	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
+	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";
+	_PostMap[PR_CREATETAG] = "bugtracker/tagcreation";
 }
 
 void DataConnectorOnline::OnResponseAPI()
@@ -81,9 +84,6 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 		break;
 	case PR_EDIT_BUG:
 		reply = EditBug(data);
-		break;
-	case PR_ASSIGNUSER_BUG:
-		reply = AssignUserToTicket(data);
 		break;
 	case PR_DELETEUSER_BUG:
 		reply = DeleteUserToTicket(data);
@@ -208,7 +208,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 		reply = GetActionOld("timeline/archivemessage", data);
 		break;
 	case GR_PROJECTBUGTAG_ALL:
-		reply = GetActionOld("bugtracker/getprojecttags", data);
+		reply = GetAction("bugtracker/getprojecttags", data);
 		break;
 	case GR_PROJECT_USERS_ALL:
 		reply = GetAction("projects/getusertoproject", data);
@@ -317,6 +317,9 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 		break;
 	case PUTR_SET_PARTICIPANT:
 		reply = EditEventParticipant(data);
+		break;
+	case PUTR_ASSIGNUSER_BUG:
+		reply = AssignUserToTicket(data);
 		break;
 	}
 	if (reply == nullptr)
