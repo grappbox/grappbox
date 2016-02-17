@@ -13,33 +13,35 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <h2>Choose the Cloud you want to access</h2>
             <p>Hold to navigate between all your your project Cloud modules (sorted by name).<br>For each project, you'll find useful information project and client name. Use the link below each card to go to the associated online storage.</p>
           </div>
-          <div class="section-content tiles" ng-show="data.onLoad">
-            <div class="loading-content section"><div></div></div>
+          <div class="section-content tiles" data-ng-if="data.onLoad">
+            <div class="loading-content section">
+              <div></div>
+            </div>
           </div>
-          <div class="section-content tiles" ng-show="!data.onLoad">
+          <div class="section-content tiles" data-ng-if="!data.onLoad">
             <div id="all-clouds-data">
               <div data-ng-if="data.isValid && data.userProjects" panhandler>
-                <div class="data-wrapper" ng-repeat="userProject in data.userProjects">
+                <div class="data-wrapper" data-ng-repeat="object in data.userProjects">
                   <ul class="data-content each-project-data shadow">
-                    <li class="project-picture left" ng-show="userProject.logo === null">
+                    <li class="project-picture left" data-ng-if="!object.logo">
                       <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                     </li>
-                    <li class="project-picture left" ng-show="userProject.logo !== null">
-                      <img class="shadow" data-ng-src="data:image/png;base64,{[{ userProject.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                    <li class="project-picture left" data-ng-if="object.logo">
+                      <img class="shadow" data-ng-src="data:image/png;base64,{[{ object.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                     </li>
                     <li class="project-data left">
-                      <div class="upper bold">"{[{ userProject.name }]}"</div>
+                      <div class="upper bold">"{[{ object.name }]}"</div>
                       <div class="clearfix"></div>
                     </li>
                     <li class="project-data left">
-                      <div>{[{ userProject.company ? 'Company: ' + userProject.company : '' }]}</div>
-                      <div>{[{ userProject.phone ? 'Phone: ' + userProject.phone : '' }]}</div>
-                      <div>{[{ userProject.contact_mail ? 'Email: ' + userProject.contact_mail : '' }]}</div>
+                      <div>{[{ object.company ? 'Company: ' + object.company : '' }]}</div>
+                      <div>{[{ object.phone ? 'Phone: ' + object.phone : '' }]}</div>
+                      <div>{[{ object.contact_mail ? 'Email: ' + object.contact_mail : '' }]}</div>
                       <div class="clearfix"></div>
                     </li>
                     <li class="clearfix"></li>
                     <li>
-                      <a ng-href="cloud/{[{ userProject.id }]}" title="Go to '{[{ userProject.name }]}' dedicated Cloud storage" class="btn-default btn-submit"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
+                      <a ng-href="cloud/{[{ object.id }]}" title="Go to '{[{ object.name }]}' dedicated Cloud storage" class="btn-default btn-submit"><i class="fa fa-arrow-up fa-fw"></i>Go to Cloud storage</a>
                     </li>
                   </ul>
                 </div>
