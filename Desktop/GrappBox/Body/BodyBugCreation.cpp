@@ -105,7 +105,6 @@ BodyBugCreation::BodyBugCreation(QWidget *parent) : QWidget(parent)
 
 void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject  *data)
 {
-    QVector<QString> tagsAndUsersData;
     QString token;
     int currentProject;
 
@@ -116,12 +115,20 @@ void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject  *data)
 
     token = API::SDataManager::GetDataManager()->GetToken();
     currentProject = API::SDataManager::GetDataManager()->GetCurrentProject();
-    tagsAndUsersData.append(token);
-    tagsAndUsersData.append(QString::number(currentProject));
     _waitingPageCreated = 2;
 
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL, tagsAndUsersData, this, "TriggerGotProjectUsers", "TriggerAPIFailure");
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL, tagsAndUsersData, this, "TriggerGotProjectTags", "TriggerAPIFailure");
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("TriggerGotProjectUsers");
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("token", token);
+		ADD_FIELD("projectId", currentProject);
+		GET(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL); //[CHIE DESSUS]
+		SET_ON_DONE("TriggerGotProjectTags");
+		GET(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL); //[CHIE DESSUS]
+	}
+	END_REQUEST;
 }
 
 void BodyBugCreation::Hide()
@@ -179,67 +186,87 @@ void BodyBugCreation::DeleteComments()
 
 void BodyBugCreation::TriggerComment(BugViewPreviewWidget* previewWid)
 {
-    QVector<QString> data;
     QString comment = _commentWidget->GetComment();
 
-    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
-    data.append(API::SDataManager::GetDataManager()->GetToken());
-    data.append(_titleBar->GetTitle());
-    data.append(comment);
-    data.append(QString::number(BUGSTATE_OPEN));
-    data.append("");
-
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_CREATE_BUG, data, this, "TriggerBugCreated", "TriggerAPIFailure");
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("TriggerBugCreated");
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_FIELD("projectId", API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_FIELD("title", _titleBar->GetTitle());
+		ADD_FIELD("description", comment);
+		ADD_FIELD("stateId", BUGSTATE_OPEN);
+		ADD_FIELD("stateName", "");
+		POST(API::DP_BUGTRACKER, API::PR_CREATE_BUG);
+	}
+	END_REQUEST;
 }
 
 void BodyBugCreation::TriggerBugCreated(int  id, QByteArray data)
 {
-    QVector<QString> commentData;
-    QJsonObject json = QJsonDocument::fromJson(data).object();
+    QJsonObject json = QJsonDocument::fromJson(data).object()["data"].toObject();
     QString comment = _commentWidget->GetComment();
     QString commentTitle = _commentWidget->GetCommentTitle();
     QList<int> assignedUser = _assignees->GetAllAssignee();
     QList<int> assignedCategories = _categories->GetAllAssignee();
-    QList<int>::iterator it;
-    QVector<QString> tagData;
     int bugID = json["ticket"].toObject()["id"].toInt();
     _waitingPageCreated = -1;
     _bugId = bugID;
 
-    for (it = assignedCategories.begin(); it != assignedCategories.end(); ++it)
+    for (QList<int>::iterator it = assignedCategories.begin(); it != assignedCategories.end(); ++it)
     {
-        tagData.clear();
-        tagData.append(API::SDataManager::GetDataManager()->GetToken());
-        tagData.append(QString::number(bugID));
-        tagData.append(QString::number(*it));
-        API::SDataManager::GetCurrentDataConnector()->Put(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG, tagData, this, "DoNothing", "TriggerAPIFailure");
+		BEGIN_REQUEST;
+		{
+			SET_ON_DONE("DoNothing");
+			SET_ON_FAIL("TriggerAPIFailure");
+			SET_CALL_OBJECT(this);
+			ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+			ADD_FIELD("bugId", bugID);
+			ADD_FIELD("tagId", *it);
+			PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG); //[CHIE DESSUS]
+		}
+		END_REQUEST;
     }
-    tagData.clear();
-    tagData.append(QString::number(bugID));
-    tagData.append(API::SDataManager::GetDataManager()->GetToken());
-    for (it = assignedUser.begin(); it != assignedUser.end(); ++it)
-    {
-        tagData.append(QString::number((*it)));
-    }
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_ASSIGNUSER_BUG, tagData, this, "DoNothing", "TriggerAPIFailure");
-
-    commentData.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
-    commentData.append(API::SDataManager::GetDataManager()->GetToken());
-    commentData.append(commentTitle);
-    commentData.append(comment);
-    commentData.append(QString::number(json["ticket"].toObject()["id"].toInt()));
-
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_COMMENT_BUG, commentData, this, "TriggerBugCommented", "TriggerAPIFailure");
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("DoNothing");
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("bugId", bugID);
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_ARRAY("toRemove");
+		ADD_ARRAY("toAdd");
+		for (QList<int>::iterator it = assignedUser.begin(); it != assignedUser.end(); ++it)
+			ADD_FIELD_ARRAY(*it, "toAdd"); //[CHIE DESSUS]
+		PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG); //[CHIE DESSUS]
+	}
+	END_REQUEST;
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("TriggerBugCommented");
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("projectId", API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_FIELD("title", commentTitle);
+		ADD_FIELD("description", comment);
+		ADD_FIELD("parentId", json["ticket"].toObject()["id"].toInt());
+		POST(API::DP_BUGTRACKER, API::PR_COMMENT_BUG);
+	}
+	END_REQUEST;
 }
 
 void BodyBugCreation::TriggerGotProjectTags(int  id, QByteArray data)
 {
     QList<QJsonObject> categoriesObjects;
-    QJsonObject json = QJsonDocument::fromJson(data).object();
+    QJsonObject json = QJsonDocument::fromJson(data).object()["data"].toObject();
+	QJsonArray arr = json["array"].toArray();
 
-    for (int i = 1; json.contains("Tag " + QString::number(i)); ++i)
+	for (QJsonArray::iterator it = arr.begin(); it != arr.end(); ++it)
     {
-        QJsonObject current = json["Tag " + QString::number(i)].toObject();
+        QJsonObject current = (*it).toObject();
 
         current.insert("assigned", false);
         categoriesObjects.append(current);
@@ -250,11 +277,11 @@ void BodyBugCreation::TriggerGotProjectTags(int  id, QByteArray data)
 void BodyBugCreation::TriggerGotProjectUsers(int  id, QByteArray data)
 {
     QList<QJsonObject> usersObjects;
-    QJsonObject json = QJsonDocument::fromJson(data).object();
-
-    for (int i = 1; json.contains("User " + QString::number(i)); ++i)
+    QJsonObject json = QJsonDocument::fromJson(data).object()["data"].toObject();
+	QJsonArray arr = json["array"].toArray();
+    for (QJsonArray::iterator it = arr.begin(); it != arr.end(); ++it)
     {
-        QJsonObject current = json["User " + QString::number(i)].toObject();
+        QJsonObject current = (*it).toObject();
 
         current.insert("assigned", false);
         usersObjects.append(current);

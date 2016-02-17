@@ -68,10 +68,8 @@ namespace API
         PR_ROLE_ADD,
         PR_ROLE_ASSIGN,
         PR_CUSTOMER_GENERATE_ACCESS,
-        PR_EDIT_BUG,
         PR_CREATE_BUG,
         PR_COMMENT_BUG,
-        PR_ASSIGNUSER_BUG,
         PR_DELETEUSER_BUG,
         PR_CREATETAG,
         PR_MESSAGE_TIMELINE,
@@ -100,7 +98,9 @@ namespace API
         PUTR_INVITE_USER,
         PUTR_ASSIGNTAG,
 		PUTR_EDIT_EVENT,
-		PUTR_SET_PARTICIPANT
+		PUTR_SET_PARTICIPANT,
+		PUTR_ASSIGNUSER_BUG,
+		PUTR_EDIT_BUG,
     };
 
 	enum RequestType

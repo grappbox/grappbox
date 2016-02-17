@@ -61,12 +61,10 @@ DataConnectorOnline::DataConnectorOnline()
 	_PostMap[PR_ROLE_ADD] = "";
 	_PostMap[PR_ROLE_ASSIGN] = "";
 	_PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "";
-	_PostMap[PR_EDIT_BUG] = "";
-	_PostMap[PR_CREATE_BUG] = "";
-	_PostMap[PR_COMMENT_BUG] = "";
-	_PostMap[PR_ASSIGNUSER_BUG] = "";
+	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
+	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";
 	_PostMap[PR_DELETEUSER_BUG] = "";
-	_PostMap[PR_CREATETAG] = "";
+	_PostMap[PR_CREATETAG] = "bugtracker/tagcreation";
 	_PostMap[PR_MESSAGE_TIMELINE] = "";
 	_PostMap[PR_EDIT_MESSAGE_TIMELINE] = "";
 	_PostMap[PR_EDIT_COMMENTBUG] = "";
@@ -151,12 +149,6 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 		break;
 	case PR_COMMENT_BUG:
 		reply = CommentBug(data);
-		break;
-	case PR_EDIT_BUG:
-		reply = EditBug(data);
-		break;
-	case PR_ASSIGNUSER_BUG:
-		reply = AssignUserToTicket(data);
 		break;
 	case PR_DELETEUSER_BUG:
 		reply = DeleteUserToTicket(data);
@@ -390,6 +382,9 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 		break;
 	case PUTR_SET_PARTICIPANT:
 		reply = EditEventParticipant(data);
+		break;
+	case PUTR_ASSIGNUSER_BUG:
+		reply = AssignUserToTicket(data);
 		break;
 	}
 	if (reply == nullptr)

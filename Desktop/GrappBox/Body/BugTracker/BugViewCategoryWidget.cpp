@@ -86,14 +86,20 @@ void BugViewCategoryWidget::TriggerOpenPage(const BugCategoryPage page)
 
 void BugViewCategoryWidget::TriggerCreateReleased()
 {
-    QVector<QString> data;
     _creationCategory->setEnabled(false);
     _creationBtn->setEnabled(false);
 
-    data.append(API::SDataManager::GetDataManager()->GetToken());
-    data.append(QString::number(API::SDataManager::GetDataManager()->GetCurrentProject()));
-    data.append(_creationCategory->text());
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_BUGTRACKER, API::PR_CREATETAG, data, this, "TriggerCreateSuccess", "TriggerAPIFailure");
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("TriggerCreateSuccess");
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+		ADD_FIELD("projectId", API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_FIELD("name", _creationCategory->text());
+		POST(API::DP_BUGTRACKER, API::PR_CREATETAG);
+	}
+	END_REQUEST;
 }
 
 void BugViewCategoryWidget::TriggerCheckChange(bool checked, int id, QString name)
@@ -103,13 +109,26 @@ void BugViewCategoryWidget::TriggerCheckChange(bool checked, int id, QString nam
 
     if (_isAPIAssignActivated)
     {
-        data.append(API::SDataManager::GetDataManager()->GetToken());
-        data.append(QString::number(_bugId));
-        data.append(QString::number(id));
-        if (checked)
-            assignId = API::SDataManager::GetCurrentDataConnector()->Put(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG, data, this, "TriggerAssignSuccess", "TriggerAssignFailure");
-        else
-            assignId = API::SDataManager::GetCurrentDataConnector()->Delete(API::DP_BUGTRACKER, API::DR_REMOVE_BUGTAG, data, this, "TriggerUnAssignSuccess", "TriggerUnAssignFailure");
+		BEGIN_REQUEST;
+		{
+			SET_CALL_OBJECT(this);
+			ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
+			ADD_FIELD("tagId", id);
+			if (checked)
+			{
+				SET_ON_DONE("TriggerAssignSuccess");
+				SET_ON_FAIL("TriggerAssignFailure");
+				ADD_FIELD("bugId", _bugId);
+				assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG);
+			}
+			else
+			{
+				SET_ON_DONE("TriggerUnAssignSuccess");
+				SET_ON_FAIL("TriggerUnAssignFailure");
+				assignId = DELETE(API::DP_BUGTRACKER, API::DR_REMOVE_BUGTAG);
+			}
+		}
+		END_REQUEST;
         _apiAssignationWait[assignId] = id;
     }
     if (checked)
@@ -145,7 +164,7 @@ const QList<int> BugViewCategoryWidget::GetAllAssignee() const
 
 void BugViewCategoryWidget::TriggerCreateSuccess(int  id, QByteArray data)
 {
-    QJsonObject json = QJsonDocument::fromJson(data).object();
+    QJsonObject json = QJsonDocument::fromJson(data).object()["data"].toObject();
     BugCheckableLabel *newItem;
 
     newItem = new BugCheckableLabel(json["tag_id"].toInt(), _creationCategory->text(), false);
