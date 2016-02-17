@@ -118,13 +118,13 @@ class EventRepository extends EntityRepository
 			 	if ($project)
 			 	{
 					$projectName = $project->getName();
-					$projectLogo = $project->getLogo();
+					//$projectLogo = $project->getLogo();
 				}
 				$eventTitle = $meeting->getTitle();
 				$eventDescription = $meeting->getDescription();
 				$beginDate = $meeting->getBeginDate();
 
-				$arr[] = array("projects" => array("name" => $projectName, "logo" => $projectLogo), "type" => $typeName, "title" => $eventTitle,
+				$arr[] = array("projects" => array("name" => $projectName, "logo" => null), "type" => $typeName, "title" => $eventTitle,
 					"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 			}
 			else
@@ -145,13 +145,13 @@ class EventRepository extends EntityRepository
 					 	if ($project)
 					 	{
 							$projectName = $project->getName();
-							$projectLogo = $project->getLogo();
+							//$projectLogo = $project->getLogo();
 						}
 						$eventTitle = $meeting->getTitle();
 						$eventDescription = $meeting->getDescription();
 						$beginDate = $meeting->getBeginDate();
 
-						$arr[] = array("projects" => array("name" => $projectName, "logo" => $projectLogo), "type" => $typeName, "title" => $eventTitle,
+						$arr[] = array("projects" => array("name" => $projectName, "logo" => null), "type" => $typeName, "title" => $eventTitle,
 							"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 					}
 				}
