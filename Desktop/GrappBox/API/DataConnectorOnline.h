@@ -35,8 +35,7 @@ namespace API
         virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
 		virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
 
-		virtual int Post(DataPart part, API::PostRequest, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char *slotFailure);
-
+		virtual int Request(RequestType type, DataPart part, int request, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
     signals:
         void responseAPISuccess(int, QByteArray);
         void responseAPIFailure(int, QByteArray);
@@ -49,13 +48,19 @@ namespace API
         QMap<QNetworkReply*, DataConnectorCallback> _CallBack;
         QNetworkAccessManager *_Manager;
 
-		QMap<API::GetRequest, QString> _GetMap;
-		QMap<API::PostRequest, QString> _PostMap;
-		QMap<API::PutRequest, QString> _PutMap;
-		QMap<API::DeleteRequest, QString> _DeleteMap;
+		QMap<int, QString> _GetMap;
+		QMap<int, QString> _PostMap;
+		QMap<int, QString> _PutMap;
+		QMap<int, QString> _DeleteMap;
 
 	private:
 		QJsonObject ParseMap(QMap<QString, QVariant> &data);
+
+	private:
+		QNetworkReply *PostAction(QString urlIn, QMap<QString, QVariant> &data);
+		QNetworkReply *PutAction(QString urlIn, QMap<QString, QVariant> &data);
+		QNetworkReply *GetAction(QString urlIn, QMap<QString, QVariant> &data);
+		QNetworkReply *DeleteAction(QString urlIn, QMap<QString, QVariant> &data);
 
         //Put
     private:
@@ -67,7 +72,6 @@ namespace API
 
         // Post
     private:
-		QNetworkReply *PostAction(QString urlIn, QMap<QString, QVariant> &data);
 
         QNetworkReply *Login(QVector<QString> &data);
         QNetworkReply *AddRole(QVector<QString> &data);
@@ -98,13 +102,13 @@ namespace API
         QNetworkReply *DeleteProject(QVector<QString> &data);
         QNetworkReply *DeleteCustomerAccess(QVector<QString> &data);
         QNetworkReply *RESTDelete(QVector<QString> &data, QString baseURL);
-		QNetworkReply *DeleteAction(QString urlIn, QVector<QString> &data);
+		QNetworkReply *DeleteActionDeprecated(QString urlIn, QVector<QString> &data);
 
         // Get
     private:
         QNetworkReply *Logout(QVector<QString> &data);
-		QNetworkReply *GetAction(QString urlIn, QVector<QString> &data);
-        QNetworkReply *GetActionOld(QString urlIn, QVector<QString> &data);
+		QNetworkReply *GetActionDeprecated(QString urlIn, QVector<QString> &data);
+        QNetworkReply *GetActionDeprecatedOld(QString urlIn, QVector<QString> &data);
     };
 
 }

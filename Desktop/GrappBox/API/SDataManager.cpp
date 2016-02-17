@@ -91,3 +91,39 @@ void                       SDataManager::SetCurrentProjectId(int id)
     if (_CurrentProject < 0)
         _CurrentProject = -1;
 }
+
+QJsonObject SDataManager::ParseMapDebug(QMap<QString, QVariant> &data)
+{
+	QJsonObject ret;
+	for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
+	{
+		if (it.value().canConvert<QString>())
+			ret[it.key()] = it.value().toString();
+		else if (it.value().canConvert<QList<QString> >())
+		{
+			QJsonArray arr;
+			QList<QString> strList;
+			for (QString str : strList)
+				arr.append(str);
+			ret[it.key()] = arr;
+		}
+		else
+			ret[it.key()] = ParseMapDebug(it.value().toMap());
+	}
+	return ret;
+}
+
+void SDataManager::GenerateFileDebug(QMap<QString, QVariant> &data)
+{
+	QJsonObject ret = SDataManager::ParseMapDebug(data);
+	QJsonDocument doc(ret);
+	QString json = doc.toJson(QJsonDocument::Indented);
+	QMessageBox::about(nullptr, "Json debug", json);
+}
+
+void API::SDataManager::GenerateFileDebug(QByteArray arr)
+{
+	QJsonDocument doc = QJsonDocument::fromJson(arr);
+	QString json = doc.toJson(QJsonDocument::Indented);
+	QMessageBox::about(nullptr, "Json debug", json);
+}

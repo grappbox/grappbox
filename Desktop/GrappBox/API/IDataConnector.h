@@ -23,7 +23,7 @@ namespace API
 
     enum GetRequest
     {
-        GR_CALENDAR,
+        GR_CALENDAR = 0,
         GR_CALENDAR_DAY,
         GR_LIST_GANTT,
         GR_LIST_PROJECT,
@@ -64,7 +64,7 @@ namespace API
 
     enum PostRequest
     {
-        PR_LOGIN,
+        PR_LOGIN = 0,
         PR_ROLE_ADD,
         PR_ROLE_ASSIGN,
         PR_CUSTOMER_GENERATE_ACCESS,
@@ -83,7 +83,7 @@ namespace API
 
     enum DeleteRequest
     {
-        DR_PROJECT_ROLE,
+        DR_PROJECT_ROLE = 0,
         DR_ROLE_DETACH,
         DR_PROJECT_USER,
         DR_PROJECT,
@@ -95,13 +95,21 @@ namespace API
 
     enum PutRequest
     {
-        PUTR_USERSETTINGS,
+        PUTR_USERSETTINGS = 0,
         PUTR_PROJECTSETTINGS,
         PUTR_INVITE_USER,
         PUTR_ASSIGNTAG,
 		PUTR_EDIT_EVENT,
 		PUTR_SET_PARTICIPANT
     };
+
+	enum RequestType
+	{
+		RT_POST = 0,
+		RT_PUT,
+		RT_GET,
+		RT_DELETE
+	};
 
     class IDataConnector
     {
@@ -115,8 +123,8 @@ namespace API
         virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
         virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
 
-		virtual int Post(DataPart part, PostRequest request, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char *slotFailure) = 0;
-    };
+		virtual int Request(RequestType, DataPart part, int request, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
+	};
 
     struct UserInformation
     {

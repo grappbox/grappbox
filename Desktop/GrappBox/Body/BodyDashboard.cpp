@@ -8,6 +8,7 @@
 #include "SDataManager.h"
 #include "SFontLoader.h"
 #include "BodyDashboard.h"
+#include "utils.h"
 
 using namespace DashboardInformation;
 
@@ -129,7 +130,6 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
     _IsInitialized = true;
     if (sendSignal)
     {
-        emit OnLoadingDone(_UserId);
         _IsInitializing = false;
     }
 }
@@ -174,21 +174,40 @@ void BodyDashboard::Show(int ID, MainWindow *mainApp)
         DeleteLayout();
     _UserId = ID;
     _MainApplication = mainApp;
-
-    if (_IsInitializing)
-    {
-        emit OnLoadingDone(_UserId);
-        return;
-    }
+	emit OnLoadingDone(_UserId);
 
     _IsInitializing = true;
     _NumberBeforeInitializingDone = 3;
 
-    QVector<QString> data;
-    data.push_back(API::SDataManager::GetDataManager()->GetToken());
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_PROJECT, API::GR_LIST_PROJECT, data, this, "GetAllProject", "Failure");
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_PROJECT, API::GR_LIST_MEMBER_PROJECT, data, this, "GetMemberProject", "Failure");
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_PROJECT, API::GR_LIST_MEETING, data, this, "GetNextMeeting", "Failure");
+	BEGIN_REQUEST;
+	{
+		SET_CALL_OBJECT(this);
+		SET_ON_DONE("GetAllProject");
+		SET_ON_FAIL("Failure");
+		ADD_URL_FIELD(USER_TOKEN);
+		GET(API::DP_PROJECT, API::GR_LIST_PROJECT);
+	}
+	END_REQUEST;
+
+	BEGIN_REQUEST;
+	{
+		SET_CALL_OBJECT(this);
+		SET_ON_DONE("GetMemberProject");
+		SET_ON_FAIL("Failure");
+		ADD_URL_FIELD(USER_TOKEN);
+		GET(API::DP_PROJECT, API::GR_LIST_MEMBER_PROJECT);
+	}
+	END_REQUEST;
+
+	BEGIN_REQUEST;
+	{
+		SET_CALL_OBJECT(this);
+		SET_ON_DONE("GetNextMeeting");
+		SET_ON_FAIL("Failure");
+		ADD_URL_FIELD(USER_TOKEN);
+		GET(API::DP_PROJECT, API::GR_LIST_MEETING);
+	}
+	END_REQUEST;
 }
 
 void BodyDashboard::Hide()
@@ -206,13 +225,13 @@ void BodyDashboard::GetNextMeeting(int, QByteArray byte)
 {
     _NumberBeforeInitializingDone--;
     QJsonDocument doc = QJsonDocument::fromJson(byte);
-    QJsonObject objmain = doc.object();
-    for (QJsonValueRef ref : objmain)
+    QJsonObject objmain = doc.object()["data"].toObject();
+    for (QJsonValueRef ref : objmain["array"].toArray())
     {
         QJsonObject obj = ref.toObject();
         NextMeetingInfo *info = new NextMeetingInfo(NextMeetingInfo::Personnal, "", "", "", nullptr);
-        info->MeetingName = obj["event_title"].toString();
-        QJsonObject date = obj["event_begin_date"].toObject();
+        info->MeetingName = obj["title"].toString();
+        QJsonObject date = obj["begin_date"].toObject();
         QStringList l = date["date"].toString().split(' ');
         info->Date = l.at(0);
         l = l.at(1).split(':');
@@ -228,11 +247,11 @@ void BodyDashboard::GetMemberProject(int, QByteArray byte)
 {
     _NumberBeforeInitializingDone--;
     QJsonDocument doc = QJsonDocument::fromJson(byte);
-    QJsonObject objmain = doc.object();
-    for (QJsonValueRef ref : objmain)
+    QJsonObject objmain = doc.object()["data"].toObject();
+    for (QJsonValueRef ref : objmain["array"].toArray())
     {
         QJsonObject obj = ref.toObject();
-        int userId = obj["user_id"].toInt();
+        int userId = obj["users"].toObject()["id"].toInt();
         bool exist = false;
         QLayoutItem *item;
         for (int i = 0; (item = _MemberAvaible->itemAt(i)) != nullptr; ++i)
@@ -253,8 +272,8 @@ void BodyDashboard::GetMemberProject(int, QByteArray byte)
         if (exist)
             continue;
         MemberAvaiableInfo *info = new MemberAvaiableInfo("", false, nullptr);
-        info->MemberName = obj["first_name"].toString() + QString(" ") + obj["last_name"].toString();
-        info->IsBusy = obj["occupation"].toBool();
+        info->MemberName = obj["users"].toObject()["firstname"].toString() + QString(" ") + obj["users"].toObject()["lastname"].toString();
+        info->IsBusy = obj["occupation"].toString() == "busy";
         info->Id = userId;
         info->MemberPicture = new QPixmap(QPixmap::fromImage(QImage(":/Image/Ressources/Icon/UserDefault.png")));
         _MemberAvaible->addWidget(new DashboardMember(info, this));

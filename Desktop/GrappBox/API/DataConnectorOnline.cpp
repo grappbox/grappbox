@@ -16,7 +16,80 @@ using namespace API;
 DataConnectorOnline::DataConnectorOnline()
 {
 	_Manager = new QNetworkAccessManager();
+
+	// Initialize Get request
+	_GetMap[GR_CALENDAR] = "";
+	_GetMap[GR_CALENDAR_DAY] = "";
+	_GetMap[GR_LIST_GANTT] = "";
+	_GetMap[GR_LIST_PROJECT] = "dashboard/getprojectsglobalprogress";
+	_GetMap[GR_PROJECT] = "";
+	_GetMap[GR_CREATOR_PROJECT] = "";
+	_GetMap[GR_LIST_MEMBER_PROJECT] = "dashboard/getteamoccupation";
+	_GetMap[GR_LIST_MEETING] = "dashboard/getnextmeetings";
+	_GetMap[GR_LIST_TASK] = "";
+	_GetMap[GR_LIST_TIMELINE] = "";
+	_GetMap[GR_TASK] = "";
+	_GetMap[GR_TIMELINE] = "";
+	_GetMap[GR_COMMENT_TIMELINE] = "";
+	_GetMap[GR_ARCHIVE_MESSAGE_TIMELINE] = "";
+	_GetMap[GR_USER_DATA] = "";
+	_GetMap[GR_WHITEBOARD] = "";
+	_GetMap[GR_LOGOUT] = "";
+	_GetMap[GR_USER_SETTINGS] = "";
+	_GetMap[GR_PROJECTS_USER] = "";
+	_GetMap[GR_PROJECT_ROLE] = "";
+	_GetMap[GR_PROJECT_USERS] = "";
+	_GetMap[GR_PROJECT_CANCEL_DELETE] = "";
+	_GetMap[GR_PROJECT_USER_ROLE] = "";
+	_GetMap[GR_CUSTOMER_ACCESSES] = "";
+	_GetMap[GR_CUSTOMER_ACCESS_BY_ID] = "";
+	_GetMap[GR_USERPROJECT_BUG] = "";
+	_GetMap[GR_XLAST_BUG_OFFSET] = "";
+	_GetMap[GR_XLAST_BUG_OFFSET_BY_STATE] = "";
+	_GetMap[GR_XLAST_BUG_OFFSET_CLOSED] = "";
+	_GetMap[GR_PROJECTBUG_ALL] = "";
+	_GetMap[GR_BUGCOMMENT] = "";
+	_GetMap[GR_GETBUGS_STATUS] = "";
+	_GetMap[GR_PROJECTBUGTAG_ALL] = "";
+	_GetMap[GR_PROJECT_USERS_ALL] = "";
+	_GetMap[GR_BUG] = "";
+	_GetMap[GR_EVENT] = "";
+	_GetMap[GR_TYPE_EVENT] = "";
+
+	// Initialize Post request
 	_PostMap[PR_LOGIN] = "accountadministration/login";
+	_PostMap[PR_ROLE_ADD] = "";
+	_PostMap[PR_ROLE_ASSIGN] = "";
+	_PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "";
+	_PostMap[PR_EDIT_BUG] = "";
+	_PostMap[PR_CREATE_BUG] = "";
+	_PostMap[PR_COMMENT_BUG] = "";
+	_PostMap[PR_ASSIGNUSER_BUG] = "";
+	_PostMap[PR_DELETEUSER_BUG] = "";
+	_PostMap[PR_CREATETAG] = "";
+	_PostMap[PR_MESSAGE_TIMELINE] = "";
+	_PostMap[PR_EDIT_MESSAGE_TIMELINE] = "";
+	_PostMap[PR_EDIT_COMMENTBUG] = "";
+	_PostMap[PR_POST_EVENT] = "event/postevent";
+	_PostMap[PR_NEW_WHITEBOARD] = "";
+
+	// Initialize Delete request
+	_DeleteMap[DR_PROJECT_ROLE] = "";
+	_DeleteMap[DR_ROLE_DETACH] = "";
+	_DeleteMap[DR_PROJECT_USER] = "";
+	_DeleteMap[DR_PROJECT] = "";
+	_DeleteMap[DR_CUSTOMER_ACCESS] = "";
+	_DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "";
+	_DeleteMap[DR_REMOVE_BUGTAG] = "";
+	_DeleteMap[DR_REMOVE_EVENT] = "";
+
+	// Initialize Put request
+	_PutMap[PUTR_USERSETTINGS] = "";
+	_PutMap[PUTR_PROJECTSETTINGS] = "";
+	_PutMap[PUTR_INVITE_USER] = "";
+	_PutMap[PUTR_ASSIGNTAG] = "";
+	_PutMap[PUTR_EDIT_EVENT] = "event/editevent";
+	_PutMap[PUTR_SET_PARTICIPANT] = "";
 }
 
 void DataConnectorOnline::OnResponseAPI()
@@ -129,104 +202,104 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 		break;
 
 	case GR_LIST_PROJECT:
-		reply = GetAction("dashboard/getprojectsglobalprogress", data);
+		reply = GetActionDeprecated("dashboard/getprojectsglobalprogress", data);
 		break;
 
 	case GR_PROJECT:
-		reply = GetAction("projects/getinformations", data);
+		reply = GetActionDeprecated("projects/getinformations", data);
 		break;
 
 	case GR_CREATOR_PROJECT:
-		reply = GetActionOld("dashboard/getprojectcreator", data);
+		reply = GetActionDeprecatedOld("dashboard/getprojectcreator", data);
 		break;
 
 	case GR_LIST_MEMBER_PROJECT:
-		reply = GetActionOld("dashboard/getteamoccupation", data);
+		reply = GetActionDeprecatedOld("dashboard/getteamoccupation", data);
 		break;
 
 	case GR_LIST_MEETING:
-		reply = GetActionOld("dashboard/getnextmeetings", data);
+		reply = GetActionDeprecatedOld("dashboard/getnextmeetings", data);
 		break;
 	case GR_USER_SETTINGS:
-		reply = GetActionOld("user/basicinformations", data);
+		reply = GetActionDeprecatedOld("user/basicinformations", data);
 		break;
 	case GR_PROJECTS_USER:
-		reply = GetActionOld("user/getprojects", data);
+		reply = GetActionDeprecatedOld("user/getprojects", data);
 		break;
 	case GR_PROJECT_ROLE:
-		reply = GetActionOld("roles/getprojectroles", data);
+		reply = GetActionDeprecatedOld("roles/getprojectroles", data);
 		break;
 	case GR_PROJECT_USERS:
-		reply = GetActionOld("dashboard/getprojectpersons", data);
+		reply = GetActionDeprecatedOld("dashboard/getprojectpersons", data);
 		break;
 	case GR_PROJECT_CANCEL_DELETE:
-		reply = GetActionOld("projects/retrieveproject", data);
+		reply = GetActionDeprecatedOld("projects/retrieveproject", data);
 		break;
 	case GR_PROJECT_USER_ROLE:
-		reply = GetActionOld("roles/getrolebyprojectanduser", data);
+		reply = GetActionDeprecatedOld("roles/getrolebyprojectanduser", data);
 		break;
 	case GR_CUSTOMER_ACCESSES:
-		reply = GetActionOld("projects/getcustomeraccessbyproject", data);
+		reply = GetActionDeprecatedOld("projects/getcustomeraccessbyproject", data);
 		break;
 	case GR_CUSTOMER_ACCESS_BY_ID:
-		reply = GetActionOld("projects/getcustomeraccessbyid", data);
+		reply = GetActionDeprecatedOld("projects/getcustomeraccessbyid", data);
 		break;
 	case GR_USERPROJECT_BUG:
-		reply = GetActionOld("bugtracker/getticketsbyuser", data);
+		reply = GetActionDeprecatedOld("bugtracker/getticketsbyuser", data);
 		break;
 	case GR_XLAST_BUG_OFFSET:
-		reply = GetActionOld("bugtracker/getlasttickets", data);
+		reply = GetActionDeprecatedOld("bugtracker/getlasttickets", data);
 		break;
 	case GR_XLAST_BUG_OFFSET_BY_STATE:
-		reply = GetActionOld("bugtracker/getticketsbystate", data);
+		reply = GetActionDeprecatedOld("bugtracker/getticketsbystate", data);
 		break;
 	case GR_XLAST_BUG_OFFSET_CLOSED:
-		reply = GetActionOld("bugtracker/getlastclosedtickets", data);
+		reply = GetActionDeprecatedOld("bugtracker/getlastclosedtickets", data);
 		break;
 	case GR_PROJECTBUG_ALL:
-		reply = GetActionOld("bugtracker/gettickets", data);
+		reply = GetActionDeprecatedOld("bugtracker/gettickets", data);
 		break;
 	case GR_BUGCOMMENT:
-		reply = GetActionOld("bugtracker/getcomments", data);
+		reply = GetActionDeprecatedOld("bugtracker/getcomments", data);
 		break;
 	case GR_GETBUGS_STATUS:
-		reply = GetActionOld("bugtracker/getStates", data);
+		reply = GetActionDeprecatedOld("bugtracker/getStates", data);
 		break;
 	case GR_LIST_TIMELINE:
-		reply = GetActionOld("timeline/gettimelines", data);
+		reply = GetActionDeprecatedOld("timeline/gettimelines", data);
 		break;
 	case GR_TIMELINE:
-		reply = GetActionOld("timeline/getlastmessages", data);
+		reply = GetActionDeprecatedOld("timeline/getlastmessages", data);
 		break;
 	case GR_COMMENT_TIMELINE:
-		reply = GetActionOld("timeline/getcomments", data);
+		reply = GetActionDeprecatedOld("timeline/getcomments", data);
 		break;
 	case GR_USER_DATA:
-		reply = GetActionOld("user/getuserbasicinformations", data);
+		reply = GetActionDeprecatedOld("user/getuserbasicinformations", data);
 		break;
 	case GR_ARCHIVE_MESSAGE_TIMELINE:
-		reply = GetActionOld("timeline/archivemessage", data);
+		reply = GetActionDeprecatedOld("timeline/archivemessage", data);
 		break;
 	case GR_PROJECTBUGTAG_ALL:
-		reply = GetActionOld("bugtracker/getprojecttags", data);
+		reply = GetActionDeprecatedOld("bugtracker/getprojecttags", data);
 		break;
 	case GR_PROJECT_USERS_ALL:
-		reply = GetAction("projects/getusertoproject", data);
+		reply = GetActionDeprecated("projects/getusertoproject", data);
 		break;
 	case GR_BUG:
-		reply = GetActionOld("bugtracker/getticket", data);
+		reply = GetActionDeprecatedOld("bugtracker/getticket", data);
 		break;
 	case GR_CALENDAR:
-		reply = GetAction("planning/getmonth", data);
+		reply = GetActionDeprecated("planning/getmonth", data);
 		break;
 	case GR_EVENT:
-		reply = GetAction("event/getevent", data);
+		reply = GetActionDeprecated("event/getevent", data);
 		break;
 	case GR_TYPE_EVENT:
-		reply = GetAction("event/gettypes", data);
+		reply = GetActionDeprecated("event/gettypes", data);
 		break;
 	case GR_WHITEBOARD:
-		reply = GetAction("whiteboard/list", data);
+		reply = GetActionDeprecated("whiteboard/list", data);
 		break;
 	}
 	if (reply == nullptr)
@@ -274,7 +347,7 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
 		reply = RESTDelete(data, "bugtracker/removetag");
 		break;
 	case DR_REMOVE_EVENT:
-		reply = DeleteAction("event/delevent", data);
+		reply = DeleteActionDeprecated("event/delevent", data);
 		break;
 	}
 	if (reply == nullptr)
@@ -337,19 +410,30 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 	return maxInt;
 }
 
-int API::DataConnectorOnline::Post(DataPart part, PostRequest request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
+int API::DataConnectorOnline::Request(RequestType type, DataPart part, int request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
 {
 	QNetworkReply *reply = nullptr;
-	reply = PostAction(_PostMap[request], data);
+	switch (type)
+	{
+	case RT_POST:
+		reply = PostAction(_PostMap[request], data);
+		break;
+	case RT_PUT:
+		reply = PutAction(_PutMap[request], data);
+		break;
+	case RT_GET:
+		reply = GetAction(_GetMap[request], data);
+		break;
+	case RT_DELETE:
+		reply = DeleteAction(_DeleteMap[request], data);
+		break;
+	}
 	if (reply == nullptr)
 		throw QException();
 	_CallBack[reply] = DataConnectorCallback();
 	_CallBack[reply]._Request = requestResponseObject;
 	_CallBack[reply]._SlotFailure = slotFailure;
 	_CallBack[reply]._SlotSuccess = slotSuccess;
-	qDebug() << slotSuccess;
-	qDebug() << requestResponseObject;
-	qDebug() << slotFailure;
 	int maxInt = 1;
 	for (QMap<QNetworkReply*, int>::const_iterator it = _Request.constBegin(); it != _Request.constEnd(); ++it)
 	{
@@ -396,6 +480,57 @@ QNetworkReply * API::DataConnectorOnline::PostAction(QString urlIn, QMap<QString
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
 	QNetworkReply *request = _Manager->post(requestSend, jsonba);
+	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+	return request;
+}
+
+QNetworkReply * API::DataConnectorOnline::PutAction(QString urlIn, QMap<QString, QVariant>& data)
+{
+	QJsonObject json;
+	QJsonObject objData = ParseMap(data);
+	json["data"] = objData;
+
+	QJsonDocument doc(json);
+	QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
+
+	QNetworkRequest requestSend(QUrl(URL_API + urlIn));
+	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+	QNetworkReply *request = _Manager->put(requestSend, jsonba);
+	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+	return request;
+}
+
+QNetworkReply * API::DataConnectorOnline::DeleteAction(QString urlIn, QMap<QString, QVariant>& data)
+{
+	QString urlAddon = "";
+
+	for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
+	{
+		QVariant var = it.value();
+		urlAddon += "/" + var.toString();
+	}
+
+	QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
+	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	QNetworkReply *request = _Manager->deleteResource(requestSend);
+	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+	return request;
+}
+
+QNetworkReply * API::DataConnectorOnline::GetAction(QString urlIn, QMap<QString, QVariant>& data)
+{
+	QString urlAddon = "";
+
+	for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
+	{
+		QVariant var = it.value();
+		urlAddon += "/" + var.toString();
+	}
+
+	QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
+	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	QNetworkReply *request = _Manager->get(requestSend);
 	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
 }
@@ -509,7 +644,7 @@ QNetworkReply *DataConnectorOnline::Logout(QVector<QString> &data)
 	return request;
 }
 
-QNetworkReply * API::DataConnectorOnline::GetAction(QString urlIn, QVector<QString>& data)
+QNetworkReply * API::DataConnectorOnline::GetActionDeprecated(QString urlIn, QVector<QString>& data)
 {
 	QString url = URL_API + urlIn;
 	for (QVector<QString>::const_iterator it = data.constBegin(); it != data.constEnd(); ++it)
@@ -523,7 +658,7 @@ QNetworkReply * API::DataConnectorOnline::GetAction(QString urlIn, QVector<QStri
 	return request;
 }
 
-QNetworkReply *DataConnectorOnline::GetActionOld(QString urlIn, QVector<QString> &data)
+QNetworkReply *DataConnectorOnline::GetActionDeprecatedOld(QString urlIn, QVector<QString> &data)
 {
 	QString url = OLD_URL_API + urlIn;
 	for (QVector<QString>::const_iterator it = data.constBegin(); it != data.constEnd(); ++it)
@@ -1047,7 +1182,7 @@ QNetworkReply *DataConnectorOnline::RESTDelete(QVector<QString> &data, QString b
 	return request;
 }
 
-QNetworkReply *DataConnectorOnline::DeleteAction(QString urlIn, QVector<QString> &data)
+QNetworkReply *DataConnectorOnline::DeleteActionDeprecated(QString urlIn, QVector<QString> &data)
 {
 	QString URL = urlIn;
 	QVector<QString>::iterator dataIt;

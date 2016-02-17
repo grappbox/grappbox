@@ -307,8 +307,6 @@ void BodyCalendar::OnProjectLoadingDone(int requestId, QByteArray data)
 	qDebug() << "Projects loaded : " << _IsProjectsLoaded;
 	if (_LoadingProjects.size() == 0 && _LoadingDates.size() == 0 && _IsProjectsLoaded)
 	{
-		if (_IsLoaded)
-			emit OnLoadingDone(_WidgetId);
 		_IsLoaded = false;
 		UpdateType();
 	}
@@ -467,8 +465,6 @@ void BodyCalendar::OnLoadingProjectsDone(int id, QByteArray data)
 	_IsProjectsLoaded = true;
 	if (_LoadingProjects.size() == 0 && _LoadingDates.size() == 0 && _IsProjectsLoaded)
 	{
-		if (_IsLoaded)
-			emit OnLoadingDone(_WidgetId);
 		_IsLoaded = false;
 		UpdateType();
 	}
@@ -634,6 +630,7 @@ void BodyCalendar::Show(int ID, MainWindow *mainApp)
 	data.clear();
 	data.push_back(USER_TOKEN);
 	DATA_CONNECTOR->Get(API::DP_PROJECT, API::GR_LIST_PROJECT, data, this, "OnLoadingProjectsDone", "OnLoadingProjectsFail");
+	emit OnLoadingDone(ID);
 }
 
 void BodyCalendar::Hide()

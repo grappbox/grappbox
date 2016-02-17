@@ -1,5 +1,7 @@
 #include <QDebug>
 #include <QFile>
+#include <QImage>
+#include <QByteArray>
 #include "SFontLoader.h"
 #include "SDataManager.h"
 #include "LoginWindow.h"
@@ -69,12 +71,8 @@ LoginWindow::LoginWindow(QWidget *mainP, QWidget *parent) : QMainWindow(parent)
 
 void LoginWindow::OnAccept()
 {
-	/*QVector<QString> data;
-	data.push_back(_Login->text());
-	data.push_back(_Password->text());
-	qDebug() << " On accept !";
-	_RequestId = API::SDataManager::GetCurrentDataConnector()->Post(API::DP_USER_DATA, API::PR_LOGIN, data, this, "OnLoginSuccess", "OnLoginFailure");
-	*/
+
+
 	BEGIN_REQUEST;
 	{
 		SET_ON_DONE("OnLoginSuccess");
@@ -92,13 +90,13 @@ void LoginWindow::OnLoginSuccess(int id, QByteArray response)
 {
 	QJsonDocument doc;
 	doc = QJsonDocument::fromJson(response);
-	QJsonObject obj = doc.object();
-	int idUser = obj["user"].toObject()["id"].toInt();
-	QString userName = obj["user"].toObject()["firstname"].toString();
-	QString userLastName = obj["user"].toObject()["lastname"].toString();
-	QString userToken = obj["user"].toObject()["token"].toString();
-	//QImage *avatar = QImage::fromData(QByteArray::fromBase64(obj["user"].toObject()[""].toString()), "PNG");
-	API::SDataManager::GetDataManager()->RegisterUserConnected(idUser, userName, userLastName, userToken, nullptr);
+	QJsonObject obj = doc.object()["data"].toObject();
+	int idUser = obj["id"].toInt();
+	QString userName = obj["firstname"].toString();
+	QString userLastName = obj["lastname"].toString();
+	QString userToken = obj["token"].toString();
+	QImage *avatar = new QImage(QImage::fromData(QByteArray::fromBase64(obj["avatar"].toString().toStdString().c_str()), "PNG"));
+	API::SDataManager::GetDataManager()->RegisterUserConnected(idUser, userName, userLastName, userToken, avatar);
 	this->setDisabled(false);
 	emit OnLogin();
 }

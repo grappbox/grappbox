@@ -14,7 +14,7 @@ CalendarEventForm::CalendarEventForm(Event *event, QMap<int, QString> &project, 
 	_CurrentEvent = event;
 	_CallBackWidget = callBackEvent;
 
-	setMaximumSize(400, 800);
+	setFixedSize(400, 800);
 
 	_MainLayout = new QFormLayout();
 	_DateStartLayout = new QHBoxLayout();
@@ -48,7 +48,7 @@ CalendarEventForm::CalendarEventForm(Event *event, QMap<int, QString> &project, 
 	_DateStartLayout->addWidget(_TimeEnd, 4);
 
 	_AreaAssociated = new QScrollArea();
-	_AreaAssociated->setMaximumHeight(100);
+	_AreaAssociated->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	QWidget *userAssociatedWidget = new QWidget();
 	_UserAssociated = new QVBoxLayout();
 	_UserAssociated->setSpacing(0);
@@ -56,10 +56,9 @@ CalendarEventForm::CalendarEventForm(Event *event, QMap<int, QString> &project, 
 	userAssociatedWidget->setLayout(_UserAssociated);
 	_AreaAssociated->setWidget(userAssociatedWidget);
 	_AreaAssociated->setWidgetResizable(true);
-	_AreaAssociated->setMinimumHeight(300);
 
 	_AreaNotAssociated = new QScrollArea();
-	_AreaNotAssociated->setMaximumHeight(100);
+	_AreaNotAssociated->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	QWidget *userNotAssociatedWidget = new QWidget();
 	_UserNotAssociated = new QVBoxLayout();
 	_UserNotAssociated->setSpacing(0);
@@ -67,7 +66,6 @@ CalendarEventForm::CalendarEventForm(Event *event, QMap<int, QString> &project, 
 	userNotAssociatedWidget->setLayout(_UserNotAssociated);
 	_AreaNotAssociated->setWidget(userNotAssociatedWidget);
 	_AreaNotAssociated->setWidgetResizable(true);
-	_AreaNotAssociated->setMinimumHeight(300);
 
 	_Save = new QPushButton("Save");
 	_Remove = new QPushButton("Delete event");
@@ -134,7 +132,51 @@ CalendarEventForm::CalendarEventForm(Event *event, QMap<int, QString> &project, 
 
 void CalendarEventForm::OnSave()
 {
-	QVector<QString> data;
+	if (_CurrentEvent == nullptr)
+	{
+		BEGIN_REQUEST;
+		{
+			SET_CALL_OBJECT(this);
+			SET_ON_DONE("OnSaveEventDone");
+			SET_ON_FAIL("OnSaveEventFail");
+			ADD_FIELD("token", USER_TOKEN);
+			ADD_FIELD("title", _TitleEdit->text());
+			ADD_FIELD("description", _DescriptionEdit->toPlainText());
+			if (_UseTypeIcon->isChecked())
+				ADD_FIELD("icon", "");
+			else
+				ADD_FIELD("icon", _UploadWidget->getEncodedImage());
+			ADD_FIELD("typeId", _SelectionType->currentData());
+			ADD_FIELD("begin", _DateStart->date().toString("yyyy-MM-dd") + " " + _TimeStart->time().toString("HH:mm:ss"));
+			ADD_FIELD("end", _DateEnd->date().toString("yyyy-MM-dd") + " " + _TimeEnd->time().toString("HH:mm:ss"));
+			GENERATE_JSON_DEBUG;
+			POST(API::DP_CALENDAR, API::PR_POST_EVENT);
+		}
+		END_REQUEST;
+	}
+	else
+	{
+		BEGIN_REQUEST;
+		{
+			SET_CALL_OBJECT(this);
+			SET_ON_DONE("OnSaveEventDone");
+			SET_ON_FAIL("OnSaveEventFail");
+			ADD_FIELD("token", USER_TOKEN);
+			ADD_FIELD("title", _TitleEdit->text());
+			ADD_FIELD("description", _DescriptionEdit->toPlainText());
+			if (_UseTypeIcon->isChecked())
+				ADD_FIELD("icon", "");
+			else
+				ADD_FIELD("icon", _UploadWidget->getEncodedImage());
+			ADD_FIELD("eventId", _CurrentEvent->EventId);
+			ADD_FIELD("typeId", _CurrentEvent->EventTypeId);
+			ADD_FIELD("begin", _DateStart->date().toString("yyyy-MM-dd") + " " + _TimeStart->time().toString("HH:mm:ss"));
+			ADD_FIELD("end", _DateEnd->date().toString("yyyy-MM-dd") + " " + _TimeEnd->time().toString("HH:mm:ss"));
+			PUT(API::DP_CALENDAR, API::PUTR_EDIT_EVENT);
+		}
+		END_REQUEST;
+	}
+	/*QVector<QString> data;
 	data.push_back(USER_TOKEN);
 	if (_CurrentEvent != nullptr)
 		data.push_back(TO_STRING(_CurrentEvent->EventId));
@@ -147,11 +189,11 @@ void CalendarEventForm::OnSave()
 	data.push_back(TO_STRING(_CurrentEvent->EventTypeId));
 	data.push_back(_DateStart->date().toString("yyyy-MM-dd") + " " + _TimeStart->time().toString("HH:mm:ss"));
 	data.push_back(_DateEnd->date().toString("yyyy-MM-dd") + " " + _TimeEnd->time().toString("HH:mm:ss"));
-	if (_CurrentEvent == nullptr)
+
 		DATA_CONNECTOR->Post(API::DP_CALENDAR, API::PR_POST_EVENT, data, this, "OnSaveEventDone", "OnSaveEventFail");
 	else
 		DATA_CONNECTOR->Put(API::DP_CALENDAR, API::PUTR_EDIT_EVENT, data, this, "OnSaveEventDone", "OnSaveEventFail");
-}
+*/}
 
 void CalendarEventForm::OnRemove()
 {
@@ -239,6 +281,11 @@ void CalendarEventForm::OnSaveAssociatedFail(int id, QByteArray data)
 
 void CalendarEventForm::OnSaveEventDone(int id, QByteArray data)
 {
+	int idUser;
+	QJsonDocument doc = QJsonDocument::fromJson(data);
+	QJsonObject obj = doc.object()["data"].toObject();
+	idUser = obj["id"].toInt();
+	SHOW_JSON(data);
 	QList<int> newToAdd;
 	QList<int> oldToRemove;
 	int selectedProject = _SelectionProject->currentData().toInt();
@@ -254,7 +301,7 @@ void CalendarEventForm::OnSaveEventDone(int id, QByteArray data)
 	}
 	QVector<QString> newData;
 	newData.push_back(USER_TOKEN);
-	newData.push_back(TO_STRING(_CurrentEvent->EventId));
+	newData.push_back(TO_STRING(idUser));
 	for (int id : newToAdd)
 	{
 		newData.push_back(TO_STRING(id));
