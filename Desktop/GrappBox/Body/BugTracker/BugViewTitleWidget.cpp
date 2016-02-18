@@ -67,8 +67,8 @@ void BugViewTitleWidget::TriggerCloseIssue()
 		SET_ON_DONE("TriggerCloseSuccess");
 		SET_ON_FAIL("TriggerAPIFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-		ADD_FIELD("ticketId", _bugID);
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(_bugID);
 		DELETE(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
 	}
 	END_REQUEST;

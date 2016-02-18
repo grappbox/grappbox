@@ -122,11 +122,19 @@ void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject  *data)
 		SET_ON_DONE("TriggerGotProjectUsers");
 		SET_ON_FAIL("TriggerAPIFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", token);
-		ADD_FIELD("projectId", currentProject);
-		GET(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL); //[CHIE DESSUS]
+		ADD_URL_FIELD(token);
+		ADD_URL_FIELD(currentProject);
+		GET(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL);
+	}
+	END_REQUEST;
+	BEGIN_REQUEST;
+	{
 		SET_ON_DONE("TriggerGotProjectTags");
-		GET(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL); //[CHIE DESSUS]
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_URL_FIELD(token);
+		ADD_URL_FIELD(currentProject);
+		GET(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL);
 	}
 	END_REQUEST;
 }
@@ -225,7 +233,7 @@ void BodyBugCreation::TriggerBugCreated(int  id, QByteArray data)
 			ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
 			ADD_FIELD("bugId", bugID);
 			ADD_FIELD("tagId", *it);
-			PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG); //[CHIE DESSUS]
+			PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG);
 		}
 		END_REQUEST;
     }
@@ -239,8 +247,8 @@ void BodyBugCreation::TriggerBugCreated(int  id, QByteArray data)
 		ADD_ARRAY("toRemove");
 		ADD_ARRAY("toAdd");
 		for (QList<int>::iterator it = assignedUser.begin(); it != assignedUser.end(); ++it)
-			ADD_FIELD_ARRAY(*it, "toAdd"); //[CHIE DESSUS]
-		PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG); //[CHIE DESSUS]
+			ADD_FIELD_ARRAY(*it, "toAdd");
+		PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
 	}
 	END_REQUEST;
 	BEGIN_REQUEST;

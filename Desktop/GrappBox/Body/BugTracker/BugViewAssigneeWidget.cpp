@@ -48,7 +48,7 @@ void BugViewAssigneeWidget::CreateAssignPageItems(const QList<QJsonObject> &item
         QJsonObject obj = *it;
         int id = obj[ITEM_ID].toInt();
         qDebug() << "ID = " << id;
-        BugCheckableLabel *widCheckable = new BugCheckableLabel(id, obj[ITEM_FIRSTNAME].toString() + " " + obj[ITEM_LASTNAME].toString(), obj[ITEM_ASSIGNED].toBool());
+        BugCheckableLabel *widCheckable = new BugCheckableLabel(id, obj["firstname"].toString() + " " + obj["lastname"].toString(), obj[ITEM_ASSIGNED].toBool());
 
         widCheckable->setMinimumHeight(35);
         widCheckable->setMinimumWidth(230);
@@ -101,14 +101,15 @@ void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString nam
 				ADD_FIELD_ARRAY(id, "toAdd");
 				SET_ON_DONE("TriggerAssignSuccess");
 				SET_ON_FAIL("TriggerAssignFailure");
+				assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
 			}
 			else
 			{
 				ADD_FIELD_ARRAY(id, "toRemove");
 				SET_ON_DONE("TriggerUnAssignSuccess");
 				SET_ON_FAIL("TriggerUnAssignFailure");
+				assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
 			}
-			assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
 		}
 		END_REQUEST;
         _apiAssignWaiting[assignId] = id;

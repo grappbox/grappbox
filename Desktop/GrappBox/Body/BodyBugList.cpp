@@ -52,11 +52,11 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject  *dataPage)
 		SET_ON_DONE("OnGetBugListSuccess");
 		SET_ON_FAIL("OnRequestFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-		ADD_FIELD("id", API::SDataManager::GetDataManager()->GetCurrentProject());
-		ADD_FIELD("state", 1);
-		ADD_FIELD("offset", 0);
-		ADD_FIELD("limit", std::numeric_limits<int>::max());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_URL_FIELD(1);
+		ADD_URL_FIELD(0);
+		ADD_URL_FIELD(std::numeric_limits<int>::max());
 		GET(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_BY_STATE);
 	}
 	END_REQUEST;
@@ -66,10 +66,10 @@ void BodyBugList::Show(BodyBugTracker *pageManager, QJsonObject  *dataPage)
 		SET_ON_DONE("OnGetBugListClosedSuccess");
 		SET_ON_FAIL("OnRequestFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-		ADD_FIELD("id", API::SDataManager::GetDataManager()->GetCurrentProject());
-		ADD_FIELD("offset", 0);
-		ADD_FIELD("limit", std::numeric_limits<int>::max());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_URL_FIELD(0);
+		ADD_URL_FIELD(std::numeric_limits<int>::max());
 		GET(API::DP_BUGTRACKER, API::GR_XLAST_BUG_OFFSET_CLOSED);
 	}
 	END_REQUEST;
@@ -198,8 +198,8 @@ void BodyBugList::TriggerCloseBug(int bugId)
 		SET_ON_DONE("TriggerCloseSuccess");
 		SET_ON_FAIL("OnRequestFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-		ADD_FIELD("id", bugId);
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(bugId);
 		APIID = DELETE(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
 	}
 	END_REQUEST;
