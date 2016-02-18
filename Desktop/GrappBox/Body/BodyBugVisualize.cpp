@@ -309,7 +309,7 @@ void BodyBugVisualize::TriggerGotBug(int  id, QByteArray data)
 		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
 		ADD_FIELD("projectId", API::SDataManager::GetDataManager()->GetCurrentProject());
 		GET(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL);
-		SET_ON_DONE("TriggerGotTagProject");
+//		SET_ON_DONE("TriggerGotTagProject");
 		GET(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL);
 	}
 	END_REQUEST;

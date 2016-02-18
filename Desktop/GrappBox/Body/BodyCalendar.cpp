@@ -268,25 +268,22 @@ void BodyCalendar::OnProjectLoadingDone(int requestId, QByteArray data)
 	QString name = obj["name"].toString();
 	QString color = obj["color"].toString();
 	color = "#" + color.toUpper();
-	qDebug() << "Color for project " << name << " is " << color;
 
-	bool exist = _Projects.contains(id);
+	bool exist = _ProjectChoiceCheckBox.contains(id);
 
 	_Projects[id] = name;
 	_ProjectsColors[id] = color;
 	if (exist)
 	{
-		_ProjectChoiceCheckBox[id]->setText(name);
+		_ProjectChoiceLayout->removeWidget(_ProjectChoiceCheckBox[id]);
+		delete _ProjectChoiceCheckBox[id];
 	}
-	else
-	{
-		QCheckBox *checkbox = new QCheckBox(name);
-		_ProjectChoiceLayout->addWidget(checkbox);
-		checkbox->setChecked(true);
-		connect(checkbox, SIGNAL(clicked(bool)), this, SLOT(OnProjectCheckChange()));
-		_ProjectChoiceCheckBox[id] = checkbox;
-		checkbox->setStyleSheet("color: " + color + ";");
-	}
+	QCheckBox *checkbox = new QCheckBox(name);
+	_ProjectChoiceLayout->addWidget(checkbox);
+	checkbox->setChecked(true);
+	connect(checkbox, SIGNAL(clicked(bool)), this, SLOT(OnProjectCheckChange()));
+	_ProjectChoiceCheckBox[id] = checkbox;
+	checkbox->setStyleSheet("color: " + color + ";");
 
 	for (QList<Event*> list : _MapMonthEvent)
 	{
@@ -392,8 +389,40 @@ void BodyCalendar::OnProjectCheckChange()
 void BodyCalendar::OnCreate()
 {
 	CalendarEventForm *form = new CalendarEventForm(nullptr, _AllProjects, this);
+	QObject::connect(form, SIGNAL(Create(QDateTime, QDateTime)), this, SLOT(OnCreateConfirm(QDateTime, QDateTime)));
 	form->exec();
 	qDebug() << "Form finish execution";
+}
+
+void BodyCalendar::OnCreateConfirm(QDateTime start, QDateTime end)
+{
+	QDate loadablefirst(_CurrentDrawingDate.year(), _CurrentDrawingDate.month(), 1);
+	QDate loadablecurrent = loadablefirst.addMonths(1);
+	QDate loadablelast = loadablecurrent.addMonths(1);
+
+	QDate realStart(start.date().year(), start.date().month(), 1);
+	QDate realEnd(end.date().year(), end.date().month(), 1);
+
+	QVector<QString> data;
+	data.push_back(USER_TOKEN);
+	QDate date = loadablefirst;
+	if (date >= realStart && date <= realEnd)
+	{
+		data.push_back(date.toString("yyyy-MM-dd"));
+		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+	}
+	date = loadablecurrent;
+	if (date >= realStart && date <= realEnd)
+	{
+		data[1] = date.toString("yyyy-MM-dd");
+		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+	}
+	date = loadablelast;
+	if (date >= realStart && date <= realEnd)
+	{
+		data[1] = date.toString("yyyy-MM-dd");
+		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+	}
 }
 
 void BodyCalendar::OnMoveToday()
@@ -614,6 +643,7 @@ void BodyCalendar::Show(int ID, MainWindow *mainApp)
 			delete item->widget();
 		delete item;
 	}
+	_ProjectChoiceCheckBox.clear();
 
 	QVector<QString> data;
 	data.push_back(USER_TOKEN);

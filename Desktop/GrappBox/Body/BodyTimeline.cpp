@@ -75,6 +75,7 @@ void BodyTimeline::OnTimelineGet(int ID, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject objMain = doc.object();
+	SHOW_JSON(data);
     for (QJsonValueRef ref : objMain["timelines"].toArray())
     {
         QJsonObject obj = ref.toObject();

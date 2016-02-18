@@ -140,6 +140,7 @@ void CalendarEventForm::OnSave()
 			SET_ON_DONE("OnSaveEventDone");
 			SET_ON_FAIL("OnSaveEventFail");
 			ADD_FIELD("token", USER_TOKEN);
+			ADD_FIELD("projectId", _SelectionProject->currentData());
 			ADD_FIELD("title", _TitleEdit->text());
 			ADD_FIELD("description", _DescriptionEdit->toPlainText());
 			if (_UseTypeIcon->isChecked())
@@ -163,6 +164,7 @@ void CalendarEventForm::OnSave()
 			SET_ON_FAIL("OnSaveEventFail");
 			ADD_FIELD("token", USER_TOKEN);
 			ADD_FIELD("title", _TitleEdit->text());
+			ADD_FIELD("projectId", _SelectionProject->currentData());
 			ADD_FIELD("description", _DescriptionEdit->toPlainText());
 			if (_UseTypeIcon->isChecked())
 				ADD_FIELD("icon", "");
@@ -176,24 +178,7 @@ void CalendarEventForm::OnSave()
 		}
 		END_REQUEST;
 	}
-	/*QVector<QString> data;
-	data.push_back(USER_TOKEN);
-	if (_CurrentEvent != nullptr)
-		data.push_back(TO_STRING(_CurrentEvent->EventId));
-	data.push_back(_TitleEdit->text());
-	data.push_back(_DescriptionEdit->toPlainText());
-	if (_UseTypeIcon->isChecked())
-		data.push_back("");
-	else
-		data.push_back(_UploadWidget->getEncodedImage());
-	data.push_back(TO_STRING(_CurrentEvent->EventTypeId));
-	data.push_back(_DateStart->date().toString("yyyy-MM-dd") + " " + _TimeStart->time().toString("HH:mm:ss"));
-	data.push_back(_DateEnd->date().toString("yyyy-MM-dd") + " " + _TimeEnd->time().toString("HH:mm:ss"));
-
-		DATA_CONNECTOR->Post(API::DP_CALENDAR, API::PR_POST_EVENT, data, this, "OnSaveEventDone", "OnSaveEventFail");
-	else
-		DATA_CONNECTOR->Put(API::DP_CALENDAR, API::PUTR_EDIT_EVENT, data, this, "OnSaveEventDone", "OnSaveEventFail");
-*/}
+}
 
 void CalendarEventForm::OnRemove()
 {
@@ -270,6 +255,7 @@ void CalendarEventForm::OnLoadEventFail(int id, QByteArray data)
 void CalendarEventForm::OnSaveAssociatedDone(int id, QByteArray data)
 {
 	setDisabled(false);
+	emit Create(QDateTime(_DateStart->date(), _TimeStart->time()), QDateTime(_DateEnd->date(), _TimeEnd->time()));
 	close();
 }
 
@@ -285,7 +271,6 @@ void CalendarEventForm::OnSaveEventDone(int id, QByteArray data)
 	QJsonDocument doc = QJsonDocument::fromJson(data);
 	QJsonObject obj = doc.object()["data"].toObject();
 	idUser = obj["id"].toInt();
-	SHOW_JSON(data);
 	QList<int> newToAdd;
 	QList<int> oldToRemove;
 	int selectedProject = _SelectionProject->currentData().toInt();

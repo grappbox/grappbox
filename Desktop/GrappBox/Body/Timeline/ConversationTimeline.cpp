@@ -19,7 +19,7 @@ ConversationTimeline::ConversationTimeline(int timelineId, MessageTimeLine::Mess
     _OpenComment->setIcon(QIcon(":/icon/Ressources/Icon/DropDown.png"));
     _OpenComment->setStyleSheet("background: #FFFFFF; border-style: none; border-top-style: solid; border-bottom-style: solid; border-width: 1px; border-color: #7f8c8d;");
 
-    _MainCommentWidget = new QWidget(this);
+    _MainCommentWidget = new QWidget();
     _ScrollAnim = new QScrollArea();
     _ScrollAnim->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     _ScrollAnim->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -166,9 +166,8 @@ void ConversationTimeline::FinishedLoad()
             delete widget;
         delete item;
     }
-    qDebug() << "Draw Comment layout...";
     _CommentLayout->addWidget(_CommentMessageNew);
-    qDebug() << "Adding Comment message new done.";
+	_CommentMessageNew->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     for (MessageTimeLine::MessageTimeLineInfo info : _Messages)
     {
         for (API::UserInformation user : _Users)
@@ -182,6 +181,7 @@ void ConversationTimeline::FinishedLoad()
         }
         qDebug() << "Adding new comment message : " << info.Message;
         MessageTimeLine *c = new MessageTimeLine(info, _TimelineId, this);
+		c->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         _CommentMessage[info.IdTimeline] = c;
         _CommentLayout->addWidget(c);
         QObject::connect(c, SIGNAL(TimelineDeleted(int)), this, SLOT(TimeLineDelete(int)));

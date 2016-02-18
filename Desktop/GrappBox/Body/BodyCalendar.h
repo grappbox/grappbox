@@ -59,6 +59,7 @@ public slots:
     void OnProjectCheckChange();
 
     void OnCreate();
+	void OnCreateConfirm(QDateTime start, QDateTime end);
 
 	void OnMoveToday();
 

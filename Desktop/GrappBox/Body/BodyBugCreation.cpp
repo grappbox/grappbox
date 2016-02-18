@@ -125,9 +125,9 @@ void BodyBugCreation::Show(BodyBugTracker *pageManager, QJsonObject  *data)
 		ADD_FIELD("token", token);
 		ADD_FIELD("projectId", currentProject);
 		GET(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL); //[CHIE DESSUS]
-		SET_ON_DONE("TriggerGotProjectTags");
+/*		SET_ON_DONE("TriggerGotProjectTags");
 		GET(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL); //[CHIE DESSUS]
-	}
+*/	}
 	END_REQUEST;
 }
 
@@ -238,8 +238,8 @@ void BodyBugCreation::TriggerBugCreated(int  id, QByteArray data)
 		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
 		ADD_ARRAY("toRemove");
 		ADD_ARRAY("toAdd");
-		for (QList<int>::iterator it = assignedUser.begin(); it != assignedUser.end(); ++it)
-			ADD_FIELD_ARRAY(*it, "toAdd"); //[CHIE DESSUS]
+/*		for (QList<int>::iterator it = assignedUser.begin(); it != assignedUser.end(); ++it)
+			ADD_FIELD_ARRAY(*it, "toAdd"); //[CHIE DESSUS]*/
 		PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG); //[CHIE DESSUS]
 	}
 	END_REQUEST;

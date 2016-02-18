@@ -96,7 +96,7 @@ void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString nam
 			ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
 			ADD_ARRAY("toAdd");
 			ADD_ARRAY("toRemove");
-			if (checked)
+/*			if (checked)
 			{
 				ADD_FIELD_ARRAY(id, "toAdd");
 				SET_ON_DONE("TriggerAssignSuccess");
@@ -108,7 +108,7 @@ void BugViewAssigneeWidget::TriggerCheckChange(bool checked, int id, QString nam
 				SET_ON_DONE("TriggerUnAssignSuccess");
 				SET_ON_FAIL("TriggerUnAssignFailure");
 			}
-			assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
+			assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);*/
 		}
 		END_REQUEST;
         _apiAssignWaiting[assignId] = id;

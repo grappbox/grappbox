@@ -28,6 +28,7 @@ public:
 
 signals:
 	void Remove(Event*);
+	void Create(QDateTime, QDateTime);
 
 public slots:
     void OnSave();
