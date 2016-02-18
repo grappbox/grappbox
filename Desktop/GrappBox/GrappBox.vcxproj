@@ -1158,7 +1158,6 @@ endlocal
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="FlowLayout.h" />
-    <ClInclude Include="IBodyContener.h" />
     <ClInclude Include="Body\BugTracker\IBugPage.h" />
     <ClInclude Include="API\IDataConnector.h" />
     <CustomBuild Include="Body\Settings\ImageUploadWidget.h">
@@ -1372,6 +1371,7 @@ endlocal
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-I.\Body" "-I.\Body\Dashboard" "-I.\API" "-I.\WidgetCommon" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtCore" "-I.\release" "-I$(QTDIR)\mkspecs\win32-msvc2013"</Command>
     </CustomBuild>
+    <ClInclude Include="IBodyContener.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SFontLoader.h" />
     <CustomBuild Include="SliderMenu.h">

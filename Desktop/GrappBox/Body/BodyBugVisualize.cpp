@@ -112,9 +112,9 @@ void BodyBugVisualize::Show(BodyBugTracker *pageManager, QJsonObject *data)
 		SET_ON_DONE("TriggerGotComments");
 		SET_ON_FAIL("TriggerAPIFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-		ADD_FIELD("id", API::SDataManager::GetDataManager()->GetCurrentProject());
-		ADD_FIELD("ticketId", _bugId);
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_URL_FIELD(_bugId);
 		GET(API::DP_BUGTRACKER, API::GR_BUGCOMMENT);
 	}
 	END_REQUEST;
@@ -123,8 +123,8 @@ void BodyBugVisualize::Show(BodyBugTracker *pageManager, QJsonObject *data)
 		SET_ON_DONE("TriggerGotBug");
 		SET_ON_FAIL("TriggerAPIFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-		ADD_FIELD("ticketId", _bugId);
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(_bugId);
 		GET(API::DP_BUGTRACKER, API::GR_BUG);
 	}
 	END_REQUEST;
@@ -306,10 +306,18 @@ void BodyBugVisualize::TriggerGotBug(int  id, QByteArray data)
 		SET_ON_DONE("TriggerGotUserProject");
 		SET_ON_FAIL("TriggerAPIFailure");
 		SET_CALL_OBJECT(this);
-		ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-		ADD_FIELD("projectId", API::SDataManager::GetDataManager()->GetCurrentProject());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetCurrentProject());
 		GET(API::DP_BUGTRACKER, API::GR_PROJECT_USERS_ALL);
-//		SET_ON_DONE("TriggerGotTagProject");
+	}
+	END_REQUEST;
+	BEGIN_REQUEST;
+	{
+		SET_ON_DONE("TriggerGotTagProject");
+		SET_ON_FAIL("TriggerAPIFailure");
+		SET_CALL_OBJECT(this);
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetCurrentProject());
 		GET(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL);
 	}
 	END_REQUEST;

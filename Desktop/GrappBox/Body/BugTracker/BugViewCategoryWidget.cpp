@@ -112,13 +112,13 @@ void BugViewCategoryWidget::TriggerCheckChange(bool checked, int id, QString nam
 		BEGIN_REQUEST;
 		{
 			SET_CALL_OBJECT(this);
-			ADD_FIELD("token", API::SDataManager::GetDataManager()->GetToken());
-			ADD_FIELD("tagId", id);
+			ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
+			ADD_URL_FIELD(id);
 			if (checked)
 			{
 				SET_ON_DONE("TriggerAssignSuccess");
 				SET_ON_FAIL("TriggerAssignFailure");
-				ADD_FIELD("bugId", _bugId);
+				ADD_URL_FIELD(_bugId);
 				assignId = PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG);
 			}
 			else

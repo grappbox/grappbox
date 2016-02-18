@@ -19,7 +19,7 @@
 #define SET_CALL_OBJECT(object) QObject *__callObj = object
 #define ADD_FIELD(name, value) __data[name] = value
 #define ADD_FIELD_OBJECT(name, value, objectName) {QMap<QString, QVariant> __map = __data[objectName].toMap(); __map[name] = value; __data[objectName] = __map
-#define ADD_FIELD_ARRAY(value, arrayName) QList<QVariant> __list = __data[objectName].toList(); __map.push_back(value); __data[objectName] = __list
+#define ADD_FIELD_ARRAY(value, arrayName) {QList<QVariant> __list = __data[arrayName].toList(); __list.push_back(value); __data[arrayName] = __list;}
 #define ADD_URL_FIELD(value) __data[QString("urlfield#") + QVariant(__currentIndex).toString()] = value; __currentIndex++
 #define ADD_OBJECT(name) __data[name] = QMap<QString, QVariant>()
 #define ADD_ARRAY(name) __data[name] = QList<QVariant>()

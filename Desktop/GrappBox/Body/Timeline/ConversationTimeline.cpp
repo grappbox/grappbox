@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QMessageBox>
 #include <QDebug>
+#include "utils.h"
 
 ConversationTimeline::ConversationTimeline(int timelineId, MessageTimeLine::MessageTimeLineInfo data, bool revert, QWidget *parent) : QWidget(parent)
 {
@@ -128,12 +129,23 @@ void ConversationTimeline::OpenComment()
         OpenCommentAnim();
         return;
     }
+	BEGIN_REQUEST;
+	{
+		SET_CALL_OBJECT(this);
+		SET_ON_DONE("TimelineGetDone");
+		SET_ON_FAIL("TimelineGetFailed");
+		ADD_URL_FIELD(USER_TOKEN);
+		ADD_URL_FIELD(_TimelineId);
+		ADD_URL_FIELD(_ConversationId);
+		GET(API::DP_TIMELINE, API::GR_COMMENT_TIMELINE);
+	}
+	END_REQUEST;
     _OpenComment->setDisabled(true);
-    QVector<QString> data;
+    /*QVector<QString> data;
     data.push_back(API::SDataManager::GetDataManager()->GetToken());
     data.push_back(QVariant(_TimelineId).toString());
     data.push_back(QVariant(_ConversationId).toString());
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_COMMENT_TIMELINE, data, this, "TimelineGetDone", "TimelineGetFailed");
+    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_COMMENT_TIMELINE, data, this, "TimelineGetDone", "TimelineGetFailed");*/
 }
 
 void ConversationTimeline::TimelineGetUserDone(int id, QByteArray array)
@@ -198,9 +210,9 @@ void ConversationTimeline::TimelineGetDone(int id, QByteArray array)
 {
     QList<int> userIdToRetrieve;
     QJsonDocument doc = QJsonDocument::fromJson(array);
-    QJsonObject objMain = doc.object();
+    QJsonObject objMain = doc.object()["data"].toObject();
     qDebug() << " COMMENT " << objMain;
-    for (QJsonValueRef ref : objMain["comments"].toArray())
+    for (QJsonValueRef ref : objMain["array"].toArray())
     {
         QJsonObject obj = ref.toObject();
         if (!obj["deletedAt"].isNull())

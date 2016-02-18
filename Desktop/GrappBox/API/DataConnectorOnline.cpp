@@ -30,7 +30,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_LIST_TIMELINE] = "";
 	_GetMap[GR_TASK] = "";
 	_GetMap[GR_TIMELINE] = "";
-	_GetMap[GR_COMMENT_TIMELINE] = "";
+	_GetMap[GR_COMMENT_TIMELINE] = "timeline/getcomments";
 	_GetMap[GR_ARCHIVE_MESSAGE_TIMELINE] = "";
 	_GetMap[GR_USER_DATA] = "";
 	_GetMap[GR_WHITEBOARD] = "";
@@ -43,16 +43,15 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_PROJECT_USER_ROLE] = "";
 	_GetMap[GR_CUSTOMER_ACCESSES] = "";
 	_GetMap[GR_CUSTOMER_ACCESS_BY_ID] = "";
-	_GetMap[GR_USERPROJECT_BUG] = "";
-	_GetMap[GR_XLAST_BUG_OFFSET] = "";
-	_GetMap[GR_XLAST_BUG_OFFSET_BY_STATE] = "";
-	_GetMap[GR_XLAST_BUG_OFFSET_CLOSED] = "";
-	_GetMap[GR_PROJECTBUG_ALL] = "";
-	_GetMap[GR_BUGCOMMENT] = "";
-	_GetMap[GR_GETBUGS_STATUS] = "";
-	_GetMap[GR_PROJECTBUGTAG_ALL] = "";
-	_GetMap[GR_PROJECT_USERS_ALL] = "";
-	_GetMap[GR_BUG] = "";
+	_GetMap[GR_XLAST_BUG_OFFSET] = "bugtracker/getlasttickets";
+	_GetMap[GR_XLAST_BUG_OFFSET_BY_STATE] = "bugtracker/getticketsbystate";
+	_GetMap[GR_XLAST_BUG_OFFSET_CLOSED] = "bugtracker/getlastclosedtickets";
+	_GetMap[GR_PROJECTBUG_ALL] = "bugtracker/gettickets";
+	_GetMap[GR_BUGCOMMENT] = "bugtracker/getcomments";
+	_GetMap[GR_GETBUGS_STATUS] = "bugtracker/getstates";
+	_GetMap[GR_PROJECTBUGTAG_ALL] = "bugtracker/getprojecttags";
+	_GetMap[GR_PROJECT_USERS_ALL] = "projects/getusertoproject";
+	_GetMap[GR_BUG] = "bugtracker/getticket";
 	_GetMap[GR_EVENT] = "";
 	_GetMap[GR_TYPE_EVENT] = "";
 
@@ -63,11 +62,9 @@ DataConnectorOnline::DataConnectorOnline()
 	_PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "";
 	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
 	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";
-	_PostMap[PR_DELETEUSER_BUG] = "";
 	_PostMap[PR_CREATETAG] = "bugtracker/tagcreation";
 	_PostMap[PR_MESSAGE_TIMELINE] = "";
 	_PostMap[PR_EDIT_MESSAGE_TIMELINE] = "";
-	_PostMap[PR_EDIT_COMMENTBUG] = "";
 	_PostMap[PR_POST_EVENT] = "event/postevent";
 	_PostMap[PR_NEW_WHITEBOARD] = "";
 
@@ -77,17 +74,19 @@ DataConnectorOnline::DataConnectorOnline()
 	_DeleteMap[DR_PROJECT_USER] = "";
 	_DeleteMap[DR_PROJECT] = "";
 	_DeleteMap[DR_CUSTOMER_ACCESS] = "";
-	_DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "";
-	_DeleteMap[DR_REMOVE_BUGTAG] = "";
+	_DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/closeticket";
+	_DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/deletetag";
 	_DeleteMap[DR_REMOVE_EVENT] = "";
 
 	// Initialize Put request
 	_PutMap[PUTR_USERSETTINGS] = "";
 	_PutMap[PUTR_PROJECTSETTINGS] = "";
 	_PutMap[PUTR_INVITE_USER] = "";
-	_PutMap[PUTR_ASSIGNTAG] = "";
+	_PutMap[PUTR_ASSIGNTAG] = "bugtracker/assigntag";
 	_PutMap[PUTR_EDIT_EVENT] = "event/editevent";
-	_PutMap[PUTR_SET_PARTICIPANT] = "";
+	_PutMap[PUTR_SET_PARTICIPANT] = "bugtracker/setparticipants";
+	_PutMap[PUTR_EDIT_COMMENTBUG] = "bugtracker/editcomment";
+	_PutMap[PUTR_EDIT_BUG] = "bugtracker/editticket";
 }
 
 void DataConnectorOnline::OnResponseAPI()
@@ -155,9 +154,6 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 		break;
 	case PR_CREATETAG:
 		reply = CreateTag(data);
-		break;
-	case PR_EDIT_COMMENTBUG:
-		reply = EditCommentBug(data);
 		break;
 	case PR_POST_EVENT:
 		reply = PostEvent(data);
