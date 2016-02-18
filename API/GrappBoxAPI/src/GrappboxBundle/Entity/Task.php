@@ -82,13 +82,13 @@ class Task
     {
       return array(
         'id' => $this->id,
-        'creatorId' => $this->creatorId ,
+        'creator' => $this->creator_user->getId() ,
         'title' => $this->title ,
         'description' => $this->description ,
         'dueDate' => $this->dueDate ,
         'startedAt' => $this->startedAt ,
         'finishedAt' => $this->finishedAt ,
-        'projectId' => $this->projects->id
+        'projectId' => $this->projects->getId()
       );
     }
 

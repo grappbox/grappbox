@@ -151,42 +151,38 @@ class PlanningController extends RolesAndTokenVerificationController
 		$events = array();
 		foreach ($query as $key => $value) {
 			$events[] = $value->objectToArray();
-			// $events[] = array(
-			// 	"id" => $value->getId(),
-			// 	"type" => array(
-			// 		"id" => $value->getEventtypes()->getId(),
-			// 		"name" => $value->getEventtypes()->getName()
-			// 	),
-			// 	"title" => $value->getTitle(),
-			// 	"icon" => $value->getIcon(),
-			// 	"beginDate" => $value->getBeginDate(),
-			// 	"endDate" => $value->getEndDate()
-			// );
 		}
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
 		$query = $repository->createQueryBuilder('t')
 					->join('t.users', 'u')
-					->where('u.id = :user_id')
+					->where('u.id = :user_id ')
 					->andWhere('t.deletedAt IS NULL')
 					->andWhere('t.finishedAt IS NULL')
 					->andWhere('t.startedAt IS NOT NULL')
-		    	->setParameters(array('user_id' => $user->getId()))
+					->setParameters(array('user_id' => $user->getId()))
 					->getQuery()->getResult();
 
 		$tasks = array();
 		foreach ($query as $key => $value) {
 			$tasks[] = $value->objectToArray();
-			// $tasks[] = array(
-			// 	"id" => $value->getId(),
-			// 	"title" => $value->getTitle(),
-			// 	"startedAt" => $value->getStartedAt(),
-			// 	"dueDate" => $value->getDueDate()
-			// );
 		}
 
-		if (count($events) <= 0 && count($tasks) <= 0)
-			return $this->setNoDataSuccess("1.5.3", "Calendar", "getDayPlanning");
+		$query = $repository->createQueryBuilder('t')
+					->where('t.creator_user = :user_id ')
+					->andWhere('t.deletedAt IS NULL')
+					->andWhere('t.finishedAt IS NULL')
+					->andWhere('t.startedAt IS NOT NULL')
+					->setParameters(array('user_id' => $user->getId()))
+					->getQuery()->getResult();
+
+		foreach ($query as $key => $value) {
+			$tasks[] = $value->objectToArray();
+		}
+
+
+		 if (count($events) <= 0 && count($tasks) <= 0)
+		 	return $this->setNoDataSuccess("1.5.3", "Calendar", "getDayPlanning");
 
 		return $this->setSuccess("1.5.1", "Calendar", "getDayPlanning", "Complete Success", array("array" => array("events" => $events, "tasks" => $tasks)));
 	}
@@ -314,16 +310,6 @@ class PlanningController extends RolesAndTokenVerificationController
 		$events = array();
 		foreach ($query as $key => $value) {
 			$events[] = $value->objectToArray();
-			// $events[] = array(
-			// 	"id" => $value->getId(),
-			// 	"type" => array(
-			// 		"id" => $value->getEventtypes()->getId(),
-			// 		"name" => $value->getEventtypes()->getName()
-			// 	),
-			// 	"title" => $value->getTitle(),
-			// 	"beginDate" => $value->getBeginDate(),
-			// 	"endDate" => $value->getEndDate()
-			// );
 		}
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
@@ -339,12 +325,18 @@ class PlanningController extends RolesAndTokenVerificationController
 		$tasks = array();
 		foreach ($query as $key => $value) {
 			$tasks[] = $value->objectToArray();
-			// $tasks[] = array(
-			// 	"id" => $value->getId(),
-			// 	"title" => $value->getTitle(),
-			// 	"startedAt" => $value->getStartedAt(),
-			// 	"dueDate" => $value->getDueDate()
-			// );
+		}
+
+		$query = $repository->createQueryBuilder('t')
+					->where('t.creator_user = :user_id ')
+					->andWhere('t.deletedAt IS NULL')
+					->andWhere('t.finishedAt IS NULL')
+					->andWhere('t.startedAt IS NOT NULL')
+					->setParameters(array('user_id' => $user->getId()))
+					->getQuery()->getResult();
+
+		foreach ($query as $key => $value) {
+			$tasks[] = $value->objectToArray();
 		}
 
 		if (count($events) <= 0 && count($tasks) <= 0)
@@ -476,16 +468,6 @@ class PlanningController extends RolesAndTokenVerificationController
 		$events = array();
 		foreach ($query as $key => $value) {
 			$events[] = $value->objectToArray();
-			// $events[] = array(
-			// 	"id" => $value->getId(),
-			// 	"type" => array(
-			// 		"id" => $value->getEventtypes()->getId(),
-			// 		"name" => $value->getEventtypes()->getName()
-			// 	),
-			// 	"title" => $value->getTitle(),
-			// 	"beginDate" => $value->getBeginDate(),
-			// 	"endDate" => $value->getEndDate()
-			// );
 		}
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
@@ -501,12 +483,18 @@ class PlanningController extends RolesAndTokenVerificationController
 		$tasks = array();
 		foreach ($query as $key => $value) {
 			$tasks[] = $value->objectToArray();
-			// $tasks[] = array(
-			// 	"id" => $value->getId(),
-			// 	"title" => $value->getTitle(),
-			// 	"startedAt" => $value->getStartedAt(),
-			// 	"dueDate" => $value->getDueDate()
-			// );
+		}
+
+		$query = $repository->createQueryBuilder('t')
+					->where('t.creator_user = :user_id ')
+					->andWhere('t.deletedAt IS NULL')
+					->andWhere('t.finishedAt IS NULL')
+					->andWhere('t.startedAt IS NOT NULL')
+					->setParameters(array('user_id' => $user->getId()))
+					->getQuery()->getResult();
+
+		foreach ($query as $key => $value) {
+			$tasks[] = $value->objectToArray();
 		}
 
 		if (count($events) <= 0 && count($tasks) <= 0)
