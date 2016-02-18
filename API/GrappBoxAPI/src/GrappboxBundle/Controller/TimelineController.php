@@ -272,10 +272,10 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.2/timeline/editmessage/:id Edit a message
+	* @api {post} /V0.2/timeline/editmessage/:id Edit a message or comment
 	* @apiName editMessage
 	* @apiGroup Timeline
-	* @apiDescription Edit a given message
+	* @apiDescription Edit a given message or comment
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id id of the timeline
@@ -768,10 +768,10 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
+	* @api {get} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a commment or a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
-	* @apiDescription Archive the given message and his comments
+	* @apiDescription Archive the given message and his comments or just a given comment
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id Id of the timeline
@@ -839,15 +839,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		}
 
 		$message = $em->getRepository('GrappboxBundle:TimelineMessage')->find($messageId);
-		while($message instanceof TimelineMessage)
-		{
-			$parentMsg = $message->getId();
-			$message->setDeletedAt(new DateTime('now'));
+		$message->setDeletedAt(new DateTime('now'));
+		$em->persist($message);
+		$em->flush();
 
-			$em->persist($message);
+		$comments = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("parentId" => $message->getId()));
+		foreach ($comments as $key => $value) {
+			$value->setDeletedAt(new DateTime('now'));
+			$em->persist($value);
 			$em->flush();
-
-			$message = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
 		}
 
 		return $this->setSuccess("1.11.1", "Timeline", "archivemessage", "Complete Success", array("id" => $messageId));
