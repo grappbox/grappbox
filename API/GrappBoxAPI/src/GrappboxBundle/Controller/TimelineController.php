@@ -272,7 +272,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.2/timeline/editmessage/:id Edit a message or comment
+	* @api {put} /V0.2/timeline/editmessage/:id Edit a message or comment
 	* @apiName editMessage
 	* @apiGroup Timeline
 	* @apiDescription Edit a given message or comment
@@ -768,7 +768,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a comment or a message and his comments
+	* @api {delete} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a comment or a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
 	* @apiDescription Archive the given message and his comments or just a given comment

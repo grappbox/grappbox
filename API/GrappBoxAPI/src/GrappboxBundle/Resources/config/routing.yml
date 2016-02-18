@@ -859,7 +859,7 @@ v2_timeline_editMessage:
     defaults:   { _controller: GrappboxBundle:Timeline:editMessage, _format: json }
     requirements:
         id: \d+
-    methods: [POST]
+    methods: [PUT]
 
 v2_timeline_getMessages:
     path:       /timeline/getmessages/{token}/{id}
@@ -887,7 +887,7 @@ v2_timeline_archiveMessage:
     defaults:   { _controller: GrappboxBundle:Timeline:archiveMessage, _format: json }
     requirements:
         id: \d+
-    methods: [GET]
+    methods: [DELETE]
 
 
 
