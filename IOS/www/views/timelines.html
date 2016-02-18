@@ -137,14 +137,16 @@
                                       ng-model="message.message"></textarea>
                             <div class="button-bar" ng-show="message.userId == userConnectedId">
                                 <!-- Delete button if message is by user connected only -->
-                                <a class="button button-block button-assertive"
-                                   ng-click="ArchiveMessage(message)">
-                                    Delete
+                                <a class="button button-block icon ion-ios-trash button-assertive"
+                                   ng-click="PopupDeleteMessage(message)">
                                 </a>
                                 <!-- Edit button if message is by user connected only -->
-                                <a class="button button-block button-positive"
+                                <a class="button button-block icon ion-edit button-positive"
                                    ng-click="EditMessage(message)">
-                                    Edit
+                                </a>
+                                <!-- Transform message into bug -->
+                                <a class="button button-block icon ion-bug button-positive"
+                                   ui-sref="app.createTicket({projectId: projectId, message: message})">
                                 </a>
                             </div>
                             <!-- Comments -->
