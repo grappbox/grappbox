@@ -732,7 +732,12 @@ v2_role_getUserRolesInformations:
     requirements:
         roleId: \d+
     methods: [GET]
-
+v2_role_getUserRoleForPart:
+    path:       roles/getuserroleforpart/{token}/{userId}/{projectId}/{part}
+    defaults:   { _controller: GrappboxBundle:RolesAndTokenVerification:getUserRoleForPart, _format: json }
+    requirements:
+        userId:     \d+
+        projectId:  \d+
 
 
 

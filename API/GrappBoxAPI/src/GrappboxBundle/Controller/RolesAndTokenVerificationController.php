@@ -1513,4 +1513,80 @@ class RolesAndTokenVerificationController extends Controller
 
 		return $this->setSuccess("1.13.1", "Role", "getuserrolesinformations", "Complete Success", array("array" => $arr));
 	}
+
+	/**
+	* @api {get} /V0.2/roles/getuserroleforpart/:token/:userId/:projectId/part Get user's rights for a specific part
+	* @apiName getUserRoleForPArt
+	* @apiGroup Roles
+	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} userId Id of the user you want the roles
+	* @apiParam {Number} projectId Id of the projectId concerned
+	* @apiParam {string} part name of the part ['team_timeline', 'customer_timeline', 'gantt', 'whiteboard', 'bugtracker', 'event', 'task', 'project_settings', 'cloud']
+	*
+	* @apiSuccess {int} userId user id
+	* @apiSuccess {int} name part name
+	* @apiSuccess {int} value part rights
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getUserRoleForPart - Complete Success"
+	*		},
+	*		"data": {
+	*					"userId": 10,
+	*					"name": "bugtracker",
+	*					"value": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.13.3",
+	*			"return_message": "Role - getUserRoleForPart - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId or projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.13.4",
+	*			"return_message": "Role - getUserRoleForPart - Bad Parameter: userId or projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: part
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.13.4",
+	*			"return_message": "Role - getUserRoleForPart - Bad Parameter: part"
+	*		}
+	*	}
+	*/
+	public function getUserRoleForPartAction(Request $request, $token, $userId, $projectId, $part)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("13.13.3", "Role", "getUserRoleForPart"));
+
+		$em = $this->getDoctrine()->getManager();
+		$roleId = $em->getRepository('GrappboxBundle:ProjectUserRole')->findOneBy(array("userId" => $userId, "projectId" => $projectId));
+		if (!($roleId instanceof ProjectUserRole))
+			return $this->setBadRequest("13.13.4", "Role", "getUserRoleForPart", "Bad Parameter: userId or projectId");
+
+		$role = $em->getRepository('GrappboxBundle:Role')->find($roleId->getRoleId());
+
+		if ($role->getPart($part) == -1)
+			return $this->setBadRequest("13.13.4", "Role", "getUserRoleForPart", "Bad Parameter: part");
+
+		return $this->setSuccess("1.13.1", "Role", "getUserRoleForPart", "Complete Success", array("user_id" => $userId, "name" => $part, "value" => $role->getPart($part)));
+
+	}
+
 }

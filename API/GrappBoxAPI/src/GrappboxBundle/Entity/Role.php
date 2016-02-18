@@ -332,4 +332,40 @@ class Role
     {
         return $this->projects;
     }
+
+    public function getPart($part)
+    {
+      switch ($part) {
+        case 'team_timeline':
+          return $this->teamTimeline;
+          break;
+        case 'customer_timeline':
+          return $this->customerTimeline;
+          break;
+        case 'gantt':
+          return $this->gantt;
+          break;
+        case 'whiteboard':
+          return $this->whiteboard;
+          break;
+        case 'bugtracker':
+          return $this->bugtracker;
+          break;
+        case 'event':
+          return $this->event;
+          break;
+        case 'task':
+          return $this->task;
+          break;
+        case 'project_settings':
+          return $this->projectSettings;
+          break;
+        case 'cloud':
+          return $this->cloud;
+          break;
+        default:
+          return -1;
+          break;
+      }
+    }
 }
