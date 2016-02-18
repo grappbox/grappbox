@@ -428,7 +428,8 @@ class TimelineController extends RolesAndTokenVerificationController
 	*						"timezone_type": 3,
 	*						"timezone": "Europe\/Paris"
 	*					},
-	*					"deletedAt": null
+	*					"deletedAt": null,
+	*					"nbComment": "6"
 	*				},
 	*				{
 	*					"id": "158",
@@ -448,6 +449,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*						"timezone": "Europe\/Paris"
 	*					},
 	*					"deletedAt": null
+	*					"nbComment": "0"
 	*				}
 	*			]
 	*		}
@@ -503,7 +505,16 @@ class TimelineController extends RolesAndTokenVerificationController
 		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
-			$timelineMessages[] = $value->objectToArray();
+
+			$query = $em->getRepository('GrappboxBundle:TimelineMessage')->createQueryBuilder('m');
+			$commentsNb = $query->select($query->expr()->count('m.id'))
+						->where("m.timelineId = :parent")
+						->setParameter("parent", $value->getId())
+						->getQuery()->getSingleScalarResult();
+
+			$elem = $value->objectToArray();
+			$elem['nbComment'] = $commentsNb;
+			$timelineMessages[] = $elem;
 		}
 
 		if (count($timelineMessages) == 0)
