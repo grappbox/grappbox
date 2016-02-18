@@ -401,6 +401,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} array.createdAt Message creation date
 	* @apiSuccess {DateTime} array.editedAt Message edition date
 	* @apiSuccess {DateTime} array.deletedAt Message deletion date
+	*	@apiSuccess {String} array.nbComment numbe of comments
 	*
 	* @apiSuccessExample {json} Success-Response:
 	*	HTTP/1.1 200 OK
@@ -448,7 +449,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*						"timezone_type": 3,
 	*						"timezone": "Europe\/Paris"
 	*					},
-	*					"deletedAt": null
+	*					"deletedAt": null,
 	*					"nbComment": "0"
 	*				}
 	*			]
@@ -657,6 +658,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} array.createdAt Message creation date
 	* @apiSuccess {DateTime} array.editedAt Message edition date
 	* @apiSuccess {DateTime} array.deletedAt Message deletion date
+	*	@apiSuccess {String} array.nbComment numbe of comments
 	*
 	* @apiSuccessExample {json} Success-Response:
 	*	HTTP/1.1 200 OK
@@ -684,7 +686,8 @@ class TimelineController extends RolesAndTokenVerificationController
 	*						"timezone_type": 3,
 	*						"timezone": "Europe\/Paris"
 	*					},
-	*					"deletedAt": null
+	*					"deletedAt": null,
+	*					"nbComment": "0"
 	*				},
 	*				{
 	*					"id": "158",
@@ -702,7 +705,8 @@ class TimelineController extends RolesAndTokenVerificationController
 	*						"date": "1945-06-18 06:00:00",
 	*						"timezone_type": 3,
 	*						"timezone": "Europe\/Paris"},
-	*					"deletedAt": null
+	*					"deletedAt": null,
+	*					"nbComment": "0"
 	*				}
 	*			]
 	*		}
@@ -769,7 +773,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
-			$timelineMessages[] = $value->objectToArray();
+			$query = $em->getRepository('GrappboxBundle:TimelineMessage')->createQueryBuilder('m');
+			$commentsNb = $query->select($query->expr()->count('m.id'))
+						->where("m.timelineId = :parent")
+						->setParameter("parent", $value->getId())
+						->getQuery()->getSingleScalarResult();
+
+			$elem = $value->objectToArray();
+			$elem['nbComment'] = $commentsNb;
+			$timelineMessages[] = $elem;
 		}
 
 		if (count($timelineMessages) == 0)
