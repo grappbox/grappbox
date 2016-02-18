@@ -512,6 +512,118 @@ class TimelineController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.11.1", "Timeline", "getmessages", "Complete Success", array("array" => $timelineMessages));
 	}
 
+
+	/**
+	* @api {get} /V0.2/timeline/getcomments/:token/:id/:message Get comments of a message
+	* @apiName getComments
+	* @apiGroup Timeline
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} id id of the timeline
+	* @apiParam {int} message commented message id
+	*
+	* @apiSuccess {int} id Message id
+	* @apiSuccess {int} userId author id
+	* @apiSuccess {int} timelineId timeline id
+	* @apiSuccess {String} title Message title
+	* @apiSuccess {String} message Message content
+  * @apiSuccess {int} parentId parent message id
+	* @apiSuccess {DateTime} createdAt Message creation date
+	* @apiSuccess {DateTime} editedAt Message edition date
+	* @apiSuccess {DateTime} deletedAt Message deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.11.1",
+	*			"return_message": "Timeline - getComments - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*			{"id": "154","userId": "25", "timelineId": 14, "parentId": 150,
+	*				"title": "hello", "message": "What about a meeting tomorrow morning ?",
+	*				"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"deletedAt": null},
+	*			{"id": "158","userId": "21", "timelineId": 14, "parentId": 150,
+	*				"title": "hello", "message": "Ok, let's do this !",
+	*				"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"deletedAt": null},
+	*		 	...
+	*		]
+	*		}
+	* 	}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.11.3",
+	*			"return_message": "Timeline - getComments - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "11.6.3",
+	*			"return_message": "Timeline - getComments - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "11.6.9",
+	*			"return_message": "Timeline - getComments - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "11.6.4",
+	*			"return_message": "Timeline - getComments - Bad Parameter: id"
+	*		}
+	*	}
+	*/
+	public function getCommentsAction(Request $request, $token, $id, $messageId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("11.6.3", "Timeline", "getComments"));
+		$em = $this->getDoctrine()->getManager();
+
+		$timeline = $em->getRepository('GrappboxBundle:Timeline')->find($id);
+		if (!($timeline instanceof Timeline))
+			return $this->setBadRequest("11.6.4", "Timeline", "getComments", "Bad Parameter: id");
+
+		$type = $em->getRepository('GrappboxBundle:TimelineType')->find($timeline->getTypeId());
+		if ($type->getName() == "customerTimeline")
+		{
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+				return ($this->setNoRightsError("11.6.9", "Timeline", "getComments"));
+		} else {
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+				return ($this->setNoRightsError("11.6.9", "Timeline", "getComments"));
+		}
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "DESC"));
+		$timelineMessages = array();
+		foreach ($messages as $key => $value) {
+			$timelineMessages[] = $value->objectToArray();
+		}
+
+		if (count($timelineMessages) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "getComments");
+
+		return $this->setSuccess("1.11.1", "Timeline", "getComments", "Complete Success", array("array" => $timelineMessages));
+	}
+
 	/**
 	* @api {get} /V0.2/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
 	* @apiName getLastMessages
