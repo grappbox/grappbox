@@ -7,7 +7,16 @@ angular.module('GrappBox.controllers')
 .controller('CreateTicketCtrl', function ($scope, $rootScope, $state, $stateParams,
     CreateTicket) {
     $scope.ticket = {};
+    $scope.message = $stateParams.message;
+    if ($scope.message != null) {
+        $scope.ticket.description = $scope.message.message;
+        $scope.ticket.title = $scope.message.title;
+    }
 
+    /*
+    ** Create ticket
+    ** Method: POST
+    */
     $scope.CreateTicket = function () {
         $rootScope.showLoading();
         CreateTicket.save({

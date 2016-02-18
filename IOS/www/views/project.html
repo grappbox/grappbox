@@ -27,23 +27,24 @@
 
                 <div class="button-bar">
                     <!-- Edit project button -->
-                    <a class="button button-block button-positive"
+                    <a class="button icon ion-edit button-positive"
                             ui-sref="app.editProject({projectId: projectId})">
-                        Edit
                     </a>
                     <!-- Roles on project button -->
-                    <a class="button button-block button-positive"
+                    <a class="button icon ion-network button-positive"
                        ui-sref="app.roles({projectId: projectId})">
-                        Roles
                     </a>
                     <!-- Bugtracker button -->
-                    <a class="button button-block button-positive"
+                    <a class="button icon ion-bug button-positive"
                        ui-sref="app.bugtracker({projectId: projectId})">
-                        Tickets
                     </a>
-                    <a class="button button-block button-positive"
+                    <!-- Gantt button -->
+                    <a class="button icon ion-ios-list button-positive"
                        ui-sref="app.gantt({projectId: projectId})">
-                        Gantt
+                    </a>
+                    <!-- Timeline button -->
+                    <a class="button icon ion-ios-chatboxes button-positive"
+                       ui-sref="app.timelines({projectId: projectId})">
                     </a>
                 </div>
             </ion-item>

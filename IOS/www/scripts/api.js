@@ -320,17 +320,22 @@ angular.module('GrappBox.api', ['ngResource'])
 
 // Post message on a timeline
 .factory('PostMessage', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'timeline/postmessage/:id', { id: "@id" });
+    return $resource($rootScope.API + 'timeline/postmessage/:id', { id: "@data.id" });
 })
 
-// Edit message on a timeline
-.factory('EditMessage', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'timeline/editmessage/:id', { id: "@id" });
+// Edit message or comment on a timeline
+.factory('EditMessageOrComment', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/editmessage/:id', { id: "@data.id" },
+    { 'update': { method: 'PUT' } });
 })
 
-// Archive message on a timeline
-.factory('ArchiveMessage', function ($rootScope, $resource) {
+// Archive message or comment on a timeline
+.factory('ArchiveMessageOrComment', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'timeline/archivemessage/:token/:id/:messageId', { token: "@token", id: "@id", messageId: "@messageId" });
+})
+
+.factory('GetCommentsOnTimeline', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'timeline/getcomments/:token/:id/:message', { token: "@token", id: "@id", message: "@message" });
 })
 
 /*

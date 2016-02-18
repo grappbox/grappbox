@@ -33,7 +33,7 @@ angular.module('GrappBox.controllers')
     $scope.PopupDeleteRole = function () {
         var confirmPopup = $ionicPopup.confirm({
             title: 'Delete Role',
-            template: 'Are you sure you want to delete this role ? '
+            template: 'Are you sure you want to delete this role ?'
         })
         .then(function (res) {
             if (res) {

@@ -34,6 +34,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
 .config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
 
     //$ionicConfigProvider.views.maxCache(0);
+    $ionicConfigProvider.views.swipeBackEnabled(false);
     $ionicConfigProvider.views.transition('platform');          // transition between views
     $ionicConfigProvider.backButton.icon('ion-ios-arrow-back'); // iOS back icon
     $ionicConfigProvider.backButton.text('');                   // default is 'Back'
@@ -50,13 +51,6 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
             url: "/auth", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
             templateUrl: "views/auth.html", //'templateUrl' is where app will search for the "physical" page
             controller: 'AuthCtrl' //link to controller
-        })
-
-        // signup view
-        .state('signup', {
-            url: "/signup",
-            templateUrl: "views/signup.html",
-            controller: 'SignupCtrl'
         })
 
         /*
@@ -188,7 +182,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
 
         // single whiteboard view
         .state('app.whiteboard', {
-            url: "/whiteboards/:whiteboardId",
+            url: "whiteboards/:whiteboardId",
             views: {
                 'menuContent': {
                     templateUrl: "views/whiteboard.html",
@@ -252,6 +246,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
         // create ticket view
         .state('app.createTicket', {
             url: "/projects/:projectId/bugtracker/createTicket",
+            params: { message: null },
             views: {
                 'menuContent': {
                     templateUrl: "views/createTicket.html",
@@ -324,7 +319,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
         */
         // timeline view
         .state('app.timelines', {
-            url: "/timelines",
+            url: "/projects/:projectId/timelines",
             views: {
                 'menuContent': {
                     templateUrl: "views/timelines.html",
@@ -332,6 +327,18 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
                 }
             }
         })
+
+        // create message view
+        .state('app.createMessage', {
+            url: "/projects/:projectId/timelines/:timelineId/createMessage",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/createMessage.html",
+                    controller: 'CreateMessageCtrl'
+                }
+            }
+        })
+
     // if no state are found, here is the fallback url - It's also the default page when starting application
     $urlRouterProvider.otherwise('/auth');
     //$urlRouterProvider.otherwise('/app/whiteboards/1');

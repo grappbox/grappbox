@@ -30,7 +30,7 @@
                   rows="5"
                   ng-model="ticket.description">
         </textarea>
-        <a class="button button-block button-positive"
+        <a ng-show="ticket.creator.id == userConnectedId" class="button button-block button-positive"
            ui-sref="app.editTicket({projectId: projectId, ticketId: ticketId})">
             Edit
         </a>
