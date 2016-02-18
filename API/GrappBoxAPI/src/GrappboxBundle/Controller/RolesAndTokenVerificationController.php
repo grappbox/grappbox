@@ -1515,7 +1515,7 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getuserroleforpart/:token/:userId/:projectId/part Get user's rights for a specific part
+	* @api {get} /V0.2/roles/getuserroleforpart/:token/:userId/:projectId/:part Get user's rights for a specific part
 	* @apiName getUserRoleForPArt
 	* @apiGroup Roles
 	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)
