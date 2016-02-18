@@ -284,7 +284,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiParam {String} title message title
 	* @apiParam {String} message message to post
 	*
-	* @apiParamExample {json} Request-Minimum-Example:
+	* @apiParamExample {json} Request-Example:
 	* 	{
 	*		"data": {
 	*			"token": "13135",
@@ -768,7 +768,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a commment or a message and his comments
+	* @api {get} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a comment or a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
 	* @apiDescription Archive the given message and his comments or just a given comment
