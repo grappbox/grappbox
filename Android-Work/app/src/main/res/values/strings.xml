@@ -156,6 +156,7 @@
     <string name="string_createdir">Create Folder</string>
     <string name="str_import">Import file</string>
     <string name="str_import_secure">Import secured file</string>
+    <string name="str_error">Error</string>
     <string name="problem_grappbox_server">We can\'t arrive to deal with grappbox server, please try again. If the problem persist, contact grappbox team at problem@grappbox.com</string>
     <string name="placeholder_create_folder">Enter the folder name here…</string>
     <string name="placeholder_safe_password">Enter the safe password here…</string>
@@ -230,4 +231,11 @@
     <string name="str_role_create_title">Role creation</string>
     <string name="str_error_empty">You have to fill this field</string>
 
+    <string name="error_insuficent_right">Insufficient Rights</string>
+    <string name="error_ir_description">You don\'t have the correct rights to access to this function. Please contact your leader. If you have correct rights, please contact us at problem@grappbox.com</string>
+    <string name="error_unexpected_error">Unexpected Error</string>
+    <string name="error_ue_description">An unexpected error occurred, please try again later. If that error persist, please contact us at problem@grappbox.com</string>
+
+    <string name="bug_reopen">Re-Open</string>
+    <string name="bug_close">Close</string>
 </resources>

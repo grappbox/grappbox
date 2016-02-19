@@ -24,11 +24,11 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:parentActivityName=".Login.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Settings.UserProfileActivity"
             android:label="@string/title_activity_user_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -42,6 +42,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <activity android:name=".BugTracker.BugCreationActivity"></activity>
     </application>
 
 </manifest>

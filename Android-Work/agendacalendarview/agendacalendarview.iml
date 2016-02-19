@@ -83,8 +83,8 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="play-services-location-8.3.0" level="project" />
-    <orderEntry type="library" exported="" name="guava-19.0" level="project" />
     <orderEntry type="library" exported="" name="gson-2.3.1" level="project" />
+    <orderEntry type="library" exported="" name="guava-19.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="stickylistheaders-2.5.2" level="project" />
     <orderEntry type="library" exported="" name="rxandroid-1.0.1" level="project" />

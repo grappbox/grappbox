@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.grappbox.grappbox.grappbox.BugTracker.BugTrackerFragment;
 import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
 import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
@@ -282,6 +283,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_Cloud:
                 fragment = new CloudExplorerFragment();
                 changeToolbarTitle("Cloud");
+                break;
+            case R.id.nav_Bugtracker:
+                fragment = new BugTrackerFragment();
+                changeToolbarTitle("Bug Tracker - BugList");
                 break;
             default:
                 break;

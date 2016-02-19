@@ -49,4 +49,10 @@
         <item>manage_role</item>
         <item>delete_role</item>
     </string-array>
+
+    <!-- BUGTRACKER ARRAYS -->
+    <string-array name="bugtracker_list_tabs">
+        <item>Open</item>
+        <item>Closed</item>
+    </string-array>
 </resources>
