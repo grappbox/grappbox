@@ -34,7 +34,6 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
         $scope.data.project_error = false;
         $scope.data.project_new = false;
         $scope.data.project = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
-        getColors();
         $scope.data.onLoad = false;
         //TODO check if user can edit settings
       },

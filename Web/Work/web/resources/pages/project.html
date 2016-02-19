@@ -105,13 +105,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <textarea class="form-control" ng-model="data.project.description"></textarea>
                           </div><!-- !form-group -->
                           <div class="form-group">
-                            <h4>Password</h4>
-                            <label for="old_pswd">Actual password/label>
-                            <input id="old_pswd" type="password" class="form-control" ng-model="data.project.old_password">
-                            <label for="new_pswd">New password/label>
-                            <input id="new_pswd" type="password" class="form-control" ng-model="data.project.password">
-                          </div><!-- !form-group -->
-                          <div class="form-group">
                             <h4>Company</h4>
                             <input type="text" class="form-control" ng-model="data.project.company">
                           </div><!-- !form-group -->
@@ -136,6 +129,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <select ng-model="data.project.color">
                                 <option ng-repeat="color in data.availableColors" value="{[{color.value}]}">{[{color.name}]}</option>
                             </select>
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Password</h4>
+                            <label for="old_pswd">Actual password</label>
+                            <input id="old_pswd" type="password" class="form-control" ng-model="data.project.old_password">
+                            <label for="new_pswd">New password</label>
+                            <input id="new_pswd" type="password" class="form-control" ng-model="data.project.password">
                           </div><!-- !form-group -->
                         </form>
                       </div><!-- !section-content -->
