@@ -36,6 +36,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="section-heading">
               <h3><i class="fa fa-folder-o"></i>"{[{ project.name }]}"</h3>
             </div>
+
             <div class="section-content tiles">
               <div id="all-bugtracker-data">
                 <div ng-show="data.projectsBugtracker_onLoad[project.name]">
@@ -45,7 +46,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div ng-if="data.projectsBugtracker_message[project.name] == '_valid'" panhandler>
                     <div class="data-wrapper" >
                       <a href="bugtracker/{[{ project.project_id }]}/0" title="Create new ticket" class="btn-default btn-access">
-                        <i class="fa fa-edit fa-fw"></i>Create new ticket</a>
+                        <i class="fa fa-plus fa-fw"></i>Create new ticket</a>
                     </div> <!-- data-wrapper-->
                     <div class="data-wrapper" ng-repeat="bugtracker in data.projectsBugtracker_content[project.name]">
                       <ul class="data-content each-available-bugtracker shadow">
@@ -72,7 +73,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div ng-if="data.projectsBugtracker_message[project.name] == '_empty'">
                     <div class="data-wrapper error">
                       <p><i class="fa fa-frown-o"></i>There is no bug ticket for this project. <a href="bugtracker/{[{ project.project_id }]}/0" title="Create new ticket" class="btn-default btn-access">
-                        <i class="fa fa-edit fa-fw"></i>Create new ticket</a></p>
+                        <i class="fa fa-plus fa-fw"></i>Create new ticket</a></p>
                     </div>
                   </div>
                   <div ng-if="data.projectsBugtracker_message[project.name] == '_denied'">

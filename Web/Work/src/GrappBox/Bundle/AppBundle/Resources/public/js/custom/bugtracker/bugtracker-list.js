@@ -18,7 +18,7 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
 
   // Get all projects where the user is associate with
   var getOpenTicketsContent = function() {
-    // Get current projet bugtracker(s)
+    // Get current project bugtracker(s)
     $scope.data.projectsBugtracker_onLoad = {};
     $scope.data.projectsBugtracker_content = {};
     $scope.data.projectsBugtracker_message = {};

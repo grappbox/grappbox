@@ -47,7 +47,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		templateUrl : "../resources/pages/calendar.html",
 		controller  : "calendarController",
 		caseInsensitiveMatch : true
-	})	
+	})
 	// Cloud-related pages
 	.when("/cloud", {
 		title: "Cloud list",
@@ -88,7 +88,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		templateUrl : "../resources/pages/project.html",
 		controller  : "projectController",
 		caseInsensitiveMatch : true,
-		resolve: { factory: project_isAccessible }
+		resolve: { factory: isProjectAccessible }
 	})
 	// Timeline-related pages
 	.when("/timeline", {

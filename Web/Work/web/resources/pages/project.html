@@ -11,10 +11,138 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="row">
                 <div class="col-lg-12">
                     <!-- grappbox.data : project content -->
-                    <div class="section-heading app-section-heading"><h2></h2></div>
-                    <div class="section-content app-section-content"></div>
-                </div>
-            </div>
-        </div>
+                    <div class="" ng-if="data.project_new">
+                      <div class="section-heading app-section-heading"><h2>New project</h2></div>
+                      <div class="section-content app-section-content" data-ng-if="data.onLoad">
+                        <div class="loading-content section">
+                          <div></div>
+                        </div>
+                      </div><!-- !section-content -->
+                      <div class="section-content app-section-content" data-ng-if="!data.onLoad">
+                        <form novalidate>
+                          <div class="form-group">
+                            <div ng-if="data.project.logo">
+                              <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                            </div>
+                            <div ng-if="!data.project.logo">
+                              <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                            </div>
+                            <input class="form-control" type="file" ng-model="data.project.logo">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Name</h4>
+                            <input type="text" class="form-control" ng-model="data.project.name">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Description</h4>
+                            <textarea class="form-control" ng-model="data.project.description"></textarea>
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Company</h4>
+                            <input type="text" class="form-control" ng-model="data.project.company">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Phone</h4>
+                            <input type="phone" class="form-control" ng-model="data.project.phone">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Email</h4>
+                            <input type="email" class="form-control" ng-model="data.project.contact_mail">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Facebook</h4>
+                            <input type="url" class="form-control" ng-model="data.project.facebook">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Twitter</h4>
+                            <input type="url" class="form-control" ng-model="data.project.twitter">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Color</h4>
+                          </div><!-- !form-group -->
+                        </form>
+
+                      </div><!-- !section-content -->
+                    </div><!-- ! ng-if="!data.project_new" -->
+
+                    <div class="" ng-if="!data.project_new">
+                      <div class="section-heading app-section-heading">
+                        <h2>{[{data.project.name + " settings"}]}</h2>
+                        <p>
+                          Created at {[{ formatObjectDate(data.project.creation_date.date) }]}
+                        </p>
+
+                      </div>
+
+                      <div class="section-content app-section-content" data-ng-if="data.onLoad">
+                        <div class="loading-content section">
+                          <div></div>
+                        </div>
+                      </div><!-- !section-content -->
+                      <div class="section-content app-section-content" ng-if="!data.onLoad">
+                        <div class="">
+                          <p>
+                            <a ng-if="!data.project.deleted_at" href="" ng-click="deleteProject()" class="btn-default btn-access"><i class="fa fa-times"></i>Delete</a>
+                            <a ng-if="data.project.deleted_at" href="" ng-click="retieveProject()" class="btn-default btn-access"><i class="fa fa-undo"></i>Retrieve</a>
+                          </p>
+                        </div>
+                        <form novalidate>
+                          <div class="form-group">
+                            <div ng-if="data.project.logo">
+                              <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                            </div>
+                            <div ng-if="!data.project.logo">
+                              <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                            </div>
+                            <input class="form-control" type="file" ng-model="data.project.logo">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Name</h4>
+                            <input type="text" class="form-control" ng-model="data.project.name">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Description</h4>
+                            <textarea class="form-control" ng-model="data.project.description"></textarea>
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Password</h4>
+                            <label for="old_pswd">Actual password/label>
+                            <input id="old_pswd" type="password" class="form-control" ng-model="data.project.old_password">
+                            <label for="new_pswd">New password/label>
+                            <input id="new_pswd" type="password" class="form-control" ng-model="data.project.password">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Company</h4>
+                            <input type="text" class="form-control" ng-model="data.project.company">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Phone</h4>
+                            <input type="phone" class="form-control" ng-model="data.project.phone">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Email</h4>
+                            <input type="email" class="form-control" ng-model="data.project.contact_mail">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Facebook</h4>
+                            <input type="url" class="form-control" ng-model="data.project.facebook">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Twitter</h4>
+                            <input type="url" class="form-control" ng-model="data.project.twitter">
+                          </div><!-- !form-group -->
+                          <div class="form-group">
+                            <h4>Color</h4>
+                            <select ng-model="data.project.color">
+                                <option ng-repeat="color in data.availableColors" value="{[{color.value}]}">{[{color.name}]}</option>
+                            </select>
+                          </div><!-- !form-group -->
+                        </form>
+                      </div><!-- !section-content -->
+                    </div><!-- ! ng-if="data.project_new"-->
+
+                </div><!-- !col-lg-12 -->
+            </div><!-- row -->
+        </div><!-- container app-container-->
     </section>
 </div>
