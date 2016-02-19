@@ -166,6 +166,12 @@ var isBugtrackerAccessible_defaultBehavior = function(deferred, $location) {
 var isBugtrackerAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
   var deferred = $q.defer();
 
+  if ($route.current.params.id == 0)
+  {
+    deferred.resolve();
+    return deferred.promise;
+  }
+
   $http.get($rootScope.apiBaseURL + '/bugtracker/getticket/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
     .then(function successCallback(response) {
       deferred.resolve();
@@ -185,7 +191,7 @@ var isBugtrackerAccessible = function($q, $http, $rootScope, $cookies, $route, $
 
           case "4.1.9":
           isBugtrackerAccessible_commonBehavior(deferred, $location);
-          Notification.warning({ message: "You don\'t have access to this ticekt.", delay: 10000 });
+          Notification.warning({ message: "You don\'t have access to this ticket.", delay: 10000 });
           break;
 
           default:

@@ -53,7 +53,8 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         $scope.commentsList = null;
       });
   };
-  getComments();
+  if ($scope.ticketId != 0)
+    getComments();
 
   // Get all tags from the project
   var getProjectTags = function() {
@@ -84,6 +85,11 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   };
   getProjectUsers();
 
+
+  // Date format
+  $scope.formatObjectDate = function(dateToFormat) {
+    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
+  };
 
   // ------------------------------------------------------
   //                 TAGS ASSIGNATION

@@ -15,16 +15,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="section-heading app-section-heading"><h2>New ticket</h2></div>
                       <div class="section-content app-section-content">
                         <form novalidate>
-                            <div class="">
+                            <div class="form-group">
                                 <h4>Title</h4>
-                                <input type="text" ng-model="new_ticket.title"/>
+                                <input class="form-control" type="text" ng-model="new_ticket.title"/>
                             </div>
-                            <div class="">
+                            <div class="form-group">
                                 <h4>Description</h4>
-                                <textarea ng-model="new_ticket.description"/></textarea>
+                                <textarea class="form-control" ng-model="new_ticket.description"/></textarea>
                             </div>
 
-                            <div class="">
+                            <div class="form-group">
                                 <h4>Tag(s)</h4>
                                 <div class="">
                                   <tags-input ng-model="tags"
@@ -36,7 +36,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   </tags-input>
                                 </div>
                             </div>
-                            <div class="">
+                            <div class="form-group">
                                 <h4>User(s) assigned</h4>
                                 <div class="">
                                   <tags-input ng-model="users"
@@ -52,7 +52,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             </div>
 
                             <div>
-                              <a href="" ng-click="bugtracker_post_ticket(new_ticket)"><i class="fa fa-check"></i>Post</a>
+                              <p><a class="btn-default" href="" ng-click="bugtracker_post_ticket(new_ticket)"><i class="fa fa-check"></i>Post</a></p>
                             </div>
                         </form>
                       </div>
@@ -63,40 +63,36 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="section-content app-section-content">
                           <div id="static-data-list">
                             <div class="">
-                                <div>Posted by</div>
-                                <div>{[{ticket.creator.fullname}]}</div>
+                                <p>Posted by {[{ticket.creator.fullname}]}</p>
                             </div>
                             <div class="">
-                                <div>Created at</div>
-                                <div>{[{ticket.createdAt.date}]}</div>
+                                <p>Created at {[{ formatObjectDate(ticket.createdAt.date) }]}</p>
                             </div>
                             <div ng-if="ticket.editedAt" class="">
-                                <div>Edited at</div>
-                                <div>{[{ticket.editedAt.date}]}</div>
+                                <p>Edited at {[{ formatObjectDate(ticket.editedAt.date) }]}</p>
                             </div>
                             <div>
                               <div ng-if="ticket.deletedAt" class="">
-                                <div>Closed at</div>
-                                <div>{[{ticket.deletedAt.date}]}</div>
+                                <p>Closed at {[{ formatObjectDate(ticket.deletedAt.date) }]}</p>
                               </div>
                               <div class="">
-                                <a ng-if="!ticket.deletedAt" href="" ng-click="bugtracker_close_ticket()"><i class="fa fa-times"></i>Close</a>
-                                <a ng-if="ticket.deletedAt" href="" ng-click="bugtracker_reopen_ticket()"><i class="fa fa-undo"></i>Reopen</a>
+                                <p><a ng-if="!ticket.deletedAt" href="" ng-click="bugtracker_close_ticket()" class="btn-default btn-access"><i class="fa fa-times"></i>Close</a>
+                                <a ng-if="ticket.deletedAt" href="" ng-click="bugtracker_reopen_ticket()" class="btn-default btn-access"><i class="fa fa-undo"></i>Reopen</a></p>
                               </div>
                             </div>
                           </div>
                           <div id="editable-data-list">
                               <form novalidate>
-                                  <div class="">
+                                  <div class="form-group">
                                       <h4>Title</h4>
-                                      <input type="text" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.title"/>
+                                      <input class="form-control" type="text" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.title"/>
                                   </div>
-                                  <div class="">
+                                  <div class="form-group">
                                       <h4>Description</h4>
-                                      <textarea ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.description"/></textarea>
+                                      <textarea class="form-control" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.description"/></textarea>
                                   </div>
 
-                                  <div class="">
+                                  <div class="form-group">
                                       <h4>Tag(s)</h4>
                                       <div class="">
                                         <tags-input ng-model="ticket.tags"
@@ -109,7 +105,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                         </tags-input>
                                       </div>
                                   </div>
-                                  <div class="">
+                                  <div class="form-group">
                                       <h4>User(s) assigned</h4>
                                       <div class="">
                                         <tags-input ng-model="ticket.users"
@@ -127,11 +123,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                                   <div ng-if="!ticket.deletedAt" ng-switch="editMode['ticket']">
                                       <div ng-switch-default >
-                                        <a class="button edit-button" href="" ng-click="bugtracker_switchEditMode('ticket')"><i class="fa fa-pencil-square-o"></i>Edit</a>
+                                        <p><a class="btn-default button edit-button" href="" ng-click="bugtracker_switchEditMode('ticket')"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
                                       </div>
                                       <div ng-switch-when="true">
-                                        <a class="button cancel-button" href="" ng-click="bugtracker_switchEditMode('ticket')"><i class=" fa fa-close"></i>Cancel</a>
-                                        <a calss="button save-button" href="" ng-click="bugtracker_save(ticket)"><i class="fa fa-check"></i>Save</a>
+                                        <p><a class="btn-default button cancel-button" href="" ng-click="bugtracker_switchEditMode('ticket')"><i class=" fa fa-close"></i>Cancel</a>
+                                        <a class="btn-default button save-button" href="" ng-click="bugtracker_save(ticket)"><i class="fa fa-check"></i>Save</a></p>
                                       </div>
                                   </div><!-- ng-switch -->
 
@@ -142,47 +138,48 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <div class="comment" ng-if="commentsList.length">
                                 <div ng-repeat="comment in commentsList">
                                   <form novalidate>
-                                      <div class="">
+                                      <div class="form-group">
                                           <h4>Title</h4>
-                                          <input type="text" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.title"/>
+                                          <input class="form-control" type="text" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.title"/>
                                       </div>
-                                      <div class="">
+                                      <div class="form-group">
                                           <h4>Description</h4>
-                                          <textarea ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.description"/></textarea>
+                                          <textarea class="form-control" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.description"/></textarea>
                                       </div>
-                                      <div>{[{"Posted by " + comment.creator.fullname}]}</div>
-                                      <div>{[{"At " + (comment.editedAt ? comment.editedAt.date : comment.createdAt.date)}]}</div>
+                                      <div>
+                                        <p>{[{"Posted by " + comment.creator.fullname + " At " + (comment.editedAt ? formatObjectDate(comment.editedAt.date) : formatObjectDate(comment.createdAt.date)) }]}</p>
+                                      </div>
 
                                       <div ng-if="!ticket.deletedAt" ng-switch="editMode[comment.id]">
                                           <div ng-switch-default >
-                                            <a href="" ng-click="bugtracker_switchEditMode(comment.id)"><i class="fa fa-pencil-square-o"></i>Edit</a>
-                                            <a href="" ng-click="bugtracker_delete_comment(comment.id)"><i class="fa fa-trash-o"></i>Delete</a>
+                                            <p><a href="" class="btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)"><i class="fa fa-pencil-square-o"></i>Edit</a>
+                                            <a class="btn-default btn-access" href="" ng-click="bugtracker_delete_comment(comment.id)"><i class="fa fa-trash-o"></i>Delete</a></p>
                                           </div>
                                           <div ng-switch-when="true">
-                                            <a href="" ng-click="bugtracker_switchEditMode(comment.id)"><i class=" fa fa-close"></i>Cancel</a>
-                                            <a href="" ng-click="bugtracker_edit_comment(comment)"><i class="fa fa-check"></i>Save</a>
+                                            <p><a class="btn-default button cancel-button" href="" ng-click="bugtracker_switchEditMode(comment.id)"><i class=" fa fa-close"></i>Cancel</a>
+                                            <a class="btn-default button save-button" href="" ng-click="bugtracker_edit_comment(comment)"><i class="fa fa-check"></i>Save</a></p>
                                           </div>
                                       </div><!-- ng-switch -->
                                   </form>
                                 </div>
                             </div>
                             <div class="no-comment-msg" ng-if="!commentsList.length">
-                              <div class="app-data error">
+                              <div class="form-group data-wrapper">
                                   <p><i class="fa fa-times"></i>No comment for the moment.</p>
                               </div>
                             </div>
                             <div class="form-new-comment" ng-if="!ticket.deletedAt">
                               <form novalidate>
-                                  <div class="">
+                                  <div class="form-group">
                                       <h4>Title</h4>
-                                      <input type="text" ng-model="new_comment.title"/>
+                                      <input class="form-control" type="text" ng-model="new_comment.title"/>
                                   </div>
-                                  <div class="">
+                                  <div class="form-group">
                                       <h4>Description</h4>
-                                      <textarea ng-model="new_comment.description"/></textarea>
+                                      <textarea class="form-control" ng-model="new_comment.description"/></textarea>
                                   </div>
                                   <div>
-                                    <a href="" ng-click="bugtracker_post_comment(new_comment)"><i class="fa fa-check"></i>Post</a>
+                                    <p><a class="btn-default btn-access" ref="" ng-click="bugtracker_post_comment(new_comment)"><i class="fa fa-check"></i>Post</a></p>
                                   </div>
                               </form>
                             </div>
