@@ -21,8 +21,9 @@
                 <Run Text="Box" FontWeight="Bold" FontFamily="Segoe UI Semibold" Foreground="#FFC0392B"/>
             </Paragraph>
         </RichTextBlock>
-        <TextBox Grid.Row="1" PlaceholderText="UserName"  ></TextBox>
-        <PasswordBox Grid.Row="2" PasswordChanged="PasswordBox_PasswordChanged" PlaceholderText="pass"></PasswordBox>
+        <TextBox x:Name="loginBlock" Grid.Row="1" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu"></TextBox>
+        <PasswordBox x:Name="pwdBlock" Grid.Row="2" PasswordChanged="PasswordBox_PasswordChanged" PlaceholderText="Password" Password="feytou_p"></PasswordBox>
         <HyperlinkButton x:Name="DashBoardButton" Content="Log In" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" Click="DashBoardButton_Click"/>
+        <TextBlock x:Name="errorBlock" Grid.Row="4" TextAlignment="Center" VerticalAlignment="Center" Foreground="#FFE81123" />
     </Grid>
 </Page>

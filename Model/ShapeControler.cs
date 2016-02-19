@@ -34,10 +34,10 @@ namespace GrappBox.Model
             get { return _posOrigin; }
             set { _posOrigin = value; }
         }
-        public ShapeControler(Point pos, string txt, bool bold, bool italic, SolidColorBrush stroke)
+        public ShapeControler(Point pos, string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
         {
             customShape = new CustomText();
-            customShape.Initialize(txt, bold, italic, stroke);
+            customShape.Initialize(txt, bold, italic, stroke, size);
             this.type = WhiteboardTool.TEXT;
             PosOrigin = pos;
         }

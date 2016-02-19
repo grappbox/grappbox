@@ -22,7 +22,7 @@ namespace GrappBox.ViewModel
             Frame tmp = new Frame();
             if (e == MenuEnum.WHITEBOARD)
             {
-                var page = new WhiteBoardList();
+                var page = new WhiteBoardView();
             }
         }
     }

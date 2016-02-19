@@ -1,9 +1,12 @@
-﻿using System;
+﻿using GrappBox.ApiCom;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -18,6 +21,7 @@ namespace GrappBox.Model
     #endregion Enum
     class WhiteBoardModel
     {
+        private int id;
         #region BindedPropertiesDeclaration
         private ShapeControler _currentDraw;
         private WhiteboardTool _currentTool;
@@ -59,6 +63,17 @@ namespace GrappBox.Model
             _strokeColor.Color = Colors.Black;
             _fillColor = new SolidColorBrush();
             _fillColor.Color = Colors.Transparent;
+        }
+
+        internal void ErazeShape(Point p)
+        {
+            ApiCommunication com = ApiCommunication.GetInstance();
+            JObject post =
+                new JObject(
+                    new JProperty("id", id),
+                    new JProperty("_token", "token"),
+                    new JProperty("modification", "del"),
+                    new JProperty("object_id", "OID"));
         }
     }
 }

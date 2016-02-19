@@ -13,10 +13,21 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <TextBox Grid.Row="0" x:Name="textBlock" TextWrapping="Wrap" PlaceholderText="Enter Text" VerticalAlignment="Top" FontSize="18.667" Margin="10,10,10,0" FontWeight="{Binding IsChecked, Converter={StaticResource BoolToFontWeightConverter}, ElementName=BoldCheckBox, Mode=TwoWay}" TextChanged="textBox_TextChanged" FontFamily="Roboto" FontStyle="{Binding IsChecked, Converter={StaticResource BoolToFontStyleConverter}, ElementName=ItalicCheckBox}"/>
-        <Grid Grid.Row="1" Grid.RowSpan="1">
+        <Grid Grid.Row="1">
+            <ComboBox x:Name="fontSize">
+                <ComboBoxItem Name="cbi1">14</ComboBoxItem>
+                <ComboBoxItem Name="cbi2">16</ComboBoxItem>
+                <ComboBoxItem Name="cbi3">18</ComboBoxItem>
+                <ComboBoxItem Name="cbi4">20</ComboBoxItem>
+                <ComboBoxItem Name="cbi5">22</ComboBoxItem>
+                <ComboBoxItem Name="cbi6">24</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid Grid.Row="2" Grid.RowSpan="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

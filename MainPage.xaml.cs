@@ -1,8 +1,11 @@
-﻿using System;
+﻿using GrappBox.ApiCom;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -29,7 +32,6 @@ namespace GrappBox
         public MainPage()
         {
             this.InitializeComponent();
-
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
@@ -40,15 +42,19 @@ namespace GrappBox
         /// <param name="e">Données d’événement décrivant la manière dont l’utilisateur a accédé à cette page.
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
+        { }
+
+        private async void DashBoardButton_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void DashBoardButton_Click(object sender, RoutedEventArgs e)
-        {/*
-            var api = GrappBox.ApiCommunication.ApiCommunication.GetInstance();
-            Debug.WriteLine(api.Request("my-objects"));*/
-            this.Frame.Navigate(typeof(GrappBox.View.DashBoardView));
+            ApiCommunication api = ApiCommunication.GetInstance();
+            HttpResponseMessage res = await api.Login(loginBlock.Text, pwdBlock.Password);
+            if (!res.IsSuccessStatusCode)
+            {
+                this.Frame.Navigate(typeof(GrappBox.View.DashBoardView));
+            }
+            else {
+                errorBlock.Text = "Can't connect to GrappBox: " + res.ReasonPhrase;
+            }
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)

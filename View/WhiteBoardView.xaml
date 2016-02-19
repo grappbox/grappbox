@@ -22,7 +22,7 @@
                     <model:WhiteboardTool>EXPLORE</model:WhiteboardTool>
                 </AppBarButton.CommandParameter>
             </AppBarButton>
-            <AppBarToggleButton Label="Color" IsChecked="{Binding ColorPanOpened, Mode=TwoWay}" Command="{Binding ColorButtonTapped}">
+            <AppBarToggleButton x:Name="ColorBtn" Label="Color" IsChecked="{Binding ColorPanOpened, Mode=TwoWay}" Command="{Binding ColorButtonTapped}">
                 <AppBarToggleButton.Icon>
                     <BitmapIcon UriSource="ms-appx:///Assets/colors.png"/>
                 </AppBarToggleButton.Icon>
@@ -30,7 +30,7 @@
                     <customControler:ColorMod>BORDER</customControler:ColorMod>
                 </AppBarToggleButton.CommandParameter>
             </AppBarToggleButton>
-            <AppBarToggleButton Label="FillColor" IsChecked="{Binding FillColorPanOpened, Mode=TwoWay}" Icon="Pictures" Command="{Binding ColorButtonTapped}">
+            <AppBarToggleButton x:Name="FillcolorBtn" Label="FillColor" IsChecked="{Binding FillColorPanOpened, Mode=TwoWay}" Icon="Pictures" Command="{Binding ColorButtonTapped}">
                 <AppBarToggleButton.CommandParameter>
                     <customControler:ColorMod>FILL</customControler:ColorMod>
                 </AppBarToggleButton.CommandParameter>
@@ -113,12 +113,12 @@
                         </i:Interaction.Behaviors>
                     </customControler:CustomCanvas>
                 </ScrollViewer>
-                <Popup x:Name="ColorPopUp" Grid.Row="1" Grid.Column="1" Visibility="{Binding ColorPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Width, Converter={StaticResource NumberInverter}, ElementName=ColorPopupGrid, Mode=OneTime}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=ColorPopupGrid, Mode=OneTime}">
+                <Popup x:Name="ColorPopUp" Grid.Row="1" Grid.Column="1" Visibility="{Binding ColorPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Offset}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=ColorPopupGrid, Mode=OneTime}">
                     <Grid x:Name="ColorPopupGrid" Height="150" Width="135" Background="#FFB3B3B3">
                         <customControler:Colorpan x:Name="ColorPan" SelectedColor="{Binding StrokeColor, Mode=TwoWay}" SelectedFillColor="{Binding FillColor, Mode=TwoWay}" Mod="{Binding SelectedColorMod , Mode=TwoWay}" Visibility="{Binding ElementName=ColorPopUp, Path=Visibility, Mode=TwoWay}"/>
                     </Grid>
                 </Popup>
-                <Popup x:Name="BrushPopup" Grid.Row="1" Grid.Column="1" Visibility="{Binding BrushPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Width, Converter={StaticResource NumberInverter}, ElementName=BrushPopupGrid, Mode=OneTime}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=BrushPopupGrid, Mode=OneTime}">
+                <Popup x:Name="BrushPopup" Grid.Row="1" Grid.Column="1" Visibility="{Binding BrushPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Offset}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=BrushPopupGrid, Mode=OneTime}">
                     <Grid x:Name="BrushPopupGrid" Height="150" Width="100" Background="#FFB3B3B3">
                         <customControler:BrushPan x:Name="BrushPan" SelectedThickness="{Binding StrokeThickness, Mode=TwoWay}" Visibility="{Binding ElementName=BrushPopup, Path=Visibility, Mode=TwoWay}"/>
                     </Grid>

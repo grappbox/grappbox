@@ -27,7 +27,7 @@
                     <RowDefinition Height="10*"/>
                 </Grid.RowDefinitions>
                 <ComboBox Grid.Row="0" ItemsSource="{Binding Projects}"></ComboBox>
-                <ListView Grid.Row="1" ItemsSource="{Binding WhiteBoards}"/>
+                <ListView Grid.Row="1" ItemsSource="{Binding WhiteBoards}" ItemClick="ListView_ItemClick"/>
             </Grid>
         </slideMenu:SlideInMenuContentControl.Content>
     </slideMenu:SlideInMenuContentControl>

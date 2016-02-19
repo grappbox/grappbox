@@ -50,6 +50,7 @@ namespace GrappBox.ViewModel
                     if (BrushPanOpened)
                         BrushPanOpened = false;
                     ColorPanVisible = Visibility.Visible;
+                    Offset = -350;
                 }
                 else
                     ColorPanVisible = FillColorPanOpened ? Visibility.Visible : Visibility.Collapsed;
@@ -70,6 +71,7 @@ namespace GrappBox.ViewModel
                     if (BrushPanOpened)
                         BrushPanOpened = false;
                     ColorPanVisible = Visibility.Visible;
+                    Offset = -280;
                 }
                 else
                     ColorPanVisible = ColorPanOpened ? Visibility.Visible : Visibility.Collapsed;
@@ -91,6 +93,7 @@ namespace GrappBox.ViewModel
                         FillColorPanOpened = false;
                     }
                     BrushPanVisible = Visibility.Visible;
+                    Offset = -200;
                 }
                 else
                     BrushPanVisible = Visibility.Collapsed;
@@ -113,6 +116,12 @@ namespace GrappBox.ViewModel
                     ColorPanVisible = Visibility.Collapsed;
             }
         }
+        private double _offset;
+        public double Offset
+        {
+            get { return _offset; }
+            set { _offset = value; NotifyPropertyChanged("Offset"); }
+        }
         private Visibility _colorPanVisible = Visibility.Collapsed;
         public Visibility ColorPanVisible
         {
@@ -134,6 +143,12 @@ namespace GrappBox.ViewModel
         #endregion ColorPansLogic
 
         #region TextPanLogic
+        private int _fontSize;
+        public int FontSize
+        {
+            get { return _fontSize; }
+            set { _fontSize = value; }
+        }
         private Point textPos;
         private bool _textPanOpened = false;
         public bool TextPanOpened
@@ -239,8 +254,7 @@ namespace GrappBox.ViewModel
         {
             if (val == true)
             {
-                Debug.WriteLine("JE FAIS DE LA MERDE !!!!!!!!!!");
-                ShapeControler sc = new ShapeControler(textPos, PopUpTextEntered, IsBold, IsItalic, StrokeColor);
+                ShapeControler sc = new ShapeControler(textPos, PopUpTextEntered, IsBold, IsItalic, StrokeColor, 18);
                 CurrentDraw = sc;
             }
         }
@@ -251,7 +265,12 @@ namespace GrappBox.ViewModel
                 textPos = p;
                 TextPanOpened = true;
             }
+            if (CurrentTool == WhiteboardTool.ERAZER)
+            {
+                model.ErazeShape(p);
+            }
         }
+
         private void ColorPanTappedAction(ColorMod mod)
         {
             Debug.WriteLine("ColorPanTappedAction {0}", mod);
