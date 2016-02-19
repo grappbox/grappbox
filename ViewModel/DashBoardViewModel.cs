@@ -12,18 +12,5 @@ namespace GrappBox.ViewModel
 {
     class DashBoardViewModel : ViewModelBase
     {
-        private ICommand _menuCommandNavigation;
-        public ICommand MenuCommandNavigation
-        {
-            get { return _menuCommandNavigation ?? (_menuCommandNavigation = new CommandHandler<MenuEnum>(MenuNavigationAction)); }
-        }
-        void MenuNavigationAction(MenuEnum e)
-        {
-            Frame tmp = new Frame();
-            if (e == MenuEnum.WHITEBOARD)
-            {
-                var page = new WhiteBoardView();
-            }
-        }
     }
 }

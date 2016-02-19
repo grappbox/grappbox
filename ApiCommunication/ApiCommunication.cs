@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -14,7 +13,7 @@ namespace GrappBox.ApiCom
     //This class is a singleton
     class ApiCommunication
     {
-        private string version = "V0.9";
+        private string version = "V0.2";
         private static ApiCommunication instance = null;
         public static ApiCommunication GetInstance()
         {
@@ -29,67 +28,48 @@ namespace GrappBox.ApiCom
             webclient.DefaultRequestHeaders.Accept.Clear();
             webclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             webclient.Timeout = new TimeSpan(0, 0, 20);
-            Debug.WriteLine(webclient.BaseAddress);
         }
         public async Task<string> Request(string requestUrl)
         {
             HttpResponseMessage result = await webclient.GetAsync(requestUrl);
             return result.Content.ToString();
         }
-        public async Task<HttpResponseMessage> Login(string username, string password)
+        public T DeserializeJson<T>(string json, string className)
         {
-            User user = null;
-            JObject post =
-             new JObject(
-                 new JProperty("login", username),
-                 new JProperty("password", password));
-            StringContent sc = new StringContent(post.ToString(), null, "application/json");
-            HttpResponseMessage res = await webclient.PostAsync("accountadministration/login", sc);
-            if (res.IsSuccessStatusCode)
-            {
-                string json = await res.Content.ReadAsStringAsync();
-                json = json.Remove(0, 8);
-                json = json.Remove(json.Length - 1, 1);
-                Debug.WriteLine(json);
-                user = JsonConvert.DeserializeObject<User>(json);
-                Debug.WriteLine("user " + user.Lastname);
-            }
-            return res;
+            string data = JObject.Parse(json).GetValue("data").ToString();
+            return JsonConvert.DeserializeObject<T>(data);
         }
-        public async Task<HttpResponseMessage> Post(string[] properties, object[] values, string url)
+        public async Task<HttpResponseMessage> Post(Dictionary<string,object> properties, string url)
         {
             JObject post = new JObject();
-            for (int i = 0; i < properties.Length; ++i)
+            JObject data = new JObject();
+            foreach (KeyValuePair<string, object> it in properties)
             {
-                post.Add(properties[i], JToken.FromObject(values[i]));
+                data.Add(it.Key, JToken.FromObject(it.Value));
             }
-            Debug.WriteLine(post.ToString());
+            post.Add("data", JToken.FromObject(data));
             StringContent sc = new StringContent(post.ToString(), null, "application/json");
             HttpResponseMessage res = await webclient.PostAsync(url, sc);
-            if (res.IsSuccessStatusCode)
-            {
-                string json = await res.Content.ReadAsStringAsync();
-                Debug.WriteLine(json);
-            }
             return res;
         }
         public async Task<HttpResponseMessage> Get(object[] values, string url)
         {
-            StringBuilder get = new StringBuilder();
+            StringBuilder get = new StringBuilder("/");
             for (int i = 0; i < values.Length; ++i)
             {
                 get.Append(values[i]);
                 if (i + 1 < values.Length)
                     get.Append("/");
             }
-            Debug.WriteLine(get.ToString());
             HttpResponseMessage res = await webclient.GetAsync(url + get);
-            if (res.IsSuccessStatusCode)
-            {
-                string json = await res.Content.ReadAsStringAsync();
-                Debug.WriteLine(json);
-            }
             return res;
+        }
+        public string GetErrorMessage(string jsonTxt)
+        {
+            JObject info = (JObject)JObject.Parse(jsonTxt).GetValue("info");
+            string message = info.GetValue("return_message").ToString();
+            string[] split = message.Split('-');
+            return split[2];
         }
     }
 }

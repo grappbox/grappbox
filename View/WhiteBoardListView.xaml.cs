@@ -20,9 +20,9 @@ namespace GrappBox.View
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WhiteBoardList : Page
+    public sealed partial class WhiteBoardListView : Page
     {
-        public WhiteBoardList()
+        public WhiteBoardListView()
         {
             this.InitializeComponent();
         }

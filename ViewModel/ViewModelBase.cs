@@ -21,7 +21,14 @@ namespace GrappBox.ViewModel
     public enum MenuEnum
     {
         DASHBOARD,
-        WHITEBOARD
+        WHITEBOARD_LIST,
+        USER_SETTINGS,
+        PROJECT_SETTING,
+        CALENDAR,
+        GANTT,
+        CLOUD,
+        TIMELINE,
+        BUGTRACKER
     }
     public class SenderParameterConverter : IValueConverter
     {

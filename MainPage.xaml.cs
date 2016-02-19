@@ -47,13 +47,19 @@ namespace GrappBox
         private async void DashBoardButton_Click(object sender, RoutedEventArgs e)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
-            HttpResponseMessage res = await api.Login(loginBlock.Text, pwdBlock.Password);
-            if (!res.IsSuccessStatusCode)
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("login", loginBlock.Text);
+            props.Add("password", pwdBlock.Password);
+            HttpResponseMessage res = await api.Post(props, "accountadministration/login");
+            if (res.IsSuccessStatusCode)
             {
+                Debug.WriteLine("Pas Error!");
+                api.DeserializeJson<User>(await res.Content.ReadAsStringAsync(), "User");
                 this.Frame.Navigate(typeof(GrappBox.View.DashBoardView));
             }
             else {
-                errorBlock.Text = "Can't connect to GrappBox: " + res.ReasonPhrase;
+                Debug.WriteLine("Error!");
+                errorBlock.Text = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
             }
         }
 
