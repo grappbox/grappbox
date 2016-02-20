@@ -316,7 +316,7 @@ class TimelineMessage
       return array(
         "id" => $this->id,
         //"userId" => $this->userId,
-        "creator"=> {"id" => $this->creator->getId(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastname()},
+        "creator"=> array("id" => $this->creator->getId(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastname()),
         "timelineId" => $this->timelineId,
         "title" => $this->title,
         "message" => $this->message,
