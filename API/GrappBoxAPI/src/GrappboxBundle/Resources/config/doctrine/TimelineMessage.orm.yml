@@ -8,9 +8,9 @@ GrappboxBundle\Entity\TimelineMessage:
             generator:
                 strategy: AUTO
     fields:
-        userId:
-            type: integer
-            column: user_id
+        # userId:
+        #     type: integer
+        #     column: user_id
         timelineId:
             type: integer
             column: timeline_id
@@ -40,5 +40,11 @@ GrappboxBundle\Entity\TimelineMessage:
           inversedBy: timelineMessages
           joinColumn:
             name: timeline_id
+            referencedColumnName: id
+        creator:
+          targetEntity: User
+          inverserdBy: message_creator
+          joinColumn:
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }

@@ -71,6 +71,9 @@ GrappboxBundle\Entity\User:
         bug_creator:
           targetEntity: Bug
           mappedBy: creator
+        message_creator:
+          targetEntity: TimelineMessage
+          mappedBy: creator
         event_creator:
           targetEntity: Event
           mappedBy: creator_user

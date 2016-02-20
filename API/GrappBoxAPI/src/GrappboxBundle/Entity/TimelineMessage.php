@@ -60,6 +60,11 @@ class TimelineMessage
      */
     private $deletedAt;
 
+    /**
+     * @var \Doctrine\Common\Collections\User
+     */
+    private $creator;
+
 
     /**
      * Get id
@@ -279,6 +284,29 @@ class TimelineMessage
     }
 
     /**
+     * Set creator
+     *
+     * @param \GrappboxBundle\Entity\User $creator
+     * @return Bug
+     */
+    public function setCreator(\GrappboxBundle\Entity\User $creator = null)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \GrappboxBundle\Entity\User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
      * Get object content into array
      *
      * @return array
@@ -287,7 +315,8 @@ class TimelineMessage
     {
       return array(
         "id" => $this->id,
-        "userId" => $this->userId,
+        //"userId" => $this->userId,
+        "creator"=> {"id" => $this->creator->getId(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastname()},
         "timelineId" => $this->timelineId,
         "title" => $this->title,
         "message" => $this->message,

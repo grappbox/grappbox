@@ -152,7 +152,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId Id of the user
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.fullname author name
 	* @apiSuccess {int} timelineId Id of the timeline
 	* @apiSuccess {String} title Message title
 	* @apiSuccess {String} message Message content
@@ -169,7 +171,7 @@ class TimelineController extends RolesAndTokenVerificationController
   	*		},
 	*		"data": {
 	*			"id": "154",
-	*			"userId": "25",
+	*			"creator": {"id": 25, "fullname": "John Doe"},
 	*			"timelineId": 14,
 	*			"title": "hello",
 	*			"message": "What about a meeting tomorrow morning ?",
@@ -188,7 +190,7 @@ class TimelineController extends RolesAndTokenVerificationController
   	*		},
 	*		"data": {
 	*			"id": "169",
-	*			"userId": "33",
+	*			"creator": {"id": 25, "fullname": "John Doe"},
 	*			"timelineId": 14,
 	*			"title": "RE: hello",
 	*			"message": "Why not, i'am completly free tomorrow",
@@ -239,7 +241,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		}
 
 		$message = new TimelineMessage();
-		$message->setUserId($user->getId());
+		$message->setCreator($user);
 		$message->setTitle($content->title);
 		$message->setMessage($content->message);
 		$message->setTimelineId($timeline->getId());
@@ -295,7 +297,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.fullname author name
 	* @apiSuccess {int} timelineId timeline id
 	* @apiSuccess {String} title Message title
 	* @apiSuccess {String} message Message content
@@ -312,7 +316,7 @@ class TimelineController extends RolesAndTokenVerificationController
   	*		},
 	*		"data": {
 	*			"id": "154",
-	*			"userId": "25",
+	*			"creator": {"id": 25, "fullname": "John Doe"},
 	*			"timelineId": 14,
 	*			"title": "hello",
 	*			"message": "What about a meeting tomorrow morning or next monday ?",
@@ -393,7 +397,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} array Array of all the timeline's messages
 	* @apiSuccess {int} array.id Message id
-	* @apiSuccess {int} array.userId Id of the author of the message
+	* @apiSuccess {Object} array.creator author
+	* @apiSuccess {int} array.creator.id author id
+	*	@apiSuccess {string} array.creator.fullname author name
 	* @apiSuccess {int} array.timelineId Id of the timeline
 	* @apiSuccess {String} array.title Message title
 	* @apiSuccess {String} array.message Message content
@@ -414,7 +420,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"array": [
 	*				{
 	*					"id": "154",
-	*					"userId": "25",
+	*					"creator": {"id": 25, "fullname": "John Doe"},
 	*					"timelineId": 14,
 	*					"title": "hello",
 	*					"message": "What about a meeting tomorrow morning ?",
@@ -434,7 +440,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*				},
 	*				{
 	*					"id": "158",
-	*					"userId": "21",
+	*					"creator": {"id": 25, "fullname": "John Doe"},
 	*					"timelineId": 14,
 	*					"title": "hello",
 	*					"message": "Ok, let's do this !",
@@ -536,7 +542,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiParam {int} message commented message id
 	*
 	* @apiSuccess {int} id Message id
-	* @apiSuccess {int} userId author id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.fullname author name
 	* @apiSuccess {int} timelineId timeline id
 	* @apiSuccess {String} title Message title
 	* @apiSuccess {String} message Message content
@@ -553,12 +561,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		},
 	*		"data": {
 	*			"array": [
-	*			{"id": "154","userId": "25", "timelineId": 14, "parentId": 150,
+	*			{"id": "154","creator": {"id": 25, "fullname": "John Doe"}, "timelineId": 14, "parentId": 150,
 	*				"title": "hello", "message": "What about a meeting tomorrow morning ?",
 	*				"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*				"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*				"deletedAt": null},
-	*			{"id": "158","userId": "21", "timelineId": 14, "parentId": 150,
+	*			{"id": "158","creator": {"id": 25, "fullname": "John Doe"}, "timelineId": 14, "parentId": 150,
 	*				"title": "hello", "message": "Ok, let's do this !",
 	*				"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*				"editedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
@@ -650,7 +658,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} array Array of all the timeline's messages
 	* @apiSuccess {int} array.id Message id
-	* @apiSuccess {int} array.userId author id
+	* @apiSuccess {Object} array.creator author
+	* @apiSuccess {int} array.creator.id author id
+	*	@apiSuccess {string} array.creator.fullname author name
 	* @apiSuccess {int} array.timelineId timeline id
 	* @apiSuccess {String} array.title Message title
 	* @apiSuccess {String} array.message Message content
@@ -671,7 +681,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"array": [
 	*				{
 	*					"id": "154",
-	*					"userId": "25",
+	*					"creator": {"id": 25, "fullname": "John Doe"},
 	*					"timelineId": 14,
 	*					"title": "hello",
 	*					"message": "What about a meeting tomorrow morning ?",
@@ -691,7 +701,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*				},
 	*				{
 	*					"id": "158",
-	*					"userId": "21",
+	*					"creator": {"id": 25, "fullname": "John Doe"},
 	*					"timelineId": 14,
 	*					"title": "hello",
 	*					"message": "Ok, let's do this !",

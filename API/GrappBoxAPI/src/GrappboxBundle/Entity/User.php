@@ -89,6 +89,11 @@ class User implements UserInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $message_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $event_creator;
 
     /**
@@ -132,6 +137,7 @@ class User implements UserInterface
     public function __construct()
     {
         $this->bug_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->message_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->project_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->gantt_creator = new \Doctrine\Common\Collections\ArrayCollection();
@@ -545,6 +551,39 @@ class User implements UserInterface
         return $this->bug_creator;
     }
 
+
+    /**
+     * Add message_creator
+     *
+     * @param \GrappboxBundle\Entity\TimelineMessage $messageCreator
+     * @return User
+     */
+    public function addMessageCreator(\GrappboxBundle\Entity\TimelineMessage $messageCreator)
+    {
+        $this->message_creator[] = $messageCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove message_creator
+     * @param \GrappboxBundle\Entity\TimelineMessage $messageCreator
+     */
+    public function removeMessageCreator(\GrappboxBundle\Entity\TimelineMessage $messageCreator)
+    {
+        $this->message_creator->removeElement($messageCreator);
+    }
+
+    /**
+     * Get message_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMessageCreator()
+    {
+        return $this->message_creator;
+    }
+
     /**
      * Add project_creator
      *
@@ -845,7 +884,7 @@ class User implements UserInterface
     /**
      * Get task_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTaskCreator()
     {
@@ -883,7 +922,7 @@ class User implements UserInterface
     /**
      * Get colors
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getColors()
     {
