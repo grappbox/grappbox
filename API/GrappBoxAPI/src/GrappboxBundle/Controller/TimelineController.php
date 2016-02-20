@@ -509,7 +509,7 @@ class TimelineController extends RolesAndTokenVerificationController
 
 			$query = $em->getRepository('GrappboxBundle:TimelineMessage')->createQueryBuilder('m');
 			$commentsNb = $query->select($query->expr()->count('m.id'))
-						->where("m.timelineId = :parent")
+						->where("m.parentId = :parent AND m.deletedAt IS NULL")
 						->setParameter("parent", $value->getId())
 						->getQuery()->getSingleScalarResult();
 
@@ -775,7 +775,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		foreach ($messages as $key => $value) {
 			$query = $em->getRepository('GrappboxBundle:TimelineMessage')->createQueryBuilder('m');
 			$commentsNb = $query->select($query->expr()->count('m.id'))
-						->where("m.timelineId = :parent")
+						->where("m.parentId = :parent AND m.deletedAt IS NULL")
 						->setParameter("parent", $value->getId())
 						->getQuery()->getSingleScalarResult();
 
