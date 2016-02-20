@@ -509,7 +509,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		}
 
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"));
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "DESC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 
@@ -632,7 +632,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
 				return ($this->setNoRightsError("11.6.9", "Timeline", "getComments"));
 		}
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "DESC"));
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "ASC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
@@ -780,7 +780,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		}
 
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"), $limit, $offset);
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "DESC"), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$query = $em->getRepository('GrappboxBundle:TimelineMessage')->createQueryBuilder('m');
