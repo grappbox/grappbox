@@ -57,11 +57,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <h4>Twitter</h4>
                             <input type="url" class="form-control" ng-model="data.project.twitter">
                           </div><!-- !form-group -->
+                          <!-- TODO password mandatory ? generate if not provide ? -->
                           <div class="form-group">
-                            <h4>Color</h4>
+                            <h4>Password</h4>
+                            <p>Used for the cloud</p>
+                            <input type="password" class="form-control" ng-model="data.project.password">
                           </div><!-- !form-group -->
+                          <div>
+                            <p><a class="btn-default button save-button" href="" ng-click="createProject(data.project)"><i class="fa fa-check"></i>Create</a></p>
+                          </div>
                         </form>
-
                       </div><!-- !section-content -->
                     </div><!-- ! ng-if="!data.project_new" -->
 
@@ -83,7 +88,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         <div class="">
                           <p>
                             <a ng-if="!data.project.deleted_at" href="" ng-click="deleteProject()" class="btn-default btn-access"><i class="fa fa-times"></i>Delete</a>
-                            <a ng-if="data.project.deleted_at" href="" ng-click="retieveProject()" class="btn-default btn-access"><i class="fa fa-undo"></i>Retrieve</a>
+                            <a ng-if="data.project.deleted_at" href="" ng-click="retrieveProject()" class="btn-default btn-access"><i class="fa fa-undo"></i>Retrieve</a>
                           </p>
                         </div>
                         <form novalidate>
@@ -94,49 +99,61 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             <div ng-if="!data.project.logo">
                               <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                             </div>
-                            <input class="form-control" type="file" ng-model="data.project.logo">
+                            <input ng-disabled="!editMode || data.project.deleted_at" class="form-control" type="file" ng-model="data.project.logo">
                           </div><!-- !form-group -->
                           <div class="form-group">
                             <h4>Name</h4>
-                            <input type="text" class="form-control" ng-model="data.project.name">
+                            <input ng-disabled="!editMode || data.project.deleted_at" type="text" class="form-control" ng-model="data.project.name">
                           </div><!-- !form-group -->
                           <div class="form-group">
                             <h4>Description</h4>
-                            <textarea class="form-control" ng-model="data.project.description"></textarea>
+                            <textarea ng-disabled="!editMode || data.project.deleted_at" class="form-control" ng-model="data.project.description"></textarea>
                           </div><!-- !form-group -->
                           <div class="form-group">
                             <h4>Company</h4>
-                            <input type="text" class="form-control" ng-model="data.project.company">
+                            <input ng-disabled="!editMode || data.project.deleted_at" type="text" class="form-control" ng-model="data.project.company">
                           </div><!-- !form-group -->
                           <div class="form-group">
                             <h4>Phone</h4>
-                            <input type="phone" class="form-control" ng-model="data.project.phone">
+                            <input ng-disabled="!editMode || data.project.deleted_at" type="phone" class="form-control" ng-model="data.project.phone">
                           </div><!-- !form-group -->
                           <div class="form-group">
                             <h4>Email</h4>
-                            <input type="email" class="form-control" ng-model="data.project.contact_mail">
+                            <input ng-disabled="!editMode || data.project.deleted_at" type="email" class="form-control" ng-model="data.project.contact_mail">
                           </div><!-- !form-group -->
                           <div class="form-group">
                             <h4>Facebook</h4>
-                            <input type="url" class="form-control" ng-model="data.project.facebook">
+                            <input ng-disabled="!editMode || data.project.deleted_at" type="url" class="form-control" ng-model="data.project.facebook">
                           </div><!-- !form-group -->
                           <div class="form-group">
                             <h4>Twitter</h4>
-                            <input type="url" class="form-control" ng-model="data.project.twitter">
+                            <input ng-disabled="!editMode || data.project.deleted_at" type="url" class="form-control" ng-model="data.project.twitter">
                           </div><!-- !form-group -->
-                          <div class="form-group">
-                            <h4>Color</h4>
-                            <select ng-model="data.project.color">
-                                <option ng-repeat="color in data.availableColors" value="{[{color.value}]}">{[{color.name}]}</option>
-                            </select>
-                          </div><!-- !form-group -->
+                          <!-- TODO how to change password ,what if no actual password ? -->
                           <div class="form-group">
                             <h4>Password</h4>
-                            <label for="old_pswd">Actual password</label>
-                            <input id="old_pswd" type="password" class="form-control" ng-model="data.project.old_password">
-                            <label for="new_pswd">New password</label>
-                            <input id="new_pswd" type="password" class="form-control" ng-model="data.project.password">
+                            <p>Used for the cloud</p>
+                            <div ng-if="data.project.password">
+                              <label for="old_pswd">Actual password</label>
+                              <input ng-disabled="!editMode || data.project.deleted_at" id="old_pswd" type="password" class="form-control" ng-model="data.project.old_password">
+                              <label for="new_pswd">New password</label>
+                              <input ng-disabled="!editMode || data.project.deleted_at" id="new_pswd" type="password" class="form-control" ng-model="data.project.new_password">
+                            </div>
+                            <div ng-if="!data.project.password">
+                              <input ng-disabled="!editMode || data.project.deleted_at" type="password" class="form-control" ng-model="data.project.new_password">
+                            </div>
                           </div><!-- !form-group -->
+
+                          <div ng-if="!data.project.deleted_at" ng-switch="editMode">
+                              <div ng-switch-default >
+                                <p><a href="" class="btn-default btn-access" ng-click="project_switchEditMode()"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
+                              </div>
+                              <div ng-switch-when="true">
+                                <p><a class="btn-default button cancel-button" href="" ng-click="project_switchEditMode()"><i class=" fa fa-close"></i>Cancel</a>
+                                <a class="btn-default button save-button" href="" ng-click="updateProject(data.project)"><i class="fa fa-check"></i>Save</a></p>
+                              </div>
+                          </div><!-- ng-switch -->
+
                         </form>
                       </div><!-- !section-content -->
                     </div><!-- ! ng-if="data.project_new"-->

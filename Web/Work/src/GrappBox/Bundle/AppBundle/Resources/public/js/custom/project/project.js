@@ -16,18 +16,7 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
   $scope.data = { onLoad: true, project: { }, isValid: false, canEdit: false };
   $scope.projectID = $routeParams.id;
 
-  $scope.data.availableColors = [
-    { name: "-None-", value: "none" }, { name: "Red", value: "#F44336" }, { name: "Pink", value: "#E91E63" }, { name: "Purple", value: "#9C27B0" },
-    { name: "Deep Purple", value: "#673AB7" }, { name: "Indigo", value: "#3F51B5" }, { name: "Blue", value: "#2196F3" }, { name: "Light Blue", value: "#03A9F4" },
-    { name: "Cyan", value: "#00BCD4" }, { name: "Teal", value: "#009688" }, { name: "Green", value: "#4CAF50" }, { name: "Light Green", value: "#8BC34A" },
-    { name: "Lime", value: "#CDDC39" }, { name: "Yellow", value: "#FFEB3B" }, { name: "Amber", value: "#FFC107" }, { name: "Orange", value: "#FF9800" },
-    { name: "Deep Orange", value: "#FF5722" }, { name: "Brown", value: "#795548" }, { name: "Blue Grey", value: "#607D8B" }, { name: "White", value: "#FFFFFF" },
-    { name: "Grey 20%", value: "#EEEEEE" }, { name: "Grey 40%", value: "#BDBDBD" }, { name: "Grey 50%", value: "#9E9E9E" }, { name: "Grey 60%", value: "#757575" },
-    { name: "Grey 80%", value: "#424242" }, { name: "Black", value: "#000000" }
-  ];
-
-
-  //Get bugtracker informations if not new
+  //Get project informations if not new
   if ($scope.projectID != 0) {
     $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID)
       .then(function successCallback(response) {
@@ -55,11 +44,122 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
     return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
   };
 
-  $scope.updateProject = function(project){
+  // ------------------------------------------------------
+  //                EDITION SWITCH
+  // ------------------------------------------------------
+  $scope.editMode = false;
 
+  $scope.project_switchEditMode = function() {
+    $scope.editMode = ($scope.editMode ? false : true);
+  };
+
+  // ------------------------------------------------------
+  //                PROJECT
+  // ------------------------------------------------------
+  $scope.updateProject = function(project){
+    //var logo = ;
+    var elem = {
+      "token": $cookies.get('USERTOKEN'),
+      "projectId": $scope.projectID,
+      "name": project.name,
+      "description": project.description,
+      //"logo": logo,
+      //"password": project.new_password,
+      "phone": project.phone,
+      "company": project.company,
+      "email": project.contact_mail,
+      "facebook": project.facebook,
+      "twitter": project.twitter
+    };
+    var data = {"data": elem};
+
+    Notification.info({ message: 'Updating project...', delay: 5000 });
+    $http.put($rootScope.apiBaseURL + '/projects/updateinformations', data)
+      .then(function successCallback(response) {
+        Notification.success({ message: 'Project updated', delay: 5000 });
+        $location.path('/project/' + $scope.projectID);
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: 'Unable to update project. Please try again.', delay: 5000 });
+      }, $scope);
+      $scope.editMode = false;
   };
 
   $scope.createProject = function(project){
+    //var logo = ;
+    var elem = {
+      "token": $cookies.get('USERTOKEN'),
+      "name": project.name,
+      "description": project.description,
+      //"logo": logo,
+      //"password": project.new_password
+      "phone": project.phone,
+      "company": project.company,
+      "email": project.contact_mail,
+      "facebook": project.facebook,
+      "twitter": project.twitter
+    };
+    var data = {"data": elem};
+
+    Notification.info({ message: 'Creating project...', delay: 5000 });
+    $http.post($rootScope.apiBaseURL + '/projects/projectcreation', data)
+      .then(function successCallback(response) {
+        $scope.data.project_error = false;
+        $scope.data.project_new = false;
+        $scope.projectID = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data.id : null);
+        // TODO create roles
+        // TODO assign users to project and to their roles
+        // TODO generate customer access
+        Notification.success({ message: 'Project created', delay: 5000 });
+        $location.path('/project/' + $scope.projectID);
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: 'Unable to create project. Please try again.', delay: 5000 });
+      }, $scope);
 
   };
+
+  $scope.deleteProject = function(){
+    Notification.info({ message: 'Deleting project...', delay: 5000 });
+    $http.delete($rootScope.apiBaseURL + '/projects/delproject/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID)
+      .then(function successCallback(response) {
+        Notification.success({ message: 'Project deleted', delay: 5000 });
+        $location.path('/project/' + $scope.projectID);
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: 'Unable to delete project. Please try again.', delay: 5000 });
+      }, $scope);
+  };
+
+  $scope.retrieveProject = function(){
+    Notification.info({ message: 'Retrieving project...', delay: 5000 });
+    $http.get($rootScope.apiBaseURL + '/projects/retrieveproject/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID)
+      .then(function successCallback(response) {
+        Notification.success({ message: 'Project retrieved', delay: 5000 });
+        $route.reload();
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: 'Unable to retrieve project. Please try again.', delay: 5000 });
+      }, $scope);
+  };
+
+  // ------------------------------------------------------
+  //                PASSWORD
+  // ------------------------------------------------------
+
+  // TODO
+
+  // ------------------------------------------------------
+  //                CUSTOMER ACCESS
+  // ------------------------------------------------------
+
+  // TODO
+
+  // ------------------------------------------------------
+  //                ROLES AND USERS
+  // ------------------------------------------------------
+
+  // TODO
+
+
 }]);
