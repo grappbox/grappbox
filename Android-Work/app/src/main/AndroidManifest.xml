@@ -43,6 +43,7 @@
                 android:value="MainActivity" />
         </activity>
         <activity android:name=".BugTracker.BugCreationActivity"></activity>
+        <activity android:name=".Timeline.TimelineConvertToBugtracker"></activity>
     </application>
 
 </manifest>

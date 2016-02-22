@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.grappbox.grappbox.grappbox.BugTracker.BugCreationActivity;
 import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
 import com.grappbox.grappbox.grappbox.R;
 
@@ -174,7 +176,16 @@ public class TimelineListFragment extends Fragment {
 
     private void convertToTicketBugtracker(int idMessage)
     {
+        String title = "";
+        String content = "";
 
+        for (ContentValues item : _value){
+            if (idMessage == Integer.parseInt(item.get("id").toString())){
+                title = item.get("title").toString();
+                content = item.get("message").toString();
+            }
+        }
+        _context.TimelineConvertToTicketBugtracker(title, content);
     }
 
     private void archiveTimelineMessage(int idMessage)

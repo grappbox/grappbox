@@ -57,6 +57,14 @@ public class CreateBugTask extends AsyncTask<String, Void, String> {
         _context = context;
     }
 
+    public void fillText(String title, String content)
+    {
+        _title = title;
+        ((EditText) _root.findViewById(R.id.et_title)).setText(_title);
+        _description = content;
+        ((EditText) _root.findViewById(R.id.et_description)).setText(_description);
+    }
+
     @Override
     protected String doInBackground(String... params) {
         JSONObject json = new JSONObject();

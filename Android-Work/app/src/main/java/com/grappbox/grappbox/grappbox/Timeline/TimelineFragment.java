@@ -1,17 +1,18 @@
 package com.grappbox.grappbox.grappbox.Timeline;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
+import com.grappbox.grappbox.grappbox.BugTracker.BugCreationActivity;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.List;
@@ -51,6 +52,14 @@ public class TimelineFragment extends Fragment {
         APIRequestGetTimeline timeline = new APIRequestGetTimeline(this, SessionAdapter.getInstance().getCurrentSelectedProject());
         timeline.execute();
         return _rootView;
+    }
+
+    public void TimelineConvertToTicketBugtracker(String title, String content)
+    {
+        Intent intent = new Intent(this.getContext(), TimelineConvertToBugtracker.class);
+        intent.putExtra("title", title);
+        intent.putExtra("content", content);
+        startActivity(intent);
     }
 
     public void TimelineShowCommentMessage(int idMessage, int idTimeline, String titleMessage, String contentMessage)
