@@ -1,4 +1,5 @@
 ﻿using GrappBox.ApiCom;
+using GrappBox.Ressources;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -53,12 +54,12 @@ namespace GrappBox
             HttpResponseMessage res = await api.Post(props, "accountadministration/login");
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine("Pas Error!");
-                api.DeserializeJson<User>(await res.Content.ReadAsStringAsync(), "User");
+                api.DeserializeJson<User>(await res.Content.ReadAsStringAsync());
+                SettingsManager.setOption("login", loginBlock.Text);
+                SettingsManager.setOption("password", pwdBlock.Password);
                 this.Frame.Navigate(typeof(GrappBox.View.DashBoardView));
             }
             else {
-                Debug.WriteLine("Error!");
                 errorBlock.Text = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
             }
         }

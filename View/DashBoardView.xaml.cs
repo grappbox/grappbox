@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrappBox.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,9 +37,21 @@ namespace GrappBox.View
 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(WhiteBoardView));
+        }
+
+        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            UserSettingsViewModel usvm = new UserSettingsViewModel();
+            usvm.getAPI();
+            this.Frame.Navigate(typeof(UserView));
+        }
+
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(DashBoardView));
         }
     }
 }

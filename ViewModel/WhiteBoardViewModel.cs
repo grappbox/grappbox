@@ -21,7 +21,6 @@ namespace GrappBox.ViewModel
 {
     class WhiteBoardViewModel : ViewModelBase
     {
-
         private WhiteBoardModel model;
         public WhiteBoardViewModel()
         {

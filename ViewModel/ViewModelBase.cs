@@ -15,6 +15,9 @@ using System.Diagnostics;
 using Windows.UI.Xaml.Media;
 using GrappBox.CustomControler;
 using Windows.UI.Text;
+using System.IO;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace GrappBox.ViewModel
 {
@@ -29,6 +32,35 @@ namespace GrappBox.ViewModel
         CLOUD,
         TIMELINE,
         BUGTRACKER
+    }
+    #region Converter
+    public class DateTimeToDateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            try
+            {
+                DateTime date = (DateTime)value;
+                return new DateTimeOffset(date);
+            }
+            catch (Exception ex)
+            {
+                return DateTimeOffset.MinValue;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            try
+            {
+                DateTimeOffset dto = (DateTimeOffset)value;
+                return dto.DateTime;
+            }
+            catch (Exception ex)
+            {
+                return DateTime.MinValue;
+            }
+        }
     }
     public class SenderParameterConverter : IValueConverter
     {
@@ -305,16 +337,15 @@ namespace GrappBox.ViewModel
             _action.Invoke(param);
         }
     }
-    abstract class  ViewModelBase : INotifyPropertyChanged
+    #endregion Converter
+    abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(string property)
         {
-
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
-                Debug.WriteLine("Notify " + property);
             }
         }
     }

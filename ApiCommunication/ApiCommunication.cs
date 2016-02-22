@@ -34,12 +34,12 @@ namespace GrappBox.ApiCom
             HttpResponseMessage result = await webclient.GetAsync(requestUrl);
             return result.Content.ToString();
         }
-        public T DeserializeJson<T>(string json, string className)
+        public T DeserializeJson<T>(string json)
         {
             string data = JObject.Parse(json).GetValue("data").ToString();
             return JsonConvert.DeserializeObject<T>(data);
         }
-        public async Task<HttpResponseMessage> Post(Dictionary<string,object> properties, string url)
+        public async Task<HttpResponseMessage> Post(Dictionary<string, object> properties, string url)
         {
             JObject post = new JObject();
             JObject data = new JObject();
@@ -50,6 +50,19 @@ namespace GrappBox.ApiCom
             post.Add("data", JToken.FromObject(data));
             StringContent sc = new StringContent(post.ToString(), null, "application/json");
             HttpResponseMessage res = await webclient.PostAsync(url, sc);
+            return res;
+        }
+        public async Task<HttpResponseMessage> Put(Dictionary<string, object> properties, string url)
+        {
+            JObject put = new JObject();
+            JObject data = new JObject();
+            foreach (KeyValuePair<string, object> it in properties)
+            {
+                data.Add(it.Key, JToken.FromObject(it.Value));
+            }
+            put.Add("data", JToken.FromObject(data));
+            StringContent sc = new StringContent(put.ToString(), null, "application/json");
+            HttpResponseMessage res = await webclient.PutAsync(url, sc);
             return res;
         }
         public async Task<HttpResponseMessage> Get(object[] values, string url)

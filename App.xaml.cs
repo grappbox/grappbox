@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrappBox.View;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -98,6 +99,11 @@ namespace GrappBox
                 {
                     throw new Exception("Failed to create initial page");
                 }
+
+                //if (!rootFrame.Navigate(typeof(UserSettingsView), e.Arguments))
+                //{
+                //    throw new Exception("Failed to create initial page");
+                //}
             }
 
             // Vérifiez que la fenêtre actuelle est active

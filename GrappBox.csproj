@@ -119,6 +119,7 @@
     <Compile Include="Model\DashBoardModel.cs" />
     <Compile Include="Model\ICustomShape.cs" />
     <Compile Include="Model\ShapeControler.cs" />
+    <Compile Include="Model\UserSettingsModel.cs" />
     <Compile Include="Model\WhiteBoardListModel.cs" />
     <Compile Include="Model\WhiteBoardModel.cs" />
     <Compile Include="Navigation_Test.xaml.cs">
@@ -126,6 +127,7 @@
     </Compile>
     <Compile Include="Ressources\SettingsManager.cs" />
     <Compile Include="ViewModel\MenuViewModel.cs" />
+    <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\WhiteBoardListViewModel.cs" />
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -133,6 +135,9 @@
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UserView.xaml.cs">
+      <DependentUpon>UserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\WhiteBoardListView.xaml.cs">
       <DependentUpon>WhiteBoardListView.xaml</DependentUpon>
@@ -204,6 +209,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="View\DashBoardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UserView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
