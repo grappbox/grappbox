@@ -81,7 +81,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
     private static ProjectSettingsActivity _childrenParent;
     private static final String[] PreferenceKeys = {
             "project_name",
-            "project_desc",
+            "project_descproject_desc",
             "project_phone",
             "project_company_name",
             "project_contact_mail",

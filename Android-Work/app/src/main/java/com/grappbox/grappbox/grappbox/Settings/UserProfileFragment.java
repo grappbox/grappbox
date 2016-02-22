@@ -263,6 +263,7 @@ public class UserProfileFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer response) {
             super.onPostExecute(response);
+
             String answer;
             if (response == 200)
                 answer = "Information Update";
@@ -280,15 +281,15 @@ public class UserProfileFragment extends Fragment {
             Integer APIResponse;
 
             try {
-                APIConnectAdapter.getInstance().startConnection("user/basicinformations/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().startConnection("user/basicinformations/" + SessionAdapter.getInstance().getToken(), "V0.2");
                 APIConnectAdapter.getInstance().setRequestConnection("PUT");
 
                 JSONObject JSONParam = new JSONObject();
-                JSONArray JSONArrayBirthdayParam = new JSONArray();
+                JSONObject JSONData = new JSONObject();
 
                 JSONParam.put("token", SessionAdapter.getInstance().getToken());
-                JSONParam.put("first_name", param[0]);
-                JSONParam.put("last_name", param[1]);
+                JSONParam.put("firstname", param[0]);
+                JSONParam.put("lastname", param[1]);
                 if (!SessionAdapter.getInstance().getLogin().equals(param[2]) && isEmailValid(param[2]))
                     JSONParam.put("email", param[2]);
                 JSONParam.put("phone", param[3]);
@@ -297,12 +298,16 @@ public class UserProfileFragment extends Fragment {
                 JSONParam.put("viadeo", param[5]);
                 JSONParam.put("twitter", param[6]);
 
-                JSONParam.put("birthday", JSONArrayBirthdayParam);
+//                JSONParam.put("birthday", "");
+                JSONData.put("data", JSONParam);
+                Log.v("JSON", JSONData.toString());
 
-                Log.v("JSON", JSONParam.toString());
+                APIConnectAdapter.getInstance().sendJSON(JSONData);
 
-                APIConnectAdapter.getInstance().sendJSON(JSONParam);
                 APIResponse = APIConnectAdapter.getInstance().getResponseCode();
+                String toto;
+                if (APIResponse == 200)
+                    toto = APIConnectAdapter.getInstance().getInputSream();
 
             } catch (IOException e){
                 Log.e("APIConnection", "Error ", e);

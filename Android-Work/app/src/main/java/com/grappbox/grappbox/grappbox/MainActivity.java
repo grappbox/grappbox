@@ -43,6 +43,7 @@ import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.Model.UserProjectTask;
 import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
+import com.grappbox.grappbox.grappbox.Timeline.TimelineFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 
 import org.w3c.dom.Text;
@@ -279,6 +280,12 @@ public class MainActivity extends AppCompatActivity
                 fragment = new AgendaFragment();
                 changeToolbarTitle("Calendar");
                 break;
+
+            case R.id.nav_Timeline:
+                fragment = new TimelineFragment();
+                changeToolbarTitle("Timeline");
+                break;
+
             case R.id.nav_Cloud:
                 fragment = new CloudExplorerFragment();
                 changeToolbarTitle("Cloud");

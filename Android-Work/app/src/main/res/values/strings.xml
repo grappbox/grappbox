@@ -230,4 +230,21 @@
     <string name="str_role_create_title">Role creation</string>
     <string name="str_error_empty">You have to fill this field</string>
 
+    <string-array name="timeline_tab_bar_title">
+        <item>Internal timeline</item>
+        <item>Client Timeline</item>
+    </string-array>
+
+    <string-array name="timeline_message_action">
+        <item>Edit message</item>
+        <item>Show comment</item>
+        <item>Archive message</item>
+        <item>Convert to ticket</item>
+    </string-array>
+
+    <string-array name="timeline_message_comment_action">
+        <item>Edit comment</item>
+        <item>Archive comment</item>
+    </string-array>
+
 </resources>
