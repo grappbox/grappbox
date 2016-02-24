@@ -108,8 +108,11 @@ QJsonObject SDataManager::ParseMapDebug(QMap<QString, QVariant> &data)
 			ret[it.key()] = arr;
 		}
 		else
-			ret[it.key()] = ParseMapDebug(it.value().toMap());
-	}
+        {
+            QMap<QString, QVariant> newData = it.value().toMap();
+            ret[it.key()] = ParseMapDebug(newData);
+        }
+    }
 	return ret;
 }
 
@@ -118,12 +121,12 @@ void SDataManager::GenerateFileDebug(QMap<QString, QVariant> &data)
 	QJsonObject ret = SDataManager::ParseMapDebug(data);
 	QJsonDocument doc(ret);
 	QString json = doc.toJson(QJsonDocument::Indented);
-	QMessageBox::about(nullptr, "Json debug", json);
+	//QMessageBox::about(nullptr, "Json debug", json);
 }
 
 void API::SDataManager::GenerateFileDebug(QByteArray arr)
 {
 	QJsonDocument doc = QJsonDocument::fromJson(arr);
 	QString json = doc.toJson(QJsonDocument::Indented);
-	QMessageBox::about(nullptr, "Json debug", json);
+	//QMessageBox::about(nullptr, "Json debug", json);
 }

@@ -74,7 +74,14 @@ SOURCES += main.cpp \
     Body/Calendar/CalendarEventMonth.cpp \
     Body/BodyCalendar.cpp \
     Body/Calendar/CalendarViewWeek.cpp \
-    Body/Calendar/CalendarEventForm.cpp
+    Body/Calendar/CalendarEventForm.cpp \
+    SDebugWindow.cpp \
+    RequestView.cpp \
+    FlowLayout.cpp \
+    SStyleLoader.cpp \
+    CreateWhiteboardDialog.cpp \
+    ListAddRemoveSelection.cpp \
+    Body/Calendar/CalendarViewDayContainer.cpp
 
 HEADERS  += MainWindow.h \
     SliderMenu.h \
@@ -137,7 +144,14 @@ HEADERS  += MainWindow.h \
     Body/Calendar/CalendarEventMonth.h \
     Body/BodyCalendar.h \
     Body/Calendar/CalendarViewWeek.h \
-    Body/Calendar/CalendarEventForm.h
+    Body/Calendar/CalendarEventForm.h \
+    SDebugWindow.h \
+    RequestView.h \
+    FlowLayout.h \
+    SStyleLoader.h \
+    CreateWhiteboardDialog.h \
+    ListAddRemoveSelection.h \
+    Body/Calendar/CalendarViewDayContainer.h
 
 RESOURCES += \
     temporaryressources.qrc \

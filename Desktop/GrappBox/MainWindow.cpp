@@ -51,13 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     _MenuWidget = new SliderMenu();
 
-    _LoadingImage = new QLabel(this);
-    _LoadingImage->setAlignment(Qt::AlignCenter);
-    QMovie *loading = new QMovie(":/icon/Ressources/Icon/Loading.gif");
-    _LoadingImage->setMovie(loading);
-    loading->start();
-    _LoadingId = _StackedLayout->addWidget(_LoadingImage);
-
     BodyDashboard *dashboard = new BodyDashboard();
     BodyUserSettings *userSettings = new BodyUserSettings();
     BodyProjectSettings *projectSettings = new BodyProjectSettings();
@@ -229,7 +222,6 @@ void MainWindow::OnMenuChange(int id)
     }
     (dynamic_cast<IBodyContener*>(currentWidget))->Hide();
     _CurrentCanvas = id;
-    _StackedLayout->setCurrentIndex(0);
     (dynamic_cast<IBodyContener*>(nextWidget))->Show(_CurrentCanvas, this);
     nextWidget->updateGeometry();
 }

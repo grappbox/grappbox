@@ -3,6 +3,7 @@
 
 #include "Calendar/CalendarView.h"
 #include "Calendar/CalendarEvent.h"
+#include "Calendar/CalendarViewDayContainer.h"
 
 #include <QGridLayout>
 
@@ -22,22 +23,12 @@ public:
     virtual void HideProject(int id);
     virtual void ShowProject(int id);
 
-protected:
-    virtual void paintEvent(QPaintEvent *event);
-
 signals:
 
 public slots:
 
-private:
-    void LoadEventInterne();
-    int GetMaximumColumnForEvent(Event *event, QMap<int, int> eventsOverlap) const;
-
-    QGridLayout     *_MainLayout;
-
-    QList<CalendarEvent*>   _EventsWidget;
-
-	bool _ViewHour;
+    QLabel          *_DayName;
+    CalendarViewDayContainer *_Container;
 };
 
 #endif // CALENDARVIEWDAY_H

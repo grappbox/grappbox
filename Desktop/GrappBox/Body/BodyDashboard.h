@@ -37,6 +37,7 @@ public slots:
 private:
     void UpdateLayout(bool sendSignal = true);
     void DeleteLayout();
+    void DeleteContent();
 
     int                 _UserId;
     MainWindow          *_MainApplication;

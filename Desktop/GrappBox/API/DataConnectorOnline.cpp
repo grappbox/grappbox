@@ -3,6 +3,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include "DataConnectorOnline.h"
 #include <QDebug>
+#include "SDebugWindow.h"
 
 #define LARGE_DEBUG
 
@@ -27,12 +28,11 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_LIST_MEMBER_PROJECT] = "dashboard/getteamoccupation";
 	_GetMap[GR_LIST_MEETING] = "dashboard/getnextmeetings";
 	_GetMap[GR_LIST_TASK] = "";
-	_GetMap[GR_LIST_TIMELINE] = "";
+    _GetMap[GR_LIST_TIMELINE] = "timeline/gettimelines";
 	_GetMap[GR_TASK] = "";
-	_GetMap[GR_TIMELINE] = "";
+    _GetMap[GR_TIMELINE] = "timeline/getlastmessages";
 	_GetMap[GR_COMMENT_TIMELINE] = "timeline/getcomments";
-	_GetMap[GR_ARCHIVE_MESSAGE_TIMELINE] = "";
-	_GetMap[GR_USER_DATA] = "";
+    _GetMap[GR_USER_DATA] = "user/getuserbasicinformations";
 	_GetMap[GR_WHITEBOARD] = "";
 	_GetMap[GR_LOGOUT] = "";
 	_GetMap[GR_USER_SETTINGS] = "";
@@ -63,9 +63,8 @@ DataConnectorOnline::DataConnectorOnline()
 	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
 	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";
 	_PostMap[PR_CREATETAG] = "bugtracker/tagcreation";
-	_PostMap[PR_MESSAGE_TIMELINE] = "";
-	_PostMap[PR_EDIT_MESSAGE_TIMELINE] = "";
-	_PostMap[PR_POST_EVENT] = "event/postevent";
+    _PostMap[PR_MESSAGE_TIMELINE] = "timeline/postmessage";
+    _PostMap[PR_POST_EVENT] = "event/postevent";
 	_PostMap[PR_NEW_WHITEBOARD] = "";
 
 	// Initialize Delete request
@@ -77,6 +76,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/closeticket";
 	_DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/deletetag";
 	_DeleteMap[DR_REMOVE_EVENT] = "";
+    _DeleteMap[DR_ARCHIVE_MESSAGE_TIMELINE] = "timeline/archivemessage";
 
 	// Initialize Put request
 	_PutMap[PUTR_USERSETTINGS] = "";
@@ -87,6 +87,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_PutMap[PUTR_SET_PARTICIPANT] = "bugtracker/setparticipants";
 	_PutMap[PUTR_EDIT_COMMENTBUG] = "bugtracker/editcomment";
 	_PutMap[PUTR_EDIT_BUG] = "bugtracker/editticket";
+    _PutMap[PUTR_EDIT_MESSAGE_TIMELINE] = "timeline/editmessage";
 }
 
 void DataConnectorOnline::OnResponseAPI()
@@ -98,8 +99,9 @@ void DataConnectorOnline::OnResponseAPI()
 	{
 		QMessageBox::critical(nullptr, "Critical error", "Unable to cast the reply of the API response.", QMessageBox::Ok);
 		return;
-	}
+    }
 	QByteArray req = request->readAll();
+    FINISH_REQUEST(_Request[request], request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString(), request->errorString(), req);
 	if (request->error())
 	{
 #ifdef LARGE_DEBUG
@@ -111,7 +113,7 @@ void DataConnectorOnline::OnResponseAPI()
 			qDebug() << "[DataConnectorOnline] Error code : " << info["return_code"].toString();
 			qDebug() << "[DataConnectorOnline] Error message : " << info["return_message"].toString();
 		}
-#elif
+#else
 		qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString();
 #endif
 		QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
@@ -137,10 +139,7 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 	case PR_CUSTOMER_GENERATE_ACCESS:
 		reply = CustomerGenerateAccess(data);
 		break;
-	case PR_EDIT_MESSAGE_TIMELINE:
-		reply = EditMessageTimeline(data);
-		break;
-	case PR_MESSAGE_TIMELINE:
+    case PR_MESSAGE_TIMELINE:
 		reply = PostMessageTimeline(data);
 		break;
 	case PR_CREATE_BUG:
@@ -163,7 +162,7 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 		break;
 	}
 	if (reply == nullptr)
-		throw QException();
+        throw QException();
 	_CallBack[reply] = DataConnectorCallback();
 	_CallBack[reply]._Request = requestResponseObject;
 	_CallBack[reply]._SlotFailure = slotFailure;
@@ -176,7 +175,7 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 			maxInt = it.value() + 1;
 		}
 	}
-	_Request[reply] = maxInt;
+    _Request[reply] = maxInt;
 	return maxInt;
 }
 
@@ -265,10 +264,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 	case GR_USER_DATA:
 		reply = GetActionDeprecatedOld("user/getuserbasicinformations", data);
 		break;
-	case GR_ARCHIVE_MESSAGE_TIMELINE:
-		reply = GetActionDeprecatedOld("timeline/archivemessage", data);
-		break;
-	case GR_PROJECTBUGTAG_ALL:
+    case GR_PROJECTBUGTAG_ALL:
 		reply = GetActionDeprecatedOld("bugtracker/getprojecttags", data);
 		break;
 	case GR_PROJECT_USERS_ALL:
@@ -291,7 +287,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 		break;
 	}
 	if (reply == nullptr)
-		throw QException();
+        throw QException();
 	_CallBack[reply] = DataConnectorCallback();
 	_CallBack[reply]._Request = requestResponseObject;
 	_CallBack[reply]._SlotFailure = slotFailure;
@@ -339,7 +335,7 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
 		break;
 	}
 	if (reply == nullptr)
-		throw QException();
+        throw QException();
 	_CallBack[reply] = DataConnectorCallback();
 	_CallBack[reply]._Request = requestResponseObject;
 	_CallBack[reply]._SlotFailure = slotFailure;
@@ -384,7 +380,7 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 		break;
 	}
 	if (reply == nullptr)
-		throw QException();
+        throw QException();
 	_CallBack[reply] = DataConnectorCallback();
 	_CallBack[reply]._Request = requestResponseObject;
 	_CallBack[reply]._SlotFailure = slotFailure;
@@ -403,19 +399,19 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 
 int API::DataConnectorOnline::Request(RequestType type, DataPart part, int request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
 {
-	QNetworkReply *reply = nullptr;
+    QNetworkReply *reply = nullptr;
 	switch (type)
 	{
-	case RT_POST:
+    case RT_POST:
 		reply = PostAction(_PostMap[request], data);
 		break;
-	case RT_PUT:
+    case RT_PUT:
 		reply = PutAction(_PutMap[request], data);
 		break;
-	case RT_GET:
+    case RT_GET:
 		reply = GetAction(_GetMap[request], data);
 		break;
-	case RT_DELETE:
+    case RT_DELETE:
 		reply = DeleteAction(_DeleteMap[request], data);
 		break;
 	}
@@ -434,6 +430,9 @@ int API::DataConnectorOnline::Request(RequestType type, DataPart part, int reque
 		}
 	}
 	_Request[reply] = maxInt;
+    QJsonObject obj = ParseMap(data);
+    QJsonDocument doc(obj);
+    REGISTER_REQUEST(maxInt, reply->url().toString(), doc.toJson(QJsonDocument::Indented));
 	return maxInt;
 }
 
@@ -442,6 +441,8 @@ QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
 	QJsonObject ret;
 	for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
 	{
+        if (it.key().contains("urlfield#"))
+            continue;
 		if (it.value().canConvert<QString>())
 			ret[it.key()] = it.value().toString();
 		else if (it.value().canConvert<QList<QString> >())
@@ -453,13 +454,25 @@ QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
 			ret[it.key()] = arr;
 		}
 		else
-			ret[it.key()] = ParseMap(it.value().toMap());
+        {
+            QMap<QString, QVariant> map = it.value().toMap();
+            ret[it.key()] = ParseMap(map);
+        }
 	}
 	return ret;
 }
 
 QNetworkReply * API::DataConnectorOnline::PostAction(QString urlIn, QMap<QString, QVariant>& data)
 {
+    QString urlAddon("");
+     for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
+     {
+         if (it.key().contains("urlfield#"))
+         {
+             QVariant var = it.value();
+             urlAddon += "/" + var.toString();
+         }
+     }
 	QJsonObject json;
 	QJsonObject objData = ParseMap(data);
 	json["data"] = objData;
@@ -467,16 +480,25 @@ QNetworkReply * API::DataConnectorOnline::PostAction(QString urlIn, QMap<QString
 	QJsonDocument doc(json);
 	QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
 
-	QNetworkRequest requestSend(QUrl(URL_API + urlIn));
+    QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
 	QNetworkReply *request = _Manager->post(requestSend, jsonba);
-	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
 }
 
 QNetworkReply * API::DataConnectorOnline::PutAction(QString urlIn, QMap<QString, QVariant>& data)
 {
+    QString urlAddon("");
+    for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
+    {
+        if (it.key().contains("urlfield#"))
+        {
+            QVariant var = it.value();
+            urlAddon += "/" + var.toString();
+        }
+    }
 	QJsonObject json;
 	QJsonObject objData = ParseMap(data);
 	json["data"] = objData;
@@ -484,11 +506,11 @@ QNetworkReply * API::DataConnectorOnline::PutAction(QString urlIn, QMap<QString,
 	QJsonDocument doc(json);
 	QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
 
-	QNetworkRequest requestSend(QUrl(URL_API + urlIn));
+    QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
 	QNetworkReply *request = _Manager->put(requestSend, jsonba);
-	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
 }
 
@@ -505,7 +527,7 @@ QNetworkReply * API::DataConnectorOnline::DeleteAction(QString urlIn, QMap<QStri
 	QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	QNetworkReply *request = _Manager->deleteResource(requestSend);
-	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
 }
 
@@ -522,7 +544,7 @@ QNetworkReply * API::DataConnectorOnline::GetAction(QString urlIn, QMap<QString,
 	QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	QNetworkReply *request = _Manager->get(requestSend);
-	QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
+    QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
 }
 

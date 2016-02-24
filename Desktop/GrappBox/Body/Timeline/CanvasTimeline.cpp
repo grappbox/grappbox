@@ -75,9 +75,9 @@ CanvasTimeline::CanvasTimeline(QWidget *parent) : QWidget(parent)
 void CanvasTimeline::TimelineGetUserDone(int id, QByteArray array)
 {
     QJsonDocument doc = QJsonDocument::fromJson(array);
-    QJsonObject objMain = doc.object();
-    _Users[id].firstName = objMain["first_name"].toString();
-    _Users[id].lastName = objMain["last_name"].toString();
+    QJsonObject objMain = doc.object()["data"].toObject();
+    _Users[id].firstName = objMain["firstname"].toString();
+    _Users[id].lastName = objMain["lastname"].toString();
     _Users[id].email = objMain["email"].toString();
     _Users[id].avatar = QImage::fromData(QByteArray::fromBase64(objMain["avatar"].toString().toStdString().c_str()), "PNG");
     for (API::UserInformation user : _Users)
@@ -96,12 +96,11 @@ void CanvasTimeline::TimelineGetUserFailed(int id, QByteArray array)
 void CanvasTimeline::TimelineAddMessageDone(int id, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonObject obj = doc.object()["message"].toObject();
+    QJsonObject obj = doc.object()["data"].toObject();
     if (!obj["deleted_at"].isNull())
         return;
     MessageTimeLine::MessageTimeLineInfo mtl;
     mtl.IdTimeline = obj["id"].toInt();
-    qDebug() << "ID Timeline : " << mtl.IdTimeline;
     mtl.IdParent = obj["parentId"].toInt();
     mtl.Title = obj["title"].toString();
     mtl.Message = obj["message"].toString();
@@ -114,7 +113,7 @@ void CanvasTimeline::TimelineAddMessageDone(int id, QByteArray data)
         dateStr = obj["editedAt"].toObject()["date"].toString();
     date = QDateTime::fromString(dateStr, format);
     mtl.DateLastModification = date;
-    mtl.IdUser = obj["userId"].toInt();
+    mtl.IdUser = obj["creator"].toObject()["id"].toInt();
     if (!_Messages.contains(mtl))
         _Messages.append(mtl);
     bool HaveToRetrieveUser = true;
@@ -130,11 +129,17 @@ void CanvasTimeline::TimelineAddMessageDone(int id, QByteArray data)
     {
         API::UserInformation userInfo;
         userInfo.id = USER_ID;
-        QVector<QString> data;
-        data.push_back(API::SDataManager::GetDataManager()->GetToken());
-        data.push_back(QVariant(userInfo.id).toString());
-        int requestId = API::SDataManager::GetCurrentDataConnector()->Get(API::DP_USER_DATA, API::GR_USER_DATA, data, this, "TimelineGetUserDone", "TimelineGetUserFailed");
-        _Users[requestId] = userInfo;
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("TimelineGetUserDone");
+            SET_ON_FAIL("TimelineGetUserFailed");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(USER_ID);
+            int requestId = GET(API::DP_USER_DATA, API::GR_USER_DATA);
+            _Users[requestId] = userInfo;
+        }
+        END_REQUEST;
         return;
     }
     FinishedLoad();
@@ -162,14 +167,12 @@ void CanvasTimeline::FinishedLoad()
         {
             if (user.id == info.IdUser)
             {
-                qDebug() << "User id ok !";
                 info.Name = user.firstName;
                 info.LastName = user.lastName;
                 info.Avatar = new QImage(user.avatar);
             }
         }
         ConversationTimeline *c = new ConversationTimeline(_IDTimeline, info, this);
-        qDebug() << "Create conversation for id : " << c->GetID();
         _Conversation.append(c);
         int i = _MainTimelineLayout->count() / 3;
         _MainTimelineLayout->addWidget(c, i + 1, (i % 2) * 2, 1, 1);
@@ -188,21 +191,27 @@ void CanvasTimeline::FinishedLoad()
 
 void CanvasTimeline::OnLoadMore()
 {
-    QVector<QString> data;
-    data.push_back(API::SDataManager::GetDataManager()->GetToken());
-    data.push_back(QVariant(_IDTimeline).toString());
-    data.push_back(QVariant(_TotalLoad).toString());
-    data.push_back(QVariant(10).toString());
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_TIMELINE, data, this, "TimelineGetDone", "TimelineGetFailed");
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("TimelineGetDone");
+        SET_ON_FAIL("TimelineGetFailed");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(_IDTimeline);
+        ADD_URL_FIELD(_TotalLoad);
+        ADD_URL_FIELD(10);
+        GET(API::DP_TIMELINE, API::GR_TIMELINE);
+    }
+    END_REQUEST;
 }
 
 void CanvasTimeline::TimelineGetDone(int id, QByteArray array)
 {
     QList<int> userIdToRetrieve;
     QJsonDocument doc = QJsonDocument::fromJson(array);
-    QJsonObject objMain = doc.object();
+    QJsonObject objMain = doc.object()["data"].toObject();
     qDebug() << objMain;
-    for (QJsonValueRef ref : objMain["messages"].toArray())
+    for (QJsonValueRef ref : objMain["array"].toArray())
     {
         QJsonObject obj = ref.toObject();
         if (!obj["deleted_at"].isNull())
@@ -221,7 +230,7 @@ void CanvasTimeline::TimelineGetDone(int id, QByteArray array)
             dateStr = obj["editedAt"].toObject()["date"].toString();
         date = QDateTime::fromString(dateStr, format);
         mtl.DateLastModification = date;
-        mtl.IdUser = obj["userId"].toInt();
+        mtl.IdUser = obj["creator"].toObject()["id"].toInt();
         if (!userIdToRetrieve.contains(mtl.IdUser))
             userIdToRetrieve.append(mtl.IdUser);
         if (!_Messages.contains(mtl))
@@ -236,11 +245,17 @@ void CanvasTimeline::TimelineGetDone(int id, QByteArray array)
     {
         API::UserInformation userInfo;
         userInfo.id = i;
-        QVector<QString> data;
-        data.push_back(API::SDataManager::GetDataManager()->GetToken());
-        data.push_back(QVariant(i).toString());
-        int requestId = API::SDataManager::GetCurrentDataConnector()->Get(API::DP_USER_DATA, API::GR_USER_DATA, data, this, "TimelineGetUserDone", "TimelineGetUserFailed");
-        _Users[requestId] = userInfo;
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("TimelineGetUserDone");
+            SET_ON_FAIL("TimelineGetUserFail");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(i);
+            int requestId = GET(API::DP_USER_DATA, API::GR_USER_DATA);
+            _Users[requestId] = userInfo;
+        }
+        END_REQUEST;
     }
 }
 
@@ -254,12 +269,19 @@ void CanvasTimeline::LoadData(int id)
     _Messages.clear();
     _Users.clear();
     _IDTimeline = id;
-    QVector<QString> data;
-    data.push_back(API::SDataManager::GetDataManager()->GetToken());
-    data.push_back(QVariant(id).toString());
-    data.push_back(QVariant(0).toString());
-    data.push_back(QVariant(10).toString());
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_TIMELINE, data, this, "TimelineGetDone", "TimelineGetFailed");
+
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("TimelineGetDone");
+        SET_ON_FAIL("TimelineGetFailed");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(id);
+        ADD_URL_FIELD(0);
+        ADD_URL_FIELD(10);
+        GET(API::DP_TIMELINE, API::GR_TIMELINE);
+    }
+    END_REQUEST;
 }
 
 void  CanvasTimeline::UpdateTimelineAnim(int Id)
@@ -273,12 +295,18 @@ void  CanvasTimeline::UpdateTimelineAnim(int Id)
 
 void CanvasTimeline::AddingTimeline()
 {
-    QVector<QString> data;
-    data.push_back(TO_STRING(_IDTimeline));
-    data.push_back(TO_STRING(USER_TOKEN));
-    data.push_back(_TitleMessage->text());
-    data.push_back(_Message->toPlainText());
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE, data, this, "TimelineAddMessageDone", "TimelineAddMessageFailed");
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("TimelineAddMessageDone");
+        SET_ON_FAIL("TimelineAddMessageFailed");
+        ADD_URL_FIELD(_IDTimeline);
+        ADD_FIELD("token", USER_TOKEN);
+        ADD_FIELD("title", _TitleMessage->text());
+        ADD_FIELD("message", _Message->toPlainText());
+        POST(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE);
+    }
+    END_REQUEST;
     _TitleMessage->setText("");
     _Message->setText("");
 }

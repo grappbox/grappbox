@@ -633,6 +633,12 @@
     <ClCompile Include="FlowLayout.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="SDebugWindow.cpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_SDebugWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Body\BodyBugTracker.h">
@@ -763,6 +769,9 @@
     </CustomBuild>
     <CustomBuild Include="CreateWhiteboardDialog.h">
       <Filter>Header Files\Body\Whiteboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SDebugWindow.h">
+      <Filter>Source Files\Utils</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

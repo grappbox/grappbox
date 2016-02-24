@@ -5,6 +5,8 @@
 #include <QJsonValueRef>
 #include <QJsonArray>
 #include <QDebug>
+#include "SDataManager.h"
+#include "utils.h"
 #include "BodyTimeline.h"
 
 BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
@@ -74,12 +76,11 @@ BodyTimeline::BodyTimeline(QWidget *parent) : QWidget(parent)
 void BodyTimeline::OnTimelineGet(int ID, QByteArray data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
-    QJsonObject objMain = doc.object();
+    QJsonObject objMain = doc.object()["data"].toObject();
 	SHOW_JSON(data);
-    for (QJsonValueRef ref : objMain["timelines"].toArray())
+    for (QJsonValueRef ref : objMain["array"].toArray())
     {
         QJsonObject obj = ref.toObject();
-        qDebug() << obj;
         if (obj["typeId"].toInt() == 1)
             _ClientTimeline->LoadData(obj["id"].toInt());
         else
@@ -103,10 +104,16 @@ void BodyTimeline::Show(int ID, MainWindow *mainApp)
 {
     _IdWidget = ID;
     _MainApp = mainApp;
-    QVector<QString> data;
-    data.push_back(API::SDataManager::GetDataManager()->GetToken());
-    data.push_back(QVariant(API::SDataManager::GetDataManager()->GetCurrentProject()).toString());
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_LIST_TIMELINE, data, this, "OnTimelineGet", "OnTimelineFailGet");
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnTimelineGet");
+        SET_ON_FAIL("OnTimelineFailGet");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(CURRENT_PROJECT);
+        GET(API::DP_TIMELINE, API::GR_LIST_TIMELINE);
+    }
+    END_REQUEST;
 
 }
 

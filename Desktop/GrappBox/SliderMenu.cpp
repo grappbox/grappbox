@@ -7,6 +7,7 @@
 #include <QJsonValueRef>
 #include "API/SDataManager.h"
 #include "SliderMenu.h"
+#include "SDebugWindow.h"
 
 SliderMenu::SliderMenu(QWidget *parent) : QWidget(parent)
 {
@@ -107,16 +108,17 @@ void SliderMenu::ForceChangeMenu(int menu)
     _CurrentIndex = menu;
     for (QMap<int, QPushButton*>::iterator it = _ListButton.begin(); it != _ListButton.end(); ++it)
     {
-		(it.value())->setObjectName("menu");
+        (it.value())->setObjectName("menu");
     }
 	_ListButton[menu]->setObjectName("menu-selected");
+    SET_CURRENT_FEATURE(_ListButton[menu]->text());
 }
 
 void SliderMenu::ButtonChangeMenu()
 {
     QObject *obj = QObject::sender();
     int index = _ListButton.key(dynamic_cast<QPushButton*>(obj));
-    qDebug() << "Index button change menu : " << index;
+	SET_CURRENT_FEATURE(dynamic_cast<QPushButton*>(obj)->text());
     ForceChangeMenu(index);
     emit MenuChanged(index);
 }

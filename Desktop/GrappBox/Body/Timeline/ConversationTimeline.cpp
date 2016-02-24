@@ -90,7 +90,6 @@ void ConversationTimeline::OpenCommentAnim()
     _CommentHide = !_CommentHide;
     _ScrollAnim->setHidden(_CommentHide);
     _MainMessage->setFixedHeight(_MainMessage->height());
-    qDebug() << "Real size equal to : " << realSize;
     QPropertyAnimation *animationMax = new QPropertyAnimation(_ScrollAnim, "maximumHeight");
     QPropertyAnimation *animationMin = new QPropertyAnimation(_ScrollAnim, "minimumHeight");
     animationMax->setDuration(500);
@@ -104,14 +103,12 @@ void ConversationTimeline::OpenCommentAnim()
     QObject::connect(animationMax, SIGNAL(finished()), this, SLOT(OnAnimEnd()));
     if (_CommentHide)
     {
-        qDebug() << "Comment is now hiden !";
         _OpenComment->setIcon(QIcon(":/icon/Ressources/Icon/DropDown.png"));
         _OpenComment->setStyleSheet("background: #FFFFFF; border-style: none; border-top-style: solid; border-bottom-style: solid; border-width: 1px; border-color: #7f8c8d;");
         _OpenComment->setText("Show comments");
     }
     else
     {
-        qDebug() << "Comment is now shown !";
         QTransform trans = QTransform().rotate(180);
         QPixmap img = QPixmap(":/icon/Ressources/Icon/DropDown.png").transformed(trans);
         _OpenComment->setIcon(QIcon(img));
@@ -141,19 +138,14 @@ void ConversationTimeline::OpenComment()
 	}
 	END_REQUEST;
     _OpenComment->setDisabled(true);
-    /*QVector<QString> data;
-    data.push_back(API::SDataManager::GetDataManager()->GetToken());
-    data.push_back(QVariant(_TimelineId).toString());
-    data.push_back(QVariant(_ConversationId).toString());
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_COMMENT_TIMELINE, data, this, "TimelineGetDone", "TimelineGetFailed");*/
 }
 
 void ConversationTimeline::TimelineGetUserDone(int id, QByteArray array)
 {
     QJsonDocument doc = QJsonDocument::fromJson(array);
-    QJsonObject objMain = doc.object();
-    _Users[id].firstName = objMain["first_name"].toString();
-    _Users[id].lastName = objMain["last_name"].toString();
+    QJsonObject objMain = doc.object()["data"].toObject();
+    _Users[id].firstName = objMain["firstname"].toString();
+    _Users[id].lastName = objMain["lastname"].toString();
     _Users[id].email = objMain["email"].toString();
     _Users[id].avatar = QImage::fromData(QByteArray::fromBase64(objMain["avatar"].toString().toStdString().c_str()), "PNG");
     for (API::UserInformation user : _Users)
@@ -191,14 +183,12 @@ void ConversationTimeline::FinishedLoad()
                 info.Avatar = new QImage(user.avatar);
             }
         }
-        qDebug() << "Adding new comment message : " << info.Message;
         MessageTimeLine *c = new MessageTimeLine(info, _TimelineId, this);
 		c->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         _CommentMessage[info.IdTimeline] = c;
         _CommentLayout->addWidget(c);
         QObject::connect(c, SIGNAL(TimelineDeleted(int)), this, SLOT(TimeLineDelete(int)));
     }
-    qDebug() << "Reset new layout to main comment widget. " << _MainCommentWidget;
     _MainCommentWidget->setLayout(_CommentLayout);
     QTimer *time = new QTimer();
     time->setSingleShot(true);
@@ -211,7 +201,6 @@ void ConversationTimeline::TimelineGetDone(int id, QByteArray array)
     QList<int> userIdToRetrieve;
     QJsonDocument doc = QJsonDocument::fromJson(array);
     QJsonObject objMain = doc.object()["data"].toObject();
-    qDebug() << " COMMENT " << objMain;
     for (QJsonValueRef ref : objMain["array"].toArray())
     {
         QJsonObject obj = ref.toObject();
@@ -231,7 +220,7 @@ void ConversationTimeline::TimelineGetDone(int id, QByteArray array)
             dateStr = obj["editedAt"].toObject()["date"].toString();
         date = QDateTime::fromString(dateStr, format);
         mtl.DateLastModification = date;
-        mtl.IdUser = obj["userId"].toInt();
+        mtl.IdUser = obj["creator"].toObject()["id"].toInt();
         if (!userIdToRetrieve.contains(mtl.IdUser))
             userIdToRetrieve.append(mtl.IdUser);
         bool haveToHadMessage = true;
@@ -255,11 +244,17 @@ void ConversationTimeline::TimelineGetDone(int id, QByteArray array)
     {
         API::UserInformation userInfo;
         userInfo.id = i;
-        QVector<QString> data;
-        data.push_back(API::SDataManager::GetDataManager()->GetToken());
-        data.push_back(QVariant(i).toString());
-        int requestId = API::SDataManager::GetCurrentDataConnector()->Get(API::DP_USER_DATA, API::GR_USER_DATA, data, this, "TimelineGetUserDone", "TimelineGetUserFailed");
-        _Users[requestId] = userInfo;
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("TimelineGetUserDone");
+            SET_ON_FAIL("TimelineGetUserFailed");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(i);
+            int requestId = GET(API::DP_USER_DATA, API::GR_USER_DATA);
+            _Users[requestId] = userInfo;
+        }
+        END_REQUEST;
     }
 }
 

@@ -315,6 +315,7 @@
     <ClCompile Include="Debug\moc_RoleTableWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Debug\moc_SDebugWindow.cpp" />
     <ClCompile Include="Debug\moc_SliderMenu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -495,6 +496,7 @@
     <ClCompile Include="Release\moc_WhiteboardGraphicsView.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="SDebugWindow.cpp" />
     <ClCompile Include="SStyleLoader.cpp" />
     <ClCompile Include="WidgetCommon\PushButtonImage.cpp" />
     <ClCompile Include="Body\Settings\RoleTableWidget.cpp" />
@@ -1373,6 +1375,7 @@ endlocal
     </CustomBuild>
     <ClInclude Include="IBodyContener.h" />
     <ClInclude Include="resource.h" />
+    <CustomBuild Include="SDebugWindow.h" />
     <ClInclude Include="SFontLoader.h" />
     <CustomBuild Include="SliderMenu.h">
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal

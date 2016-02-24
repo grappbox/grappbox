@@ -10,7 +10,8 @@ CalendarViewWeek::CalendarViewWeek()
     {
         CalendarViewDay *view = new CalendarViewDay((i == 0));
         _ViewsDay.push_back(view);
-        _MainLayout->addWidget(view, 1);
+        _MainLayout->addWidget(view);
+        view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 		connect(view, SIGNAL(NeedEdit(Event*)), this, SLOT(EventEdit(Event*)));
 		connect(view, SIGNAL(NeedDelete(Event*)), this, SLOT(EventDelete(Event*)));
 	}

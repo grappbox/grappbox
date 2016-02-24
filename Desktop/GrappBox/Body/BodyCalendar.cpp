@@ -202,7 +202,6 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 		eve->Icon = obj["icon"].toString();
 		if (!projectToLoad.contains(eve->ProjectId))
 		{
-			qDebug() << "Loading " << eve->ProjectId;
 			projectToLoad.push_back(eve->ProjectId);
 		}
 		eve->EventId = obj["id"].toInt();

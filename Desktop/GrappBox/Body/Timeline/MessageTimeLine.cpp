@@ -127,11 +127,17 @@ void MessageTimeLine::OnEdit()
 
 void MessageTimeLine::OnRemove()
 {
-    QVector<QString> data;
-    data.push_back(TO_STRING(USER_TOKEN));
-    data.push_back(TO_STRING(_IDTimeline));
-    data.push_back(TO_STRING(_IDTimelineMessage));
-    API::SDataManager::GetCurrentDataConnector()->Get(API::DP_TIMELINE, API::GR_ARCHIVE_MESSAGE_TIMELINE, data, this, "OnDeleteDone", "OnDeleteFail");
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnDeleteDone");
+        SET_ON_FAIL("OnDeleteFail");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(_IDTimeline);
+        ADD_URL_FIELD(_IDTimelineMessage);
+        DELETE(API::DP_TIMELINE, API::DR_ARCHIVE_MESSAGE_TIMELINE);
+    }
+    END_REQUEST;
 }
 
 void MessageTimeLine::OnCancelEdit()
@@ -143,28 +149,38 @@ void MessageTimeLine::OnConfirmEdit()
 {
     if (_IDTimelineMessage == -1)
     {
-        QVector<QString> data;
-        data.push_back(TO_STRING(_IDTimeline));
-        data.push_back(TO_STRING(USER_TOKEN));
-        data.push_back(_TitleEdit->text());
-        data.push_back(_EditMessageArea->toPlainText());
-        data.push_back(TO_STRING(_MessageData.IdParent));
-        API::SDataManager::GetCurrentDataConnector()->Post(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE, data, this, "OnEditDone", "OnEditFail");
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnEditDone");
+            SET_ON_FAIL("OnEditFail");
+            ADD_URL_FIELD(_IDTimeline);
+            ADD_FIELD("token", USER_TOKEN);
+            ADD_FIELD("title", _TitleEdit->text());
+            ADD_FIELD("message", _EditMessageArea->toPlainText());
+            ADD_FIELD("commentedId", _MessageData.IdParent);
+            POST(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE);
+        }
+        END_REQUEST;
         this->setDisabled(true);
         return;
     }
     _LoadingImage->show();
     _EditButton->setDisabled(true);
     _RemoveButton->setDisabled(true);
-    QVector<QString> data;
-    data.push_back(TO_STRING(_IDTimeline));
-    data.push_back(TO_STRING(USER_TOKEN));
-    data.push_back(TO_STRING(_IDTimelineMessage));
-    data.push_back(_TitleEdit->text());
-    data.push_back(_EditMessageArea->toPlainText());
-    qDebug() << "ConfirmEdit data set";
-    API::SDataManager::GetCurrentDataConnector()->Post(API::DP_TIMELINE, API::PR_EDIT_MESSAGE_TIMELINE, data, this, "OnEditDone", "OnEditFail");
-    qDebug() << "ConfirmEdit sent to API";
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnEditDone");
+        SET_ON_FAIL("OnEditFail");
+        ADD_URL_FIELD(_IDTimeline);
+        ADD_FIELD("token", USER_TOKEN);
+        ADD_FIELD("messageId", _IDTimelineMessage);
+        ADD_FIELD("title", _TitleEdit->text());
+        ADD_FIELD("message", _EditMessageArea->toPlainText());
+        PUT(API::DP_TIMELINE, API::PUTR_EDIT_MESSAGE_TIMELINE);
+    }
+    END_REQUEST;
     _BeforeAPITitle = _Title->text();
     _BeforeAPIMessage = _Message->text();
     _Title->setText(_TitleEdit->text());
@@ -221,12 +237,10 @@ void MessageTimeLine::OnEditFail(int id, QByteArray data)
     _RemoveButton->setDisabled(false);
     _Title->setText(_BeforeAPITitle);
     _Message->setText(_BeforeAPIMessage);
-    qDebug() << "Unable to push informations.";
 }
 
 void MessageTimeLine::OnDeleteDone(int id, QByteArray data)
 {
-    qDebug() << "Delete me ! Summon TimelineDeleted";
     emit TimelineDeleted(_IDTimelineMessage);
 }
 

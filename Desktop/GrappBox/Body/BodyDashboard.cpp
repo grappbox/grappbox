@@ -26,6 +26,7 @@ BodyDashboard::BodyDashboard(QWidget *parent) : QWidget(parent)
 
     _UserId = -1;
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    UpdateLayout(false);
 }
 
 void BodyDashboard::UpdateLayout(bool sendSignal)
@@ -34,14 +35,22 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
     font = SFontLoader::GetFont(SFontLoader::OPEN_SANS_BOLD);
     font.setPointSize(20);
     QString titleStyleSheet = "QLabel { color: #af2d2e;}";
-
+    DeleteLayout();
     if (_MemberAvaible->count() == 0)
     {
-        _TopWidget = new QLabel("No member to manage.");
-        QLabel *lab = dynamic_cast<QLabel*>(_TopWidget);
+        _TopWidget = new QWidget();
+        QLabel *lab = new QLabel("No member to manage.");
         lab->setAlignment(Qt::AlignCenter);
-        lab->setFont(font);
         lab->setStyleSheet(titleStyleSheet);
+        lab->setFont(font);
+        _TitleMemberAvaible = new QLabel("Your team occupation", _TopWidget);
+        _TitleMemberAvaible->setFont(font);
+        _TitleMemberAvaible->setStyleSheet(titleStyleSheet);
+        _TitleMemberAvaible->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        QVBoxLayout *TopLayout = new QVBoxLayout();
+        TopLayout->addWidget(_TitleMemberAvaible);
+        TopLayout->addWidget(lab);
+        _TopWidget->setLayout(TopLayout);
     }
     else
     {
@@ -49,6 +58,7 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
         _TitleMemberAvaible = new QLabel("Your team occupation", _TopWidget);
         _TitleMemberAvaible->setFont(font);
         _TitleMemberAvaible->setStyleSheet(titleStyleSheet);
+        _TitleMemberAvaible->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         QVBoxLayout *TopLayout = new QVBoxLayout();
         QWidget *MemberWidget = new QWidget();
         MemberWidget->setObjectName("MemberWidget");
@@ -66,12 +76,19 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
 
     if (_NextMeeting->count() == 0)
     {
-        _MiddleWidget = new QLabel("No next meeting for now.");
-        QLabel *lab = dynamic_cast<QLabel*>(_MiddleWidget);
+        _MiddleWidget = new QWidget();
+        _TitleNextMeeting = new QLabel("Your next meetings", _MiddleWidget);
+        _TitleNextMeeting->setFont(font);
+        _TitleNextMeeting->setStyleSheet(titleStyleSheet);
+        QLabel *lab = new QLabel("No next meeting for now.");
         lab->setAlignment(Qt::AlignCenter);
         lab->setFont(font);
         lab->setObjectName("MiddleWidget");
         lab->setStyleSheet(titleStyleSheet + QString("QWidget#MiddleWidget { background: #f0f0f0; }"));
+        QVBoxLayout *MiddleLayout = new QVBoxLayout();
+        MiddleLayout->addWidget(_TitleNextMeeting);
+        MiddleLayout->addWidget(lab);
+        _MiddleWidget->setLayout(MiddleLayout);
     }
     else
     {
@@ -97,11 +114,18 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
 
     if (_GlobalProgress->count() == 0)
     {
-        _BottomWidget = new QLabel("No project associated.");
-        QLabel *lab = dynamic_cast<QLabel*>(_BottomWidget);
+        _BottomWidget = new QWidget();
+        _TitleGlobalProgress = new QLabel("Global progress", _BottomWidget);
+        _TitleGlobalProgress->setFont(font);
+        _TitleGlobalProgress->setStyleSheet(titleStyleSheet);
+        QLabel *lab = new QLabel("No project associated.");
+        QVBoxLayout *BottomLayout = new QVBoxLayout();
         lab->setAlignment(Qt::AlignCenter);
         lab->setFont(font);
         lab->setStyleSheet(titleStyleSheet);
+        BottomLayout->addWidget(_TitleGlobalProgress);
+        BottomLayout->addWidget(lab);
+        _BottomWidget->setLayout(BottomLayout);
     }
     else
     {
@@ -127,6 +151,7 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
     _MainLayoutLoaded->addWidget(_MiddleWidget, 5);
     _MainLayoutLoaded->addWidget(_BottomWidget, 5);
 
+    setLayout(_MainLayoutLoaded);
     _IsInitialized = true;
     if (sendSignal)
     {
@@ -134,47 +159,53 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
     }
 }
 
-void BodyDashboard::DeleteLayout()
+void BodyDashboard::DeleteContent()
 {
     QLayoutItem *wItem;
     while ((wItem = _GlobalProgress->takeAt(0)) != nullptr)
     {
         if (wItem->widget())
-            wItem->widget()->setParent(NULL);
+            delete wItem->widget();
         delete wItem;
     }
     while ((wItem = _MemberAvaible->takeAt(0)) != nullptr)
     {
         if (wItem->widget())
-            wItem->widget()->setParent(NULL);
+            delete wItem->widget();
         delete wItem;
     }
     while ((wItem = _NextMeeting->takeAt(0)) != nullptr)
     {
         if (wItem->widget())
-            wItem->widget()->setParent(NULL);
+            delete wItem->widget();
         delete wItem;
     }
+    _GlobalProgress = new QHBoxLayout();
+    _MemberAvaible = new QHBoxLayout();
+    _NextMeeting = new QHBoxLayout();
+}
+
+void BodyDashboard::DeleteLayout()
+{
     _MainLayoutLoaded->removeWidget(_TopWidget);
     _MainLayoutLoaded->removeWidget(_MiddleWidget);
     _MainLayoutLoaded->removeWidget(_BottomWidget);
     delete _TopWidget;
     delete _MiddleWidget;
     delete _BottomWidget;
-    _MemberAvaible = new QHBoxLayout();
-    _NextMeeting = new QHBoxLayout();
-    _GlobalProgress = new QHBoxLayout();
 }
 
 void BodyDashboard::Show(int ID, MainWindow *mainApp)
 {
+    qDebug() << _IsInitializing;
+    emit OnLoadingDone(_UserId);
     if (_IsInitializing)
         return;
     if (_IsInitialized)
-        DeleteLayout();
+        DeleteContent();
+    UpdateLayout();
     _UserId = ID;
     _MainApplication = mainApp;
-	emit OnLoadingDone(_UserId);
 
     _IsInitializing = true;
     _NumberBeforeInitializingDone = 3;
@@ -239,6 +270,7 @@ void BodyDashboard::GetNextMeeting(int, QByteArray byte)
         info->ProjectIcon = new QPixmap(QPixmap::fromImage(QImage(":/Image/Ressources/Icon/ProjectDefault.png")));
         _NextMeeting->addWidget(new DashboardMeeting(info, this));
     }
+    qDebug() << _NumberBeforeInitializingDone;
     if (_NumberBeforeInitializingDone == 0)
        UpdateLayout();
 }
@@ -279,6 +311,7 @@ void BodyDashboard::GetMemberProject(int, QByteArray byte)
         _MemberAvaible->addWidget(new DashboardMember(info, this));
 
     }
+    qDebug() << _NumberBeforeInitializingDone;
     if (_NumberBeforeInitializingDone == 0)
        UpdateLayout();
 }
@@ -300,7 +333,9 @@ void BodyDashboard::GetAllProject(int id, QByteArray byte)
         currentInfo->NumberProblem = obj["number_bugs"].toInt();
         currentInfo->ProjectPicture = new QPixmap(QPixmap::fromImage(QImage(":/Image/Ressources/Icon/ProjectDefault.png")));
         _GlobalProgress->addWidget(new DashboardGlobalProgress(currentInfo, this));
+        qDebug() << "Project";
     }
+    qDebug() << _NumberBeforeInitializingDone;
     if (_NumberBeforeInitializingDone == 0)
        UpdateLayout();
 }
