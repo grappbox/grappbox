@@ -9,6 +9,11 @@ import com.grappbox.grappbox.grappbox.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+interface OnTaskListener
+{
+    void OnTaskEnd(boolean isErrorOccured, String... params);
+}
+
 public class BugtrackerInfoHandler {
 
     private static void DialogContactServer(Context context, int statusCode)

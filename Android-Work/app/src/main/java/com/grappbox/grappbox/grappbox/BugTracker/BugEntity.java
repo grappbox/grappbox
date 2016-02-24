@@ -51,7 +51,6 @@ public class BugEntity {
         JSONObject createdAt = data.getJSONObject("createdAt");
         JSONObject editedAt = (data.has("editedAt") && !data.isNull("editedAt") ? data.getJSONObject("editedAt") : null);
         JSONObject deletedAt = (data.has("deletedAt") && !data.isNull("deletedAt") ? data.getJSONObject("deletedAt") : null);
-        JSONObject state = data.getJSONObject("state");
         JSONArray tags = data.getJSONArray("tags");
         JSONArray users = data.getJSONArray("users");
         int max = (tags.length() > users.length() ? tags.length() : users.length());
@@ -66,8 +65,7 @@ public class BugEntity {
         _deletedAt = (deletedAt == null ? null : deletedAt.getString("date"));
         _creatorId = creator.getString("id");
         _creatorFullname = creator.getString("fullname");
-        _stateId = state.getString("id");
-        _stateName = state.getString("name");
+
         for (int i = 0; i < max; ++i)
         {
             if (i < tags.length())

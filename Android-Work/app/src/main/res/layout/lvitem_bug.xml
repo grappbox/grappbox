@@ -12,7 +12,8 @@
         android:layout_weight="1"
         android:layout_gravity="top|left|center_vertical"
         android:gravity="center_vertical"
-        android:layout_marginLeft="5dp" />
+        android:layout_marginLeft="5dp"
+        android:clickable="true" />
 
     <Button
         android:layout_width="match_parent"

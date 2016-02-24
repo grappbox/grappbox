@@ -42,8 +42,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
-        <activity android:name=".BugTracker.BugCreationActivity"></activity>
-        <activity android:name=".Timeline.TimelineConvertToBugtracker"></activity>
+        <activity android:name=".BugTracker.BugCreationActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.grappbox.MainActivity" />
+        </activity>
+        <activity android:name=".Timeline.TimelineConvertToBugtracker" />
+        <activity
+            android:name=".BugTracker.EditBugActivity"
+            android:label="@string/title_activity_edit_bug"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.grappbox.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

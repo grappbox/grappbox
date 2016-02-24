@@ -16,12 +16,14 @@ import android.widget.Button;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 public class BugTrackerFragment extends Fragment {
     private SectionsPagerAdapter _SectionPagerAdapter;
     private ViewPager _viewPager;
     private TabLayout _tabLayout;
+
 
     public BugTrackerFragment() {
         // Required empty public constructor
@@ -38,6 +40,30 @@ public class BugTrackerFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    public void RefreshClosedList()
+    {
+        for (Fragment fragment : _SectionPagerAdapter._Fragments)
+        {
+            if (Objects.equals(fragment.getClass().getName(), BugClosedListFragment.class.getName()))
+            {
+                BugClosedListFragment closedBugFragment = (BugClosedListFragment) fragment;
+                closedBugFragment.refresher.onRefresh();
+            }
+        }
+    }
+
+    public void RefreshOpenList()
+    {
+        for (Fragment fragment : _SectionPagerAdapter._Fragments)
+        {
+            if (Objects.equals(fragment.getClass().getName(), BugOpenListFragment.class.getName()))
+            {
+                BugOpenListFragment openBugFragment = (BugOpenListFragment) fragment;
+                openBugFragment.refresher.onRefresh();
+            }
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,8 +72,8 @@ public class BugTrackerFragment extends Fragment {
         List<Fragment> pages = new Vector<>();
         Button btnNew = (Button) v.findViewById(R.id.btn_new_issue);
 
-        pages.add(Fragment.instantiate(getActivity(), BugOpenListFragment.class.getName()));
-        pages.add(Fragment.instantiate(getActivity(), BugClosedListFragment.class.getName()));
+        pages.add(((BugOpenListFragment)Fragment.instantiate(getActivity(), BugOpenListFragment.class.getName())).SetParent(this));
+        pages.add(((BugClosedListFragment)Fragment.instantiate(getActivity(), BugClosedListFragment.class.getName())).SetParent(this));
 
         _SectionPagerAdapter = new SectionsPagerAdapter(super.getChildFragmentManager(), pages);
         _viewPager = (ViewPager)v.findViewById(R.id.pager);

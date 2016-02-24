@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.grappbox.BugTracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,8 @@ import com.grappbox.grappbox.grappbox.R;
 
 public class BugOpenListFragment extends Fragment {
     private BugListAdapter bugListAdapter;
+    public SwipeRefreshLayout.OnRefreshListener refresher;
+    private BugTrackerFragment _parent;
 
     public BugOpenListFragment() {
         // Required empty public constructor
@@ -24,6 +27,12 @@ public class BugOpenListFragment extends Fragment {
         BugTrackerFragment fragment = new BugTrackerFragment();
         Bundle args = new Bundle();
         return fragment;
+    }
+
+    public BugOpenListFragment SetParent(BugTrackerFragment fragment)
+    {
+        _parent = fragment;
+        return this;
     }
 
     @Override
@@ -38,7 +47,7 @@ public class BugOpenListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_bug_open_list, container, false);
         SwipeRefreshLayout swiper = (SwipeRefreshLayout) v.findViewById(R.id.pull_refresher);
         ListView bugListView = (ListView) swiper.findViewById(R.id.lv_buglist);
-
+        bugListView.setClickable(true);
         bugListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -46,20 +55,24 @@ public class BugOpenListFragment extends Fragment {
 
                 if (!bug.IsValid())
                     return;
-                //TODO : Open ticket
+                Intent intent = new Intent(getContext(), EditBugActivity.class);
+                intent.putExtra(EditBugActivity.EXTRA_GRAPPBOX_BUG_ID, bug.GetId());
+                startActivity(intent);
             }
         });
-        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        refresher = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20);
                 task.SetRefreshSwiper(swiper);
                 task.execute();
             }
-        });
+        };
+        swiper.setOnRefreshListener(refresher);
         if (bugListAdapter == null)
             bugListAdapter = new BugListAdapter(getContext(), R.layout.lvitem_bug);
         bugListView.setAdapter(bugListAdapter);
+        bugListAdapter.SetParentFragment(_parent);
         GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20);
         task.execute();
 

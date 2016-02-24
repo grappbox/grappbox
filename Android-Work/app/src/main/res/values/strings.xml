@@ -231,7 +231,7 @@
     <string name="str_role_create_title">Role creation</string>
     <string name="str_error_empty">You have to fill this field</string>
 
-	
+
     <string name="error_insuficent_right">Insufficient Rights</string>
     <string name="error_ir_description">You don\'t have the correct rights to access to this function. Please contact your leader. If you have correct rights, please contact us at problem@grappbox.com</string>
     <string name="error_unexpected_error">Unexpected Error</string>
@@ -239,6 +239,9 @@
 
     <string name="bug_reopen">Re-Open</string>
     <string name="bug_close">Close</string>
+
+    <string name="bug_modif_success">Modification successfull</string>
+    <string name="bug_modif_desc_success">Ticket edition terminated successfully</string>
 
     <string-array name="timeline_tab_bar_title">
         <item>Internal timeline</item>
@@ -256,5 +259,6 @@
         <item>Edit comment</item>
         <item>Archive comment</item>
     </string-array>
+    <string name="title_activity_edit_bug">EditBugActivity</string>
 
 </resources>
