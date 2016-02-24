@@ -5,7 +5,7 @@ RequestView::RequestView(RequestDebug *data)
 {
     _Data = data;
     bool isRespondOk = data->_ErrorCode != "";
-    if (isRespondOk)
+    if (!isRespondOk)
     {
         QObject::connect(&_TimerUpdate, SIGNAL(timeout()), this, SLOT(Update()));
         _TimerUpdate.start(10);
@@ -14,12 +14,15 @@ RequestView::RequestView(RequestDebug *data)
     QFormLayout *formLayout = new QFormLayout();
     formLayout->addRow("Url : ", new QLabel(data->_Url));
     if (!isRespondOk)
-        _Time = new QLabel(QTime().toString("ss.zzz"));
-    else
     {
         QTime time(0, 0, 0, 0);
         time = time.addMSecs(_Data->_Timer.elapsed());
-        qDebug() << time;
+        _Time = new QLabel(QTime().toString("ss.zzz"));
+    }
+    else
+    {
+        QTime time(0, 0, 0, 0);
+        time = time.addMSecs(_Data->_Millisecond);
         _Time = new QLabel(time.toString("ss.zzzz"));
     }
     formLayout->addRow("Time : ", _Time);
@@ -51,5 +54,7 @@ RequestView::RequestView(RequestDebug *data)
 
 void RequestView::Update()
 {
-    _Time->setText("####");
+    QTime time(0, 0, 0, 0);
+    time = time.addMSecs(_Data->_Timer.elapsed());
+    _Time->setText(time.toString("ss.zzzz"));
 }
