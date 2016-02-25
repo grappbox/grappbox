@@ -2,57 +2,64 @@ package com.grappbox.grappbox.grappbox.BugTracker;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.util.Pair;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
- * Created by wieser_m on 24/02/2016.
+ * Created by wieser_m on 25/02/2016.
  */
-public class EditTicketTask extends AsyncTask<String, Void, String> {
+public class SetParticipantTask extends AsyncTask<String, Void, String> {
+    private Context _context;
+    private OnTaskListener _listener;
+    private APIConnectAdapter _api;
+    private List<Pair<String, Boolean>> _ids;
 
-    Context _context;
-    OnTaskListener _listener;
-    APIConnectAdapter _api;
-
-    public EditTicketTask(Context context, OnTaskListener listener)
+    SetParticipantTask(Context context, OnTaskListener listener, List<Pair<String, Boolean>> ids)
     {
+        _api = APIConnectAdapter.getInstance(true);
         _context = context;
         _listener = listener;
-        _api = APIConnectAdapter.getInstance(true);
+        _ids = ids;
     }
 
     @Override
     protected String doInBackground(String... params) {
-        if (params.length < 3)
+        if (params.length < 1)
             return null;
-        String token = SessionAdapter.getInstance().getToken();
         String bugId = params[0];
-        String title = params[1];
-        String description = params[2];
         JSONObject json = new JSONObject();
         JSONObject data = new JSONObject();
+        JSONArray toAdd = new JSONArray();
+        JSONArray toRm = new JSONArray();
 
-        _api.setVersion("V0.2");
         try {
-            data.put("token", token);
             data.put("bugId", bugId);
-            data.put("title", title);
-            data.put("description", description);
-            data.put("stateId", 1);
-            data.put("stateName", "");
+            data.put("token", SessionAdapter.getInstance().getToken());
+            for(Pair<String, Boolean> id : _ids)
+            {
+                if (id.second)
+                    toAdd.put(id.first);
+                else
+                    toRm.put(id.first);
+            }
+            data.put("toAdd", toAdd);
+            data.put("toRemove", toRm);
             json.put("data", data);
-            _api.startConnection("bugtracker/editticket");
+            _api.setVersion("V0.2");
+            _api.startConnection("bugtracker/setparticipants");
             _api.setRequestConnection("PUT");
             _api.sendJSON(json);
             return _api.getInputSream();
-        } catch (IOException | JSONException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
         return null;

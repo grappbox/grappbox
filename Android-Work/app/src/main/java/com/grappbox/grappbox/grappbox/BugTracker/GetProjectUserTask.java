@@ -23,13 +23,15 @@ public class GetProjectUserTask extends AsyncTask<String, Void, String> {
     private Context _context;
     private LinearLayout _adapter;
     private APIConnectAdapter _api;
+    private OnTaskListener _listener;
 
-    public GetProjectUserTask(Context context, LinearLayout adapter)
+    public GetProjectUserTask(Context context, LinearLayout adapter, OnTaskListener listener)
     {
         _context = context;
         _adapter = adapter;
         _api = APIConnectAdapter.getInstance(true);
         _api.setVersion("V0.2");
+        _listener = listener;
     }
 
     @Override
@@ -80,6 +82,8 @@ public class GetProjectUserTask extends AsyncTask<String, Void, String> {
                     cb.SetId(current.getString("id"));
                     _adapter.addView(lay);
                 }
+                if (_listener != null)
+                    _listener.OnTaskEnd(false);
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();

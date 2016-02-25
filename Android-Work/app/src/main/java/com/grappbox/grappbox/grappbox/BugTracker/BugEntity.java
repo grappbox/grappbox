@@ -11,6 +11,8 @@ import java.util.List;
  * Created by wieser_m on 18/02/2016.
  */
 public class BugEntity {
+    public static final String EXTRA_GRAPPBOX_BUG_ID = "extra.grappbox.bugId";
+
     String              _id;
     String              _projectId;
     String              _title;

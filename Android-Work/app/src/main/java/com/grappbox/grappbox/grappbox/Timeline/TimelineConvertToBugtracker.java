@@ -31,9 +31,9 @@ public class TimelineConvertToBugtracker extends AppCompatActivity {
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
         String content = intent.getStringExtra("content");
-        GetBugTagTask bttask = new GetBugTagTask(this, tagList);
+        GetBugTagTask bttask = new GetBugTagTask(this, tagList, null);
         bttask.execute();
-        GetProjectUserTask puttask = new GetProjectUserTask(this, userList);
+        GetProjectUserTask puttask = new GetProjectUserTask(this, userList, null);
         puttask.execute();
         Activity me = this;
         LinearLayout rootlayout = (LinearLayout) findViewById(R.id.ll_root);

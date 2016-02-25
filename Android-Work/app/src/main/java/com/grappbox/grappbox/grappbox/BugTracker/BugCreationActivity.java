@@ -20,9 +20,9 @@ public class BugCreationActivity extends AppCompatActivity {
         LinearLayout userList = (LinearLayout) findViewById(R.id.ll_assignee);
         Button save = (Button) findViewById(R.id.btn_save);
 
-        GetBugTagTask bttask = new GetBugTagTask(this, tagList);
+        GetBugTagTask bttask = new GetBugTagTask(this, tagList, null);
         bttask.execute();
-        GetProjectUserTask puttask = new GetProjectUserTask(this, userList);
+        GetProjectUserTask puttask = new GetProjectUserTask(this, userList, null);
         puttask.execute();
         Activity me = this;
         save.setOnClickListener(new View.OnClickListener() {

@@ -57,7 +57,7 @@ public class BugListAdapter extends ArrayAdapter<BugEntity> implements AbsListVi
                         if (!bug.IsValid())
                             return;
                         Intent intent = new Intent(getContext(), EditBugActivity.class);
-                        intent.putExtra(EditBugActivity.EXTRA_GRAPPBOX_BUG_ID, bug.GetId());
+                        intent.putExtra(BugEntity.EXTRA_GRAPPBOX_BUG_ID, bug.GetId());
                         _parent.getActivity().startActivity(intent);
 
                     }

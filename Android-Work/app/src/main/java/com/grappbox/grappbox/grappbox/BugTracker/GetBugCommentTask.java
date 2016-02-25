@@ -2,7 +2,6 @@ package com.grappbox.grappbox.grappbox.BugTracker;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
@@ -13,15 +12,15 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 /**
- * Created by wieser_m on 24/02/2016.
+ * Created by wieser_m on 25/02/2016.
  */
-public class EditTicketTask extends AsyncTask<String, Void, String> {
-
+public class GetBugCommentTask extends AsyncTask<String, Void, String> {
     Context _context;
     OnTaskListener _listener;
     APIConnectAdapter _api;
 
-    public EditTicketTask(Context context, OnTaskListener listener)
+
+    public GetBugCommentTask(Context context, OnTaskListener listener)
     {
         _context = context;
         _listener = listener;
@@ -30,29 +29,14 @@ public class EditTicketTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        if (params.length < 3)
+        if (params.length < 1)
             return null;
-        String token = SessionAdapter.getInstance().getToken();
-        String bugId = params[0];
-        String title = params[1];
-        String description = params[2];
-        JSONObject json = new JSONObject();
-        JSONObject data = new JSONObject();
-
-        _api.setVersion("V0.2");
         try {
-            data.put("token", token);
-            data.put("bugId", bugId);
-            data.put("title", title);
-            data.put("description", description);
-            data.put("stateId", 1);
-            data.put("stateName", "");
-            json.put("data", data);
-            _api.startConnection("bugtracker/editticket");
-            _api.setRequestConnection("PUT");
-            _api.sendJSON(json);
+            _api.setVersion("V0.2");
+            _api.startConnection("bugtracker/getcomments/" + SessionAdapter.getInstance().getToken() + "/" + SessionAdapter.getInstance().getCurrentSelectedProject() + "/" + params[0]);
+            _api.setRequestConnection("GET");
             return _api.getInputSream();
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -60,8 +44,10 @@ public class EditTicketTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        JSONObject json, info, data;
-        json = info = data = null;
+        JSONObject json = null;
+        JSONObject info = null;
+        JSONObject data = null;
+
         super.onPostExecute(s);
 
         if (s != null)
@@ -74,11 +60,9 @@ public class EditTicketTask extends AsyncTask<String, Void, String> {
                 e.printStackTrace();
             }
         }
-        try
-        {
+        try {
             _listener.OnTaskEnd(BugtrackerInfoHandler.process(_context, _api.getResponseCode(), info), (data == null ? null : data.toString()));
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

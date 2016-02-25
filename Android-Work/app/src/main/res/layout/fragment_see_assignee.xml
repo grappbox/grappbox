@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.grappbox.grappbox.grappbox.BugTracker.SeeAssigneeFragment">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/assignee_container"
+            android:orientation="vertical" />
+    </ScrollView>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Save and go back"
+        android:id="@+id/btn_save"
+        android:textColor="#fff"
+        android:background="@color/colorGrappboxBlack"
+        android:layout_weight="10" />
+</LinearLayout>

@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
         if (fragment != null)
-            _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

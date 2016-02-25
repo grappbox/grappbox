@@ -23,13 +23,15 @@ public class GetBugTagTask extends AsyncTask<String, Void, String> {
     private Context _context;
     private LinearLayout _adapter;
     private APIConnectAdapter _api;
+    private OnTaskListener _listener;
 
-    public GetBugTagTask(Context context, LinearLayout adapter)
+    public GetBugTagTask(Context context, LinearLayout adapter, OnTaskListener listener)
     {
         _context = context;
         _adapter = adapter;
         _api = APIConnectAdapter.getInstance(true);
         _api.setVersion("V0.2");
+        _listener = listener;
     }
 
     @Override
@@ -80,7 +82,8 @@ public class GetBugTagTask extends AsyncTask<String, Void, String> {
                     cb.SetId(current.getString("id"));
                     _adapter.addView(lay);
                 }
-
+                if (_listener != null)
+                    _listener.OnTaskEnd(true, data.toString());
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
