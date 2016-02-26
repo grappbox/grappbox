@@ -28,6 +28,7 @@ public class BugCommentEntity {
 
     public void reimport(JSONObject data) throws JSONException
     {
+
         JSONObject creator = data.getJSONObject("creator");
         JSONObject jDate = data.getJSONObject("createdAt");
 

@@ -260,5 +260,10 @@
         <item>Archive comment</item>
     </string-array>
     <string name="title_activity_edit_bug">EditBugActivity</string>
+    <string name="str_new_comment_title">Write a new comment</string>
+    <string name="ph_bugtracker_comtitle">Enter a title here...</string>
+    <string name="ph_bugtracker_comdesc">Enter your comment here...</string>
+    <string name="yes_answer">Yes</string>
+    <string name="no_answer">No</string>
 
 </resources>
