@@ -667,7 +667,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* {
 	*  "info": {
 	*    "return_code": "1.4.1",
-	*    "return_message": "Bugtracker - getComments - Complete Success"
+	*    "return_message": "Bugtracker - postComments - Complete Success"
 	*  },
 	*  "data": {
 	*    "id": 11,
@@ -768,7 +768,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $bug);
+		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $ticket);
 	}
 
 	/**
