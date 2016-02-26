@@ -55,19 +55,17 @@ public class NextMeetingFragment extends Fragment {
         _value = contentValues;
         for (ContentValues item : contentValues){
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put("meeting_title", item.get("project_name").toString() + " " + item.get("event_title").toString());
-            map.put("meeting_subject", item.get("event_description").toString());
-            map.put("date_meeting_start", item.get("event_begin_date").toString());
-            map.put("place_meeting_start", item.get("event_begin_place").toString());
-            map.put("date_meeting_end", item.get("event_end_date").toString());
-            map.put("place_meeting_end", item.get("event_end_place").toString());
-            map.put("logo_project_image_metting", String.valueOf(R.mipmap.icon_launcher));
+            map.put("meeting_title", item.get("projects_name").toString() + " " + item.get("title").toString());
+            map.put("meeting_subject", item.get("description").toString());
+            map.put("date_meeting_start", item.get("begin_date").toString());
+            map.put("date_meeting_end", item.get("end_date").toString());
+            map.put("logo_project_image_meeting", String.valueOf(R.mipmap.icon_launcher));
             listMemberTeam.add(map);
         }
 
         SimpleAdapter meetingAdapter = new SimpleAdapter(_view.getContext(), listMemberTeam, R.layout.item_next_meeting,
-                new String[] {"meeting_title", "meeting_subject", "date_meeting_start", "place_meeting_start", "date_meeting_end", "place_meeting_end", "logo_project_image_metting"},
-                new int[] {R.id.meeting_title, R.id.meeting_subject, R.id.date_meeting_start, R.id.place_meeting_start, R.id.date_meeting_end, R.id.place_meeting_end, R.id.logo_project_image_metting});
+                new String[] {"meeting_title", "meeting_subject", "date_meeting_start", "date_meeting_end", "logo_project_image_meeting"},
+                new int[] {R.id.meeting_title, R.id.meeting_subject, R.id.date_meeting_start,  R.id.date_meeting_end, R.id.logo_project_image_metting});
         TeamList.setAdapter(meetingAdapter);
     }
 
@@ -85,13 +83,19 @@ public class NextMeetingFragment extends Fragment {
         protected List<ContentValues> doInBackground(String ... param)
         {
             String resultAPI;
+            Integer APIResponse;
             List<ContentValues> listResult = null;
 
             try {
-                APIConnectAdapter.getInstance().startConnection("dashboard/getnextmeetings/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().startConnection("dashboard/getnextmeetings/" + SessionAdapter.getInstance().getToken(), "V0.2");
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                listResult = APIConnectAdapter.getInstance().getListNextMeeting(resultAPI);
+                APIResponse = APIConnectAdapter.getInstance().getResponseCode();
+                Log.v("Response Meeting", String.valueOf(APIResponse));
+                if (APIResponse == 200) {
+                    Log.v("JSON Meeting", resultAPI);
+                    listResult = APIConnectAdapter.getInstance().getListNextMeeting(resultAPI);
+                }
 
             } catch (IOException e){
                 Log.e("APIConnection", "Error ", e);

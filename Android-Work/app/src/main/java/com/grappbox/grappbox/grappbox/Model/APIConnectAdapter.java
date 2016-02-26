@@ -30,7 +30,7 @@ public class APIConnectAdapter  {
     private static APIConnectAdapter _instance = null;
 
     private static final String _APIUrlBase = "http://api.grappbox.com/app_dev.php/";
-    private static final String _APIBaseVersion = "V0.11";
+    private static final String _APIBaseVersion = "V0.2";
 
     String _APIVersion = _APIBaseVersion;
     HttpURLConnection _connection = null;
@@ -143,7 +143,7 @@ public class APIConnectAdapter  {
 
     public ContentValues getLoginData(String resultJSON) throws JSONException
     {
-        final String DATA_LIST = "user";
+        final String DATA_LIST = "data";
         final String[] DATA_USER = {"id", "firstname", "lastname", "email", "token"};
 
         if (resultJSON.length() == 0 || resultJSON.length() == 3)
@@ -163,23 +163,21 @@ public class APIConnectAdapter  {
 
     public List<ContentValues> getListTeamOccupation(String result) throws JSONException
     {
-        final String[] DATA_TEAM = {"project_name", "user_id", "first_name", "last_name", "occupation", "number_of_tasks_begun", "number_of_ongoing_tasks"};
-
-        if (result.length() == 0 || result.length() == 3)
-            return null;
-        JSONObject forecastJSON = new JSONObject(result);
+        JSONObject forecastJSON = new JSONObject(result).getJSONObject("data");
+        JSONArray arrayJSON = forecastJSON.getJSONArray("array");
         List<ContentValues> list = new Vector<ContentValues>();
-        int i = 0;
-        while (1 == 1) {
-            String person = "Person " + String.valueOf(i);
-            if (!forecastJSON.has(person) || forecastJSON.getString(person).length() == 0)
-                break;
+        for (int i = 0; i < arrayJSON.length(); ++i)
+        {
+            JSONObject obj = arrayJSON.getJSONObject(i);
             ContentValues values = new ContentValues();
-            for (int data = 0; data < DATA_TEAM.length; ++data){
-                values.put(DATA_TEAM[data], forecastJSON.getJSONObject(person).getString(DATA_TEAM[data]));
-            }
-            list.add(values);
-            ++i;
+
+            values.put("name", obj.getString("name"));
+            values.put("user_id", obj.getJSONObject("users").getString("id"));
+            values.put("first_name", obj.getJSONObject("users").getString("firstname"));
+            values.put("last_name", obj.getJSONObject("users").getString("lastname"));
+            values.put("occupation", obj.getString("occupation"));
+            values.put("number_of_tasks_begun", obj.getString("number_of_tasks_begun"));
+            values.put("number_of_ongoing_tasks", obj.getString("number_of_ongoing_tasks"));
         }
         return list;
     }
@@ -202,57 +200,42 @@ public class APIConnectAdapter  {
                 "number_bugs",
                 "number_messages"};
 
-        if (result.length() == 0 || result.length() == 3)
-            return null;
-        JSONObject forecastJSON = new JSONObject(result);
+        JSONObject forecastJSON = new JSONObject(result).getJSONObject("data");
+        JSONArray arrayJSON = forecastJSON.getJSONArray("array");
         List<ContentValues> list = new Vector<ContentValues>();
-        int i = 0;
-        while (1 == 1) {
-            String project = "Project " + String.valueOf(i);
-            if (!forecastJSON.has(project) || forecastJSON.getString(project).length() == 0)
-                break;
+        for (int i = 0; i < arrayJSON.length(); ++i)
+        {
+            JSONObject obj = arrayJSON.getJSONObject(i);
             ContentValues values = new ContentValues();
             for (int data = 0; data < DATA_PROGRESS.length; ++data){
-                if (forecastJSON.getJSONObject(project).getString(DATA_PROGRESS[data]) == null)
+                if (obj.getString(DATA_PROGRESS[data]) == null)
                     values.put(DATA_PROGRESS[data], "");
                 else
-                    values.put(DATA_PROGRESS[data], forecastJSON.getJSONObject(project).getString(DATA_PROGRESS[data]));
+                    values.put(DATA_PROGRESS[data], obj.getString(DATA_PROGRESS[data]));
             }
             list.add(values);
-            ++i;
         }
         return list;
     }
 
     public List<ContentValues> getListNextMeeting(String result)  throws JSONException
     {
-        final String[] DATA_MEETING = {"project_name", "project_logo", "event_type", "event_title", "event_description", "event_begin_date", "event_end_date"};
-        final String[] DATA_DATE_EVENT = {"date", "timezone"};
-        final String[] KEY_MEETING = {"project_name", "project_logo", "event_type", "event_title", "event_description", "event_begin_date", "event_begin_place", "event_end_date", "event_end_place"};
-
         if (result.length() == 0 || result.length() == 3)
             return null;
-        JSONObject forecastJSON = new JSONObject(result);
+        JSONObject forecastJSON = new JSONObject(result).getJSONObject("data");
+        JSONArray arrayJSON = forecastJSON.getJSONArray("array");
         List<ContentValues> list = new Vector<ContentValues>();
-        int i = 0;
-        while (1 == 1) {
-            String person = "Meeting " + String.valueOf(i);
-            if (!forecastJSON.has(person) || forecastJSON.getString(person).length() == 0)
-                break;
+        for (int i = 0; i < arrayJSON.length(); ++i){
+            JSONObject obj = arrayJSON.getJSONObject(i);
             ContentValues values = new ContentValues();
-            for (int data = 0; data < 5; ++data) {
-                if (forecastJSON.getJSONObject(person).getString(DATA_MEETING[data]) == null)
-                    values.put(KEY_MEETING[data], "");
-                else
-                    values.put(KEY_MEETING[data], forecastJSON.getJSONObject(person).getString(DATA_MEETING[data]));
-            }
-            values.put(KEY_MEETING[5], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[5]).getString(DATA_DATE_EVENT[0]));
-            values.put(KEY_MEETING[6], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[5]).getString(DATA_DATE_EVENT[1]));
-            values.put(KEY_MEETING[7], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[6]).getString(DATA_DATE_EVENT[0]));
-            values.put(KEY_MEETING[8], forecastJSON.getJSONObject(person).getJSONObject(DATA_MEETING[6]).getString(DATA_DATE_EVENT[1]));
 
+            values.put("projects_name", obj.getJSONObject("projects").getString("name"));
+            values.put("type", obj.getString("type"));
+            values.put("title", obj.getString("title"));
+            values.put("description", obj.getString("description"));
+            values.put("begin_date", obj.getJSONObject("begin_date").getString("date"));
+            values.put("end_date", obj.getJSONObject("end_date").getString("date"));
             list.add(values);
-            ++i;
         }
         return list;
     }

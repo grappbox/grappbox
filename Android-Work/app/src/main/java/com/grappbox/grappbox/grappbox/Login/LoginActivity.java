@@ -76,16 +76,22 @@ public class LoginActivity extends AppCompatActivity {
         protected ContentValues doInBackground(String ... param)
         {
             ContentValues contentAPI = null;
+            Integer APIResponse;
             String resultAPI;
 
             try {
-                APIConnectAdapter.getInstance().startConnection("accountadministration/login");
+                APIConnectAdapter.getInstance().startConnection("accountadministration/login", "V0.2");
                 APIConnectAdapter.getInstance().setRequestConnection("POST");
 
                 JSONObject JSONParam = new JSONObject();
+                JSONObject JSONData = new JSONObject();
                 JSONParam.put("login", param[0]);
                 JSONParam.put("password", param[1]);
-                APIConnectAdapter.getInstance().sendJSON(JSONParam);
+                JSONData.put("data", JSONParam);
+                Log.v("JSON", JSONData.toString());
+                APIConnectAdapter.getInstance().sendJSON(JSONData);
+                APIResponse = APIConnectAdapter.getInstance().getResponseCode();
+                Log.v("JSON Response", String.valueOf(APIResponse));
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
                 if ((contentAPI = APIConnectAdapter.getInstance().getLoginData(resultAPI)) == null)
                     return null;

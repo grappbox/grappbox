@@ -57,10 +57,8 @@ public class TeamOccupationFragment extends Fragment {
         for (ContentValues item : contentValues){
             alreadyHere = false;
             String nameMember = item.get("first_name").toString() + " " + item.get("last_name").toString();
-            for (String name : nameList)
-            {
-                if (name.equals(nameMember))
-                {
+            for (String name : nameList) {
+                if (name.equals(nameMember)) {
                     alreadyHere = true;
                 }
             }
@@ -68,7 +66,7 @@ public class TeamOccupationFragment extends Fragment {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("name_member", nameMember);
                 map.put("occupation_state", item.get("occupation").toString());
-                map.put("occupation_project_name", item.get("project_name").toString());
+                map.put("occupation_project_name", item.get("name").toString());
                 map.put("profil_image", String.valueOf(R.mipmap.icon_launcher));
                 listMemberTeam.add(map);
                 nameList.add(nameMember);
@@ -93,14 +91,20 @@ public class TeamOccupationFragment extends Fragment {
         protected List<ContentValues> doInBackground(String ... param)
         {
             String resultAPI;
+            Integer APIResponse;
             List<ContentValues> listResult = null;
 
             try {
-                APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getToken(), "V0.2");
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
 
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                listResult =  APIConnectAdapter.getInstance().getListTeamOccupation(resultAPI);
+                APIResponse = APIConnectAdapter.getInstance().getResponseCode();
+                Log.v("Team Response", String.valueOf(APIResponse));
+                if (APIResponse == 200) {
+                    Log.v("Team Content", resultAPI);
+                    listResult = APIConnectAdapter.getInstance().getListTeamOccupation(resultAPI);
+                }
 
             } catch (IOException e){
                 Log.e("APIConnection", "Error ", e);
