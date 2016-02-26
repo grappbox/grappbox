@@ -892,7 +892,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$ticket = $bug->objectToArray();
 
-		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $bug);
+		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $ticket);
 	}
 
 	/**
