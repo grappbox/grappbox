@@ -26,21 +26,21 @@
                          ng-if="lastMessagesTeam != null">
                         <div class="item item-avatar">
                             <img src="mcfly.jpg">
-                            <h2>Pierre HOFMAN</h2>
+                            <h2>{{ message.creator.fullname }}</h2>
                             <p>{{ message.createdAt.date }}</p>
                         </div>
                         <div class="item item-body">
                             <!--- Message -->
                             <!-- Message title -->
-                            <input ng-readonly="message.userId != userConnectedId"
+                            <input ng-readonly="message.creator.id != userConnectedId"
                                    type="text"
                                    placeholder="Title"
                                    ng-model="message.title" />
                             <!-- Message body -->
-                            <textarea ng-readonly="message.userId != userConnectedId"
+                            <textarea ng-readonly="message.creator.id != userConnectedId"
                                       rows="5"
                                       ng-model="message.message"></textarea>
-                            <div class="button-bar" ng-show="message.userId == userConnectedId">
+                            <div class="button-bar" ng-show="message.creator.id == userConnectedId">
                                 <!-- Delete button if message is by user connected only -->
                                 <a class="button button-block icon ion-ios-trash button-assertive"
                                    ng-click="PopupDeleteMessage(message)">
@@ -56,15 +56,16 @@
                             </div>
                             <!-- Comments -->
                             <p class="subdued">
-                                <a ng-click="GetCommentsOnTimeline(message)">{{ message.nbComment }} Comments</a>
+                                <a ng-click="GetCommentsOnTimeline(message); showLeaveComment = !showLeaveComment">{{ message.nbComment }} Comments</a>
                             </p>
-                            <ion-item ng-show="comments[0] != null"
+                            <!-- Show comments -->
+                            <ion-item ng-show="comments[0] != null && showLeaveComment"
                                       ng-repeat="com in comments">
                                 <textarea rows="5"
-                                          ng-readonly="com.userId != userConnectedId"
+                                          ng-readonly="com.creator.id != userConnectedId"
                                           ng-model="com.message"></textarea>
-                                <p>By Pierre HOFMAN</p>
-                                <div class="button-bar" ng-show="com.userId == userConnectedId">
+                                <p>By {{ com.creator.fullname }}</p>
+                                <div class="button-bar" ng-show="com.creator.id == userConnectedId">
                                     <!-- Delete button if comment is by user connected only -->
                                     <a class="button button-block button-assertive"
                                        ng-click="ArchiveComment(com, message)">
@@ -76,6 +77,9 @@
                                         Edit
                                     </a>
                                 </div>
+                            </ion-item>
+                            <!-- Show leave a comment if user clicked on Get comments -->
+                            <div ng-show="showLeaveComment">
                                 <!-- Leave a comment -->
                                 <ion-item>
                                     <textarea rows="5"
@@ -87,7 +91,7 @@
                                    ng-click="PostComment(message)">
                                     Comment
                                 </a>
-                            </ion-item>
+                            </div>
                         </div>
                     </div>
                     <!-- Button "More" messages -->
@@ -121,21 +125,21 @@
                          ng-if="lastMessagesCustomer != null">
                         <div class="item item-avatar">
                             <img src="mcfly.jpg">
-                            <h2>Pierre HOFMAN</h2>
+                            <h2>{{ message.creator.fullname }}</h2>
                             <p>{{ message.createdAt.date }}</p>
                         </div>
                         <div class="item item-body">
                             <!--- Message -->
                             <!-- Message title -->
-                            <input ng-readonly="message.userId != userConnectedId"
+                            <input ng-readonly="message.creator.id != userConnectedId"
                                    type="text"
                                    placeholder="Title"
                                    ng-model="message.title" />
                             <!-- Message body -->
-                            <textarea ng-readonly="message.userId != userConnectedId"
+                            <textarea ng-readonly="message.creator.id != userConnectedId"
                                       rows="5"
                                       ng-model="message.message"></textarea>
-                            <div class="button-bar" ng-show="message.userId == userConnectedId">
+                            <div class="button-bar" ng-show="message.creator.id == userConnectedId">
                                 <!-- Delete button if message is by user connected only -->
                                 <a class="button button-block icon ion-ios-trash button-assertive"
                                    ng-click="PopupDeleteMessage(message)">
@@ -156,10 +160,10 @@
                             <ion-item ng-show="comments[0] != null"
                                       ng-repeat="com in comments">
                                 <textarea rows="5"
-                                          ng-readonly="com.userId != userConnectedId"
+                                          ng-readonly="com.creator.id != userConnectedId"
                                           ng-model="com.message"></textarea>
-                                <p>By Pierre HOFMAN</p>
-                                <div class="button-bar" ng-show="com.userId == userConnectedId">
+                                <p>By {{ com.creator.fullname }}</p>
+                                <div class="button-bar" ng-show="com.creator.id == userConnectedId">
                                     <!-- Delete button if comment is by user connected only -->
                                     <a class="button button-block button-assertive"
                                        ng-click="ArchiveComment(com, message)">
