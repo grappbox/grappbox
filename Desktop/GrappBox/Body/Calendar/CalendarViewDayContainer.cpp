@@ -74,7 +74,8 @@ void CalendarViewDayContainer::HideProject(int id)
 {
     for (CalendarEvent *event : _EventsWidget)
     {
-        if (event->GetEvent()->ProjectId == id)
+        CalendarEvent *test = event;
+        if (event->GetEvent() && event->GetEvent()->ProjectId == id)
             event->hide();
     }
 }
@@ -119,7 +120,7 @@ void CalendarViewDayContainer::LoadEventInterne()
     {
         eventsOverlap[event->EventId] = 1;
     }
-
+    _EventsWidget.clear();
     bool noOverlap = false;
     while (!noOverlap)
     {

@@ -12,6 +12,8 @@ CalendarViewDay::CalendarViewDay(bool viewHour)
     _DayName->setFixedHeight(30);
     _DayName->setAlignment(Qt::AlignCenter);
     _Container = new CalendarViewDayContainer(viewHour);
+    connect(_Container, SIGNAL(NeedEdit(Event*)), this, SLOT(EventEdit(Event*)));
+    connect(_Container, SIGNAL(NeedDelete(Event*)), this, SLOT(EventDelete(Event*)));
 
     mainLayout->addWidget(_DayName);
     mainLayout->addWidget(_Container);

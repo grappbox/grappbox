@@ -19,11 +19,11 @@ DataConnectorOnline::DataConnectorOnline()
 	_Manager = new QNetworkAccessManager();
 
 	// Initialize Get request
-	_GetMap[GR_CALENDAR] = "";
+    _GetMap[GR_CALENDAR] = "planning/getmonth";
 	_GetMap[GR_CALENDAR_DAY] = "";
 	_GetMap[GR_LIST_GANTT] = "";
 	_GetMap[GR_LIST_PROJECT] = "dashboard/getprojectsglobalprogress";
-	_GetMap[GR_PROJECT] = "";
+    _GetMap[GR_PROJECT] = "projects/getinformations";
 	_GetMap[GR_CREATOR_PROJECT] = "";
 	_GetMap[GR_LIST_MEMBER_PROJECT] = "dashboard/getteamoccupation";
 	_GetMap[GR_LIST_MEETING] = "dashboard/getnextmeetings";
@@ -52,8 +52,8 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_PROJECTBUGTAG_ALL] = "bugtracker/getprojecttags";
 	_GetMap[GR_PROJECT_USERS_ALL] = "projects/getusertoproject";
 	_GetMap[GR_BUG] = "bugtracker/getticket";
-	_GetMap[GR_EVENT] = "";
-	_GetMap[GR_TYPE_EVENT] = "";
+    _GetMap[GR_EVENT] = "event/getevent";
+    _GetMap[GR_TYPE_EVENT] = "event/gettypes";
 
 	// Initialize Post request
 	_PostMap[PR_LOGIN] = "accountadministration/login";

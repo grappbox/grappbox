@@ -135,7 +135,7 @@ void MessageTimeLine::OnRemove()
         ADD_URL_FIELD(USER_TOKEN);
         ADD_URL_FIELD(_IDTimeline);
         ADD_URL_FIELD(_IDTimelineMessage);
-        DELETE(API::DP_TIMELINE, API::DR_ARCHIVE_MESSAGE_TIMELINE);
+        DELETE_REQ(API::DP_TIMELINE, API::DR_ARCHIVE_MESSAGE_TIMELINE);
     }
     END_REQUEST;
 }

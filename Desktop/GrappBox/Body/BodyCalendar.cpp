@@ -110,10 +110,23 @@ BodyCalendar::BodyCalendar()
 	_SideBarLayout->addWidget(_LabelMonthCalendar);
 	_SideBarLayout->addWidget(_MonthCalendarFixed);
 	_SideBarLayout->addWidget(_ProjectChoice);
-	_SideBarLayout->addLayout(_ProjectChoiceLayout);
-	_SideBarLayout->addWidget(_TaskChoice);
-	_SideBarLayout->addLayout(_TaskChoiceLayout);
-	_SideBarLayout->addSpacing(1080);
+    QScrollArea *projectChoiceArea = new QScrollArea();
+    projectChoiceArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    projectChoiceArea->setWidgetResizable(true);
+    projectChoiceArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    QWidget *projectChoiceWidget = new QWidget();
+    projectChoiceWidget->setLayout(_ProjectChoiceLayout);
+    projectChoiceArea->setWidget(projectChoiceWidget);
+    _SideBarLayout->addWidget(projectChoiceArea);
+    _SideBarLayout->addWidget(_TaskChoice);
+    QScrollArea *taskChoiceArea = new QScrollArea();
+    taskChoiceArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    taskChoiceArea->setWidgetResizable(true);
+    QWidget *taskChoiceWidget = new QWidget();
+    taskChoiceWidget->setLayout(_TaskChoiceLayout);
+    taskChoiceArea->setWidget(taskChoiceWidget);
+    _SideBarLayout->addWidget(taskChoiceArea);
+    //_SideBarLayout->addSpacing(1080);
 
 	QWidget *wTopBarLayout = new QWidget();
 	wTopBarLayout->setLayout(_TopBarLayout);
@@ -184,7 +197,7 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 {
 	QJsonDocument doc = QJsonDocument::fromJson(data);
 	QJsonArray arrayEvent = doc.object()["data"].toObject()["array"].toObject()["events"].toArray();
-	QJsonArray taskEvent = doc.object()["data"].toObject()["array"].toObject()["task"].toArray();
+    QJsonArray taskEvent = doc.object()["data"].toObject()["array"].toObject()["tasks"].toArray();
 	QString format = "yyyy-MM-dd HH:mm:ss.zzzz";
 	QList<int> projectToLoad;
 	for (QJsonValueRef ref : arrayEvent)
@@ -229,29 +242,33 @@ void BodyCalendar::OnEventLoadingDone(int id, QByteArray data)
 		task->Start = QDateTime::fromString(dateStart, format);
 		QString dateEnd = obj["dueDate"].toObject()["date"].toString();
 		task->End = QDateTime::fromString(dateEnd, format);
-		_MapMonthTask.push_back(task);
+        _MapMonthTask.push_back(task);
 		if (!projectToLoad.contains(task->ProjectId))
 		{
 			projectToLoad.push_back(task->ProjectId);
 		}
 	}
 	_LoadingDates.remove(id);
-	qDebug() << "Dates Loading !";
-	qDebug() << "Project : " << _LoadingProjects.size();
-	qDebug() << "Dates : " << _LoadingDates.size();
-	qDebug() << "Projects loaded : " << _IsProjectsLoaded;
+
 	if (_LoadingDates.size() == 0)
 	{
+        //API
 		for (int id : projectToLoad)
 		{
-			QVector<QString> data;
-			data.push_back(USER_TOKEN);
-			data.push_back(TO_STRING(id));
-			int requestId = API::SDataManager::GetCurrentDataConnector()->Get(API::DP_PROJECT, API::GR_PROJECT, data, this, "OnProjectLoadingDone", "OnProjectLoadingFail");
-			_LoadingProjects[requestId] = id;
+            BEGIN_REQUEST;
+            {
+                SET_CALL_OBJECT(this);
+                SET_ON_DONE("OnProjectLoadingDone");
+                SET_ON_FAIL("OnProjectLoadingFail");
+                ADD_URL_FIELD(USER_TOKEN);
+                ADD_URL_FIELD(id);
+                int requestId = GET(API::DP_PROJECT, API::GR_PROJECT);
+                _LoadingProjects[requestId] = id;
+            }
+            END_REQUEST;
 		}
 		qDebug() << "Loading projects : " << projectToLoad.size();
-	}
+    }
 }
 
 void BodyCalendar::OnEventLoadingFail(int, QByteArray data)
@@ -297,10 +314,6 @@ void BodyCalendar::OnProjectLoadingDone(int requestId, QByteArray data)
 	}
 
 	_LoadingProjects.remove(requestId);
-	qDebug() << "Project Loading !";
-	qDebug() << "Project : " << _LoadingProjects.size();
-	qDebug() << "Dates : " << _LoadingDates.size();
-	qDebug() << "Projects loaded : " << _IsProjectsLoaded;
 	if (_LoadingProjects.size() == 0 && _LoadingDates.size() == 0 && _IsProjectsLoaded)
 	{
 		_IsLoaded = false;
@@ -389,8 +402,7 @@ void BodyCalendar::OnCreate()
 {
 	CalendarEventForm *form = new CalendarEventForm(nullptr, _AllProjects, this);
 	QObject::connect(form, SIGNAL(Create(QDateTime, QDateTime)), this, SLOT(OnCreateConfirm(QDateTime, QDateTime)));
-	form->exec();
-	qDebug() << "Form finish execution";
+    form->exec();
 }
 
 void BodyCalendar::OnCreateConfirm(QDateTime start, QDateTime end)
@@ -405,22 +417,47 @@ void BodyCalendar::OnCreateConfirm(QDateTime start, QDateTime end)
 	QVector<QString> data;
 	data.push_back(USER_TOKEN);
 	QDate date = loadablefirst;
+    //API
 	if (date >= realStart && date <= realEnd)
 	{
-		data.push_back(date.toString("yyyy-MM-dd"));
-		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnEventLoadingDone");
+            SET_ON_FAIL("OnEventLoadingFail");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(date.toString("yyyy-MM-dd"));
+            _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = date;
+        }
+        END_REQUEST;
 	}
 	date = loadablecurrent;
 	if (date >= realStart && date <= realEnd)
 	{
-		data[1] = date.toString("yyyy-MM-dd");
-		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnEventLoadingDone");
+            SET_ON_FAIL("OnEventLoadingFail");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(date.toString("yyyy-MM-dd"));
+            _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = date;
+        }
+        END_REQUEST;
 	}
 	date = loadablelast;
 	if (date >= realStart && date <= realEnd)
 	{
-		data[1] = date.toString("yyyy-MM-dd");
-		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnEventLoadingDone");
+            SET_ON_FAIL("OnEventLoadingFail");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(date.toString("yyyy-MM-dd"));
+            _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = date;
+        }
+        END_REQUEST;
 	}
 }
 
@@ -434,27 +471,39 @@ void BodyCalendar::OnEditEvent(Event *event)
 {
 	CalendarEventForm *form = new CalendarEventForm(event, _AllProjects, this);
 	form->exec();
-	QVector<QString> data;
-	data.push_back(USER_TOKEN);
-	QDate date = event->Start.date();
-	date.setDate(date.year(), date.month(), 01);
-	data.push_back(date.toString("yyyy-MM-dd"));
+    //API
+    QDate date = event->Start.date();
+    date.setDate(date.year(), date.month(), 01);
 	while (date.year() != event->End.date().year() && date.month() != event->End.date().month())
 	{
-		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
-		date = date.addMonths(1);
-		data[1] = date.toString("yyyy-MM-dd");
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnEventLoadingDone");
+            SET_ON_FAIL("OnEventLoadingFail");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(date.toString("yyyy-MM-dd"));
+            _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = date;
+        }
+        END_REQUEST;
+        date = date.addMonths(1);
 	}
 }
 
 void BodyCalendar::OnDeleteEvent(Event *event)
 {
-	qDebug() << "Delete event " + event->EventId;
-	QVector<QString> data;
-	data.push_back(USER_TOKEN);
-	data.push_back(TO_STRING(event->EventId));
-	int requestId = DATA_CONNECTOR->Delete(API::DP_CALENDAR, API::DR_REMOVE_EVENT, data, this, "OnDeleteDone", "OnDeleteFail");
-	_DeleteEvent[requestId] = event->EventId;
+    //API
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnDeleteDone");
+        SET_ON_FAIL("OnDeleteFail");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(event->EventId);
+        int requestId = DELETE_REQ(API::DP_CALENDAR, API::DR_REMOVE_EVENT);
+        _DeleteEvent[requestId] = event->EventId;
+    }
+    END_REQUEST;
 }
 
 void BodyCalendar::OnDeleteDone(int id, QByteArray data)
@@ -541,19 +590,31 @@ void BodyCalendar::UpdateType()
 	if (_LastDrawingDate.month() != _CurrentDrawingDate.month())
 	{
 		QDate keyDate = QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month() + 1, 1);
-		QVector<QString> data;
-		data.push_back(USER_TOKEN);
-		data.push_back(keyDate.toString("yyyy-MM-dd"));
-		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = keyDate;
-		keyDate = QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month() - 1, 1);
-		data.clear();
-		data.push_back(USER_TOKEN);
-		data.push_back(keyDate.toString("yyyy-MM-dd"));
-		_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = keyDate;
-		_LastDrawingDate = _CurrentDrawingDate;
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnEventLoadingDone");
+            SET_ON_FAIL("OnEventLoadingFail");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(keyDate.toString("yyyy-MM-dd"));
+            _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = keyDate;
+        }
+        END_REQUEST;
+        keyDate = QDate(_CurrentDrawingDate.year(), _CurrentDrawingDate.month() - 1, 1);
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnEventLoadingDone");
+            SET_ON_FAIL("OnEventLoadingFail");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(keyDate.toString("yyyy-MM-dd"));
+            _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = keyDate;
+        }
+        END_REQUEST;
 		_ViewMonth->LoadEvents(_MapMonthEvent[keyDate], _CurrentDrawingDate);
 		_MonthCalendarFixed->setCurrentPage(_CurrentDrawingDate.year(), _CurrentDrawingDate.month());
-	}
+        _LastDrawingDate = _CurrentDrawingDate;
+    }
 	switch (_View)
 	{
 	case DAY:
@@ -622,9 +683,16 @@ void BodyCalendar::UpdateType()
 	{
 		if (task->Start.date() <= end && start <= task->End.date())
 		{
-			QLabel *lab = new QLabel(task->Title);
-			lab->setStyleSheet("color: " + _ProjectsColors[task->ProjectId] + ";");
-			_TaskChoiceLayout->addWidget(lab);
+            QString str = task->Title;
+            if (str.length() > 30)
+            {
+                str.resize(30);
+                str += "...";
+            }
+            QPushButton *lab = new QPushButton(str);
+            lab->setFixedWidth(250);
+            lab->setStyleSheet("color: " + _ProjectsColors[task->ProjectId] + "; text-align: left; font-size: 11px;");
+            _TaskChoiceLayout->addWidget(lab);
 		}
 	}
 }
@@ -644,21 +712,49 @@ void BodyCalendar::Show(int ID, MainWindow *mainApp)
 	}
 	_ProjectChoiceCheckBox.clear();
 
-	QVector<QString> data;
-	data.push_back(USER_TOKEN);
-	QDate date = QDate::currentDate();
-	date.setDate(date.year(), date.month(), 01);
-	data.push_back(date.toString("yyyy-MM-dd"));
-	_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
-	date = date.addMonths(1);
-	data[1] = date.toString("yyyy-MM-dd");
-	_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
-	date = date.addMonths(-2);
-	data[1] = date.toString("yyyy-MM-dd");
-	_LoadingDates[API::SDataManager::GetCurrentDataConnector()->Get(API::DP_CALENDAR, API::GR_CALENDAR, data, this, "OnEventLoadingDone", "OnEventLoadingFail")] = date;
-	data.clear();
-	data.push_back(USER_TOKEN);
-	DATA_CONNECTOR->Get(API::DP_PROJECT, API::GR_LIST_PROJECT, data, this, "OnLoadingProjectsDone", "OnLoadingProjectsFail");
+    QDate date = QDate::currentDate();
+    date.setDate(date.year(), date.month(), 01);
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnEventLoadingDone");
+        SET_ON_FAIL("OnEventLoadingFail");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(date.toString("yyyy-MM-dd"));
+        _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = date;
+    }
+    END_REQUEST;
+    date = date.addMonths(1);
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnEventLoadingDone");
+        SET_ON_FAIL("OnEventLoadingFail");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(date.toString("yyyy-MM-dd"));
+        _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = date;
+    }
+    END_REQUEST;
+    date = date.addMonths(-2);
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnEventLoadingDone");
+        SET_ON_FAIL("OnEventLoadingFail");
+        ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(date.toString("yyyy-MM-dd"));
+        _LoadingDates[GET(API::DP_CALENDAR, API::GR_CALENDAR)] = date;
+    }
+    END_REQUEST;
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnLoadingProjectsDone");
+        SET_ON_FAIL("OnLoadingProejctsFail");
+        ADD_URL_FIELD(USER_TOKEN);
+        GET(API::DP_PROJECT, API::GR_LIST_PROJECT);
+    }
+    END_REQUEST;
 	emit OnLoadingDone(ID);
 }
 

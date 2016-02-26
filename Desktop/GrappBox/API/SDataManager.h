@@ -26,7 +26,7 @@
 #define POST(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_POST, part, request, __data, __callObj, __onDone, __onFail)
 #define PUT(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_PUT, part, request, __data, __callObj, __onDone, __onFail)
 #define GET(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_GET, part, request, __data, __callObj, __onDone, __onFail)
-#define DELETE(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_DELETE, part, request, __data, __callObj, __onDone, __onFail)
+#define DELETE_REQ(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_DELETE, part, request, __data, __callObj, __onDone, __onFail)
 #define END_REQUEST }
 
 #define GENERATE_JSON_DEBUG API::SDataManager::GenerateFileDebug(__data)

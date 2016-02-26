@@ -35,7 +35,8 @@ void BodyDashboard::UpdateLayout(bool sendSignal)
     font = SFontLoader::GetFont(SFontLoader::OPEN_SANS_BOLD);
     font.setPointSize(20);
     QString titleStyleSheet = "QLabel { color: #af2d2e;}";
-    DeleteLayout();
+    if (_IsInitialized)
+        DeleteLayout();
     if (_MemberAvaible->count() == 0)
     {
         _TopWidget = new QWidget();

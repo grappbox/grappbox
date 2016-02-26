@@ -97,6 +97,7 @@ CalendarEventForm::CalendarEventForm(Event *event, QMap<int, QString> &project, 
 	_EventLoaded = true;
 
 	QVector<QString> data;
+    //API
 	for (QMap<int, QString>::iterator it = project.begin(); it != project.end(); ++it)
 	{
 		data.push_back(USER_TOKEN);
@@ -111,6 +112,7 @@ CalendarEventForm::CalendarEventForm(Event *event, QMap<int, QString> &project, 
 
 	setDisabled(true);
 
+    //API
 	if (event)
 	{
 		_EventLoaded = false;
@@ -284,6 +286,7 @@ void CalendarEventForm::OnSaveEventDone(int id, QByteArray data)
 		if (!_AssociatedUserForProject.contains(id))
 			oldToRemove.push_back(id);
 	}
+    //API
 	QVector<QString> newData;
 	newData.push_back(USER_TOKEN);
 	newData.push_back(TO_STRING(idUser));

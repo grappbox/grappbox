@@ -14,6 +14,7 @@
 #include <QJsonObject>
 #include <QTimer>
 #include <QTime>
+#include <QPlainTextEdit>
 #include <QByteArray>
 #include <QTextEdit>
 

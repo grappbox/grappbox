@@ -69,7 +69,7 @@ void BugViewTitleWidget::TriggerCloseIssue()
 		SET_CALL_OBJECT(this);
 		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
 		ADD_URL_FIELD(_bugID);
-		DELETE(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
+		DELETE_REQ(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
 	}
 	END_REQUEST;
 }

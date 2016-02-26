@@ -200,7 +200,7 @@ void BodyBugList::TriggerCloseBug(int bugId)
 		SET_CALL_OBJECT(this);
 		ADD_URL_FIELD(API::SDataManager::GetDataManager()->GetToken());
 		ADD_URL_FIELD(bugId);
-		APIID = DELETE(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
+		APIID = DELETE_REQ(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
 	}
 	END_REQUEST;
     _waitingAPIIDBugId[APIID] = bugId;

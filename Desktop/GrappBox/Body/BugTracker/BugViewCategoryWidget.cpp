@@ -125,7 +125,7 @@ void BugViewCategoryWidget::TriggerCheckChange(bool checked, int id, QString nam
 			{
 				SET_ON_DONE("TriggerUnAssignSuccess");
 				SET_ON_FAIL("TriggerUnAssignFailure");
-				assignId = DELETE(API::DP_BUGTRACKER, API::DR_REMOVE_BUGTAG);
+				assignId = DELETE_REQ(API::DP_BUGTRACKER, API::DR_REMOVE_BUGTAG);
 			}
 		}
 		END_REQUEST;

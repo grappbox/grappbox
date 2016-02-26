@@ -31,7 +31,7 @@ RequestView::RequestView(RequestDebug *data)
     line2->setFrameShadow(QFrame::Sunken);
     formLayout->addRow(line2);
     QJsonDocument doc = QJsonDocument::fromJson(data->_DataIn);
-    QTextEdit *Json = new QTextEdit(doc.toJson(QJsonDocument::Indented));
+    QPlainTextEdit *Json = new QPlainTextEdit(doc.toJson(QJsonDocument::Indented));
     formLayout->addRow(Json);
     if (isRespondOk)
     {
@@ -45,7 +45,7 @@ RequestView::RequestView(RequestDebug *data)
         QJsonObject info = doc.object()["info"].toObject();
         formLayout->addRow("API return code : ", new QLabel(info["return_code"].toString()));
         formLayout->addRow("API return message : ", new QLabel(info["return_message"].toString()));
-        QTextEdit *Json = new QTextEdit(doc.toJson(QJsonDocument::Indented));
+        QPlainTextEdit *Json = new QPlainTextEdit(doc.toJson(QJsonDocument::Indented));
         formLayout->addRow(Json);
     }
 
