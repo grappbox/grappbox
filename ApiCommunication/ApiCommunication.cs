@@ -39,6 +39,12 @@ namespace GrappBox.ApiCom
             string data = JObject.Parse(json).GetValue("data").ToString();
             return JsonConvert.DeserializeObject<T>(data);
         }
+        public T DeserializeArrayJson<T>(string json)
+        {
+            string data = JObject.Parse(json).GetValue("data").ToString();
+            data = JObject.Parse(data).GetValue("array").ToString();
+            return JsonConvert.DeserializeObject<T>(data);
+        }
         public async Task<HttpResponseMessage> Post(Dictionary<string, object> properties, string url)
         {
             JObject post = new JObject();
@@ -75,6 +81,18 @@ namespace GrappBox.ApiCom
                     get.Append("/");
             }
             HttpResponseMessage res = await webclient.GetAsync(url + get);
+            return res;
+        }
+        public async Task<HttpResponseMessage> Delete(object[] values, string url)
+        {
+            StringBuilder del = new StringBuilder("/");
+            for (int i = 0; i < values.Length; ++i)
+            {
+                del.Append(values[i]);
+                if (i + 1 < values.Length)
+                    del.Append("/");
+            }
+            HttpResponseMessage res = await webclient.DeleteAsync(url + del);
             return res;
         }
         public string GetErrorMessage(string jsonTxt)

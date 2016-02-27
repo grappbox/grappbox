@@ -11,10 +11,11 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     DataContext="viewModel.DashBoardViewModel">
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" DataContext="viewModel.MenuViewModel">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl">
         <slideMenu:SlideInMenuContentControl.LeftMenuContent>
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -22,13 +23,14 @@
                 <Button Content="Dashboard" Click="DashboardButton_Click" Grid.Row="0" HorizontalAlignment="Center"/>
                 <Button Content="WhiteBoard" Click="WhiteboardButton_Click" Grid.Row="1" HorizontalAlignment="Center"/>
                 <Button Content="User Settings" Click="UserSettingsButton_Click" Grid.Row="2" HorizontalAlignment="Center"/>
+                <Button Content="Project Settings" Click="ProjectSettingsButton_Click" Grid.Row="3" HorizontalAlignment="Center"/>
             </Grid>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.RightMenuContent>
             <Grid/>
         </slideMenu:SlideInMenuContentControl.RightMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Background="#FF0C0C0C" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" >
+            <Grid Background="#FF0C0C0C" DataContext="viewModel.DashBoardViewModel" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" >
                 <Pivot Title="DashBoard">
                     <PivotItem Header="General Menu">
                         <Grid>

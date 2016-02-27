@@ -29,25 +29,25 @@ namespace GrappBox.ViewModel
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            if (model.Firstname != null || model.Firstname != "")
+            if (model.Firstname != null && model.Firstname != "")
                 props.Add("firstname", model.Firstname);
-            if (model.Lastname != null || model.Lastname != "")
+            if (model.Lastname != null && model.Lastname != "")
                 props.Add("lastname", model.Lastname);
             if (model.Birthday != null)
                 props.Add("birthday", model.Birthday);
-            if (model.Avatar != null || model.Avatar != "")
+            if (model.Avatar != null && model.Avatar != "")
                 props.Add("avatar", model.Avatar);
             if (password != null)
                 props.Add("password", password);
-            if (model.Phone != null || model.Phone != "")
+            if (model.Phone != null && model.Phone != "")
                 props.Add("phone", model.Phone);
-            if (model.Country != null || model.Country != "")
+            if (model.Country != null && model.Country != "")
                 props.Add("country", model.Country);
-            if (model.Linkedin != null || model.Linkedin != "")
+            if (model.Linkedin != null && model.Linkedin != "")
                 props.Add("linkedin", model.Linkedin);
-            if (model.Viadeo != null || model.Viadeo != "")
+            if (model.Viadeo != null && model.Viadeo != "")
                 props.Add("viadeo", model.Viadeo);
-            if (model.Twitter != null || model.Twitter != "")
+            if (model.Twitter != null && model.Twitter != "")
                 props.Add("twitter", model.Twitter);
             HttpResponseMessage res = await api.Put(props, "user/basicinformations/" + User.GetUser().Token);
             if (res.IsSuccessStatusCode)

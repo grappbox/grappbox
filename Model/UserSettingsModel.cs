@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GrappBox.Model
 {
-    class UserSettingsModel : ViewModelBase
+    class UserSettingsModel
     {
         private string _firstname;
         private string _lastname;

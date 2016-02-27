@@ -1,6 +1,8 @@
-﻿using GrappBox.ViewModel;
+﻿using GrappBox.Ressources;
+using GrappBox.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,6 +27,7 @@ namespace GrappBox.View
         public DashBoardView()
         {
             this.InitializeComponent();
+            this.DataContext = DashBoardViewModel.GetViewModel();
         }
 
         /// <summary>
@@ -52,6 +55,15 @@ namespace GrappBox.View
         private void DashboardButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(DashBoardView));
+        }
+
+        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
+            psvm.getProjectSettings();
+            psvm.getProjectUsers();
+            psvm.getCustomerAccesses();
+            this.Frame.Navigate(typeof(ProjectSettingsView));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using GrappBox.ApiCom;
 using GrappBox.Ressources;
+using GrappBox.ViewModel;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,9 @@ namespace GrappBox
                 api.DeserializeJson<User>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("login", loginBlock.Text);
                 SettingsManager.setOption("password", pwdBlock.Password);
-                this.Frame.Navigate(typeof(GrappBox.View.DashBoardView));
+                DashBoardViewModel usvm = new DashBoardViewModel();
+                usvm.getProjectList();
+                this.Frame.Navigate(typeof(View.DashBoardView));
             }
             else {
                 errorBlock.Text = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
