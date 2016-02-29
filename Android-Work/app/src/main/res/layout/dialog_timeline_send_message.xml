@@ -64,14 +64,6 @@
         android:textColor="#000"
         android:textStyle="bold"/>
 
-    <EditText
-        android:id="@+id/timelie_bugtracker_tag"
-        android:lines="4"
-        android:inputType="textMultiLine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tag"/>
-
     <LinearLayout
         android:layout_gravity="center"
         android:layout_marginTop="20dp"

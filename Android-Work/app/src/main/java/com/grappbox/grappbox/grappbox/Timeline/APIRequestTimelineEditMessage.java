@@ -20,15 +20,27 @@ import java.io.IOException;
  */
 public class APIRequestTimelineEditMessage  extends AsyncTask<String, Void, String> {
 
-    private TimelineListFragment _context;
+    private TimelineMessage _context;
     private int _idTimeline;
     private Dialog _dialog;
+    private boolean _isComment = false;
+    private int _idMessage;
 
-    APIRequestTimelineEditMessage(TimelineListFragment context, int idTimeline, Dialog dialog)
+    APIRequestTimelineEditMessage(TimelineMessage context, int idTimeline, Dialog dialog)
     {
         _context = context;
         _idTimeline = idTimeline;
         _dialog = dialog;
+        _isComment = false;
+    }
+
+    APIRequestTimelineEditMessage(TimelineMessage context, int idTimeline, int idMessage, Dialog dialog)
+    {
+        _context = context;
+        _idTimeline = idTimeline;
+        _idMessage = idMessage;
+        _dialog = dialog;
+        _isComment = true;
     }
 
     @Override
@@ -36,8 +48,13 @@ public class APIRequestTimelineEditMessage  extends AsyncTask<String, Void, Stri
     {
         super.onPostExecute(result);
         if (result != null){
-            APIRequestGetListMessageTimeline apiGet = new APIRequestGetListMessageTimeline(_context, _idTimeline);
-            apiGet.execute();
+            if (_isComment) {
+                APIRequestGetMessageComment apiGet = new APIRequestGetMessageComment(_context, _idTimeline, _idMessage);
+                apiGet.execute();
+            } else {
+                APIRequestGetListMessageTimeline apiGet = new APIRequestGetListMessageTimeline(_context, _idTimeline);
+                apiGet.execute();
+            }
             _dialog.dismiss();
         } else {
             Context context = _context.getContext();

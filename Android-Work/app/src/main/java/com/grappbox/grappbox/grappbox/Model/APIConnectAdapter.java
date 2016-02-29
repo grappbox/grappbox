@@ -146,8 +146,6 @@ public class APIConnectAdapter  {
         final String DATA_LIST = "data";
         final String[] DATA_USER = {"id", "firstname", "lastname", "email", "token"};
 
-        if (resultJSON.length() == 0 || resultJSON.length() == 3)
-            return null;
         ContentValues JSONContent = new ContentValues();
         JSONObject jsonObject = new JSONObject(resultJSON);
         JSONObject userData = jsonObject.getJSONObject(DATA_LIST);
@@ -279,8 +277,6 @@ public class APIConnectAdapter  {
         }
         return listResult;
     }
-
-
 
     public void printContentValues(ContentValues values)
     {

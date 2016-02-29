@@ -1,11 +1,14 @@
 package com.grappbox.grappbox.grappbox.Model;
 
+import android.content.SharedPreferences;
+
 /**
  * Created by Arkanice on 02/12/2015.
  */
 public class SessionAdapter {
 
     private static SessionAdapter _instance = null;
+
 
     private String _fisrname = null;
     private String _lastname = null;

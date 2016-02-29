@@ -17,16 +17,29 @@ import java.io.IOException;
  * Created by tan_f on 17/02/2016.
  */
 public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, String> {
-    private TimelineListFragment _context;
+
+    private TimelineMessage _context;
     private int _idMessage;
     private int _idTimeline;
     private Integer _APIRespond;
+    private int _idComment;
+    private boolean _isComment = false;
 
-    APIRequestTimelineArchiveMessage(TimelineListFragment context, int idTimeline, int idMessage)
+    APIRequestTimelineArchiveMessage(TimelineMessage context, int idTimeline, int idMessage)
     {
         _context = context;
         _idMessage = idMessage;
         _idTimeline = idTimeline;
+        _isComment = false;
+    }
+
+    APIRequestTimelineArchiveMessage(TimelineMessage context, int idTimeline, int idMessage, int idComment)
+    {
+        _context = context;
+        _idMessage = idMessage;
+        _idTimeline = idTimeline;
+        _idComment = idComment;
+        _isComment = true;
     }
 
     @Override
@@ -47,8 +60,13 @@ public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, St
             return;
         }
         Toast.makeText(_context.getContext(), "Archive message complete", Toast.LENGTH_SHORT).show();
-        APIRequestGetListMessageTimeline apiGet = new APIRequestGetListMessageTimeline(_context, _idTimeline);
-        apiGet.execute();
+        if (_isComment) {
+            APIRequestGetMessageComment apiGet = new APIRequestGetMessageComment(_context, _idTimeline, _idMessage);
+            apiGet.execute();
+        } else {
+            APIRequestGetListMessageTimeline apiGet = new APIRequestGetListMessageTimeline(_context, _idTimeline);
+            apiGet.execute();
+        }
     }
 
     @Override
@@ -58,7 +76,13 @@ public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, St
 
         try {
             String token = SessionAdapter.getInstance().getToken();
-            APIConnectAdapter.getInstance().startConnection("timeline/archivemessage/" + token + "/" + _idTimeline + "/" + String.valueOf(_idMessage), "V0.2");
+            String archive;
+            if (_isComment){
+                archive = String.valueOf(_idComment);
+            } else {
+                archive = String.valueOf(_idMessage);
+            }
+            APIConnectAdapter.getInstance().startConnection("timeline/archivemessage/" + token + "/" + _idTimeline + "/" + archive, "V0.2");
             APIConnectAdapter.getInstance().setRequestConnection("DELETE");
 
             _APIRespond = APIConnectAdapter.getInstance().getResponseCode();

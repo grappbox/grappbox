@@ -33,7 +33,7 @@ import java.util.Vector;
 /**
  * Created by tan_f on 17/02/2016.
  */
-public class TimelineListFragment extends Fragment {
+public class TimelineListFragment extends TimelineMessage {
 
     private int _idTimeline = -1;
     private View _rootView;
@@ -115,14 +115,15 @@ public class TimelineListFragment extends Fragment {
             } catch (ParseException p) {
                 Log.e("Date parse", "Parsing error");
             }
-            map.put("timelie_message_title", item.get("title").toString());
-            map.put("timelie_message_description", item.get("message").toString());
+            map.put("timeline_message_title", item.get("title").toString());
+            map.put("timeline_message_description", item.get("message").toString());
+            map.put("timeline_message_user", item.get("creator").toString());
             listTimelineMessage.add(map);
         }
 
         SimpleAdapter messageAdapter = new SimpleAdapter(_rootView.getContext(), listTimelineMessage, R.layout.item_timeline_message,
-                new String[] {"timelie_message_title", "timelie_message_description", "timeline_edit_date", "timeline_edit_hour"},
-                new int[] {R.id.timelie_message_title, R.id.timelie_message_description, R.id.timeline_edit_date, R.id.timeline_edit_hour});
+                new String[] {"timeline_message_title", "timeline_message_description", "timeline_edit_date", "timeline_edit_hour", "timeline_message_user"},
+                new int[] {R.id.timelie_message_title, R.id.timelie_message_description, R.id.timeline_edit_date, R.id.timeline_edit_hour, R.id.timeline_message_user});
         message.setAdapter(messageAdapter);
         message.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

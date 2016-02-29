@@ -20,11 +20,11 @@ import java.util.Vector;
  */
 public class APIRequestGetListMessageTimeline extends AsyncTask<String, Void, String> {
 
-    private TimelineListFragment _context;
+    private TimelineMessage _context;
     private int _idTimeline;
     private Integer _APIRespond;
 
-    APIRequestGetListMessageTimeline(TimelineListFragment context, int idTimeline)
+    APIRequestGetListMessageTimeline(TimelineMessage context, int idTimeline)
     {
         _context = context;
         _idTimeline = idTimeline;
