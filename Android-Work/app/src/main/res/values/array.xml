@@ -55,4 +55,12 @@
         <item>Open</item>
         <item>Closed</item>
     </string-array>
+    <string-array name="bugtracker_comment_choice_universal">
+        <item>action_edit</item>
+        <item>action_delete</item>
+    </string-array>
+    <string-array name="bugtracker_comment_choice">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
 </resources>

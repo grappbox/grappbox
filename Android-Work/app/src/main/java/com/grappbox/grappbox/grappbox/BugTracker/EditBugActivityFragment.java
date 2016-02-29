@@ -87,7 +87,7 @@ public class EditBugActivityFragment extends Fragment {
 
                     task.execute(_bug.GetId(), title.getText().toString(), description.getText().toString());
                     Button btn_close;
-                    btn_close = (Button) v.findViewById(R.id.btn_close);
+                    btn_close = (Button) v.findViewById(R.id.btn_save);
                     if (_bug.IsClosed()) {
                         btn_close.setText("Re Open Ticket");
                         btn_close.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorGrappboxGreen));
