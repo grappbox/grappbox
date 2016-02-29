@@ -130,6 +130,11 @@ class User implements UserInterface
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tasks;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $ressources;
 
     /**
      * Constructor
@@ -927,5 +932,39 @@ class User implements UserInterface
     public function getColors()
     {
         return $this->colors;
+    }
+
+
+    /**
+     * Add ressources
+     *
+     * @param \GrappboxBundle\Entity\Ressources $ressources
+     * @return User
+     */
+    public function addRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources[] = $ressources;
+
+        return $this;
+    }
+
+    /**
+     * Remove ressources
+     *
+     * @param \GrappboxBundle\Entity\Ressources $ressources
+     */
+    public function removeRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources->removeElement($ressources);
+    }
+
+    /**
+     * Get ressources
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRessources()
+    {
+        return $this->ressources;
     }
 }

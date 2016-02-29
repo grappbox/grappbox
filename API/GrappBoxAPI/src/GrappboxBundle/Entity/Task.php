@@ -68,6 +68,21 @@ class Task
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tags;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $ressources;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $dependence;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $task_depended;
 
     /**
      * Constructor
@@ -373,5 +388,107 @@ class Task
     public function getTags()
     {
         return $this->tags;
+    }
+
+
+    /**
+     * Add ressources
+     *
+     * @param \GrappboxBundle\Entity\Ressources $ressources
+     * @return Task
+     */
+    public function addRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources[] = $ressources;
+
+        return $this;
+    }
+
+    /**
+     * Remove ressources
+     *
+     * @param \GrappboxBundle\Entity\Ressources $ressources
+     */
+    public function removeRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources->removeElement($ressources);
+    }
+
+    /**
+     * Get ressources
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRessources()
+    {
+        return $this->ressources;
+    }
+
+
+    /**
+     * Add dependence
+     *
+     * @param \GrappboxBundle\Entity\Dependencies $dependence
+     * @return Task
+     */
+    public function addDependence(\GrappboxBundle\Entity\Dependencies $dependence)
+    {
+        $this->dependence[] = $dependence;
+
+        return $this;
+    }
+
+    /**
+     * Remove dependence
+     *
+     * @param \GrappboxBundle\Entity\Dependencies $dependence
+     */
+    public function removeDependence(\GrappboxBundle\Entity\Dependencies $dependence)
+    {
+        $this->dependence->removeElement($dependence);
+    }
+
+    /**
+     * Get dependence
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDependence()
+    {
+        return $this->dependence;
+    }
+
+
+    /**
+     * Add task_depended
+     *
+     * @param \GrappboxBundle\Entity\Dependencies $taskDepended
+     * @return Task
+     */
+    public function addTaskDepended(\GrappboxBundle\Entity\Dependencies $taskDepended)
+    {
+        $this->task_depended[] = $taskDepended;
+
+        return $this;
+    }
+
+    /**
+     * Remove task_depended
+     *
+     * @param \GrappboxBundle\Entity\Dependencies $taskDepended
+     */
+    public function removeTaskDepended(\GrappboxBundle\Entity\Dependencies $taskDepended)
+    {
+        $this->task_depended->removeElement($taskDepended);
+    }
+
+    /**
+     * Get task_depended
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTaskDepended()
+    {
+        return $this->task_depended;
     }
 }

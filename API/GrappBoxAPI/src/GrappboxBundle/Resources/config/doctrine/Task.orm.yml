@@ -69,4 +69,17 @@ GrappboxBundle\Entity\Task:
             inverseJoinColumns:
               tag_id:
                 referencedColumnName: id
+    oneToMany:
+        ressources:
+          targetEntity: Ressources
+          mappedBy: task
+          cascade: [remove]
+        dependence:
+          targetEntity: Dependencies
+          mappedBy: task
+          cascade: [remove, refresh ]
+        task_depended:
+          targetEntity: Dependencies
+          mappedBy: dependence
+          cascade: [remove, refresh ]
     lifecycleCallbacks: {  }

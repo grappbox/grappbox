@@ -101,4 +101,7 @@ GrappboxBundle\Entity\User:
           targetEntity: Color
           mappedBy: user
           cascade: [remove]
+        ressources:
+          targetEntity: Ressources
+          mappedBy: user
     lifecycleCallbacks: {  }
