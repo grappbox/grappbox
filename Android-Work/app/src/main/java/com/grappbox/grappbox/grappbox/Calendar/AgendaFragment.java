@@ -147,7 +147,7 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
             List<ContentValues> listResult = null;
 
             try {
-                String token = SessionAdapter.getInstance().getToken();
+                String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
                 Log.v("Token :", token);
                 APIConnectAdapter.getInstance().startConnection("planning/getmonth/" + token + "/" + param[0], "V0.2");
                 APIConnectAdapter.getInstance().setRequestConnection("GET");

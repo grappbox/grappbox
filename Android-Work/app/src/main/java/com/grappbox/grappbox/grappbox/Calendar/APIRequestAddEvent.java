@@ -52,7 +52,7 @@ public class APIRequestAddEvent extends AsyncTask<String, Void, String> {
 
             JSONObject JSONParam = new JSONObject();
             JSONObject JSONData = new JSONObject();
-            JSONParam.put("token", SessionAdapter.getInstance().getToken());
+            JSONParam.put("token", SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
             if (!param[0].equals("-1")) {
                 JSONParam.put("projectId", Integer.parseInt(param[0]));
             }

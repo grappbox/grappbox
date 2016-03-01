@@ -77,7 +77,7 @@ public class APIRequestGetEventData  extends AsyncTask<String, Void, String> {
         Integer APIResponse;
 
         try {
-            String token = SessionAdapter.getInstance().getToken();
+            String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
             APIConnectAdapter.getInstance().startConnection("event/getevent/" + token + "/" + String.valueOf(_idEvent), "V0.2");
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 

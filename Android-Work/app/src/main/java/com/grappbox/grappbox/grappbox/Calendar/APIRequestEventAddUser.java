@@ -58,7 +58,7 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
         Integer APISendRespond;
 
         try {
-            String token = SessionAdapter.getInstance().getToken();
+            String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
             APIConnectAdapter.getInstance().startConnection("user/getidbyemail/" + token + "/" + param[0], "V0.2");
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
@@ -76,7 +76,7 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
                 JSONArray ArrayToAdd = new JSONArray();
                 JSONArray ArrayToRemove = new JSONArray();
 
-                JSONParam.put("token", SessionAdapter.getInstance().getToken());
+                JSONParam.put("token", SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
                 JSONParam.put("eventId", _idEvent);
                 ArrayToAdd.put(_idUser);
                 JSONParam.put("toAdd", ArrayToAdd);

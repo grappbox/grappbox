@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity
 
         View headerView = navigationView.getHeaderView(0);
         TextView text = (TextView)headerView.findViewById(R.id.nav_head_name_user);
-        String name = SessionAdapter.getInstance().getFisrname() + " " + SessionAdapter.getInstance().getLastname();
+        String name = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN) + " " + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
 
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -313,6 +313,7 @@ public class MainActivity extends AppCompatActivity
     public void logoutUser()
     {
         super.onBackPressed();
+        SessionAdapter.getInstance().LogoutUser();
     }
 
     private void changeToolbarTitle(String title)
@@ -334,7 +335,7 @@ public class MainActivity extends AppCompatActivity
             String resultAPI;
 
             try {
-                APIConnectAdapter.getInstance().startConnection("accountadministration/logout/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().startConnection("accountadministration/logout/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
 
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();

@@ -36,7 +36,7 @@ class APIRequestTeamOccupation extends AsyncTask<String, Void, List<ContentValue
         List<ContentValues> listResult = null;
 
         try {
-            APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getToken());
+            APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
             resultAPI = APIConnectAdapter.getInstance().getInputSream();

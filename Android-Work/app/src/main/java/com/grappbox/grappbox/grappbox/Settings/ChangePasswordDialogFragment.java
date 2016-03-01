@@ -31,12 +31,12 @@ public class ChangePasswordDialogFragment extends DialogFragment {
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setMessage(R.string.change_password_title).setPositiveButton(R.string.change_password_validate, new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.change_password_title).setPositiveButton(R.string.confirm_response, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
             }
-        }).setNegativeButton(R.string.change_password_return, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

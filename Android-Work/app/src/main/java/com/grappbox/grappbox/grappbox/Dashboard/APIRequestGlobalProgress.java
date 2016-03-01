@@ -38,7 +38,7 @@ public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<Conte
         String resultAPI;
 
         try {
-            APIConnectAdapter.getInstance().startConnection(_PATH + SessionAdapter.getInstance().getToken());
+            APIConnectAdapter.getInstance().startConnection(_PATH + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
             resultAPI = APIConnectAdapter.getInstance().getInputSream();

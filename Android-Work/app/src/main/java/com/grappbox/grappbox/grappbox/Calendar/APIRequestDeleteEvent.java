@@ -53,7 +53,7 @@ public class APIRequestDeleteEvent extends AsyncTask<String, Void, String> {
         Integer APIResponse;
 
         try {
-            String token = SessionAdapter.getInstance().getToken();
+            String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
             APIConnectAdapter.getInstance().startConnection("event/delevent/" + token + "/" + _idEvent, "V0.2");
             APIConnectAdapter.getInstance().setRequestConnection("DELETE");
 

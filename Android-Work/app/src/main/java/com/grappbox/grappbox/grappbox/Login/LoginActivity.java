@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -23,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
         _login = (EditText) findViewById(R.id.loginInput);
         _passw = (EditText) findViewById(R.id.passwInput);
 
+        SessionAdapter.initializeInstance(this.getApplicationContext());
         APIRequestLogin api = new APIRequestLogin(this);
         api.execute(_login.getText().toString(), _passw.getText().toString());
     }

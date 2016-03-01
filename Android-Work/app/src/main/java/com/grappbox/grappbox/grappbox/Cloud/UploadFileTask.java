@@ -197,7 +197,7 @@ public class UploadFileTask {
             APIConnectAdapter api = APIConnectAdapter.getInstance();
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
-            String token = SessionAdapter.getInstance().getToken();
+            String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
             String safeURL;
             String cloudPath = params[0];
             String filePassword = params[1];
@@ -263,7 +263,7 @@ public class UploadFileTask {
             _closeAPI = api;
             api.setVersion("V0.2");
             try {
-                api.startConnection("cloud/stream/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(SessionAdapter.getInstance().getCurrentSelectedProject()) + "/" + String.valueOf(_streamId));
+                api.startConnection("cloud/stream/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN) + "/" + String.valueOf(SessionAdapter.getInstance().getCurrentSelectedProject()) + "/" + String.valueOf(_streamId));
                 api.setRequestConnection("DELETE");
                 return api.getInputSream();
             } catch (IOException e) {
@@ -327,7 +327,7 @@ public class UploadFileTask {
                     APIConnectAdapter api = APIConnectAdapter.getInstance(true);
                     _uploadAPI.put(_id, api);
                     try {
-                        data.put("token", SessionAdapter.getInstance().getToken());
+                        data.put("token", SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
                         data.put("stream_id", _streamId);
                         data.put("project_id", _projectId);
                         data.put("chunk_numbers", _chunkNumbers);

@@ -47,6 +47,7 @@ class APIRequestLogin extends AsyncTask<String, Void, String> {
             }
             userInformation.put("login", _login);
             userInformation.put("password", _password);
+
             SessionAdapter.getInstance().LogInUser(userInformation.get("id").toString(),
                     userInformation.get("firstname").toString(),
                     userInformation.get("lastname").toString(),
