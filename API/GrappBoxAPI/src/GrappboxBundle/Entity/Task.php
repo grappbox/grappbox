@@ -50,25 +50,10 @@ class Task
     private $deletedAt;
 
     /**
-     * @var \GrappboxBundle\Entity\Project
+     * @var boolean
      */
-    private $projects;
+    private $isMilestone;
 
-    /**
-     * @var \GrappboxBundle\Entity\User
-     */
-    private $creator_user;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $users;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $tags;
-    
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -85,12 +70,35 @@ class Task
     private $task_depended;
 
     /**
+     * @var \GrappboxBundle\Entity\Project
+     */
+    private $projects;
+
+    /**
+     * @var \GrappboxBundle\Entity\User
+     */
+    private $creator_user;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tags;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $contains;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->dependence = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->task_depended = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contains = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function objectToArray()
@@ -110,7 +118,7 @@ class Task
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -133,7 +141,7 @@ class Task
     /**
      * Get title
      *
-     * @return string
+     * @return string 
      */
     public function getTitle()
     {
@@ -156,7 +164,7 @@ class Task
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -179,7 +187,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDueDate()
     {
@@ -202,7 +210,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getStartedAt()
     {
@@ -225,7 +233,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getFinishedAt()
     {
@@ -248,7 +256,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -271,7 +279,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
@@ -279,117 +287,27 @@ class Task
     }
 
     /**
-     * Set projects
+     * Set isMilestone
      *
-     * @param \GrappboxBundle\Entity\Project $projects
+     * @param boolean $isMilestone
      * @return Task
      */
-    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
+    public function setIsMilestone($isMilestone)
     {
-        $this->projects = $projects;
+        $this->isMilestone = $isMilestone;
 
         return $this;
     }
 
     /**
-     * Get projects
+     * Get isMilestone
      *
-     * @return \GrappboxBundle\Entity\Project
+     * @return boolean 
      */
-    public function getProjects()
+    public function getIsMilestone()
     {
-        return $this->projects;
+        return $this->isMilestone;
     }
-
-    /**
-     * Set creator_user
-     *
-     * @param \GrappboxBundle\Entity\User $creatorUser
-     * @return Task
-     */
-    public function setCreatorUser(\GrappboxBundle\Entity\User $creatorUser = null)
-    {
-        $this->creator_user = $creatorUser;
-
-        return $this;
-    }
-
-    /**
-     * Get creator_user
-     *
-     * @return \GrappboxBundle\Entity\User
-     */
-    public function getCreatorUser()
-    {
-        return $this->creator_user;
-    }
-
-    /**
-     * Add users
-     *
-     * @param \GrappboxBundle\Entity\User $users
-     * @return Task
-     */
-    public function addUser(\GrappboxBundle\Entity\User $users)
-    {
-        $this->users[] = $users;
-
-        return $this;
-    }
-
-    /**
-     * Remove users
-     *
-     * @param \GrappboxBundle\Entity\User $users
-     */
-    public function removeUser(\GrappboxBundle\Entity\User $users)
-    {
-        $this->users->removeElement($users);
-    }
-
-    /**
-     * Get users
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
-
-    /**
-     * Add tags
-     *
-     * @param \GrappboxBundle\Entity\Tag $tags
-     * @return Task
-     */
-    public function addTag(\GrappboxBundle\Entity\Tag $tags)
-    {
-        $this->tags[] = $tags;
-
-        return $this;
-    }
-
-    /**
-     * Remove tags
-     *
-     * @param \GrappboxBundle\Entity\Tag $tags
-     */
-    public function removeTag(\GrappboxBundle\Entity\Tag $tags)
-    {
-        $this->tags->removeElement($tags);
-    }
-
-    /**
-     * Get tags
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
 
     /**
      * Add ressources
@@ -424,7 +342,6 @@ class Task
         return $this->ressources;
     }
 
-
     /**
      * Add dependence
      *
@@ -458,7 +375,6 @@ class Task
         return $this->dependence;
     }
 
-
     /**
      * Add task_depended
      *
@@ -490,5 +406,117 @@ class Task
     public function getTaskDepended()
     {
         return $this->task_depended;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param \GrappboxBundle\Entity\Project $projects
+     * @return Task
+     */
+    public function setProjects(\GrappboxBundle\Entity\Project $projects = null)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \GrappboxBundle\Entity\Project 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Set creator_user
+     *
+     * @param \GrappboxBundle\Entity\User $creatorUser
+     * @return Task
+     */
+    public function setCreatorUser(\GrappboxBundle\Entity\User $creatorUser = null)
+    {
+        $this->creator_user = $creatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_user
+     *
+     * @return \GrappboxBundle\Entity\User 
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
+    }
+
+    /**
+     * Add tags
+     *
+     * @param \GrappboxBundle\Entity\Tag $tags
+     * @return Task
+     */
+    public function addTag(\GrappboxBundle\Entity\Tag $tags)
+    {
+        $this->tags[] = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param \GrappboxBundle\Entity\Tag $tags
+     */
+    public function removeTag(\GrappboxBundle\Entity\Tag $tags)
+    {
+        $this->tags->removeElement($tags);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * Add contains
+     *
+     * @param \GrappboxBundle\Entity\Contains $contains
+     * @return Task
+     */
+    public function addContain(\GrappboxBundle\Entity\Contains $contains)
+    {
+        $this->contains[] = $contains;
+
+        return $this;
+    }
+
+    /**
+     * Remove contains
+     *
+     * @param \GrappboxBundle\Entity\Contains $contains
+     */
+    public function removeContain(\GrappboxBundle\Entity\Contains $contains)
+    {
+        $this->contains->removeElement($contains);
+    }
+
+    /**
+     * Get contains
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getContains()
+    {
+        return $this->contains;
     }
 }

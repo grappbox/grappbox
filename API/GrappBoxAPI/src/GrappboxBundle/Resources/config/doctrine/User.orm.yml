@@ -64,9 +64,6 @@ GrappboxBundle\Entity\User:
         events:
           targetEntity: Event
           mappedBy: users
-        tasks:
-          targetEntity: Task
-          mappedBy: users
     oneToMany:
         bug_creator:
           targetEntity: Bug

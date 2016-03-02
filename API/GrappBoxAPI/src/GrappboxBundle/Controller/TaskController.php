@@ -11,6 +11,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use GrappboxBundle\Entity\Task;
 use GrappboxBundle\Entity\Tag;
 use GrappboxBundle\Entity\Dependencies;
+use GrappboxBundle\Entity\Ressources;
+use GrappboxBundle\Entity\Contains;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -70,6 +72,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} title Title of the task
 	* @apiParam {String} description Description of the task
 	* @apiParam {Datetime} due_date Due date of the task
+	* @apiParam {Boolean} is_milestone If true, set the task to a milestone
 	* @apiParam {Object[]} [dependencies] Array of infos on the dependencies
 	* @apiParam {String} dependencies.name name of the dependence, it should be: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
 	* @apiParam {Number} dependencies.id Id of the task the new task dependes on
@@ -89,6 +92,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			},
+	*			"is_milstone": false,
 	*			"dependencies":
 	*			[
 	*				{
@@ -112,6 +116,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			}
+	*		}
 	*	}
 	*
 	* @apiParamExample {json} Request-Minimum-Example:
@@ -126,7 +131,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"date":"2015-10-16 19:00:00",
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
-	*			}
+	*			},
+	*			"is_milestone": true
+	*		}
 	*	}
 	*
 	* @apiParamExample {json} Request-Partial-Example:
@@ -142,22 +149,24 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			},
+	*			"is_milestone": false,
 	*			"started_at":
 	*			{
 	*				"date":"2015-10-15 10:00:00",
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			}
+	*		}
 	*	}
 	*
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
 	* @apiSuccess {Datetime} due_date Due date of the task
+	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} started_at Date of start of the task
 	* @apiSuccess {Datetime} finished_at Date of finish of the task
 	* @apiSuccess {Datetime} created_at Date of creation of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
 	* @apiSuccess {Object[]} creator Creator informations
 	* @apiSuccess {Number} creator.id Id of the creator
 	* @apiSuccess {String} creator.firstname Frist name of the creator
@@ -169,17 +178,17 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
-	* @apiSuccess {Object[]} [dependencies] Array of infos on the dependencies
+	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
 	* @apiSuccess {Number} dependencies.id Id of the task the task dependes on
 	* @apiSuccess {String} dependencies.title Title of the task the task dependes on
 	*
 	* @apiSuccessExample Success-Full-Data-Response
-	*	HTTP/1.1 200 OK
+	*	HTTP/1.1 201 Create
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskupdate - Complete Success"
+	*			"return_message": "Task - taskcreation - Complete Success"
 	*		},
 	*		"data":
 	*		{
@@ -192,6 +201,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			},
+	*			"is_milestone": false,
 	*			"started_at":
 	*			{
 	*				"date":"2015-10-10 11:00:00",
@@ -234,11 +244,11 @@ class TaskController extends RolesAndTokenVerificationController
 	*	}
 	*
 	* @apiSuccessExample Success-Partial-Data-Response
-	*	HTTP/1.1 200 OK
+	*	HTTP/1.1 201 Create
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskupdate - Complete Success"
+	*			"return_message": "Task - taskcreation - Complete Success"
 	*		},
 	*		"data":
 	*		{
@@ -250,7 +260,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"date":"2015-10-15 11:00:00",
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
-	*			}
+	*			},
+	*			"is_milestone": true,
 	*			"started_at": null,
 	*			"finished_at": null,
 	*			"created_at":
@@ -318,7 +329,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if ($content === null || (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('title', $content)
-			|| !array_key_exists('description', $content) || !array_key_exists('due_date', $content)))
+			|| !array_key_exists('description', $content) || !array_key_exists('due_date', $content) || !array_key_exists('is_milestone', $content)))
 			return $this->setBadRequest("12.1.6", "Task", "taskcreation", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -400,6 +411,13 @@ class TaskController extends RolesAndTokenVerificationController
 			$this->checkDependencies($task);
 		}
 
+		if ($content->is_milestone == true)
+		{
+			$task->setIsMilestone($content->is_milestone);
+			$task->setStartedAt(null);
+			$task->setFinishedAt(null);
+		}
+
 		$em->flush();
 		$id = $task->getId();
 		$title = $task->getTitle();
@@ -431,8 +449,8 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 		}
 		
-		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt,
-			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
+		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),
+			"started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
 	}
 
 	/**
@@ -519,10 +537,10 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
 	* @apiSuccess {Datetime} due_date Due date of the task
+	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} started_at Date of start of the task
 	* @apiSuccess {Datetime} finished_at Date of finish of the task
 	* @apiSuccess {Datetime} created_at Date of creation of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
 	* @apiSuccess {Object[]} creator Creator informations
 	* @apiSuccess {Number} creator.id Id of the creator
 	* @apiSuccess {String} creator.firstname Frist name of the creator
@@ -531,6 +549,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} users_assigned.id Id of the user assigned
 	* @apiSuccess {String} users_assigned.firstname Frist name of the user assigned
 	* @apiSuccess {String} users_assigned.lastname Last name of the user assigned
+	* @apiSuccess {String} users_assigned.percent Percent of charge of the user assigned
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
@@ -557,6 +576,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			},
+	*			"is_milestone": false,
 	*			"started_at":
 	*			{
 	*				"date":"2015-10-10 11:00:00",
@@ -584,7 +604,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*				{
 	*					"id": 1,
 	*					"firstname": "john",
-	*					"lastname": "doe"
+	*					"lastname": "doe",
+	*					"percent": 150
 	*				},
 	*				{
 	*					"id": 3,
@@ -632,6 +653,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			},
+	*			"is_milestone": true,
 	*			"started_at": null,
 	*			"finished_at": null,
 	*			"created_at":
@@ -687,7 +709,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "12.1.4",
+	*			"return_code": "12.2.4",
 	*			"return_message": "Task - taskcreation - Bad Parameter: dependencies"
 	*		}
 	*	}
@@ -813,7 +835,7 @@ class TaskController extends RolesAndTokenVerificationController
 						$cnt++;
 				}
 				if ($cnt > 1)
-					return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: dependencies");
+					return $this->setBadRequest("12.2.4", "Task", "taskcreation", "Bad Parameter: dependencies");
 			}
 			foreach ($content->dependencies as $dep) {
 				$dependence = $em->getRepository('GrappboxBundle:Task')->find($dep->id);
@@ -831,6 +853,12 @@ class TaskController extends RolesAndTokenVerificationController
 			$this->checkDependencies($task);
 		}
 
+		if ($task->getIsMilestone() == true)
+		{
+			$task->setStartedAt(null);
+			$task->setFinishedAt(null);
+		}
+
 		$em->flush();
 
 		$id = $task->getId();
@@ -842,7 +870,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$createdAt = $task->getCreatedAt();
 		$deletedAt = $task->getDeletedAt();
 		$creator = $task->getCreatorUser();
-		$users = $task->getUsers();
+		$users = $task->getRessources();
 		$tags = $task->getTags();
 		$dependencies = $task->getDependence();
 
@@ -854,12 +882,14 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$userArray = array();
 
-		foreach ($users as $u) {
+		foreach ($users as $res) {
+			$percent = $res->getResource();
+			$u = $res->getUser();
 			$uid = $u->getId();
 			$firstname = $u->getFirstname();
 			$lastname = $u->getLastname();
 
-			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname);
+			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
 			if ($uid != $creator_id)
 				$userNotif[] = $uid;
 		}
@@ -897,7 +927,7 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 
 		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success",
-			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt,
+			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
 			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
 	}
 
@@ -915,10 +945,10 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
 	* @apiSuccess {Datetime} due_date Due date of the task
+	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} started_at Date of start of the task
 	* @apiSuccess {Datetime} finished_at Date of finish of the task
 	* @apiSuccess {Datetime} created_at Date of creation of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
 	* @apiSuccess {Object[]} creator Creator informations
 	* @apiSuccess {Number} creator.id Id of the creator
 	* @apiSuccess {String} creator.firstname Frist name of the creator
@@ -927,6 +957,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} users_assigned.id Id of the user assigned
 	* @apiSuccess {String} users_assigned.firstname Frist name of the user assigned
 	* @apiSuccess {String} users_assigned.lastname Last name of the user assigned
+	* @apiSuccess {String} users_assigned.percent Percent of charge of the user assigned
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
@@ -940,7 +971,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskupdate - Complete Success"
+	*			"return_message": "Task - taskinformations - Complete Success"
 	*		},
 	*		"data":
 	*		{
@@ -953,6 +984,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			},
+	*			"is_milestone": false,
 	*			"started_at":
 	*			{
 	*				"date":"2015-10-10 11:00:00",
@@ -981,11 +1013,13 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"id": 1,
 	*					"firstname": "john",
 	*					"lastname": "doe"
+	*					"percent": 150
 	*				},
 	*				{
 	*					"id": 3,
 	*					"firstname": "jane",
 	*					"lastname": "doe"
+	*					"percent": 50
 	*				}
 	*			],
 	*			"tags": [
@@ -1015,7 +1049,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
-	*			"return_message": "Task - taskupdate - Complete Success"
+	*			"return_message": "Task - taskinformations - Complete Success"
 	*		},
 	*		"data":
 	*		{
@@ -1028,6 +1062,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"timezone_type":3,
 	*				"timezone":"Europe\/Paris"
 	*			},
+	*			"is_milestone": true,
 	*			"started_at": null,
 	*			"finished_at": null,
 	*			"created_at":
@@ -1096,7 +1131,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$createdAt = $task->getCreatedAt();
 		$deletedAt = $task->getDeletedAt();
 		$creator = $task->getCreatorUser();
-		$users = $task->getUsers();
+		$users = $task->getRessources();
 		$tags = $task->getTags();
 		$dependencies = $task->getDependence();
 
@@ -1106,12 +1141,16 @@ class TaskController extends RolesAndTokenVerificationController
 		$creatorInfos = array("id" => $creator_id, "first_name" => $creator_firstname, "last_name" => $creator_lastname);
 
 		$userArray = array();
-		foreach ($users as $u) {
+		foreach ($users as $res) {
+			$percent = $res->getResource();
+			$u = $res->getUser();
 			$uid = $u->getId();
 			$firstname = $u->getFirstname();
 			$lastname = $u->getLastname();
 
-			$userArray[] = array("id" => $uid, "first_name" => $firstname, "last_name" => $lastname);
+			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
+			if ($uid != $creator_id)
+				$userNotif[] = $uid;
 		}
 
 		$tagArray = array();
@@ -1132,7 +1171,7 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 
 		return $this->setSuccess("1.12.1", "Task", "taskinformations", "Complete Success",
-			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt,
+			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
 			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
 	}
 
@@ -1308,13 +1347,15 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
 	* @apiParam {Number} userId Id of the user
+	* @apiParam {Number} percent Percent of charge of the user
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
 	*		"data": {
 	*			"token": "nfeq34efbfkqf54",
 	*			"taskId": 2,
-	*			"userId": 18
+	*			"userId": 18,
+	*			"percent": 100
 	*		}
 	* 	}
 	*
@@ -1323,6 +1364,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} user.id Id of the user
 	* @apiSuccess {String} user.firstname Firstname of the user
 	* @apiSuccess {String} user.lastname Lastname of the user
+	* @apiSuccess {Number} percent Percent of charge of the user
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -1338,6 +1380,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"id": 18
 	*				"firstname": "john",
 	*				"lastname": "doe",
+	*				"percent": 100
 	*			}
 	*		}
 	*	}
@@ -1374,6 +1417,14 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"return_message": "Task - assignusertotask - Bad Parameter: taskId"
 	*		}
 	*	}
+	* @apiErrorExample Bad Parameter: You can't add someone on a milestone
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "12.6.4",
+	*			"return_message": "Task - assignusertotask - Bad Parameter: You can't add someone on a milestone"
+	*		}
+	*	}
 	* @apiErrorExample Bad Parameter: userId
 	*	HTTP/1.1 400 Bad Request
 	*	{
@@ -1397,7 +1448,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('userId', $content) || !array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
+		if ($content === null || (!array_key_exists('percent', $content) || !array_key_exists('userId', $content) || !array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
 			return $this->setBadRequest("12.6.6", "Task", "assignusertotask", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -1406,26 +1457,33 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 		$task = $em->getRepository('GrappboxBundle:Task')->find($content->taskId);
-
 		if ($task === null)
 			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: taskId");
+
+		if ($task->getIsMilestone() == true)
+			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: You can't add someone on a milestone");			
 
 		$projectId = $task->getProjects()->getId();
 		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.6.9", "Task", "assignusertotask"));
 
 		$userToAdd = $em->getRepository('GrappboxBundle:User')->find($content->userId);
-
 		if ($userToAdd === null)
 			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: userId");
 
-		$users = $task->getUsers();
-		foreach ($users as $user) {
+		$users = $task->getRessources();
+		foreach ($users as $res) {
+			$user = $res->getUser();
 			if ($user === $userToAdd)
 				return $this->setBadRequest("12.6.7", "Task", "assignusertotask", "Already In Database");
 		}
 
-		$task->addUser($userToAdd);
+		$resource = new Ressources();
+		$resource->setResource($content->percent);
+		$resource->setTask($task);
+		$resource->setUser($userToAdd);
+
+		$em->persist($resource);		
 		$em->flush();
 
 		// Notifications
@@ -1443,7 +1501,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.12.1", "Task", "assignusertotask", "Complete Success",
-			array("id" => $task->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname())));
+			array("id" => $task->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "percent" => $resource->getResource())));
 	}
 
 	/**
@@ -1520,19 +1578,21 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($userToRemove === null)
 			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: userId");
 
-		$users = $task->getUsers();
+		$resources = $task->getRessources();
 		$isAssign = false;
-		foreach ($users as $user) {
-			if ($user === $userToRemove)
+		$resToRemove;
+		foreach ($resources as $res) {
+			if ($res->getUser() === $userToRemove)
 			{
 				$isAssign = true;
+				$resToRemove = $res;
 			}
 		}
 
 		if ($isAssign === false)
 			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: userId");
 
-		$task->removeUser($userToRemove);
+		$em->remove($resToRemove);
 		$em->flush();
 
 		// Notifications
@@ -2121,10 +2181,10 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} array.title Title of the task
 	* @apiSuccess {String} array.description Description of the task
 	* @apiSuccess {Datetime} array.due_date Due date of the task
+	* @apiSuccess {Boolean} array.is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} array.started_at Date of start of the task
 	* @apiSuccess {Datetime} array.finished_at Date of finish of the task
 	* @apiSuccess {Datetime} array.created_at Date of creation of the task
-	* @apiSuccess {Datetime} array.started_at Date of start of the task
 	* @apiSuccess {Object[]} array.creator Creator informations
 	* @apiSuccess {Number} array.creator.id Id of the creator
 	* @apiSuccess {String} array.creator.first_name Frist name of the creator
@@ -2133,6 +2193,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} array.users_assigned.id Id of the user assigned
 	* @apiSuccess {String} array.users_assigned.first_name Frist name of the user assigned
 	* @apiSuccess {String} array.users_assigned.last_name Last name of the user assigned
+	* @apiSuccess {String} array.users_assigned.percent Percent of charge of the user assigned
 	* @apiSuccess {Object[]} array.tags Array of tags assigned to the task
 	* @apiSuccess {Number} array.tags.id Id of the tag
 	* @apiSuccess {String} array.tags.name Name of the tag
@@ -2161,6 +2222,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*						"timezone_type":3,
 	*						"timezone":"Europe\/Paris"
 	*					},
+	*					"is_milestone": false,
 	*					"started_at":
 	*					{
 	*						"date":"2015-10-10 11:00:00",
@@ -2189,11 +2251,13 @@ class TaskController extends RolesAndTokenVerificationController
 	*							"id": 1,
 	*							"firstname": "john",
 	*							"lastname": "doe"
+	*							"percent": 150
 	*						},
 	*						{
 	*							"id": 3,
 	*							"firstname": "jane",
 	*							"lastname": "doe"
+	*							"percent": 50
 	*						}
 	*					],
 	*					"tags": [
@@ -2288,7 +2352,7 @@ class TaskController extends RolesAndTokenVerificationController
 			$createdAt = $task->getCreatedAt();
 			$deletedAt = $task->getDeletedAt();
 			$creator = $task->getCreatorUser();
-			$users = $task->getUsers();
+			$users = $task->getRessources();
 			$tags = $task->getTags();
 			$dependencies = $task->getDependence();
 
@@ -2298,32 +2362,45 @@ class TaskController extends RolesAndTokenVerificationController
 			$creatorInfos = array("id" => $creator_id, "first_name" => $creator_firstname, "last_name" => $creator_lastname);
 
 			$userArray = array();
-			foreach ($users as $u) {
-				$uid = $u->getId();
-				$firstname = $u->getFirstname();
-				$lastname = $u->getLastname();
+			if ($users != null)
+			{
+				foreach ($users as $res) {
+					$percent = $res->getResource();
+					$u = $res->getUser();
+					$uid = $u->getId();
+					$firstname = $u->getFirstname();
+					$lastname = $u->getLastname();
 
-				$userArray[] = array("id" => $uid, "first_name" => $firstname, "last_name" => $lastname);
+					$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
+					if ($uid != $creator_id)
+						$userNotif[] = $uid;
+				}
 			}
 
 			$tagArray = array();
-			foreach ($tags as $t) {
-				$tid = $t->getId();
-				$name = $t->getName();
+			if ($tags != null)
+			{
+				foreach ($tags as $t) {
+					$tid = $t->getId();
+					$name = $t->getName();
 
-				$tagArray[] = array("id" => $tid, "name" => $name);
+					$tagArray[] = array("id" => $tid, "name" => $name);
+				}
 			}
 
 			$depArray = array();
-			foreach ($dependencies as $d) {
-				$dname = $d->getName();
-				$did = $d->getDependence()->getId();
-				$dtitle = $d->getDependence()->getTitle();
-	
-				$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
+			if ($dependencies != null)
+			{
+				foreach ($dependencies as $d) {
+					$dname = $d->getName();
+					$did = $d->getDependence()->getId();
+					$dtitle = $d->getDependence()->getTitle();
+
+					$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
+				}
 			}
 
-			$arr[] = array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt,
+			$arr[] = array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
 				"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray);
 		}
 
@@ -2445,5 +2522,729 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setNoDataSuccess("1.12.3", "Task", "getprojecttags");
 
 		return $this->setSuccess("1.12.1", "Task", "getprojecttags", "Complete Success", array("array" => $arr));
+	}
+
+	/**
+	* @api {post} /V0.2/tasks/postcontainer Create a container
+	* @apiName postContainer
+	* @apiGroup Task
+	* @apiDescription Create a container for the project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projecId Id of the project
+	* @apiParam {String} title Title of the container
+	* @apiParam {Number[]} tasks Array of task id you want to link the container with
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "1fez4c5ze31e5f14cze31fc",
+	*			"projectId": 2,
+	*			"title": "Sprint 1",
+	*			"tasks": [1, 3]
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the container
+	* @apiSuccess {String} title Title of the container
+	* @apiSuccess {Datetime} begin_date Date of the begining of the container
+	* @apiSuccess {Datetime} end_date Date of end of the container
+	* @apiSuccess {Object[]} tasks Task informations
+	* @apiSuccess {Number} tasks.id Id of the creator
+	* @apiSuccess {String} tasks.title Title of the task
+	*
+	* @apiSuccessExample Success-Full-Data-Response
+	*	HTTP/1.1 201 Create
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - postcontainer - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 2,
+	*			"title": "Sprint 1",
+	*			"begin_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"end_date":
+	*			{
+	*				"date":"2015-10-10 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"tasks":
+	*			[
+	*				{
+	*					"id": 1,
+	*					"title": "Add users to project"
+	*				},
+	*				{
+	*					"id": 3,
+	*					"title": "Add customers to project"
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-Partial-Data-Response
+	*	HTTP/1.1 201 Create
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - postcontainer - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 2,
+	*			"title": "Sprint 1",
+	*			"begin_date": null,
+	*			"end_date": null,
+	*			"tasks": [],
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "12.16.3",
+	*			"return_message": "Task - postcontainer - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "12.16.6",
+	*			"return_message": "Task - postcontainer - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "12.16.9",
+	*			"return_message": "Task - postcontainer - Insufficient Rights"
+	*		}
+	*	}
+	*/
+	public function postContainerAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+
+		if ($content === null || (!array_key_exists('title', $content) || !array_key_exists('tasks', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content)))
+			return $this->setBadRequest("12.16.6", "Task", "postcontainer", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("12.16.3", "Task", "postcontainer"));
+
+		if ($this->checkRoles($user, $content->projectId, "task") < 2)
+			return ($this->setNoRightsError("12.16.9", "Task", "postcontainer"));
+
+		$container = new Contains();
+		$container->setTitle($content->title);
+		$container->setProjectID($content->projectId);
+
+		$em = $this->getDoctrine()->getManager();
+		$arr = array();
+		foreach ($content->tasks as $key => $value) {
+			$task = $em->getRepository("GrappboxBundle:Task")->find($value);
+			if ($task instanceof Task && $task->getProjects()->getId() == $content->projectId)
+			{
+				$container->addTask($task);
+				$task->setContains($container);
+				
+				if ($container->getBeginDate() != null)
+				{
+					$date = $container->getBeginDate();
+					$diff = date_diff($date, $task->getStartedAt());
+					if ($diff->format('R') == '-')
+						$container->setBeginDate($task->getStartedAt());
+				}
+				else
+					$container->setBeginDate($task->getStartedAt());
+				if ($container->getEndDate() != null)
+				{
+					$date = $container->getEndDate();
+					$diff = date_diff($date, $task->getDueDate());
+					if ($diff->format('R') == '+')
+						$container->setEndDate($task->getDueDate());
+				}
+				else
+					$container->setEndDate($task->getDueDate());
+			}
+		}
+		
+		$em->persist($container);
+		$em->flush();
+
+		$tasksAdded = $container->getTasks();
+		foreach ($tasksAdded as $task) {
+			$arr[] = array("id" => $task->getId(), "title" => $task->getTitle());
+		}
+
+		return $this->setCreated("1.12.1", "Task", "postcontainer", "Complete Success", array("id" => $container->getId(), "title" => $container->getTitle(), "begin_date" => $container->getBeginDate(), "end_date" => $container->getEndDate(),
+			"tasks" => $arr));
+	}
+
+	/**
+	* @api {get} /V0.2/tasks/getcontainer/:token/:id Get a container informations
+	* @apiName getContainer
+	* @apiGroup Task
+	* @apiDescription Get the informations of the given container
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the container
+	*
+	* @apiSuccess {Number} id Id of the container
+	* @apiSuccess {String} title Title of the container
+	* @apiSuccess {Datetime} begin_date Date of the begining of the container
+	* @apiSuccess {Datetime} end_date Date of end of the container
+	* @apiSuccess {Object[]} tasks Task informations
+	* @apiSuccess {Number} tasks.id Id of the creator
+	* @apiSuccess {String} tasks.title Title of the task
+	*
+	* @apiSuccessExample Success-Full-Data-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - getcontainer - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 2,
+	*			"title": "Sprint 1",
+	*			"begin_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"end_date":
+	*			{
+	*				"date":"2015-10-10 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"tasks":
+	*			[
+	*				{
+	*					"id": 1,
+	*					"title": "Add users to project"
+	*				},
+	*				{
+	*					"id": 3,
+	*					"title": "Add customers to project"
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-Partial-Data-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - getcontainer - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 2,
+	*			"title": "Sprint 1",
+	*			"begin_date": null,
+	*			"end_date": null,
+	*			"tasks": [],
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "12.17.3",
+	*			"return_message": "Task - getcontainer - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "12.17.9",
+	*			"return_message": "Task - getcontainer - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "12.17.4",
+	*			"return_message": "Task - getcontainer - Bad Parameter: id"
+	*		}
+	*	}
+	*/
+	public function getContainerAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("12.17.3", "Task", "getcontainer"));
+
+		$em = $this->getDoctrine()->getManager();
+		$container = $em->getRepository('GrappboxBundle:Contains')->find($id);
+		if ($container === null)
+			return $this->setBadRequest("12.17.4", "Task", "getcontainer", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $container->getProjectID(), "task") < 1)
+			return ($this->setNoRightsError("12.17.9", "Task", "getcontainer"));
+
+		$arr = array();
+		$tasksAdded = $container->getTasks();
+		foreach ($tasksAdded as $task) {
+			$arr[] =  array("id" => $task->getId(), "title" => $task->getTitle());
+		}
+
+		return $this->setSuccess("1.12.1", "Task", "getcontainer", "Complete Success", array("id" => $container->getId(), "title" => $container->getTitle(), "begin_date" => $container->getBeginDate(), "end_date" => $container->getEndDate(),
+			"tasks" => $arr));
+	}
+
+	/**
+	* @api {get} /V0.2/tasks/getprojectcontainers/:token/:id Get all the containers for a project
+	* @apiName getProjectContainers
+	* @apiGroup Task
+	* @apiDescription Get all the containers for a given project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the project
+	*
+	* @apiSuccess {Object[]} array Array of containers
+	* @apiSuccess {Number} array.id Id of the container
+	* @apiSuccess {String} array.title Title of the container
+	* @apiSuccess {Datetime} array.begin_date Date of begining of the container
+	* @apiSuccess {Datetime} array.end_date Date of end of the container
+	* @apiSuccess {Object[]} array.tasks Array of infos on the tasks
+	* @apiSuccess {Number} array.tasks.id Id of the task
+	* @apiSuccess {String} array.tasks.title Title of the task
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - getprojectcontainers - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": [
+	*				{
+	*					"id": 2,
+	*					"title": "Sprint 1",
+	*					"begin_date":
+	*					{
+	*						"date":"2015-10-15 11:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					},
+	*					"end_date":
+	*					{
+	*						"date":"2015-10-10 11:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					},
+	*					"tasks":
+	*					[
+	*						{
+	*							"id": 1,
+	*							"title": "Add users to project"
+	*						},
+	*						{
+	*							"id": 3,
+	*							"title": "Add customers to project"
+	*						}
+	*					]
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.3",
+	*			"return_message": "Task - getprojectcontainers - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "12.18.3",
+	*			"return_message": "Task - getprojectcontainers - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "12.18.9",
+	*			"return_message": "Task - getprojectcontainers - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "12.18.4",
+	*			"return_message": "Task - getprojectcontainers - Bad Parameter: id"
+	*		}
+	*	}
+	*/
+	public function getProjectContainersAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("12.18.3", "Task", "getprojectcontainers"));
+
+		$em = $this->getDoctrine()->getManager();
+		$containers = $em->getRepository('GrappboxBundle:Contains')->findByprojectID($id);
+		if ($containers === null)
+			return $this->setBadRequest("12.18.4", "Task", "getprojectcontainers", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $id, "task") < 1)
+			return ($this->setNoRightsError("12.18.9", "Task", "getprojectcontainers"));
+
+		$arr = array();
+		foreach ($containers as $cont) {
+
+			$tasksArray = array();
+			foreach ($cont->getTasks() as $task) {
+				$tasksArray[] =  array("id" => $task->getId(), "title" => $task->getTitle());
+			}
+
+			$arr[] =  array("id" => $cont->getId(), "title" => $cont->getTitle(), "begin_date" => $cont->getBeginDate(), "end_date" => $cont->getEndDate(), "tasks" => $tasksArray);
+		}
+
+		if (count($arr) == 0)
+			return $this->setNoDataSuccess("1.12.3", "Task", "getcontainer");
+
+		return $this->setSuccess("1.12.1", "Task", "getcontainer", "Complete Success", array("array" => $arr));
+	}
+
+	/**
+	* @api {put} /V0.2/tasks/putcontainer Update a container
+	* @apiName putContainer
+	* @apiGroup Task
+	* @apiDescription Update a given container
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the container
+	* @apiParam {Number[]} tasksAdd Array of task id to add to the container
+	* @apiParam {Number[]} tasksRemove Array of task id to remove to the container
+	* @apiParam {String} [title] Title of the task
+	*
+	* @apiParamExample {json} Request-Full-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"id": 10,
+	*			"title": "User management",
+	*			"tasksAdd": [1, 3],
+	*			"tasksRemove": [2]
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"id": 10,
+	*			"tasksAdd": [1, 3],
+	*			"tasksRemove": []
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Partial-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"id": 10,
+	*			"title": "User management",
+	*			"tasksAdd": [],
+	*			"tasksRemove": [2]
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the container
+	* @apiSuccess {String} title Title of the container
+	* @apiSuccess {Datetime} begin_date Date of the begining of the container
+	* @apiSuccess {Datetime} end_date Date of end of the container
+	* @apiSuccess {Object[]} tasks Task informations
+	* @apiSuccess {Number} tasks.id Id of the creator
+	* @apiSuccess {String} tasks.title Title of the task
+	*
+	* @apiSuccessExample Success-Full-Data-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - putcontainer - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 2,
+	*			"title": "Sprint 1",
+	*			"begin_date":
+	*			{
+	*				"date":"2015-10-15 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"end_date":
+	*			{
+	*				"date":"2015-10-10 11:00:00",
+	*				"timezone_type":3,
+	*				"timezone":"Europe\/Paris"
+	*			},
+	*			"tasks":
+	*			[
+	*				{
+	*					"id": 1,
+	*					"title": "Add users to project"
+	*				},
+	*				{
+	*					"id": 3,
+	*					"title": "Add customers to project"
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-Partial-Data-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - putcontainer - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 2,
+	*			"title": "Sprint 1",
+	*			"begin_date": null,
+	*			"end_date": null,
+	*			"tasks": [],
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "12.19.3",
+	*			"return_message": "Task - putcontainer - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "12.19.6",
+	*			"return_message": "Task - putcontainer - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "12.19.9",
+	*			"return_message": "Task - putcontainer - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "12.19.4",
+	*			"return_message": "Task - putcontainer - Bad Parameter: id"
+	*		}
+	*	}
+	*/
+	public function putContainerAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+
+		if ($content === null || (!array_key_exists('token', $content) || !array_key_exists('id', $content) || !array_key_exists('tasksAdd', $content) || !array_key_exists('tasksRemove', $content)))
+			return $this->setBadRequest("12.19.6", "Task", "putcontainer", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("12.19.3", "Task", "putcontainer"));
+
+		$em = $this->getDoctrine()->getManager();
+		$container = $em->getRepository('GrappboxBundle:Contains')->find($content->id);
+		if ($container === null)
+			return $this->setBadRequest("12.19.4", "Task", "putcontainer", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $container->getProjectID(), "task") < 2)
+			return ($this->setNoRightsError("12.19.9", "Task", "putcontainer"));
+
+		if (array_key_exists('title', $content))
+			$container->setTitle($content->title);
+
+		if (count($content->tasksAdd) > 0)
+		{
+			foreach ($content->tasksAdd as $key => $value) {
+				$task = $em->getRepository("GrappboxBundle:Task")->find($value);
+				if ($task instanceof Task && $task->getProjects()->getId() == $container->getProjectID())
+				{
+					$isInArray = false;
+					foreach ($container->getTasks() as $t) {
+						if ($t->getId() == $task->getId())
+							$isInArray = true;
+					}
+					if ($isInArray == false)
+					{
+						$container->addTask($task);
+						$task->setContains($container);
+					}
+				}
+			}
+		}
+
+		if (count($content->tasksRemove))
+		{
+			foreach ($content->tasksRemove as $key => $value) {
+				$task = $em->getRepository("GrappboxBundle:Task")->find($value);
+				if ($task instanceof Task)
+				{
+					$isInArray = false;
+					foreach ($container->getTasks() as $t) {
+						if ($t->getId() == $task->getId())
+							$isInArray = true;
+					}
+					if ($isInArray == true)
+					{
+						$container->removeTask($task);
+						$task->setContains(null);
+					}
+				}
+			}
+		}
+
+		$arr = array();
+		foreach ($container->getTasks() as $t) {
+			$arr[] = array("id" => $t->getId(), "title" => $t->getTitle());
+
+			if ($container->getBeginDate() != null)
+			{
+				$date = $container->getBeginDate();
+				$diff = date_diff($date, $t->getStartedAt());
+				if ($diff->format('R') == '-')
+					$container->setBeginDate($t->getStartedAt());
+			}
+			else
+				$container->setBeginDate($t->getStartedAt());
+			if ($container->getEndDate() != null)
+			{
+				$date = $container->getEndDate();
+				$diff = date_diff($date, $t->getDueDate());
+				if ($diff->format('R') == '+')
+					$container->setEndDate($t->getDueDate());
+			}
+			else
+				$container->setEndDate($t->getDueDate());
+		}
+
+		$em->flush();
+
+		return $this->setCreated("1.12.1", "Task", "postcontainer", "Complete Success", array("id" => $container->getId(), "title" => $container->getTitle(), "begin_date" => $container->getBeginDate(), "end_date" => $container->getEndDate(),
+			"tasks" => $arr));
+	}
+
+	/**
+	* @api {delete} /V0.2/tasks/delcontainer/:token/:id Delete a container
+	* @apiName delContainer
+	* @apiGroup Task
+	* @apiDescription Delete definitely the given task
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the container
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.12.1",
+	*			"return_message": "Task - delcontainer - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "12.20.3",
+	*			"return_message": "Task - delcontainer - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "12.20.9",
+	*			"return_message": "Task - delcontainer - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "12.20.4",
+	*			"return_message": "Task - delcontainer - Bad Parameter: id"
+	*		}
+	*	}
+	*/
+	public function delContainerAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("12.20.3", "Task", "delcontainer"));
+
+		$em = $this->getDoctrine()->getManager();
+		$container = $em->getRepository('GrappboxBundle:Contains')->find($id);
+		if ($container === null)
+			return $this->setBadRequest("12.20.4", "Task", "delcontainer", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $container->getProjectID(), "task") < 2)
+			return ($this->setNoRightsError("12.20.9", "Task", "delcontainer"));
+
+		foreach ($container->getTasks() as $tasks) {
+			$task->setContains(null);
+		}
+
+		$em->remove($container);
+		$em->flush();
+
+		$response["info"]["return_code"] = "1.12.1";
+		$response["info"]["return_message"] = "Task - delcontainer - Complete Success";
+		return new JsonResponse($response);
 	}
 }

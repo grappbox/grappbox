@@ -16,7 +16,7 @@ class TaskRepository extends EntityRepository
 {
 	public function findUserAllTasks($id)
 	{
-		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('t')->join('t.ressources', 'r')->join('r.user', 'u')->where('u.id = :id')->setParameter('id', $id);
 
 		$tasks = $qb->getQuery()->getResult();
 
@@ -56,7 +56,7 @@ class TaskRepository extends EntityRepository
 
 	public function findUserAllTasksV2($id, $code, $part, $function)
 	{
-		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('t')->join('t.ressources', 'r')->join('r.user', 'u')->where('u.id = :id')->setParameter('id', $id);
 		$tasks = $qb->getQuery()->getResult();
 
 		$resp = new JsonResponse();
@@ -110,7 +110,7 @@ class TaskRepository extends EntityRepository
 
 	public function findUserCurrentAndNextTasks($id)
 	{
-		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('t')->join('t.ressources', 'r')->join('r.user', 'u')->where('u.id = :id')->setParameter('id', $id);
 
 		$tasks = $qb->getQuery()->getResult();
 
@@ -154,7 +154,7 @@ class TaskRepository extends EntityRepository
 
 	public function findUserCurrentAndNextTasksV2($id, $code, $part, $function)
 	{
-		$qb = $this->createQueryBuilder('t')->join('t.users', 'u')->where('u.id = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('t')->join('t.ressources', 'r')->join('r.user', 'u')->where('u.id = :id')->setParameter('id', $id);
 		$tasks = $qb->getQuery()->getResult();
 
 		$resp = new JsonResponse();

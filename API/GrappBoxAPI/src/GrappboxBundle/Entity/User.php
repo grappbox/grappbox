@@ -125,11 +125,6 @@ class User implements UserInterface
      * @var \Doctrine\Common\Collections\Collection
      */
     private $events;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $tasks;
     
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -785,39 +780,6 @@ class User implements UserInterface
     public function getEvents()
     {
         return $this->events;
-    }
-
-    /**
-     * Add tasks
-     *
-     * @param \GrappboxBundle\Entity\Task $tasks
-     * @return User
-     */
-    public function addTask(\GrappboxBundle\Entity\Task $tasks)
-    {
-        $this->tasks[] = $tasks;
-
-        return $this;
-    }
-
-    /**
-     * Remove tasks
-     *
-     * @param \GrappboxBundle\Entity\Task $tasks
-     */
-    public function removeTask(\GrappboxBundle\Entity\Task $tasks)
-    {
-        $this->tasks->removeElement($tasks);
-    }
-
-    /**
-     * Get tasks
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTasks()
-    {
-        return $this->tasks;
     }
     /**
      * @var \Doctrine\Common\Collections\Collection
