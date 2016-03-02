@@ -411,9 +411,10 @@ class TaskController extends RolesAndTokenVerificationController
 			$this->checkDependencies($task);
 		}
 
+
+		$task->setIsMilestone($content->is_milestone);
 		if ($content->is_milestone == true)
 		{
-			$task->setIsMilestone($content->is_milestone);
 			$task->setStartedAt(null);
 			$task->setFinishedAt(null);
 		}
