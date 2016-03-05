@@ -115,17 +115,23 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ApiCommunication\ApiCommunication.cs" />
+    <Compile Include="Model\CalendarModel.cs" />
+    <Compile Include="Model\Creator.cs" />
     <Compile Include="Model\CustomerAccessModel.cs" />
     <Compile Include="Model\CustomShapes.cs" />
     <Compile Include="Model\DashBoardModel.cs" />
     <Compile Include="Model\DateModel.cs" />
+    <Compile Include="Model\Event.cs" />
+    <Compile Include="Model\EventType.cs" />
     <Compile Include="Model\ICustomShape.cs" />
+    <Compile Include="Model\Planning.cs" />
     <Compile Include="Model\ProjectListModel.cs" />
     <Compile Include="Model\ProjectRoleModel.cs" />
     <Compile Include="Model\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectUserModel.cs" />
     <Compile Include="Model\RoleUserModel.cs" />
     <Compile Include="Model\ShapeControler.cs" />
+    <Compile Include="Model\Task.cs" />
     <Compile Include="Model\UserSettingsModel.cs" />
     <Compile Include="Model\WhiteBoardListModel.cs" />
     <Compile Include="Model\WhiteBoardModel.cs" />
@@ -133,6 +139,7 @@
       <DependentUpon>Navigation_Test.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ressources\SettingsManager.cs" />
+    <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\MenuViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
@@ -141,6 +148,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\Calendar.xaml.cs">
+      <DependentUpon>Calendar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
     </Compile>
@@ -221,6 +231,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="View\Calendar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\DashBoardView.xaml">
       <SubType>Designer</SubType>

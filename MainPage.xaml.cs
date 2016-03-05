@@ -60,7 +60,7 @@ namespace GrappBox
                 SettingsManager.setOption("password", pwdBlock.Password);
                 DashBoardViewModel usvm = new DashBoardViewModel();
                 usvm.getProjectList();
-                this.Frame.Navigate(typeof(View.DashBoardView));
+                this.Frame.Navigate(typeof(View.Calendar));
             }
             else {
                 errorBlock.Text = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
