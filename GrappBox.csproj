@@ -124,6 +124,7 @@
     <Compile Include="Model\ProjectRoleModel.cs" />
     <Compile Include="Model\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectUserModel.cs" />
+    <Compile Include="Model\RoleUserModel.cs" />
     <Compile Include="Model\ShapeControler.cs" />
     <Compile Include="Model\UserSettingsModel.cs" />
     <Compile Include="Model\WhiteBoardListModel.cs" />
@@ -145,6 +146,9 @@
     </Compile>
     <Compile Include="View\ProjectSettingsView.xaml.cs">
       <DependentUpon>ProjectSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RoleView.xaml.cs">
+      <DependentUpon>RoleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserView.xaml.cs">
       <DependentUpon>UserView.xaml</DependentUpon>
@@ -223,6 +227,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ProjectSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\RoleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

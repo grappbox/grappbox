@@ -40,6 +40,7 @@ namespace GrappBox.View
 
         }
 
+        #region menuClicked
         private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(WhiteBoardView));
@@ -63,7 +64,10 @@ namespace GrappBox.View
             psvm.getProjectSettings();
             psvm.getProjectUsers();
             psvm.getCustomerAccesses();
+            psvm.getRoles();
             this.Frame.Navigate(typeof(ProjectSettingsView));
         }
+        #endregion menuClicked
+
     }
 }

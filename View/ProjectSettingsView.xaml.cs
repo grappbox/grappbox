@@ -61,11 +61,6 @@ namespace GrappBox.View
         }
 
         #region menuClicked
-        private void Dashboard_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
         private void Whiteboard_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(WhiteBoardView));
@@ -78,8 +73,18 @@ namespace GrappBox.View
             this.Frame.Navigate(typeof(UserView));
         }
 
+        private void Dashboard_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(DashBoardView));
+        }
+
         private void ProjectSettings_Click(object sender, RoutedEventArgs e)
         {
+            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
+            psvm.getProjectSettings();
+            psvm.getProjectUsers();
+            psvm.getCustomerAccesses();
+            psvm.getRoles();
             this.Frame.Navigate(typeof(ProjectSettingsView));
         }
         #endregion menuClicked
@@ -213,21 +218,34 @@ namespace GrappBox.View
 
             if (num == 1)
             {
-                CommandBar.Visibility = Visibility.Visible;
+                CB.Visibility = Visibility.Visible;
                 RemoveUser.Visibility = Visibility.Visible;
                 RemoveCU.Visibility = Visibility.Collapsed;
                 RegenerateCu.Visibility = Visibility.Collapsed;
+                RemoveRole.Visibility = Visibility.Collapsed;
+                ModifyRole.Visibility = Visibility.Collapsed;
             }
             else if (num == 2)
             {
-                CommandBar.Visibility = Visibility.Visible;
+                CB.Visibility = Visibility.Visible;
                 RemoveUser.Visibility = Visibility.Collapsed;
                 RemoveCU.Visibility = Visibility.Visible;
                 RegenerateCu.Visibility = Visibility.Visible;
+                RemoveRole.Visibility = Visibility.Collapsed;
+                ModifyRole.Visibility = Visibility.Collapsed;
+            }
+            else if (num == 3)
+            {
+                CB.Visibility = Visibility.Visible;
+                RemoveUser.Visibility = Visibility.Collapsed;
+                RemoveCU.Visibility = Visibility.Collapsed;
+                RegenerateCu.Visibility = Visibility.Collapsed;
+                RemoveRole.Visibility = Visibility.Visible;
+                ModifyRole.Visibility = Visibility.Visible;
             }
             else
             {
-                CommandBar.Visibility = Visibility.Collapsed;
+                CB.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -265,6 +283,28 @@ namespace GrappBox.View
         private void customerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.CustomerSelected = (sender as ListBox).SelectedItem as CustomerAccessModel;
+        }
+
+        private void AddRole_Click(object sender, RoutedEventArgs e)
+        {
+            vm.getUsersAssigned(0);
+            this.Frame.Navigate(typeof(RoleView), null);
+        }
+
+        private void roleListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            vm.RoleSelected = (sender as ListBox).SelectedItem as ProjectRoleModel;
+        }
+
+        private void ModifyRole_Click(object sender, RoutedEventArgs e)
+        {
+            vm.getUsersAssigned(vm.RoleSelected.Id);
+            this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.Id);
+        }
+
+        private void RemoveRoleButton_Click(object sender, RoutedEventArgs e)
+        {
+            vm.removeRole();
         }
     }
 }

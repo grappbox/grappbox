@@ -12,10 +12,12 @@
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu">
 
     <Page.BottomAppBar>
-        <CommandBar Visibility="Collapsed" x:Name="CommandBar" ClosedDisplayMode="Compact">
+        <CommandBar Visibility="Collapsed" x:Name="CB" ClosedDisplayMode="Compact">
             <AppBarButton Visibility="Collapsed" Name="RemoveUser" Label="Remove" Click="RemoveUserButton_Click" Icon="Delete"/>
             <AppBarButton Visibility="Collapsed" Name="RemoveCU" Label="Remove" Click="RemoveCustomerButton_Click" Icon="Delete"/>
             <AppBarButton Visibility="Collapsed" Name="RegenerateCu" Label="Regenerate" Click="RegenerateCU_Click" Icon="Sync"/>
+            <AppBarButton Visibility="Collapsed" Name="RemoveRole" Label="Remove" Click="RemoveRoleButton_Click" Icon="Delete"/>
+            <AppBarButton Visibility="Collapsed" Name="ModifyRole" Label="Edit" Click="ModifyRole_Click" Icon="Edit"/>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -146,6 +148,25 @@
                             </Grid>
                         </StackPanel>
                         <TextBlock x:Name="errorBlock" Grid.Row="1" TextAlignment="Center" VerticalAlignment="Center" Foreground="#FFE81123"  FontFamily="Segoe WP" FontSize="15"/>
+                    </Grid>
+                </PivotItem>
+                <PivotItem Header="Roles">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="8.5*"/>
+                            <RowDefinition Height="0.5*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0">
+                            <ListBox x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="roleListView_SelectionChanged">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Button Content="Add" Click="AddRole_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
+                        </StackPanel>
+                        <TextBlock x:Name="errorRoleBlock" Grid.Row="1" TextAlignment="Center" VerticalAlignment="Center" Foreground="#FFE81123"  FontFamily="Segoe WP" FontSize="15"/>
                     </Grid>
                 </PivotItem>
             </Pivot>
