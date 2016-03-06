@@ -250,9 +250,11 @@ section { margin: 0 0 60px 0; }
 
 #bugtracker-list .title { background: #009688; margin: 0 0 15px 0; }
 #bugtracker-list .data-content .btn-default { margin: 28px 0 0 0; }
+#bugtracker-list .create-btn { min-width: 240px; padding-left: 10px; }
 
 #bugtracker-content .app-actions-list li { display: inline; }
 #bugtracker-content .app-actions-list ul { padding: 0; margin: 0; }
+
 /*#bugtracker-content #existing-ticket {}
 #bugtracker-content #existing-ticket #editable-data-list {}
 #bugtracker-content #editable-data-list .data-wrapper {}
@@ -321,3 +323,12 @@ section { margin: 0 0 60px 0; }
 #project-list .project-picture img { max-width: 120px; border-radius: 50%; }
 #project-list .project-data { max-width: 60%; padding: 15px 0 0 10px; }
 #project-list a:not(.standalone) { margin: 13px 0 0 0; }
+
+#project-content #customers-list .loading-content,
+#project-content #users-list .loading-content,
+#project-content #roles-list .loading-content {top: 0px;}
+#project-content #customers-list .title,
+#project-content #users-list .title,
+#project-content #roles-list .title { background: #7CB342; margin: 0 0 15px 0; }
+
+#project-content #roles-lists .roles-details { }
