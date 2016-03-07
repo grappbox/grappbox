@@ -400,9 +400,12 @@ class ProjectRepository extends EntityRepository
 				$contactMail = $project->getContactEmail();
 				$facebook = $project->getFacebook();
 				$twitter = $project->getTwitter();
+				$deletedAt = $project->getDeletedAt();
+				$creator = $project->getCreatorUser();
+				$creatorArr = array("id" => $creator->getId(), "firstname" => $creator->getFirstname(), "lastname" => $creator->getLastname());
 
-				$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail,
-					"facebook" => $facebook, "twitter" => $twitter);
+				$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "creator" => $creatorArr, "logo" => $projectLogo,
+					"phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt);
 			}
 			else
 			{
@@ -422,9 +425,12 @@ class ProjectRepository extends EntityRepository
 						$contactMail = $project->getContactEmail();
 						$facebook = $project->getFacebook();
 						$twitter = $project->getTwitter();
+						$deletedAt = $prject->getDeletedAt();
+						$creator = $project->getCreatorUser();
+						$creatorArr = array("id" => $creator->getId(), "firstname" => $creator->getFirstname(), "lastname" => $creator->getLastname());
 
-						$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail,
-							"facebook" => $facebook, "twitter" => $twitter);
+						$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "creator" => $creatorArr, "logo" => $projectLogo,
+							"phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt);
 					}
 				}
 			}

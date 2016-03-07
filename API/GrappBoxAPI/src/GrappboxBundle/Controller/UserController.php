@@ -622,12 +622,17 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} array.id Id of the project
 	* @apiSuccess {String} array.name Name of the project
 	* @apiSuccess {String} array.description Description of the project
+	* @apiSuccess {Object[]} array.creator Informations about the creator
+	* @apiSuccess {Number} array.creator.id Id of the creator
+	* @apiSuccess {String} array.creator.firstname Firstname of the creator
+	* @apiSuccess {String} array.creator.lastname Lastname of the creator
 	* @apiSuccess {String} array.phone Phone of the project
 	* @apiSuccess {String} array.company Company of the project
 	* @apiSuccess {String} array.logo Logo of the project
 	* @apiSuccess {String} array.contact_mail Mail for the project
 	* @apiSuccess {String} array.facebook Facebook of the project
 	* @apiSuccess {String} array.twitter Twitter of the project
+	* @apiSuccess {Datetime} array.deleted_at Date of deletion of the project
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -642,12 +647,18 @@ class UserController extends RolesAndTokenVerificationController
 	*					"id": 2,
 	*					"name": "Grappbox",
 	*					"description": "Grappbox est une application de gestion de projet.",
+	*					"creator": {
+	*						"id": 2,
+	*						"firstname": "John",
+	*						"lastname": "Snow"
+	*					}
 	*					"phone": "+339 46 12 45 78",
 	*					"company": "Ubisoft",
 	*					"logo": "DATA",
 	*					"contact_mail": "contact@grappbox.com",
 	*					"facebook": "www.facebook.com/GrappBox",
-	*					"twitter": "twitter.com/GrappBox"
+	*					"twitter": "twitter.com/GrappBox",
+	*					"deleted_at": null
 	*				}
 	*			]
 	*		}
