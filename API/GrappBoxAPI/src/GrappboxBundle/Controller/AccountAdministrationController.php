@@ -154,12 +154,21 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
 			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
+		$now = new DateTime('now');
+		if ($user->getTokenValidity() > $now)
+			{
+				$user->setTokenValidity($now->add(new DateInterval("P1D")));
+
+				$em->persist($user);
+				$em->flush();
+
+				return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
+			}
+
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
 		$token = md5($tmpToken);
 		$user->setToken($token);
-
-		$now = new DateTime('now');
 		$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
 		$em->persist($user);
