@@ -28,7 +28,7 @@
                 <div class="button-bar">
                     <!-- Edit project button -->
                     <a class="button icon ion-edit button-positive"
-                            ui-sref="app.editProject({projectId: projectId})">
+                       ui-sref="app.editProject({projectId: projectId})">
                     </a>
                     <!-- Roles on project button -->
                     <a class="button icon ion-network button-positive"
@@ -38,6 +38,8 @@
                     <a class="button icon ion-bug button-positive"
                        ui-sref="app.bugtracker({projectId: projectId})">
                     </a>
+                </div>
+                <div class="button-bar">
                     <!-- Gantt button -->
                     <a class="button icon ion-ios-list button-positive"
                        ui-sref="app.gantt({projectId: projectId})">
@@ -45,6 +47,10 @@
                     <!-- Timeline button -->
                     <a class="button icon ion-ios-chatboxes button-positive"
                        ui-sref="app.timelines({projectId: projectId})">
+                    </a>
+                    <!-- Cloud button -->
+                    <a class="button icon ion-ios-cloud button-positive"
+                       ui-sref="app.cloud({projectId: projectId})">
                     </a>
                 </div>
             </ion-item>

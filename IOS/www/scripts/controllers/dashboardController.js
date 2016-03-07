@@ -36,6 +36,7 @@ TeamOccupation, NextMeetings, GlobalProgress) {
             })
             .catch(function (error) {
                 console.error('Get team occupation list failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');

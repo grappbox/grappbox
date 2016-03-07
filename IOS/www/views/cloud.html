@@ -1,0 +1,22 @@
+﻿<!--
+    Summary: Single project view
+-->
+
+<ion-view cache-view="false">
+    <ion-nav-title>Cloud</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Cloud LS -->
+        <div class="item item-divider">Files</div>
+        <ion-list>
+            <!--ng-click="showMemberActionSheet(userOnProject.id)"-->
+            <ion-item ng-repeat="file in cloudData">
+                <h2>{{ file.filename }}</h2>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

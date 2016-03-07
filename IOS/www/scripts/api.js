@@ -339,6 +339,62 @@ angular.module('GrappBox.api', ['ngResource'])
 })
 
 /*
+********************* CLOUD *********************
+*/
+
+// List files and folders with a path
+.factory('CloudLS', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/list/:token/:idProject/:path/:passwordSafe', { token: "@token", idProject: "@idProject", path: "@path", passwordSafe: "@passwordSafe" });
+})
+
+// Open stream for a file before uploading
+.factory('CloudOpenStream', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/stream/:token/:project_id/:safe_password', { token: "@token", project_id: "@project_id", path: "@path", passwordSafe: "@passwordSafe" });
+})
+
+// Upload the file divided in chunks
+.factory('CloudUploadChunks', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/file', null, 
+        { 'update': { method: 'PUT' } });
+})
+
+// Close stream to complete file upload
+.factory('CloudCloseStream', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/stream/:token/:project_id/:streamId', { token: "@token", project_id: "@project_id", streamId: "@streamId"});
+})
+
+// Create a directory
+.factory('CloudCreateDir', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/createdir');
+})
+
+// Set the safe password
+.factory('CloudSetSafe', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/safepass', null,
+        { 'update': { method: 'PUT' } });
+})
+
+// Download a file
+.factory('CloudDownloadFile', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/file/:cloudPath/:token/:idProject/:passwordSafe', { cloudPath: "@cloudPath", token: "@token", idProject: "@idProject", passwordSafe: "@passwordSafe" });
+})
+
+// Download a secure file
+.factory('CloudDownloadSecuredFile', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/filesecured/:cloudPath/:token/:idProject/:password]/:passwordSafe', { cloudPath: "@cloudPath", token: "@token", idProject: "@idProject", password: "@passwordSafe", passwordSafe: "@passwordSafe" });
+})
+
+// Delete a file or a directory
+.factory('CloudDelFileOrDir', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/file/:token/:project_id/:path/:password', { token: "@token", project_id: "@project_id", path: "@path", password: "@password" });
+})
+
+// Delete a secured file or a secured directory
+.factory('CloudDelSecuredFileOrDir', function ($rootScope, $resource) {
+    return $resource($rootScope.API + 'cloud/filesecured/:token/:project_id/:path/:password/:safe_password', { token: "@token", project_id: "@project_id", path: "@path", password: "@password", safe_password: "@safe_password" });
+})
+
+/*
 ********************* GANTT *********************
 */
 // Get current and next tasks

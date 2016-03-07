@@ -339,6 +339,20 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
             }
         })
 
+        /*
+        ** CLOUD
+        */
+        // cloud view
+        .state('app.cloud', {
+            url: "/projects/:projectId/cloud",
+            views: {
+                'menuContent': {
+                    templateUrl: "views/cloud.html",
+                    controller: 'CloudCtrl'
+                }
+            }
+        })
+
     // if no state are found, here is the fallback url - It's also the default page when starting application
     $urlRouterProvider.otherwise('/auth');
     //$urlRouterProvider.otherwise('/app/whiteboards/1');
