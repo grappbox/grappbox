@@ -49,7 +49,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParam {String} [email] Email for the project
 	* @apiParam {String} [facebook] Facebook of the project
 	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
+	* @apiParam {String} password Safe password for the project hashed in SHA-1 512
 	*
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
@@ -126,7 +126,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('name', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('password', $content))
 			return $this->setBadRequest("6.1.6", "Project", "projectcreation", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -140,6 +140,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->setCreatedAt(new \DateTime);
 		$project->setCreatorUser($user);
 		$project->setColor(dechex(rand(0x000000, 0xFFFFFF)));
+		$project->setSafePassword($content->password);
 		if (array_key_exists('description', $content))
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
@@ -154,8 +155,6 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setFacebook($content->facebook);
 		if (array_key_exists('twitter', $content))
 			$project->setTwitter($content->twitter);
-		if (array_key_exists('password', $content))
-			$project->setSafePassword($content->password);
 
 		$em->persist($project);
 
