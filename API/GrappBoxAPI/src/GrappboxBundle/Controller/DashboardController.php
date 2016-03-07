@@ -581,7 +581,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	* 	{
 	*		"info": {
 	*			"return_code": "1.2.1",
-	*			"return_message": "Dashboard - getProjectTasks - Complete Success"
+	*			"return_message": "Dashboard - getUserBasicInformations - Complete Success"
 	*		},
 	*		"data":
 	*			{

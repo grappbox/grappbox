@@ -43,12 +43,13 @@ class ProjectRepository extends EntityRepository
 				$id = $user->getId();
 				$firstName = $user->getFirstname();
 				$lastName = $user->getLastname();
-				$tasks = $user->getTasks();
+				$tasks = $user->getRessources();
 				$nbOfOngoingTasks = 0;
 				$nbOfTasksBegun = 0;
 				$busy = false;
 
 				foreach ($tasks as $task) {
+					$task = $task->getTask();
 					if ($task->getProjects()->getId() == $projectId)
 					{
 						if ($task->getFinishedAt() == $defaultDate)
@@ -106,12 +107,13 @@ class ProjectRepository extends EntityRepository
 				$id = $user->getId();
 				$firstName = $user->getFirstname();
 				$lastName = $user->getLastname();
-				$tasks = $user->getTasks();
+				$tasks = $user->getRessources();
 				$nbOfOngoingTasks = 0;
 				$nbOfTasksBegun = 0;
 				$busy = false;
 
 				foreach ($tasks as $task) {
+					$task = $task->getTask();
 					if ($task->getProjects()->getId() == $projectId)
 					{
 						if ($task->getFinishedAt() == $defaultDate)

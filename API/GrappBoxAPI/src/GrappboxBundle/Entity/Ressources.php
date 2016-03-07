@@ -12,6 +12,11 @@ class Ressources
     /**
      * @var integer
      */
+    private $id;
+    
+    /**
+     * @var integer
+     */
     private $resource;
 
     /**
@@ -93,10 +98,6 @@ class Ressources
     {
         return $this->user;
     }
-    /**
-     * @var integer
-     */
-    private $id;
 
 
     /**

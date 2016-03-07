@@ -155,8 +155,8 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
 		$query = $repository->createQueryBuilder('t')
-					->join('t.users', 'u')
-					->where('u.id = :user_id ')
+					->join('t.ressources', 'r')
+					->where('r.user = :user_id')
 					->andWhere('t.deletedAt IS NULL')
 					->andWhere('t.finishedAt IS NULL')
 					->andWhere('t.startedAt IS NOT NULL')
@@ -314,8 +314,8 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
 		$query = $repository->createQueryBuilder('t')
-					->join('t.users', 'u')
-					->where('u.id = :user_id')
+					->join('t.ressources', 'r')
+					->where('r.user = :user_id')
 					->andWhere('t.deletedAt IS NULL')
 					->andWhere('t.finishedAt IS NULL')
 					->andWhere('t.startedAt IS NOT NULL')
@@ -472,8 +472,8 @@ class PlanningController extends RolesAndTokenVerificationController
 
 		$repository = $em->getRepository('GrappboxBundle:Task');
 		$query = $repository->createQueryBuilder('t')
-					->join('t.users', 'u')
-					->where('u.id = :user_id')
+					->join('t.ressources', 'r')
+					->where('r.user = :user_id')
 					->andWhere('t.deletedAt IS NULL')
 					->andWhere('t.finishedAt IS NULL')
 					->andWhere('t.startedAt IS NOT NULL')
