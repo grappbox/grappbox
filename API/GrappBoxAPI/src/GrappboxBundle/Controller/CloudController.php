@@ -148,6 +148,7 @@ class CloudController extends Controller
 	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
 	{
 		return $str; //TODO : code the Grappbox sha-1 algorithm when assigned people ready
+		// TODO : copy code in the corresponding function in ProjectController (before updateInformation method)
 	}
 
 	/**
@@ -683,13 +684,15 @@ class CloudController extends Controller
 	* @apiParam {Object[]} data All informations about the core request have to be here
 	* @apiParam {string} data.token The token of authenticated user.
 	* @apiParam {Number} data.project_id The project id to execute the command.
-	* @apiParam {string} data.password The password hashed in SHA-1 512
+	* @apiParam {string} data.password The new password hashed in SHA-1 512
+	* @apiParam {string} data.oldPassword The actual password
 	* @apiParamExample {json} Request Example:
 	*	{
 	*		"data": {
 	*			"token": "48q98d"
 	*			"project_id": 42,
-	*			"password": "6q8d4zq68d"
+	*			"password": "6q8d4zq68d",
+	*			"oldPassword": "MyPassword"
 	*		}
 	*	}
 	*
@@ -733,6 +736,15 @@ class CloudController extends Controller
 			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.6.9";
 			$response["info"]["return_message"] = "Cloud - setSafePassAction - Insufficient Success";
+			return new JsonResponse($response);
+		}
+
+		$passwordEncrypted = ($json["data"]["oldPassword"] ? $this->grappSha1($json["data"]["oldPassword"]) : NULL);
+		if ($passwordEncrypted != $project->getSafePassword())
+		{
+			header("HTTP/1.1 206 Partial Content", True, 206);
+			$response["info"]["return_code"] = "3.6.9";
+			$response["info"]["return_message"] = "Cloud - setSafePassAction - Insufficient Right";
 			return new JsonResponse($response);
 		}
 
