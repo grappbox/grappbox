@@ -49,7 +49,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParam {String} [email] Email for the project
 	* @apiParam {String} [facebook] Facebook of the project
 	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
+	* @apiParam {String} password Safe password for the project hashed in SHA-1 512
 	*
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
@@ -126,7 +126,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('name', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('password', $content))
 			return $this->setBadRequest("6.1.6", "Project", "projectcreation", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -140,6 +140,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->setCreatedAt(new \DateTime);
 		$project->setCreatorUser($user);
 		$project->setColor(dechex(rand(0x000000, 0xFFFFFF)));
+		$project->setSafePassword($content->password);
 		if (array_key_exists('description', $content))
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
@@ -154,8 +155,6 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setFacebook($content->facebook);
 		if (array_key_exists('twitter', $content))
 			$project->setTwitter($content->twitter);
-		if (array_key_exists('password', $content))
-			$project->setSafePassword($content->password);
 
 		$em->persist($project);
 
@@ -222,6 +221,11 @@ class ProjectController extends RolesAndTokenVerificationController
 		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id));
 	}
 
+	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
+	{
+		return $str; //TODO : code the Grappbox sha-1 algorithm when assigned people ready
+	}
+
 	/**
 	* @api {put} /V0.2/projects/updateinformations Update a project informations
 	* @apiName updateInformations
@@ -240,7 +244,8 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParam {String} [email] Email for the project
 	* @apiParam {String} [facebook] Facebook of the project
 	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
+	* @apiParam {String} [password] New safe password for the project hashed in SHA-1 512
+	* @apiParam {String} [oldPassword] Old safe password for the project hashed in SHA-1 512
 	*
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
@@ -417,7 +422,15 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (array_key_exists('twitter', $content))
 			$project->setTwitter($content->twitter);
 		if (array_key_exists('password', $content))
+		{
+			if (!array_key_exists('oldPassword', $content))
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
+			$passwordEncrypted = ($content->oldPassword ? $this->grappSha1($content->oldPassword) : NULL);
+			if ($passwordEncrypted != $project->getSafePassword())
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
 			$project->setSafePassword($content->password);
+		}
+
 
 		$em->flush();
 
