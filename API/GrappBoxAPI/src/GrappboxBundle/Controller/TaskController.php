@@ -184,7 +184,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} dependencies.title Title of the task the task dependes on
 	*
 	* @apiSuccessExample Success-Full-Data-Response
-	*	HTTP/1.1 201 Create
+	*	HTTP/1.1 201 Created
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
@@ -244,7 +244,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*	}
 	*
 	* @apiSuccessExample Success-Partial-Data-Response
-	*	HTTP/1.1 201 Create
+	*	HTTP/1.1 201 Created
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
@@ -558,6 +558,11 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
 	* @apiSuccess {Number} dependencies.id Id of the task the task dependes on
 	* @apiSuccess {String} dependencies.title Title of the task the task dependes on
+	* @apiSuccess {Object[]} tasks_modified Array of infos on the tasks modified because of the dependencies
+	* @apiSuccess {Number} tasks_modified.id Id of the task modified
+	* @apiSuccess {String} tasks_modified.title Title of the task modified
+	* @apiSuccess {Datetime} tasks_modified.started_at Date of start of the task modified
+	* @apiSuccess {Datetime} tasks_modified.due_date Due date of the task modified
 	*
 	* @apiSuccessExample Success-Full-Data-Response
 	*	HTTP/1.1 200 OK
@@ -632,6 +637,41 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"id": 3,
 	*					"title": "Add customers to project"
 	*				}
+	*			],
+	*			"tasks_modified":
+	*			[
+	*				{
+	*					"id": 1,
+	*					"title": "Add users to project",
+	*					"started_at":
+	*					{
+	*						"date":"2015-10-10 11:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					},
+	*					"due_date":
+	*					{
+	*						"date":"2015-10-15 11:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					}
+	*				},
+	*				{
+	*					"id": 3,
+	*					"title": "Add customers to project",
+	*					"started_at":
+	*					{
+	*						"date":"2015-10-10 11:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					},
+	*					"due_date":
+	*					{
+	*						"date":"2015-10-15 11:00:00",
+	*						"timezone_type":3,
+	*						"timezone":"Europe\/Paris"
+	*					}
+	*				}
 	*			]
 	*		}
 	*	}
@@ -670,7 +710,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*			},
 	*			"users_assigned": [],
 	*			"tags": [],
-	*			"dependencies": []
+	*			"dependencies": [],
+	*			"tasks_modified": []
 	*		}
 	*	}
 	*
@@ -739,6 +780,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.2.9", "Task", "taskupdate"));
 
 		$taskDep = $task->getTaskDepended();
+		$taskModified = array();
 
 		if (array_key_exists('title', $content))
 			$task->setTitle($content->title);
@@ -770,12 +812,14 @@ class TaskController extends RolesAndTokenVerificationController
 					$date = $td->getTask()->getStartedAt();
 					date_add($date, $diff);
 					$td->getTask()->setStartedAt(new \Datetime($date->format('Y-m-d H:i:s')));
+					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
 				}
 				else if ($td->getName() == "ff")
 				{
 					$date = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));
+					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));	
+					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
 				}
 			}
 			$task->setDueDate($newDate);
@@ -806,12 +850,14 @@ class TaskController extends RolesAndTokenVerificationController
 					$date = $td->getTask()->getStartedAt();
 					date_add($date, $diff);
 					$td->getTask()->setStartedAt(new \Datetime($date->format('Y-m-d H:i:s')));
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 				else if ($td->getName() == "sf")
 				{
 					$date = $td->getTask()->getDueDate();
 					date_add($date, $diff);
 					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 			}
 			$task->setStartedAt($newDate);
@@ -929,7 +975,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success",
 			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
-			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
+			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray, "tasks_modified" => $taskModified));
 	}
 
 	/**
@@ -2556,7 +2602,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} tasks.title Title of the task
 	*
 	* @apiSuccessExample Success-Full-Data-Response
-	*	HTTP/1.1 201 Create
+	*	HTTP/1.1 201 Created
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
@@ -2593,7 +2639,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*	}
 	*
 	* @apiSuccessExample Success-Partial-Data-Response
-	*	HTTP/1.1 201 Create
+	*	HTTP/1.1 201 Created
 	*	{
 	*		"info": {
 	*			"return_code": "1.12.1",
