@@ -425,7 +425,7 @@ class ProjectRepository extends EntityRepository
 						$contactMail = $project->getContactEmail();
 						$facebook = $project->getFacebook();
 						$twitter = $project->getTwitter();
-						$deletedAt = $prject->getDeletedAt();
+						$deletedAt = $project->getDeletedAt();
 						$creator = $project->getCreatorUser();
 						$creatorArr = array("id" => $creator->getId(), "firstname" => $creator->getFirstname(), "lastname" => $creator->getLastname());
 
