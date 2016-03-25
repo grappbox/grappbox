@@ -67,7 +67,17 @@ namespace GrappBox.View
             psvm.getRoles();
             this.Frame.Navigate(typeof(ProjectSettingsView));
         }
-        #endregion menuClicked
 
+        private void BugtrackerButton_Click(object sender, RoutedEventArgs e)
+        {
+            BugtrackerViewModel vm = new BugtrackerViewModel();
+            vm.getOpenTickets();
+            vm.getClosedTickets();
+            vm.getStateList();
+            vm.getTagList();
+            vm.getUsers();
+            this.Frame.Navigate(typeof(BugtrackerView));
+        }
+        #endregion menuClicked
     }
 }

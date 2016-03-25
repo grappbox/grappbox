@@ -7,6 +7,6 @@ namespace GrappBox.Model
         [JsonProperty("id")]
         public int Id {get;set;}
         [JsonProperty("fullname")]
-        public int Fullname { get; set; }
+        public string Fullname { get; set; }
     }
 }
