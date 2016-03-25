@@ -1046,7 +1046,7 @@ v2_whiteboard_pushDraw:
     defaults:	{ _controller: GrappboxBundle:Whiteboard:pushDraw, _format: json }
     requirements:
         id: \d+
-    methods: [POST]
+    methods: [PUT]
 
 v2_whiteboard_pullDraw:
     path:		whiteboard/pulldraw/{id}
@@ -1061,3 +1061,8 @@ v2_whiteboard_delete:
     requirements:
         id: \d+
     methods: [DELETE]
+
+v2_whiteboard_deleteObject:
+    path:		whiteboard/deleteobject
+    defaults:	{ _controller: GrappboxBundle:Whiteboard:deleteObject, _format: json }
+    methods: [PUT]

@@ -12,11 +12,6 @@ use GrappboxBundle\Entity\Whiteboard;
 use GrappboxBundle\Entity\WhiteboardObject;
 use DateTime;
 
-// use Symfony\Component\Serializer\Serializer;
-// use Symfony\Component\Serializer\Encoder\XmlEncoder;
-// use Symfony\Component\Serializer\Encoder\JsonEncoder;
-// use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-
 /**
 *  @IgnoreAnnotation("apiName")
 *  @IgnoreAnnotation("apiGroup")
@@ -232,7 +227,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("10.2.3", "Whiteboard", "new"));
 
-		if (!$this->checkRoles($user, $content->projectId, "whiteboard"))
+		if ($this->checkRoles($user, $content->projectId, "whiteboard") < 2)
 			return ($this->setNoRightsError("10.2.9", "Whiteboard", "new"));
 
 		$em = $this->getDoctrine()->getManager();
@@ -353,7 +348,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			return $this->setBadRequest("10.3.4", "Whiteboard", "open", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 1)
 			return ($this->setNoRightsError("10.3.9", "Whiteboard", "open"));
 
 		if ($whiteboard->getDeletedAt())
@@ -474,7 +469,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$whiteboard)
  			return $this->setBadRequest("10.4.4", "Whiteboard", "push", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard"))
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
 			return ($this->setNoRightsError("10.4.9", "Whiteboard", "push"));
 
 		if ($content->modification == "add")
@@ -484,7 +479,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$object = new WhiteboardObject();
 			$object->setWhiteboardId($id);
 			$object->setWhiteboard($whiteboard);
-			$object->setObject($content->object);
+			$object->setObject(json_encode($content->object));
 			$object->setCreatedAt(new DateTime('now'));
 		}
 		else {
@@ -709,4 +704,296 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$response["info"]["return_message"] = "Whiteboard - delete - Complete Success";
 		return new JsonResponse($response);
 	}
+
+	/**
+	* @api {put} /V0.2/whiteboard/deleteObject Delete object
+	* @apiName deleteObject
+	* @apiGroup Whiteboard
+	* @apiDescription Determiner object(s) to delete from rubber position and radius
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Client authentification token
+	* @apiParam {int} whiteboardId Id of the whiteboard
+	* @apiParam (Object) center position in X and Y of the rubber center
+	* @apiParam {float}  center.x postion in x of the center
+	* @apiParam {float}  center.y postion in y of the center
+	* @apiParam {float}  radius radius of the rubber
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"whiteboardId": 15,
+	*			"center": {"x": 15.2, "y": 16.78},
+	*			"radius": 15.6
+	*		}
+	*	}
+	*
+	* @apiSuccess {id} id object id
+	* @apiSuccess {int} whiteboardId whiteboard id
+	* @apiSuccess {String} object the object caracterictics
+	* @apiSuccess {DateTime} createdAt object creation date
+	* @apiSuccess {DateTime} deletedAt object deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.10.1",
+	*			"return_message": "Whiteboard - deleteObject - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": {
+	*				{
+	*					"id": 5,
+	*					"whiteboardId": "2",
+	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+	*					"deletedAt": null
+	*				},
+	*				{
+	*					"id": 13,
+	*					"whiteboardId": "2",
+	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
+	*					"deletedAt": null
+	*				},
+	*				...
+	*			}
+	*		}
+	*	}
+	*
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "10.7.6",
+	*			"return_message": "Whiteboard - deleteObject - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "10.7.3",
+	*			"return_message": "Whiteboard - deleteObject - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: whiteboardId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "10.7.4",
+	*			"return_message": "Whiteboard - deleteObject - Bad Parameter: whiteboardId"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "10.7.9",
+	*			"return_message": "Whiteboard - deleteObject - Insufficient Rights"
+	*		}
+	*	}
+	*/
+	public function deleteObjectAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!array_key_exists('token', $content) || !array_key_exists('center', $content) || !array_key_exists('radius', $content) || !array_key_exists('whiteboardId', $content))
+			return $this->setBadRequest("10.7.6", "Whiteboard", "deleteObject", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("10.7.3", "Whiteboard", "deleteObject"));
+
+		$em = $this->getDoctrine()->getManager();
+		$whiteboard =  $em->getRepository('GrappboxBundle:Whiteboard')->find($content->whiteboardId);
+		if (!$whiteboard)
+			return $this->setBadRequest("10.7.4", "Whiteboard", "deleteObject", "Bad Parameter: whiteboardId");
+
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
+			 return ($this->setNoRightsError("10.7.9", "Whiteboard", "deleteObject"));
+
+		$objects =  $em->getRepository('GrappboxBundle:WhiteboardObject')->findBy(array("whiteboardId" => $whiteboard->getId(), "deletedAt" => NULL));
+
+		$toDel = $this->checkDeletion($objects, $content->center, $content->radius);
+
+		$data = array();
+		foreach ($toDel as $key => $value) {
+			$data[] = $value->objectToArray();
+		}
+		return $this->setSuccess("1.10.1", "Whiteboard", "deleteObject", "Complete Success", array("array" => $data));
+	}
+
+	private function checkDeletion($objects, $center, $radius)
+	{
+		$toDel = array();
+		foreach ($objects as $key => $object) {
+			$obj = json_decode($object->getObject());
+			switch ($obj->type) {
+				case 'LINE':
+					if ($this->intersectionWithLine($center, $radius, array("x" => $obj->positionStart->x, "y" => $obj->positionStart->y), array("x" => $obj->positionEnd->x, "y" => $obj->positionEnd->y)))
+						$toDel[] = $object;
+					break;
+				case 'HANDWRITE':
+					if ($this->intersectionWithHandwrite($center, $radius, array("x" => $obj->positionStart->x, "y" => $obj->positionStart->y), array("x" => $obj->positionEnd->x, "y" => $obj->positionEnd->y)))
+						$toDel[] = $object;
+					break;
+				case 'RECTANGLE':
+					$square = $this->determineMinimalSquare($obj);
+					if ($this->intersectionWithSquare($center, $radius, $square))
+						$toDel[] = $object;
+					break;
+				case 'TEXT':
+				$square = $this->determineMinimalSquare($obj);
+					if ($this->intersectionWithSquare($center, $radius, $square))
+						$toDel[] = $object;
+					break;
+				case 'DIAMOND':
+					$square = $this->determineMinimalSquare($obj);
+					$diamond = $this->determineDiamond($square);
+					if ($this->intersectionWithSquare($center, $radius, $diamond))
+						$toDel[] = $object;
+					break;
+				case 'ELLIPSE':
+					if ($this->intersectionWithEllipse($center, $radius, $obj))
+						$toDel[] = $object;
+					break;
+				default:
+					$square = $this->determineMinimalSquare($obj);
+					if ($this->intersectionWithSquare($center, $radius, $square))
+						$toDel[] = $object;
+					break;
+			}
+		}
+		return $toDel;
+	}
+
+	private function determineMinimalSquare($object)
+	{
+		$pointA = array("x" => $object->positionStart->x, "y" => $object->positionStart->y);
+		$pointB = array("x" => $object->positionStart->x, "y" => $object->positionEnd->y);
+		$pointC = array("x" => $object->positionEnd->x, "y" => $object->positionEnd->y);
+		$pointD = array("x" => $object->positionEnd->x, "y" => $object->positionStart->y);
+
+		return array("A" => $pointA, "B" => $pointB, "C" => $pointC, "D" => $pointD);
+	}
+
+	private function determineDiamond($square)
+	{
+		$pointA = array("x" => (($square["A"]["x"] + $square["B"]["x"]) / 2), "y" => (($square["A"]["y"] + $square["B"]["y"]) / 2));
+		$pointB = array("x" => (($square["B"]["x"] + $square["C"]["x"]) / 2), "y" => (($square["B"]["y"] + $square["C"]["y"]) / 2));
+		$pointC = array("x" => (($square["C"]["x"] + $square["D"]["x"]) / 2), "y" => (($square["C"]["y"] + $square["D"]["y"]) / 2));
+		$pointD = array("x" => (($square["D"]["x"] + $square["A"]["x"]) / 2), "y" => (($square["D"]["y"] + $square["A"]["y"]) / 2));
+
+		return array("A" => $pointA, "B" => $pointB, "C" => $pointC, "D" => $pointD);
+	}
+
+	private function intersectionWithLine($center, $radius, $pointA, $pointB)
+	{
+		if ($pointA["x"] == $pointB["x"])
+		{
+			$x = $pointA["x"];
+			if ($pointA["y"] > $pointB["y"])
+				$dif = -0.1;
+			else
+				$dif = 0.1;
+
+			for ($y = $pointA["y"]; ($y >= $pointA["y"] && $y <= $pointB["y"]) || ($y <= $pointA["y"] && $y >= $pointB["y"]); $y += $dif)
+			{
+				if ((pow(($x-$center->x), 2) + pow(($y-$center->y), 2)) <= pow($radius, 2))
+					return true;
+			}
+			return false;
+		}
+
+		// determine m and p
+		$m = ($pointB["y"] - $pointA["y"]) / ($pointB["x"] - $pointA["x"]);
+		$p = $pointA["y"] - ($m * $pointA["x"]);
+
+		// determine line direction
+		if ($pointA["x"] > $pointB["x"])
+			$dif = -0.1;
+		else
+			$dif = 0.1;
+
+		//determine if has intersection
+		for ($x = $pointA["x"]; ($x >= $pointA["x"] && $x <= $pointB["x"]) || ($x <= $pointA["x"] && $x >= $pointB["x"]); $x += $dif)
+		{
+			$y = ($m * $x) + $p;
+			if ((pow(($x-$center->x), 2) + pow(($y-$center->y), 2)) <= pow($radius, 2))
+				return true;
+		}
+		return false;
+	}
+
+	private function intersectionWithHandwrite($center, $radius, $obj)
+	{
+		$prev = null;
+			foreach ($obj->points as $key => $point) {
+				if (!$prev)
+					$prev = $point;
+				else {
+					if ($this->intersectionWithLine($center, $radius, $prev, $point))
+						return true;
+					$prev = $point;
+				}
+			}
+		return false;
+	}
+
+	private function intersectionWithSquare($center, $radius, $square)
+	{
+		if ($this->intersectionWithLine($center, $radius, $square["A"], $square["B"]) || $this->intersectionWithLine($center, $radius, $square["B"], $square["C"])
+			|| $this->intersectionWithLine($center, $radius, $square["C"], $square["D"]) || $this->intersectionWithLine($center, $radius, $square["D"], $square["A"]))
+			return true;
+		return false;
+	}
+
+	private function intersectionWithEllipse($center, $radius, $obj)
+	{
+		$objCenter = array("x" => (($obj->positionStart->x + $obj->positionEnd->x) / 2), "y" => (($obj->positionStart->y + $obj->positionEnd->y) / 2));
+
+		if ($center->x == $objCenter["x"])
+		{
+			$x = $center->x;
+			if ($center->y > $objCenter["y"])
+				$dif = -0.1;
+			else
+				$dif = 0.1;
+
+			for ($y = $center->y; ($y >= $center->y && $y <= $objCenter["y"]) || ($y <= $center->y && $y >= $objCenter["y"]); $y += $dif)
+			{
+				if (((pow(($x-$center->x), 2) + pow(($y-$center->y), 2)) <= pow($radius, 2))
+					&& ((pow(($x - $objCenter["x"]), 2) / pow($obj->radius->x, 2)) + (pow(($y - $objCenter["y"]), 2) / pow($obj->radius->y, 2)) <= 1))
+					return true;
+			}
+			return false;
+		}
+
+		// determine m and p
+		$m = ($objCenter["y"] - $center->y) / ($objCenter["x"] - $center->x);
+		$p = $center->y - ($m * $center->x);
+
+		// determine line direction
+		if ($center->x > $objCenter["x"])
+			$dif = -0.1;
+		else
+			$dif = 0.1;
+
+		//determine if has intersection
+		for ($x = $center->x; ($x >= $center->x && $x <= $objCenter["x"]) || ($x <= $center->x && $x >= $objCenter["x"]); $x += $dif)
+		{
+			$y = ($m * $x) + $p;
+			if (((pow(($x-$center->x), 2) + pow(($y-$center->y), 2)) <= pow($radius, 2))
+				&& ((pow(($x - $objCenter["x"]), 2) / pow($obj->radius->x, 2)) + (pow(($y - $objCenter["y"]), 2) / pow($obj->radius->y, 2)) <= 1))
+				return true;
+		}
+		return false;
+	}
+
 }
