@@ -155,7 +155,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
 		$now = new DateTime('now');
-		if ($user->getTokenValidity() > $now)
+		if ($user->getToken() && $user->getTokenValidity() > $now)
 			{
 				$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
