@@ -33,13 +33,16 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
   // ------------------------------------------------------
   $scope.updateProject = function(project){
     //var logo = ;
+
+    var encrypted_password = project.password;
     var elem = {
       "token": $cookies.get('USERTOKEN'),
       "projectId": $scope.projectID,
       "name": project.name,
       "description": project.description,
       //"logo": logo,
-      //"password": project.new_password,
+      //"password": encrypted_password,
+      "oldPassword": project.old_password,
       "phone": project.phone,
       "company": project.company,
       "email": project.contact_mail,
@@ -62,12 +65,14 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
 
   $scope.createProject = function(project){
     //var logo = ;
+
+    var encrypted_password = project.password;
     var elem = {
       "token": $cookies.get('USERTOKEN'),
       "name": project.name,
       "description": project.description,
       //"logo": logo,
-      //"password": project.new_password,
+      "password": encrypted_password,
       "phone": project.phone,
       "company": project.company,
       "email": project.contact_mail,
@@ -163,11 +168,12 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
       }, $scope);
   };
 
-  $scope.deleteCustomersAccess = function(customer) {
+  $scope.deleteCustomerAccess = function(customer) {
     Notification.info({ message: 'Deleting customer access...', delay: 5000 });
     $http.delete($rootScope.apiBaseURL + '/projects/delcustomeraccess/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID + '/' + customer.id)
       .then(function successCallback(response) {
         Notification.success({ message: 'Customer access deleted', delay: 5000 });
+        getCustomers();
       },
       function errorCallback(response) {
         Notification.warning({ message: 'Unable to delete customer access. Please try again.', delay: 5000 });
