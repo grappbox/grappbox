@@ -1890,8 +1890,8 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V0.11/cloud/createdir create a directory
-	* @apiVersion 0.11.0
+	* @api {post} /V0.2/cloud/createdir create a directory
+	* @apiVersion 0.2.0
 	* @apiDescription This method is there to create a directory in the cloud
 	* @apiGroup Cloud
 	* @apiName Create Directory
@@ -1901,7 +1901,7 @@ class CloudController extends Controller
 	* @apiParam {Number} creation_infos.project_id The project id to execute the command.
 	* @apiParam {string} creation_infos.path The path of the directory in the cloud where the new directory have to be created (absolute path from the root of the project's cloud)
 	* @apiParam {string} creation_infos.dir_name The new directory's name.
-	* @apiParam {string} [creation_infos.password] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
+	* @apiParam {string} [creation_infos.password_safe] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
 	* @apiParamExample {json} Request Example:
 	* 	{
 	*		"session_infos": {
