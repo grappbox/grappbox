@@ -508,7 +508,9 @@ class CloudController extends Controller
 			$content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
 			$filename = split('/', $content[$i]["path"]);
 			$filename = $filename[count($filename) - 1];
-			$filename = str_replace('|', ' ', urldecode($filename));
+			$filename = urldecode($filename);
+			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
+			$filename = str_replace('|', ' ', $filename);
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
 			if ($content[$i]["type"] == "file")
@@ -518,7 +520,7 @@ class CloudController extends Controller
 					unset($content[$i]["timestamp"]);
 			}
 
-			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
+
 		}
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - getListAction - Complete Success";
