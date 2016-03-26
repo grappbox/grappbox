@@ -287,6 +287,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setDescription($content->description);
 		$bug->setCreatedAt(new DateTime('now'));
 
+		$state = null;
 		if (array_key_exists("stateId", $content) && $content->stateId != 0)
 			$state = $em->getRepository("GrappboxBundle:BugState")->find($content->stateId);
 		if ($state instanceof BugState)
@@ -305,7 +306,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$ticket = $bug->objectToArray();
-		$ticket['state'] = $state->getName();
+		$ticket['state'] = $state->objectToArray();
 		foreach ($bug->getTags() as $key => $tag_value) {
 			$ticket['tags'][] = $tag_value->objectToArray();
 		}
