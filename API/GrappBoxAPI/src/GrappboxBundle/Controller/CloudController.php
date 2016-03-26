@@ -766,7 +766,7 @@ class CloudController extends Controller
 	* @apiParam {string} token The token of authenticated user.
 	* @apiParam {Number} project_id The project id to execute the command.
 	* @apiParam {string} path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
-	* @apiParam {string} [password] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
+	* @apiParam {string} [passwordSafe] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
 	* @apiParamExample {curl} Request Example:
 	* curl -X DELETE http://api.grappbox.com/app_dev.php/V0.2/cloud/del/MyToken/1/,Doulan.txt/satan
 	*
@@ -853,7 +853,7 @@ class CloudController extends Controller
 	* @apiParam {Number} project_id The project id to execute the command.
 	* @apiParam {string} path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
 	* @apiParam {string} password the password of the file you want to delete
-	* @apiParam {string} [password] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
+	* @apiParam {string} [passwordSafe] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
 	* @apiParamExample {curl} Request Example:
 	* curl -X DELETE http://api.grappbox.com/app_dev.php/V0.2/cloud/del/MyToken/1/,Doulan.txt/satan
 	*
@@ -941,7 +941,7 @@ class CloudController extends Controller
 	* @apiParam {Number} data.project_id The project id to execute the command.
 	* @apiParam {string} data.path The path of the directory in the cloud where the new directory have to be created (absolute path from the root of the project's cloud)
 	* @apiParam {string} data.dir_name The new directory's name.
-	* @apiParam {string} [data.password] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
+	* @apiParam {string} [data.passwordSafe] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
 	* @apiParamExample {json} Request Example:
 	* 	{
 	*		"data": {
