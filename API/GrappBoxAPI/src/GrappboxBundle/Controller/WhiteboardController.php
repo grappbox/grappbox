@@ -824,6 +824,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		$data = array();
 		foreach ($toDel as $key => $value) {
+			$value->setDeletedAt(new DateTime("now"));
+			$em->persist($value);
+			$em->flush();
+
 			$data[] = $value->objectToArray();
 		}
 		return $this->setSuccess("1.10.1", "Whiteboard", "deleteObject", "Complete Success", array("array" => $data));
