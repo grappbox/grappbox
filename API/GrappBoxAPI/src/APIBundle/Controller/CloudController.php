@@ -164,7 +164,7 @@ class CloudController extends Controller
 			$idProject = $receivedData["project_id"];
 		}
 		if (($method == "POST" && $this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
-			throw $this->createAccessDeniedException();
+			return $this->createAccessDeniedException($method == "POST" ? 1 : 2, $method == "POST" ? "openStreamAction" : "closeStreamAction");
 		return ($method == "POST"
 							? $this->openStream($receivedData, $userId, $idProject)
 							: $this->closeStream($receivedData, $token));
@@ -610,7 +610,7 @@ class CloudController extends Controller
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		$user_id = $this->getUserId($token);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
-			throw $this->createAccessDeniedException();
+			return $this->createAccessDeniedException(2, "closeStreamAction");
 
 		//Here the user have the authorization to close this stream
 		if (!is_null($stream->getPassword()))
@@ -867,7 +867,7 @@ class CloudController extends Controller
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
-			throw $this->createAccessDeniedException();
+			return $this->createAccessDeniedException(3, "sendFileAction");
 
 		//Here the user have the right authorization, so upload the file's chunk
 
@@ -1000,7 +1000,7 @@ class CloudController extends Controller
 			$passwordEncrypted = null;
 		}
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
-			throw $this->createAccessDeniedException();
+			return $this->createAccessDeniedException(4, "getListAction");
 
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
@@ -1158,7 +1158,7 @@ class CloudController extends Controller
 			$passwordEncrypted = NULL;
 		}
 		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
-			throw $this->createAccessDeniedException();
+			return $this->createAccessDeniedException(5, "getFileAction");
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
 		$cloudPath = str_replace(',', '/', $cloudPath);
@@ -1167,7 +1167,7 @@ class CloudController extends Controller
 		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
 		if ($searchResult->meta->statuscode != 100 ||
 			$searchResult->data->element->share_type != "3")
-			throw $this->createNotFoundException('file not found');
+			return $this->createNotFoundException('file not found');
 		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
 	}
 
@@ -1365,7 +1365,7 @@ class CloudController extends Controller
 		$idProject = (int)$json["safe_infos"]["project_id"];
 		$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
-			throw $this->createAccessDeniedException();
+			return $this->createAccessDeniedException(6, "setSafePassAction");
 
 		$project->setSafePassword($json["safe_infos"]["password"]);
 		$dbManager->persist($project);
@@ -1707,7 +1707,7 @@ class CloudController extends Controller
 			$passwordEncrypted = NULL;
 		}
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || preg_match("/Safe$/", $json["deletion_infos"]["path"]) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
-			throw $this->createAccessDeniedException();
+			return $this->createAccessDeniedException(7, "delAction");
 
 		//Now we can delete the file or the directory
 		$path = "/GrappBox|Projects/".(string)($idProject).str_replace(' ', '|', $json["deletion_infos"]["path"]);
@@ -1939,7 +1939,7 @@ class CloudController extends Controller
 			$passwordEncrypted = NULL;
 		}
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
-			return  $this->createAccessDeniedException();
+			return  $this->createAccessDeniedException(8, "createDirAction");
 
 		//Now we can create the directory at the proper place
 		$path = $json["creation_infos"]["path"];
@@ -1952,5 +1952,14 @@ class CloudController extends Controller
 		//HERE Create the dir in the cloud
 		$flysystem->createDir($rpath);
 		return new JsonResponse(Array("infos" => "OK"));
+	}
+
+	public function createAccessDeniedException($routeNumber, $routeName)
+	{
+			header("HTTP/1.0 203 Partial Content", true, 203);
+			$json["info"]["return_code"] = "3.".((string)$routeNumber).".9";
+			$json["info"]["return_message"] = "Cloud - " . $routeName . "Insufficient Right";
+
+			return new JsonResponse($json);
 	}
 }
