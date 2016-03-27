@@ -16,7 +16,6 @@
 
 /* ==================== GENERAL LAYOUT ==================== */
 
-html { background: #fafafa; }
 body { font-family: 'Roboto', Helvetica, Arial, sans-serif; font-weight: 400; line-height: initial; letter-spacing: normal; color: #212121; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 body.modal-open { overflow: auto!important; }
 
@@ -39,7 +38,7 @@ i { padding: 0 10px 0 0; }
 #app-wrapper.toggled { padding-left: 250px; }
 #app-wrapper.toggled #sidebar-wrapper { width: 250px; }
 #app-wrapper.toggled #page-content-wrapper { position: absolute; margin-right: -250px; }
-#page-content-wrapper { width: 100%; position: absolute; padding: 15px; background: #fafafa; }
+#page-content-wrapper { width: 100%; position: absolute; padding: 15px; }
 #page-content-wrapper .page-header { margin: 0; padding: 0; border: 0; }
 #page-content-wrapper .page-header .app-page-title { height: 60px; margin: 0 -20px; padding: 0 35px; font-family: "Roboto Condensed", Helvetica, Arial, sans-serif; font-size: 24px; background: #e05e52; color: #fafafa; text-transform: uppercase; }
 #page-content-wrapper .page-header .app-page-title .title { display: inline-block; padding: 14px 0 0 0; }
@@ -201,6 +200,29 @@ section { margin: 0 0 60px 0; }
 
 
 
+/* ==================== SECTION: CALENDAR ==================== */
+
+#calendar-view .section-content { margin: 30px 15px 0 15px; }
+#calendar-view .section-content .data-title { padding: 11px 10px; margin: 0; background: #616161; color: #fafafa; font-size: 18px; text-transform: uppercase; text-align: center; }
+#calendar-view .section-content .data-actions { padding: 0; margin: 0; background: #fafafa; border: 1px solid #e0e0e0; }
+#calendar-view .section-content .data-actions a { display: inline-block; width: 100%; text-align: center; padding: 10px 0; color: #212121; text-transform: uppercase; }
+
+#calendar-view .cal-context .glyphicon,
+#calendar-view .cal-context .fa { padding: 0!important; margin: 0!important; }
+#calendar-view .cal-event-list .event.pull-left,
+#calendar-view .events-list { display: none!important; }
+#calendar-view .cal-context span[data-cal-date] { opacity: 1; }
+#calendar-view .cal-context .cal-day-outmonth span[data-cal-date] { opacity: 0.5; }
+#calendar-view .cal-context .cal-row-head { background: #e0e0e0; }
+#calendar-view .cal-context .cal-row-head > div { text-transform: uppercase; padding: 10px 0; }
+#calendar-view .cal-context .cal-month-box { border-radius: 0; border: 1px solid #e0e0e0; border-right: none; border-bottom: none; }
+#calendar-view .cal-context .cal-events-num { padding: 5px 7px; background: #4FC3F7; }
+#calendar-view .cal-context .cal-day-weekend span[data-cal-date] { color: #212121; }
+#calendar-view .cal-context .cal-slide-content { background: #616161; box-shadow: none!important; }
+#calendar-view .cal-context .cal-slide-content .event-item a { background: #fff; border-radius: 50%; }
+#calendar-view .cal-context .cal-day-tick { width: auto; right: 45%; padding: 8px 10px; border: none; border-radius: 50%; }
+
+
 /* ==================== SECTION: CLOUD ==================== */
 
 #cloud-list .section-content { margin: 30px -20px; }
@@ -318,6 +340,7 @@ section { margin: 0 0 60px 0; }
 
 
 /* ==================== SECTION: PROJECT ==================== */
+
 #project-list .section-content { margin: 30px -20px; }
 #project-list .project-picture { padding: 10px; }
 #project-list .project-picture img { max-width: 120px; border-radius: 50%; }

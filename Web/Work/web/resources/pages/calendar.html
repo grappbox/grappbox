@@ -2,9 +2,7 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="calendar-view" data-ng-controller="calendarController">
-
-  <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}">{[{ alert.message }]}</uib-alert>
+<div class="view view-content" id="calendar-view" data-ng-controller="calendarController as vm">
 
   <section class="app-section" id="calendar">
     <div class="container app-container">
@@ -12,13 +10,66 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div class="col-lg-12">
           <!-- grappbox.data : calendar -->
           <div class="section-heading">
-            <h2></h2>
-            <p></p>
+            <h2>View your calendar</h2>
+            <p>Use the calendar controls to switch between day, week and month view. Clic on any day to add an event, or view the day's events if any.<br>All your changes are submitted automatically.</p>
           </div>
           <div class="section-content" ng-show="data.onLoad">
             <div class="loading-content section"><div></div></div>
           </div>
-          <div class="section-content" ng-show="!data.onLoad"></div>
+          <div class="section-content list" ng-show="!data.onLoad">
+            <div id="all-calendar-data">
+              <div class="row data-title">
+                <div class="col-md-12"><i class="fa fa-calendar"></i>{[{ calendarTitle }]}</div>
+              </div>
+              <div class="row data-actions">
+                <div class="col-md-1">
+                  <a ng-model="calendarView" uib-btn-radio="'day'">Day</a>
+                </div>
+                <div class="col-md-1">
+                  <a ng-model="calendarView" uib-btn-radio="'week'">Week</a>
+                </div>
+                <div class="col-md-1">
+                  <a ng-model="calendarView" uib-btn-radio="'month'">Month</a>
+                </div>
+                <div class="col-md-1">
+                  <a ng-model="calendarView" uib-btn-radio="'year'">Year</a>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-1"></div>
+                <div class="col-md-1"></div>
+                <div class="col-md-1"></div>
+                <div class="col-md-1"></div>
+                <div class="col-md-1">
+                  <a mwl-date-modifier date="viewDate" decrement="calendarView"><i class="fa fa-arrow-left"></i>Previous</a>
+                </div>
+                <div class="col-md-1">
+                  <a mwl-date-modifier date="viewDate" set-to-today>Today</a>
+                </div>
+                <div class="col-md-1">
+                  <a mwl-date-modifier date="viewDate" increment="calendarView"><i class="fa fa-arrow-right"></i>Next</a>
+                </div>
+              </div>
+
+              <mwl-calendar
+                events="events"
+                view="calendarView"
+                view-title="calendarTitle"
+                view-date="viewDate"
+                on-event-click="eventClicked(calendarEvent)"
+                on-event-times-changed="eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+                edit-event-html="'<i class=\'fa fa-pencil\'></i>'"
+                delete-event-html="'<i class=\'fa fa-trash-o\'></i>'"
+                on-edit-event-click="eventEdited(calendarEvent)"
+                on-delete-event-click="eventDeleted(calendarEvent)"
+                cell-is-open="isCellOpen"
+                day-view-start="03:00"
+                day-view-end="23:00"
+                day-view-split="30"
+                cell-modifier="modifyCell(calendarCell)">
+              </mwl-calendar>
+            
+            </div>
+          </div>
         </div>
       </div>
     </div>

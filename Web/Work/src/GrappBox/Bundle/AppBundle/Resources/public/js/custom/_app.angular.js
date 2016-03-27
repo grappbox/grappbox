@@ -9,7 +9,7 @@
 * APP and main controller definition
 *
 */
-var app = angular.module("grappbox", ["ngRoute", "ngCookies", "ngAnimate", "ui.bootstrap", "panhandler", "ui-notification", "naif.base64", "ngTagsInput"]);
+var app = angular.module("grappbox", ["ngRoute", "ngCookies", "ngAnimate", 'mwl.calendar', "ui.bootstrap", "panhandler", "ui-notification", "naif.base64", "ngTagsInput"]);
 
 /* ==================== INITIALIZATION ==================== */
 
