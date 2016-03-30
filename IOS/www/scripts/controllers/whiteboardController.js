@@ -61,8 +61,8 @@ angular.module('GrappBox.controllers')
 
 // WHITEBOARD
 .controller('WhiteboardCtrl', function ($scope, $ionicPopover, $ionicPopup, $ionicScrollDelegate) {
-    var width = 2000; //4096;
-    var height = 2000; //2160;
+    var width = 4096; //4096;
+    var height = 2160; //2160;
 
     var canvas = new fabric.Canvas('canvasWhiteboard');
 

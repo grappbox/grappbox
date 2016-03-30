@@ -8,6 +8,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="Content-Security-Policy" />
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>GrappBox</title>
 
@@ -30,6 +31,7 @@
     <script src="scripts/lib/angular-gantt-plugins.js"></script> <!-- Angular-gantt-plugin include all plugins for the gantt (like table or tree) -->
     <script src="scripts/lib/ng-cordova.js"></script> <!-- ngCordova to access native functions on phone -->
     <script src="scripts/lib/fabric.js"></script> <!-- fabric.js is a library used for the whiteboard -->
+    <script src="scripts/lib/angular-base64-upload.js"></script> <!-- angular-base-64-upload.js for binding file from HTML5 input type file to scope variable -->
     <script src="scripts/lib/fastclick.js"></script> <!-- fastclick.js is a library used to avoid 300ms click lag -->
     <script>
         window.addEventListener('load', function() {
