@@ -489,10 +489,9 @@ class CloudController extends Controller
 		}
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.4.9";
 			$response["info"]["return_message"] = "Cloud - getListAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		$client = new Client(self::$settingsDAV);
