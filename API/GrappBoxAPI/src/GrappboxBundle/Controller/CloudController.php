@@ -221,20 +221,18 @@ class CloudController extends Controller
 		}
 		if (($this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.1.9";
 			$response["info"]["return_message"] = "Cloud - openStreamAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 		$receivedData["filename"] = str_replace(" ", "|", $receivedData["filename"]);
 		$receivedData["path"] = str_replace(" ", "|", $receivedData["path"]);
 
 		if ($receivedData["path"][0] != "/")
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.1.4";
 			$response["info"]["return_message"] = "Cloud - openStreamAction - Bad Parameter";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 		$em = $this->getDoctrine()->getManager();
 		$stream = new CloudTransfer();
@@ -300,10 +298,9 @@ class CloudController extends Controller
 		$user_id = $this->getUserId($token);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.2.9";
 			$response["info"]["return_message"] = "Cloud - closeStreamAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Here the user have the authorization to close this stream
@@ -395,10 +392,9 @@ class CloudController extends Controller
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.3.9";
 			$response["info"]["return_message"] = "Cloud - sendFileAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Here the user have the right authorization, so upload the file's chunk
@@ -580,10 +576,9 @@ class CloudController extends Controller
 		}
 		if (!is_null($filePassword) || $userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.5.9";
 			$response["info"]["return_message"] = "Cloud - getFileAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
@@ -593,10 +588,9 @@ class CloudController extends Controller
 		if ($searchResult->meta->statuscode != 100 ||
 			$searchResult->data->element->share_type != "3")
 			{
-				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.5.10";
 				$response["info"]["return_message"] = "Cloud - getFileAction - Target file not found";
-				return new JsonResponse($response);
+				return new JsonResponse($response, 206);
 			}
 		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
 	}
@@ -653,10 +647,9 @@ class CloudController extends Controller
 		}
 		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordFileEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.5.9";
 			$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
@@ -667,10 +660,9 @@ class CloudController extends Controller
 		if ($searchResult->meta->statuscode != 100 ||
 			$searchResult->data->element->share_type != "3")
 			{
-				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.5.10";
 				$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Target file not found";
-				return new JsonResponse($response);
+				return new JsonResponse($response, 206);
 			}
 		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
 	}
@@ -734,19 +726,17 @@ class CloudController extends Controller
 		$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.6.9";
 			$response["info"]["return_message"] = "Cloud - setSafePassAction - Insufficient Success";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		$passwordEncrypted = ($json["data"]["oldPassword"] ? $this->grappSha1($json["data"]["oldPassword"]) : NULL);
 		if ($passwordEncrypted != $project->getSafePassword())
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.6.9";
 			$response["info"]["return_message"] = "Cloud - setSafePassAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		$project->setSafePassword($json["data"]["password"]);
@@ -818,10 +808,9 @@ class CloudController extends Controller
 		}
 		if ($path == "" || $path == "/" || !is_null($file) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
-				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.7.9";
 				$response["info"]["return_message"] = "Cloud - delAction - Insufficient Right Access";
-				return new JsonResponse($response);
+				return new JsonResponse($response, 206);
 			}
 
 		//Now we can delete the file or the directory
@@ -911,10 +900,9 @@ class CloudController extends Controller
 		}
 		if ($path == "/" || $path == "" || is_null($file) || (!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
-				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.9.9";
 				$response["info"]["return_message"] = "Cloud - delSafeAction - Insufficient Right Access";
-				return new JsonResponse($response);
+				return new JsonResponse($response, 206);
 			}
 
 		//Now we can delete the file or the directory
@@ -994,10 +982,9 @@ class CloudController extends Controller
 		}
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.8.9";
 			$response["info"]["return_message"] = "Cloud - createDirAction - Insufficient Success";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Now we can create the directory at the proper place
