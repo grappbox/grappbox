@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 .controller('CloudCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicModal, $cordovaFile, $cordovaFileTransfer, $timeout,
-    CloudLS, CloudCreateDir, CloudDownloadFile, CloudOpenStream, CloudCloseStream, CloudUploadChunk) {
+    CloudLS, CloudCreateDir, CloudOpenStream, CloudCloseStream, CloudUploadChunk) {
 
     $scope.projectId = $stateParams.projectId;
     $scope.userConnectedId = $rootScope.userDatas.id;
@@ -18,8 +18,7 @@ angular.module('GrappBox.controllers')
     $scope.pathTab = [];
     $scope.password = "";
     $scope.path = "";
-    $scope.file = {};
-    
+
     // Add directory name to pathTab and add it to path
     $scope.pushDirToPath = function (dirName) {
         $scope.pathTab.push(dirName + "/");
@@ -119,6 +118,11 @@ angular.module('GrappBox.controllers')
         $scope.dirModal.remove();
     });
 
+    /*
+    ** Download file with $cordovaFileTransfer
+    ** Method: GET
+    ** File location on Android: Android\Data\com.grappbox.grappbox\Files\
+    */
     $scope.downloadFile = function (fileName) {
         document.addEventListener('deviceready', function () {
             // File for download
@@ -131,9 +135,11 @@ angular.module('GrappBox.controllers')
             // Options to send
             var options = {};
             $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-              .then(function (result) {
-                  console.log(result);
+              .then(function (data) {
+                  console.log('Cloud download file successful !');
+                  console.log(data);
               }, function (error) {
+                  console.error('Cloud download file failed ! Reason: ' + error.status + ' ' + error.statusText);
                   console.error(error);
               }, function (progress) {
                   $timeout(function () {
@@ -144,65 +150,94 @@ angular.module('GrappBox.controllers')
     }
 
     /*
-    ** Get html redirection to download a file
-    ** Method: GET
-    */
-    /*$scope.downloadData = {};
-    $scope.CloudDownloadFile = function (fileName) {
-        $rootScope.showLoading();
-        console.log("CloudPath = '" + $scope.path + fileName + "', token = '" + $rootScope.userDatas.token + "' , idProject = '" + $scope.projectId + "'");
-        CloudDownloadFile.get({
-            CloudPath: $scope.path.replace(/\//g, ",") + fileName,
-            token: $rootScope.userDatas.token,
-            idProject: $scope.projectId
-        }).$promise
-            .then(function (data) {
-                console.log('Cloud download file successful !');
-                console.log(data);
-                $scope.downloadData = data.data;
-                //$scope.downloadFile(data, fileName);
-            })
-            .catch(function (error) {
-                console.error('Cloud download file failed ! Reason: ' + error.status + ' ' + error.statusText);
-                console.error(error);
-            })
-            .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
-            })
-    }*/
-
-    /*
     ** Open stream in order to upload file
     ** Method: POST
     */
+    $scope.streamId = {};
     $scope.openStreamData = {};
-    $scope.CloudOpenStream = function () {
+    $scope.closeStreamData = {};
+    $scope.fileChunks = {};
+    $scope.chunkSent = 0;
+
+    $scope.UploadFile = function (fileUpload) {
         $rootScope.showLoading();
+        console.log(fileUpload.filename);        
         CloudOpenStream.save({
             token: $rootScope.userDatas.token,
             project_id: $scope.projectId,
             data: {
                 path: $scope.path,
-                filename: $scope.fileName
+                filename: fileUpload.filename
             }
         }).$promise
             .then(function (data) {
                 console.log('Cloud open stream successful !');
                 console.log(data);
                 $scope.openStreamData = data.data;
-                $scope.CloudLS(true);
+                $scope.streamId = data.data.stream_id;
+                $scope.fileChunks = fileUpload.base64.match(/.{1,1048576}/g);
+                console.log(fileUpload);
+                console.log("$scope.fileChunks.length = " + $scope.fileChunks.length);
+                for (var i = 0; i < $scope.fileChunks.length; ++i) {
+                    CloudUploadChunk.update({
+                        data: {
+                            token: $rootScope.userDatas.token,
+                            project_id: $scope.projectId,
+                            stream_id: $scope.streamId,
+                            chunk_numbers: $scope.fileChunks.length,
+                            current_chunk: i,
+                            file_chunk: $scope.fileChunks[i]
+                        }
+                    }).$promise
+                        .then(function (data) {
+                            console.log('Cloud send chunk successful !');
+                            ++$scope.chunkSent;
+                            if ($scope.chunkSent === $scope.fileChunks.length) {
+                                CloudCloseStream.delete({
+                                    token: $rootScope.userDatas.token,
+                                    project_id: $scope.projectId,
+                                    stream_id: $scope.streamId
+                                }).$promise
+                                .then(function (data) {
+                                    console.log('Cloud close stream successful !');
+                                    $scope.closeStreamData = data.data;
+                                    resetUploadFileField();
+                                    $scope.CloudLS(true);
+                                })
+                                .catch(function (error) {
+                                    console.error('Cloud close stream failed ! Reason: ' + error.status + ' ' + error.statusText);
+                                    console.log(error);
+                                    resetUploadFileField();
+                                    $scope.$broadcast('scroll.refreshComplete');
+                                    $rootScope.hideLoading();
+                                })
+                                .finally(function () {
+                                    $scope.$broadcast('scroll.refreshComplete');
+                                    $rootScope.hideLoading();
+                                })
+                            }
+                        })
+                        .catch(function (error) {
+                            console.error('Cloud send chunk failed ! Reason: ' + error.status + ' ' + error.statusText);
+                            resetUploadFileField();
+                            $scope.$broadcast('scroll.refreshComplete');
+                            $rootScope.hideLoading();
+                        })
+                }
             })
             .catch(function (error) {
                 console.error('Cloud open stream failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
-            })
-            .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                resetUploadFileField();
             })
     }
-    
+
+    // Reset file input
+    var resetUploadFileField = function () {
+        angular.element(document.querySelector("#fileUploadId")).val("");
+        $scope.fileUpload = {};
+    };
+
     // Chunk from string is the faster solution
     function chunkString(str, len) {
         var _size = Math.ceil(str.length / len),

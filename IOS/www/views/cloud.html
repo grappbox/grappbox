@@ -22,7 +22,14 @@
                ng-click="dirModal.show()">
             </a>
             <!-- Upload file button -->
-            <a class="button icon ion-ios-cloud-upload button-positive">
+            <input type="file"
+                   id="fileUploadId"
+                   style="display: none;"
+                   data-ng-model="fileUpload"
+                   ng-change="UploadFile(fileUpload)"
+                   base-sixty-four-input />
+            <a class="button icon ion-ios-cloud-upload button-positive"
+               onclick="document.getElementById('fileUploadId').click();">
             </a>
         </div>
         <div class="item item-divider"> Folders</div>
@@ -38,21 +45,10 @@
         <ion-list>
             <ion-item ng-repeat="file in cloudData"
                       ng-show="file.type == 'file'"
-                      ng-click="downloadFile(file.filename)"><!--ng-click="CloudDownloadFile(file.filename)"-->
+                      ng-click="downloadFile(file.filename)">
                 <h2 class="icon ion-document"> {{ file.filename }}</h2>
             </ion-item>
         </ion-list>
-        <form>
-            Select image to upload:
-            <!--<input type="file" name="file" id="file">
-            <input type="submit" value="Upload Image" name="submit">
-            <input type="file" fileread="file.test" />-->
-            <input type='file' ng-model="file" base-sixty-four-input>
-            <p>FileName: {{ file.filename }}</p>
-            <p>FileSize: {{ file.filesize }}</p>
-            <p>FileType: {{ file.filetype }}</p>
-            <p>Base 64: {{ file.base64 }}</p>
-        </form>
     </ion-content>
 </ion-view>
 
@@ -62,7 +58,9 @@
         <ion-header-bar class="bar-dark">
             <h1 class="title">Add folder</h1>
             <button class="button button-clear button-primary"
-                    ng-click="dirModal.hide()">Cancel</button>
+                    ng-click="dirModal.hide()">
+                Cancel
+            </button>
         </ion-header-bar>
         <ion-content>
             <!--<form ng-submit="addWhiteboard(elem)">

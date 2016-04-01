@@ -1,21 +1,26 @@
-﻿body {
+﻿/* Just a little enhancement on browser debug pointer */
+body {
     cursor: url('http://ionicframework.com/img/finger.png'), auto;
 }
 
+/* Bigger font size on titles on tickets */
 .ticket_title {
     font-size: 16px;
 }
 
+/* Text areas auto adapting screen */
 textarea {
     width: 100%;
     height: auto;
 }
 
+/* icons in item dividers */
 .item-divider i {
     position: absolute;
     right: 10px;
 }
 
+/* Stylizing action sheets on Android */
 .platform-android .action-sheet-backdrop.active {
     background-color: rgba(0, 0, 0, 0.1);
 }

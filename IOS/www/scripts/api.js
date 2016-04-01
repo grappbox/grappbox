@@ -342,6 +342,8 @@ angular.module('GrappBox.api', ['ngResource'])
 ********************* CLOUD *********************
 */
 
+// Download file and Download secure file are handled by $cordovaFileTransfer
+
 // List files and folders with a path
 .factory('CloudLS', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'cloud/list/:token/:idProject/:path/:passwordSafe', { token: "@token", idProject: "@idProject", path: "@path" });
@@ -349,7 +351,7 @@ angular.module('GrappBox.api', ['ngResource'])
 
 // Open stream for a file before uploading
 .factory('CloudOpenStream', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'cloud/stream/:token/:project_id', { token: "@token", project_id: "@project_id", path: "@path" });
+    return $resource($rootScope.API + 'cloud/stream/:token/:project_id', { token: "@token", project_id: "@project_id" });
 })
 
 // Upload the file divided in chunks
@@ -360,7 +362,7 @@ angular.module('GrappBox.api', ['ngResource'])
 
 // Close stream to complete file upload
 .factory('CloudCloseStream', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'cloud/stream/:token/:project_id/:streamId', { token: "@token", project_id: "@project_id", streamId: "@streamId"});
+    return $resource($rootScope.API + 'cloud/stream/:token/:project_id/:stream_id', { token: "@token", project_id: "@project_id", stream_id: "@stream_id"});
 })
 
 // Create a directory
@@ -372,16 +374,6 @@ angular.module('GrappBox.api', ['ngResource'])
 .factory('CloudSetSafe', function ($rootScope, $resource) {
     return $resource($rootScope.API + 'cloud/safepass', null,
         { 'update': { method: 'PUT' } });
-})
-
-// Download a file
-.factory('CloudDownloadFile', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'cloud/file/:CloudPath/:token/:idProject', { CloudPath: "@CloudPath", token: "@token", idProject: "@idProject" });
-})
-
-// Download a secure file
-.factory('CloudDownloadSecuredFile', function ($rootScope, $resource) {
-    return $resource($rootScope.API + 'cloud/filesecured/:CloudPath/:token/:idProject/:password/:passwordSafe', { cloudPath: "@cloudPath", token: "@token", idProject: "@idProject", password: "@passwordSafe", passwordSafe: "@passwordSafe" });
 })
 
 // Delete a file or a directory
