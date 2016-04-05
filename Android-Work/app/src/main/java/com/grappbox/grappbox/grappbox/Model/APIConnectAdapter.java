@@ -65,8 +65,8 @@ public class APIConnectAdapter  {
         Log.v("URL", connectURL);
         _url = new URL(connectURL);
         _connection = (HttpURLConnection) _url.openConnection();
-        _connection.setReadTimeout(10000);
-        _connection.setConnectTimeout(15000);
+        _connection.setReadTimeout(40000);
+        _connection.setConnectTimeout(45000);
     }
 
     public void startConnection(String url, String version) throws IOException

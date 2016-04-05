@@ -13,6 +13,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name="WhiteboardService"/>
         <activity android:name=".Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,6 +59,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.grappbox.MainActivity" />
         </activity>
+
+        <service android:name=".Whiteboard.WhiteboardPullIntentService"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

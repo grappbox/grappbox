@@ -53,6 +53,7 @@ public class TimelineFragment extends Fragment {
         timeline.execute();
         return _rootView;
     }
+    
 
     public void TimelineConvertToTicketBugtracker(String title, String content)
     {

@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Debug;
 import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.MainActivity;
@@ -37,6 +38,7 @@ class APIRequestLogin extends AsyncTask<String, Void, String> {
             loginError.show(_loginActivity.getFragmentManager(), "LoginError");
             return;
         }
+        Log.v("Login JSON", result);
         try {
             ContentValues userInformation = new ContentValues();
             JSONObject jsonObject = new JSONObject(result);

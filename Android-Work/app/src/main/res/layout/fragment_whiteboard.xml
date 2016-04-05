@@ -7,6 +7,15 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Whiteboard"
+        android:textSize="30dip"
+        android:paddingLeft="10dip"
+        android:textColor="#c0392b"
+        android:textStyle="bold"/>
+
     <com.grappbox.grappbox.grappbox.Whiteboard.DrawingView
         android:id="@+id/drawing"
         android:layout_width="wrap_content"
@@ -58,6 +67,15 @@
             android:layout_weight="0.2"
             android:contentDescription="Erase button"
             android:src="@drawable/eraser"
+            android:clickable="true" />
+
+        <ImageButton
+            android:id="@+id/move_btn"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Erase button"
+            android:src="@drawable/arrows"
             android:clickable="true" />
 
 

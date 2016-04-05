@@ -1,9 +1,12 @@
 package com.grappbox.grappbox.grappbox.Whiteboard;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -18,13 +21,19 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.R;
 
@@ -35,6 +44,7 @@ import java.util.Iterator;
 public class DrawingView extends View {
 
     private Context _context;
+    private String _idWhiteboard = "0";
     private Path _DrawPath;
     private Paint _DrawPaint;
     private Paint _CanvasPaint;
@@ -45,21 +55,33 @@ public class DrawingView extends View {
     private Bitmap _CanvasBitmap;
     private Bitmap _WhiteboardBitmap;
 
-    private float touchXStart = 0;
-    private float touchYStart = 0;
     private int _ShapeType = 0;
 
     private boolean _OnDraw = false;
+    private boolean _onMove = false;
     private Region _clip;
 
     private ArrayList<DrawingShape> _ListShape = new ArrayList<DrawingShape>();
     private ArrayList<DrawingText> _ListText = new ArrayList<DrawingText>();
+
+    private static float MIN_ZOOM = 1f;
+    private static float MAX_ZOOM = 10f;
+
+    private float _scaleFactor = 1.0f;
+    private float touchXStart = 0;
+    private float touchYStart = 0;
+    private float _speed = 5.0f;
+    private float _previousTouchX = 0;
+    private float _previousTouchY = 0;
+    private ScaleGestureDetector _detector;
+
 
     public DrawingView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         _context = context;
         setupDraw();
+
     }
 
     private void setupDraw()
@@ -80,9 +102,9 @@ public class DrawingView extends View {
 
         _CanvasPaint = new Paint(Paint.DITHER_FLAG);
         _clip = new Region(0, 0, 3840, 2160);
-        _WhiteboardBitmap = Bitmap.createBitmap( 1000 /*3840*/, 1000/*2160*/, Bitmap.Config.ARGB_8888);
+        _WhiteboardBitmap = Bitmap.createBitmap( 1024, 1024, Bitmap.Config.ARGB_8888);
         _CanvasBitmap = _WhiteboardBitmap;
-
+        _detector = new ScaleGestureDetector(_context, new ScaleListener());
     }
 
     @Override
@@ -96,10 +118,10 @@ public class DrawingView extends View {
     @Override
     protected void onDraw(Canvas canvas)
     {
-        //canvas.drawBitmap(_WhiteboardBitmap, new Rect(0, 0, 4096, 2160), new RectF(0, 0, 100, 100), _CanvasPaint);
         if (_OnDraw) {
             _CanvasBitmap = _WhiteboardBitmap;
         }
+        //canvas.translate(translateX, translateY);
         canvas.drawBitmap(_WhiteboardBitmap, 0, 0, _CanvasPaint);
 
         for (DrawingShape shape : _ListShape) {
@@ -144,6 +166,7 @@ public class DrawingView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        int count = event.getPointerCount();
         float touchX = event.getX();
         float touchY = event.getY();
 
@@ -151,63 +174,89 @@ public class DrawingView extends View {
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                _OnDraw = true;
-                //_WhiteboardBitmap = _CanvasBitmap;
                 touchXStart = event.getX();
                 touchYStart = event.getY();
-                _DrawPath.moveTo(touchX, touchY);
-                if (_ShapeType == 3) {
-                    TextEditDialogFragment textEditDIalogFragment = new TextEditDialogFragment();
-                    FragmentManager fm = ((FragmentActivity) _context).getSupportFragmentManager();
-                    textEditDIalogFragment.show(fm, "color selection");
-                }
+                _previousTouchX = touchXStart;
+                _previousTouchY = touchYStart;
+                if (!_onMove) {
+                    if (count == 2) {
 
+                    } else {
+                        _OnDraw = true;
+                        _DrawPath.moveTo(touchX, touchY);
+                        if (_ShapeType == 3) {
+                            TextEditDialogFragment textEditDIalogFragment = new TextEditDialogFragment();
+                            FragmentManager fm = ((FragmentActivity) _context).getSupportFragmentManager();
+                            textEditDIalogFragment.show(fm, "color selection");
+                        }
+                    }
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                _OnDraw = true;
-                drawShape(touchX, touchY);
-                if (_ShapeType == 5) {
-                    _DrawPath.reset();
+                if (!_onMove) {
+                    _OnDraw = true;
                     drawShape(touchX, touchY);
-                    for (Iterator<DrawingShape> it = _ListShape.iterator(); it.hasNext();) {
-                        DrawingShape shape = it.next();
-                        if (intersect(shape.getPath())) {
-                            it.remove();
+                    if (_ShapeType == 5) {
+                        _DrawPath.reset();
+                        drawShape(touchX, touchY);
+                        for (Iterator<DrawingShape> it = _ListShape.iterator(); it.hasNext(); ) {
+                            DrawingShape shape = it.next();
+                            if (intersect(shape.getPath())) {
+                                it.remove();
+                            }
+                        }
+                        for (Iterator<DrawingText> it = _ListText.iterator(); it.hasNext(); ) {
+                            DrawingText text = it.next();
+                            if (intersect(text.getPathText())) {
+                                it.remove();
+                            }
+
                         }
                     }
-                    for (Iterator<DrawingText> it = _ListText.iterator(); it.hasNext();) {
-                        DrawingText text = it.next();
-                        if (intersect(text.getPathText())) {
-                            it.remove();
-                        }
+                } else {
+                    if (count < 2) {
 
+                        float moveX = touchX - _previousTouchX;
+                        float moveY = touchY - _previousTouchY;
+
+                        for (DrawingShape shape : _ListShape) {
+                            shape.TranslatePath(moveX, moveY);
+                        }
+                        for (DrawingText text : _ListText) {
+                            text.TranslatePath(moveX, moveY);
+                        }
+                        _previousTouchX = touchX;
+                        _previousTouchY = touchY;
                     }
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
-                _OnDraw = false;
-                _CanvasBitmap = _WhiteboardBitmap;
-                _DrawCanvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
-                if (_ShapeType == 2) {
-                    _DrawPaint.setStyle(Paint.Style.STROKE);
-                    _DrawPaint.setColor(_PaintColor);
-                    Paint inPaint = new Paint(_DrawPaint);
-                    Paint outPaint = new Paint(_DrawPaint);
-                    _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint));
-                } else if (_ShapeType != 5) {
+                if (!_onMove) {
+                    _OnDraw = false;
+                    _CanvasBitmap = _WhiteboardBitmap;
+                    _DrawCanvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
+                    if (_ShapeType == 2) {
+                        _DrawPaint.setStyle(Paint.Style.STROKE);
+                        _DrawPaint.setColor(_PaintColor);
+                        Paint inPaint = new Paint(_DrawPaint);
+                        Paint outPaint = new Paint(_DrawPaint);
+                        _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint, 1.0f));
+                    } else if (_ShapeType != 5) {
+                        _DrawPath.reset();
+                        drawShape(touchX, touchY);
+                        _DrawPaint.setStyle(Paint.Style.FILL);
+                        _DrawPaint.setColor(_PaintColor);
+                        Paint inPaint = new Paint(_DrawPaint);
+                        _DrawPaint.setStyle(Paint.Style.STROKE);
+                        _DrawPaint.setColor(_SecondColor);
+                        Paint outPaint = new Paint(_DrawPaint);
+                        _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint, 1.0f));
+                    }
+                    pushShape(_ShapeType, touchXStart, touchYStart, touchX, touchY);
                     _DrawPath.reset();
-                    drawShape(touchX, touchY);
-                    _DrawPaint.setStyle(Paint.Style.FILL);
-                    _DrawPaint.setColor(_PaintColor);
-                    Paint inPaint = new Paint(_DrawPaint);
-                    _DrawPaint.setStyle(Paint.Style.STROKE);
-                    _DrawPaint.setColor(_SecondColor);
-                    Paint outPaint = new Paint(_DrawPaint);
-                    _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint));
                 }
-                _DrawPath.reset();
 
                 break;
 
@@ -215,9 +264,38 @@ public class DrawingView extends View {
                 return false;
         }
 
+        _detector.onTouchEvent(event);
         invalidate();
 
         return true;
+    }
+
+    private void pushShape(int shapeType, float initX, float initY, float endX, float endY)
+    {
+        String shape;
+        switch (shapeType){
+            case 0:
+                shape = "RECTANGLE";
+                break;
+
+            case 1:
+                shape = "ELLIPSE";
+                break;
+
+            case 2:
+                shape = "HANDWRITE";
+
+            default:
+                shape = null;
+                break;
+        }
+
+        if (shape != null) {
+            String pos = String.valueOf(initX) + "," + String.valueOf(initY) + ";" + String.valueOf(endX) + "," + String.valueOf(endY);
+            String color =  String.format("#%06X", (0xFFFFFF & _PaintColor));
+            APIRequestWhiteboardPush push = new APIRequestWhiteboardPush(this, "add");
+            push.execute(_idWhiteboard, shape, pos, color);
+        }
     }
 
     private void drawTriangle(float touchX, float touchY)
@@ -268,6 +346,12 @@ public class DrawingView extends View {
         } else if (_ShapeType == 5){
             _DrawPath.addCircle(touchX, touchY, 100, Path.Direction.CCW);
         }
+    }
+
+    public void onMove(boolean isOnMove)
+    {
+        invalidate();
+        _onMove = isOnMove;
     }
 
     public void setColor(String newColor)
@@ -340,6 +424,31 @@ public class DrawingView extends View {
         _DrawPaint.setColor(_PaintColor);
     }
 
+    public void setIdWhiteboard(String idWhiteboard)
+    {
+        _idWhiteboard = idWhiteboard;
+    }
+
+    class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+
+            float value = (detector.getScaleFactor() - 1.0f) / 10;
+            _scaleFactor += value;
+            /*if (_scaleFactor >= 0.5f && _scaleFactor <= 3) {
+                for (DrawingShape shape : _ListShape) {
+                    shape.scalePath(value);
+                }
+                for (DrawingText text : _ListText) {
+                    text.scalePath(value);
+                }
+            }*/
+            _scaleFactor = Math.max(MIN_ZOOM, Math.min(_scaleFactor, MAX_ZOOM));
+            Log.v("Scale Factor", String.valueOf(value));
+            return true;
+        }
+    }
 
     public class TextEditDialogFragment extends DialogFragment {
 

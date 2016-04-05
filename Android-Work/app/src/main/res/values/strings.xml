@@ -27,6 +27,9 @@
     <string name="occupation_state_label">State :</string>
 
     <string name="list_whiteboard">List whiteboard</string>
+    <string name="add_whiteboard_label">Create new whiteboard</string>
+    <string name="delete_whiteboard_label">Delete whiteboard</string>
+    <string name="delete_confirm_whiteboard_label">Are you sure you want to delete</string>
     <string name="data_not_specified">Not specified</string>
     <string name="dialog_color_select">Color selection</string>
 
