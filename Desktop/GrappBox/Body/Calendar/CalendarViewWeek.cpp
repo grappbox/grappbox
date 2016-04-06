@@ -9,11 +9,12 @@ CalendarViewWeek::CalendarViewWeek()
     for (int i = 0; i < 7; ++i)
     {
         CalendarViewDay *view = new CalendarViewDay((i == 0));
+        view->setMaximumWidth(2000);
+        view->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         _ViewsDay.push_back(view);
         _MainLayout->addWidget(view);
-        view->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 		connect(view, SIGNAL(NeedEdit(Event*)), this, SLOT(EventEdit(Event*)));
-		connect(view, SIGNAL(NeedDelete(Event*)), this, SLOT(EventDelete(Event*)));
+        connect(view, SIGNAL(NeedDelete(Event*)), this, SLOT(EventDelete(Event*)));
 	}
 
     setLayout(_MainLayout);

@@ -3,7 +3,7 @@
 
 CalendarViewDay::CalendarViewDay(bool viewHour)
 {
-	setFixedHeight(1920);
+    setFixedHeight(1920);
 
 	setStyleSheet("border: red solid 2px;");
 

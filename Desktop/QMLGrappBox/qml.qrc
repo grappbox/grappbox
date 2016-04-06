@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/qrc">
+        <file>qrc/Cloud.qml</file>
+        <file>qrc/main.qml</file>
+        <file>qrc/MainForm.qml</file>
+        <file>qrc/IconTextButton.qml</file>
+        <file>qrc/Gantt.qml</file>
+        <file>qrc/GanttDisplay.qml</file>
+    </qresource>
+</RCC>
