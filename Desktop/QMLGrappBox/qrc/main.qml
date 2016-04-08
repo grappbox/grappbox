@@ -13,6 +13,10 @@ Window {
     visible: true
 
     color: "#3b3b3b"
+    onClosing: {
+        if (!controller.isLoged)
+            demo.close()
+    }
 
     property bool isLoading: false
 
@@ -20,8 +24,8 @@ Window {
         id: controller
 
         onLoginSuccess: {
-            loginPage.close()
             demo.selectedComponent = demo.sectionTitles[6]
+            loginPage.close()
         }
 
         onLoginFailed: {
@@ -167,7 +171,7 @@ ApplicationWindow {
     id: demo
 
     title: "GrappBox"
-    visible: !loginPage.visible
+    visible: !loginPage.visible && controller.isLoged
 
     theme {
         primaryColor: "#c0392b"

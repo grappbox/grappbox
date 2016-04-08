@@ -10,7 +10,7 @@ SOURCES += main.cpp \
     LoginController.cpp \
     FileDownloader.cpp \
     SDebugLog.cpp \
-    GanttArrow.cpp
+    GanttView.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
@@ -36,5 +36,5 @@ HEADERS += \
     LoginController.h \
     FileDownloader.h \
     SDebugLog.h \
-    GanttArrow.h
+    GanttView.h
 

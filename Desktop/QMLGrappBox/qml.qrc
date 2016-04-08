@@ -5,6 +5,5 @@
         <file>qrc/MainForm.qml</file>
         <file>qrc/IconTextButton.qml</file>
         <file>qrc/Gantt.qml</file>
-        <file>qrc/GanttDisplay.qml</file>
     </qresource>
 </RCC>

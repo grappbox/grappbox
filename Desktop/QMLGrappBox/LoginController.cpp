@@ -4,7 +4,7 @@
 
 LoginController::LoginController(QWidget *parent)
 {
-
+    _IsLoged = false;
 }
 
 void LoginController::login(QString name, QString password)
@@ -33,9 +33,18 @@ void LoginController::OnLoginSuccess(int id, QByteArray response)
     QImage *avatar = new QImage(QImage::fromData(QByteArray::fromBase64(obj["avatar"].toString().toStdString().c_str()), "PNG"));
     API::SDataManager::GetDataManager()->RegisterUserConnected(idUser, userName, userLastName, userToken, avatar);
     emit loginSuccess();
+    _IsLoged = true;
+    emit isLogedChanged();
 }
 
 void LoginController::OnLoginFailure(int id, QByteArray response)
 {
+    _IsLoged = false;
+    emit isLogedChanged();
     emit loginFailed();
+}
+
+bool LoginController::isLoged()
+{
+    return _IsLoged;
 }

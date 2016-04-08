@@ -15,7 +15,6 @@ Item {
 
     function finishedLoad()
     {
-        console.log(Qt.formatDate(gantt.addDate(currentDate, 1), "dd.MM"))
     }
 
     function addDate(date, number)
@@ -25,47 +24,58 @@ Item {
         return ret
     }
 
-    // Top of the gantt
-    // Jalon drawer
-    Item {
-        id: jalonItem
-    }
-    // Date drawer
-    View {
-        id: dateItem
-
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-
-        MouseArea {
-            id: dateMouseArea
-            anchors.fill: parent
-        }
-
-        Item {
-            RowLayout {
-                id: dateContain
-                anchors.fill: parent
-                Repeater {
-                    model: 30
-                    delegate: Label {
-                        text: Qt.formatDate(gantt.addDate(currentDate, index), "dd.MM")
-
-                    }
-                }
-            }
-        }
-    }
     // Side of the gantt
     Item {
         id: taskItem
     }
+
     // Body of the gantt
-    Item {
-        id: bodyItem
+    MouseArea {
+        anchors.fill: parent
+
+        property double lastX: 150000
+
+        onWheel: {
+            ganttView.sizeX += wheel.angleDelta.y / 120
+            if (ganttView.sizeX < ganttView.minSizeYear)
+                ganttView.sizeX = ganttView.minSizeYear
+            else if (ganttView.sizeX > 100)
+                ganttView.sizeX = 100
+        }
+
+        onReleased: {
+            lastX = 150000
+        }
+
+        onMouseXChanged: {
+            console.log("X changed ! : " + mouse.x)
+            if (lastX == 150000)
+            {
+                lastX = mouseX
+                return
+            }
+            ganttView.cursorX += mouseX - lastX
+            lastX = mouseX
+        }
+    }
+
+    GanttView
+    {
+        id: ganttView
+        anchors.fill: parent
+
+        sizeX: 100
+        sizeY: 25
+        minSizeWeek: 30
+        minSizeYear: 3
+        rectangleColor: "red"
+        cursorY: 0
+        cursorX: 0
+        numberOfDraw: 100
+        Component.onCompleted: {
+            console.log("Component is loaded !")
+            ganttView.update()
+        }
     }
 }
 
