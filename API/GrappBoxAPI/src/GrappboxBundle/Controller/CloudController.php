@@ -966,9 +966,12 @@ class CloudController extends Controller
 	public function createDirAction(Request $request)
 	{
 		$json = json_decode($request->getContent(), true);
+		if (!isset($json["data"]["password"]) && isset($json["data"]["passwordSafe"]))
+			$json["data"]["password"] = $json["data"]["passwordSafe"];
 		$token = $json["data"]["token"];
 		$userId = $this->getUserId($token);
 		$idProject = $json["data"]["project_id"];
+		$json["data"]["path"] = str_replace(" ", "|", urldecode($json["data"]["path"]));
 
 		$isSafe = preg_match("/Safe/", $json["data"]["path"]);
 		if ($isSafe)
