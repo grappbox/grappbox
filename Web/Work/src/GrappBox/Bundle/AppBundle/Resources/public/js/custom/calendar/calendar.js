@@ -25,12 +25,58 @@ app.config(["calendarConfig", function(calendarConfig) {
 * APP calendar page content
 *
 */
-app.controller('calendarController', ["$scope", "moment", function($scope, moment) {
+app.controller('calendarController', ["$scope", "$http", "$rootScope", "$cookies", "moment", function($scope, $http, $rootScope, $cookies, moment) {
 
   /* ==================== INITIALIZATION ==================== */
 
   // Scope variables initialization
-  $scope.data = { onLoad: false, calendar: true, isValid: true };
+  $scope.data = { onLoad: true, calendar: "", isValid: true };
+  $scope.events = [];
+
+  // Get user's current month planning
+  $http.get($rootScope.apiBaseURL + "/planning/getmonth/" + $cookies.get("USERTOKEN") + "/" + moment().format('YYYY-MM-DD'))
+    .then(function userCalendarReceived(response) {
+      $scope.data.calendar = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
+      $scope.data.isValid = true;
+      $scope.data.onLoad = false;
+
+      console.log($scope.data.calendar);
+      for (var i = 0; i < $scope.data.calendar.events.length; ++i) {      
+        $scope.events.push({
+          id: $scope.data.calendar.events[i].id,
+          projectId: $scope.data.calendar.events[i].projectId,
+          type: 'event',
+          tag: '[ Event ]',
+          title: $scope.data.calendar.events[i].title,
+          description: $scope.data.calendar.events[i].description,
+          startsAt: moment($scope.data.calendar.events[i].beginDate.date).toDate(),
+          endsAt: moment($scope.data.calendar.events[i].endDate.date).toDate(),
+          draggable: false,
+          resizable: false
+        });
+      }
+/*      for (var i = 0; i < $scope.data.calendar.tasks.length; ++i) {      
+        $scope.events.push({
+          id: $scope.data.calendar.tasks[i].id,
+          projectId: $scope.data.calendar.tasks[i].projectId,
+          type: 'task',
+          tag: '[ Task ]',
+          title: $scope.data.calendar.tasks[i].title,
+          description: $scope.data.calendar.tasks[i].description,
+          startsAt: moment($scope.data.calendar.tasks[i].startedAt.date).toDate(),
+          endsAt: ($scope.data.calendar.tasks[i].finishedAt ? moment($scope.data.calendar.tasks[i].finishedAt.date).toDate() : moment().toDate()),
+          dueDate: moment($scope.data.calendar.tasks[i].dueDate.date).toDate(),
+          draggable: false,
+          resizable: false
+        });
+      }*/
+    },
+    function userCalendarNotReceived(response) {
+      $scope.data.calendar = null;
+      $scope.data.isValid = false;
+      $scope.data.onLoad = false;
+      $scope.events = [];
+    });
 
   $scope.calendarTitle = "";
   $scope.calendarView = 'month';
@@ -58,17 +104,5 @@ app.controller('calendarController', ["$scope", "moment", function($scope, momen
     $event.stopPropagation();
     event[field] = !event[field];
   };
-
-
-  // DUMMY DATA [TEMP]
-  $scope.events = [
-    {
-      title: 'Event 1',
-      startsAt: new Date(2016,2,26,14,30),
-      endsAt: new Date(2016,2,26,15),
-      draggable: true,
-      resizable: true
-    }
-  ];
 
 }]);
