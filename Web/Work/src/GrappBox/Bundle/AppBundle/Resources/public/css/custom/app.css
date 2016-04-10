@@ -223,7 +223,7 @@ section { margin: 0 0 60px 0; }
 #calendar-view .cal-context .cal-row-head > div { text-transform: uppercase; padding: 10px 0; border-right: 1px solid #bdbdbd; width: 215px!important; }
 #calendar-view .cal-context .cal-row-head > div:last-child { border: none; }
 #calendar-view .cal-context .cal-month-box { border-radius: 0; border: 1px solid #e0e0e0; border-right: none; border-bottom: none; }
-#calendar-view .cal-context .cal-events-num { padding: 8px 10px; background: #4FC3F7; border-radius: 50%; position: absolute; top: -5px; }
+#calendar-view .cal-context .cal-events-num { padding: 10px 0; background: #4FC3F7; border-radius: 2px; width: 30px; margin-top: 10px; }
 #calendar-view .cal-context span[data-cal-date] { color: #212121; cursor: pointer; }
 #calendar-view .cal-context .cal-slide-content { background: #616161; box-shadow: none!important; padding: 30px 20px 20px 20px; }
 #calendar-view .cal-context .cal-slide-content .event-item a { background: #fff; border-radius: 50%; }
