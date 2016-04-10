@@ -237,6 +237,8 @@ class CloudController extends Controller
 		$em = $this->getDoctrine()->getManager();
 		$stream = new CloudTransfer();
 		$receivedData["filename"] = str_replace(',', '', $receivedData["filename"]);
+		if (substr($receivedData["path"], -1) == '/')
+			$receivedData["path"] = substr($receivedData["path"], 0, -1);
 		$stream->setCreatorId($userId)
 					 ->setFilename(str_replace(',', '', $receivedData["filename"]))
 					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
