@@ -101,6 +101,39 @@ app.controller('calendarController', ["$scope", "Notification", "$http", "$rootS
 
 
 
+  /* ==================== CREATE OBJECT (EVENT/TASK) ==================== */
+
+  // "Create" button handler
+  $scope.view_onCreateEvent = function(event) {
+    var modalInstance_createEvent = "";
+
+    modalInstance_createEvent = $uibModal.open({ animation: true, templateUrl: "view_createEvent.html", controller: "view_createEvent", size: "lg" });
+    modalInstance_createEvent.result.then(function creationConfirmed(data) {
+      Notification.info({ message: "Loading...", delay: 5000 });
+      $http.post($rootScope.apiBaseURL + "/event/postevent", {
+        data: {
+          token: $cookies.get("USERTOKEN"),
+          title: data.title,
+          description: data.description,
+          begin: data.beginDate,
+          end: data.endDate,
+          icon: "DATA", // TEMP
+          typeId:  1 // TEMP
+        }})
+      .then(function eventCreationSuccess(response) {
+        if (response.data.info && response.data.info.return_code == "1.5.1") {
+          Notification.success({ message: "Event \"" + data.title + "\" successfully created.", delay: 5000 });
+          local_refreshEventList();
+        }
+        else { Notification.warning({ message: "Unable to create \"" + data.title + "\" event. Please try again.", delay: 5000 }); }
+      },
+      function eventCreationFailed(response) { Notification.warning({ message: "Unable to create \"" + data.title + "\" event. Please try again.", delay: 5000 }); })
+    },
+    function creationNotConfirmed() { Notification.success({ message: "Event creation cancelled.", delay: 5000 }); });
+  };
+
+
+
   /* ==================== DELETE OBJECT (EVENT/TASK) ==================== */
 
   // "Delete" button handler
@@ -111,7 +144,7 @@ app.controller('calendarController', ["$scope", "Notification", "$http", "$rootS
     modalInstance_deleteEvent.result.then(function deletionConfirmed() {
       $http.delete($rootScope.apiBaseURL + "/event/delevent/" + $cookies.get("USERTOKEN") + "/" + event.id)
       .then(function deletionSuccess(response) {
-        Notification.success({ message: "Deletion success.", delay: 5000 });
+        Notification.success({ message: "Event successfully deleted.", delay: 5000 });
         getDatePlanning($scope.view_calendarMode == 'year' ? moment().startOf('year').format('YYYY-MM-DD') : moment().startOf('month').format('YYYY-MM-DD'));
       }, 
       function deletionFailure(response) { Notification.warning({ message: "Unable to delete the selected event. Please try again.", delay: 5000 }); });
@@ -141,6 +174,49 @@ app.controller('calendarController', ["$scope", "Notification", "$http", "$rootS
     event[field] = !event[field];
   };
 
+}]);
+
+
+
+/**
+* Controller definition (from view)
+* EVENT CREATION => parameters
+*
+*/
+app.controller("view_createEvent", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+
+  $scope.view_createEventSuccess = function() {
+    var newElement = { title: "", description: "", beginDate: "", endDate: "" };
+    var data = "";
+
+    data = angular.element(document.querySelector("#view_newEventTitle"));
+    if (data && data.val() !== "")
+      newElement.title = data.val();
+    else
+      angular.element(data).attr("class", "input-error");
+
+    data = angular.element(document.querySelector("#view_newEventDescription"));
+    if (data && data.val() !== "")
+      newElement.description = data.val();
+    else
+      angular.element(data).attr("class", "input-error");
+
+    data = angular.element(document.querySelector("#view_newEventBeginDate"));
+    if (data && data.val() !== "")
+      newElement.beginDate = data.val();
+    else
+      angular.element(data).attr("class", "input-error");
+
+    data = angular.element(document.querySelector("#view_newEventEndDate"));
+    if (data && data.val() !== "")
+      newElement.endDate = data.val();
+    else
+      angular.element(data).attr("class", "input-error");
+ 
+    if (newElement.title && newElement.description && newElement.beginDate && newElement.endDate)
+      $uibModalInstance.close(newElement);
+  };
+  $scope.view_createEventFailure = function() { $uibModalInstance.dismiss(); };
 }]);
 
 

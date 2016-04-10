@@ -35,10 +35,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <a href="" data-ng-model="view_calendarMode" uib-btn-radio="'year'">Year</a>
                 </div>
                 <div class="col-md-1"></div>
-                <div class="col-md-1"></div>
-                <div class="col-md-1"></div>
-                <div class="col-md-1"></div>
-                <div class="col-md-1"></div>
                 <div class="col-md-1 right-offset">
                   <a href="" mwl-date-modifier date="view_currentDate" decrement="view_calendarMode" data-ng-click="view_updateEventList()"><i class="fa fa-arrow-left"></i>Previous</a>
                 </div>
@@ -47,6 +43,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <div class="col-md-1 left-offset">
                   <a href="" mwl-date-modifier date="view_currentDate" increment="view_calendarMode" data-ng-click="view_updateEventList()">Next<i class="fa fa-arrow-right"></i></a>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                  <a href="" class="create-event" data-ng-click="view_onCreateEvent()"><i class="fa fa-plus"></i>Create</a>                  
                 </div>
               </div>
 
@@ -74,6 +74,25 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>
     </div>
   </section>
+
+  <div>
+    <script type="text/ng-template" id="view_createEvent.html">
+      <div class="modal-header">
+        <h3 class="modal-title">Event creation</h3>
+      </div>
+      <div class="modal-body">
+        <p>Please enter details of your new event.</p>
+        <input type="text" placeholder="Title..." id="view_newEventTitle" autofocus>
+        <textarea rows="4" cols="50" placeholder="Description..." id="view_newEventDescription"></textarea>
+        <input type="datetime-local" placeholder="Begin..." id="view_newEventBeginDate">
+        <input type="datetime-local" placeholder="End..." id="view_newEventEndDate">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-default btn-submit" data-ng-click="view_createEventSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="view_createEventFailure()"><i class="fa fa-ban"></i>Cancel</button>
+      </div>
+    </script>
+  </div>
 
   <div>
     <script type="text/ng-template" id="view_deleteEvent.html">
