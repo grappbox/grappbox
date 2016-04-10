@@ -202,10 +202,16 @@ section { margin: 0 0 60px 0; }
 
 /* ==================== SECTION: CALENDAR ==================== */
 
-#calendar-view .section-content { margin: 30px 15px 0 15px; }
-#calendar-view .section-content .data-title { padding: 11px 10px; margin: 0; background: #616161; color: #fafafa; font-size: 18px; text-transform: uppercase; text-align: center; }
-#calendar-view .section-content .data-actions { padding: 0; margin: 0; background: #fafafa; border: 1px solid #e0e0e0; }
+#calendar-view .section-content { margin: 30px 15px; }
+#calendar-view .section-content .data-title { padding: 11px 10px; margin: 0; background: #616161; color: #fafafa; font-size: 18px; text-transform: uppercase; text-align: center; border-radius: 2px; }
+#calendar-view .section-content .data-actions { padding: 0; margin: 0 0 15px 0; background: #fafafa; border: 1px solid #bdbdbd; }
 #calendar-view .section-content .data-actions a { display: inline-block; width: 100%; text-align: center; padding: 10px 0; color: #212121; text-transform: uppercase; }
+#calendar-view .section-content .data-actions a.active,
+#calendar-view .section-content .data-actions a:active { background: #e05e52; color: #fafafa; border-radius: 2px; }
+#calendar-view .section-content .data-actions a:focus,
+#calendar-view .section-content .data-actions a:hover { background: rgba(224,94,82,0.5); border-radius: 2px; }
+#calendar-view .section-content .data-actions .left-offset i { padding: 0 0 0 10px!important; }
+#calendar-view .section-content .data-actions .right-offset i { padding: 0 10px 0 0!important; }
 
 #calendar-view .cal-context .glyphicon,
 #calendar-view .cal-context .fa { padding: 0!important; margin: 0!important; }
@@ -215,13 +221,33 @@ section { margin: 0 0 60px 0; }
 #calendar-view .cal-context .cal-day-outmonth span[data-cal-date] { opacity: 0.5; }
 #calendar-view .cal-context .cal-row-head { background: #e0e0e0; }
 #calendar-view .cal-context .cal-row-head > div { text-transform: uppercase; padding: 10px 0; }
+#calendar-view .cal-context .cal-row-head > div:last-child { border: none; }
 #calendar-view .cal-context .cal-month-box { border-radius: 0; border: 1px solid #e0e0e0; border-right: none; border-bottom: none; }
-#calendar-view .cal-context .cal-events-num { padding: 5px 7px; background: #4FC3F7; }
-#calendar-view .cal-context .cal-day-weekend span[data-cal-date] { color: #212121; }
+#calendar-view .cal-context .cal-events-num { padding: 8px 10px; background: #4FC3F7; border-radius: 50%; position: absolute; top: -5px; }
+#calendar-view .cal-context span[data-cal-date] { color: #212121; width: 100%; height: 100%; margin: 0; padding: 15px; text-align: right; cursor: pointer; }
 #calendar-view .cal-context .cal-slide-content { background: #616161; box-shadow: none!important; }
 #calendar-view .cal-context .cal-slide-content .event-item a { background: #fff; border-radius: 50%; }
-#calendar-view .cal-context .cal-day-tick { width: auto; right: 45%; padding: 8px 10px; border: none; border-radius: 50%; }
+#calendar-view .cal-context .cal-day-tick { width: auto; right: 45%; padding: 8px 10px; border: none; border-radius: 50%; background: #E05E52; color: #fafafa; }
+#calendar-view .cal-context .cal-year-box a.event-item-edit { margin: 0 5px 0 20px; }
+#calendar-view .cal-context .cal-year-box a.event-item-edit,
+#calendar-view .cal-context .cal-year-box a.event-item-delete { color: #fafafa; padding: 6px 9px; border: 2px solid #E05E52; border-radius: 50%; font-size: 16px; top: -1px; }
+#calendar-view .cal-context .cal-year-box a.event-item-edit:active,
+#calendar-view .cal-context .cal-year-box a.event-item-edit:focus,
+#calendar-view .cal-context .cal-year-box a.event-item-edit:hover,
+#calendar-view .cal-context .cal-year-box a.event-item-delete:active,
+#calendar-view .cal-context .cal-year-box a.event-item-delete:focus,
+#calendar-view .cal-context .cal-year-box a.event-item-delete:hover { background: #fafafa; color: #E05E52; }
 
+/* Override */
+.cal-context,
+.cal-day-box,
+.cal-week-box.cal-day-box .cal-day-panel { overflow: visible!important; }
+.cal-day-weekend,
+.cal-day-future { width: 215px!important; }
+.cal-day-box .cal-day-hour-part .cal-day-hour-part-spacer { width: 215px!important; border-right: 1px solid #bdbdbd; }
+.cal-day-box .cal-day-hour-part .cal-day-hour-part-spacer:nth-of-type(2) { margin-left: 60px; }
+.cal-day-box .cal-day-hour-part .cal-day-hour-part-spacer:last-child { border-right: none; }
+.cal-day-box .cal-day-hour-part .cal-day-hour-part-time { margin-right: -60px; }
 
 /* ==================== SECTION: CLOUD ==================== */
 

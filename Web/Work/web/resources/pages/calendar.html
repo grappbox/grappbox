@@ -23,30 +23,30 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
               <div class="row data-actions">
                 <div class="col-md-1">
-                  <a ng-model="calendarView" uib-btn-radio="'day'">Day</a>
+                  <a href="" ng-model="calendarView" uib-btn-radio="'day'">Day</a>
                 </div>
                 <div class="col-md-1">
-                  <a ng-model="calendarView" uib-btn-radio="'week'">Week</a>
+                  <a href="" ng-model="calendarView" uib-btn-radio="'week'">Week</a>
                 </div>
                 <div class="col-md-1">
-                  <a ng-model="calendarView" uib-btn-radio="'month'">Month</a>
+                  <a href="" ng-model="calendarView" uib-btn-radio="'month'">Month</a>
                 </div>
                 <div class="col-md-1">
-                  <a ng-model="calendarView" uib-btn-radio="'year'">Year</a>
+                  <a href="" ng-model="calendarView" uib-btn-radio="'year'">Year</a>
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-1"></div>
                 <div class="col-md-1"></div>
                 <div class="col-md-1"></div>
                 <div class="col-md-1"></div>
-                <div class="col-md-1">
-                  <a mwl-date-modifier date="viewDate" decrement="calendarView"><i class="fa fa-arrow-left"></i>Previous</a>
+                <div class="col-md-1 right-offset">
+                  <a href="" mwl-date-modifier date="viewDate" decrement="calendarView"><i class="fa fa-arrow-left"></i>Previous</a>
                 </div>
                 <div class="col-md-1">
-                  <a mwl-date-modifier date="viewDate" set-to-today>Today</a>
+                  <a href="" mwl-date-modifier date="viewDate" set-to-today>Today</a>
                 </div>
-                <div class="col-md-1">
-                  <a mwl-date-modifier date="viewDate" increment="calendarView"><i class="fa fa-arrow-right"></i>Next</a>
+                <div class="col-md-1 left-offset">
+                  <a href="" mwl-date-modifier date="viewDate" increment="calendarView">Next<i class="fa fa-arrow-right"></i></a>
                 </div>
               </div>
 
@@ -58,11 +58,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 on-event-click="eventClicked(calendarEvent)"
                 on-event-times-changed="eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
                 edit-event-html="'<i class=\'fa fa-pencil\'></i>'"
-                delete-event-html="'<i class=\'fa fa-trash-o\'></i>'"
+                delete-event-html="'<i class=\'fa fa-times\'></i>'"
                 on-edit-event-click="eventEdited(calendarEvent)"
                 on-delete-event-click="eventDeleted(calendarEvent)"
                 cell-is-open="isCellOpen"
-                day-view-start="03:00"
+                day-view-start="00:00"
                 day-view-end="23:00"
                 day-view-split="30"
                 cell-modifier="modifyCell(calendarCell)">

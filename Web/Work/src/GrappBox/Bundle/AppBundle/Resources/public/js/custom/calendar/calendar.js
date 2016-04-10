@@ -10,13 +10,12 @@
 *
 */
 app.config(["calendarConfig", function(calendarConfig) {
-  console.log(calendarConfig);
-    calendarConfig.dateFormatter = 'moment';
-    calendarConfig.allDateFormats.moment.date.hour = 'HH:mm';
-    calendarConfig.allDateFormats.moment.title.day = 'ddd D MMM';
-    calendarConfig.displayAllMonthEvents = true;
-    calendarConfig.displayEventEndTimes = true;
-    calendarConfig.showTimesOnWeekView = true;
+  calendarConfig.dateFormatter = 'moment';
+  calendarConfig.allDateFormats.moment.date.hour = 'HH:mm';
+  calendarConfig.allDateFormats.moment.title.day = 'ddd D MMM';
+  calendarConfig.displayAllMonthEvents = true;
+  calendarConfig.displayEventEndTimes = true;
+  calendarConfig.showTimesOnWeekView = true;
 }]);
 
 
