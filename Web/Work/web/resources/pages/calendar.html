@@ -13,54 +13,54 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <h2>View your calendar</h2>
             <p>Use the calendar controls to switch between day, week and month view. Clic on any day to add an event, or view the day's events if any.<br>All your changes are submitted automatically.</p>
           </div>
-          <div class="section-content" data-ng-show="data.onLoad">
+          <div class="section-content" data-ng-show="content.onLoad">
             <div class="loading-content section"><div></div></div>
           </div>
-          <div class="section-content list" data-ng-show="!data.onLoad">
+          <div class="section-content list" data-ng-show="!content.onLoad">
             <div id="all-calendar-data">
               <div class="row data-title">
-                <div class="col-md-12"><i class="fa fa-calendar"></i>{[{ view_calendarTitle }]}</div>
+                <div class="col-md-12"><i class="fa fa-calendar"></i>{[{ view.title }]}</div>
               </div>
               <div class="row data-actions">
                 <div class="col-md-1">
-                  <a href="" data-ng-model="view_calendarMode" uib-btn-radio="'day'">Day</a>
+                  <a href="" data-ng-model="view.mode" uib-btn-radio="'day'">Day</a>
                 </div>
                 <div class="col-md-1">
-                  <a href="" data-ng-model="view_calendarMode" uib-btn-radio="'week'">Week</a>
+                  <a href="" data-ng-model="view.mode" uib-btn-radio="'week'">Week</a>
                 </div>
                 <div class="col-md-1">
-                  <a href="" data-ng-model="view_calendarMode" uib-btn-radio="'month'">Month</a>
+                  <a href="" data-ng-model="view.mode" uib-btn-radio="'month'">Month</a>
                 </div>
                 <div class="col-md-1">
-                  <a href="" data-ng-model="view_calendarMode" uib-btn-radio="'year'">Year</a>
+                  <a href="" data-ng-model="view.mode" uib-btn-radio="'year'">Year</a>
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-1 right-offset">
-                  <a href="" mwl-date-modifier date="view_currentDate" decrement="view_calendarMode" data-ng-click="view_updateEventList()"><i class="fa fa-arrow-left"></i>Previous</a>
+                  <a href="" mwl-date-modifier date="view.date" decrement="view.mode" data-ng-click="method.onRefresh()"><i class="fa fa-arrow-left"></i>Previous</a>
                 </div>
                 <div class="col-md-1">
-                  <a href="" mwl-date-modifier date="view_currentDate" set-to-today data-ng-click="view_updateEventList()">Today</a>
+                  <a href="" mwl-date-modifier date="view.date" set-to-today data-ng-click="method.onRefresh()">Today</a>
                 </div>
                 <div class="col-md-1 left-offset">
-                  <a href="" mwl-date-modifier date="view_currentDate" increment="view_calendarMode" data-ng-click="view_updateEventList()">Next<i class="fa fa-arrow-right"></i></a>
+                  <a href="" mwl-date-modifier date="view.date" increment="view.mode" data-ng-click="method.onRefresh()">Next<i class="fa fa-arrow-right"></i></a>
                 </div>
                 <div class="col-md-1"></div>
                 <div class="col-md-3">
-                  <a href="" class="create-event" data-ng-click="view_onCreateEvent()"><i class="fa fa-plus"></i>Create</a>                  
+                  <a href="" class="create-event" data-ng-click="method.onEventCreate()"><i class="fa fa-plus"></i>Create</a>                  
                 </div>
               </div>
 
               <mwl-calendar
-                events="events"
-                view="view_calendarMode"
-                view-title="view_calendarTitle"
-                view-date="view_currentDate"
+                events="calendar.events"
+                view="view.mode"
+                view-title="view.title"
+                view-date="view.date"
                 edit-event-html="'<i class=\'fa fa-pencil\'></i>'"
                 delete-event-html="'<i class=\'fa fa-times\'></i>'"
-                on-event-click="view_onSelectEvent(calendarEvent)"
-                on-edit-event-click="view_onEditEvent(calendarEvent)"
-                on-delete-event-click="view_onDeleteEvent(calendarEvent)"
-                cell-is-open="view_isCellOpen"
+                on-event-click="method.onEventEdit(calendarEvent)"
+                on-edit-event-click="method.onEventEdit(calendarEvent)"
+                on-delete-event-click="method.onEventDelete(calendarEvent)"
+                cell-is-open="view.isCellOpen"
                 day-view-start="00:00"
                 day-view-end="23:00"
                 day-view-split="30">
@@ -74,26 +74,38 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </section>
 
   <div>
-    <script type="text/ng-template" id="view_updateEvent.html">
+    <script type="text/ng-template" id="modal_eventUpdate.html">
       <div class="modal-header">
         <h3 class="modal-title">Event creation/edition</h3>
       </div>
       <div class="modal-body">
         <p>Please enter new details of your event.</p>
-        <input type="text" placeholder="Title..." data-ng-model="view_newEventTitle" id="view_newEventTitle" autofocus>
-        <textarea rows="4" cols="50" placeholder="Description..." data-ng-model="view_newEventDescription" id="view_newEventDescription"></textarea>
-        <input type="datetime-local" placeholder="Begin..." data-ng-model="view_newEventBeginDate" id="view_newEventBeginDate">
-        <input type="datetime-local" placeholder="End..." data-ng-model="view_newEventEndDate" id="view_newEventEndDate">
+        <div class="form-group">
+          <label for="modal_eventTitle">Title</label>
+          <input type="text" data-ng-model="update.eventTitle" id="modal_eventTitle" autofocus>
+        </div>
+        <div class="form-group">
+          <label for="modal_eventTitle">Description</label>
+          <textarea rows="4" cols="50" data-ng-model="update.eventDescription" id="modal_eventDescription"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="modal_eventBeginDate">Begin date</label>
+          <input type="datetime-local" data-ng-model="update.eventBeginDate" id="modal_eventBeginDate">
+        </div>
+        <div class="form-group">
+          <label for="modal_eventEndDate">End date</label>
+          <input type="datetime-local" data-ng-model="update.eventEndDate" id="modal_eventEndDate">
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-default btn-submit" data-ng-click="view_updateEventSuccess()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" class="btn-default btn-access" data-ng-click="view_updateEventFailure()"><i class="fa fa-ban"></i>Cancel</button>
+        <button type="button" class="btn-default btn-submit" data-ng-click="update.onConfirm()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="update.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
       </div>
     </script>
   </div>
 
   <div>
-    <script type="text/ng-template" id="view_deleteEvent.html">
+    <script type="text/ng-template" id="modal_eventDeletion.html">
       <div class="modal-header">
         <h3 class="modal-title">Event deletion</h3>
       </div>
@@ -101,8 +113,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <p>Are you sure you want to delete this event?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-default btn-submit" data-ng-click="view_deleteEventSuccess()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" class="btn-default btn-access" data-ng-click="view_deleteEventFailure()"><i class="fa fa-ban"></i>Cancel</button>
+        <button type="button" class="btn-default btn-submit" data-ng-click="delete.onConfirm()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="delete.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
       </div>
     </script>
   </div>
