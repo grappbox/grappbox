@@ -498,9 +498,8 @@ class CloudController extends Controller
 		$securedFileRepository = $this->getDoctrine()->getRepository("GrappboxBundle:CloudSecuredFileMetadata");
 
 		$content = str_replace("|", " ", $adapter->listContents($rpath));
-		if (substr($rpath, -1) == ',')
+		if (substr($rpath, -1) == '/')
 			$rpath = substr($rpath, 0, -1);
-		var_dump($rpath);
 		foreach ($content as $i => $row)
 		{
 			$content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
