@@ -55,17 +55,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 view="view_calendarMode"
                 view-title="view_calendarTitle"
                 view-date="view_currentDate"
-                on-event-click="eventClicked(calendarEvent)"
-                on-event-times-changed="eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
                 edit-event-html="'<i class=\'fa fa-pencil\'></i>'"
                 delete-event-html="'<i class=\'fa fa-times\'></i>'"
-                on-edit-event-click="eventEdited(calendarEvent)"
+                on-event-click="view_onSelectEvent(calendarEvent)"
+                on-edit-event-click="view_onEditEvent(calendarEvent)"
                 on-delete-event-click="view_onDeleteEvent(calendarEvent)"
                 cell-is-open="view_isCellOpen"
                 day-view-start="00:00"
                 day-view-end="23:00"
-                day-view-split="30"
-                cell-modifier="modifyCell(calendarCell)">
+                day-view-split="30">
               </mwl-calendar>
             
             </div>
@@ -76,20 +74,20 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </section>
 
   <div>
-    <script type="text/ng-template" id="view_createEvent.html">
+    <script type="text/ng-template" id="view_updateEvent.html">
       <div class="modal-header">
-        <h3 class="modal-title">Event creation</h3>
+        <h3 class="modal-title">Event creation/edition</h3>
       </div>
       <div class="modal-body">
-        <p>Please enter details of your new event.</p>
-        <input type="text" placeholder="Title..." id="view_newEventTitle" autofocus>
-        <textarea rows="4" cols="50" placeholder="Description..." id="view_newEventDescription"></textarea>
-        <input type="datetime-local" placeholder="Begin..." id="view_newEventBeginDate">
-        <input type="datetime-local" placeholder="End..." id="view_newEventEndDate">
+        <p>Please enter new details of your event.</p>
+        <input type="text" placeholder="Title..." data-ng-model="view_newEventTitle" id="view_newEventTitle" autofocus>
+        <textarea rows="4" cols="50" placeholder="Description..." data-ng-model="view_newEventDescription" id="view_newEventDescription"></textarea>
+        <input type="datetime-local" placeholder="Begin..." data-ng-model="view_newEventBeginDate" id="view_newEventBeginDate">
+        <input type="datetime-local" placeholder="End..." data-ng-model="view_newEventEndDate" id="view_newEventEndDate">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-default btn-submit" data-ng-click="view_createEventSuccess()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" class="btn-default btn-access" data-ng-click="view_createEventFailure()"><i class="fa fa-ban"></i>Cancel</button>
+        <button type="button" class="btn-default btn-submit" data-ng-click="view_updateEventSuccess()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="view_updateEventFailure()"><i class="fa fa-ban"></i>Cancel</button>
       </div>
     </script>
   </div>
