@@ -118,7 +118,7 @@ class Project
      * @var \Doctrine\Common\Collections\Collection
      */
     private $customers_access;
-    
+
     /**
      * @var string
      */
@@ -128,6 +128,16 @@ class Project
      * @var \Doctrine\Common\Collections\Collection
      */
     private $colors;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statProjectAdvancement;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statLateTasks;
 
     /**
      * Constructor
@@ -142,6 +152,8 @@ class Project
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->gantts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statProjectAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -764,7 +776,7 @@ class Project
     {
         return $this->tags;
     }
-    
+
     /**
      * Set color
      *
@@ -781,7 +793,7 @@ class Project
     /**
      * Get color
      *
-     * @return string 
+     * @return string
      */
     public function getColor()
     {
@@ -814,10 +826,76 @@ class Project
     /**
      * Get colors
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getColors()
     {
         return $this->colors;
+    }
+
+    /**
+     * Add statProjectAdvancement
+     *
+     * @param \GrappboxBundle\Entity\StatProjectAdvancement $statProjectAdvancement
+     * @return Project
+     */
+    public function addStatProjectAdvancement(\GrappboxBundle\Entity\StatProjectAdvancement $statProjectAdvancement)
+    {
+        $this->statProjectAdvancement[] = $statProjectAdvancement;
+
+        return $this;
+    }
+
+    /**
+     * Remove statProjectAdvancement
+     *
+     * @param \GrappboxBundle\Entity\StatProjectAdvancement $statProjectAdvancement
+     */
+    public function removeStatProjectAdvancement(\GrappboxBundle\Entity\StatProjectAdvancement $statProjectAdvancement)
+    {
+        $this->statProjectAdvancement->removeElement($statProjectAdvancement);
+    }
+
+    /**
+     * Get statProjectAdvancement
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatProjectAdvancement()
+    {
+        return $this->StatProjectAdvancement;
+    }
+
+    /**
+     * Add statLateTasks
+     *
+     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     * @return Project
+     */
+    public function addStatLateTasks(\GrappboxBundle\Entity\StatLateTasks $statLateTasks)
+    {
+        $this->statLateTasks[] = $statLateTasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove statLateTasks
+     *
+     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     */
+    public function removeStatLateTasks(\GrappboxBundle\Entity\StatLateTasks $statLateTasks)
+    {
+        $this->statLateTasks->removeElement($statLateTasks);
+    }
+
+    /**
+     * Get statLateTasks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatLateTasks()
+    {
+        return $this->StatLateTasks;
     }
 }

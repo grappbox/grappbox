@@ -742,6 +742,39 @@ v2_role_getUserRoleForPart:
 
 
 # -----------------------------------------------------------------------
+#                          STATISTIC CONTROLLER
+# -----------------------------------------------------------------------
+
+v2_stat_getAllStat:
+    path:       statistics/getall/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:Statistic:getAllStat, _format: json }
+    methods: [GET]
+    requirements:
+        projectId: \d+
+
+v2_stat_getStat:
+    path:       statistics/getstat/{token}/{projectId}/{statName}
+    defaults:   { _controller: GrappboxBundle:Statistic:getStat, _format: json }
+    methods: [GET]
+    requirements:
+        projectId: \d+
+
+v2_stat_weeklyUpdate:
+    path:       statistics/update/weekly
+    defaults:   { _controller: GrappboxBundle:Statistic:weeklyUpdate }
+    methods: [GET]
+
+v2_stat_dailyUpdate:
+    path:       statistics/update/daily
+    defaults:   { _controller: GrappboxBundle:Statistic:dailyUpdate }
+    methods: [GET]
+
+v2_stat_instantValues:
+    path:       statistics/update/instant
+    defaults:   { _controller: GrappboxBundle:Statistic:instantValues }
+    methods: [GET]
+
+# -----------------------------------------------------------------------
 #                           TASK CONTROLLER
 # -----------------------------------------------------------------------
 

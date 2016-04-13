@@ -111,4 +111,12 @@ GrappboxBundle\Entity\Project:
           targetEntity: Color
           mappedBy: project
           cascade: [remove]
+        statProjectAdvancement:
+          targetEntity: StatProjectAdvancement
+          mappedBy: project
+          cascade: [remove]
+        statLateTasks:
+          targetEntity: StatLateTasks
+          mappedBy: project
+          cascade: [remove]
     lifecycleCallbacks: {  }
