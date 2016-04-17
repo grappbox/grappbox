@@ -769,6 +769,8 @@ v2_stat_dailyUpdate:
     defaults:   { _controller: GrappboxBundle:Statistic:dailyUpdate }
     methods: [GET]
 
+
+# FOR DEVELOPMENT ONLY
 v2_stat_instantValues:
     path:       statistics/update/instant
     defaults:   { _controller: GrappboxBundle:Statistic:instantValues }

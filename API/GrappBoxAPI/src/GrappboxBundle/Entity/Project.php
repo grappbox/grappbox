@@ -140,6 +140,11 @@ class Project
     private $statLateTasks;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statBugsEvolution;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -154,6 +159,7 @@ class Project
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statProjectAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statBugsEvolution = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -897,5 +903,38 @@ class Project
     public function getStatLateTasks()
     {
         return $this->StatLateTasks;
+    }
+
+    /**
+     * Add statBugsEvolution
+     *
+     * @param \GrappboxBundle\Entity\StatBugsEvolution $statBugsEvolution
+     * @return Project
+     */
+    public function addStatBugsEvolution(\GrappboxBundle\Entity\StatBugsEvolution $statBugsEvolution)
+    {
+        $this->statBugsEvolution[] = $statBugsEvolution;
+
+        return $this;
+    }
+
+    /**
+     * Remove statBugsEvolution
+     *
+     * @param \GrappboxBundle\Entity\StatBugsEvolution $statBugsEvolution
+     */
+    public function removeStatBugsEvolution(\GrappboxBundle\Entity\StatBugsEvolution $statBugsEvolution)
+    {
+        $this->statBugsEvolution->removeElement($statBugsEvolution);
+    }
+
+    /**
+     * Get statBugsEvolution
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatBugsEvolution()
+    {
+        return $this->statBugsEvolution;
     }
 }

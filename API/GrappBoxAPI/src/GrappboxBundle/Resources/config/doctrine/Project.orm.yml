@@ -119,4 +119,8 @@ GrappboxBundle\Entity\Project:
           targetEntity: StatLateTasks
           mappedBy: project
           cascade: [remove]
+        statBugsEvolution:
+          targetEntity: StatBugsEvolution
+          mappedBy: project
+          cascade: [remove]
     lifecycleCallbacks: {  }

@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use GrappboxBundle\Controller\RolesAndTokenVerificationController;
 use GrappboxBundle\Entity\StatProjectAdvancement;
 use GrappboxBundle\Entity\StatLateTasks;
+use GrappboxBundle\Entity\StatBugsEvolution;
 use DateTime;
 
 /**
@@ -271,6 +272,9 @@ class StatisticController extends RolesAndTokenVerificationController
 
   public function updateStorageLimitsAction(Request $request, $token, $projectId)
   {
+
+    //TODO : ajouter appel de la method sur toute les modif de cloud ou ajouter un apel à partir d'un script
+
     $user = $this->checkToken($token);
     if (!$user)
       return $this->setBadTokenError("16.??.3", "Stat", "updateStorageLimits");
@@ -283,30 +287,31 @@ class StatisticController extends RolesAndTokenVerificationController
 
     // ',' = racine
 
-    $path = ',';
-    $baseUrl = $this->container->get('router')->getContext()->getBaseUrl();
-    $url =  $baseUrl.'/V0.2/cloud/list/'.$token.'/'.$projectId.'/'.$path.'/'.$project->getSafePassword();
-    $http = new HttpRequest($url, HttpRequest::METH_GET);
-
-    $response = $http->send();
-
-    if ($response->getBody()->info->return_code != "1.3.1")
-      return $respone;
-
-    $results = $response->data->array;
-    $folderList = array();
-    $fileList = array();
-    foreach ($results as $key => $result) {
-      if ($result->type == "dir")
-        $folderList[] = $result;
-      else
-        $fileList[] = $result;
-    }
-
-    while (count($folderList)) {
-      //
-    }
-
+    // $path = ',';
+    // $baseUrl = $this->container->get('router')->getContext()->getBaseUrl();
+    // $url =  $baseUrl.'/V0.2/cloud/list/'.$token.'/'.$projectId.'/'.$path.'/'.$project->getSafePassword();
+    // $http = new HttpRequest($url, HttpRequest::METH_GET);
+    //
+    // $response = $http->send();
+    //
+    // if ($response->getBody()->info->return_code != "1.3.1")
+    //   return $respone;
+    //
+    // $results = $response->data->array;
+    // $folderList = array();
+    // $fileList = array();
+    // foreach ($results as $key => $result) {
+    //   if ($result->type == "dir")
+    //     $folderList[] = $result;
+    //   else
+    //     $fileList[] = $result;
+    // }
+    //
+    // $i = 0;
+    // while (count($folderList)) {
+    //   $path = $path.$folderList[$i]->fileName
+    // }
+    return $this->setSuccess("1.16.1", "Stat", "updateStorageLimits", "Complete Success", "Not implemented yet");
   }
 
   // -----------------------------------------------------------------------
@@ -321,7 +326,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($projects as $key => $project) {
-      $result['lateTasks'] = $this->updateLateTasks($project);
+      //$result['LateTasks'] = $this->updateLateTasks($project);
+      $result['BugsEvolution'] = $this->updateBugsEvolution($project);
       // TODO complete with all daily stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
@@ -391,7 +397,38 @@ class StatisticController extends RolesAndTokenVerificationController
     return "Data updated";
   }
 
+  private function updateBugsEvolution($project)
+  {
+    $em = $this->getDoctrine()->getManager();
 
+    $date = new DateTime('now');
+    // remove one day
+
+    $createdBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                   ->select('count(b)')
+                   ->where("b.projects = :project")
+                   ->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
+                   ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+                   ->getQuery()->getSingleScalarResult();
+
+    $closedBugs =  $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                   ->select('count(b)')
+                   ->where("b.projects = :project")
+                   ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
+                   ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+                   ->getQuery()->getSingleScalarResult();
+
+    $statBugsEvolution = new statBugsEvolution();
+    $statBugsEvolution->setProject($project);
+    $statBugsEvolution->setCreatedBugs($createdBugs);
+    $statBugsEvolution->setClosedbugs($closedBugs);
+    $statBugsEvolution->setDate($date);
+
+    $em->persist($statBugsEvolution);
+    $em->flush();
+
+    return "Data updated";
+  }
 
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - WEEKLY UPDATE
