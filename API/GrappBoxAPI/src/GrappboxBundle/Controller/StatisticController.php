@@ -13,6 +13,7 @@ use GrappboxBundle\Entity\StatLateTasks;
 use GrappboxBundle\Entity\StatBugsEvolution;
 use GrappboxBundle\Entity\StatBugsTagsRepartition;
 use GrappboxBundle\Entity\StatBugAssignationTracker;
+use GrappboxBundle\Entity\StatBugsUsersRepartition;
 use DateTime;
 
 /**
@@ -331,7 +332,8 @@ class StatisticController extends RolesAndTokenVerificationController
       //$result['LateTasks'] = $this->updateLateTasks($project);
       //$result['BugsEvolution'] = $this->updateBugsEvolution($project);
       //$result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
-      $result['StatBugAssignationTracker'] = $this->updateBugAssignationTracker($project);
+      //$result['StatBugAssignationTracker'] = $this->updateBugAssignationTracker($project);
+      $result['BugsTagsRepartition'] = $this->updateBugsUsersRepartition($project);
       // TODO complete with all daily stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
@@ -499,6 +501,50 @@ class StatisticController extends RolesAndTokenVerificationController
     $em->flush();
 
     return array('assignedBug' => $assigned, "unassignedBug" => $unassigned);
+  }
+
+  private function updateBugsUsersRepartition($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $users = $project->getUsers();
+
+    $totalBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                   ->select('count(b)')
+                   ->where("b.projects = :project")
+                   ->setParameters(array('project' => $project))
+                   ->getQuery()->getSingleScalarResult();
+
+    foreach ($users as $key => $user) {
+      if ($totalBugs != 0)
+      {
+        $number = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                       ->select('count(b)')
+                       ->where("b.projects = :project")
+                       ->andWhere(':user MEMBER OF b.users')
+                       ->setParameters(array('project' => $project, 'user' => $user))
+                       ->getQuery()->getSingleScalarResult();
+
+        $percentage = ($number * 100) / $totalBugs;
+      }
+      else {
+        $number = 0;
+        $percentage = 0;
+      }
+
+      $statBugsTagsRepartition = $em->getRepository('GrappboxBundle:StatBugsUsersRepartition')->findOneBy(array('project' => $project));
+      if ($statBugsTagsRepartition === null)
+      {
+        $statBugsTagsRepartition = new StatBugsUsersRepartition();
+        $statBugsTagsRepartition->setProject($project);
+        $statBugsTagsRepartition->setUser($user->getFirstname().' '.$user->getLastName());
+      }
+      $statBugsTagsRepartition->setValue($number);
+      $statBugsTagsRepartition->setPercentage($percentage);
+
+      $em->persist($statBugsTagsRepartition);
+      $em->flush();
+    }
   }
 
   // -----------------------------------------------------------------------
