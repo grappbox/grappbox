@@ -12,6 +12,7 @@ use GrappboxBundle\Entity\StatProjectAdvancement;
 use GrappboxBundle\Entity\StatLateTasks;
 use GrappboxBundle\Entity\StatBugsEvolution;
 use GrappboxBundle\Entity\StatBugsTagsRepartition;
+use GrappboxBundle\Entity\StatBugAssignationTracker;
 use DateTime;
 
 /**
@@ -329,7 +330,8 @@ class StatisticController extends RolesAndTokenVerificationController
     foreach ($projects as $key => $project) {
       //$result['LateTasks'] = $this->updateLateTasks($project);
       //$result['BugsEvolution'] = $this->updateBugsEvolution($project);
-      $result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
+      //$result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
+      $result['StatBugAssignationTracker'] = $this->updateBugAssignationTracker($project);
       // TODO complete with all daily stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
@@ -467,6 +469,36 @@ class StatisticController extends RolesAndTokenVerificationController
       $em->persist($statBugsTagsRepartition);
       $em->flush();
     }
+  }
+
+  private function updateBugAssignationTracker($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $bugs = $em->getRepository('GrappboxBundle:Bug')->findBy(array('projects' => $project, 'deletedAt' => NULL));
+
+    $assigned = 0;
+    $unassigned = 0;
+    foreach ($bugs as $key => $bug) {
+      if($bug->getUsers() != null)
+        $assigned += 1;
+      else
+        $unassigned += 1;
+    }
+
+    $statBugAssignationTracker = $em->getRepository('GrappboxBundle:StatBugAssignationTracker')->findOneBy(array('project' => $project));
+    if ($statBugAssignationTracker === null)
+    {
+      $statBugAssignationTracker = new StatBugAssignationTracker();
+      $statBugAssignationTracker->setProject($project);
+    }
+    $statBugAssignationTracker->setAssignedBugs($assigned);
+    $statBugAssignationTracker->setUnassignedBugs($unassigned);
+
+    $em->persist($statBugAssignationTracker);
+    $em->flush();
+
+    return array('assignedBug' => $assigned, "unassignedBug" => $unassigned);
   }
 
   // -----------------------------------------------------------------------

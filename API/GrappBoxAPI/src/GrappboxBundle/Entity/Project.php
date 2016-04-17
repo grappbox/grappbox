@@ -150,6 +150,11 @@ class Project
     private $statBugsTagsRepartition;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statBugAssignationTracker;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -166,6 +171,7 @@ class Project
         $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statBugsEvolution = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statBugsTagsRepartition = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statBugAssignationTracker = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -975,5 +981,38 @@ class Project
     public function getStatBugsTagsRepartition()
     {
         return $this->statBugsTagsRepartition;
+    }
+
+    /**
+     * Add statBugAssignationTracker
+     *
+     * @param \GrappboxBundle\Entity\StatBugAssignationTracker $statBugAssignationTracker
+     * @return Project
+     */
+    public function addStatBugAssignationTracker(\GrappboxBundle\Entity\StatBugAssignationTracker $statBugAssignationTracker)
+    {
+        $this->statBugAssignationTracker[] = $statBugAssignationTracker;
+
+        return $this;
+    }
+
+    /**
+     * Remove statBugAssignationTracker
+     *
+     * @param \GrappboxBundle\Entity\StatBugAssignationTracker $statBugAssignationTracker
+     */
+    public function removeStatBugAssignationTracker(\GrappboxBundle\Entity\StatBugAssignationTracker $statBugAssignationTracker)
+    {
+        $this->statBugAssignationTracker->removeElement($statBugAssignationTracker);
+    }
+
+    /**
+     * Get statBugAssignationTracker
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatBugAssignationTracker()
+    {
+        return $this->statBugAssignationTracker;
     }
 }

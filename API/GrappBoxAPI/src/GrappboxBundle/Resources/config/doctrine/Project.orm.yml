@@ -127,4 +127,8 @@ GrappboxBundle\Entity\Project:
           targetEntity: StatBugsTagsRepartition
           mappedBy: project
           cascade: [remove]
+        statBugAssignationTracker:
+          targetEntity: StatBugAssignationTracker
+          mappedBy: project
+          cascade: [remove]
     lifecycleCallbacks: {  }
