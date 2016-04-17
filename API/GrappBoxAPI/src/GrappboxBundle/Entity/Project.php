@@ -145,6 +145,11 @@ class Project
     private $statBugsEvolution;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statBugsTagsRepartition;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -160,6 +165,7 @@ class Project
         $this->statProjectAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statBugsEvolution = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statBugsTagsRepartition = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -936,5 +942,38 @@ class Project
     public function getStatBugsEvolution()
     {
         return $this->statBugsEvolution;
+    }
+
+    /**
+     * Add statBugsTagsRepartition
+     *
+     * @param \GrappboxBundle\Entity\StatBugsTagsRepartition $statBugsTagsRepartition
+     * @return Project
+     */
+    public function addStatBugsTagsRepartition(\GrappboxBundle\Entity\StatBugsTagsRepartition $statBugsTagsRepartition)
+    {
+        $this->statBugsTagsRepartition[] = $statBugsTagsRepartition;
+
+        return $this;
+    }
+
+    /**
+     * Remove statBugsTagsRepartition
+     *
+     * @param \GrappboxBundle\Entity\StatBugsTagsRepartition $statBugsTagsRepartition
+     */
+    public function removeStatBugsTagsRepartition(\GrappboxBundle\Entity\StatBugsTagsRepartition $statBugsTagsRepartition)
+    {
+        $this->statBugsTagsRepartition->removeElement($statBugsTagsRepartition);
+    }
+
+    /**
+     * Get statBugsTagsRepartition
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatBugsTagsRepartition()
+    {
+        return $this->statBugsTagsRepartition;
     }
 }

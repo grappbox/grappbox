@@ -11,6 +11,7 @@ use GrappboxBundle\Controller\RolesAndTokenVerificationController;
 use GrappboxBundle\Entity\StatProjectAdvancement;
 use GrappboxBundle\Entity\StatLateTasks;
 use GrappboxBundle\Entity\StatBugsEvolution;
+use GrappboxBundle\Entity\StatBugsTagsRepartition;
 use DateTime;
 
 /**
@@ -327,7 +328,8 @@ class StatisticController extends RolesAndTokenVerificationController
     $result = array();
     foreach ($projects as $key => $project) {
       //$result['LateTasks'] = $this->updateLateTasks($project);
-      $result['BugsEvolution'] = $this->updateBugsEvolution($project);
+      //$result['BugsEvolution'] = $this->updateBugsEvolution($project);
+      $result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
       // TODO complete with all daily stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
@@ -428,6 +430,43 @@ class StatisticController extends RolesAndTokenVerificationController
     $em->flush();
 
     return "Data updated";
+  }
+
+  private function updateBugsTagsRepartition($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $tags = $em->getRepository('GrappboxBundle:Tag')->findBy(array('project' => $project));
+
+    $totalBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('t')
+                   ->select('count(t)')
+                   ->where("t.projects = :project")
+                   ->setParameters(array('project' => $project))
+                   ->getQuery()->getSingleScalarResult();
+
+    foreach ($tags as $key => $tag) {
+      $number = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('t')
+                     ->select('count(t)')
+                     ->where("t.projects = :project")
+                     ->andWhere(":tag MEMBER OF t.tags")
+                     ->setParameters(array('project' => $project, 'tag' => $tag))
+                     ->getQuery()->getSingleScalarResult();
+
+      $percentage = ($number * 100) / $totalBugs;
+
+      $statBugsTagsRepartition = $em->getRepository('GrappboxBundle:StatBugsTagsRepartition')->findOneBy(array('project' => $project, 'name' => $tag->getName()));
+      if ($statBugsTagsRepartition === null)
+      {
+        $statBugsTagsRepartition = new StatBugsTagsRepartition();
+        $statBugsTagsRepartition->setProject($project);
+        $statBugsTagsRepartition->setName($tag->getName());
+      }
+      $statBugsTagsRepartition->setValue($number);
+      $statBugsTagsRepartition->setPercentage($percentage);
+
+      $em->persist($statBugsTagsRepartition);
+      $em->flush();
+    }
   }
 
   // -----------------------------------------------------------------------
