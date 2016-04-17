@@ -30,7 +30,7 @@ use DateTime;
 class EventController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /V0.2/event/getTypes/:token Get event types
+	* @api {get} /V0.2/event/gettypes/:token Get event types
 	* @apiName getTypes
 	* @apiGroup Event
 	* @apiDescription Get all event types
