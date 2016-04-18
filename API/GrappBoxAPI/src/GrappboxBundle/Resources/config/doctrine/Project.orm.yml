@@ -135,4 +135,8 @@ GrappboxBundle\Entity\Project:
           targetEntity: StatBugsUsersRepartition
           mappedBy: project
           cascade: [remove]
+        statTasksRepartition:
+          targetEntity: StatTasksRepartition
+          mappedBy: project
+          cascade: [remove]
     lifecycleCallbacks: {  }

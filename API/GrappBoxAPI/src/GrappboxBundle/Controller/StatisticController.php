@@ -14,6 +14,7 @@ use GrappboxBundle\Entity\StatBugsEvolution;
 use GrappboxBundle\Entity\StatBugsTagsRepartition;
 use GrappboxBundle\Entity\StatBugAssignationTracker;
 use GrappboxBundle\Entity\StatBugsUsersRepartition;
+use GrappboxBundle\Entity\StatTasksRepartition;
 use DateTime;
 
 /**
@@ -202,7 +203,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($projects as $key => $project) {
-      $result['project'.$project->getId()] = $this->getTaskStatus($project);
+      $result['project'.$project->getId()] = $this->getTotalTasks($project);
       // TODO complete with all weekly stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "instantUpdate", "Complete Success", $result);
@@ -305,6 +306,18 @@ class StatisticController extends RolesAndTokenVerificationController
     return $result;
   }
 
+  private function getTotalTasks($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $result = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+                        ->select('count(t)')
+                        ->where('t.projects = :project')
+                        ->setParameters(array('project' => $project))
+                        ->getQuery()->getSingleScalarResult();
+
+    return $result;
+  }
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - INSTANT UPDATE
   // -----------------------------------------------------------------------
@@ -384,7 +397,9 @@ class StatisticController extends RolesAndTokenVerificationController
       //$result['BugsEvolution'] = $this->updateBugsEvolution($project);
       //$result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
       //$result['StatBugAssignationTracker'] = $this->updateBugAssignationTracker($project);
-      $result['BugsTagsRepartition'] = $this->updateBugsUsersRepartition($project);
+      //$result['BugsTagsRepartition'] = $this->updateBugsUsersRepartition($project);
+      $result['TasksRepartition'] = $this->updateTasksRepartition($project);
+      //$result['WorkingChargeByUser'] = $this->updateWorkingChargeByUser($project);
       // TODO complete with all daily stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
@@ -404,14 +419,12 @@ class StatisticController extends RolesAndTokenVerificationController
                         ->setParameters(array('project' => $project))
                         ->getQuery()->getResult();
 
-
     $lateProjectTasks = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
                       ->where('t.projects = :project')
                       ->andWhere('t.deletedAt IS NULL')
                       ->andWhere('(t.finishedAt IS NOT NULL AND t.finishedAt > t.dueDate) OR (t.finishedAt IS NULL AND t.dueDate < :now)')
                       ->setParameters(array('project' => $project, 'now' => new DateTime('now')))
                       ->getQuery()->getResult();
-
 
     $result = array();
     foreach ($users as $key => $user) {
@@ -595,6 +608,77 @@ class StatisticController extends RolesAndTokenVerificationController
 
       $em->persist($statBugsTagsRepartition);
       $em->flush();
+    }
+  }
+
+  private function updateTasksRepartition($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $users = $project->getUsers();
+
+    // $totalTasks = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+    //                ->select('count(t)')
+    //                ->where("t.projects = :project")
+    //                ->setParameters(array('project' => $project))
+    //                ->getQuery()->getSingleScalarResult();
+
+    $tasks = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+                   ->where("t.projects = :project")
+                   ->setParameters(array('project' => $project))
+                   ->getQuery()->getResult();
+
+    foreach ($users as $key => $user) {
+      $number = 0;
+      $role = $em->getRepository('GrappboxBundle:ProjectUserRole')->createQueryBuilder('u')
+              ->select('r.name')
+              ->join('GrappboxBundle\Entity\Role', 'r', 'WITH', 'r.id = u.roleId')
+              ->where('u.projectId = :projectId')
+              ->setParameter('projectId', $project->getId())
+              ->setMaxResults(1)
+              ->getQuery()->getResult();
+
+      foreach ($tasks as $key => $task) {
+        foreach ($task->getRessources() as $key => $res) {
+          if ($res->getUser()->getId() == $user->getId())
+            $number += 1;
+        }
+      }
+
+      if (count($tasks) != 0)
+        $percentage = ($number * 100) / count($tasks);
+      else {
+        $percentage = 0;
+      }
+
+      $statTasksRepartition = $em->getRepository('GrappboxBundle:StatTasksRepartition')->findOneBy(array('project' => $project));
+      if ($statTasksRepartition === null)
+      {
+        $statTasksRepartition = new StatTasksRepartition();
+        $statTasksRepartition->setProject($project);
+        $statTasksRepartition->setUser($user->getFirstname().' '.$user->getLastName());
+        $statTasksRepartition->setRole($role[0]['name']);
+      }
+      $statTasksRepartition->setValue($number);
+      $statTasksRepartition->setPercentage($percentage);
+
+      $em->persist($statTasksRepartition);
+      $em->flush();
+    }
+    return "Data updated";
+  }
+
+  private function updateWorkingChargeByUser($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $users = $project->getUsers();
+
+    foreach ($users as $key => $user) {
+      $tasks = $user->getTasks();
+      foreach ($tasks as $key => $task) {
+        $result[$user->getFirstname().' '.$user->getLastname()] += $task->getWorkingCharge();
+      }
     }
   }
 
