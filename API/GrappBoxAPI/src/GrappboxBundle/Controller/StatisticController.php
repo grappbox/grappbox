@@ -202,7 +202,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($projects as $key => $project) {
-      $result['project'.$project->getId()] = $this->getTimelinesMessageNumber($project);
+      $result['project'.$project->getId()] = $this->getTaskStatus($project);
       // TODO complete with all weekly stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "instantUpdate", "Complete Success", $result);
@@ -254,6 +254,56 @@ class StatisticController extends RolesAndTokenVerificationController
     return $result;
   }
 
+  private function getOpenCloseBug($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $result['open'] = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                        ->select('count(b)')
+                        ->where('b.deletedAt IS NULL AND b.projects = :project')
+                        ->setParameters(array('project' => $project))
+                        ->getQuery()->getSingleScalarResult();
+
+    $result['closed'] = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                        ->select('count(b)')
+                        ->where('b.deletedAt IS NOT NULL AND b.projects = :project')
+                        ->setParameters(array('project' => $project))
+                        ->getQuery()->getSingleScalarResult();
+
+    return $result;
+  }
+
+  private function getTaskStatus($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $date = new DateTime('now');
+
+    $result['Done'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+                        ->select('count(t)')
+                        ->where('t.finishedAt IS NOT NULL AND t.projects = :project')
+                        ->setParameters(array('project' => $project))
+                        ->getQuery()->getSingleScalarResult();
+
+    $result['Doing'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+                        ->select('count(t)')
+                        ->where('t.finishedAt IS NULL AND t.startedAt IS NOT NULL AND t.dueDate > :date AND t.projects = :project')
+                        ->setParameters(array('project' => $project, 'date' => $date))
+                        ->getQuery()->getSingleScalarResult();
+
+    $result['ToDo'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+                        ->select('count(t)')
+                        ->where('t.startedAt IS NULL AND t.dueDate > :date AND t.projects = :project')
+                        ->setParameters(array('project' => $project, 'date' => $date))
+                        ->getQuery()->getSingleScalarResult();
+
+    $result['Late'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+                        ->select('count(t)')
+                        ->where('t.finishedAt IS NULL AND t.dueDate <= :date AND t.projects = :project')
+                        ->setParameters(array('project' => $project, 'date' => $date))
+                        ->getQuery()->getSingleScalarResult();
+
+    return $result;
+  }
 
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - INSTANT UPDATE
@@ -316,6 +366,7 @@ class StatisticController extends RolesAndTokenVerificationController
     // }
     return $this->setSuccess("1.16.1", "Stat", "updateStorageLimits", "Complete Success", "Not implemented yet");
   }
+
 
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - DAILY UPDATE
