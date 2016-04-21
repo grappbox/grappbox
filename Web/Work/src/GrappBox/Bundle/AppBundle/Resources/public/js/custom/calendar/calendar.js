@@ -49,7 +49,6 @@ app.controller("calendarController", ["$scope", "$q", "$http", "$rootScope", "$c
 
         if (response.data.info && response.data.info.return_code == "1.5.1") {
           var data = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
-          $scope.calendar.types.push({ id: 0, name: "None" });
           for (var i = 0; i < data.length; ++i) {
             $scope.calendar.types.push({
               id: data[i].id,
@@ -57,12 +56,8 @@ app.controller("calendarController", ["$scope", "$q", "$http", "$rootScope", "$c
             });
           }
         }
-        else
-          $scope.calendar.types.push({ id: 0, name: "None" });
       },
-      function onGetFail(response) {
-        $scope.calendar.types.push({ id: 0, name: "None" });
-      });
+      function onGetFail(response) { });
   };
 
   // Routine definition
@@ -248,7 +243,7 @@ app.controller("modal_eventUpdate", ["$scope", "modalInputService", "$uibModalIn
     $scope.update.newDescription = eventToEdit.description;
     $scope.update.newBeginDate = moment(eventToEdit.startsAt).toDate();
     $scope.update.newEndDate = moment(eventToEdit.endsAt).toDate();
-    $scope.update.newType = $scope.events.types[eventToEdit.typeId];
+    $scope.update.newType = $scope.events.types[eventToEdit.typeId - 1];
   }
 
   $scope.update.onConfirm = function() {
