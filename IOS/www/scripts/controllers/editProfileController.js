@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditProfileCtrl', function ($scope, $rootScope, $state, GetProfileInfo, EditProfile) {
+.controller('EditProfileCtrl', function ($scope, $rootScope, $state, Users) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -19,7 +19,7 @@ angular.module('GrappBox.controllers')
     $scope.profileInfo = {};
     $scope.GetProfileInfo = function () {
         $rootScope.showLoading();
-        GetProfileInfo.get({
+        Users.ProfileInfo().get({
             token: $rootScope.userDatas.token
         }).$promise
             .then(function (data) {
@@ -41,7 +41,7 @@ angular.module('GrappBox.controllers')
 
     $scope.EditProfile = function () {
         $rootScope.showLoading();
-        EditProfile.update({
+        Users.EditProfile().update({
             data: {
                 firstname: $scope.profileInfo.first_name,
                 lastname: $scope.profileInfo.last_name,

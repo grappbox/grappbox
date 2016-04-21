@@ -4,11 +4,11 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('MenuCtrl', function ($scope, $rootScope, $state, $ionicLoading, $ionicHistory, Logout) {
+.controller('MenuCtrl', function ($scope, $rootScope, $state, $ionicLoading, $ionicHistory, Auth) {
     $scope.userDatas = $rootScope.userDatas;
 
     $scope.logout = function () {
-        Logout.get({ token: $rootScope.userDatas.token }).$promise
+        Auth.Logout().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Deconnexion successful !');
                 $ionicLoading.show({ template: 'Logging out....' });

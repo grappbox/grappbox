@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditTagCtrl', function ($scope, $rootScope, $state, $stateParams,
-    GetTagInfo, UpdateTag) {
+.controller('EditTagCtrl', function ($scope, $rootScope, $state, $stateParams, Bugtracker) {
 
     $scope.doRefresh = function () {
         $scope.GetTagInfo();
@@ -21,7 +20,7 @@ angular.module('GrappBox.controllers')
     $scope.tagInfo = {};
     $scope.GetTagInfo = function () {
         $rootScope.showLoading();
-        GetTagInfo.get({
+        Bugtracker.GetTagInfo().get({
             token: $rootScope.userDatas.token,
             tagId: $scope.tagId
         }).$promise
@@ -47,7 +46,7 @@ angular.module('GrappBox.controllers')
     $scope.updateTagData = {};
     $scope.UpdateTag = function () {
         $rootScope.showLoading();
-        UpdateTag.update({
+        Bugtracker.UpdateTag().update({
             data: {
                 token: $rootScope.userDatas.token,
                 tagId: $scope.tagId,

@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('UserCtrl', function ($scope, $rootScope, $state, $stateParams,
-    GetUserInfo, GetMemberRoles) {
+.controller('UserCtrl', function ($scope, $rootScope, $state, $stateParams, Roles, Users) {
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetUserInfo();
@@ -21,7 +20,7 @@ angular.module('GrappBox.controllers')
     $scope.GetUserInfo = function () {
         $rootScope.showLoading();
         console.log("userId: " + $stateParams.userId);
-        GetUserInfo.get({
+        Users.UserInfo().get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
         }).$promise
@@ -46,7 +45,7 @@ angular.module('GrappBox.controllers')
     $scope.memberRoles = {};
     $scope.GetMemberRoles = function () {
         $rootScope.showLoading();
-        GetMemberRoles.get({
+        Roles.MemberRoles().get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
         }).$promise

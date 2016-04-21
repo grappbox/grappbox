@@ -4,9 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $http,
-    ProjectView, AddUserToProject, UsersOnProjectList, GenCustomerAccess, GetCustomersAccessOnProject, RetreiveProject,
-    GetProjectRoles, RemoveUserFromProject, DeleteCustomerAccess, DeleteProject) {
+.controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Projects, Roles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -26,7 +24,7 @@ angular.module('GrappBox.controllers')
     $scope.projectInfo = {};
     $scope.GetProjectInfo = function () {
         $rootScope.showLoading();
-        ProjectView.get({
+        Projects.Info().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -53,7 +51,7 @@ angular.module('GrappBox.controllers')
     $scope.userList = {};
     $scope.GetUsersOnProject = function () {
         $rootScope.showLoading();
-        UsersOnProjectList.get({
+        Projects.Users().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -81,7 +79,7 @@ angular.module('GrappBox.controllers')
     $scope.userToAdd = {};
     $scope.AddUserToProject = function () {
         $rootScope.showLoading();
-        AddUserToProject.save({
+        Projects.AddUser().save({
             data: {
                 token: $rootScope.userDatas.token,
                 id: $scope.projectId,
@@ -146,7 +144,7 @@ angular.module('GrappBox.controllers')
     $scope.RemoveUserFromProject = function () {
         $rootScope.showLoading();
         console.log($rootScope.userDatas.token + " " + $scope.projectId + " " + $scope.user_id);
-        RemoveUserFromProject.delete({
+        Projects.RemoveUser().delete({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
             userId: $scope.user_id
@@ -174,7 +172,7 @@ angular.module('GrappBox.controllers')
     $scope.customersError = "";
     $scope.GetCustomersOnProject = function () {
         $rootScope.showLoading();
-        GetCustomersAccessOnProject.get({
+        Projects.CustomersAccesses().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -202,7 +200,7 @@ angular.module('GrappBox.controllers')
     $scope.customerAccessToAdd = {};
     $scope.GenerateAccess = function () {
         $rootScope.showLoading();
-        GenCustomerAccess.save({
+        Projects.GenCustomerAccess().save({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
@@ -265,7 +263,7 @@ angular.module('GrappBox.controllers')
     $scope.DeleteCustomerAccess = function () {
         $rootScope.showLoading();
         console.log("token: " + $rootScope.userDatas.token + " projectId: " + $scope.projectId + " customerId: " + $scope.customer_id);
-        DeleteCustomerAccess.delete({
+        Projects.DeleteCustomerAccess().delete({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
             customerAccessId: $scope.customer_id
@@ -308,7 +306,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.DeleteProject = function () {
         $rootScope.showLoading();
-        DeleteProject.delete({
+        Projects.Delete().delete({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -334,7 +332,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.RetreiveProject = function () {
         $rootScope.showLoading();
-        RetreiveProject.get({
+        Projects.Retreive().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -364,7 +362,7 @@ angular.module('GrappBox.controllers')
     $scope.projectRoles = {};
     $scope.GetProjectRoles = function () {
         $rootScope.showLoading();
-        GetProjectRoles.get({
+        Roles.List().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise

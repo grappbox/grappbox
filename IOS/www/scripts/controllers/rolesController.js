@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('RolesCtrl', function ($scope, $rootScope, $state, $stateParams, $http,
-    GetProjectRoles, AddNewRole) {
+.controller('RolesCtrl', function ($scope, $rootScope, $state, $stateParams, Roles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -23,7 +22,7 @@ angular.module('GrappBox.controllers')
     $scope.projectRoles = {};
     $scope.GetProjectRoles = function () {
         $rootScope.showLoading();
-        GetProjectRoles.get({
+        Roles.List().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -49,7 +48,7 @@ angular.module('GrappBox.controllers')
     $scope.AddNewRole = function () {
         $rootScope.showLoading();
         console.log($scope.roleType.teamTimeline);
-        AddNewRole.save({
+        Roles.Add().save({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,

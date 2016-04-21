@@ -26,29 +26,40 @@
                    id="fileUploadId"
                    style="display: none;"
                    data-ng-model="fileUpload"
-                   ng-change="UploadFile(fileUpload)"
+                   ng-change="showAskPasswordChoicePopup(fileUpload)"
                    base-sixty-four-input />
             <a class="button icon ion-ios-cloud-upload button-positive"
                onclick="document.getElementById('fileUploadId').click();">
             </a>
         </div>
+        <!-- FOLDERS -->
         <div class="item item-divider"> Folders</div>
-        <ion-list>
-            <!--ng-click="showMemberActionSheet(userOnProject.id)"-->
+        <ion-list can-swipe="true">
             <ion-item ng-repeat="dir in cloudData"
                       ng-show="dir.type == 'dir'"
-                      ng-click="CloudLS(false, dir.filename)">
+                      ng-click="checkSafe(dir.is_secured, dir.filename)"> <!--CloudLS(false, dir.filename)"-->
                 <h2 class="icon ion-ios-folder"> {{ dir.filename }}</h2>
+                <ion-option-button class="button-assertive"
+                                   ng-click="deleteFileOrFolder(dir.filename)">
+                    Delete
+                </ion-option-button>
             </ion-item>
         </ion-list>
+        <!-- FILES -->
         <div class="item item-divider"> Files</div>
-        <ion-list>
+        <ion-list can-swipe="true">
             <ion-item ng-repeat="file in cloudData"
                       ng-show="file.type == 'file'"
-                      ng-click="downloadFile(file.filename)">
+                      ng-click="checkFileProtected(file.is_secured, file.filename)">
                 <h2 class="icon ion-document"> {{ file.filename }}</h2>
+                <ion-option-button class="button-assertive"
+                                   ng-click="checkDeleteFile(file.filename, file.is_secured)">
+                    Delete
+                </ion-option-button>
             </ion-item>
         </ion-list>
+        <progress max="100" value="{{downloadProgress}}"></progress>
+        <progress max="100" value="{{uploadProgress}}"></progress>
     </ion-content>
 </ion-view>
 
@@ -63,18 +74,6 @@
             </button>
         </ion-header-bar>
         <ion-content>
-            <!--<form ng-submit="addWhiteboard(elem)">
-                <ion-list class="list-inset">
-                    <label class="item item-input">
-                        <input type="text" placeholder="Whiteboard's name" ng-model="elem.title">
-                    </label>
-                    <div class="padding">
-                        <button class="button button-full button-positive" type="submit">
-                            Add Whiteboard
-                        </button>
-                    </div>
-                </ion-list>
-            </form>-->
             <form name="createDirectory_form">
                 <ion-input class="item item-input">
                     <ion-label>Name</ion-label>

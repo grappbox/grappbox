@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditTicketCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet,
-    GetTicketInfo, EditTicket, GetTagsOnProject, AssignTag, CreateTag, UpdateTag, UsersOnProjectList, RemoveTagFromTicket, SetUsersToTicket) {
+.controller('EditTicketCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, Bugtracker, Projects) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -33,7 +32,7 @@ angular.module('GrappBox.controllers')
     $scope.userList = {};
     $scope.GetTicketInfo = function () {
         $rootScope.showLoading();
-        GetTicketInfo.get({
+        Bugtracker.GetTicketInfo().get({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token,
         }).$promise
@@ -50,33 +49,38 @@ angular.module('GrappBox.controllers')
                         checked: true
                     });
                 }
-                return UsersOnProjectList.get({
+                Projects.Users().get({
                     token: $rootScope.userDatas.token,
                     projectId: $scope.projectId
-                }).$promise;
-            })
-            .then(function (data) {
-                $scope.userList = data.data.array;
-                console.log('Get project members successful !');
-                console.log(data.data.array);
-                for (var i = 0; i < $scope.userList.length; i++) { // for each user on the project...
-                    for (var j = 0, isIn = false; j < $scope.usersOnTicket.length; j++) { // ... and for each user already in user assigned tab...
-                        if ($scope.userList[i].id == $scope.usersOnTicket[j].id) // ... if a user from project is in user from ticket ...
-                        {
-                            isIn = true;
-                            break;
+                }).$promise
+                .then(function (data) {
+                    $scope.userList = data.data.array;
+                    console.log('Get project members successful !');
+                    console.log(data.data.array);
+                    for (var i = 0; i < $scope.userList.length; i++) { // for each user on the project...
+                        for (var j = 0, isIn = false; j < $scope.usersOnTicket.length; j++) { // ... and for each user already in user assigned tab...
+                            if ($scope.userList[i].id == $scope.usersOnTicket[j].id) // ... if a user from project is in user from ticket ...
+                            {
+                                isIn = true;
+                                break;
+                            }
+                        }
+                        if (!isIn) { // if he isn't, push him in users on ticket tab
+                            $scope.usersOnTicket.push({
+                                id: $scope.userList[i].id,
+                                name: $scope.userList[i].firstname + " " + $scope.userList[i].lastname,
+                                email: "",
+                                avatar: "",
+                                checked: false
+                            });
                         }
                     }
-                    if (!isIn) { // if he isn't, push him in users on ticket tab
-                        $scope.usersOnTicket.push({
-                            id: $scope.userList[i].id,
-                            name: $scope.userList[i].firstname + " " + $scope.userList[i].lastname,
-                            email: "",
-                            avatar: "",
-                            checked: false
-                        });
-                    }
-                }
+                })
+                .catch(function (error) {
+                    console.error('Get project members failed ! Reason: ' + error.status + ' ' + error.statusText);
+                    $scope.$broadcast('scroll.refreshComplete');
+                    $rootScope.hideLoading();
+                })
             })
             .catch(function (error) {
                 console.error('Get ticket info or get users on project failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -95,7 +99,7 @@ angular.module('GrappBox.controllers')
     $scope.editTicketData = {};
     $scope.EditTicket = function () {
         $rootScope.showLoading();
-        EditTicket.update({
+        Bugtracker.EditTicket().update({
             data: {
                 token: $rootScope.userDatas.token,
                 bugId: $scope.ticketId,
@@ -126,7 +130,7 @@ angular.module('GrappBox.controllers')
     $scope.tagsOnProject = {};
     $scope.GetTagsOnProject = function () {
         $rootScope.showLoading();
-        GetTagsOnProject.get({
+        Bugtracker.GetTagsOnProject().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -155,7 +159,7 @@ angular.module('GrappBox.controllers')
     $scope.createTagData = {};
     $scope.CreateTag = function () {
         $rootScope.showLoading();
-        CreateTag.save({
+        Bugtracker.CreateTag().save({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
@@ -184,7 +188,7 @@ angular.module('GrappBox.controllers')
     $scope.assignTagData = {};
     $scope.AssignTag = function () {
         $rootScope.showLoading();
-        AssignTag.update({
+        Bugtracker.AssignTag().update({
             data: {
                 token: $rootScope.userDatas.token,
                 bugId: $scope.ticketId,
@@ -229,7 +233,7 @@ angular.module('GrappBox.controllers')
     $scope.removeTagFromTicketData = {};
     $scope.RemoveTagFromTicket = function () {
         $rootScope.showLoading();
-        RemoveTagFromTicket.delete({
+        Bugtracker.RemoveTagFromTicket().delete({
             token: $rootScope.userDatas.token,
             bugId: $scope.ticketId,
             tagId: $scope.tagToRemove.id
@@ -292,7 +296,7 @@ angular.module('GrappBox.controllers')
     $scope.setParticipantsData = {};
     $scope.SetUsersToTicket = function () {
         $rootScope.showLoading();
-        SetUsersToTicket.update({
+        Bugtracker.SetUsersToTicket().update({
             data: {
                 token: $rootScope.userDatas.token,
                 bugId: $scope.ticketId,

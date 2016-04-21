@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('ProfileCtrl', function ($scope, $rootScope, $state,
-    GetProfileInfo, ProjectsList, NextMeetings, GetCurrentTasks, GetUserConnectedRoles) {
+.controller('ProfileCtrl', function ($scope, $rootScope, $state, Dashboard, Projects, Users, Roles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -23,7 +22,7 @@ angular.module('GrappBox.controllers')
     $scope.profileInfo = {};
     $scope.GetProfileInfo = function () {
         $rootScope.showLoading();
-        GetProfileInfo.get({
+        Users.ProfileInfo().get({
             token: $rootScope.userDatas.token
         }).$promise
             .then(function (data) {
@@ -47,7 +46,7 @@ angular.module('GrappBox.controllers')
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
         $rootScope.showLoading();
-        ProjectsList.get({ token: $rootScope.userDatas.token }).$promise
+        Projects.List().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
                 $scope.projectsTab = data.data.array;
@@ -70,7 +69,7 @@ angular.module('GrappBox.controllers')
     $scope.nextMeetingsError = "";
     $scope.GetNextMeetings = function () {
         $rootScope.showLoading();
-        NextMeetings.get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.NextMeetings().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
                 console.log(data);
@@ -96,7 +95,7 @@ angular.module('GrappBox.controllers')
     $scope.currentTasksError = "";
     $scope.GetCurrentTasks = function () {
         $rootScope.showLoading();
-        GetCurrentTasks.get({ token: $rootScope.userDatas.token }).$promise
+        Users.CurrentTasks().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get current tasks list successful !');
                 console.log(data);
@@ -122,7 +121,7 @@ angular.module('GrappBox.controllers')
     $scope.userConnectedRolesError = "";
     $scope.GetUserConnectedRoles = function () {
         $rootScope.showLoading();
-        GetUserConnectedRoles.get({ token: $rootScope.userDatas.token }).$promise
+        Roles.UserConnectedRoles().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get user connected roles successful !');
                 console.log(data);

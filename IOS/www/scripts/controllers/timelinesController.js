@@ -3,8 +3,7 @@
 */
 
 angular.module('GrappBox.controllers')
-.controller('TimelinesCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup,
-GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessageOrComment, GetCommentsOnTimeline) {
+.controller('TimelinesCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, Timeline) {
 
     $scope.offsetMax = 25;
     $scope.limitMax = 25;
@@ -51,7 +50,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     $scope.timelineIds = [];
     $scope.GetTimelines = function () {
         $rootScope.showLoading();
-        GetTimelines.get({
+        Timeline.List().get({
             token: $rootScope.userDatas.token,
             id: $scope.projectId
         }).$promise
@@ -81,7 +80,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     */
     $scope.GetLastMessagesTeam = function () {
         $rootScope.showLoading();
-        GetLastMessages.get({
+        Timeline.LastMessages().get({
             id: $scope.timelineIds[0],
             token: $rootScope.userDatas.token,
             offset: $scope.offsetTeam,
@@ -114,7 +113,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     */
     $scope.GetLastMessagesCustomer = function () {
         $rootScope.showLoading();
-        GetLastMessages.get({
+        Timeline.LastMessages().get({
             id: $scope.timelineIds[1],
             token: $rootScope.userDatas.token,
             offset: $scope.offsetCustomer,
@@ -147,7 +146,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     $scope.editMessageData = {};
     $scope.EditMessage = function (mess) {
         $rootScope.showLoading();
-        EditMessageOrComment.update({
+        Timeline.EditMessageOrComment().update({
             data: {
                 id: mess.timelineId,
                 token: $rootScope.userDatas.token,
@@ -177,7 +176,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     $scope.editCommentData = {};
     $scope.EditCommentOnTimeline = function (com) {
         $rootScope.showLoading();
-        EditMessageOrComment.update({
+        Timeline.EditMessageOrComment().update({
             data: {
                 id: com.timelineId,
                 token: $rootScope.userDatas.token,
@@ -223,7 +222,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     $scope.archiveMessageData = {};
     $scope.ArchiveMessage = function (message) {
         $rootScope.showLoading();
-        ArchiveMessageOrComment.delete({
+        Timeline.ArchiveMessageOrComment().delete({
             id: message.timelineId,
             token: $rootScope.userDatas.token,
             messageId: message.id
@@ -250,7 +249,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     $scope.archiveCommentData = {};
     $scope.ArchiveComment = function (com, mess) {
         $rootScope.showLoading();
-        ArchiveMessageOrComment.delete({
+        Timeline.ArchiveMessageOrComment().delete({
             id: com.timelineId,
             token: $rootScope.userDatas.token,
             messageId: com.id
@@ -277,7 +276,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     $scope.comments = {};
     $scope.GetCommentsOnTimeline = function (message) {
         $rootScope.showLoading();
-        GetCommentsOnTimeline.get({
+        Timeline.Comments().get({
             id: message.timelineId,
             token: $rootScope.userDatas.token,
             message: message.id
@@ -303,7 +302,7 @@ GetTimelines, GetLastMessages, PostMessage, EditMessageOrComment, ArchiveMessage
     $scope.comment = {};
     $scope.PostComment = function (mess) {
         $rootScope.showLoading();
-        PostMessage.save({
+        Timeline.PostMessage().save({
             data: {
                 id: mess.timelineId,
                 token: $rootScope.userDatas.token,

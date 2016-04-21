@@ -4,12 +4,12 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CreateProjectCtrl', function ($scope, $rootScope, $state, CreateProject) {
+.controller('CreateProjectCtrl', function ($scope, $rootScope, $state, Projects) {
     $scope.project = {};
 
     $scope.CreateProject = function () {
         $rootScope.showLoading();
-        CreateProject.save({
+        Projects.Create().save({
             data: {
                 token: $rootScope.userDatas.token,
                 name: $scope.project.name,

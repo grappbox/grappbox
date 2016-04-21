@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $http,
-    GetUsersForRole, AssignToRole, UpdateProjectRole, DeleteProjectRole, RemoveUserFromRole) {
+.controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Roles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -52,7 +51,7 @@ angular.module('GrappBox.controllers')
     $scope.deleteRoleData = {};
     $scope.DeleteProjectRole = function () {
         $rootScope.showLoading();
-        DeleteProjectRole.delete({
+        Roles.Delete().delete({
             token: $rootScope.userDatas.token,
             id: $scope.roleId
         }).$promise
@@ -76,7 +75,7 @@ angular.module('GrappBox.controllers')
     $scope.usersForRole = {};
     $scope.GetUsersForRole = function () {
         $rootScope.showLoading();
-        GetUsersForRole.get({
+        Roles.UsersAssignedOrNot().get({
             token: $rootScope.userDatas.token,
             roleId: $scope.roleId
         }).$promise
@@ -105,7 +104,7 @@ angular.module('GrappBox.controllers')
     $scope.AssignToRole = function () {
         $rootScope.showLoading();
         console.log($scope.userToAdd.userId);
-        AssignToRole.save({
+        Roles.Assign().save({
             data: {
                 token: $rootScope.userDatas.token,
                 userId: $scope.userToAdd.userId,
@@ -171,7 +170,7 @@ angular.module('GrappBox.controllers')
     $userRemoveRoleData = {};
     $scope.RemoveUserFromRole = function () {
         $rootScope.showLoading();
-        RemoveUserFromRole.delete({
+        Roles.RemoveUser().delete({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
             userId: $scope.user_id,
@@ -199,7 +198,7 @@ angular.module('GrappBox.controllers')
     $scope.updatedRoleData = {};
     $scope.UpdateProjectRole = function () {
         $rootScope.showLoading();
-        UpdateProjectRole.update({
+        Roles.Update().update({
             data: {
                 token: $rootScope.userDatas.token,
                 roleId: $scope.roleId,

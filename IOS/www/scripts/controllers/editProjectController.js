@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams,
-    ProjectView, EditProject) {
+.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams, Projects) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -20,7 +19,7 @@ angular.module('GrappBox.controllers')
     $scope.project = {};
     $scope.GetProjectInfo = function () {
         $rootScope.showLoading();
-        ProjectView.get({
+        Projects.Info().get({
             token: $rootScope.userDatas.token,
             projectId: $stateParams.projectId
         }).$promise
@@ -44,19 +43,20 @@ angular.module('GrappBox.controllers')
 
     $scope.EditProject = function () {
         $rootScope.showLoading();
-        EditProject.update({
+        Projects.Edit().update({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $stateParams.projectId,
-                name: $scope.project.name,
-                description: $scope.project.description,
-                logo: $scope.project.logo,
-                phone: $scope.project.phone,
-                company: $scope.project.company,
-                email: $scope.project.email,
-                facebook: $scope.project.facebook,
-                twitter: $scope.project.twitter,
-                password: $scope.project.password
+                name: $scope.project.name ? $scope.project.name : "",
+                description: $scope.project.description ? $scope.project.description : "",
+                logo: $scope.project.logo ? $scope.project.logo : "",
+                phone: $scope.project.phone ? $scope.project.phone : "",
+                company: $scope.project.company ? $scope.project.company : "",
+                email: $scope.project.email ? $scope.project.email : "",
+                facebook: $scope.project.facebook ? $scope.project.facebook : "",
+                twitter: $scope.project.twitter ? $scope.project.twitter : "",
+                password: $scope.project.password ? $scope.project.password : "",
+                oldPassword: $scope.project.oldPassword ? $scope.project.oldPassword : ""
             }
         }).$promise
             .then(function (data) {

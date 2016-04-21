@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 // PROJECTS LIST
-.controller('ProjectsListCtrl', function ($scope, $rootScope, $state, ProjectsList) {
+.controller('ProjectsListCtrl', function ($scope, $rootScope, $state, Projects) {
 
     $scope.doRefresh = function () {
         $scope.GetProjects();
@@ -18,7 +18,7 @@ angular.module('GrappBox.controllers')
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
         $rootScope.showLoading();
-        ProjectsList.get({ token: $rootScope.userDatas.token }).$promise
+        Projects.List().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
                 $scope.projectsTab = data.data.array;

@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('AuthCtrl', function ($scope, $rootScope, $state, Login, $ionicHistory) {
+.controller('AuthCtrl', function ($scope, $rootScope, $state, $ionicHistory, Auth) {
     $scope.user = {};
 
     $scope.$on('$ionicView.enter', function () {
@@ -15,7 +15,7 @@ angular.module('GrappBox.controllers')
     $scope.user.password = "hofman_p";
     $scope.login = function () {
         $rootScope.showLoading();
-        Login.save({
+        Auth.Login().save({
             data: {
                 login: $scope.user.email,
                 password: $scope.user.password

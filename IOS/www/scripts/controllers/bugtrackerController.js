@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('BugtrackerCtrl', function ($scope, $rootScope, $state, $stateParams,
-GetLastOpenTickets, GetLastClosedTickets) {
+.controller('BugtrackerCtrl', function ($scope, $rootScope, $state, $stateParams, Bugtracker) {
 
     $scope.offsetMax = 25;
     $scope.limitMax = 25;
@@ -50,7 +49,7 @@ GetLastOpenTickets, GetLastClosedTickets) {
     */
     $scope.GetLastOpenTickets = function () {
         $rootScope.showLoading();
-        GetLastOpenTickets.get({
+        Bugtracker.GetLastOpenTickets().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
             offset: $scope.offsetOpen,
@@ -82,7 +81,7 @@ GetLastOpenTickets, GetLastClosedTickets) {
     */
     $scope.GetLastClosedTickets = function () {
         $rootScope.showLoading();
-        GetLastClosedTickets.get({
+        Bugtracker.GetLastClosedTickets().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
             offset: $scope.offsetClosed,

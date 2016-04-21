@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CreateMessageCtrl', function ($scope, $rootScope, $state, $stateParams,
-    PostMessage) {
+.controller('CreateMessageCtrl', function ($scope, $rootScope, $state, $stateParams, Timeline) {
 
     $scope.timelineId = $stateParams.timelineId;
     console.log($scope.timelineId);
@@ -17,7 +16,7 @@ angular.module('GrappBox.controllers')
     $scope.message = {};
     $scope.PostMessage = function () {
         $rootScope.showLoading();
-        PostMessage.save({
+        Timeline.PostMessage().save({
             data: {
                 id: $scope.timelineId,
                 token: $rootScope.userDatas.token,

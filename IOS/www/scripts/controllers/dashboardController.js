@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('DashboardCtrl', function ($scope, $rootScope, $state,
-TeamOccupation, NextMeetings, GlobalProgress) {
+.controller('DashboardCtrl', function ($scope, $rootScope, $state, Dashboard) {
 
     $scope.doRefreshTeamOccupation = function () {
         $scope.GetTeamOccupation();
@@ -26,7 +25,7 @@ TeamOccupation, NextMeetings, GlobalProgress) {
     $scope.teamOccupationTab = {};
     $scope.GetTeamOccupation = function () {
         $rootScope.showLoading();
-        TeamOccupation.get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.TeamOccupation().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get team occupation list successful !');
                 console.log(data.data.array);
@@ -50,7 +49,7 @@ TeamOccupation, NextMeetings, GlobalProgress) {
     $scope.nextMeetingsError = "";
     $scope.GetNextMeetings = function () {
         $rootScope.showLoading();
-        NextMeetings.get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.NextMeetings().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
                 console.log(data.data);
@@ -72,7 +71,7 @@ TeamOccupation, NextMeetings, GlobalProgress) {
     $scope.globalProgressTab = {};
     $scope.GetGlobalProgress = function () {
         $rootScope.showLoading();
-        GlobalProgress.get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.GlobalProgress().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get global progress list successful !');
                 console.log(data.data);

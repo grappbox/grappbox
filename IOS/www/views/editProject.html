@@ -71,9 +71,16 @@
                        ng-model="project.twitter" />
             </ion-input>
             <ion-input class="item item-input">
-                <ion-label>Password</ion-label>
+                <ion-label>Old Safe Password</ion-label>
                 <input type="password"
-                       placeholder="My Project's password'"
+                       placeholder="My Project's old safe password'"
+                       name="project_oldPassword"
+                       ng-model="project.oldPassword" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Safe Password</ion-label>
+                <input type="password"
+                       placeholder="My Project's safe password'"
                        name="project_password"
                        ng-model="project.password" />
             </ion-input>

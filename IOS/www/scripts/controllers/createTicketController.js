@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CreateTicketCtrl', function ($scope, $rootScope, $state, $stateParams,
-    CreateTicket) {
+.controller('CreateTicketCtrl', function ($scope, $rootScope, $state, $stateParams, Bugtracker) {
     $scope.ticket = {};
     $scope.message = $stateParams.message;
     if ($scope.message != null) {
@@ -19,7 +18,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.CreateTicket = function () {
         $rootScope.showLoading();
-        CreateTicket.save({
+        Bugtracker.CreateTicket().save({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $stateParams.projectId,

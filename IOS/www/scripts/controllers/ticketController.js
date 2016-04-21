@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('TicketCtrl', function ($scope, $rootScope, $state, $stateParams,
-    GetTicketInfo, CloseTicketOrComment, GetCommentsOnTicket, PostComment, ReopenTicket, EditCommentOnTicket) {
+.controller('TicketCtrl', function ($scope, $rootScope, $state, $stateParams, Bugtracker) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -26,7 +25,7 @@ angular.module('GrappBox.controllers')
     $scope.creatorId = {};
     $scope.GetTicketInfo = function () {
         $rootScope.showLoading();
-        GetTicketInfo.get({
+        Bugtracker.GetTicketInfo().get({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token
         }).$promise
@@ -52,7 +51,7 @@ angular.module('GrappBox.controllers')
     $scope.comments = {};
     $scope.GetCommentsOnTicket = function () {
         $rootScope.showLoading();
-        GetCommentsOnTicket.get({
+        Bugtracker.GetCommentsOnTicket().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
             ticketId: $scope.ticketId
@@ -79,7 +78,7 @@ angular.module('GrappBox.controllers')
     $scope.postCommentData = {};
     $scope.PostComment = function () {
         $rootScope.showLoading();
-        PostComment.save({
+        Bugtracker.PostComment().save({
             data: {
                 projectId: $scope.projectId,
                 token: $rootScope.userDatas.token,
@@ -111,7 +110,7 @@ angular.module('GrappBox.controllers')
     $scope.reopenTicketData = {};
     $scope.ReopenTicket = function () {
         $rootScope.showLoading();
-        ReopenTicket.update({
+        Bugtracker.ReopenTicket().update({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token
         }).$promise
@@ -136,7 +135,7 @@ angular.module('GrappBox.controllers')
     $scope.closeTicketData = {};
     $scope.CloseTicket = function () {
         $rootScope.showLoading();
-        CloseTicketOrComment.delete({
+        Bugtracker.CloseTicketOrComment().delete({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token
         }).$promise
@@ -161,7 +160,7 @@ angular.module('GrappBox.controllers')
     $scope.closedCommentData = {};
     $scope.CloseComment = function (com) {
         $rootScope.showLoading();
-        CloseTicketOrComment.delete({
+        Bugtracker.CloseTicketOrComment().delete({
             id: com.id,
             token: $rootScope.userDatas.token
         }).$promise
@@ -186,7 +185,7 @@ angular.module('GrappBox.controllers')
     $scope.editCommentData = {};
     $scope.EditCommentOnTicket = function (com) {
         $rootScope.showLoading();
-        EditCommentOnTicket.update({
+        Bugtracker.EditCommentOnTicket().update({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,

@@ -3,7 +3,8 @@
 */
 
 angular.module('GrappBox.controllers')
-.controller('GanttCtrl', function ($scope) {
+
+.controller('GanttCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Gantt) {
     $scope.data = [{
         name: 'Milestones', height: '3em', sortable: false, classes: 'gantt-row-milestone', color: '#45607D', tasks: [
            // Dates can be specified as string, timestamp or javascript date object. The data attribute can be used to attach a custom object

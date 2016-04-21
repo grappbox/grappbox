@@ -4,8 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('TagsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet,
-    GetTagsOnProject, CreateTag, DeleteTagFromProject) {
+.controller('TagsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, Bugtracker) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -22,7 +21,7 @@ angular.module('GrappBox.controllers')
     $scope.tagsOnProject = {};
     $scope.GetTagsOnProject = function () {
         $rootScope.showLoading();
-        GetTagsOnProject.get({
+        Bugtracker.GetTagsOnProject().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
@@ -73,7 +72,7 @@ angular.module('GrappBox.controllers')
     $scope.DeleteTagFromProject = function () {
         $rootScope.showLoading();
         console.log($scope.tagToDelete.id);
-        DeleteTagFromProject.delete({
+        Bugtracker.DeleteTagFromProject().delete({
             token: $rootScope.userDatas.token,
             tagId: $scope.tagToDelete.id
         }).$promise
@@ -100,7 +99,7 @@ angular.module('GrappBox.controllers')
     $scope.createTagData = {};
     $scope.CreateTag = function () {
         $rootScope.showLoading();
-        CreateTag.save({
+        Bugtracker.CreateTag().save({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
