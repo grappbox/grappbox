@@ -100,10 +100,18 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <label for="modal_newType">Event type</label>
           <select id="modal_newType" data-ng-options="type.name for type in events.types track by type.id" data-ng-model="update.newType"></select>
         </div>
+        <div class="form-group">
+          <label for="modal_newProject">Project</label>
+          <select id="modal_newProject" data-ng-options="project.name for project in projects track by project.id" data-ng-model="update.newProject" data-ng-change="method.onProjectUpdate(update.newProject)"></select>
+        </div>
+        <div class="form-group" ng-if="update.newProject && update.newProject.id">
+          <label for="modal_newMembers">Members</label>
+          <select id="modal_newMembers" multiple="true" data-ng-options="member.name for member in members track by member.name" data-ng-model="update.newMembers"></select>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-default btn-submit" data-ng-click="update.onConfirm()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" class="btn-default btn-access" data-ng-click="update.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
+        <button type="button" class="btn-default btn-submit" data-ng-click="method.onConfirm()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="method.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
       </div>
     </script>
   </div>
@@ -117,8 +125,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <p>Are you sure you want to delete this event?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-default btn-submit" data-ng-click="delete.onConfirm()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" class="btn-default btn-access" data-ng-click="delete.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
+        <button type="button" class="btn-default btn-submit" data-ng-click="method.onConfirm()"><i class="fa fa-check"></i>OK</button>
+        <button type="button" class="btn-default btn-access" data-ng-click="method.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
       </div>
     </script>
   </div>

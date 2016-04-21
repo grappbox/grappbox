@@ -9,7 +9,7 @@
 * APP and main controller definition
 *
 */
-var app = angular.module("grappbox", ["ngRoute", "ngCookies", "ngAnimate", 'mwl.calendar', "ui.bootstrap", "panhandler", "ui-notification", "naif.base64", "ngTagsInput"]);
+var app = angular.module("grappbox", ["ngRoute", "ngCookies", "ngAnimate", "mwl.calendar", "ui.bootstrap", "panhandler", "ui-notification", "naif.base64", "ngTagsInput" ]);
 
 /* ==================== INITIALIZATION ==================== */
 
@@ -42,7 +42,7 @@ app.config(["NotificationProvider", function(NotificationProvider) {
 app.controller("grappboxController", ["$scope", "$location", function($scope, $location) {
 
   $scope.routeActiveList  = { "/": false, "/bugtracker": false, "/calendar": false, "/cloud": false, "/notifications": false, "/profile": false, "/project": false, "/timeline": false, "/whiteboard": false };
-  $scope.routeIconList    = { "/": "fa-bolt", "/bugtracker": "fa-code", "/calendar": "fa-calendar", "/cloud": "fa-upload", "/notifications": "fa-exclamation", '/profile': "fa-sliders", "/project": "fa-folder", "/timeline": "fa-sort-amount-asc", "/whiteboard": "fa-pencil" };
+  $scope.routeIconList    = { "/": "fa-bolt", "/bugtracker": "fa-code", "/calendar": "fa-calendar", "/cloud": "fa-upload", "/notifications": "fa-exclamation", "/profile": "fa-sliders", "/project": "fa-folder", "/timeline": "fa-sort-amount-asc", "/whiteboard": "fa-pencil" };
   $scope.routeCurrentIcon = "";
 
   // Routine definition
