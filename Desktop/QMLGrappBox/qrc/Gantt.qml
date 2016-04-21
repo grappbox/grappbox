@@ -24,9 +24,12 @@ Item {
         return ret
     }
 
-    // Side of the gantt
-    Item {
-        id: taskItem
+    GanttModel {
+        id: model
+
+        Component.onCompleted: {
+            ganttView.setTask(model.tasks)
+        }
     }
 
     // Body of the gantt
@@ -48,7 +51,6 @@ Item {
         }
 
         onMouseXChanged: {
-            console.log("X changed ! : " + mouse.x)
             if (lastX == 150000)
             {
                 lastX = mouseX
@@ -59,13 +61,13 @@ Item {
         }
     }
 
-    GanttView
-    {
+    GanttView {
         id: ganttView
         anchors.fill: parent
 
         sizeX: 100
-        sizeY: 25
+        sizeY: 40
+        sizeYTop: 25
         minSizeWeek: 30
         minSizeYear: 3
         rectangleColor: "red"

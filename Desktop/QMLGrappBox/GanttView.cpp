@@ -12,6 +12,7 @@ void GanttView::paint(QPainter *painter)
     painter->setRenderHints(QPainter::Antialiasing, true);
     DrawGrid(painter);
     DrawDate(painter);
+    DrawTaskRectangles(painter);
 }
 
 void GanttView::DrawGrid(QPainter *painter)
@@ -21,15 +22,15 @@ void GanttView::DrawGrid(QPainter *painter)
     painter->setPen(pen);
     QRectF maxRect = this->boundingRect();
     float sizeCase = _SizeX;
-    float startY = _SizeY * 3;
+    float startY = _SizeYTop * 3;
     if (_SizeX <= _MinSizeWeek)
     {
-        startY -= _SizeY;
+        startY -= _SizeYTop;
         sizeCase *= 7;
     }
     if (_SizeX <= _MinSizeYear)
     {
-        startY -= _SizeY;
+        startY -= _SizeYTop;
         sizeCase *= 4;
     }
     float currentDrawX = (maxRect.center().x() - (sizeCase / 2.0f)) + (_CursorX - (float)(diff * 100));
@@ -52,7 +53,7 @@ void GanttView::DrawDate(QPainter *painter)
         sizeCase *= 4;
     QRectF maxRect = this->boundingRect();
     float currentDrawX = (maxRect.center().x() - (sizeCase / 2.0f)) + (_CursorX - (float)(diff * 100));
-    float currentDrawY = _SizeY;
+    float currentDrawY = _SizeYTop;
     // Draw Month
     for (int i = _NumberOfDraw / -2; i < _NumberOfDraw / 2; ++i)
     {
@@ -65,12 +66,12 @@ void GanttView::DrawDate(QPainter *painter)
             newDate.setDate(current.year(), current.month(), 1);
             int dayDiff = newDate.daysTo(current);
             drawX = currentDrawX + (float)(i - dayDiff) * sizeCase;
-            textContain = QRectF(drawX, 0, sizeCase * newDate.daysInMonth(), _SizeY);
+            textContain = QRectF(drawX, 0, sizeCase * newDate.daysInMonth(), _SizeYTop);
         }
         else if (current.day() == 1)
         {
             drawX = currentDrawX + (float)i * sizeCase;
-            textContain = QRectF(drawX, 0, sizeCase * current.daysInMonth(), _SizeY);
+            textContain = QRectF(drawX, 0, sizeCase * current.daysInMonth(), _SizeYTop);
         }
         else
             continue;
@@ -94,12 +95,12 @@ void GanttView::DrawDate(QPainter *painter)
                     newDate = newDate.addDays(-1);
                 int dayDiff = newDate.daysTo(current);
                 drawX = currentDrawX + (float)(i - dayDiff) * sizeCase;
-                textContain = QRectF(drawX, _SizeY, sizeCase * 7, _SizeY);
+                textContain = QRectF(drawX, _SizeYTop, sizeCase * 7, _SizeYTop);
             }
             else if (current.dayOfWeek() == 1)
             {
                 drawX = currentDrawX + (float)i * sizeCase;
-                textContain = QRectF(drawX, _SizeY, sizeCase * 7, _SizeY);
+                textContain = QRectF(drawX, _SizeYTop, sizeCase * 7, _SizeYTop);
             }
             else
                 continue;
@@ -108,7 +109,7 @@ void GanttView::DrawDate(QPainter *painter)
             painter->setPen(pen);
             painter->drawText(textContain, Qt::AlignCenter , "Week #" + QVariant(current.weekNumber()).toString());
         }
-        currentDrawY += _SizeY;
+        currentDrawY += _SizeYTop;
     }
     // Draw days
     if (_SizeX > _MinSizeWeek)
@@ -117,7 +118,7 @@ void GanttView::DrawDate(QPainter *painter)
         for (int i = _NumberOfDraw / -2; i < _NumberOfDraw / 2; ++i)
         {
             float drawX = currentDrawX + (float)i * sizeCase;
-            QRectF textContain = QRectF(drawX, currentDrawY, sizeCase, _SizeY);
+            QRectF textContain = QRectF(drawX, currentDrawY, sizeCase, _SizeYTop);
             painter->fillRect(textContain, QColor(210, 210, 210));
             QDate current = currentDateCursor.addDays(i);
             QPen pen(QColor(0, 0, 0), 0.5);
@@ -129,7 +130,30 @@ void GanttView::DrawDate(QPainter *painter)
 
 void GanttView::DrawTaskRectangles(QPainter *painter)
 {
-
+    QDate currentDateCursor = _TodayDate;
+    int diff = (int)(_CursorX / 100);
+    currentDateCursor = currentDateCursor.addDays(-diff);
+    float currentY = _SizeYTop * 3;
+    if (_SizeX <= _MinSizeWeek)
+    {
+        currentY -= _SizeYTop;
+    }
+    if (_SizeX <= _MinSizeYear)
+    {
+        currentY -= _SizeYTop;
+    }
+    QRectF maxRect = this->boundingRect();
+    float currentDrawX = (maxRect.center().x() - (_SizeX / 2.0f)) + (_CursorX - (float)(diff * 100));
+    for (TaskData *task : _Tasks)
+    {
+        int diffStart = task->startDate().daysTo(QDateTime(currentDateCursor, task->startDate().time()));
+        int length = task->startDate().daysTo(task->dueDate()) + 1;
+        QRectF rect(currentDrawX - (float)diffStart * _SizeX + 3, currentY + 3, (float)length * _SizeX - 6, _SizeY - 6);
+        QPainterPath path;
+        path.addRoundedRect(rect, 3, 3);
+        painter->fillPath(path, _RectangleColor);
+        currentY += _SizeY;
+    }
 }
 
 void GanttView::DrawArrow(QPainter *painter)
@@ -148,6 +172,12 @@ void GanttView::setSizeY(float value)
 {
     _SizeY = value;
     emit sizeYChanged();
+}
+
+void GanttView::setSizeYTop(float value)
+{
+    _SizeYTop = value;
+    emit sizeYTopChanged();
 }
 
 void GanttView::setMinSizeWeek(float value)
@@ -187,6 +217,21 @@ void GanttView::setNumberOfDraw(int value)
     emit numberOfDrawChanged();
 }
 
+void GanttView::setTask(QVariantList task)
+{
+    _Tasks.clear();
+    for (QVariant var : task)
+    {
+        TaskData *task = qobject_cast<TaskData*>(var.value<TaskData*>());
+        if (task == nullptr)
+        {
+            qDebug() << "Task is null";
+            continue;
+        }
+        _Tasks.push_back(task);
+    }
+}
+
 float GanttView::sizeX() const
 {
     return _SizeX;
@@ -195,6 +240,11 @@ float GanttView::sizeX() const
 float GanttView::sizeY() const
 {
     return _SizeY;
+}
+
+float GanttView::sizeYTop() const
+{
+    return _SizeYTop;
 }
 
 float GanttView::minSizeWeek() const
@@ -225,4 +275,9 @@ float GanttView::cursorX() const
 int GanttView::numberOfDraw() const
 {
     return _NumberOfDraw;
+}
+
+QQmlListProperty<TaskData> GanttView::tasks()
+{
+    return (QQmlListProperty<TaskData>(this, _Tasks));
 }
