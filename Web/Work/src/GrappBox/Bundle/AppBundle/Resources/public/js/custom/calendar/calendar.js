@@ -111,8 +111,9 @@ app.controller("calendarController", ["$scope", "$q", "$http", "$rootScope", "$c
         for (var i = 0; i < data.events.length; ++i) {
           $scope.calendar.events.push({
             id: data.events[i].id,
-            projectId: (data.project ? data.project.id : null),
-            typeName: "[ " + data.events[i].type.name + " ]",
+            projectId: (data.events[i].projectId ? data.events[i].projectId : null),
+            projectName: (data.events[i].projectId ? $scope.projects[data.events[i].projectId].name + " | " : null),
+            typeName: data.events[i].type.name + " | ",
             typeId: data.events[i].type.id,
             title: data.events[i].title,
             description: data.events[i].description,
@@ -148,11 +149,7 @@ app.controller("calendarController", ["$scope", "$q", "$http", "$rootScope", "$c
   $scope.method.onRefresh = function() {
     if ($scope.content.isInit) {
       Notification.info({ message: "Loading...", delay: 1500 });
-      getUserProjectsWithMembers().then(function() {
-        getEventTypes().then(function() {
-          getUserPlanning(moment($scope.view.date).startOf("month").format("YYYY-MM-DD"));
-        });
-      });
+      getUserPlanning(moment($scope.view.date).startOf("month").format("YYYY-MM-DD"));
     }
   };
 
@@ -271,33 +268,51 @@ app.controller("calendarController", ["$scope", "$q", "$http", "$rootScope", "$c
 * EVENT CREATION/EDITION => parameters
 *
 */
-app.controller("modal_eventUpdate", ["$scope", "modalInputService", "$uibModalInstance", "projects", "eventTypes", "eventToEdit",
-  function($scope, modalInputService, $uibModalInstance, projects, eventTypes, eventToEdit) {
+app.controller("modal_eventUpdate", ["$scope", "modalInputService", "$uibModalInstance", "$http", "$rootScope", "$cookies", "projects", "eventTypes", "eventToEdit",
+  function($scope, modalInputService, $uibModalInstance, $http, $rootScope, $cookies, projects, eventTypes, eventToEdit) {
 
   // Scope variables initialization
+  console.log(JSON.stringify(projects));
+
   $scope.projects = projects;
-  $scope.projects.unshift({ id: 0, name: "-None-", members: "" });
   $scope.members = [];
 
-  $scope.update = { id: "", newTitle: "", newDescription: "", newBeginDate: "", newEndDate: "", newType: "", newProject: "", newMembers: "" };
+  $scope.update = { id: "", newTitle: "", newDescription: "", newBeginDate: "", newEndDate: "", newType: "", newProject: "", newMembers: [] };
   $scope.events = { types: [] };
   $scope.events.types = eventTypes;
 
   $scope.method = { onProjectUpdate: "", onConfirm: "", onCancel: "" };
 
+  // Event data setting
+  // ONLY FOR EDITION/NOT CREATION MODE
   if (eventToEdit) {
     $scope.update.id = eventToEdit.id;
     $scope.update.newTitle = eventToEdit.title;
     $scope.update.newDescription = eventToEdit.description;
     $scope.update.newBeginDate = moment(eventToEdit.startsAt).toDate();
     $scope.update.newEndDate = moment(eventToEdit.endsAt).toDate();
-    $scope.update.newType = $scope.events.types[eventToEdit.typeId - 1];
-    $scope.update.newProject = $scope.projects[eventToEdit.projectId];
+    $scope.update.newType = $scope.events.types[eventToEdit.typeId];
 
-/*    $http.get($rootScope.apiBaseURL + "/event/getevent/" + $cookies.get("USERTOKEN") + "/" + event)
+    if (eventToEdit.projectId)
+      $scope.update.newProject = $scope.projects[eventToEdit.projectId];
+    else
+      $scope.update.newProject = "";
+
+    console.log("DETECTED: " + JSON.stringify($scope.update));
+
+    $http.get($rootScope.apiBaseURL + "/event/getevent/" + $cookies.get("USERTOKEN") + "/" + eventToEdit.id)
     .then(function onGetSuccess(response) {
-
-    $scope.update.newMembers = 0;*/
+      if (response.data.info && response.data.info.return_code == "1.5.1") {
+        var users = (Object.keys(response.data.data).length && Object.keys(response.data.data.users).length ? response.data.data.users : null);
+        for (var i = 0; i < users.length; ++i)
+          $scope.update.newMembers.push({ id: users[i].id, name: users[i].name });
+      }
+      else
+        $scope.update.newMembers = "";
+    },
+    function onGetFail(response) {
+      $scope.update.newMembers = "";
+    });
   }
 
   // Project selection change handler
@@ -311,7 +326,7 @@ app.controller("modal_eventUpdate", ["$scope", "modalInputService", "$uibModalIn
 
   // "Ok" button handler
   $scope.method.onConfirm = function() {
-    var newElement = { title: "", description: "", beginDate: "", endDate: "", type: "" };
+    var newElement = { title: "", description: "", beginDate: "", endDate: "", type: "", project: "", members: "" };
 
     // New event title
     if ($scope.update.newTitle && $scope.update.newTitle !== "")
@@ -348,20 +363,19 @@ app.controller("modal_eventUpdate", ["$scope", "modalInputService", "$uibModalIn
       newElement.project = $scope.update.newProject;
 
     // IS THIS OPERATION CREATION OR EDITION?
-    // Is event already have an ID?
+    // Does event already have an ID?
     if ($scope.update.id)
       newElement.id = $scope.update.id;
 
     if (newElement.title && newElement.description && newElement.beginDate && newElement.endDate && newElement.type) {
+      console.log("SENT: " + JSON.stringify(newElement));
       $uibModalInstance.close(newElement);
-      $scope.projects.shift();
     }
   };
 
   // "Cancel" button handler
   $scope.method.onCancel = function() {
     $uibModalInstance.dismiss();
-    $scope.projects.shift();
   };
 }]);
 
