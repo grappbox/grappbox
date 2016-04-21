@@ -81,20 +81,24 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div class="modal-body">
         <p>Please enter new details of your event.</p>
         <div class="form-group">
-          <label for="modal_eventTitle">Title</label>
-          <input type="text" data-ng-model="update.eventTitle" id="modal_eventTitle" autofocus>
+          <label for="modal_newTitle">Title</label>
+          <input type="text" data-ng-model="update.newTitle" id="modal_newTitle" autofocus>
         </div>
         <div class="form-group">
-          <label for="modal_eventTitle">Description</label>
-          <textarea rows="4" cols="50" data-ng-model="update.eventDescription" id="modal_eventDescription"></textarea>
+          <label for="modal_newTitle">Description</label>
+          <textarea rows="4" cols="50" data-ng-model="update.newDescription" id="modal_newDescription"></textarea>
         </div>
         <div class="form-group">
-          <label for="modal_eventBeginDate">Begin date</label>
-          <input type="datetime-local" data-ng-model="update.eventBeginDate" id="modal_eventBeginDate">
+          <label for="modal_newBeginDate">Begin date</label>
+          <input type="datetime-local" data-ng-model="update.newBeginDate" id="modal_newBeginDate">
         </div>
         <div class="form-group">
-          <label for="modal_eventEndDate">End date</label>
-          <input type="datetime-local" data-ng-model="update.eventEndDate" id="modal_eventEndDate">
+          <label for="modal_newEndDate">End date</label>
+          <input type="datetime-local" data-ng-model="update.newEndDate" id="modal_newEndDate">
+        </div>
+        <div class="form-group">
+          <label for="modal_newType">Event type</label>
+          <select id="modal_newType" data-ng-options="type.name for type in events.types track by type.id" data-ng-model="update.newType"></select>
         </div>
       </div>
       <div class="modal-footer">
