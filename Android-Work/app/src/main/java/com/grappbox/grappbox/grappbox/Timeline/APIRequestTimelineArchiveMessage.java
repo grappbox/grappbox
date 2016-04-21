@@ -94,7 +94,7 @@ public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, St
             }
 
         } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

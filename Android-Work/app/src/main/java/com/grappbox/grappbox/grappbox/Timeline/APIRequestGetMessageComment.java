@@ -91,7 +91,7 @@ public class APIRequestGetMessageComment extends AsyncTask<String, Void, String>
             }
 
         } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

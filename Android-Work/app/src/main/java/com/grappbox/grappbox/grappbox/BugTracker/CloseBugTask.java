@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by wieser_m on 24/02/2016.

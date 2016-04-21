@@ -2,7 +2,6 @@ package com.grappbox.grappbox.grappbox.BugTracker;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;

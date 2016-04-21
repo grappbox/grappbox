@@ -48,13 +48,10 @@ public class APIRequestNextMeeting extends AsyncTask<String, Void, List<ContentV
                 listResult = APIConnectAdapter.getInstance().getListNextMeeting(resultAPI);
             }
 
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
             return null;
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
-            return null;
-        }finally {
+        } finally {
             APIConnectAdapter.getInstance().closeConnection();
         }
         return listResult;

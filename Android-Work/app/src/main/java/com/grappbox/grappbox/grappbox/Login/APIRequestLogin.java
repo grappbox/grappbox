@@ -16,14 +16,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 class APIRequestLogin extends AsyncTask<String, Void, String> {
 
-    private Activity _loginActivity;
+    private LoginActivity _loginActivity;
     private String _login;
     private String _password;
 
-    public APIRequestLogin(Activity activity)
+    public APIRequestLogin(LoginActivity activity)
     {
         _loginActivity = activity;
     }
@@ -34,11 +35,10 @@ class APIRequestLogin extends AsyncTask<String, Void, String> {
         final String[] DATA_USER = {"id", "firstname", "lastname", "email", "token"};
 
         if (result == null) {
-            DialogFragment loginError = new LoginErrorAlertFragment();
-            loginError.show(_loginActivity.getFragmentManager(), "LoginError");
+            _loginActivity.loginFail();
+
             return;
         }
-        Log.v("Login JSON", result);
         try {
             ContentValues userInformation = new ContentValues();
             JSONObject jsonObject = new JSONObject(result);
@@ -56,8 +56,8 @@ class APIRequestLogin extends AsyncTask<String, Void, String> {
                     userInformation.get("token").toString(),
                     userInformation.get("login").toString(),
                     userInformation.get("password").toString());
-            Intent intent = new Intent(_loginActivity, MainActivity.class);
-            _loginActivity.startActivity(intent);
+            _loginActivity.loginSucced();
+
         } catch (JSONException j){
             Log.v("JSON error", "Exception");
         }

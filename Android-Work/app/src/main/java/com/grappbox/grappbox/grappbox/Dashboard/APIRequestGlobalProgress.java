@@ -49,13 +49,10 @@ public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<Conte
                 contentAPI = APIConnectAdapter.getInstance().getListGlobalProgress(resultAPI);
             }
 
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+        } catch (IOException |JSONException e){
+            e.printStackTrace();
             return null;
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
-            return null;
-        }finally {
+        } finally {
             APIConnectAdapter.getInstance().closeConnection();
         }
         return contentAPI;

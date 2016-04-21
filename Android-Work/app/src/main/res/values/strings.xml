@@ -4,6 +4,7 @@
     <string name="logo_description">Grappbox logo</string>
     <string name="login_label">Login</string>
     <string name="login_hint">Enter your login</string>
+    <string name="login_progress_label">Connexion</string>
     <string name="password_label">password</string>
     <string name="password_hint">Enter your password</string>
     <string name="login_connect_button">Connexion</string>

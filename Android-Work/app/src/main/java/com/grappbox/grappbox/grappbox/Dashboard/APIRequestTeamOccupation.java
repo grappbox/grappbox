@@ -47,11 +47,8 @@ class APIRequestTeamOccupation extends AsyncTask<String, Void, List<ContentValue
                 listResult = APIConnectAdapter.getInstance().getListTeamOccupation(resultAPI);
             }
 
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
-            return null;
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

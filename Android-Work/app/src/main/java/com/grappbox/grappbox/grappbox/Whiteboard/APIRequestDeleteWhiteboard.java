@@ -53,7 +53,7 @@ public class APIRequestDeleteWhiteboard  extends AsyncTask<String, Void, String>
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
             Log.v("JSON Content", resultAPI);
         } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

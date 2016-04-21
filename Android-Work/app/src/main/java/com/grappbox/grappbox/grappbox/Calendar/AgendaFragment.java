@@ -161,11 +161,8 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
                     return null;
                 }
 
-            } catch (IOException e){
+            } catch (IOException | JSONException e){
                 Log.e("APIConnection", "Error ", e);
-                return null;
-            } catch (JSONException j){
-                Log.e("APIConnection", "Error ", j);
                 return null;
             }finally {
                 APIConnectAdapter.getInstance().closeConnection();

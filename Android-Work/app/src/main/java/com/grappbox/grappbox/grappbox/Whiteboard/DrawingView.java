@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class DrawingView extends View {
@@ -62,7 +64,6 @@ public class DrawingView extends View {
     private Region _clip;
 
     private ArrayList<DrawingShape> _ListShape = new ArrayList<DrawingShape>();
-    private ArrayList<DrawingText> _ListText = new ArrayList<DrawingText>();
 
     private static float MIN_ZOOM = 1f;
     private static float MAX_ZOOM = 10f;
@@ -70,9 +71,10 @@ public class DrawingView extends View {
     private float _scaleFactor = 1.0f;
     private float touchXStart = 0;
     private float touchYStart = 0;
-    private float _speed = 5.0f;
     private float _previousTouchX = 0;
     private float _previousTouchY = 0;
+    private float _decalX = 0;
+    private float _decalY = 0;
     private ScaleGestureDetector _detector;
 
 
@@ -121,15 +123,15 @@ public class DrawingView extends View {
         if (_OnDraw) {
             _CanvasBitmap = _WhiteboardBitmap;
         }
-        //canvas.translate(translateX, translateY);
         canvas.drawBitmap(_WhiteboardBitmap, 0, 0, _CanvasPaint);
 
         for (DrawingShape shape : _ListShape) {
-            canvas.drawPath(shape.getPath(), shape.getInPaint());
-            canvas.drawPath(shape.getPath(), shape.getOutPaint());
-        }
-        for (DrawingText text : _ListText){
-            canvas.drawText(text.getText(), text.getSizeText().left, text.getSizeText().top, text.getPaintText());
+            if (shape.getTypeShape() == DrawingShape.typeShape.SHAPE) {
+                canvas.drawPath(shape.getPath(), shape.getInPaint());
+                canvas.drawPath(shape.getPath(), shape.getOutPaint());
+            } else {
+                canvas.drawText(shape.getText(), shape.getRectPosition().left, shape.getRectPosition().top, shape.getInPaint());
+            }
         }
 
         if (_ShapeType == 2) {
@@ -206,13 +208,6 @@ public class DrawingView extends View {
                                 it.remove();
                             }
                         }
-                        for (Iterator<DrawingText> it = _ListText.iterator(); it.hasNext(); ) {
-                            DrawingText text = it.next();
-                            if (intersect(text.getPathText())) {
-                                it.remove();
-                            }
-
-                        }
                     }
                 } else {
                     if (count < 2) {
@@ -223,9 +218,8 @@ public class DrawingView extends View {
                         for (DrawingShape shape : _ListShape) {
                             shape.TranslatePath(moveX, moveY);
                         }
-                        for (DrawingText text : _ListText) {
-                            text.TranslatePath(moveX, moveY);
-                        }
+                        _decalX += moveX;
+                        _decalY += moveY;
                         _previousTouchX = touchX;
                         _previousTouchY = touchY;
                     }
@@ -237,12 +231,16 @@ public class DrawingView extends View {
                     _OnDraw = false;
                     _CanvasBitmap = _WhiteboardBitmap;
                     _DrawCanvas.drawBitmap(_CanvasBitmap, 0, 0, _CanvasPaint);
+                    DrawingShape newShape = new DrawingShape(DrawingShape.typeShape.SHAPE, new Path(_DrawPath), new RectF(touchXStart - _decalX, touchYStart - _decalY,
+                            touchX - _decalX, touchY - _decalY));
                     if (_ShapeType == 2) {
                         _DrawPaint.setStyle(Paint.Style.STROKE);
                         _DrawPaint.setColor(_PaintColor);
                         Paint inPaint = new Paint(_DrawPaint);
                         Paint outPaint = new Paint(_DrawPaint);
-                        _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint, 1.0f));
+                        newShape.setPaint(inPaint, outPaint);
+                        newShape.scalePath(_scaleFactor);
+                        _ListShape.add(newShape);
                     } else if (_ShapeType != 5) {
                         _DrawPath.reset();
                         drawShape(touchX, touchY);
@@ -252,12 +250,13 @@ public class DrawingView extends View {
                         _DrawPaint.setStyle(Paint.Style.STROKE);
                         _DrawPaint.setColor(_SecondColor);
                         Paint outPaint = new Paint(_DrawPaint);
-                        _ListShape.add(new DrawingShape(new Path(_DrawPath), inPaint, outPaint, 1.0f));
+                        newShape.setPaint(inPaint, outPaint);
+                        newShape.scalePath(_scaleFactor);
+                        _ListShape.add(newShape);
                     }
-                    pushShape(_ShapeType, touchXStart, touchYStart, touchX, touchY);
+                    pushShape(_ShapeType, newShape.getRectPosition(), newShape);
                     _DrawPath.reset();
                 }
-
                 break;
 
             default:
@@ -270,9 +269,10 @@ public class DrawingView extends View {
         return true;
     }
 
-    private void pushShape(int shapeType, float initX, float initY, float endX, float endY)
+    private void pushShape(int shapeType, RectF rect, DrawingShape pushShape)
     {
         String shape;
+        Log.v("TypeShape", String.valueOf(shapeType));
         switch (shapeType){
             case 0:
                 shape = "RECTANGLE";
@@ -284,6 +284,15 @@ public class DrawingView extends View {
 
             case 2:
                 shape = "HANDWRITE";
+                break;
+
+            case 3:
+                shape = "TEXT";
+                break;
+
+            case 4:
+                shape = "DIAMOND";
+                break;
 
             default:
                 shape = null;
@@ -291,19 +300,96 @@ public class DrawingView extends View {
         }
 
         if (shape != null) {
-            String pos = String.valueOf(initX) + "," + String.valueOf(initY) + ";" + String.valueOf(endX) + "," + String.valueOf(endY);
-            String color =  String.format("#%06X", (0xFFFFFF & _PaintColor));
-            APIRequestWhiteboardPush push = new APIRequestWhiteboardPush(this, "add");
-            push.execute(_idWhiteboard, shape, pos, color);
+            String text = pushShape.getText();
+            float rayX = (rect.right - rect.left) / 2;
+            float rayY = (rect.bottom - rect.top) / 2;
+            String radius = null;
+            if (shape.equals("ELLIPSE"))
+                radius = String.valueOf(rayX) + ";" + String.valueOf(rayY);
+            String pos = String.valueOf(rect.left) + "," + String.valueOf(rect.top) + ";" + String.valueOf(rect.right) + "," + String.valueOf(rect.bottom);
+            String inColor =  String.format("#%06X", (0xFFFFFF & _PaintColor));
+            String outColor = String.format("#%06X", (0xFFFFFF & _SecondColor));
+            String italic = String.valueOf(pushShape.isItalicText());
+            String bold = String.valueOf(pushShape.isBoldText());
+            String sizeText = String.valueOf(pushShape.getSizeText());
+            APIRequestWhiteboardPush push = new APIRequestWhiteboardPush(this, "add", pushShape);
+            push.execute(_idWhiteboard, shape, pos, inColor, outColor, text, radius, italic, bold, sizeText);
         }
     }
 
-    private void drawTriangle(float touchX, float touchY)
+    private void drawDiamond(float touchX, float touchY)
     {
         _DrawPath.moveTo((touchX + touchXStart) / 2, touchYStart);
-        _DrawPath.lineTo(touchXStart, touchY);
-        _DrawPath.lineTo(touchX, touchY);
+        _DrawPath.lineTo(touchXStart, (touchY + touchYStart) / 2);
+        _DrawPath.lineTo((touchX + touchXStart) / 2, touchY);
+        _DrawPath.lineTo(touchX, (touchY + touchYStart) / 2);
         _DrawPath.lineTo((touchX + touchXStart) / 2, touchYStart);
+    }
+
+    private void drawDiamond(float touchStartX, float touchStartY,float touchX, float touchY, Path path)
+    {
+        path.moveTo((touchX + touchStartX) / 2, touchStartY);
+        path.lineTo(touchStartX, (touchY + touchStartY) / 2);
+        path.lineTo((touchX + touchStartX) / 2, touchY);
+        path.lineTo(touchX, (touchY + touchStartY) / 2);
+        path.lineTo((touchX + touchStartX) / 2, touchStartY);
+    }
+
+    public void drawFormWhiteboard(List<ContentValues> whiteboardForm)
+    {
+        boolean already;
+
+        for (ContentValues form : whiteboardForm)
+        {
+            already = false;
+            if (form.getAsString("form").equals("add"))
+            {
+                for (DrawingShape shape : _ListShape)
+                {
+                    if (shape.getId() == form.getAsInteger("id")) {
+                        already = true;
+                        break;
+                    }
+                }
+                if (already)
+                    continue;
+                Path path = new Path();
+                String pos = form.getAsString("position");
+
+                String start = pos.substring(0, pos.indexOf(";"));
+                String end = pos.substring(pos.indexOf(";") + 1);
+                float startx = Float.parseFloat(start.substring(0, start.indexOf(",")));
+                float starty = Float.parseFloat(start.substring(start.indexOf(",") + 1));
+
+                float endx = Float.parseFloat(end.substring(0, end.indexOf(",")));
+                float endy = Float.parseFloat(end.substring(end.indexOf(",") + 1));
+
+                RectF rect = new RectF(startx, starty, endx, endy);
+
+                if (form.getAsString("type").equals("RECTANGLE")) {
+                    path.addRect(startx, starty, endx, endy, Path.Direction.CCW);
+                } else if (form.getAsString("type").equals("ELLIPSE")) {
+                    path.addOval(rect, Path.Direction.CCW);
+                } else if (form.getAsString("type").equals("DIAMOND")) {
+                    path.setFillType(Path.FillType.EVEN_ODD);
+                    drawDiamond(startx, starty, endx, endy, path);
+                }
+
+                if (!form.getAsString("type").equals("TEXT")) {
+                    _DrawPaint.setStyle(Paint.Style.FILL);
+                    Paint inPaint = new Paint(_DrawPaint);
+                    _DrawPaint.setStyle(Paint.Style.STROKE);
+                    Paint outPaint = new Paint(_DrawPaint);
+
+                    inPaint.setColor(Color.parseColor(form.getAsString("color")));
+
+                    outPaint.setColor(Color.parseColor(form.getAsString("background")));
+                    _ListShape.add(new DrawingShape(DrawingShape.typeShape.SHAPE, new Path(path), rect, inPaint, outPaint, 1.0f));
+                    Log.v("form", form.getAsString("type"));
+                }
+            }
+        }
+        invalidate();
     }
 
     private void drawShape(float touchX, float touchY)
@@ -342,7 +428,7 @@ public class DrawingView extends View {
             _DrawPath.lineTo(touchX, touchY);
         }else if (_ShapeType == 4) {
             _DrawPath.setFillType(Path.FillType.EVEN_ODD);
-            drawTriangle(touchX, touchY);
+            drawDiamond(touchX, touchY);
         } else if (_ShapeType == 5){
             _DrawPath.addCircle(touchX, touchY, 100, Path.Direction.CCW);
         }
@@ -435,7 +521,7 @@ public class DrawingView extends View {
         public boolean onScale(ScaleGestureDetector detector) {
 
             float value = (detector.getScaleFactor() - 1.0f) / 10;
-            _scaleFactor += value;
+            //_scaleFactor += value;
             /*if (_scaleFactor >= 0.5f && _scaleFactor <= 3) {
                 for (DrawingShape shape : _ListShape) {
                     shape.scalePath(value);
@@ -444,7 +530,7 @@ public class DrawingView extends View {
                     text.scalePath(value);
                 }
             }*/
-            _scaleFactor = Math.max(MIN_ZOOM, Math.min(_scaleFactor, MAX_ZOOM));
+            //_scaleFactor = Math.max(MIN_ZOOM, Math.min(_scaleFactor, MAX_ZOOM));
             Log.v("Scale Factor", String.valueOf(value));
             return true;
         }
@@ -471,6 +557,7 @@ public class DrawingView extends View {
                     .setPositiveButton("Write Text", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
+                            float textSize;
                             if (_italic.isChecked())
                                 _DrawText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
                             if (_bold.isChecked())
@@ -479,10 +566,13 @@ public class DrawingView extends View {
                                 _DrawText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC));
                             if(spinner.getSelectedItemPosition() == 0) {
                                 _DrawText.setTextSize(getResources().getDimension(R.dimen.text_little));
-                            }else if (spinner.getSelectedItemPosition() == 1) {
+                                textSize = 14;
+                            } else if (spinner.getSelectedItemPosition() == 1) {
                                 _DrawText.setTextSize(getResources().getDimension(R.dimen.text_medium));
+                                textSize = 18;
                             } else {
                                 _DrawText.setTextSize(getResources().getDimension(R.dimen.text_large));
+                                textSize = 22;
                             }
                             String message;
                             Rect bound = new Rect();
@@ -492,7 +582,12 @@ public class DrawingView extends View {
                             textPath.addRect(touchXStart, touchYStart, (float) bound.width(), (float) bound.height(), Path.Direction.CCW);
                             Paint textPaint = new Paint(_DrawText);
                             Rect sizeText = new Rect((int)touchXStart, (int)touchYStart, bound.width(), bound.height());
-                            _ListText.add(new DrawingText(message, textPath, textPaint, sizeText));
+                            DrawingShape newText = new DrawingShape(DrawingShape.typeShape.TEXT, textPath, new RectF(sizeText));
+                            newText.setPaint(textPaint, null);
+                            newText.setText(message, _italic.isChecked(), _bold.isChecked(), textSize);
+                            _ListShape.add(newText);
+
+                            pushShape(_ShapeType, new RectF(sizeText), newText);
                             invalidate();
                         }
                     });

@@ -36,33 +36,49 @@ public class APIRequestOpenWhiteboard extends AsyncTask<String, Void, String> {
         if (result == null || _APIResponse != 200) {
             return ;
         }
-/*
-        List<ContentValues> whiteboardList = new Vector<ContentValues>();
 
+        List<ContentValues> whiteboardForm = new Vector<ContentValues>();
         try {
             JSONObject forecastJSON = new JSONObject(result).getJSONObject("data");
-            JSONArray whiteboardListArray = forecastJSON.getJSONArray("array");
+            JSONArray addForm = forecastJSON.getJSONArray("add");
+            JSONArray deleteForm = forecastJSON.getJSONArray("delete");
+            JSONObject obj;
 
-            for (int i = 0; i < whiteboardListArray.length(); ++i)
+            Log.v("JSON add", addForm.toString());
+            for (int i = 0; i < addForm.length(); ++i)
             {
-                JSONObject obj = whiteboardListArray.getJSONObject(i);
+                obj = addForm.getJSONObject(i);
                 ContentValues content = new ContentValues();
 
+                content.put("form", "add");
                 content.put("id", obj.getString("id"));
-                content.put("userId", obj.getString("userId"));
-                content.put("name", obj.getString("name"));
-                content.put("updatorId", obj.getString("updatorId"));
-                content.put("createdAt", obj.getJSONObject("createdAt").getString("date"));
-                if (!obj.getString("updatedAt").contains("null"))
-                    content.put("updatedAt", obj.getJSONObject("updatedAt").getString("date"));
-                if (!obj.getString("deletedAt").contains("null"))
-                    content.put("deletedAt", obj.getString("deletedAt"));
-                whiteboardList.add(content);
+                content.put("whiteboardId", obj.getString("whiteboardId"));
+                String object = obj.getString("object");
+                JSONObject objectData = new JSONObject(object);
+                content.put("type", objectData.getString("type"));
+                content.put("color", objectData.getString("color"));
+                if (objectData.has("background"))
+                    content.put("background", objectData.getString("background"));
+                else
+                    content.put("background", objectData.getString("color"));
+                content.put("position", objectData.getString("position"));
+                whiteboardForm.add(content);
             }
-            _context.fillList(whiteboardList);
+            for (int i = 0; i < deleteForm.length(); ++i)
+            {
+                obj = deleteForm.getJSONObject(i);
+                ContentValues content = new ContentValues();
+
+                content.put("form", "delete");
+                content.put("id", obj.getString("id"));
+                content.put("whiteboardId", obj.getString("whiteboardId"));
+                whiteboardForm.add(content);
+            }
+            _context.refreshWhiteboard(whiteboardForm);
+
         } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
-        }*/
+            j.printStackTrace();
+        }
     }
 
     @Override
@@ -88,12 +104,9 @@ public class APIRequestOpenWhiteboard extends AsyncTask<String, Void, String> {
             Log.v("JSON Response", String.valueOf(_APIResponse));
             if (_APIResponse == 200 || _APIResponse == 206)
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-            Log.v("JSON Content", resultAPI);
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
-            return null;
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+            Log.v("JSON Whiteboard", resultAPI);
+        } catch (JSONException | IOException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

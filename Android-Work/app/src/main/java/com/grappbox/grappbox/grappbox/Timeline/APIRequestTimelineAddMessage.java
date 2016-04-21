@@ -76,11 +76,8 @@ public class APIRequestTimelineAddMessage extends AsyncTask<String, Void, String
                 return null;
             }
 
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
-            return null;
-        } catch (JSONException j) {
-            Log.e("JSON", "Error ", j);
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

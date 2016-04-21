@@ -74,11 +74,8 @@ public class APIRequestAddEvent extends AsyncTask<String, Void, String> {
                 return null;
             }
 
-        } catch (IOException e){
+        } catch (IOException | JSONException e){
             Log.e("APIConnection", "Error ", e);
-            return null;
-        } catch (JSONException j) {
-            Log.e("JSON", "Error ", j);
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

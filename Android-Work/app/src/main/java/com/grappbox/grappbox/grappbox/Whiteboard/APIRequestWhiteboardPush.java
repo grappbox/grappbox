@@ -22,11 +22,13 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
     private Integer _APIResponse;
     private DrawingView _context;
     private String    _type;
+    //private DrawingShape _shape = null;
 
-    APIRequestWhiteboardPush(DrawingView context, String typePush)
+    APIRequestWhiteboardPush(DrawingView context, String typePush, DrawingShape shape)
     {
         _context = context;
         _type = typePush;
+        //_shape = shape;
     }
 
     @Override
@@ -36,6 +38,14 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
             Toast.makeText(_context.getContext(), "Error Happen", Toast.LENGTH_SHORT).show();
             return ;
         }
+        /*if (_shape != null) {
+            try {
+                JSONObject obj = new JSONObject(result).getJSONObject("data");
+                _shape.setId(obj.getInt("id"));
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }*/
         Log.v("Push Whiteboard", result);
     }
 
@@ -55,12 +65,28 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
             String typeObject = param[1];
             String posObject = param[2];
             String colorObject = param[3];
+            String colorBackgound = param[4];
+            String text = param[5];
+            String radius = param[6];
+            boolean isItalic = Boolean.getBoolean(param[7]);
+            boolean isBold = Boolean.getBoolean(param[8]);
+            String size = param[9];
             JSONParam.put("token", token);
             JSONParam.put("modification", _type);
             if (_type.equals("add")) {
                 JSONObjParam.put("type", typeObject);
                 JSONObjParam.put("position", posObject);
                 JSONObjParam.put("color", colorObject);
+                if (!typeObject.equals("TEXT")) {
+                    JSONObjParam.put("background", colorBackgound);
+                } else {
+                    JSONObjParam.put("text", text);
+                    JSONObjParam.put("isItalic", isItalic);
+                    JSONObjParam.put("isBold", isBold);
+                    JSONObjParam.put("size", size);
+                }
+                if (radius != null)
+                    JSONObjParam.put("radius", radius);
                 JSONParam.put("object", JSONObjParam);
             } else if (_type.equals("del")) {
                 JSONParam.put("objectId",  Integer.getInteger(param[1]));
@@ -72,13 +98,9 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
             Log.v("JSON Response", String.valueOf(_APIResponse));
             if (_APIResponse == 200 || _APIResponse == 206) {
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                Log.v("JSON Content", resultAPI);
             }
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
-            return null;
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+        } catch (JSONException | IOException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

@@ -74,11 +74,8 @@ public class APIRequestAddWhiteboard extends AsyncTask<String, Void, String> {
             if (_APIResponse >= 200 && _APIResponse < 300)
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
             Log.v("JSON Content", resultAPI);
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
-            return null;
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

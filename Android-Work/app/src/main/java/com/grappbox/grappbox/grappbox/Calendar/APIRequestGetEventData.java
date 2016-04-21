@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by tan_f on 27/01/2016.
@@ -91,7 +92,7 @@ public class APIRequestGetEventData  extends AsyncTask<String, Void, String> {
             }
 
         } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

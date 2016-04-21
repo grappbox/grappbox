@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,6 +31,8 @@ import com.grappbox.grappbox.grappbox.Whiteboard.DrawingView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.TimeZone;
 
 public class WhiteboardFragment extends Fragment implements View.OnClickListener {
 
@@ -47,6 +50,7 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
     private MyReceiver _receiver;
     private FragmentActivity _fragment;
     private PendingIntent _pendingIntent;
+    private String          _lastUpadte;
 
     private float t = 0;
 
@@ -59,6 +63,7 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         public void onReceive(Context context, Intent intent)
         {
             Log.v("Call", String.valueOf(t++));
+            pullWhiteboard();
 /*            String text = intent.getStringExtra("Test");
             TextView result = (TextView) findViewById(R.id.text_result);
             result.setText(text);*/
@@ -86,8 +91,9 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         _MoveButton = (ImageButton)view.findViewById(R.id.move_btn);
         _MoveButton.setOnClickListener(this);
 
-        APIRequestOpenWhiteboard apiRequest = new APIRequestOpenWhiteboard(this);
-        apiRequest.execute(_idWhiteboard, _dateWithboard);
+//        APIRequestOpenWhiteboard apiRequest = new APIRequestOpenWhiteboard(this);
+//        apiRequest.execute(_idWhiteboard, _dateWithboard);
+        _lastUpadte = _dateWithboard;
 
         _fragment = getActivity();
 
@@ -97,20 +103,24 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         _pendingIntent = PendingIntent.getService(_fragment, 0, msgIntent, 0);
         AlarmManager alarmManager = (AlarmManager)_fragment.getSystemService(Context.ALARM_SERVICE);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5000, _pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 15000, _pendingIntent);
         _fragment.startService(msgIntent);
         return view;
     }
 
-    public void pullWithboard()
+    public void pullWhiteboard()
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        final Calendar c = Calendar.getInstance();
+        TimeZone timezone = TimeZone.getTimeZone("UTC");
+        final Calendar c = Calendar.getInstance(timezone);
+        dateFormat.setTimeZone(timezone);
 
         String date;
+        c.add(Calendar.HOUR, +2);
         date = dateFormat.format(c.getTime());
         APIRequestOpenWhiteboard apiRequest = new APIRequestOpenWhiteboard(this);
-        apiRequest.execute(_idWhiteboard, date);
+        apiRequest.execute(_idWhiteboard, _lastUpadte);
+        _lastUpadte = date;
     }
 
     @Override
@@ -119,7 +129,7 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         IntentFilter filter = new IntentFilter(MyReceiver.ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         AlarmManager alarmManager = (AlarmManager)_fragment.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(_pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5000, _pendingIntent);
         _fragment.registerReceiver(_receiver, filter);
     }
 
@@ -128,6 +138,8 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
     {
         super.onPause();
         _fragment.unregisterReceiver(_receiver);
+        AlarmManager alarmManager = (AlarmManager)_fragment.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(_pendingIntent);
     }
 
     @Override
@@ -244,6 +256,11 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         {
             _DrawView.onMove(true);
         }
+    }
+
+    public void refreshWhiteboard(List<ContentValues> whiteboardForm)
+    {
+        _DrawView.drawFormWhiteboard(whiteboardForm);
     }
 
     public class ImageAdapter extends BaseAdapter {

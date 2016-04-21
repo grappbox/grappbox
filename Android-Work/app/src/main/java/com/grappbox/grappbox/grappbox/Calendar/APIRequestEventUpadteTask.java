@@ -1,6 +1,5 @@
 package com.grappbox.grappbox.grappbox.Calendar;
 
-import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -8,13 +7,10 @@ import android.widget.Toast;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by tan_f on 21/01/2016.
@@ -80,11 +76,8 @@ public class APIRequestEventUpadteTask extends AsyncTask<String, Void, String> {
                 return null;
             }
 
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
-            return null;
-        } catch (JSONException j) {
-            Log.e("JSON", "Error ", j);
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();
