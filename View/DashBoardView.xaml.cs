@@ -24,6 +24,8 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class DashBoardView : Page
     {
+        TimelineViewModel tvm = new TimelineViewModel();
+
         public DashBoardView()
         {
             this.InitializeComponent();
@@ -37,7 +39,7 @@ namespace GrappBox.View
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
+            tvm.getTimelines();
         }
 
         #region menuClicked
@@ -77,6 +79,10 @@ namespace GrappBox.View
             vm.getTagList();
             vm.getUsers();
             this.Frame.Navigate(typeof(BugtrackerView));
+        }
+        private void TimelineButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(TimelineView));
         }
         #endregion menuClicked
     }
