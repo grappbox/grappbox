@@ -20,12 +20,12 @@ import java.util.Vector;
  */
 public class APIRequestGetMessageComment extends AsyncTask<String, Void, String> {
 
-    private TimelineCommentFragment _context;
+    private TimelineMessage _context;
     private int _idTimeline;
     private int _idMessage;
     private Integer _APIRespond;
 
-    APIRequestGetMessageComment(TimelineCommentFragment context, int idTimeline, int idMessage)
+    APIRequestGetMessageComment(TimelineMessage context, int idTimeline, int idMessage)
     {
         _context = context;
         _idTimeline = idTimeline;
@@ -91,7 +91,7 @@ public class APIRequestGetMessageComment extends AsyncTask<String, Void, String>
             }
 
         } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

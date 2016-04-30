@@ -63,4 +63,10 @@
         <item>Edit</item>
         <item>Delete</item>
     </string-array>
+
+    <!-- WHITEBOARD ARRAYS -->
+    <string-array name="whiteboard_action">
+        <item>Open whiteboard</item>
+        <item>Delete whiteboard</item>
+    </string-array>
 </resources>

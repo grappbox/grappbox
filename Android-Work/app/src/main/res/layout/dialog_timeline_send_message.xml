@@ -52,26 +52,6 @@
         android:layout_height="wrap_content"
         android:text="Message content"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event_description"
-        android:textSize="20sp"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"/>
-
-    <EditText
-        android:id="@+id/timelie_bugtracker_tag"
-        android:lines="4"
-        android:inputType="textMultiLine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tag"/>
-
     <LinearLayout
         android:layout_gravity="center"
         android:layout_marginTop="20dp"

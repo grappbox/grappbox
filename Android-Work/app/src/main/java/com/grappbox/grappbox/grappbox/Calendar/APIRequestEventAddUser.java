@@ -1,7 +1,6 @@
 package com.grappbox.grappbox.grappbox.Calendar;
 
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,8 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by tan_f on 31/01/2016.
@@ -58,7 +55,7 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
         Integer APISendRespond;
 
         try {
-            String token = SessionAdapter.getInstance().getToken();
+            String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
             APIConnectAdapter.getInstance().startConnection("user/getidbyemail/" + token + "/" + param[0], "V0.2");
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
@@ -76,7 +73,7 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
                 JSONArray ArrayToAdd = new JSONArray();
                 JSONArray ArrayToRemove = new JSONArray();
 
-                JSONParam.put("token", SessionAdapter.getInstance().getToken());
+                JSONParam.put("token", SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
                 JSONParam.put("eventId", _idEvent);
                 ArrayToAdd.put(_idUser);
                 JSONParam.put("toAdd", ArrayToAdd);
@@ -97,11 +94,8 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
                 return null;
             }
 
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
-            return null;
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

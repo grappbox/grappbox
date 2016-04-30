@@ -100,7 +100,7 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
         List<CalendarEvent> calendarEventList = new ArrayList<>();
-        for (ContentValues event : eventList) {
+/*        for (ContentValues event : eventList) {
 
             Calendar beginDate = Calendar.getInstance();
             beginDate.setTime(format.parse(event.get("beginDate").toString()));
@@ -121,6 +121,7 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
 
             calendarEventList.add(calendarEvent);
         }
+        */
         _AgendaCalendarView.init(calendarEventList, _minDate, _maxDate, Locale.getDefault(), this);
         _AgendaCalendarView.addEventRenderer(new DrawableEventRenderer());
     }
@@ -147,7 +148,7 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
             List<ContentValues> listResult = null;
 
             try {
-                String token = SessionAdapter.getInstance().getToken();
+                String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
                 Log.v("Token :", token);
                 APIConnectAdapter.getInstance().startConnection("planning/getmonth/" + token + "/" + param[0], "V0.2");
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
@@ -161,11 +162,8 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
                     return null;
                 }
 
-            } catch (IOException e){
+            } catch (IOException | JSONException e){
                 Log.e("APIConnection", "Error ", e);
-                return null;
-            } catch (JSONException j){
-                Log.e("APIConnection", "Error ", j);
                 return null;
             }finally {
                 APIConnectAdapter.getInstance().closeConnection();

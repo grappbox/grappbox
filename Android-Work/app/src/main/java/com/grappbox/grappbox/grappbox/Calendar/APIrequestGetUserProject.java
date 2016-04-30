@@ -71,7 +71,7 @@ public class APIrequestGetUserProject extends AsyncTask<String, Void, String> {
         Integer APIResponse;
 
         try {
-            APIConnectAdapter.getInstance().startConnection("user/getprojects/" + SessionAdapter.getInstance().getToken(), "V0.2");
+            APIConnectAdapter.getInstance().startConnection("user/getprojects/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN), "V0.2");
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
 

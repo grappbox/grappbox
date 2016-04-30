@@ -50,7 +50,7 @@ public class GetLastTicketsTask extends AsyncTask<String, Void, String>{
     protected String doInBackground(String... params) {
         String token, id, state, offset, limit;
 
-        token = SessionAdapter.getInstance().getToken();
+        token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
         id = String.valueOf(SessionAdapter.getInstance().getCurrentSelectedProject());
         state = "1";
         offset = String.valueOf(_offset);

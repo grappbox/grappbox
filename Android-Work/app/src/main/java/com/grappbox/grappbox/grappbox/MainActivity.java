@@ -45,6 +45,7 @@ import com.grappbox.grappbox.grappbox.Model.ProjectMenuAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.Model.UserProjectTask;
+import com.grappbox.grappbox.grappbox.Project.CreateProjectActivity;
 import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
 import com.grappbox.grappbox.grappbox.Timeline.TimelineFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -125,6 +127,16 @@ public class MainActivity extends AppCompatActivity
                     return false;
                 }
             });
+            MenuItem create_project = menu.add(R.string.str_project_create).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_settings, getTheme()));
+            create_project.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item)
+                {
+                    Intent intent = new Intent(getBaseContext(), CreateProjectActivity.class);
+                    startActivity(intent);
+
+                    return false;
+                }
+            });
             btn.setImageDrawable(arrow_up);
 
         }
@@ -166,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 
         View headerView = navigationView.getHeaderView(0);
         TextView text = (TextView)headerView.findViewById(R.id.nav_head_name_user);
-        String name = SessionAdapter.getInstance().getFisrname() + " " + SessionAdapter.getInstance().getLastname();
+        String name = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN) + " " + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
 
         headerView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,11 +282,6 @@ public class MainActivity extends AppCompatActivity
                 changeToolbarTitle("Dashboard");
                 break;
 
-            case R.id.nav_project:
-                fragment = new ProjectListFragment();
-                changeToolbarTitle("Project list");
-                break;
-
             case R.id.nav_whiteboard:
                 fragment = new WhiteboardListFragment();
                 changeToolbarTitle("Whiteboard");
@@ -323,6 +330,7 @@ public class MainActivity extends AppCompatActivity
     public void logoutUser()
     {
         super.onBackPressed();
+        SessionAdapter.getInstance().LogoutUser();
     }
 
     private void changeToolbarTitle(String title)
@@ -344,7 +352,7 @@ public class MainActivity extends AppCompatActivity
             String resultAPI;
 
             try {
-                APIConnectAdapter.getInstance().startConnection("accountadministration/logout/" + SessionAdapter.getInstance().getToken());
+                APIConnectAdapter.getInstance().startConnection("accountadministration/logout/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
 
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();

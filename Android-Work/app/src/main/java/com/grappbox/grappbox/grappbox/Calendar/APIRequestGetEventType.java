@@ -42,7 +42,7 @@ public class APIRequestGetEventType extends AsyncTask<String, Void, String> {
         Integer APIResponse;
 
         try {
-            APIConnectAdapter.getInstance().startConnection("event/getTypes/" + SessionAdapter.getInstance().getToken(), "V0.2");
+            APIConnectAdapter.getInstance().startConnection("event/getTypes/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN), "V0.2");
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
 

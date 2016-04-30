@@ -244,13 +244,10 @@ public class UserProfileFragment extends Fragment {
                 APIConnectAdapter.getInstance().sendJSON(JSONParam);
                 APIResponse = APIConnectAdapter.getInstance().getResponseCode();
 
-            } catch (IOException e){
+            } catch (IOException | JSONException e){
                 Log.e("APIConnection", "Error ", e);
                 return -1;
-            } catch (JSONException j){
-                Log.e("APIConnection", "Error ", j);
-                return -1;
-            }finally {
+            } finally {
                 APIConnectAdapter.getInstance().closeConnection();
             }
             return APIResponse;
@@ -309,13 +306,10 @@ public class UserProfileFragment extends Fragment {
                 if (APIResponse == 200)
                     toto = APIConnectAdapter.getInstance().getInputSream();
 
-            } catch (IOException e){
-                Log.e("APIConnection", "Error ", e);
+            } catch (IOException | JSONException e){
+                e.printStackTrace();
                 return -1;
-            } catch (JSONException j){
-                Log.e("APIConnection", "Error ", j);
-                return -1;
-            }finally {
+            } finally {
                 APIConnectAdapter.getInstance().closeConnection();
             }
             return APIResponse;
@@ -345,13 +339,10 @@ public class UserProfileFragment extends Fragment {
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
                 contentAPI = APIConnectAdapter.getInstance().getUserInformation(resultAPI);
 
-            } catch (IOException e){
-                Log.e("APIConnection", "Error ", e);
+            } catch (IOException | JSONException e){
+                e.printStackTrace();
                 return null;
-            } catch (JSONException j){
-                Log.e("APIConnection", "Error ", j);
-                return null;
-            }finally {
+            } finally {
                 APIConnectAdapter.getInstance().closeConnection();
             }
             return contentAPI;

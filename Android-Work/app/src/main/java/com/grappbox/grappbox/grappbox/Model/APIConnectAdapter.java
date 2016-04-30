@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Arkanice on 08/12/2015.
@@ -65,8 +66,8 @@ public class APIConnectAdapter  {
         Log.v("URL", connectURL);
         _url = new URL(connectURL);
         _connection = (HttpURLConnection) _url.openConnection();
-        _connection.setReadTimeout(10000);
-        _connection.setConnectTimeout(15000);
+        _connection.setReadTimeout(40000);
+        _connection.setConnectTimeout(45000);
     }
 
     public void startConnection(String url, String version) throws IOException
@@ -146,8 +147,6 @@ public class APIConnectAdapter  {
         final String DATA_LIST = "data";
         final String[] DATA_USER = {"id", "firstname", "lastname", "email", "token"};
 
-        if (resultJSON.length() == 0 || resultJSON.length() == 3)
-            return null;
         ContentValues JSONContent = new ContentValues();
         JSONObject jsonObject = new JSONObject(resultJSON);
         JSONObject userData = jsonObject.getJSONObject(DATA_LIST);
@@ -159,27 +158,6 @@ public class APIConnectAdapter  {
         }
 
         return JSONContent;
-    }
-
-    public List<ContentValues> getListTeamOccupation(String result) throws JSONException
-    {
-        JSONObject forecastJSON = new JSONObject(result).getJSONObject("data");
-        JSONArray arrayJSON = forecastJSON.getJSONArray("array");
-        List<ContentValues> list = new Vector<ContentValues>();
-        for (int i = 0; i < arrayJSON.length(); ++i)
-        {
-            JSONObject obj = arrayJSON.getJSONObject(i);
-            ContentValues values = new ContentValues();
-
-            values.put("name", obj.getString("name"));
-            values.put("user_id", obj.getJSONObject("users").getString("id"));
-            values.put("first_name", obj.getJSONObject("users").getString("firstname"));
-            values.put("last_name", obj.getJSONObject("users").getString("lastname"));
-            values.put("occupation", obj.getString("occupation"));
-            values.put("number_of_tasks_begun", obj.getString("number_of_tasks_begun"));
-            values.put("number_of_ongoing_tasks", obj.getString("number_of_ongoing_tasks"));
-        }
-        return list;
     }
 
     public List<ContentValues> getListGlobalProgress(String result) throws JSONException
@@ -279,8 +257,6 @@ public class APIConnectAdapter  {
         }
         return listResult;
     }
-
-
 
     public void printContentValues(ContentValues values)
     {

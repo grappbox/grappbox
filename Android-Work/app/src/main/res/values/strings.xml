@@ -4,6 +4,7 @@
     <string name="logo_description">Grappbox logo</string>
     <string name="login_label">Login</string>
     <string name="login_hint">Enter your login</string>
+    <string name="login_progress_label">Connexion</string>
     <string name="password_label">password</string>
     <string name="password_hint">Enter your password</string>
     <string name="login_connect_button">Connexion</string>
@@ -27,6 +28,9 @@
     <string name="occupation_state_label">State :</string>
 
     <string name="list_whiteboard">List whiteboard</string>
+    <string name="add_whiteboard_label">Create new whiteboard</string>
+    <string name="delete_whiteboard_label">Delete whiteboard</string>
+    <string name="delete_confirm_whiteboard_label">Are you sure you want to delete</string>
     <string name="data_not_specified">Not specified</string>
     <string name="dialog_color_select">Color selection</string>
 
@@ -36,6 +40,7 @@
 
     <string name="positive_response">OK</string>
     <string name="negative_response">Cancel</string>
+    <string name="confirm_response">Confirm</string>
 
     <string-array name="list_global_progress">
         <item>project_id</item>
@@ -53,6 +58,11 @@
         <item>number_bugs</item>
         <item>number_messages</item>
     </string-array>
+
+    <string name="meeting_hour_label">Hour</string>
+    <string name="meeting_date_label">Date</string>
+    <string name="meeting_date_begin_label">Date begin</string>
+    <string name="meeting_date_end_label">Date end</string>
 
     <string-array name="size_text">
         <item>14</item>
@@ -78,9 +88,12 @@
     </string-array>
 
     <string name="user_profile_title">User Profile</string>
+    <string name="user_profile_name_label">User name:</string>
+    <string name="str_current_password_label">Current Password:</string>
+    <string name="str_current_password_hint">Your password</string>
+    <string name="str_new_password_hint">Your new password</string>
+    <string name="str_confirm_new_password_hint">Confirm your new password</string>
 
-    <string name="change_password_validate">Confirm</string>
-    <string name="change_password_return">Return</string>
     <string name="change_password_title">Change password</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -180,12 +193,17 @@
     <string name="event_end_date_hint">Event end date</string>
     <string name="event_button_update">Update event information</string>
     <string name="event_button_add_user">Add user</string>
+    <string name="event_add_user_mail_label">User mail:</string>
+    <string name="event_add_user_mail_hint">User mail</string>
+    <string name="event_delete_title_label">Are you sure you want to delete this event ?</string>
 
     <string name="no_proj_selected_str">No project selected</string>
     <string name="str_project_settings">Manage project settings</string>
+    <string name="str_project_create">Create project</string>
     <string name="str_modif_project_settings">Modify project settings</string>
     <string name="title_activity_project_settings">Project Settings</string>
     <string name="str_project_settings_title">Project Settings</string>
+    <string name="str_create_project_title">Create Project</string>
     <string name="str_project_settings_footer">" Settings"</string>
     <string name="str_placeholder_project_name">Enter project name here...</string>
     <string name="str_project_name">Project Name</string>
@@ -265,5 +283,22 @@
     <string name="ph_bugtracker_comdesc">Enter your comment here...</string>
     <string name="yes_answer">Yes</string>
     <string name="no_answer">No</string>
+    <string name="title_activity_create_project">CreateProjectActivity</string>
 
+    <string name="project_create_title">Project creation</string>
+    <string name="project_create_title_hint">Your project title</string>
+    <string name="project_create_description">Description</string>
+    <string name="project_create_description_hint">Your project description</string>
+    <string name="project_create_phone">Phone</string>
+    <string name="project_create_company">Company</string>
+    <string name="project_create_company_hint">Company name</string>
+    <string name="project_create_mail">Mail</string>
+    <string name="project_create_mail_hint">example@mail.com</string>
+    <string name="project_create_facebook_link">Facebook</string>
+    <string name="project_create_twitter_link">Twitter</string>
+    <string name="project_create_safe_passeword">Safe passeword project</string>
+    <string name="project_create_safe_passeword_hint">Your safe passeword</string>
+    <string name="project_create_send">Create</string>
+    <string name="project_create_alert_error">Error in project creation</string>
+    <string name="project_create_alert_error_message">You have to set a title and a safe password for your project</string>
 </resources>

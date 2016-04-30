@@ -96,6 +96,8 @@ public class UserProjectTask extends AsyncTask<String, Void, String> {
         JSONObject json, info, data;
         JSONArray array;
 
+        if (s == null)
+            return;
         assert s != null;
         try {
             json = new JSONObject(s);

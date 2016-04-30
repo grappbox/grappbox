@@ -61,7 +61,7 @@ public class APIRequestGetTimeline extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
+            j.printStackTrace();
         }
     }
 
@@ -84,7 +84,7 @@ public class APIRequestGetTimeline extends AsyncTask<String, Void, String> {
             }
 
         } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

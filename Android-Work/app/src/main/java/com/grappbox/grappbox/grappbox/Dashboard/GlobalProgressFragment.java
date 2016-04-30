@@ -1,23 +1,16 @@
 package com.grappbox.grappbox.grappbox.Dashboard;
 
 import android.content.ContentValues;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.R;
-import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,53 +76,5 @@ public class GlobalProgressFragment extends Fragment {
         _projectList.setAdapter(teamAdapter);
     }
 
-    public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<ContentValues>> {
 
-        GlobalProgressFragment _context;
-
-        APIRequestGlobalProgress(GlobalProgressFragment context)
-        {
-            _context = context;
-        }
-
-        @Override
-        protected void onPostExecute(List<ContentValues> result) {
-            super.onPostExecute(result);
-            if (result != null) {
-                _context.createContentView(result);
-            }
-        }
-
-        @Override
-        protected List<ContentValues> doInBackground(String ... param)
-        {
-            List<ContentValues> contentAPI = null;
-            Integer APIResponse;
-            String resultAPI;
-
-            try {
-                APIConnectAdapter.getInstance().startConnection("dashboard/getprojectsglobalprogress/" + SessionAdapter.getInstance().getToken(), "V0.2");
-                APIConnectAdapter.getInstance().setRequestConnection("GET");
-
-                resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                APIResponse = APIConnectAdapter.getInstance().getResponseCode();
-                Log.v("JSON Response", String.valueOf(APIResponse));
-                if (APIResponse == 200) {
-                    Log.v("JSON Content", resultAPI);
-                    contentAPI = APIConnectAdapter.getInstance().getListGlobalProgress(resultAPI);
-                }
-
-            } catch (IOException e){
-                Log.e("APIConnection", "Error ", e);
-                return null;
-            } catch (JSONException j){
-                Log.e("APIConnection", "Error ", j);
-                return null;
-            }finally {
-                APIConnectAdapter.getInstance().closeConnection();
-            }
-            return contentAPI;
-        }
-
-    }
 }
