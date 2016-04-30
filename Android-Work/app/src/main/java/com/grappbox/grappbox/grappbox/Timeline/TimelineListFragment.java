@@ -159,6 +159,7 @@ public class TimelineListFragment extends TimelineMessage {
             }
         });
         message.setSelection(messageAdapter.getCount() - 1);
+
     }
 
     private void showCommentMessage(int idMessage)
