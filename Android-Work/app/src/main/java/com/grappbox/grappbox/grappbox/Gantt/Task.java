@@ -177,5 +177,7 @@ public class Task {
         this.isMilestone = isMilestone;
     }
 
-    public int  
+    public int  getAccomplishedPercent(){return this.accomplishedPercent;}
+
+    public void setAccomplishedPercent(int accomplishedPercent) { this.accomplishedPercent = accomplishedPercent; }
 }
