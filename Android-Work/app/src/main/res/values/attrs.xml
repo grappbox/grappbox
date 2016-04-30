@@ -12,5 +12,6 @@
         <attr name="taskListPadding" format="integer"/>
         <attr name="taskHeight" format="integer"/>
         <attr name="timelineHeight" format="integer"/>
+        <attr name="accomplishementTaskColor" format="color"/>
     </declare-styleable>
 </resources>

@@ -9,6 +9,7 @@
         <item android:id="@+id/nav_Cloud" android:icon="@drawable/ic_backup" android:title="Cloud"/>
         <item android:id="@+id/nav_Bugtracker" android:icon="@drawable/ic_action_name" android:title="Bug Tracker" />
         <item android:id="@+id/nav_Gantt" android:icon="@android:drawable/ic_menu_my_calendar" android:title="GANTT" />
+        <item android:id="@+id/nav_tasks" android:icon="@android:drawable/ic_menu_my_calendar" android:title="Tasks" />
     </group>
 
 </menu>

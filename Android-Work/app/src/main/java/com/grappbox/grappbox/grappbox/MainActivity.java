@@ -40,6 +40,7 @@ import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
 import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
 import com.grappbox.grappbox.grappbox.Gantt.GanttFragment;
+import com.grappbox.grappbox.grappbox.Gantt.TaskFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectMenuAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
@@ -303,12 +304,16 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_Bugtracker:
                 fragment = new BugTrackerFragment();
-                changeToolbarTitle("Bug Tracker - BugList");
+                changeToolbarTitle("Bug Tracker - Bug list");
                 break;
             case R.id.nav_Gantt:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 fragment = new GanttFragment();
                 changeToolbarTitle("GANTT");
+                break;
+            case R.id.nav_tasks:
+                fragment = new TaskFragment();
+                changeToolbarTitle("Tasks - List");
                 break;
             default:
                 break;
