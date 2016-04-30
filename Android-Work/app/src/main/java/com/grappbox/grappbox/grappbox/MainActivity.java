@@ -43,6 +43,7 @@ import com.grappbox.grappbox.grappbox.Model.ProjectMenuAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.Model.UserProjectTask;
+import com.grappbox.grappbox.grappbox.Project.CreateProjectActivity;
 import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
 import com.grappbox.grappbox.grappbox.Timeline.TimelineFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
@@ -121,6 +122,16 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
                     builder.show();
+                    return false;
+                }
+            });
+            MenuItem create_project = menu.add(R.string.str_project_create).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_settings, getTheme()));
+            create_project.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
+                public boolean onMenuItemClick(MenuItem item)
+                {
+                    Intent intent = new Intent(getBaseContext(), CreateProjectActivity.class);
+                    startActivity(intent);
+
                     return false;
                 }
             });
@@ -266,11 +277,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_dashboard:
                 fragment = new DashboardFragment();
                 changeToolbarTitle("Dashboard");
-                break;
-
-            case R.id.nav_project:
-                fragment = new ProjectListFragment();
-                changeToolbarTitle("Project list");
                 break;
 
             case R.id.nav_whiteboard:

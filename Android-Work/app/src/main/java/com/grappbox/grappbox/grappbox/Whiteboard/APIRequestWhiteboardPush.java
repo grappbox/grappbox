@@ -7,10 +7,15 @@ import android.widget.Toast;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by tan_f on 25/03/2016.
@@ -22,13 +27,12 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
     private Integer _APIResponse;
     private DrawingView _context;
     private String    _type;
-    //private DrawingShape _shape = null;
 
-    APIRequestWhiteboardPush(DrawingView context, String typePush, DrawingShape shape)
+    APIRequestWhiteboardPush(DrawingView context, String typePush)
     {
         _context = context;
         _type = typePush;
-        //_shape = shape;
+
     }
 
     @Override
@@ -36,17 +40,16 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
         super.onPostExecute(result);
         if (result == null || _APIResponse != 200) {
             Toast.makeText(_context.getContext(), "Error Happen", Toast.LENGTH_SHORT).show();
+            _context.errorPush();
             return ;
         }
-        /*if (_shape != null) {
-            try {
-                JSONObject obj = new JSONObject(result).getJSONObject("data");
-                _shape.setId(obj.getInt("id"));
-            } catch (JSONException e){
-                e.printStackTrace();
-            }
-        }*/
         Log.v("Push Whiteboard", result);
+        try {
+            JSONObject obj = new JSONObject(result).getJSONObject("data");
+            _context.giveIdShapePush(obj.getInt("id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -61,24 +64,52 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
             JSONObject JSONParam = new JSONObject();
             JSONObject JSONData = new JSONObject();
             JSONObject JSONObjParam = new JSONObject();
+            JSONObject JSONPositionStart = new JSONObject();
+            JSONObject JSONPositionEnd = new JSONObject();
+
             String token = SessionAdapter.getInstance().getToken();
             String typeObject = param[1];
-            String posObject = param[2];
-            String colorObject = param[3];
-            String colorBackgound = param[4];
-            String text = param[5];
-            String radius = param[6];
-            boolean isItalic = Boolean.getBoolean(param[7]);
-            boolean isBold = Boolean.getBoolean(param[8]);
-            String size = param[9];
+            String posStartX = param[2];
+            String posStartY = param[3];
+            String posEndX = param[4];
+            String posEndY = param[5];
+            String colorObject = param[6];
+            String colorBackground = param[7];
+            String text = param[8];
+            String radius = param[9];
+            boolean isItalic = Boolean.getBoolean(param[10]);
+            boolean isBold = Boolean.getBoolean(param[11]);
+            String size = param[12];
+            String pointListX = param[13];
+            String pointListY = param[14];
+
             JSONParam.put("token", token);
             JSONParam.put("modification", _type);
             if (_type.equals("add")) {
                 JSONObjParam.put("type", typeObject);
-                JSONObjParam.put("position", posObject);
+                JSONPositionStart.put("x", posStartX);
+                JSONPositionStart.put("y", posStartY);
+                JSONPositionEnd.put("x", posEndX);
+                JSONPositionEnd.put("y", posEndY);
+                JSONObjParam.put("positionStart", JSONPositionStart);
+                JSONObjParam.put("positionEnd", JSONPositionEnd);
+                if (typeObject.equals("HANDWRITE")) {
+                    Log.v("PointsX", pointListX);
+                    Log.v("PointsY", pointListY);
+                    List<String> pointX = new ArrayList<String>(Arrays.asList(pointListX.split(";")));
+                    List<String> pointY = new ArrayList<String>(Arrays.asList(pointListY.split(";")));
+                    JSONArray points = new JSONArray();
+                    for (int i = 0; i < pointX.size(); ++i){
+                        JSONObject coord = new JSONObject();
+                        coord.put("x", pointX.get(i));
+                        coord.put("y", pointY.get(i));
+                        points.put(coord);
+                    }
+                    JSONObjParam.put("points", points);
+                }
                 JSONObjParam.put("color", colorObject);
                 if (!typeObject.equals("TEXT")) {
-                    JSONObjParam.put("background", colorBackgound);
+                    JSONObjParam.put("background", colorBackground);
                 } else {
                     JSONObjParam.put("text", text);
                     JSONObjParam.put("isItalic", isItalic);

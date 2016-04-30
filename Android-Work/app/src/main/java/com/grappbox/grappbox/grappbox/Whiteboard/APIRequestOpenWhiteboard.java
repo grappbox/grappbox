@@ -61,7 +61,12 @@ public class APIRequestOpenWhiteboard extends AsyncTask<String, Void, String> {
                     content.put("background", objectData.getString("background"));
                 else
                     content.put("background", objectData.getString("color"));
-                content.put("position", objectData.getString("position"));
+                if (objectData.has("points"))
+                    content.put("points", objectData.getString("points"));
+                content.put("positionStartX", objectData.getJSONObject("positionStart").getString("x"));
+                content.put("positionStartY", objectData.getJSONObject("positionStart").getString("y"));
+                content.put("positionEndX", objectData.getJSONObject("positionEnd").getString("x"));
+                content.put("positionEndY", objectData.getJSONObject("positionEnd").getString("y"));
                 whiteboardForm.add(content);
             }
             for (int i = 0; i < deleteForm.length(); ++i)

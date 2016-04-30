@@ -199,9 +199,11 @@
 
     <string name="no_proj_selected_str">No project selected</string>
     <string name="str_project_settings">Manage project settings</string>
+    <string name="str_project_create">Create project</string>
     <string name="str_modif_project_settings">Modify project settings</string>
     <string name="title_activity_project_settings">Project Settings</string>
     <string name="str_project_settings_title">Project Settings</string>
+    <string name="str_create_project_title">Create Project</string>
     <string name="str_project_settings_footer">" Settings"</string>
     <string name="str_placeholder_project_name">Enter project name here...</string>
     <string name="str_project_name">Project Name</string>
@@ -281,5 +283,22 @@
     <string name="ph_bugtracker_comdesc">Enter your comment here...</string>
     <string name="yes_answer">Yes</string>
     <string name="no_answer">No</string>
+    <string name="title_activity_create_project">CreateProjectActivity</string>
 
+    <string name="project_create_title">Project creation</string>
+    <string name="project_create_title_hint">Your project title</string>
+    <string name="project_create_description">Description</string>
+    <string name="project_create_description_hint">Your project description</string>
+    <string name="project_create_phone">Phone</string>
+    <string name="project_create_company">Company</string>
+    <string name="project_create_company_hint">Company name</string>
+    <string name="project_create_mail">Mail</string>
+    <string name="project_create_mail_hint">example@mail.com</string>
+    <string name="project_create_facebook_link">Facebook</string>
+    <string name="project_create_twitter_link">Twitter</string>
+    <string name="project_create_safe_passeword">Safe passeword project</string>
+    <string name="project_create_safe_passeword_hint">Your safe passeword</string>
+    <string name="project_create_send">Create</string>
+    <string name="project_create_alert_error">Error in project creation</string>
+    <string name="project_create_alert_error_message">You have to set a title and a safe password for your project</string>
 </resources>

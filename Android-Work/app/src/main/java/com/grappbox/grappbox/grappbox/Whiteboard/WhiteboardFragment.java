@@ -37,6 +37,7 @@ import java.util.TimeZone;
 public class WhiteboardFragment extends Fragment implements View.OnClickListener {
 
     private int _SizeSpinnerSelected = 0;
+    private int _timeRefresh = 15000;
 
     private DrawingView _DrawView;
     private String      _idWhiteboard;
@@ -64,9 +65,6 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         {
             Log.v("Call", String.valueOf(t++));
             pullWhiteboard();
-/*            String text = intent.getStringExtra("Test");
-            TextView result = (TextView) findViewById(R.id.text_result);
-            result.setText(text);*/
         }
     }
 
@@ -91,19 +89,16 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         _MoveButton = (ImageButton)view.findViewById(R.id.move_btn);
         _MoveButton.setOnClickListener(this);
 
-//        APIRequestOpenWhiteboard apiRequest = new APIRequestOpenWhiteboard(this);
-//        apiRequest.execute(_idWhiteboard, _dateWithboard);
         _lastUpadte = _dateWithboard;
 
         _fragment = getActivity();
 
         _receiver = new MyReceiver();
         Intent msgIntent = new Intent(_fragment, WhiteboardPullIntentService.class);
-        msgIntent.putExtra("URL", " un test d'intent");
         _pendingIntent = PendingIntent.getService(_fragment, 0, msgIntent, 0);
         AlarmManager alarmManager = (AlarmManager)_fragment.getSystemService(Context.ALARM_SERVICE);
 
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 15000, _pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), _timeRefresh, _pendingIntent);
         _fragment.startService(msgIntent);
         return view;
     }
@@ -120,6 +115,17 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         date = dateFormat.format(c.getTime());
         APIRequestOpenWhiteboard apiRequest = new APIRequestOpenWhiteboard(this);
         apiRequest.execute(_idWhiteboard, _lastUpadte);
+        _lastUpadte = date;
+    }
+
+    public void updatePush()
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date;
+        TimeZone timezone = TimeZone.getTimeZone("UTC");
+        final Calendar c = Calendar.getInstance(timezone);
+
+        date = dateFormat.format(c.getTime());
         _lastUpadte = date;
     }
 

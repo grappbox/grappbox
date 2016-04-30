@@ -3,6 +3,7 @@ package com.grappbox.grappbox.grappbox.Login;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,11 +30,14 @@ public class LoginActivity extends AppCompatActivity {
         _progress.setIndeterminate(true);
         _login = (EditText) findViewById(R.id.loginInput);
         _passw = (EditText) findViewById(R.id.passwInput);
+        SessionAdapter.initializeInstance(this.getApplicationContext());
+        _login.setText(SessionAdapter.getInstance().getLogin());
+        _passw.setText(SessionAdapter.getInstance().getPassword());
     }
 
     public void LoginUser(View view)
     {
-        SessionAdapter.initializeInstance(this.getApplicationContext());
+
         APIRequestLogin api = new APIRequestLogin(this);
         api.execute(_login.getText().toString(), _passw.getText().toString());
         _progress.show();

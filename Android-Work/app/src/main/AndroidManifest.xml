@@ -13,7 +13,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name="WhiteboardService"/>
+        <service android:name=".WhiteboardService" />
+
         <activity android:name=".Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +44,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
-        <activity android:name=".BugTracker.BugCreationActivity"
+        <activity
+            android:name=".BugTracker.BugCreationActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -60,9 +62,19 @@
                 android:value="com.grappbox.grappbox.grappbox.MainActivity" />
         </activity>
 
-        <service android:name=".Whiteboard.WhiteboardPullIntentService"
-            android:exported="false"/>
+        <service
+            android:name=".Whiteboard.WhiteboardPullIntentService"
+            android:exported="false" />
 
+        <activity
+            android:name=".Project.CreateProjectActivity"
+            android:label="@string/title_activity_create_project"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.grappbox.grappbox.grappbox.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

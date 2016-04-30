@@ -86,11 +86,8 @@ class APIRequestLogin extends AsyncTask<String, Void, String> {
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
             }
 
-        } catch (IOException e){
-            Log.e("APIConnection", "Error ", e);
-            return null;
-        } catch (JSONException j){
-            Log.e("APIConnection", "Error ", j);
+        } catch (IOException | JSONException e){
+            e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

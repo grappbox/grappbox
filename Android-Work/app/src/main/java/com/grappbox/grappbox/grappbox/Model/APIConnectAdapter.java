@@ -160,27 +160,6 @@ public class APIConnectAdapter  {
         return JSONContent;
     }
 
-    public List<ContentValues> getListTeamOccupation(String result) throws JSONException
-    {
-        JSONObject forecastJSON = new JSONObject(result).getJSONObject("data");
-        JSONArray arrayJSON = forecastJSON.getJSONArray("array");
-        List<ContentValues> list = new Vector<ContentValues>();
-        for (int i = 0; i < arrayJSON.length(); ++i)
-        {
-            JSONObject obj = arrayJSON.getJSONObject(i);
-            ContentValues values = new ContentValues();
-
-            values.put("name", obj.getString("name"));
-            values.put("user_id", obj.getJSONObject("users").getString("id"));
-            values.put("first_name", obj.getJSONObject("users").getString("firstname"));
-            values.put("last_name", obj.getJSONObject("users").getString("lastname"));
-            values.put("occupation", obj.getString("occupation"));
-            values.put("number_of_tasks_begun", obj.getString("number_of_tasks_begun"));
-            values.put("number_of_ongoing_tasks", obj.getString("number_of_ongoing_tasks"));
-        }
-        return list;
-    }
-
     public List<ContentValues> getListGlobalProgress(String result) throws JSONException
     {
         final String[] DATA_PROGRESS = {

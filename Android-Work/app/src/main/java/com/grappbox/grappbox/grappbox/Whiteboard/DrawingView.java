@@ -18,6 +18,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -38,6 +39,10 @@ import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +61,8 @@ public class DrawingView extends View {
     private Canvas _DrawCanvas;
     private Bitmap _CanvasBitmap;
     private Bitmap _WhiteboardBitmap;
+    private ArrayList<String> _pointXList = new ArrayList<String>();
+    private ArrayList<String> _pointYList = new ArrayList<String>();
 
     private int _ShapeType = 0;
 
@@ -150,8 +157,6 @@ public class DrawingView extends View {
             canvas.drawPath(_DrawPath, _DrawPaint);
             _DrawPath.reset();
         }
-
-
     }
 
     private boolean intersect(Path shape)
@@ -254,8 +259,11 @@ public class DrawingView extends View {
                         newShape.scalePath(_scaleFactor);
                         _ListShape.add(newShape);
                     }
-                    pushShape(_ShapeType, newShape.getRectPosition(), newShape);
+                    invalidate();
                     _DrawPath.reset();
+                    pushShape(_ShapeType, newShape.getRectPosition(), newShape);
+                    _pointXList.clear();
+                    _pointYList.clear();
                 }
                 break;
 
@@ -306,14 +314,48 @@ public class DrawingView extends View {
             String radius = null;
             if (shape.equals("ELLIPSE"))
                 radius = String.valueOf(rayX) + ";" + String.valueOf(rayY);
-            String pos = String.valueOf(rect.left) + "," + String.valueOf(rect.top) + ";" + String.valueOf(rect.right) + "," + String.valueOf(rect.bottom);
+            String positionStartX = String.valueOf(rect.left);
+            String positionStartY = String.valueOf(rect.top);
+            String positionEndX = String.valueOf(rect.right);
+            String positionEndY = String.valueOf(rect.bottom);
+            String pointListX = "";
+            String pointListY = "";
+            for (int i = 0; i < _pointXList.size(); ++i)
+            {
+                pointListX += _pointXList.get(i);
+                pointListY += _pointYList.get(i);
+                if ((i + 1) < _pointXList.size()) {
+                    pointListX += ";";
+                    pointListY += ";";
+                }
+            }
             String inColor =  String.format("#%06X", (0xFFFFFF & _PaintColor));
             String outColor = String.format("#%06X", (0xFFFFFF & _SecondColor));
             String italic = String.valueOf(pushShape.isItalicText());
             String bold = String.valueOf(pushShape.isBoldText());
             String sizeText = String.valueOf(pushShape.getSizeText());
-            APIRequestWhiteboardPush push = new APIRequestWhiteboardPush(this, "add", pushShape);
-            push.execute(_idWhiteboard, shape, pos, inColor, outColor, text, radius, italic, bold, sizeText);
+            APIRequestWhiteboardPush push = new APIRequestWhiteboardPush(this, "add");
+            push.execute(_idWhiteboard, shape, positionStartX, positionStartY, positionEndX, positionEndY, inColor, outColor, text, radius, italic, bold, sizeText, pointListX, pointListY);
+        }
+    }
+
+    public void errorPush()
+    {
+        for (Iterator<DrawingShape> it = _ListShape.iterator(); it.hasNext(); ) {
+            DrawingShape shape = it.next();
+            if (shape.getId() < 0) {
+                it.remove();
+            }
+        }
+    }
+
+    public void giveIdShapePush(int id)
+    {
+        for (DrawingShape shape : _ListShape)
+        {
+            if (shape.getId() < 0){
+                shape.setId(id);
+            }
         }
     }
 
@@ -354,18 +396,18 @@ public class DrawingView extends View {
                 if (already)
                     continue;
                 Path path = new Path();
-                String pos = form.getAsString("position");
 
-                String start = pos.substring(0, pos.indexOf(";"));
-                String end = pos.substring(pos.indexOf(";") + 1);
-                float startx = Float.parseFloat(start.substring(0, start.indexOf(",")));
-                float starty = Float.parseFloat(start.substring(start.indexOf(",") + 1));
+                float startx = Float.parseFloat(form.getAsString("positionStartX")) - _decalX;
+                float starty = Float.parseFloat(form.getAsString("positionStartY")) - _decalY;
 
-                float endx = Float.parseFloat(end.substring(0, end.indexOf(",")));
-                float endy = Float.parseFloat(end.substring(end.indexOf(",") + 1));
+                float endx = Float.parseFloat(form.getAsString("positionEndX")) - _decalX;
+                float endy = Float.parseFloat(form.getAsString("positionEndY")) - _decalY;
 
                 RectF rect = new RectF(startx, starty, endx, endy);
 
+                _DrawPaint.setStyle(Paint.Style.FILL);
+                _DrawPaint.setStrokeJoin(Paint.Join.BEVEL);
+                _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
                 if (form.getAsString("type").equals("RECTANGLE")) {
                     path.addRect(startx, starty, endx, endy, Path.Direction.CCW);
                 } else if (form.getAsString("type").equals("ELLIPSE")) {
@@ -373,12 +415,27 @@ public class DrawingView extends View {
                 } else if (form.getAsString("type").equals("DIAMOND")) {
                     path.setFillType(Path.FillType.EVEN_ODD);
                     drawDiamond(startx, starty, endx, endy, path);
+                } else if (form.getAsString("type").equals("HANDWRITE")) {
+                    _DrawPaint.setStyle(Paint.Style.STROKE);
+                    _DrawPaint.setStrokeJoin(Paint.Join.ROUND);
+                    _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
+                    try {
+                        JSONArray arrayPoints = new JSONArray(form.getAsString("points"));
+
+                        for (int i = 0; i < arrayPoints.length(); ++i){
+                            JSONObject point = arrayPoints.getJSONObject(i);
+                            if (i == 0)
+                                path.moveTo(Float.parseFloat(point.getString("x")), Float.parseFloat(point.getString("y")));
+                            path.lineTo(Float.parseFloat(point.getString("x")) - _decalX, Float.parseFloat(point.getString("y")) - _decalY);
+                        }
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+
                 }
 
                 if (!form.getAsString("type").equals("TEXT")) {
-                    _DrawPaint.setStyle(Paint.Style.FILL);
                     Paint inPaint = new Paint(_DrawPaint);
-                    _DrawPaint.setStyle(Paint.Style.STROKE);
                     Paint outPaint = new Paint(_DrawPaint);
 
                     inPaint.setColor(Color.parseColor(form.getAsString("color")));
@@ -426,6 +483,9 @@ public class DrawingView extends View {
             _DrawPath.addOval(new RectF(ovalXStart, ovalYStart, ovalXEnd, ovalYEnd), Path.Direction.CCW);
         } else if (_ShapeType == 2) {
             _DrawPath.lineTo(touchX, touchY);
+            _pointXList.add(String.valueOf(touchX));
+            _pointYList.add(String.valueOf(touchY));
+
         }else if (_ShapeType == 4) {
             _DrawPath.setFillType(Path.FillType.EVEN_ODD);
             drawDiamond(touchX, touchY);

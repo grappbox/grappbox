@@ -7,12 +7,15 @@ import android.util.Log;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Vector;
 
-class APIRequestTeamOccupation extends AsyncTask<String, Void, List<ContentValues>> {
+class APIRequestTeamOccupation extends AsyncTask<String, Void, String> {
 
     TeamOccupationFragment _context;
 
@@ -22,37 +25,53 @@ class APIRequestTeamOccupation extends AsyncTask<String, Void, List<ContentValue
     }
 
     @Override
-    protected void onPostExecute(List<ContentValues> result) {
+    protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        if (result != null)
-            _context.createContentView(result);
+        if (result != null) {
+            try {
+                JSONObject forecastJSON = new JSONObject(result).getJSONObject("data");
+                JSONArray arrayJSON = forecastJSON.getJSONArray("array");
+                List<ContentValues> list = new Vector<ContentValues>();
+                for (int i = 0; i < arrayJSON.length(); ++i) {
+                    JSONObject obj = arrayJSON.getJSONObject(i);
+                    ContentValues values = new ContentValues();
+                    values.put("name", obj.getString("name"));
+                    values.put("user_id", obj.getJSONObject("users").getString("id"));
+                    values.put("first_name", obj.getJSONObject("users").getString("firstname"));
+                    values.put("last_name", obj.getJSONObject("users").getString("lastname"));
+                    values.put("occupation", obj.getString("occupation"));
+                    values.put("number_of_tasks_begun", obj.getString("number_of_tasks_begun"));
+                    values.put("number_of_ongoing_tasks", obj.getString("number_of_ongoing_tasks"));
+                    list.add(values);
+                }
+                _context.createContentView(list);
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
-    protected List<ContentValues> doInBackground(String ... param)
+    protected String doInBackground(String ... param)
     {
-        String resultAPI;
+        String resultAPI = null;
         Integer APIResponse;
-        List<ContentValues> listResult = null;
 
         try {
             APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
-            resultAPI = APIConnectAdapter.getInstance().getInputSream();
             APIResponse = APIConnectAdapter.getInstance().getResponseCode();
-            Log.v("Team Response", String.valueOf(APIResponse));
             if (APIResponse == 200) {
-                Log.v("Team Content", resultAPI);
-                listResult = APIConnectAdapter.getInstance().getListTeamOccupation(resultAPI);
+                resultAPI = APIConnectAdapter.getInstance().getInputSream();
             }
 
-        } catch (IOException | JSONException e){
+        } catch (IOException e){
             e.printStackTrace();
             return null;
         } finally {
             APIConnectAdapter.getInstance().closeConnection();
         }
-        return listResult;
+        return resultAPI;
     }
 }

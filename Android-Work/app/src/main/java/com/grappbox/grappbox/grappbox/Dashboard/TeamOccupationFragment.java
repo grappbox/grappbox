@@ -3,6 +3,7 @@ package com.grappbox.grappbox.grappbox.Dashboard;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class TeamOccupationFragment extends Fragment {
         ArrayList<HashMap<String, String>> listMemberTeam = new ArrayList<HashMap<String, String>>();
         ArrayList<String> nameList = new ArrayList<String>();
 
+        Log.v("Team Occupation", String.valueOf(contentValues.size()));
         for (ContentValues item : contentValues){
             alreadyHere = false;
             String nameMember = item.get("first_name").toString() + " " + item.get("last_name").toString();

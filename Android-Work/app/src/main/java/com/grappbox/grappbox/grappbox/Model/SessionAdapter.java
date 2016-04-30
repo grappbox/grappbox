@@ -34,6 +34,7 @@ public class SessionAdapter {
     {
         _context = context;
         _pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        
         _editor = _pref.edit();
     }
 

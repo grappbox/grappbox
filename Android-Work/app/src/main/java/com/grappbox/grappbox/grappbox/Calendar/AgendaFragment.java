@@ -100,7 +100,7 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
         List<CalendarEvent> calendarEventList = new ArrayList<>();
-        for (ContentValues event : eventList) {
+/*        for (ContentValues event : eventList) {
 
             Calendar beginDate = Calendar.getInstance();
             beginDate.setTime(format.parse(event.get("beginDate").toString()));
@@ -121,6 +121,7 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
 
             calendarEventList.add(calendarEvent);
         }
+        */
         _AgendaCalendarView.init(calendarEventList, _minDate, _maxDate, Locale.getDefault(), this);
         _AgendaCalendarView.addEventRenderer(new DrawableEventRenderer());
     }
