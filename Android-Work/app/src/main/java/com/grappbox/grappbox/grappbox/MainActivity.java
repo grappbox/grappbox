@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
@@ -38,6 +39,7 @@ import com.grappbox.grappbox.grappbox.BugTracker.BugTrackerFragment;
 import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
 import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
+import com.grappbox.grappbox.grappbox.Gantt.GanttFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectMenuAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
@@ -260,6 +262,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         Fragment fragment = null;
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         switch (id){
 
             case R.id.nav_dashboard:
@@ -295,9 +298,16 @@ public class MainActivity extends AppCompatActivity
                 fragment = new BugTrackerFragment();
                 changeToolbarTitle("Bug Tracker - BugList");
                 break;
+            case R.id.nav_Gantt:
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                fragment = new GanttFragment();
+                changeToolbarTitle("GANTT");
+                break;
             default:
                 break;
         }
+        if (_fragmentManager == null)
+            _fragmentManager = getSupportFragmentManager();
         if (fragment != null)
             _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
