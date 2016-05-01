@@ -134,6 +134,8 @@
     <Compile Include="Model\RoleUserModel.cs" />
     <Compile Include="Model\ShapeControler.cs" />
     <Compile Include="Model\Task.cs" />
+    <Compile Include="Model\TimelineListModel.cs" />
+    <Compile Include="Model\TimelineModel.cs" />
     <Compile Include="Model\Users.cs" />
     <Compile Include="Model\UserSettingsModel.cs" />
     <Compile Include="Model\WhiteBoardListModel.cs" />
@@ -146,6 +148,7 @@
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\MenuViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
+    <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\WhiteBoardListViewModel.cs" />
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
@@ -169,6 +172,12 @@
     </Compile>
     <Compile Include="View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TimelineMessageView.xaml.cs">
+      <DependentUpon>TimelineMessageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TimelineView.xaml.cs">
+      <DependentUpon>TimelineView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserView.xaml.cs">
       <DependentUpon>UserView.xaml</DependentUpon>
@@ -263,6 +272,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\RoleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TimelineMessageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TimelineView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

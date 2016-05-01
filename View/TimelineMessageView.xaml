@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="GrappBox.View.TimelineMessageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="GrappBox.ViewModel.TimelineViewModel"
+    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu">
+
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False">
+        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button Content="Dashboard" Click="DashboardButton_Click" Grid.Row="0" HorizontalAlignment="Center"/>
+                <Button Content="WhiteBoard" Click="WhiteboardButton_Click" Grid.Row="1" HorizontalAlignment="Center"/>
+                <Button Content="User Settings" Click="UserSettingsButton_Click" Grid.Row="2" HorizontalAlignment="Center"/>
+                <Button Content="Project Settings" Click="ProjectSettingsButton_Click" Grid.Row="3" HorizontalAlignment="Center"/>
+                <Button Content="Bugtracker" Click="BugtrackerButton_Click" Grid.Row="4" HorizontalAlignment="Center"/>
+            </Grid>
+        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+        <Grid Background="#FF0C0C0C" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="400">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0">
+                <StackPanel>
+                    <Border BorderBrush="White" BorderThickness="2" HorizontalAlignment="Stretch" Height="Auto" Width="Auto" Margin="3">
+                        <StackPanel Loaded="StackPanel_Loaded">
+                            <TextBlock  Text="Timeline Message" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                            <TextBlock  Text="Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                            <TextBox Text="{Binding Title, Mode=TwoWay}" IsReadOnly="True"/>
+                            <TextBlock Text="Message" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                            <TextBox TextWrapping="Wrap" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" AcceptsReturn="True" IsReadOnly="True"/>
+                            <TextBlock x:Name="block" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                    <ListView x:Name="CommentsListView" ItemsSource="{Binding Comments}" HorizontalAlignment="Center"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="CommentsListView_SelectionChanged">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="White" BorderThickness="2" HorizontalAlignment="Stretch" Height="Auto" Width="Auto">
+                                    <StackPanel Loaded="StackPanel_Loaded">
+                                        <TextBlock  Text="Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                                        <TextBox PlaceholderText="Title" Text="{Binding Title, Mode=TwoWay}"/>
+
+                                        <TextBlock Text="Message" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                                        <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="Edit" Click="EditMessage_Click" HorizontalAlignment="Center" Width="90" Height="50" MinWidth="80" MinHeight="60" Margin="10"/>
+                                            <Button Content="Delete" Click="DeleteMessage_Click" HorizontalAlignment="Center" Width="90" Height="50" MinWidth="80" MinHeight="60" Margin="10"/>
+                                        </StackPanel>
+                                        <TextBlock x:Name="block" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="14"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </ScrollViewer>
+            <Border Grid.Row="1" BorderBrush="White" BorderThickness="2" Height="Auto" Width="Auto">
+                <StackPanel>
+                    <TextBlock Text="Post Comment" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                    <TextBox x:Name="CommentTitle" PlaceholderText="Title"/>
+                    <TextBox x:Name="CommentMessage" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Message" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    <Button Content="Post Comment" Click="PostComment_Click" HorizontalAlignment="Center" Width="150" Height="50" MinWidth="140" MinHeight="50"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </slideMenu:SlideInMenuContentControl>
+</Page>

@@ -54,7 +54,7 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <RadioButton Content="{Binding Name}" GroupName="State" HorizontalAlignment="Left" VerticalAlignment="Stretch" FontFamily="Segoe WP" FontSize="18" Loaded="radioButton_Loaded" Checked="RadioButton_Checked" />
+                                        <RadioButton Content="{Binding Name}" GroupName="State" HorizontalAlignment="Left" VerticalAlignment="Stretch" FontFamily="Segoe WP" FontSize="18" Loaded="radioButton_Loaded" Checked="RadioButton_Checked"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -62,7 +62,7 @@
 
                     </StackPanel>
                 </PivotItem>
-                <PivotItem Header="Comments">
+                <PivotItem Header="Comments" Name="Comments">
                     <ScrollViewer>
                         <StackPanel>
                             <ListBox x:Name="CommentListView" ItemsSource="{Binding CommentList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White">
@@ -96,7 +96,7 @@
                         </StackPanel>
                     </ScrollViewer>
                 </PivotItem>
-                <PivotItem Header="Tags">
+                <PivotItem Header="Tags" Name="Tags">
                     <ScrollViewer>
                         <StackPanel>
                             <ListBox x:Name="TagListView" ItemsSource="{Binding TagList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="tagListView_SelectionChanged">
@@ -120,7 +120,7 @@
                         </StackPanel>
                     </ScrollViewer>
                 </PivotItem>
-                <PivotItem Header="Users">
+                <PivotItem Header="Users" Name="Users">
                     <StackPanel Grid.Row="0">
                         <ListBox x:Name="UserListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White">
                             <ListBox.ItemTemplate>

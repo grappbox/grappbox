@@ -60,7 +60,12 @@ namespace GrappBox.View
                 }
             }
             else
+            {
                 isAdd = true;
+                Comments.Visibility = Visibility.Collapsed;
+                Tags.Visibility = Visibility.Collapsed;
+                Users.Visibility = Visibility.Collapsed;
+            }
         }
 
         #region menuClicked
@@ -144,10 +149,18 @@ namespace GrappBox.View
         #region Bug
         private void SaveBug_Click(object sender, RoutedEventArgs e)
         {
-            if (isAdd == true)
-                vm.addBug();
-            else
-                vm.editBug();
+            if (vm.State.Id != null && vm.State.Name != null && vm.Title != "" && vm.Description != "")
+            {
+                if (isAdd == true)
+                {
+                    vm.addBug();
+                    Comments.Visibility = Visibility.Visible;
+                    Tags.Visibility = Visibility.Visible;
+                    Users.Visibility = Visibility.Visible;
+                }
+                else
+                    vm.editBug();
+            }
         }
 
         private void radioButton_Loaded(object sender, RoutedEventArgs e)

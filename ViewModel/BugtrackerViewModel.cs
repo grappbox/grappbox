@@ -331,7 +331,8 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _model = api.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
-                _openBugs.Insert(0, _model);
+                if (_openBugs != null)
+                    _openBugs.Insert(0, _model);
                 NotifyPropertyChanged("OpenList");
             }
             else {
