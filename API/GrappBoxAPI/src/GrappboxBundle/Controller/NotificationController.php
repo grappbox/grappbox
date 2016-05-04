@@ -91,36 +91,36 @@ class NotificationController extends RolesAndTokenVerificationController
 	*/
 	public function registerDeviceAction(Request $request)
 	{
-	$content = $request->getContent();
-	$content = json_decode($content);
-	$content = $content->data;
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-	$user = $this->checkToken($content->token);
-	if (!$user)
-		return ($this->setBadTokenError("15.1.3", "Notification", "registerDevice"));
-	if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
-		return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("15.1.3", "Notification", "registerDevice"));
+		if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
+			return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
-	$em = $this->getDoctrine()->getManager();
-	$device = $em->getRepository("GrappboxBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
+		$em = $this->getDoctrine()->getManager();
+		$device = $em->getRepository("GrappboxBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
 
-	if ($device instanceof Devices)
-	{
-		$device->setName($content->name);
-		$em->flush();
-	}
-	else {
-		$device = new Devices();
-		$device->setName($content->device_name);
-		$device->setType($content->device_type);
-		$device->setToken($content->device_token);
-		$device->setUser($user);
+		if ($device instanceof Devices)
+		{
+			$device->setName($content->name);
+			$em->flush();
+		}
+		else {
+			$device = new Devices();
+			$device->setName($content->device_name);
+			$device->setType($content->device_type);
+			$device->setToken($content->device_token);
+			$device->setUser($user);
 
-		$em->persist($device);
-		$em->flush();
-	}
+			$em->persist($device);
+			$em->flush();
+		}
 
-	return $this->setCreated("1.15.3", "Notification", "registerDevice", "Complete Success", (Object)array());
+		return $this->setCreated("1.15.3", "Notification", "registerDevice", "Complete Success", (Object)array());
 	}
 
 	/**
@@ -262,7 +262,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/notification/getnotifications/:token/:read/offset/limit Get user notifications
+	* @api {get} /V0.2/notification/getnotifications/:token/:read/:offset/:limit Get user notifications
 	* @apiName getNotifications
 	* @apiGroup Notification
 	* @apiDescription Get user notifications

@@ -25,6 +25,11 @@ class Task
     private $description;
 
     /**
+     * @var string
+     */
+    private $color;
+
+    /**
      * @var \DateTime
      */
     private $dueDate;
@@ -108,6 +113,7 @@ class Task
         'creator' => $this->creator_user->getId() ,
         'title' => $this->title ,
         'description' => $this->description ,
+        'color' => $this->color ,
         'dueDate' => $this->dueDate ,
         'startedAt' => $this->startedAt ,
         'finishedAt' => $this->finishedAt ,
@@ -118,7 +124,7 @@ class Task
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -141,7 +147,7 @@ class Task
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -164,12 +170,37 @@ class Task
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
         return $this->description;
     }
+
+    /**
+     * Set color
+     *
+     * @param string $color
+     * @return Task
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * Get color
+     *
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+
 
     /**
      * Set dueDate
@@ -187,7 +218,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDueDate()
     {
@@ -210,7 +241,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStartedAt()
     {
@@ -233,7 +264,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFinishedAt()
     {
@@ -256,7 +287,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -279,7 +310,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -302,7 +333,7 @@ class Task
     /**
      * Get isMilestone
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsMilestone()
     {
@@ -335,7 +366,7 @@ class Task
     /**
      * Get ressources
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRessources()
     {
@@ -368,7 +399,7 @@ class Task
     /**
      * Get dependence
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDependence()
     {
@@ -401,7 +432,7 @@ class Task
     /**
      * Get task_depended
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTaskDepended()
     {
@@ -424,7 +455,7 @@ class Task
     /**
      * Get projects
      *
-     * @return \GrappboxBundle\Entity\Project 
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -447,7 +478,7 @@ class Task
     /**
      * Get creator_user
      *
-     * @return \GrappboxBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getCreatorUser()
     {
@@ -480,7 +511,7 @@ class Task
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTags()
     {
@@ -513,7 +544,7 @@ class Task
     /**
      * Get contains
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getContains()
     {

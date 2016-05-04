@@ -2252,7 +2252,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.4.1", "Bugtracker", "getStates", "Commplete Success", array("array" => $states_array));
 	}
 
-
 	/**
 	* @api {put} /V0.2/bugtracker/reopenticket/:token/:id Reopen closed ticket
 	* @apiName reopenTicket

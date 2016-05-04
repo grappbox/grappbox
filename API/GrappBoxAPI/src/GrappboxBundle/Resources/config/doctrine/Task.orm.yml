@@ -15,6 +15,10 @@ GrappboxBundle\Entity\Task:
         description:
             type: text
             nullable: TRUE
+        color:
+            type: string
+            length: 255
+            nullable: TRUE
         dueDate:
             type: datetime
             column: due_date

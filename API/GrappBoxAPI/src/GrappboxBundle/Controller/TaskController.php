@@ -57,7 +57,7 @@ class TaskController extends RolesAndTokenVerificationController
 					break;
 			}
 		}
-		return $task;	
+		return $task;
 	}
 
 	/**
@@ -71,6 +71,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Number} projecId Id of the project
 	* @apiParam {String} title Title of the task
 	* @apiParam {String} description Description of the task
+	* @apiParam {String} [color] Color of the task
 	* @apiParam {Datetime} due_date Due date of the task
 	* @apiParam {Boolean} is_milestone If true, set the task to a milestone
 	* @apiParam {Object[]} [dependencies] Array of infos on the dependencies
@@ -86,6 +87,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
+	*			"color": "#25D5C2",
 	*			"due_date":
 	*			{
 	*				"date":"2015-10-16 19:00:00",
@@ -162,6 +164,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
+	* @apiSuccess {String} color Color of the task
 	* @apiSuccess {Datetime} due_date Due date of the task
 	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} started_at Date of start of the task
@@ -195,6 +198,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
+	*			"color": "#26D85A"
 	*			"due_date":
 	*			{
 	*				"date":"2015-10-15 11:00:00",
@@ -351,6 +355,9 @@ class TaskController extends RolesAndTokenVerificationController
 		$task->setCreatedAt(new \Datetime);
 		$task->setCreatorUser($user);
 
+		if (array_key_exists('color', $content))
+			$task->setColor($content->color);
+
 		if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
 			$dueDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
 		else
@@ -423,6 +430,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$id = $task->getId();
 		$title = $task->getTitle();
 		$description = $task->getDescription();
+		$color = $task->getColor();
 		$dueDate = $task->getDueDate();
 		$startedAt = $task->getStartedAt();
 		$finishedAt = $task->getFinishedAt();
@@ -449,8 +457,8 @@ class TaskController extends RolesAndTokenVerificationController
 				$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
 			}
 		}
-		
-		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),
+
+		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", array("id" => $id, "title" => $title, "description" => $description, "color" => $color, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),
 			"started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
 	}
 
@@ -465,6 +473,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Number} taskId Id of the task
 	* @apiParam {String} [title] Title of the task
 	* @apiParam {String} [description] Description of the task
+	* @apiParam {String} [color] Color of the task
 	* @apiParam {Datetime} [due_date] Due date of the task
 	* @apiParam {Object[]} [dependencies] Array of infos on the dependencies
 	* @apiParam {String} dependencies.name name of the dependence, it should be: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
@@ -479,6 +488,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"taskId": 10,
 	*			"title": "User management",
 	*			"description": "User: creation, uptade and delete",
+	*			"color": "#25D86A",
 	*			"due_date": {
 	*				"date":"2015-10-10 11:00:00",
 	*				"timezone_type":3,
@@ -537,6 +547,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
+	* @apiSuccess {String} [color] Color of the task
 	* @apiSuccess {Datetime} due_date Due date of the task
 	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} started_at Date of start of the task
@@ -576,6 +587,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
+	*			"color": "#54D8A2",
 	*			"due_date":
 	*			{
 	*				"date":"2015-10-15 11:00:00",
@@ -785,7 +797,9 @@ class TaskController extends RolesAndTokenVerificationController
 		if (array_key_exists('title', $content))
 			$task->setTitle($content->title);
 		if (array_key_exists('description', $content))
-			$task->setDescription($content->description);
+		$task->setDescription($content->description);
+		if (array_key_exists('color', $content))
+			$task->setColor($content->color);
 		if (array_key_exists('due_date', $content))
 		{
 			$dueDate = $task->getDueDate();
@@ -805,7 +819,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$diff = date_diff($dueDate, $newDate);
 				$dueDate = $newDate;
 			}
-			
+
 			foreach ($taskDep as $td) {
 				if ($td->getName() == "fs")
 				{
@@ -818,7 +832,7 @@ class TaskController extends RolesAndTokenVerificationController
 				{
 					$date = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));	
+					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));
 					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
 				}
 			}
@@ -843,7 +857,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$diff = date_diff($startedAt, $newDate);
 				$startedAt = $newDate;
 			}
-			
+
 			foreach ($taskDep as $td) {
 				if ($td->getName() == "ss")
 				{
@@ -911,6 +925,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$id = $task->getId();
 		$title = $task->getTitle();
 		$description = $task->getDescription();
+		$color = $task->getColor();
 		$dueDate = $task->getDueDate();
 		$startedAt = $task->getStartedAt();
 		$finishedAt = $task->getFinishedAt();
@@ -974,7 +989,7 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 
 		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success",
-			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
+			array("id" => $id, "title" => $title, "description" => $description, "color" => $color, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
 			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray, "tasks_modified" => $taskModified));
 	}
 
@@ -991,6 +1006,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
+	* @apiSuccess {String} color Color of the task
 	* @apiSuccess {Datetime} due_date Due date of the task
 	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} started_at Date of start of the task
@@ -1025,6 +1041,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
+	*			"color": "#54D823",
 	*			"due_date":
 	*			{
 	*				"date":"2015-10-15 11:00:00",
@@ -1172,6 +1189,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$id = $task->getId();
 		$title = $task->getTitle();
 		$description = $task->getDescription();
+		$color = $task->getColor();
 		$dueDate = $task->getDueDate();
 		$startedAt = $task->getStartedAt();
 		$finishedAt = $task->getFinishedAt();
@@ -1218,7 +1236,7 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 
 		return $this->setSuccess("1.12.1", "Task", "taskinformations", "Complete Success",
-			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
+			array("id" => $id, "title" => $title, "description" => $description, "color" => $color, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
 			"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
 	}
 
@@ -1508,7 +1526,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: taskId");
 
 		if ($task->getIsMilestone() == true)
-			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: You can't add someone on a milestone");			
+			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: You can't add someone on a milestone");
 
 		$projectId = $task->getProjects()->getId();
 		if ($this->checkRoles($user, $projectId, "task") < 2)
@@ -1530,7 +1548,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$resource->setTask($task);
 		$resource->setUser($userToAdd);
 
-		$em->persist($resource);		
+		$em->persist($resource);
 		$em->flush();
 
 		// Notifications
@@ -2227,6 +2245,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} array.id Id of the task
 	* @apiSuccess {String} array.title Title of the task
 	* @apiSuccess {String} array.description Description of the task
+	* @apiSuccess {String} array.color Color of the task
 	* @apiSuccess {Datetime} array.due_date Due date of the task
 	* @apiSuccess {Boolean} array.is_milestone Is the task a milestone
 	* @apiSuccess {Datetime} array.started_at Date of start of the task
@@ -2263,6 +2282,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"id": 2,
 	*					"title": "Update servers",
 	*					"description": "update all the servers",
+	*					"color": "#54D820",
 	*					"due_date":
 	*					{
 	*						"date":"2015-10-15 11:00:00",
@@ -2393,6 +2413,7 @@ class TaskController extends RolesAndTokenVerificationController
 			$id = $task->getId();
 			$title = $task->getTitle();
 			$description = $task->getDescription();
+			$color = $task->getColor();
 			$dueDate = $task->getDueDate();
 			$startedAt = $task->getStartedAt();
 			$finishedAt = $task->getFinishedAt();
@@ -2447,7 +2468,7 @@ class TaskController extends RolesAndTokenVerificationController
 				}
 			}
 
-			$arr[] = array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
+			$arr[] = array("id" => $id, "title" => $title, "description" => $description, "color" => $color,  "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(), "started_at" => $startedAt, "finished_at" => $finishedAt,
 				"created_at" => $createdAt, "deleted_at" => $deletedAt, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray);
 		}
 
@@ -2708,7 +2729,7 @@ class TaskController extends RolesAndTokenVerificationController
 			{
 				$container->addTask($task);
 				$task->setContains($container);
-				
+
 				if ($container->getBeginDate() != null)
 				{
 					$date = $container->getBeginDate();
@@ -2729,7 +2750,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$container->setEndDate($task->getDueDate());
 			}
 		}
-		
+
 		$em->persist($container);
 		$em->flush();
 

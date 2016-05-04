@@ -44,7 +44,7 @@ class WhiteboardObject
         return array(
             'id' => $this->id,
             'whiteboardId' => $this->whiteboardId,
-            'object' => $this->object,
+            'object' => json_decode($this->object),
             'createdAt' => $this->createdAt,
             'deletedAt' => $this->deletedAt
         );
