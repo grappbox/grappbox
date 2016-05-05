@@ -128,10 +128,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 		$whiteboards = $project->getWhiteboards();
 
-		if (count($whiteboards) == 0)
+		foreach ($whiteboards as $key => $whiteboard) {
+			if(!$whiteboard->getDeletedAt())
+				$whiteboardsList[] = $whiteboard;
+		}
+
+		if (count($whiteboardsList) == 0)
 			return $this->setNoDataSuccess("1.10.3", "Whiteboard", "list");
 
-		return $this->setSuccess("1.10.1", "Whiteboard", "list", "Complete Success", array("array" => $this->serializeInArray($whiteboards)));
+		return $this->setSuccess("1.10.1", "Whiteboard", "list", "Complete Success", array("array" => $this->serializeInArray($whiteboardsList)));
 	}
 
 	/**
