@@ -16,6 +16,7 @@ use GrappboxBundle\Entity\StatBugAssignationTracker;
 use GrappboxBundle\Entity\StatBugsUsersRepartition;
 use GrappboxBundle\Entity\StatTasksRepartition;
 use GrappboxBundle\Entity\StatUserWorkingCharge;
+use GrappboxBundle\Entity\StatUserTasksAdvancement;
 use DateTime;
 
 /**
@@ -205,7 +206,6 @@ class StatisticController extends RolesAndTokenVerificationController
     $result = array();
     foreach ($projects as $key => $project) {
       $result['project'.$project->getId()] = $this->getTotalTasks($project);
-      // TODO complete with all weekly stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "instantUpdate", "Complete Success", $result);
   }
@@ -331,8 +331,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($projects as $key => $project) {
-      $result['lateTasks'] = $this->updateLateTasks($project);
-      // TODO complete with all instant stat update
+      //$result['StorageLimitsAction'] = $this->updateStorageLimitsAction($project);
+      $result['UserTasksAdvancement'] = $this->updateUserTasksAdvancement($project);
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
   }
@@ -381,6 +381,52 @@ class StatisticController extends RolesAndTokenVerificationController
     return $this->setSuccess("1.16.1", "Stat", "updateStorageLimits", "Complete Success", "Not implemented yet");
   }
 
+  private function updateUserTasksAdvancement($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $date = new DateTime('now');
+    $users = $project->getUsers();
+
+    foreach ($users as $key => $user) {
+      $result['Done'] = 0;
+      $result['ToDo'] = 0;
+      $result['Doing'] = 0;
+      $result['Late'] = 0;
+      $resources = $user->getRessources();
+      foreach ($resources as $key => $res) {
+        $task = $res->getTask();
+        if ($task->getProjects()->getId() == $project->getId())
+        {
+          if($task->getFinishedAt())
+            $result['Done'] += 1;
+          elseif (!$task->getStartedAt() && $task->getDueDate() > $date)
+            $result['ToDo'] += 1;
+          elseif ($task->getStartedAt() && !$task->getFinishedAt() && $task->getDueDate() > $date)
+            $result['Doing'] += 1;
+          elseif (!$task->getFinishedAt() && $task->getDueDate() <= $date)
+            $result['Late'] += 1;
+        }
+      }
+
+      $userFullname = $user->getFirstname().' '.$user->getLastName();
+      $statUserTasksAdvancement = $em->getRepository('GrappboxBundle:StatUserTasksAdvancement')->findOneBy(array('project' => $project, 'user' => $userFullname));
+      if ($statUserTasksAdvancement === null)
+      {
+        $statUserTasksAdvancement = new StatUserTasksAdvancement();
+        $statUserTasksAdvancement->setProject($project);
+        $statUserTasksAdvancement->setUser($userFullname);
+      }
+      $statUserTasksAdvancement->setTasksToDo($result['ToDo']);
+      $statUserTasksAdvancement->setTasksDoing($result['Doing']);
+      $statUserTasksAdvancement->setTasksDone($result['Done']);
+      $statUserTasksAdvancement->setTasksLate($result['Late']);
+
+      $em->persist($statUserTasksAdvancement);
+      $em->flush();
+    }
+
+    return "Data updated";
+  }
 
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - DAILY UPDATE
@@ -400,8 +446,7 @@ class StatisticController extends RolesAndTokenVerificationController
       //$result['StatBugAssignationTracker'] = $this->updateBugAssignationTracker($project);
       //$result['BugsTagsRepartition'] = $this->updateBugsUsersRepartition($project);
       //$result['TasksRepartition'] = $this->updateTasksRepartition($project);
-      $result['UserWorkingCharge'] = $this->updateUserWorkingCharge($project);
-      // TODO complete with all daily stat update
+      //$result['UserWorkingCharge'] = $this->updateUserWorkingCharge($project);
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
   }
@@ -708,7 +753,6 @@ class StatisticController extends RolesAndTokenVerificationController
     $result = array();
     foreach ($projects as $key => $project) {
       $result["ProjectAdvancement"] = $this->updateProjectAdvancement($project);
-      // TODO complete with all weekly stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "weeklyUpdate", "Complete Success", $result);
   }

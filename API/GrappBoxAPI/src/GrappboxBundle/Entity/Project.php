@@ -170,6 +170,11 @@ class Project
     private $statUserWorkingCharge;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statUserTasksAdvancement;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -190,6 +195,7 @@ class Project
         $this->statBugsUsersRepartition = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statTasksRepartition = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statUserWorkingCharge = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statUserTasksAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -1131,5 +1137,38 @@ class Project
     public function getStatUserWorkingCharge()
     {
         return $this->statUserWorkingCharge;
+    }
+
+    /**
+     * Add statUserTasksAdvancement
+     *
+     * @param \GrappboxBundle\Entity\StatUserTasksAdvancement $statUserTasksAdvancement
+     * @return Project
+     */
+    public function addStatUserTasksAdvancement(\GrappboxBundle\Entity\StatUserTasksAdvancement $statUserTasksAdvancement)
+    {
+        $this->statUserTasksAdvancement[] = $statUserTasksAdvancement;
+
+        return $this;
+    }
+
+    /**
+     * Remove statUserTasksAdvancement
+     *
+     * @param \GrappboxBundle\Entity\StatUserTasksAdvancement $statUserTasksAdvancement
+     */
+    public function removeStatUserTasksAdvancement(\GrappboxBundle\Entity\StatUserTasksAdvancement $statUserTasksAdvancement)
+    {
+        $this->statUserTasksAdvancement->removeElement($statUserTasksAdvancement);
+    }
+
+    /**
+     * Get statUserTasksAdvancement
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatUserTasksAdvancement()
+    {
+        return $this->statUserTasksAdvancement;
     }
 }
