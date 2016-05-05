@@ -139,4 +139,8 @@ GrappboxBundle\Entity\Project:
           targetEntity: StatTasksRepartition
           mappedBy: project
           cascade: [remove]
+        statUserWorkingCharge:
+          targetEntity: StatUserWorkingCharge
+          mappedBy: project
+          cascade: [remove]
     lifecycleCallbacks: {  }

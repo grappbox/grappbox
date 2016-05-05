@@ -15,6 +15,7 @@ use GrappboxBundle\Entity\StatBugsTagsRepartition;
 use GrappboxBundle\Entity\StatBugAssignationTracker;
 use GrappboxBundle\Entity\StatBugsUsersRepartition;
 use GrappboxBundle\Entity\StatTasksRepartition;
+use GrappboxBundle\Entity\StatUserWorkingCharge;
 use DateTime;
 
 /**
@@ -398,8 +399,8 @@ class StatisticController extends RolesAndTokenVerificationController
       //$result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
       //$result['StatBugAssignationTracker'] = $this->updateBugAssignationTracker($project);
       //$result['BugsTagsRepartition'] = $this->updateBugsUsersRepartition($project);
-      $result['TasksRepartition'] = $this->updateTasksRepartition($project);
-      //$result['WorkingChargeByUser'] = $this->updateWorkingChargeByUser($project);
+      //$result['TasksRepartition'] = $this->updateTasksRepartition($project);
+      $result['UserWorkingCharge'] = $this->updateUserWorkingCharge($project);
       // TODO complete with all daily stat update
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
@@ -617,12 +618,6 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $users = $project->getUsers();
 
-    // $totalTasks = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
-    //                ->select('count(t)')
-    //                ->where("t.projects = :project")
-    //                ->setParameters(array('project' => $project))
-    //                ->getQuery()->getSingleScalarResult();
-
     $tasks = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
                    ->where("t.projects = :project")
                    ->setParameters(array('project' => $project))
@@ -651,12 +646,13 @@ class StatisticController extends RolesAndTokenVerificationController
         $percentage = 0;
       }
 
-      $statTasksRepartition = $em->getRepository('GrappboxBundle:StatTasksRepartition')->findOneBy(array('project' => $project));
+      $userFullname = $user->getFirstname().' '.$user->getLastName();
+      $statTasksRepartition = $em->getRepository('GrappboxBundle:StatTasksRepartition')->findOneBy(array('project' => $project, 'user' => $userFullname));
       if ($statTasksRepartition === null)
       {
         $statTasksRepartition = new StatTasksRepartition();
         $statTasksRepartition->setProject($project);
-        $statTasksRepartition->setUser($user->getFirstname().' '.$user->getLastName());
+        $statTasksRepartition->setUser($userFullname);
         $statTasksRepartition->setRole($role[0]['name']);
       }
       $statTasksRepartition->setValue($number);
@@ -668,18 +664,35 @@ class StatisticController extends RolesAndTokenVerificationController
     return "Data updated";
   }
 
-  private function updateWorkingChargeByUser($project)
+  private function updateUserWorkingCharge($project)
   {
     $em = $this->getDoctrine()->getManager();
 
     $users = $project->getUsers();
 
     foreach ($users as $key => $user) {
-      $tasks = $user->getTasks();
-      foreach ($tasks as $key => $task) {
-        $result[$user->getFirstname().' '.$user->getLastname()] += $task->getWorkingCharge();
+      $charge = 0;
+      $resources = $user->getRessources();
+      foreach ($resources as $key => $res) {
+        $task = $res->getTask();
+          if ($task->getProjects()->getId() == $project->getId())
+            $charge += $res->getResource();
       }
+
+      $userFullname = $user->getFirstname().' '.$user->getLastName();
+      $statUserWorkingCharge = $em->getRepository('GrappboxBundle:StatUserWorkingCharge')->findOneBy(array('project' => $project, 'user' => $userFullname));
+      if ($statUserWorkingCharge === null)
+      {
+        $statUserWorkingCharge = new StatUserWorkingCharge();
+        $statUserWorkingCharge->setProject($project);
+        $statUserWorkingCharge->setUser($userFullname);
+      }
+      $statUserWorkingCharge->setCharge($charge);
+
+      $em->persist($statUserWorkingCharge);
+      $em->flush();
     }
+    return "Data updated";
   }
 
   // -----------------------------------------------------------------------

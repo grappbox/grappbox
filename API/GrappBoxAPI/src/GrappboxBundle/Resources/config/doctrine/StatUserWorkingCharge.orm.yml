@@ -1,0 +1,23 @@
+GrappboxBundle\Entity\StatUserWorkingCharge:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        user:
+            type: string
+            length: 255
+        charge:
+            type: integer
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: StatUserWorkingCharge
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

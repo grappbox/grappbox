@@ -165,6 +165,11 @@ class Project
     private $statTasksRepartition;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statUserWorkingCharge;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -184,6 +189,7 @@ class Project
         $this->statBugAssignationTracker = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statBugsUsersRepartition = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statTasksRepartition = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statUserWorkingCharge = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -1092,5 +1098,38 @@ class Project
     public function getStatTasksRepartition()
     {
         return $this->statTasksRepartition;
+    }
+
+    /**
+     * Add statUserWorkingCharge
+     *
+     * @param \GrappboxBundle\Entity\StatUserWorkingCharge $statUserWorkingCharge
+     * @return Project
+     */
+    public function addStatUserWorkingCharge(\GrappboxBundle\Entity\StatUserWorkingCharge $statUserWorkingCharge)
+    {
+        $this->statUserWorkingCharge[] = $statUserWorkingCharge;
+
+        return $this;
+    }
+
+    /**
+     * Remove statUserWorkingCharge
+     *
+     * @param \GrappboxBundle\Entity\StatUserWorkingCharge $statUserWorkingCharge
+     */
+    public function removeStatUserWorkingCharge(\GrappboxBundle\Entity\StatUserWorkingCharge $statUserWorkingCharge)
+    {
+        $this->statUserWorkingCharge->removeElement($statUserWorkingCharge);
+    }
+
+    /**
+     * Get statUserWorkingCharge
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatUserWorkingCharge()
+    {
+        return $this->statUserWorkingCharge;
     }
 }
