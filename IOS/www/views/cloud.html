@@ -37,7 +37,7 @@
         <ion-list can-swipe="true">
             <ion-item ng-repeat="dir in cloudData"
                       ng-show="dir.type == 'dir'"
-                      ng-click="checkSafe(dir.is_secured, dir.filename)"> <!--CloudLS(false, dir.filename)"-->
+                      ng-click="checkSafe(dir.is_secured, dir.filename)">
                 <h2 class="icon ion-ios-folder"> {{ dir.filename }}</h2>
                 <ion-option-button class="button-assertive"
                                    ng-click="deleteFileOrFolder(dir.filename)">

@@ -3,65 +3,137 @@
 */
 
 angular.module('GrappBox.controllers')
+
 // WHITEBOARD LIST
-.controller('WhiteboardsCtrl', function ($scope, $ionicModal) {
+.controller('WhiteboardsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, Whiteboard) {
 
-    //Search for addWhiteboardModal.html ng-template in whiteboards.html
-    $ionicModal.fromTemplateUrl('addWhiteboardModal.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-    }).then(function (modal) {
-        $scope.modal = modal;
-    });
+    // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
+    //$scope.projectId = $stateParams.projectId;
+    $scope.projectId = 18;
 
-    //Open the modal
-    $scope.openAddWhiteboardModal = function () {
-        $scope.modal.show();
-    };
+    //Refresher
+    $scope.doRefresh = function () {
+        $scope.ListWhiteboards();
+        console.log("View refreshed !");
+    }
 
-    //Close the modal
-    $scope.closeWhiteboardModal = function () {
-        $scope.modal.hide();
-    };
+    $scope.whiteboardName = {};
 
-    //Destroy the modal
-    $scope.$on('$destroy', function () {
-        $scope.modal.remove();
-    });
+    /*
+    ** List all whiteboards
+    ** Method: GET
+    */
+    $scope.whiteboardsInfo = {};
+    $scope.ListWhiteboards = function () {
+        $rootScope.showLoading();
+        Whiteboard.List().get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('List whiteboards successful !');
+                console.log(data.data.array);
+                $scope.whiteboardsInfo = data.data.array;
+            })
+            .catch(function (error) {
+                console.error('List whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
+    }
+    $scope.ListWhiteboards();
 
-    //Add a whiteboard in the list
-    $scope.addWhiteboard = function (elem) {
-        $scope.whiteboardsTab.push({
-            id: 4,
-            name: elem.title
+    /*
+    ** Create a new whiteboard
+    ** Method: POST
+    */
+    $scope.createWhiteboardData = {};
+    $scope.CreateWhiteboard = function () {
+        $rootScope.showLoading();
+        Whiteboard.Create().save({
+            data: {
+                token: $rootScope.userDatas.token,
+                projectId: $scope.projectId,
+                whiteboardName: $scope.whiteboardName.name
+            }
+        }).$promise
+            .then(function (data) {
+                console.log('Create whiteboard successful !');
+                console.log(data.data);
+                $scope.createWhiteboardData = data.data;
+            })
+            .catch(function (error) {
+                console.error('Create whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+                $scope.ListWhiteboards();
+            })
+    }
+
+    // Enter whiteboard name popup
+    $scope.showNameWhiteboardPopup = function () {
+        var myPopup = $ionicPopup.show({
+            template: '<input type="text" placeholder="Name for whiteboard" ng-model="whiteboardName.name">',
+            title: 'Choose Name',
+            scope: $scope,
+            buttons: [
+              { text: 'Cancel' },
+              {
+                  text: '<b>Save</b>',
+                  type: 'button-positive',
+                  onTap: function (e) {
+                      if (!$scope.whiteboardName.name) {
+                          // Don't allow the user to close unless he enters file password
+                          e.preventDefault();
+                      } else {
+                          return $scope.whiteboardName;
+                      }
+                  }
+              }]
+        })
+        .then(function (res) {
+            if (res && res.name) {
+                if ($scope.whiteboardName.name != 'undefined')
+                    $scope.CreateWhiteboard();
+            }
         });
-        $scope.modal.hide();
-        elem.title = "";
     };
 
-    //Delete a whiteboard
-    $scope.onWhiteboardDelete = function (whiteboard) {
-        $scope.whiteboardsTab.splice($scope.whiteboardsTab.indexOf(whiteboard), 1);
-    };
-
-    $scope.whiteboardsTab = [
-    {
-        id: 1,
-        name: "Whiteboard"
-    },
-    {
-        id: 2,
-        name: "Whiteboard"
-    },
-    {
-        id: 3,
-        name: "Whiteboard"
-    }];
+    /*
+    ** Delete a whiteboard
+    ** Method: DELETE
+    */
+    $scope.DeleteWhiteboard = function (whiteboard) {
+        $rootScope.showLoading();
+        Whiteboard.Delete().delete({
+            token: $rootScope.userDatas.token,
+            id: whiteboard.id
+        }).$promise
+            .then(function (data) {
+                console.log('Delete whiteboard successful !');
+                console.log(data.info);
+            })
+            .catch(function (error) {
+                console.error('Delete whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+                $scope.ListWhiteboards();
+            })
+    }
 })
 
 // WHITEBOARD
 .controller('WhiteboardCtrl', function ($scope, $ionicPopover, $ionicPopup, $ionicScrollDelegate) {
-    var width = 4096; //4096;
+    var width = 3840; //3840;
     var height = 2160; //2160;
 
     var canvas = new fabric.Canvas('canvasWhiteboard');

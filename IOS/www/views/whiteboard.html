@@ -4,8 +4,8 @@
 
 <ion-view cache-view="false">
     <ion-nav-title>Whiteboard</ion-nav-title>
-    <ion-content overflow-scroll="false">
-        <ion-scroll zooming="true" direction="xy" locking="false" style="width: 100%; height: 100%">
+   
+        <ion-scroll overflow-scroll="false" zooming="true" direction="xy" locking="false" style="width: 100%; height: 100%">
             <canvas id="canvasWhiteboard"></canvas>
         </ion-scroll>
         <ion-footer-bar class="bar-stable">
@@ -18,7 +18,7 @@
                 <button class="button button-icon ion-ios-undo" ng-click="undoLastObject()"></button>
             </div>
         </ion-footer-bar>
-    </ion-content>
+   
 </ion-view>
 
 <!-- Whiteboard text (when adding a text) -->

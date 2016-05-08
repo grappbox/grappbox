@@ -5,44 +5,19 @@
 <ion-view>
     <ion-nav-title>Whiteboards</ion-nav-title>
     <ion-content>
-        <ion-list show-delete="minusButton.showDelete">
-            <ion-item ng-repeat="item in whiteboardsTab" 
-                      class="item-remove-animate item-icon-right"
-                      ui-sref="app.whiteboard({whiteboardId: item.id})">
-                {{item.name}}
-                <ion-delete-button class="ion-minus-circled"
-                                   ng-click="onWhiteboardDelete(item)">
-                </ion-delete-button>
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+        <ion-list can-swipe="true">
+            <ion-item ng-repeat="whiteboard in whiteboardsInfo"
+                      ui-sref="app.whiteboard({whiteboardId: whiteboard.id})">
+                {{whiteboard.name}}
+                <ion-option-button class="button-assertive"
+                                   ng-click="DeleteWhiteboard(whiteboard)">
+                    Delete
+                </ion-option-button>
             </ion-item>
         </ion-list>
+        <button class="button button-block button-positive" ng-click="showNameWhiteboardPopup()">Create</button>
     </ion-content>
-    <ion-footer-bar class="bar-stable">
-        <div class="title">
-            <button class="button button-icon ion-minus-round" ng-click="minusButton.showDelete = !minusButton.showDelete"></button>
-            <button class="button button-icon ion-plus-round" ng-click="openAddWhiteboardModal()"></button>
-        </div>
-    </ion-footer-bar>
 </ion-view>
-
-<!-- Whiteboard modal (when adding a whiteboard) -->
-<script id="addWhiteboardModal.html" type="text/ng-template">
-    <ion-modal-view>
-        <ion-header-bar class="bar-dark">
-            <h1 class="title">Add Whiteboard</h1>
-        </ion-header-bar>
-        <ion-content>
-            <form ng-submit="addWhiteboard(elem)">
-                <ion-list class="list-inset">
-                    <label class="item item-input">
-                        <input type="text" placeholder="Whiteboard's name" ng-model="elem.title">
-                    </label>
-                    <div class="padding">
-                        <button class="button button-full button-positive" type="submit">
-                            Add Whiteboard
-                        </button>
-                    </div>
-                </ion-list>
-            </form>
-        </ion-content>
-    </ion-modal-view>
-</script>

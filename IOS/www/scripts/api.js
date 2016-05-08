@@ -304,7 +304,8 @@ angular.module('GrappBox.api', ['ngResource'])
         // Edit message or comment on a timeline
         EditMessageOrComment: function () {
             return $resource($rootScope.API + 'timeline/editmessage/:id', { id: "@data.id" }, {
-                'update': { method: 'PUT' } });
+                'update': { method: 'PUT' }
+            });
         },
         // Archive message or comment on a timeline
         ArchiveMessageOrComment: function () {
@@ -360,6 +361,45 @@ angular.module('GrappBox.api', ['ngResource'])
         DelSecuredFile: function () {
             return $resource($rootScope.API + 'cloud/filesecured/:token/:project_id/:path/:password/:passwordSafe', { token: "@token", project_id: "@project_id", path: "@path", password: "@password" });
         }
+    }
+})
+
+/*
+********************* WHITEBOARD *********************
+*/
+// Get current and next tasks
+.factory('Whiteboard', function ($rootScope, $resource) {
+    return {
+        // Create a new whiteboard
+        Create: function () {
+            return $resource($rootScope.API + 'whiteboard/new', { token: "@token", projectId: "@projectId", whiteboardName: "@whiteboardName" });
+        },
+        // Delete a whiteboard
+        Delete: function () {
+            return $resource($rootScope.API + 'whiteboard/delete/:token/:id', { token: "@token", id: "@id" });
+        },
+        // Delete an object on a whiteboard
+        DeleteObject: function () {
+            return $resource($rootScope.API + 'whiteboard/deleteObject', null, {
+                'update': { method: 'PUT' }
+            });
+        },
+        // List all whiteboards
+        List: function () {
+            return $resource($rootScope.API + 'whiteboard/list/:token/:projectId', { token: "@token", projectId: "@projectId" });
+        },
+        // Open a whiteboard
+        Open: function () {
+            return $resource($rootScope.API + 'whiteboard/open/:token/:id', { token: "@token", id: "@id" });
+        },
+        // Pull whiteboard modifications
+        Pull: function () {
+            return $resource($rootScope.API + 'whiteboard/pulldraw/:id', { id: "@id", token: "@token", lastUpdate: "@lastUpdate" });
+        },
+        // Push whiteboard modification
+        Pull: function () {
+            return $resource($rootScope.API + 'whiteboard/pushdraw/:id', { id: "@id", token: "@token", modification: "@modification", objectId: "@objectId", object: "@object" });
+        },
     }
 })
 
