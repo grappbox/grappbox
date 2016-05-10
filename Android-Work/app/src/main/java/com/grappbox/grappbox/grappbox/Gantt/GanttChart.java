@@ -33,6 +33,7 @@ import com.grappbox.grappbox.grappbox.R;
 public class GanttChart extends View {
     private final long millisecondToDays = 86400000;
 
+
     //Overall property
     private int backgroundColor;
 

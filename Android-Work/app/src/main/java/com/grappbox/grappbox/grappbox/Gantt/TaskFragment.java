@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.grappbox.Gantt;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,6 +37,16 @@ public class TaskFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recycler.setLayoutManager(layoutManager);
         adapter = new TaskListAdapter(null);
+        adapter.setInteractionObject(new TaskListAdapter.TaskCardInteraction(){
+            @Override
+            public void onOpenClicked(String ID) {
+                Intent intent = new Intent(getActivity(), GanttChart.class);
+
+                intent.putExtra(Task.INTENT_TASK_ID, ID);
+                startActivity(intent);
+            }
+
+        });
         recycler.setAdapter(adapter);
         APIGetAllTask task = new APIGetAllTask(getActivity(), new APIGetAllTask.APIGetAllTaskListener() {
             @Override

@@ -23,10 +23,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 {
     private final long millisecondToDays = 86400000;
     private Task[] dataSet;
-
+    private TaskCardInteraction interaction = null;
     public TaskListAdapter(Task[] dataSet)
     {
         this.dataSet = dataSet;
+    }
+
+    public interface TaskCardInteraction
+    {
+        void onOpenClicked(String ID);
     }
 
     @Override
@@ -36,6 +41,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         return new ViewHolder(v);
     }
+
+    public void setInteractionObject(TaskCardInteraction newInteraction) { interaction = newInteraction; }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -106,10 +113,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         openAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), GanttChart.class);
-
-                intent.putExtra(Task.INTENT_TASK_ID, currentContent.getId());
-                v.getContext().startActivity(intent);
+               if (interaction != null)
+                   interaction.onOpenClicked(currentContent.getId());
             }
         });
     }
