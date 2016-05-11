@@ -7,7 +7,9 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 /**
+ *
  * Created by tan_f on 01/04/2016.
+ * 
  */
 public class WhiteboardService extends IntentService {
 
