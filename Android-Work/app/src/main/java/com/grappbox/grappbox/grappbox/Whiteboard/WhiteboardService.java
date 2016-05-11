@@ -13,10 +13,12 @@ import android.widget.Toast;
  */
 public class WhiteboardService extends IntentService {
 
-    WhiteboardService()
+    public WhiteboardService()
     {
         super("WhiteboardService");
     }
+
+
 
     @Override
     protected void onHandleIntent(Intent intent)

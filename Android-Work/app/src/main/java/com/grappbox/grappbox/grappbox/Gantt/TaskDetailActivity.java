@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.R;
 
@@ -26,6 +28,17 @@ public class TaskDetailActivity extends AppCompatActivity {
         GetTaskInformationsTask task = new GetTaskInformationsTask(getBaseContext(), new GetTaskInformationsTask.APIGetTaskInformationListener() {
             @Override
             public void onTaskFetched(Task task) {
+                TextView title, description, date;
+                CheckBox isMilestone;
+
+                title = (TextView) findViewById(R.id.etxt_title);
+                description = (TextView) findViewById(R.id.etxt_description);
+                date = (TextView) findViewById(R.id.etxt_due_date);
+                isMilestone = (CheckBox) findViewById(R.id.is_milestone);
+                title.setText(task.getTitle());
+                description.setText(task.getDescription());
+                date.setText(task.getEndDate().toString());
+                isMilestone.setChecked(task.IsMilestone());
                 //TODO : bind task model to view layout
             }
         });
@@ -33,7 +46,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO : edit task
+                //TODO : edit task (linkAPI)
             }
         });
     }
@@ -45,7 +58,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: save new task
+                //TODO: save new task (linkAPI)
             }
         });
     }

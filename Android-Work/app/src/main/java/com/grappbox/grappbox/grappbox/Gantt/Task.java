@@ -189,4 +189,12 @@ public class Task {
     public ArrayList<TaskUser> getUsers() { return users; }
 
     public ArrayList<TaskTag> getTags() { return tags; }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
