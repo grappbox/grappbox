@@ -873,37 +873,6 @@ v2_task_getProjectTags:
         projectId: \d+
     methods: [GET]
 
-v2_task_postContainer:
-    path:       tasks/postcontainer
-    defaults:   { _controller: 'GrappboxBundle:Task:postContainer', _format: json }
-    methods: [POST]
-
-v2_task_getContainer:
-    path:       tasks/getcontainer/{token}/{id}
-    defaults:   { _controller: 'GrappboxBundle:Task:getContainer', _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
-
-v2_task_getProjectContainer:
-    path:       tasks/getprojectcontainers/{token}/{id}
-    defaults:   { _controller: 'GrappboxBundle:Task:getProjectContainers', _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
-
-v2_task_putContainer:
-    path:       tasks/putcontainer
-    defaults: { _controller: GrappboxBundle:Task:putContainer, _format: json }
-    methods: [PUT]
-
-v2_task_delContainer:
-    path:       tasks/delcontainer/{token}/{id}
-    defaults:   { _controller: 'GrappboxBundle:Task:delContainer', _format: json }
-    requirements:
-        id: \d+
-    methods: [DELETE]
-
 
 
 # -----------------------------------------------------------------------

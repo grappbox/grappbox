@@ -41,6 +41,12 @@ GrappboxBundle\Entity\Task:
         isMilestone:
             type: boolean
             column: is_milestone
+        isContainer:
+            type: boolean
+            column: is_container
+        advance:
+          type: integer
+          nullable: FALSE
     manyToOne:
         projects:
           targetEntity: Project
@@ -54,6 +60,9 @@ GrappboxBundle\Entity\Task:
           joinColumn:
             name: creator_id
             referencedColumnName: id
+        container:
+          targetEntity: Task
+          inversedBy: tasks_container
     manyToMany:
         tags:
           targetEntity: Tag
@@ -66,12 +75,6 @@ GrappboxBundle\Entity\Task:
             inverseJoinColumns:
               tag_id:
                 referencedColumnName: id
-        contains:
-          targetEntity: Contains
-          inveredBy: tasks
-          joinColumn:
-            name: container
-            referencedColumnName: id
     oneToMany:
         ressources:
           targetEntity: Ressources
@@ -85,4 +88,7 @@ GrappboxBundle\Entity\Task:
           targetEntity: Dependencies
           mappedBy: dependence
           cascade: [remove, refresh ]
+        tasks_container:
+          targetEntity: Task
+          mappedBy: container
     lifecycleCallbacks: {  }
