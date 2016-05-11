@@ -72,8 +72,13 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.grappbox.grappbox.grappbox.MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.grappbox.MainActivity" />
+        </activity>
+        <activity android:name=".Gantt.TaskDetailActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.grappbox.MainActivity" />
         </activity>
     </application>
 

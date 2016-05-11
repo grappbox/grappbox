@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class GanttFragment extends Fragment {
-
+    public final String SELECTION_MODE = "com.grappbox.grappbox.grappbox.Gantt.selection_mode";
 
     public GanttFragment() {
         // Required empty public constructor

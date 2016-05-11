@@ -17,7 +17,7 @@ import java.util.List;
  * Created by wieser_m on 09/03/2016.
  */
 public class Task {
-
+    public final static String INTENT_TASK_ID = "com.grappbox.intent.task.intent_task_id";
     public enum ELinkType
     {
         NONE,
@@ -64,6 +64,11 @@ public class Task {
     public Task(JSONObject data) throws JSONException, ParseException {
         if (this.links == null)
             this.links = new ArrayList<>();
+        if (this.users == null)
+            this.users = new ArrayList<>();
+        if (this.tags == null)
+            this.tags = new ArrayList<>();
+
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         JSONArray jusersAssigned = data.getJSONArray("users_assigned");
         JSONArray jtags = data.getJSONArray("tags");
@@ -180,4 +185,8 @@ public class Task {
     public int  getAccomplishedPercent(){return this.accomplishedPercent;}
 
     public void setAccomplishedPercent(int accomplishedPercent) { this.accomplishedPercent = accomplishedPercent; }
+
+    public ArrayList<TaskUser> getUsers() { return users; }
+
+    public ArrayList<TaskTag> getTags() { return tags; }
 }

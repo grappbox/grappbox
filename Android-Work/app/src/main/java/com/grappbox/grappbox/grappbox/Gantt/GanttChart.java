@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Build;
@@ -32,6 +33,7 @@ import com.grappbox.grappbox.grappbox.R;
 public class GanttChart extends View {
     private final long millisecondToDays = 86400000;
 
+
     //Overall property
     private int backgroundColor;
 
@@ -52,6 +54,7 @@ public class GanttChart extends View {
 
     //Brushes
     private Paint taskBrush;
+    private Paint accomplishementBrush;
     private TextPaint textBrush;
     private Paint lineBrush;
     private Paint todayLineBrush;
@@ -113,7 +116,7 @@ public class GanttChart extends View {
         oneDayWidth = 50;
         mainDayLineHeight = 40;
         otherDayLineHeight = 20;
-        tasklistWidth = 10;
+        tasklistWidth = 500;
 
         taskBrush = new Paint(Paint.ANTI_ALIAS_FLAG);
         taskBrush.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -143,6 +146,10 @@ public class GanttChart extends View {
         dividerBrush.setColor(typedArray.getColor(R.styleable.GanttChart_dividerColor, Color.parseColor("#202020")));
         dividerBrush.setStrokeWidth(1);
 
+        accomplishementBrush = new Paint(Paint.ANTI_ALIAS_FLAG);
+        accomplishementBrush.setStyle(Paint.Style.FILL_AND_STROKE);
+        accomplishementBrush.setColor(typedArray.getColor(R.styleable.GanttChart_accomplishementTaskColor, Color.parseColor("#70ad47")));
+
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.SECOND, 0);
@@ -158,7 +165,6 @@ public class GanttChart extends View {
         screenWidth = w;
         minYPos = getPaddingTop();
         Date furtherDate = null;
-        tasklistWidth = 20;
         for (Task task : tasks)
         {
             float taskWidth = textBrush.measureText(task.getTitle());
@@ -176,6 +182,7 @@ public class GanttChart extends View {
     public void SetTasks(List<Task> tasks)
     {
         this.tasks = tasks;
+        invalidate();
     }
 
     public void setTaskListener(GanttTaskListener listener)
@@ -312,13 +319,29 @@ public class GanttChart extends View {
             }
             if (!task.IsMilestone() && !task.IsContainer())
             {
+                float accomplishementWidth = (right - left) * (task.getAccomplishedPercent() / 100);
                 canvas.drawRect(left, top, right, bottom, taskBrush);
+                //Draw percent accomplishment
+                if (accomplishementWidth > 0)
+                    canvas.drawRect(left, bottom - ((bottom - top) / 4), left + accomplishementWidth,bottom, accomplishementBrush);
             }
             else if (task.IsMilestone())
                 drawMilestone(canvas, new Pair<Integer, Integer>((int) left, top));
             else if (task.IsContainer())
             {
                 //Draw container
+                canvas.drawRect(left, top, right, bottom - (bottom - top) / 1.5f,taskBrush);
+                Path triangle = new Path();
+                triangle.moveTo(left - (oneDayWidth / 2), top);
+                triangle.rLineTo(oneDayWidth, 0);
+                triangle.rLineTo(-(oneDayWidth / 2), bottom - top);
+                triangle.rLineTo(-(oneDayWidth / 2), top - bottom);
+                triangle.close();
+                canvas.drawPath(triangle, taskBrush);
+                Matrix translate = new Matrix();
+                translate.setTranslate(right - left - (oneDayWidth / 2), 0);
+                triangle.transform(translate);
+                canvas.drawPath(triangle, taskBrush);
             }
             for (Pair<String, Task.ELinkType> pair : task.getLinks())
             {
@@ -458,6 +481,8 @@ public class GanttChart extends View {
     private ArrayList<Float> drawStartToStartLink(Pair<Integer, Integer> startPosition, int currentTaskIndex, int endTaskIndex, int endTaskLeft, Task endTask)
     {
         ArrayList<Float> lines = new ArrayList<>();
+        int hauteur  = (startPosition.second + ((taskHeight / 2))) - startPosition.second;
+        int baselength = (int) (hauteur / (Math.sqrt(3) / 2));
 
         lines.add(Float.valueOf(startPosition.first));
         lines.add((float) (startPosition.second));
@@ -471,7 +496,7 @@ public class GanttChart extends View {
 
         lines.add(lines.get(6));
         lines.add(lines.get(7));
-        lines.add((float) endTaskLeft - (endTask.IsMilestone() ? oneDayWidth : 0));
+        lines.add((float) endTaskLeft - (endTask.IsMilestone() ? baselength / 2 : 0));
         lines.add(lines.get(9));
 
         return lines;
@@ -665,10 +690,10 @@ public class GanttChart extends View {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             oneDayWidth *= detector.getScaleFactor();
-            if (oneDayWidth * 7 < textBrush.measureText("00/00/0000") / 2)
-                oneDayWidth = (int) ((textBrush.measureText("00/00/0000") / 2) / 7);
-            else if (oneDayWidth >= screenWidth - getPaddingLeft() - tasklistPadding - tasklistWidth)
-                oneDayWidth = screenWidth - getPaddingLeft() - tasklistPadding - tasklistWidth;
+            if (oneDayWidth * 7 < textBrush.measureText("00/00/0000"))
+                oneDayWidth = (int) ((textBrush.measureText("00/00/0000")) / 7);
+            else if (oneDayWidth * 7 >= screenWidth - getPaddingLeft() - tasklistPadding - tasklistWidth)
+                oneDayWidth = (screenWidth - getPaddingLeft() - tasklistPadding - tasklistWidth) / 7;
             invalidate();
             return true;
         }
