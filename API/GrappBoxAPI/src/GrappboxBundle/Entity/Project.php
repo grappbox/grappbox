@@ -1171,4 +1171,27 @@ class Project
     {
         return $this->statUserTasksAdvancement;
     }
+
+    /**
+     * Add statLateTasks
+     *
+     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     * @return Project
+     */
+    public function addStatLateTask(\GrappboxBundle\Entity\StatLateTasks $statLateTasks)
+    {
+        $this->statLateTasks[] = $statLateTasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove statLateTasks
+     *
+     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     */
+    public function removeStatLateTask(\GrappboxBundle\Entity\StatLateTasks $statLateTasks)
+    {
+        $this->statLateTasks->removeElement($statLateTasks);
+    }
 }

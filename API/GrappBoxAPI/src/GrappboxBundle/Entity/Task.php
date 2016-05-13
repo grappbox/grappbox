@@ -9,6 +9,21 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Task
 {
+    public function objectToArray()
+    {
+      return array(
+        'id' => $this->id,
+        'creator' => $this->creator_user->getId() ,
+        'title' => $this->title ,
+        'description' => $this->description ,
+        'color' => $this->color ,
+        'dueDate' => $this->dueDate ,
+        'startedAt' => $this->startedAt ,
+        'finishedAt' => $this->finishedAt ,
+        'projectId' => $this->projects->getId()
+      );
+    }
+
     /**
      * @var integer
      */
@@ -60,6 +75,16 @@ class Task
     private $isMilestone;
 
     /**
+     * @var boolean
+     */
+    private $isContainer;
+
+    /**
+     * @var integer
+     */
+    private $advance;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $ressources;
@@ -73,6 +98,16 @@ class Task
      * @var \Doctrine\Common\Collections\Collection
      */
     private $task_depended;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $tasks_container;
+    
+    /**
+     * @var \GrappboxBundle\Entity\Task
+     */
+    private $container;
 
     /**
      * @var \GrappboxBundle\Entity\Project
@@ -90,11 +125,6 @@ class Task
     private $tags;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $contains;
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -102,29 +132,14 @@ class Task
         $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
         $this->dependence = new \Doctrine\Common\Collections\ArrayCollection();
         $this->task_depended = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks_container = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contains = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    public function objectToArray()
-    {
-      return array(
-        'id' => $this->id,
-        'creator' => $this->creator_user->getId() ,
-        'title' => $this->title ,
-        'description' => $this->description ,
-        'color' => $this->color ,
-        'dueDate' => $this->dueDate ,
-        'startedAt' => $this->startedAt ,
-        'finishedAt' => $this->finishedAt ,
-        'projectId' => $this->projects->getId()
-      );
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -147,7 +162,7 @@ class Task
     /**
      * Get title
      *
-     * @return string
+     * @return string 
      */
     public function getTitle()
     {
@@ -170,7 +185,7 @@ class Task
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -193,14 +208,12 @@ class Task
     /**
      * Get color
      *
-     * @return string
+     * @return string 
      */
     public function getColor()
     {
         return $this->color;
     }
-
-
 
     /**
      * Set dueDate
@@ -218,7 +231,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDueDate()
     {
@@ -241,7 +254,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getStartedAt()
     {
@@ -264,7 +277,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getFinishedAt()
     {
@@ -287,7 +300,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -310,7 +323,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
@@ -333,11 +346,57 @@ class Task
     /**
      * Get isMilestone
      *
-     * @return boolean
+     * @return boolean 
      */
     public function getIsMilestone()
     {
         return $this->isMilestone;
+    }
+
+    /**
+     * Set isContainer
+     *
+     * @param boolean $isContainer
+     * @return Task
+     */
+    public function setIsContainer($isContainer)
+    {
+        $this->isContainer = $isContainer;
+
+        return $this;
+    }
+
+    /**
+     * Get isContainer
+     *
+     * @return boolean 
+     */
+    public function getIsContainer()
+    {
+        return $this->isContainer;
+    }
+
+    /**
+     * Set advance
+     *
+     * @param integer $advance
+     * @return Task
+     */
+    public function setAdvance($advance)
+    {
+        $this->advance = $advance;
+
+        return $this;
+    }
+
+    /**
+     * Get advance
+     *
+     * @return integer 
+     */
+    public function getAdvance()
+    {
+        return $this->advance;
     }
 
     /**
@@ -366,7 +425,7 @@ class Task
     /**
      * Get ressources
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getRessources()
     {
@@ -399,7 +458,7 @@ class Task
     /**
      * Get dependence
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getDependence()
     {
@@ -432,11 +491,44 @@ class Task
     /**
      * Get task_depended
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTaskDepended()
     {
         return $this->task_depended;
+    }
+
+    /**
+     * Add tasks_container
+     *
+     * @param \GrappboxBundle\Entity\Task $tasksContainer
+     * @return Task
+     */
+    public function addTasksContainer(\GrappboxBundle\Entity\Task $tasksContainer)
+    {
+        $this->tasks_container[] = $tasksContainer;
+
+        return $this;
+    }
+
+    /**
+     * Remove tasks_container
+     *
+     * @param \GrappboxBundle\Entity\Task $tasksContainer
+     */
+    public function removeTasksContainer(\GrappboxBundle\Entity\Task $tasksContainer)
+    {
+        $this->tasks_container->removeElement($tasksContainer);
+    }
+
+    /**
+     * Get tasks_container
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTasksContainer()
+    {
+        return $this->tasks_container;
     }
 
     /**
@@ -455,7 +547,7 @@ class Task
     /**
      * Get projects
      *
-     * @return \GrappboxBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project 
      */
     public function getProjects()
     {
@@ -478,7 +570,7 @@ class Task
     /**
      * Get creator_user
      *
-     * @return \GrappboxBundle\Entity\User
+     * @return \GrappboxBundle\Entity\User 
      */
     public function getCreatorUser()
     {
@@ -511,43 +603,34 @@ class Task
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getTags()
     {
         return $this->tags;
     }
 
+
     /**
-     * Add contains
+     * Set container
      *
-     * @param \GrappboxBundle\Entity\Contains $contains
+     * @param \GrappboxBundle\Entity\Task $container
      * @return Task
      */
-    public function addContain(\GrappboxBundle\Entity\Contains $contains)
+    public function setContainer(\GrappboxBundle\Entity\Task $container = null)
     {
-        $this->contains[] = $contains;
+        $this->container = $container;
 
         return $this;
     }
 
     /**
-     * Remove contains
+     * Get container
      *
-     * @param \GrappboxBundle\Entity\Contains $contains
+     * @return \GrappboxBundle\Entity\Task 
      */
-    public function removeContain(\GrappboxBundle\Entity\Contains $contains)
+    public function getContainer()
     {
-        $this->contains->removeElement($contains);
-    }
-
-    /**
-     * Get contains
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getContains()
-    {
-        return $this->contains;
+        return $this->container;
     }
 }
