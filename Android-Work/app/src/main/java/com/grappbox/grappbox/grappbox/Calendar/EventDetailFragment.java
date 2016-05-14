@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.grappbox.Calendar;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.os.Bundle;
@@ -156,6 +157,11 @@ public class EventDetailFragment extends EventFragment {
 
     private void addUserToEvent()
     {
+        AlertDialog.Builder addUser = new AlertDialog.Builder(getActivity());
+        addUser.setMessage("");
+
+
+        /*
         final Dialog eventAddUserDialog = new Dialog(getActivity());
         eventAddUserDialog.setTitle("Add User : ");
         eventAddUserDialog.setContentView(R.layout.dialog_event_add_user);
@@ -172,7 +178,7 @@ public class EventDetailFragment extends EventFragment {
                 userMail.setText("");
             eventAddUserDialog.dismiss();
         });
-        eventAddUserDialog.show();
+        eventAddUserDialog.show();*/
     }
 
     private void sendUpadteRequestToAPI()

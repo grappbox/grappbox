@@ -330,14 +330,19 @@ public class UserProfileFragment extends Fragment {
         protected ContentValues doInBackground(String ... param)
         {
             ContentValues contentAPI = null;
+            Integer responseAPI;
             String resultAPI;
 
             try {
                 APIConnectAdapter.getInstance().startConnection("user/getuserbasicinformations/" + SessionAdapter.getInstance().getToken() + "/" +String.valueOf(SessionAdapter.getInstance().getUserID()));
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
 
-                resultAPI = APIConnectAdapter.getInstance().getInputSream();
-                contentAPI = APIConnectAdapter.getInstance().getUserInformation(resultAPI);
+                responseAPI = APIConnectAdapter.getInstance().getResponseCode();
+                Log.v("User result", responseAPI.toString());
+                if (responseAPI == 200) {
+                    resultAPI = APIConnectAdapter.getInstance().getInputSream();
+                    contentAPI = APIConnectAdapter.getInstance().getUserInformation(resultAPI);
+                }
 
             } catch (IOException | JSONException e){
                 e.printStackTrace();

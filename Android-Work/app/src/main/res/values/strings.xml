@@ -196,6 +196,7 @@
     <string name="event_add_user_mail_label">User mail:</string>
     <string name="event_add_user_mail_hint">User mail</string>
     <string name="event_delete_title_label">Are you sure you want to delete this event ?</string>
+    <string name="event_progres_label">Loading</string>
 
     <string name="no_proj_selected_str">No project selected</string>
     <string name="str_project_settings">Manage project settings</string>
