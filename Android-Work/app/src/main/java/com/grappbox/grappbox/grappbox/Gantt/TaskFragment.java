@@ -40,8 +40,9 @@ public class TaskFragment extends Fragment {
         adapter.setInteractionObject(new TaskListAdapter.TaskCardInteraction(){
             @Override
             public void onOpenClicked(String ID) {
-                Intent intent = new Intent(getActivity(), GanttChart.class);
+                Intent intent = new Intent(getActivity(), TaskDetailActivity.class);
 
+                intent.addCategory(TaskDetailActivity.EDIT_MODE);
                 intent.putExtra(Task.INTENT_TASK_ID, ID);
                 startActivity(intent);
             }

@@ -1,9 +1,11 @@
 package com.grappbox.grappbox.grappbox.Gantt;
 
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +34,11 @@ public class GanttFragment extends Fragment {
     private class TaskListener implements GanttChart.GanttTaskListener {
         @Override
         public void onTaskClick(Task task) {
-            
+            Intent intent = new Intent(getContext(), TaskDetailActivity.class);
+
+            intent.addCategory(TaskDetailActivity.EDIT_MODE);
+            intent.putExtra(Task.INTENT_TASK_ID, task.getId());
+            startActivity(intent);
         }
     }
 

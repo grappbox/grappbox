@@ -69,4 +69,19 @@
         <item>Open whiteboard</item>
         <item>Delete whiteboard</item>
     </string-array>
+
+    <!-- Task Arrays -->
+    <string-array name="task_dependencies_universal">
+        <item>start_start</item>
+        <item>start_end</item>
+        <item>end_end</item>
+        <item>end_start</item>
+    </string-array>
+    <string-array name="task_dependencies_en">
+        <item>Start to Start</item>
+        <item>Start to End</item>
+        <item>End to End</item>
+        <item>End to Start</item>
+    </string-array>
+
 </resources>

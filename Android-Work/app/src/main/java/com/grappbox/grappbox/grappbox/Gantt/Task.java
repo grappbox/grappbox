@@ -80,6 +80,7 @@ public class Task {
         endDate = format.parse(data.getJSONObject("due_date").getString("date"));
         startDate = format.parse(data.getJSONObject("started_at").getString("date"));
         isMilestone = data.getBoolean("is_milestone");
+        accomplishedPercent = data.getInt("advance");
         for (int i = 0; i < jusersAssigned.length(); ++i)
             users.add(new TaskUser(jusersAssigned.getJSONObject(i)));
         for (int i = 0; i < jtags.length(); ++i)

@@ -6,53 +6,53 @@ import android.os.AsyncTask;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 /**
- * Created by wieser_m on 10/05/2016.
+ * Created by wieser_m on 14/05/2016.
  */
-public class GetTaskInformationsTask extends AsyncTask<String, Void, String> {
+public class GetAllProjectUsersTask extends AsyncTask<String, Void, String> {
     APIConnectAdapter api;
     Context context;
-    APIGetTaskInformationListener listener;
+    APIGetAllProjectUserListener listener;
 
-    public interface APIGetTaskInformationListener
+    public interface APIGetAllProjectUserListener
     {
-        public void onTaskFetched(Task task);
+        public void onUsersFetched(ArrayList<TaskUser> users);
     }
 
-    public GetTaskInformationsTask(Context context, APIGetTaskInformationListener listener) {
+    public GetAllProjectUsersTask(Context context, APIGetAllProjectUserListener listener) {
         this.context = context;
         this.listener = listener;
+        api = APIConnectAdapter.getInstance(true);
     }
 
     @Override
     protected String doInBackground(String... params) {
-        if (params.length < 1)
-            return null;
-        String taskID = params[0];
         String token = SessionAdapter.getInstance().getToken();
+        String projectId = String.valueOf(SessionAdapter.getInstance().getCurrentSelectedProject());
 
         try {
             api = APIConnectAdapter.getInstance(true);
             api.setVersion("V0.2");
-            api.startConnection("tasks/taskinformations/"+token+"/"+taskID);
+            api.startConnection("projects/getusertoproject/"+token+"/"+projectId);
             return api.getInputSream();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        Task taskFetched = null;
+        ArrayList<TaskUser> usersFetched = new ArrayList<>();
         if (s == null || s.isEmpty())
             return;
         try {
@@ -61,10 +61,12 @@ public class GetTaskInformationsTask extends AsyncTask<String, Void, String> {
             if (TaskInfoHandler.process(context, api.getResponseCode(), info))
                 return;
             JSONObject data = json.getJSONObject("data");
-            taskFetched = new Task(data);
-            if (listener != null && taskFetched != null)
-                listener.onTaskFetched(taskFetched);
-        } catch (JSONException | IOException | ParseException e) {
+            JSONArray arr = data.getJSONArray("array");
+            for (int i = 0; i < arr.length(); ++i)
+                usersFetched.add(new TaskUser(arr.getJSONObject(i)));
+            if (listener != null)
+                listener.onUsersFetched(usersFetched);
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }

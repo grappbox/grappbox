@@ -314,7 +314,6 @@ public class CloudExplorerFragment extends Fragment {
                     else
                         task.execute(_path, _safePassword);
                 } else {
-                    //TODO : Open dialog to know which action execute (Download or delete)
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
                     dialogBuilder.setItems(R.array.cloudExplorer_fileAction, new DialogInterface.OnClickListener() {
                         @Override
@@ -322,7 +321,6 @@ public class CloudExplorerFragment extends Fragment {
                             switch (which)
                             {
                                 case 0:
-                                    //TODO : API Call Download File
                                     if (!clickedItem.isSecured())
                                     {
                                         DownloadFileTask task  = new DownloadFileTask(getActivity().getApplicationContext());

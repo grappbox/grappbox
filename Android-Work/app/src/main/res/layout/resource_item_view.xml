@@ -12,20 +12,12 @@
         android:layout_weight="1"
         android:gravity="center_vertical" />
 
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/spin_types"
-        android:layout_weight="1"
-        android:spinnerMode="dialog"
-        android:entries="@array/task_dependencies_en"/>
-
     <ImageButton
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Delete"
         android:id="@+id/btn_delete"
-        android:layout_weight="1.5"
+        android:layout_weight="5"
         android:tint="@color/colorGrappboxRed"
         android:background="@android:color/transparent"
         android:src="@android:drawable/ic_delete" />

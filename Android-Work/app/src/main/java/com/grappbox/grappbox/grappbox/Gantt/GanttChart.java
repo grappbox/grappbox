@@ -19,13 +19,15 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
+import com.grappbox.grappbox.grappbox.R;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import com.grappbox.grappbox.grappbox.R;
 
 /**
  * Created by wieser_m on 08/03/2016.
@@ -345,7 +347,8 @@ public class GanttChart extends View {
             }
             for (Pair<String, Task.ELinkType> pair : task.getLinks())
             {
-                Pair<Integer, Integer> startPosition = new Pair<Integer, Integer>((int) left, top + (taskHeight / 4));
+                //Pair<Integer, Integer> startPosition = new Pair<Integer, Integer>((int) left, top + (taskHeight / 4));
+
                 Task endTask = null;
                 int endIndex = 0;
                 for (Task finder : tasks)
@@ -359,7 +362,12 @@ public class GanttChart extends View {
                 }
                 if (endTask == null)
                     continue;
-                drawLink(canvas, pair.second, startPosition, daysNumber, endTask, endIndex, index);
+                int edaysOffset = (int) ((endTask.getStartDate().getTime() - zeroDate.getTime()) / millisecondToDays);
+                float eleft = tasklistWidth + tasklistPadding + (oneDayWidth * edaysOffset) + pan;
+                int etop = (int) (getPaddingTop() + timelineHeight + minYPos + (taskHeight * endIndex) + (taskHeight / 4) + panVertical);
+                int edaysNumber = (int)((endTask.getEndDate().getTime() - endTask.getStartDate().getTime()) / millisecondToDays);
+                Pair<Integer, Integer> startPosition = new Pair<Integer, Integer>((int)eleft, etop);
+                drawLink(canvas, pair.second, startPosition, daysNumber, task, index, endIndex);
             }
 
             ++index;
@@ -610,13 +618,15 @@ public class GanttChart extends View {
             return false;
         if (x < getPaddingLeft() + tasklistWidth)
             return true;
+        /*
         Task task = tasks.get(taskIndex);
         int daysOffset = (int) ((task.getStartDate().getTime() - zeroDate.getTime()) / millisecondToDays);
         int daysNumber = (int)((task.getEndDate().getTime() - task.getStartDate().getTime()) / millisecondToDays);
         float left = tasklistWidth + tasklistPadding + (oneDayWidth * daysOffset) + pan;
         float right = left + (oneDayWidth * daysNumber);
         x += pan;
-        return x >= left && x <= right;
+        return x >= left && x <= right;*/
+        return false;
     }
 
 
@@ -635,7 +645,6 @@ public class GanttChart extends View {
 
         @Override
         public boolean onDown(MotionEvent e) {
-            super.onDown(e);
             int leftBox = getPaddingLeft() + tasklistWidth;
             int rightBox = getPaddingLeft() + tasklistWidth + tasklistPadding;
             isTaskWidthChanging = e.getX() >= leftBox && e.getX() <= rightBox;
@@ -649,7 +658,7 @@ public class GanttChart extends View {
 
             if (isClicked && taskListener != null)
                 taskListener.onTaskClick(tasks.get(taskIndex));
-            return isClicked;
+            return true;
         }
 
         @Override
