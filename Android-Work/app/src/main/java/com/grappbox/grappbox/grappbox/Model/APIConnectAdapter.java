@@ -219,7 +219,7 @@ public class APIConnectAdapter  {
     }
 
     public ContentValues getUserInformation(String result)  throws JSONException {
-        final String[] userInfo = {"first_name", "last_name", "birthday", "avatar", "email", "phone", "country", "linkedin", "viadeo", "twitter"};
+        final String[] userInfo = {"firstname", "lastname", "birthday", "avatar", "email", "phone", "country", "linkedin", "viadeo", "twitter"};
 
         JSONObject forecastJSON = new JSONObject(result);
         Log.v("JSON", forecastJSON.toString());

@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.grappbox.Calendar;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,8 +42,10 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
 
     private View _rootView;
     private AgendaCalendarView _AgendaCalendarView;
+    private FloatingActionButton _FAB;
     private Calendar _minDate = Calendar.getInstance();
     private Calendar _maxDate = Calendar.getInstance();
+    private ProgressDialog  _progress;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,29 +53,41 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
 
         ButterKnife.bind(this.getActivity());
 
+        _progress = new ProgressDialog(this.getContext());
+        _progress.setMessage(getString(R.string.event_progres_label));
+        _progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        _progress.setIndeterminate(true);
+        _progress.show();
+
         _minDate.add(Calendar.YEAR, -1);
         _minDate.set(Calendar.DAY_OF_MONTH, 1);
         _maxDate.add(Calendar.YEAR, 3);
 
         _AgendaCalendarView = (AgendaCalendarView)_rootView.findViewById(R.id.agenda_calendar_view);
 
-        FloatingActionButton fab = (FloatingActionButton) _rootView.findViewById(R.id.add_event_float_button);
-        fab.setOnClickListener((View v)-> {
+        _FAB = (FloatingActionButton) _rootView.findViewById(R.id.add_event_float_button);
+        _FAB.setOnClickListener((View v)-> {
             Fragment eventDetail = new AddEventFragment();
             android.support.v4.app.FragmentManager fragManager = getFragmentManager();
             android.support.v4.app.FragmentTransaction ft = fragManager.beginTransaction();
             ft.replace(R.id.content_frame, eventDetail).commit();
         });
+        _FAB.hide();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar cal = Calendar.getInstance();
-        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), 1);
+        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) - 1, 1);
+        String previousMonth = format.format(cal.getTime());
 
+        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, 1);
         String currentDate = format.format(cal.getTime());
+
+        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, 1);
+        String nextMonth = format.format(cal.getTime());
         Log.v("Date = ", currentDate);
         APIRequestCalendarEvent api = new APIRequestCalendarEvent();
-        api.execute(currentDate);
+        api.execute(previousMonth, currentDate, nextMonth);
         return _rootView;
     }
 
@@ -100,28 +115,31 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
         List<CalendarEvent> calendarEventList = new ArrayList<>();
-/*        for (ContentValues event : eventList) {
+        if (eventList != null) {
+            for (ContentValues event : eventList) {
 
-            Calendar beginDate = Calendar.getInstance();
-            beginDate.setTime(format.parse(event.get("beginDate").toString()));
-            Calendar endDate = Calendar.getInstance();
-            endDate.setTime(format.parse(event.get("endDate").toString()));
+                Calendar beginDate = Calendar.getInstance();
+                beginDate.setTime(format.parse(event.get("beginDate").toString()));
+                Calendar endDate = Calendar.getInstance();
+                endDate.setTime(format.parse(event.get("endDate").toString()));
 
-            BaseCalendarEvent calendarEvent;
-            if (beginDate.get(beginDate.YEAR) == endDate.get(endDate.YEAR) &&
-                    beginDate.get(beginDate.MONTH) == endDate.get(endDate.MONTH) &&
-                    beginDate.get(beginDate.DAY_OF_MONTH) == endDate.get(endDate.DAY_OF_MONTH)) {
-                String title = event.get("title").toString() + " " + hourFormat.format(beginDate.getTime()) + " - " + hourFormat.format(endDate.getTime());
-                calendarEvent = new BaseCalendarEvent(Long.parseLong(event.get("id").toString()), ContextCompat.getColor(this.getContext(), R.color.Brown), title,
-                        "", "", beginDate.getTimeInMillis(), endDate.getTimeInMillis(), 0, "");
-            } else{
-                calendarEvent = new BaseCalendarEvent(Long.parseLong(event.get("id").toString()), ContextCompat.getColor(this.getContext(), R.color.Brown), event.get("title").toString(),
-                        "", "", beginDate.getTimeInMillis(), endDate.getTimeInMillis(), 0, "");
+                BaseCalendarEvent calendarEvent;
+                if (beginDate.get(beginDate.YEAR) == endDate.get(endDate.YEAR) &&
+                        beginDate.get(beginDate.MONTH) == endDate.get(endDate.MONTH) &&
+                        beginDate.get(beginDate.DAY_OF_MONTH) == endDate.get(endDate.DAY_OF_MONTH)) {
+                    String title = event.get("title").toString() + " " + hourFormat.format(beginDate.getTime()) + " - " + hourFormat.format(endDate.getTime());
+                    calendarEvent = new BaseCalendarEvent(Long.parseLong(event.get("id").toString()), ContextCompat.getColor(this.getContext(), R.color.Brown), title,
+                            "", "", beginDate.getTimeInMillis(), endDate.getTimeInMillis(), 0, "");
+                } else {
+                    calendarEvent = new BaseCalendarEvent(Long.parseLong(event.get("id").toString()), ContextCompat.getColor(this.getContext(), R.color.Brown), event.get("title").toString(),
+                            "", "", beginDate.getTimeInMillis(), endDate.getTimeInMillis(), 0, "");
+                }
+
+                calendarEventList.add(calendarEvent);
             }
-
-            calendarEventList.add(calendarEvent);
         }
-        */
+        _FAB.show();
+        _progress.hide();
         _AgendaCalendarView.init(calendarEventList, _minDate, _maxDate, Locale.getDefault(), this);
         _AgendaCalendarView.addEventRenderer(new DrawableEventRenderer());
     }
@@ -150,16 +168,41 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
             try {
                 String token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
                 Log.v("Token :", token);
-                APIConnectAdapter.getInstance().startConnection("planning/getmonth/" + token + "/" + param[0], "V0.2");
+                APIConnectAdapter.getInstance().startConnection("planning/getmonth/" + token + "/" + param[1], "V0.2");
                 APIConnectAdapter.getInstance().setRequestConnection("GET");
 
                 APIResponse = APIConnectAdapter.getInstance().getResponseCode();
                 Log.v("Response API :", APIResponse.toString());
                 if (APIResponse == 200) {
                     resultAPI = APIConnectAdapter.getInstance().getInputSream();
+                    Log.v("API Content:", resultAPI);
                     listResult = APIConnectAdapter.getInstance().getMonthPlanning(resultAPI);
-                } else {
-                    return null;
+                }
+
+                APIConnectAdapter.getInstance().startConnection("planning/getmonth/" + token + "/" + param[0], "V0.2");
+                APIResponse = APIConnectAdapter.getInstance().getResponseCode();
+                Log.v("Response API :", APIResponse.toString());
+                if (APIResponse == 200) {
+                    List<ContentValues> previousMonth;
+                    resultAPI = APIConnectAdapter.getInstance().getInputSream();
+                    Log.v("API Content:", resultAPI);
+                    previousMonth = APIConnectAdapter.getInstance().getMonthPlanning(resultAPI);
+                    if (listResult == null)
+                        listResult = previousMonth;
+                    listResult.addAll(previousMonth);
+                }
+
+                APIConnectAdapter.getInstance().startConnection("planning/getmonth/" + token + "/" + param[2], "V0.2");
+                APIResponse = APIConnectAdapter.getInstance().getResponseCode();
+                Log.v("Response API :", APIResponse.toString());
+                if (APIResponse == 200) {
+                    List<ContentValues> nextMonth;
+                    resultAPI = APIConnectAdapter.getInstance().getInputSream();
+                    Log.v("API Content:", resultAPI);
+                    nextMonth = APIConnectAdapter.getInstance().getMonthPlanning(resultAPI);
+                    if (listResult == null)
+                        listResult = nextMonth;
+                    listResult.addAll(nextMonth);
                 }
 
             } catch (IOException | JSONException e){
