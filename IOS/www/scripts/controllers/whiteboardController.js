@@ -132,7 +132,13 @@ angular.module('GrappBox.controllers')
 })
 
 // WHITEBOARD
-.controller('WhiteboardCtrl', function ($scope, $ionicPopover, $ionicPopup, $ionicScrollDelegate) {
+.controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, Whiteboard) {
+
+    // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
+    //$scope.projectId = $stateParams.projectId;
+    $scope.projectId = 18;
+    $scope.whiteboardId = $stateParams.whiteboardId;
+
     var width = 3840; //3840;
     var height = 2160; //2160;
 
@@ -248,6 +254,7 @@ angular.module('GrappBox.controllers')
         var started = false;
         var rect;
         var mouse_pos_init;
+        var mouse_pos;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -270,13 +277,19 @@ angular.module('GrappBox.controllers')
 
         canvas.on('mouse:move', function (option) {
             if (!started) return;
-            var mouse_pos = canvas.getPointer(option.e);
-            rect.set({ 'width': mouse_pos.x - mouse_pos_init.x, 'height': mouse_pos.y - mouse_pos_init.y });
+            mouse_pos = canvas.getPointer(option.e);
+            rect.set({
+                'width': mouse_pos.x - mouse_pos_init.x,
+                'height': mouse_pos.y - mouse_pos_init.y
+            });
             canvas.renderAll();
         });
 
         canvas.on('mouse:up', function (option) {
             started = false;
+            var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
+            var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
+            $scope.PushOnWhiteboard("rectangle", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
         });
         $scope.popoverShapes.hide();
     }
@@ -286,6 +299,7 @@ angular.module('GrappBox.controllers')
         var started = false;
         var ellipse;
         var mouse_pos_init;
+        var mouse_pos;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -307,7 +321,7 @@ angular.module('GrappBox.controllers')
 
         canvas.on('mouse:move', function (option) {
             if (!started) return;
-            var mouse_pos = canvas.getPointer(option.e);
+            mouse_pos = canvas.getPointer(option.e);
             ellipse.set({ 'rx': mouse_pos.x - mouse_pos_init.x, 'ry': mouse_pos.y - mouse_pos_init.y });
             canvas.renderAll();
         });
@@ -323,6 +337,7 @@ angular.module('GrappBox.controllers')
         var started = false;
         var triangle;
         var mouse_pos_init;
+        var mouse_pos;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -344,7 +359,7 @@ angular.module('GrappBox.controllers')
 
         canvas.on('mouse:move', function (option) {
             if (!started) return;
-            var mouse_pos = canvas.getPointer(option.e);
+            mouse_pos = canvas.getPointer(option.e);
             triangle.set({ 'width': mouse_pos.x - mouse_pos_init.x, 'height': mouse_pos.y - mouse_pos_init.y });
             canvas.renderAll();
         });
@@ -409,6 +424,7 @@ $scope.popoverShapes.hide();
     $scope.drawLine = function () {
         var started = false;
         var line;
+        var mouse_pos;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -427,7 +443,7 @@ $scope.popoverShapes.hide();
 
         canvas.on('mouse:move', function (option) {
             if (!started) return;
-            var mouse_pos = canvas.getPointer(option.e);
+            mouse_pos = canvas.getPointer(option.e);
             line.set({ x2: mouse_pos.x, y2: mouse_pos.y });
             canvas.renderAll();
         });
@@ -505,5 +521,123 @@ $scope.popoverShapes.hide();
         canvas.off('mouse:down');
         canvas.isDrawingMode = false;
         $ionicScrollDelegate.freezeScroll(false);
+    }
+
+    /*
+    ** Open a whiteboard
+    ** Method: GET
+    */
+    $scope.openWhiteboardData = {};
+    $scope.objects = {};
+    $scope.OpenWhiteboard = function () {
+        $rootScope.showLoading();
+        Whiteboard.Open().get({
+            id: $scope.whiteboardId,
+            token: $rootScope.userDatas.token,
+        }).$promise
+            .then(function (data) {
+                console.log('Open whiteboard successful !');
+                console.log(data.data);
+                $scope.openWhiteboardData = data.data;
+                $scope.objects = data.data.content;
+                console.log($scope.objects);
+                var rect = new fabric.Rect({
+                    top: data.data.content[0].object.positionStart.y,
+                    left: data.data.content[0].object.positionStart.x,
+                    width: data.data.content[0].object.positionEnd.x,
+                    height: data.data.content[0].object.positionEnd.y,
+                    fill: data.data.content[0].object.background,
+                    stroke: data.data.content[0].object.color,
+                });
+                console.log(rect);
+                canvas.add(rect);
+                var rect2 = new fabric.Rect({
+                    top: data.data.content[1].object.positionStart.y,
+                    left: data.data.content[1].object.positionStart.x,
+                    width: data.data.content[1].object.positionEnd.x,
+                    height: data.data.content[1].object.positionEnd.y,
+                    fill: data.data.content[1].object.background,
+                    stroke: data.data.content[1].object.color,
+                });
+                console.log(rect2);
+                canvas.add(rect2);
+                canvas.renderAll();
+            })
+            .catch(function (error) {
+                console.error('Open whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
+    }
+    $scope.OpenWhiteboard();
+
+    /*
+    ** Push a modification on whiteboard
+    ** Method: PUT
+    */
+    $scope.pushOnWhiteboardData = {};
+    $scope.PushOnWhiteboard = function (type, color, background, lineWeight, positionStart, positionEnd) {
+        $rootScope.showLoading();
+        Whiteboard.Push().update({
+            id: $scope.whiteboardId,
+            data: {
+                id: $scope.whiteboardId,
+                token: $rootScope.userDatas.token,
+                modification: "add",
+                object: {
+                    type: type,
+                    color: color,
+                    background: background,
+                    lineWeight: lineWeight,
+                    positionStart: positionStart,
+                    positionEnd: positionEnd
+                }
+            }
+        }).$promise
+            .then(function (data) {
+                console.log('Push on whiteboard successful !');
+                console.log(data.data);
+                $scope.pushOnWhiteboardData = data.data;
+            })
+            .catch(function (error) {
+                console.error('Push on whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
+    }
+
+    /*
+    ** Pull modifications on whiteboard
+    ** Method: POST
+    */
+    $scope.pullFromWhiteboardData = {};
+    $scope.pullFromWhiteboard = function () {
+        $rootScope.showLoading();
+        Whiteboard.Pull().save({
+            data: {
+                id: $scope.whiteboardId,
+                token: $rootScope.userDatas.token,
+                lastUpdate: ""
+            }
+        }).$promise
+            .then(function (data) {
+                console.log('List whiteboards successful !');
+                console.log(data.data.array);
+                $scope.pullFromWhiteboardData = data.data.array;
+            })
+            .catch(function (error) {
+                console.error('List whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
     }
 })

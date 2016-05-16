@@ -10,7 +10,7 @@
         </ion-refresher>
         <ion-list can-swipe="true">
             <ion-item ng-repeat="whiteboard in whiteboardsInfo"
-                      ui-sref="app.whiteboard({whiteboardId: whiteboard.id})">
+                      ui-sref="app.whiteboard({whiteboardId: whiteboard.id, projectId: projectId})">
                 {{whiteboard.name}}
                 <ion-option-button class="button-assertive"
                                    ng-click="DeleteWhiteboard(whiteboard)">

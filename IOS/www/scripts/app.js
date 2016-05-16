@@ -171,7 +171,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
 
         // whiteboards list view
         .state('app.whiteboards', {
-            url: "/whiteboards",
+            url: "/whiteboards/:projectId",
             views: {
                 'menuContent': {
                     templateUrl: "views/whiteboards.html",
@@ -182,7 +182,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
 
         // single whiteboard view
         .state('app.whiteboard', {
-            url: "whiteboards/:whiteboardId",
+            url: "whiteboards/:projectId/:whiteboardId",
             views: {
                 'menuContent': {
                     templateUrl: "views/whiteboard.html",

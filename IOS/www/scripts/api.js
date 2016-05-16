@@ -397,9 +397,11 @@ angular.module('GrappBox.api', ['ngResource'])
             return $resource($rootScope.API + 'whiteboard/pulldraw/:id', { id: "@id", token: "@token", lastUpdate: "@lastUpdate" });
         },
         // Push whiteboard modification
-        Pull: function () {
-            return $resource($rootScope.API + 'whiteboard/pushdraw/:id', { id: "@id", token: "@token", modification: "@modification", objectId: "@objectId", object: "@object" });
-        },
+        Push: function () {
+            return $resource($rootScope.API + 'whiteboard/pushdraw/:id', { id: "@id", token: "@token", modification: "@modification", objectId: "@objectId", object: "@object" }, {
+                'update': { method: 'PUT' }
+            });
+        }
     }
 })
 
