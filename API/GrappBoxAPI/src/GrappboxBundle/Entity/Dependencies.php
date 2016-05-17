@@ -22,12 +22,13 @@ class Dependencies
     /**
      * @var \GrappboxBundle\Entity\Task
      */
-    private $dependence;
+    private $dependence_task;
 
     /**
      * @var \GrappboxBundle\Entity\Task
      */
     private $task;
+
 
     /**
      * Get id
@@ -62,28 +63,27 @@ class Dependencies
         return $this->name;
     }
 
-
     /**
-     * Set dependence
+     * Set dependence_task
      *
-     * @param \GrappboxBundle\Entity\Task $dependence
+     * @param \GrappboxBundle\Entity\Task $dependenceTask
      * @return Dependencies
      */
-    public function setDependence(\GrappboxBundle\Entity\Task $dependence = null)
+    public function setDependenceTask(\GrappboxBundle\Entity\Task $dependenceTask = null)
     {
-        $this->dependence = $dependence;
+        $this->dependence_task = $dependenceTask;
 
         return $this;
     }
 
     /**
-     * Get dependence
+     * Get dependence_task
      *
      * @return \GrappboxBundle\Entity\Task 
      */
-    public function getDependence()
+    public function getDependenceTask()
     {
-        return $this->dependence;
+        return $this->dependence_task;
     }
 
     /**

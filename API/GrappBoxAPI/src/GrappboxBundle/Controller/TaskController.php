@@ -33,28 +33,31 @@ class TaskController extends RolesAndTokenVerificationController
 	{
 		$dependencies = $task->getDependence();
 		foreach ($dependencies as $dep) {
-			$depName = $dep->getName();
-			$taskDep = $dep->getDependence();
+			if ($dep instanceof Dependencies)
+			{
+				$depName = $dep->getName();
+				$taskDep = $dep->getDependenceTask();
 
-			switch ($depName) {
-				case "fs":
-					if ($task->getStartedAt() < $taskDep->getDueDate())
-						$task->setStartedAt($taskDep->getDueDate());
-					break;
-				case "ss":
-					if ($task->getStartedAt() < $taskDep->getStartedAt())
-						$task->setStartedAt($taskDep->getStartedAt());
-					break;
-				case "ff":
-					if ($task->getDueDate() < $taskDep->getDueDate())
-						$task->setDueDate($taskDep->getDueDate());
-					break;
-				case "sf":
-					if ($task->getDueDate() < $taskDep->getStartedAt())
-						$task->setDueDate($taskDep->getStartedAt());
-					break;
-				default:
-					break;
+				switch ($depName) {
+					case "fs":
+						if ($task->getStartedAt() < $taskDep->getDueDate())
+							$task->setStartedAt($taskDep->getDueDate());
+						break;
+					case "ss":
+						if ($task->getStartedAt() < $taskDep->getStartedAt())
+							$task->setStartedAt($taskDep->getStartedAt());
+						break;
+					case "ff":
+						if ($task->getDueDate() < $taskDep->getDueDate())
+							$task->setDueDate($taskDep->getDueDate());
+						break;
+					case "sf":
+						if ($task->getDueDate() < $taskDep->getStartedAt())
+							$task->setDueDate($taskDep->getStartedAt());
+						break;
+					default:
+						break;
+				}
 			}
 		}
 		return $task;
@@ -605,6 +608,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Object[]} [dependencies] Array of infos on the dependencies
 	* @apiParam {String} dependencies.name name of the dependence, it should be: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
 	* @apiParam {Number} dependencies.id Id of the task the new task dependes on
+	* @apiParam {Int[]} [dependenciesRemove] Array of dependencies Id to remove.
 	* @apiParam {Datetime} [started_at] Date of start of the task
 	* @apiParam {Datetime} [finished_at] Date of finish of the task
 	* @apiParam {Number} [advance] Advance percent of the task
@@ -636,6 +640,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"id": 3
 	*				}
 	*			],
+	*			"dependenciesRemove": [6, 9],
 	*			"started_at": {
 	*				"date":"2015-10-10 12:00:00",
 	*				"timezone_type":3,
@@ -1046,31 +1051,45 @@ class TaskController extends RolesAndTokenVerificationController
 		if (array_key_exists('dependencies', $content))
 		{
 			$dependencies = $content->dependencies;
-			$dependencies += $task->getDependence();
 			foreach ($dependencies as $dep) {
-				$id = $dep->id;
 				$cnt = 0;
 				foreach ($dependencies as $d) {
-					if ($id == $d->id)
+					if ($dep->id == $d->id)
+						$cnt++;
+				}
+				foreach ($task->getDependence() as $d) {
+					if ($d->getDependenceTask()->getId() == $dep->id)
 						$cnt++;
 				}
 				if ($cnt > 1)
 					return $this->setBadRequest("12.2.4", "Task", "taskcreation", "Bad Parameter: dependencies");
 			}
-			foreach ($content->dependencies as $dep) {
+			foreach ($dependencies as $dep) {
 				$dependence = $em->getRepository('GrappboxBundle:Task')->find($dep->id);
 				if ($dependence != null)
 				{
 					$newDep = new Dependencies();
 					$newDep->setName($dep->name);
-
-					$newDep->setDependence($dependence);
+					$newDep->setDependenceTask($dependence);
 					$newDep->setTask($task);
 					$em->persist($newDep);
 					$task->addDependence($newDep);
 				}
 			}
 			$this->checkDependencies($task);
+		}
+
+		if (array_key_exists('dependenciesRemove', $content))
+		{
+			foreach ($content->dependenciesRemove as $depId) {
+				foreach ($task->getDependence() as $dep) {
+					if ($dep->getDependenceTask()->getId() == $depId)
+					{
+						$task->removeDependence($dep);
+						$em->remove($dep);
+					}
+				}
+			}
 		}
 
 		if ($task->getIsMilestone() == true)
@@ -1204,8 +1223,8 @@ class TaskController extends RolesAndTokenVerificationController
 		$depArray = array();
 		foreach ($dependencies as $d) {
 			$dname = $d->getName();
-			$did = $d->getDependence()->getId();
-			$dtitle = $d->getDependence()->getTitle();
+			$did = $d->getDependenceTask()->getId();
+			$dtitle = $d->getDependenceTask()->getTitle();
 
 			$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
 		}

@@ -12,7 +12,7 @@ GrappboxBundle\Entity\Dependencies:
         type: string
         length: 255
     manyToOne:
-        dependence:
+        dependence_task:
           targetEntity: Task
           inversedBy: task_depended
           cascade: [refresh, persist]

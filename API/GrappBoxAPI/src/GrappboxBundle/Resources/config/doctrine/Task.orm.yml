@@ -86,7 +86,7 @@ GrappboxBundle\Entity\Task:
           cascade: [remove, refresh ]
         task_depended:
           targetEntity: Dependencies
-          mappedBy: dependence
+          mappedBy: dependence_task
           cascade: [remove, refresh ]
         tasks_container:
           targetEntity: Task
