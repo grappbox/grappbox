@@ -438,14 +438,17 @@ class TaskController extends RolesAndTokenVerificationController
 		{
 			$dependencies = $content->dependencies;
 			foreach ($dependencies as $dep) {
-				$id = $dep->id;
 				$cnt = 0;
 				foreach ($dependencies as $d) {
-					if ($id == $d->id)
+					if ($dep->id == $d->id)
+						$cnt++;
+				}
+				foreach ($task->getDependence() as $d) {
+					if ($d->getDependenceTask()->getId() == $dep->id)
 						$cnt++;
 				}
 				if ($cnt > 1)
-					return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: dependencies");
+					return $this->setBadRequest("12.2.4", "Task", "taskcreation", "Bad Parameter: dependencies");
 			}
 			foreach ($dependencies as $dep) {
 				$dependence = $em->getRepository('GrappboxBundle:Task')->find($dep->id);
@@ -453,11 +456,9 @@ class TaskController extends RolesAndTokenVerificationController
 				{
 					$newDep = new Dependencies();
 					$newDep->setName($dep->name);
-
-					$newDep->setDependence($dependence);
+					$newDep->setDependenceTask($dependence);
 					$newDep->setTask($task);
 					$em->persist($newDep);
-					$dependence->addTaskDepended($newDep);
 					$task->addDependence($newDep);
 				}
 			}
@@ -577,8 +578,8 @@ class TaskController extends RolesAndTokenVerificationController
 		{
 			foreach ($dependencies as $d) {
 				$dname = $d->getName();
-				$did = $d->getDependence()->getId();
-				$dtitle = $d->getDependence()->getTitle();
+				$did = $d->getDependenceTask()->getId();
+				$dtitle = $d->getDependenceTask()->getTitle();
 
 				$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
 			}
