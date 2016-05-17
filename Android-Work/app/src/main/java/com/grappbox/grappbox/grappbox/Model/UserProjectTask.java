@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.MainActivity;
 import com.grappbox.grappbox.grappbox.R;
@@ -83,7 +84,9 @@ public class UserProjectTask extends AsyncTask<String, Void, String> {
             _api.setVersion("V0.2");
             _api.startConnection("dashboard/getprojectsglobalprogress/" + SessionAdapter.getInstance().getToken());
             _api.setRequestConnection("GET");
-            return _api.getInputSream();
+            String result = _api.getInputSream();
+            Log.v("Task", result);
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
         }

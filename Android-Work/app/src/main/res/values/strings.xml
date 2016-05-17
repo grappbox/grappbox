@@ -26,6 +26,8 @@
     <string name="username_label">Name :</string>
     <string name="occupation_project_label">Project :</string>
     <string name="occupation_state_label">State :</string>
+    <string name="catefory_profile_user">User information</string>
+    <string name="catefory_profile_user_security">User security</string>
 
     <string name="list_whiteboard">List whiteboard</string>
     <string name="add_whiteboard_label">Create new whiteboard</string>

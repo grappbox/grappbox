@@ -36,14 +36,14 @@ public class ProjectModel implements Serializable {
     }
 
     public ProjectModel(JSONObject data) throws JSONException {
-        byte[] blob = Base64.decode(data.getString("logo"), Base64.DEFAULT);
+        byte[] blob = Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
 
-        id = data.getInt("id");
-        name = data.getString("name");
-        description = data.getString("description");
-        phone = data.getString("phone");
-        company = data.getString("company");
-        logo = Base64.decode(data.getString("logo"), Base64.DEFAULT);
+        id = data.getInt("project_id");
+        name = data.getString("project_name");
+        description = data.getString("project_description");
+        phone = data.getString("project_phone");
+        company = data.getString("project_company");
+        logo = Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
         contact_mail = data.getString("contact_mail");
         facebookURL = data.getString("facebook");
         twitterURL = data.getString("twitter");

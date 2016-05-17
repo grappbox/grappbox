@@ -47,6 +47,7 @@ import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.Model.UserProjectTask;
 import com.grappbox.grappbox.grappbox.Project.CreateProjectActivity;
+import com.grappbox.grappbox.grappbox.Settings.UserProfileActivity;
 import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
 import com.grappbox.grappbox.grappbox.Timeline.TimelineFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
@@ -252,10 +253,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (id == R.id.action_profile) {
-            Fragment fragment = new UserProfileFragment();
-            changeToolbarTitle("UserProfile");
-            _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-            //startActivity(new Intent(this, UserProfileActivity.class));
+            startActivity(new Intent(this, UserProfileActivity.class));
             return true;
         }
 
