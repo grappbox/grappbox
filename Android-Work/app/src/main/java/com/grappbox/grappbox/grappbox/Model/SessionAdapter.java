@@ -83,6 +83,11 @@ public class SessionAdapter {
         return _pref.getString(KEY_LOGIN, null);
     }
 
+    public void setLogin(String newLogin)
+    {
+        _editor.putString(KEY_LOGIN, newLogin);
+    }
+
     public int getCurrentSelectedProject() { return _currentSelectedProject; }
 
     public void LogInUser(String id, String firstname, String lastname, String token, String login, String password)

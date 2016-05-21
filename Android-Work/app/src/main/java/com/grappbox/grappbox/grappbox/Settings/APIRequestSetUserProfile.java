@@ -6,26 +6,22 @@ import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
-import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
 
 /**
- * Created by tan_f on 15/05/2016.
+ * Created by tan_f on 21/05/2016.
  */
-public class APIRequestGetUserProfile extends AsyncTask<String, Void, String> {
+public class APIRequestSetUserProfile extends AsyncTask<String, Void, String> {
 
     private final static String _PATH = "user/basicinformations/";
     private Integer _APIResponse;
     private UserProfilePreferenceFragment _context;
 
-    APIRequestGetUserProfile(UserProfilePreferenceFragment context)
+    APIRequestSetUserProfile(UserProfilePreferenceFragment context)
     {
         _context = context;
     }
@@ -34,9 +30,10 @@ public class APIRequestGetUserProfile extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         if (result == null || _APIResponse != 200) {
+            APIRequestGetUserProfile api = new APIRequestGetUserProfile(_context);
+            api.execute();
             return ;
         }
-
         try {
             ContentValues profileInfo = new ContentValues();
             JSONObject jsonObject = new JSONObject(result).getJSONObject("data");
@@ -62,18 +59,24 @@ public class APIRequestGetUserProfile extends AsyncTask<String, Void, String> {
     protected String doInBackground(String ... param)
     {
         String resultAPI = null;
-
+        if (param[0] == null || param[1] == null)
+            return null;
         try {
             APIConnectAdapter.getInstance().startConnection(_PATH + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
-            APIConnectAdapter.getInstance().setRequestConnection("GET");
+            APIConnectAdapter.getInstance().setRequestConnection("PUT");
 
+            JSONObject JSONData = new JSONObject();
+            JSONObject JSONParam = new JSONObject();
+            JSONParam.put(param[0], param[1]);
+            JSONData.put("data", JSONParam);
 
+            APIConnectAdapter.getInstance().sendJSON(JSONData);
             _APIResponse = APIConnectAdapter.getInstance().getResponseCode();
             Log.v("JSON Response", String.valueOf(_APIResponse));
             if (_APIResponse == 200 || _APIResponse == 206)
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
             Log.v("JSON Content", resultAPI);
-        } catch (IOException e){
+        } catch (IOException | JSONException e){
             e.printStackTrace();
         } finally {
             APIConnectAdapter.getInstance().closeConnection();

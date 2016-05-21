@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Grappbox</string>
 
+    <string name="progress_loading">Loading</string>
+
     <string name="logo_description">Grappbox logo</string>
     <string name="login_label">Login</string>
     <string name="login_hint">Enter your login</string>
@@ -184,12 +186,17 @@
     <string name="cloudexplorer_import">We are importing your file, please wait</string>
 
 
+    <string-array name="event_types_list_default">
+        <item>Nothing</item>
+        <item>New type</item>
+    </string-array>
     <string name="event_header">Event</string>
     <string name="event_title">Title</string>
     <string name="event_title_hint">Title event</string>
     <string name="event_description">Description</string>
     <string name="event_description_hint">Event description</string>
     <string name="event_begin_date">Begin date:</string>
+    <string name="event_type_label">Event type</string>
     <string name="event_begin_date_hint">Event begin date</string>
     <string name="event_end_date">End date:</string>
     <string name="event_end_date_hint">Event end date</string>

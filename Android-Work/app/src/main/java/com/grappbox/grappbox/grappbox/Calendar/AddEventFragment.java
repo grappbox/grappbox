@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.grappbox.Calendar;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +46,7 @@ public class AddEventFragment extends EventFragment {
     private TextView    _eventEndDateHour;
     private Button      _eventSendButton;
     private Spinner     _eventProjectSpinner;
+    private Spinner     _eventTypes;
     private ContentValues _eventProjectId = new ContentValues();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,7 +61,26 @@ public class AddEventFragment extends EventFragment {
         _eventEndDateHour = (TextView) _rootView.findViewById(R.id.create_event_end_date_hour);
         _eventSendButton = (Button) _rootView.findViewById(R.id.create_event_button);
         _eventProjectSpinner = (Spinner) _rootView.findViewById(R.id.event_project);
+        _eventTypes = (Spinner) _rootView.findViewById(R.id.event_type);
+        ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter.createFromResource(this.getContext(), R.array.event_types_list_default, android.R.layout.simple_spinner_dropdown_item);
+        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _eventTypes.setAdapter(eventTypeAdapter);
+        _eventTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                final String newType = getResources().getStringArray(R.array.event_types_list_default)[1];
+                if (_eventTypes.getSelectedItem().toString().equals(newType)){
+                    AlertDialog.Builder build = new AlertDialog.Builder(_rootView.getContext());
+                    build.setTitle("Create new type");
+                    build.show();
+                }
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         initDateValue();
         setListener();
         APIrequestGetUserProject getProject = new APIrequestGetUserProject(this);

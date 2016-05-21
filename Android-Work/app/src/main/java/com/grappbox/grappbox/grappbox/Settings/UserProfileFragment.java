@@ -83,7 +83,7 @@ public class UserProfileFragment extends Fragment {
                 final EditText initPass = (EditText)changePasswordDialog.findViewById(R.id.actual_pass);
                 final EditText newPass = (EditText)changePasswordDialog.findViewById(R.id.first_new_password);
                 final EditText retypeNewPass = (EditText)changePasswordDialog.findViewById(R.id.retype_password);
-                Button confirmChangePass = (Button)changePasswordDialog.findViewById(R.id.confirm_change_password);
+                /*Button confirmChangePass = (Button)changePasswordDialog.findViewById(R.id.confirm_change_password);
                 confirmChangePass.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -106,7 +106,7 @@ public class UserProfileFragment extends Fragment {
                         changePasswordDialog.dismiss();
                     }
                 });
-                changePasswordDialog.show();
+                changePasswordDialog.show();*/
             }
         });
         _SendModification = (Button)_view.findViewById(R.id.send_modification_button);
