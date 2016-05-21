@@ -37,10 +37,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/whiteboard/list/:token/:projectId Get the whiteboards' list of a project
+	* @api {get} /V0.2/whiteboard/list/:token/:projectId List whiteboards
 	* @apiName listWhiteboard
 	* @apiGroup Whiteboard
-	* @apiDescription Get a list of whiteboards for the given project
+	* @apiDescription Get the list of whiteboards for the given project
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token client Authentification token
@@ -58,32 +58,29 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	*	HTTP/1.1 200 OK
 	*	{
-	*		"info": {
-	*			"return_code": "1.10.1",
-	*			"return_message": "Whiteboard - list - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 12,
-	*					"userId": 13,
-	*					"name": "Brainstorming #5",
-	*					"updatorId": 54,
-	*					"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				},
-	*				{
-	*					"id": "12",
-	*					"userId": 13,
-	*					"name": "Brainstorming #5",
-	*					"updatorId": 54,
-	*					"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				}
-	*			]
-	*		}
+	*	  "info": {
+	*	    "return_code": "1.10.1",
+	*	    "return_message": "Whiteboard - list - Complete Success"
+	*	  },
+	*	  "data": {
+	*	    "array": [
+	*	      {
+	*	        "id": 1,
+	*	        "projectId": 1,
+	*	        "userId": 13,
+	*	        "name": "test whiteboard",
+	*	        "updatorId": 13,
+	*	        "updatedAt": { "date": "2015-10-30 08:53:01", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	        "createdAt": { "date": "2015-10-30 08:53:01", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	        "deletedAt": null
+	*	      },
+	*	      {
+	*	        "id": 2,
+	*	        "projectId": 1,
+	*	        ...
+	*	      },
+	*	      ...
+	*	  }
 	*	}
 	*
 	* @apiSuccessExample Success-No Data
@@ -161,6 +158,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	}
 	*
 	* @apiSuccess {int} id whiteboard id
+	* @apiSuccess {int} projectId project id
 	* @apiSuccess {int} userId user creator id
 	* @apiSuccess {string} name whiteboard name
 	* @apiSuccess {int} updatorId id of the whiteboard's last updator (creator)
@@ -171,20 +169,20 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiSuccessExample {json} Success-Response:
 	*	HTTP/1.1 201 Created
 	*	{
-	*		"info": {
-	*			"return_code": "1.10.1",
-	*			"return_message": "Whiteboard - new - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 12,
-	*			"userId": 13,
-	*			"name": "Brainstorming #5",
-	*			"updator_id": 54,
-	*			"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*		}
+	*	  "info": {
+	*	    "return_code": "1.10.1",
+	*	    "return_message": "Whiteboard - new - Complete Success"
+	*	  },
+	*	  "data": {
+	*	    "id": 7,
+	*	    "projectId": 1,
+	*	    "userId": 13,
+	*	    "name": "Test Whiteboard #42",
+	*	    "updatorId": 13,
+	*	    "updatedAt": { "date": "2016-05-21 08:16:01", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	    "createdAt": { "date": "2016-05-21 08:16:01", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	    "deletedAt": null
+	*	  }
 	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
@@ -266,6 +264,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiParam {Number} id Id of the whiteboard
 	*
 	* @apiSuccess {int} id Whiteboard id
+	* @apiSuccess {int} projectId Project id
 	* @apiSuccess {int} userId User creator id
 	* @apiSuccess {string} name Whiteboard name
 	* @apiSuccess {int} updatorId Id of the whiteboard's last updator (creator)
@@ -273,42 +272,52 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} createdAt Creation date
 	* @apiSuccess {DateTime} deledtedAt Deletion date
 	* @apiSuccess {Object[]} content Whiteboard content objects
-	* @apiSuccess {object} content.object Object whiteboard's object
+	* @apiSuccess {int} content.id id whiteboard's object
+	* @apiSuccess {int} content.whiteboardId whiteboardId whiteboard's object
+	* @apiSuccess {object} content.object object whiteboard's object
+	* @apiSuccess {DateTime} content.createdAt createdAt object creation date
+	* @apiSuccess {DateTime} content.deletedAt deletedAt object deletion date
 	*
 	* @apiSuccessExample {json} Success-Response:
-	*	HTTP/1.1 201 Created
+	*	HTTP/1.1 200 OK
 	*	{
-	*		"info": {
-	*			"return_code": "1.10.1",
-	*			"return_message": "Whiteboard - open - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 12,
-	*			"userId": 13,
-	*			"name": "Brainstorming #5",
-	*			"updator_id": 54,
-	*			"updatedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"deletedAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*			"content": [
-	*				{
-	*					"id": 5,
-	*					"whiteboardId": "2",
-	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
-	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
-	*					"deletedAt": null
-	*				},
-	*				{
-	*					"id": 5,
-	*					"whiteboardId": "2",
-	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
-	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
-	*					"deletedAt": null
-	*				}
-	*			]
-	*		}
-	* 	}
+	*	  "info": {
+	*	    "return_code": "1.10.1",
+	*	    "return_message": "Whiteboard - open - Complete Success"
+	*	  },
+	*	  "data": {
+	*	    "id": 3,
+	*	    "projectId": 1,
+	*	    "userId": 13,
+	*	    "name": "Test Whiteboard #42",
+	*	    "updatorId": 13,
+	*	    "updatedAt": { "date": "2016-03-24 10:49:18", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	    "createdAt": { "date": "2016-03-24 10:49:18", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	    "deletedAt": null,
+	*	    "content": [
+	*	      {
+	*	        "id": 6,
+	*	        "whiteboardId": 3,
+	*	        "object": {
+	*	          "type": "RECTANGLE",
+	*	          "color": "#A2CD08",
+	*	          "background": "#A294D5",
+	*	          "lineWeight": 3,
+	*	          "positionStart": { "x": 10.5, "y": 5.5 },
+	*	          "positionEnd": { "x": 15, "y": 15 }
+	*	        },
+	*	        "createdAt": { "date": "2016-03-24 11:10:45", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	        "deletedAt": { "date": "2016-04-21 16:15:52", "timezone_type": 3, "timezone": "Europe/Paris" }
+	*	      },
+	*	      {
+	*	        "id": 7,
+	*	        "whiteboardId": 3,
+	*	        ...
+	*	      },
+	*	      ...
+	*	    ]
+	*	  }
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
 	*	HTTP/1.1 401 Unauthorized
@@ -392,16 +401,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			"objectId": 3
 	*		}
 	*	}
-	*
 	* @apiParamExample {json} Request-Add-Example:
 	*	{
 	*		"data": {
 	*			"token": "aeqf231ced651qcd",
 	*			"modification": "add",
 	*			"object": {
-	*				"type": "rectangle",
-	*				"position": "14,51;25,06",
-	*				"color": "rbg(25,125,65)"
+	*				"type": "RECTANGLE",
+	*				"color": "#8BC800",
+	*				...
 	*			}
 	*		}
 	*	}
@@ -413,7 +421,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} deletedAt object deletion date
 	*
 	* @apiSuccessExample {json} Success-Response:
-	*	HTTP/1.1 201 Created
+	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.10.1",
@@ -423,7 +431,11 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		{
 	*			"id": 5,
 	*			"whiteboardId": "2",
-	*			"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
+	*			"object": {
+	*				"type": "RECTANGLE",
+	*				"color": "#8BC800",
+	*				...
+	*			},
 	*			"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
 	*			"deletedAt": null
 	*		}
@@ -507,10 +519,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.2/whiteboard/pulldraw/:id Pull a whiteboard modification
+	* @api {post} /V0.2/whiteboard/pulldraw/:id Pull whiteboard modifications
 	* @apiName pullDrawOnWhiteboard
 	* @apiGroup Whiteboard
-	* @apiDescription Pull a whiteboard modification
+	* @apiDescription Pull whiteboard modifications
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id Id of the whiteboard
@@ -526,47 +538,56 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	}
 	*
 	* @apiSuccess {Object[]} add Array of the objects added in the whiteboard
-	* @apiSuccess {Object} add.object  The objects to add
+	* @apiSuccess {int} add.id id whiteboard's object
+	* @apiSuccess {int} add.whiteboardId whiteboardId whiteboard's object
+	* @apiSuccess {object} add.object object whiteboard's object
+	* @apiSuccess {DateTime} add.createdAt createdAt object creation date
+	* @apiSuccess {DateTime} add.deletedAt deletedAt object deletion date
 	* @apiSuccess {Object[]} delete Array of the objects deleted in the whiteboard
-	* @apiSuccess {Object} delete.object  the objects to delete
+	* @apiSuccess {int} delete.id id whiteboard's object
+	* @apiSuccess {int} delete.whiteboardId whiteboardId whiteboard's object
+	* @apiSuccess {object} delete.object object whiteboard's object
+	* @apiSuccess {DateTime} delete.createdAt createdAt object creation date
+	* @apiSuccess {DateTime} delete.deletedAt deletedAt object deletion date
 	*
 	* @apiSuccessExample {json} Success-Response:
-	*	HTTP/1.1 201 Created
+	*	HTTP/1.1 200 OK
 	*	{
-	*		"info": {
-	*			"return_code": "1.10.1",
-	*			"return_message": "Whiteboard - pull - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"add":[
-	*				{
-	*					"id": 5,
-	*					"whiteboardId": "2",
-	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
-	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
-	*					"deletedAt": null
-	*				},
-	*				{
-	*					"id": 5,
-	*					"whiteboardId": "2",
-	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
-	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
-	*					"deletedAt": null
-	*				},
-	*				...
-	*			],
-	*			"delete":[
-	*				0: {
-	*					"id": 5,
-	*					"whiteboardId": "2",
-	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
-	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
-	*					"deletedAt": null
-	*				}
-	*			]
-	*		}
-	* 	}
+	*	  "info": {
+	*	    "return_code": "1.10.1",
+	*	    "return_message": "Whiteboard - push - Complete Success"
+	*	  },
+	*	  "data": {
+	*	    "add": [
+	*	      {
+	*	        "id": 11,
+	*	        "whiteboardId": 3,
+	*	        "object": {
+	*	          "type": "RECTANGLE",
+	*	          "color": "#009D98",
+	*	         ...
+	*	        },
+	*	        "createdAt": { "date": "2016-05-21 08:53:05", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	        "deletedAt": null
+	*	      },
+	*	      ...
+	*	    ],
+	*	    "delete": [
+	*	      {
+	*	        "id": 11,
+	*	        "whiteboardId": 3,
+	*	        "object": {
+	*	          "type": "RECTANGLE",
+	*	          "color": "#5D0058",
+	*	         ...
+	*	        },
+	*	        "createdAt": { "date": "2016-05-21 08:53:05", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	        "deletedAt": { "date": "2016-05-21 08:53:42", "timezone_type": 3, "timezone": "Europe/Paris" }
+	*	      },
+	*	      ...
+	*	    ]
+	*	  }
+	*	}
 	*
 	* @apiErrorExample Bad Authentication Token
 	*	HTTP/1.1 401 Unauthorized
@@ -742,37 +763,33 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {id} id object id
 	* @apiSuccess {int} whiteboardId whiteboard id
-	* @apiSuccess {String} object the object caracterictics
+	* @apiSuccess {Object} object the object caracterictics
 	* @apiSuccess {DateTime} createdAt object creation date
 	* @apiSuccess {DateTime} deletedAt object deletion date
 	*
 	* @apiSuccessExample {json} Success-Response:
-	*	HTTP/1.1 201 Created
+	*	HTTP/1.1 200 OK
 	*	{
-	*		"info": {
-	*			"return_code": "1.10.1",
-	*			"return_message": "Whiteboard - deleteObject - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"array": {
-	*				{
-	*					"id": 5,
-	*					"whiteboardId": "2",
-	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
-	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
-	*					"deletedAt": null
-	*				},
-	*				{
-	*					"id": 13,
-	*					"whiteboardId": "2",
-	*					"object": "{'type':'rectangle', 'position':'14,51;25,06', 'color': 'rgb(25,125,65)', ...}",
-	*					"createdAt": {"date": "2015-11-27 11:31:24", "timezone_type": 3, "timezone": "Europe/Paris"},
-	*					"deletedAt": null
-	*				},
-	*				...
-	*			}
-	*		}
+	*	  "info": {
+	*	    "return_code": "1.10.1",
+	*	    "return_message": "Whiteboard - deleteObject - Complete Success"
+	*	  },
+	*	  "data": {
+	*	    "array": [
+	*	      {
+	*	        "id": 11,
+	*	        "whiteboardId": 3,
+	*	        "object": {
+	*	          "type": "RECTANGLE",
+	*	          "color": "#009D98",
+	*	         ...
+	*	        },
+	*	        "createdAt": { "date": "2016-05-21 08:53:05", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*	        "deletedAt": { "date": "2016-05-21 08:57:42", "timezone_type": 3, "timezone": "Europe/Paris" }
+	*	      },
+	*	      ...
+	*	    ]
+	*	  }
 	*	}
 	*
 	* @apiErrorExample Missing Parameters
