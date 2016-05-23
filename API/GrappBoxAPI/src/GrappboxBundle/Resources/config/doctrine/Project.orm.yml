@@ -147,4 +147,8 @@ GrappboxBundle\Entity\Project:
           targetEntity: StatUserTasksAdvancement
           mappedBy: project
           cascade: [remove]
+        statStorageSize:
+          targetEntity: StatStorageSize
+          mappedBy: project
+          cascade: [remove]
     lifecycleCallbacks: {  }

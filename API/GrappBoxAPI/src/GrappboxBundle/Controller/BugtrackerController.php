@@ -51,6 +51,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
 	* @apiSuccess {Object} state Ticket state
 	* @apiSuccess {int} state.id state id
 	* @apiSuccess {String} state.name state name
@@ -79,6 +80,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "editedAt": { "date": "2015-12-29 11:54:57", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "deletedAt": null,
+	*    "clientOrigin": false,
 	*    "state": { "id": 1, "name": "Waiting" },
 	*    "tags": [
 	*      { "id": 1, "name": "To Do", "projectId": 1 },
@@ -164,6 +166,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {String} description Ticket content
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
+	* @apiParam {bool} clientOrigin true if bug created by/from client
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
@@ -173,7 +176,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"title": "J'ai un petit problème",
   * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
   * 		"stateId": 1,
-  * 		"stateName": "To Do"
+  * 		"stateName": "To Do",
+	* 		"clientOrigin": false
   * 	}
 	*   }
 	*
@@ -188,6 +192,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
 	* @apiSuccess {Object} state Ticket state
 	* @apiSuccess {int} state.id state id
 	* @apiSuccess {String} state.name state name
@@ -217,6 +222,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "editedAt": null,
 	*    "deletedAt": null,
+	*    "clientOrigin": false,
 	*    "state": { "id": 1, "name": "Waiting" },
 	*    "tags": [],
 	*    "users": []
@@ -266,7 +272,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content))
+			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
+			|| !array_key_exists("clientOrigin", $content))
 				return $this->setBadRequest("4.2.6", "Bugtracker", "postTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -285,6 +292,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setCreator($user);
 		$bug->setTitle($content->title);
 		$bug->setDescription($content->description);
+		$bug->setClientOrigin($content->clientOrigin);
 		$bug->setCreatedAt(new DateTime('now'));
 
 		$state = null;
@@ -338,6 +346,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {String} description Ticket content
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
+	* @apiParam {bool} clientOrigin true if bug created by/from client
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
@@ -347,7 +356,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"title": "J'ai un petit problème",
   * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
   * 		"stateId": 1,
-  * 		"stateName": "To Do"
+  * 		"stateName": "To Do",
+	* 		"clientOrigin": false
   * 	}
 	*   }
 	*
@@ -362,6 +372,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
 	* @apiSuccess {Object} state Ticket state
 	* @apiSuccess {int} state.id state id
 	* @apiSuccess {String} state.name state name
@@ -391,6 +402,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "deletedAt": null,
+	*    "clientOrigin": false,
 	*    "state": { "id": 1, "name": "Waiting" },
 	*    "tags": [],
 	*    "users": []
@@ -439,7 +451,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if (!array_key_exists("token", $content) || !array_key_exists("bugId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content))
+			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
+			|| !!array_key_exists("clientOrigin", $content))
 				return $this->setBadRequest("4.3.6", "Bugtracker", "editTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -456,6 +469,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$bug->setTitle($content->title);
 		$bug->setDescription($content->description);
+		$bug->setClientOrigin($content->clientOrigin);
 		$bug->setEditedAt(new DateTime('now'));
 
 		if ($content->stateId != 0)

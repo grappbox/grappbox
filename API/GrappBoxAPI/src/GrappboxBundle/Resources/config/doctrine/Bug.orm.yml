@@ -33,6 +33,9 @@ GrappboxBundle\Entity\Bug:
             type: datetime
             column: deleted_at
             nullable: TRUE
+        clientOrigin:
+            type: boolean
+            column: client_origin
     manyToOne:
         projects:
           targetEntity: Project

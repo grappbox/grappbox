@@ -205,7 +205,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($projects as $key => $project) {
-      $result['project'.$project->getId()] = $this->getTotalTasks($project);
+      $result['project'.$project->getId()] = $this->getClientBugTracker($project);
     }
     return $this->setSuccess("1.16.1", "Stat", "instantUpdate", "Complete Success", $result);
   }
@@ -319,6 +319,21 @@ class StatisticController extends RolesAndTokenVerificationController
 
     return $result;
   }
+
+  private function getClientBugTracker($project)
+  {
+      $em = $this->getDoctrine()->getManager();
+
+      $result = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                          ->select('count(b)')
+                          ->where('b.projects = :project AND b.clientOrigin = TRUE')
+                          ->andWhere('b.deletedAt IS NULL')
+                          ->setParameters(array('project' => $project))
+                          ->getQuery()->getSingleScalarResult();
+
+      return $result;
+  }
+
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - INSTANT UPDATE
   // -----------------------------------------------------------------------
@@ -331,54 +346,62 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($projects as $key => $project) {
-      //$result['StorageLimitsAction'] = $this->updateStorageLimitsAction($project);
-      $result['UserTasksAdvancement'] = $this->updateUserTasksAdvancement($project);
+      $result['project '.$project->getId()]['StorageSize'] = $this->updateStorageSize($project, "ThisIsMyToken", ",", $request);
+      //$result['UserTasksAdvancement'] = $this->updateUserTasksAdvancement($project);
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
   }
 
-  public function updateStorageLimitsAction(Request $request, $token, $projectId)
+  private function updateStorageSize($project, $token, $path, Request $request)
   {
-
-    //TODO : ajouter appel de la method sur toute les modif de cloud ou ajouter un apel à partir d'un script
-
-    $user = $this->checkToken($token);
-    if (!$user)
-      return $this->setBadTokenError("16.??.3", "Stat", "updateStorageLimits");
+    $res = $this->calculateStorageSize();
 
     $em = $this->getDoctrine()->getManager();
-    $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+    $statStorageSize = $em->getRepository('GrappboxBundle:StatStorageSize')->findOneBy(array('project' => $project));
 
-    if ($project === null)
-      return $this->setBadRequest("16.2.4", "Stat", "updateStorageLimits", "Bad Parameter: projectId");
+    if ($statStorageSize === null)
+    {
+      $statStorageSize = new $statStorageSize();
+      $statStorageSize->setProject($project);
+      $statStorageSize->setValue(0);
+    }
 
-    // ',' = racine
+    if ($res->result != "error")
+      $statStorageSize->setValue($res->result->data);
 
-    // $path = ',';
-    // $baseUrl = $this->container->get('router')->getContext()->getBaseUrl();
-    // $url =  $baseUrl.'/V0.2/cloud/list/'.$token.'/'.$projectId.'/'.$path.'/'.$project->getSafePassword();
-    // $http = new HttpRequest($url, HttpRequest::METH_GET);
-    //
-    // $response = $http->send();
-    //
-    // if ($response->getBody()->info->return_code != "1.3.1")
-    //   return $respone;
-    //
-    // $results = $response->data->array;
-    // $folderList = array();
-    // $fileList = array();
-    // foreach ($results as $key => $result) {
-    //   if ($result->type == "dir")
-    //     $folderList[] = $result;
-    //   else
-    //     $fileList[] = $result;
-    // }
-    //
-    // $i = 0;
-    // while (count($folderList)) {
-    //   $path = $path.$folderList[$i]->fileName
-    // }
-    return $this->setSuccess("1.16.1", "Stat", "updateStorageLimits", "Complete Success", "Not implemented yet");
+    $em->persist($statStorageSize);
+    $em->flush();
+
+    return "Data updated";
+  }
+
+  private function calculateStorageSize($project, $token, $path, Request $request)
+  {
+    $response = $this->get('service_cloud')->getListAction($token, $project->getId(), $path, $project->getSafePassword(), $request);
+    $response = json_decode($response->getContent());
+
+    if ($response->info->return_code != "1.3.1")
+         return array("result" => "error", "data" => $response);
+
+    $results = $response->data->array;
+    $size = 0;
+
+    foreach ($results as $key => $result) {
+      if ($result->type == "dir")
+      {
+        $newPath = $path.$result->filename.",";
+        $subResult = $this->calculateStorageSize($project, $token, $newPath, $request);
+
+        if ($subResult['result'] == "error")
+          return $subResult;
+        else
+          $size += $subResult['data'];
+      }
+      else
+        $size += $result->size;
+    }
+
+    return array("result" => "success", "data" => $size);
   }
 
   private function updateUserTasksAdvancement($project)

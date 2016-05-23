@@ -175,6 +175,11 @@ class Project
     private $statUserTasksAdvancement;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $statStorageSize;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -196,6 +201,7 @@ class Project
         $this->statTasksRepartition = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statUserWorkingCharge = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statUserTasksAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statStorageSize = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -1173,25 +1179,35 @@ class Project
     }
 
     /**
-     * Add statLateTasks
+     * Add statStorageSize
      *
-     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     * @param \GrappboxBundle\Entity\StatStorageSize $statStorageSize
      * @return Project
      */
-    public function addStatLateTask(\GrappboxBundle\Entity\StatLateTasks $statLateTasks)
+    public function addStatStorageSize(\GrappboxBundle\Entity\StatStorageSize $statStorageSize)
     {
-        $this->statLateTasks[] = $statLateTasks;
+        $this->statStorageSize[] = $statStorageSize;
 
         return $this;
     }
 
     /**
-     * Remove statLateTasks
+     * Remove statStorageSize
      *
-     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     * @param \GrappboxBundle\Entity\StatStorageSize $statStorageSize
      */
-    public function removeStatLateTask(\GrappboxBundle\Entity\StatLateTasks $statLateTasks)
+    public function removeStatStorageSize(\GrappboxBundle\Entity\StatStorageSize $statStorageSize)
     {
-        $this->statLateTasks->removeElement($statLateTasks);
+        $this->statStorageSize->removeElement($statStorageSize);
+    }
+
+    /**
+     * Get statStorageSize
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatStorageSize()
+    {
+        return $this->statStorageSize;
     }
 }
