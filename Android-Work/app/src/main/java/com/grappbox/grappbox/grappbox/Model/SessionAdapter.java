@@ -18,7 +18,7 @@ public class SessionAdapter {
     private Editor _editor;
     private Context _context;
     private ArrayList<SessionListener> _listeners;
-    private String    _currentSelectedProject = "";
+    private String    _currentSelectedProject;
 
     private int PRIVATE_MODE = 0;
     private static final String PREF_NAME = "GrappboxSessionPref";
@@ -41,6 +41,7 @@ public class SessionAdapter {
         _context = context;
         _pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         _listeners = new ArrayList<>();
+        _currentSelectedProject = "";
 
         _editor = _pref.edit();
     }

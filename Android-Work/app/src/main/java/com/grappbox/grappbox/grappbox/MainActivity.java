@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.graphics.drawable.DrawableWrapper;
 import android.support.v7.view.menu.MenuBuilder;
 import android.util.Log;
@@ -59,10 +60,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SessionAdapter.SessionListener{
+        implements NavigationView.OnNavigationItemSelectedListener, SessionAdapter.SessionListener, FragmentManager.OnBackStackChangedListener{
 
     public static final int PICK_DOCUMENT_FROM_SYSTEM = 1;
     public static final int PICK_DOCUMENT_SECURED_FROM_SYSTEM = 2;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout _Drawer;
     private ArrayList<ProjectModel> _projectMenuList;
     private boolean _bMenuClosed;
+    private Map<String, Runnable> _toolbarTitleHandler;
 
 
     private void OnHeaderClicked(View header)
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity
                 item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        _bMenuClosed = !_bMenuClosed;
                         txt_projectSelected.setText(item.getTitle());
                         SessionAdapter.getInstance().setCurrentSelectedProject(model.getId());
                         navView.getMenu().clear();
@@ -110,6 +114,7 @@ public class MainActivity extends AppCompatActivity
             item_settings.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
+                    _bMenuClosed = !_bMenuClosed;
                     AlertDialog.Builder builder = new AlertDialog.Builder(_currentActivity);
                     ListAdapter adapter = new ProjectMenuAdapter(_currentActivity, R.layout.dialog_project_settings, _projectMenuList);
 
@@ -152,10 +157,25 @@ public class MainActivity extends AppCompatActivity
         _bMenuClosed = !_bMenuClosed;
     }
 
+    protected void toolbarHandlerInitialize()
+    {
+        _toolbarTitleHandler = new HashMap<>();
+
+        _toolbarTitleHandler.put(DashboardFragment.class.getName(), () -> changeToolbarTitle("Dashboard"));
+        _toolbarTitleHandler.put(WhiteboardListFragment.class.getName(), () -> changeToolbarTitle("Whiteboard"));
+        _toolbarTitleHandler.put(AgendaFragment.class.getName(), () -> changeToolbarTitle("Calendar"));
+        _toolbarTitleHandler.put(TimelineFragment.class.getName(), () -> changeToolbarTitle("Timeline"));
+        _toolbarTitleHandler.put(CloudExplorerFragment.class.getName(), () -> changeToolbarTitle("Cloud"));
+        _toolbarTitleHandler.put(BugTrackerFragment.class.getName(), () -> changeToolbarTitle("Bug Tracker - Bug list"));
+        _toolbarTitleHandler.put(GanttFragment.class.getName(), () -> changeToolbarTitle("GANTT"));
+        _toolbarTitleHandler.put(TaskFragment.class.getName(), () -> changeToolbarTitle("Tasks - List"));
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbarHandlerInitialize();
         _bMenuClosed = true;
         _toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(_toolbar);
@@ -202,12 +222,13 @@ public class MainActivity extends AppCompatActivity
                 fragment.setPath(cloudPath);
                 _fragmentManager = getSupportFragmentManager();
                 changeToolbarTitle("Cloud");
-                _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+                _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
                 return;
             }
         }
         if (savedInstanceState == null) {
             _fragmentManager = getSupportFragmentManager();
+            _fragmentManager.addOnBackStackChangedListener(this);
             _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
 
         }
@@ -294,48 +315,44 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.nav_dashboard:
                 fragment = new DashboardFragment();
-                changeToolbarTitle("Dashboard");
                 break;
 
             case R.id.nav_whiteboard:
                 fragment = new WhiteboardListFragment();
-                changeToolbarTitle("Whiteboard");
                 break;
 
             case R.id.nav_calendar:
                 fragment = new AgendaFragment();
-                changeToolbarTitle("Calendar");
                 break;
 
             case R.id.nav_Timeline:
                 fragment = new TimelineFragment();
-                changeToolbarTitle("Timeline");
                 break;
 
             case R.id.nav_Cloud:
                 fragment = new CloudExplorerFragment();
-                changeToolbarTitle("Cloud");
                 break;
             case R.id.nav_Bugtracker:
                 fragment = new BugTrackerFragment();
-                changeToolbarTitle("Bug Tracker - Bug list");
                 break;
             case R.id.nav_Gantt:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 fragment = new GanttFragment();
-                changeToolbarTitle("GANTT");
                 break;
             case R.id.nav_tasks:
                 fragment = new TaskFragment();
-                changeToolbarTitle("Tasks - List");
                 break;
             default:
                 break;
         }
         if (_fragmentManager == null)
+        {
             _fragmentManager = getSupportFragmentManager();
+            _fragmentManager.addOnBackStackChangedListener(this);
+        }
+
         if (fragment != null)
-            _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
+                _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("").commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -355,6 +372,16 @@ public class MainActivity extends AppCompatActivity
     private void changeToolbarTitle(String title)
     {
         _toolbar.setTitle(title);
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        Fragment fragment = _fragmentManager.findFragmentById(R.id.content_frame);
+        Log.i("MainActivity", "onBackStackChanged called!");
+        if (fragment == null)
+            return;
+        Log.i("MainActivity", "fragment not null");
+        _toolbarTitleHandler.get(fragment.getClass().getName()).run();
     }
 
     public class APIRequestLogout extends AsyncTask<String, Void, Void> {
