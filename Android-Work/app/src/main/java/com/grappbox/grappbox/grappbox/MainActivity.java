@@ -102,7 +102,9 @@ public class MainActivity extends AppCompatActivity
                     public boolean onMenuItemClick(MenuItem item) {
                         _bMenuClosed = !_bMenuClosed;
                         txt_projectSelected.setText(item.getTitle());
-                        SessionAdapter.getInstance().setCurrentSelectedProject(model.getId());
+                        SessionAdapter session = SessionAdapter.getInstance();
+                        session.setCurrentSelectedProject(model.getId());
+                        session.setCurrentSelectedProjectName(model.getName());
                         navView.getMenu().clear();
                         navView.inflateMenu(R.menu.activity_main_drawer);
                         btn.setImageDrawable(arrow_down);
@@ -203,6 +205,7 @@ public class MainActivity extends AppCompatActivity
 
         View headerView = navigationView.getHeaderView(0);
         TextView text = (TextView)headerView.findViewById(R.id.nav_head_name_user);
+        TextView txt_selectedProject = (TextView) headerView.findViewById(R.id.txt_current_project);
         String name = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN) + " " + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
 
         headerView.setOnClickListener(new View.OnClickListener() {
@@ -230,15 +233,18 @@ public class MainActivity extends AppCompatActivity
             _fragmentManager = getSupportFragmentManager();
             _fragmentManager.addOnBackStackChangedListener(this);
             _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
-
         }
         SessionAdapter.getInstance().addEventSeeker(this);
+        onSelectedProjectChange(SessionAdapter.getInstance().getCurrentSelectedProject());
+        if (!SessionAdapter.getInstance().getCurrentSelectedProjectName().isEmpty())
+            txt_selectedProject.setText(SessionAdapter.getInstance().getCurrentSelectedProjectName());
     }
 
     //SessionAdapter.SessionListener interface implementation
     @Override
     public void onSelectedProjectChange(String projectID) {
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
+
         nv.getMenu().clear();
         nv.inflateMenu(projectID.isEmpty() ? R.menu.activity_main_drawer_no_project : R.menu.activity_main_drawer);
     }
@@ -257,6 +263,7 @@ public class MainActivity extends AppCompatActivity
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         _actionBarDrawerToggle.onConfigurationChanged(newConfig);
+        onSelectedProjectChange(SessionAdapter.getInstance().getCurrentSelectedProject());
     }
 
     @Override
