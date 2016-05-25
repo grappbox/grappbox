@@ -62,7 +62,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener, SessionAdapter.SessionListener{
 
     public static final int PICK_DOCUMENT_FROM_SYSTEM = 1;
     public static final int PICK_DOCUMENT_SECURED_FROM_SYSTEM = 2;
@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle _actionBarDrawerToggle;
     private DrawerLayout _Drawer;
     private ArrayList<ProjectModel> _projectMenuList;
+    private boolean _bMenuClosed;
+
 
     private void OnHeaderClicked(View header)
     {
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         TextView txt_projectSelected = (TextView) findViewById(R.id.txt_current_project);
 
         assert arrow_down != null && arrow_up != null;
-        if (btn.getDrawable().getConstantState().equals(arrow_down.getConstantState()))
+        if (_bMenuClosed)
         {
             Menu menu = navView.getMenu();
 
@@ -91,12 +93,12 @@ public class MainActivity extends AppCompatActivity
             for (ProjectModel model : _projectMenuList) {
                 if (!model.isValid())
                     continue;
-                MenuItem item = menu.add(0, model.getId(), 0, model.getName());
+                MenuItem item = menu.add(model.getName());
                 item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         txt_projectSelected.setText(item.getTitle());
-                        SessionAdapter.getInstance().setCurrentSelectedProject(item.getItemId());
+                        SessionAdapter.getInstance().setCurrentSelectedProject(model.getId());
                         navView.getMenu().clear();
                         navView.inflateMenu(R.menu.activity_main_drawer);
                         btn.setImageDrawable(arrow_down);
@@ -144,16 +146,17 @@ public class MainActivity extends AppCompatActivity
         }
         else
         {
-            navView.getMenu().clear();
-            navView.inflateMenu(R.menu.activity_main_drawer);
+            onSelectedProjectChange(SessionAdapter.getInstance().getCurrentSelectedProject());
             btn.setImageDrawable(arrow_down);
         }
+        _bMenuClosed = !_bMenuClosed;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        _bMenuClosed = true;
         _toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(_toolbar);
         changeToolbarTitle("Grappbox");
@@ -208,13 +211,26 @@ public class MainActivity extends AppCompatActivity
             _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
 
         }
+        SessionAdapter.getInstance().addEventSeeker(this);
     }
+
+    //SessionAdapter.SessionListener interface implementation
+    @Override
+    public void onSelectedProjectChange(String projectID) {
+        NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
+        nv.getMenu().clear();
+        nv.inflateMenu(projectID.isEmpty() ? R.menu.activity_main_drawer_no_project : R.menu.activity_main_drawer);
+    }
+    //SessionAdapter.SessionListener END
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         _actionBarDrawerToggle.syncState();
     }
+
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

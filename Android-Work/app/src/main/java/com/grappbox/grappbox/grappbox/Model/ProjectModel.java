@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class ProjectModel implements Serializable {
 
-    private int id;
+    private String id;
     private String name;
     private String description;
     private String phone;
@@ -32,13 +32,13 @@ public class ProjectModel implements Serializable {
 
     public ProjectModel()
     {
-        id = -1;
+        id = "";
     }
 
     public ProjectModel(JSONObject data) throws JSONException {
         byte[] blob = Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
 
-        id = data.getInt("project_id");
+        id = data.getString("project_id");
         name = data.getString("project_name");
         description = data.getString("project_description");
         phone = data.getString("project_phone");
@@ -56,10 +56,10 @@ public class ProjectModel implements Serializable {
 
     public boolean isValid()
     {
-        return id > 0;
+        return !id.isEmpty();
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

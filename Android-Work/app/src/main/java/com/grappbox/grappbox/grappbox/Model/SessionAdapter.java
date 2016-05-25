@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -16,6 +17,8 @@ public class SessionAdapter {
     private SharedPreferences _pref;
     private Editor _editor;
     private Context _context;
+    private ArrayList<SessionListener> _listeners;
+    private String    _currentSelectedProject = "";
 
     private int PRIVATE_MODE = 0;
     private static final String PREF_NAME = "GrappboxSessionPref";
@@ -28,14 +31,28 @@ public class SessionAdapter {
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_ISLOGGED = "idLogged";
 
-    private int    _currentSelectedProject = 1;
+    public interface SessionListener
+    {
+        public void onSelectedProjectChange(String projectID);
+    }
 
     private SessionAdapter(Context context)
     {
         _context = context;
         _pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        
+        _listeners = new ArrayList<>();
+
         _editor = _pref.edit();
+    }
+
+    public void addEventSeeker(SessionListener seeker)
+    {
+        _listeners.add(seeker);
+    }
+
+    public boolean isProjectSelected()
+    {
+        return !_currentSelectedProject.isEmpty();
     }
 
     public static synchronized void initializeInstance(Context context) {
@@ -88,7 +105,7 @@ public class SessionAdapter {
         _editor.putString(KEY_LOGIN, newLogin);
     }
 
-    public int getCurrentSelectedProject() { return _currentSelectedProject; }
+    public String getCurrentSelectedProject() { return _currentSelectedProject; }
 
     public void LogInUser(String id, String firstname, String lastname, String token, String login, String password)
     {
@@ -121,8 +138,14 @@ public class SessionAdapter {
         return _editor.clear().commit();
     }
 
-    public void setCurrentSelectedProject(int projectId)
+    public void setCurrentSelectedProject(String projectId)
     {
         _currentSelectedProject = projectId;
+        for (SessionListener listener : _listeners)
+        {
+            if (listener == null)
+                continue;
+            listener.onSelectedProjectChange(_currentSelectedProject);
+        }
     }
 }
