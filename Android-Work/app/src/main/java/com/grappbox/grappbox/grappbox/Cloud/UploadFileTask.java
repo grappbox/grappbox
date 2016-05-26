@@ -46,7 +46,7 @@ public class UploadFileTask {
     private int                     _fileSize;
     private int                     _passedChunk;
     private int                     _currentChunk;
-    private int                     _projectId;
+    private String                     _projectId;
     private String                  _safePassword;
     private boolean                 _isProtected;
     private PrepareChunkTask                _chunkTask;
@@ -201,7 +201,7 @@ public class UploadFileTask {
             String safeURL;
             String cloudPath = params[0];
             String filePassword = params[1];
-            int projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
+            String projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
 
             try {
                 data.put("path", cloudPath);

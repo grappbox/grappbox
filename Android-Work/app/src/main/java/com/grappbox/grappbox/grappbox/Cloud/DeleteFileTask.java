@@ -36,7 +36,7 @@ public class DeleteFileTask extends AsyncTask<String, Void, String> {
         if (params.length < 2)
             return null;
         String token = SessionAdapter.getInstance().getToken();
-        int projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
+        String projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
         String path = params[0];
         String passwordSafe = params[1];
         _filename = _deletedObject.get_filename();

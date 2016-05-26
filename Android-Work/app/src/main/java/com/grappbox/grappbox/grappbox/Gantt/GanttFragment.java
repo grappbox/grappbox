@@ -28,8 +28,14 @@ public class GanttFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
+
+   /* @Override
+    public void onResume()
+    {
+        super.onResume();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }*/
 
     private class TaskListener implements GanttChart.GanttTaskListener {
         @Override

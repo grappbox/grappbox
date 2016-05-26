@@ -20,10 +20,10 @@ import java.io.IOException;
 public class APIRequestGetTimeline extends AsyncTask<String, Void, String> {
 
     private TimelineFragment _context;
-    private int _idProject;
+    private String _idProject;
     private Integer _APIRespond;
 
-    APIRequestGetTimeline(TimelineFragment context, int idProject)
+    APIRequestGetTimeline(TimelineFragment context, String idProject)
     {
         _context = context;
         _idProject = idProject;
