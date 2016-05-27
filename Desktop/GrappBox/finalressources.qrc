@@ -30,7 +30,6 @@
         <file>Ressources/Icon/Loading2.gif</file>
     </qresource>
     <qresource prefix="/Image">
-        <file>Ressources/Title.png</file>
         <file>Ressources/Icon/MeetingDefault.png</file>
         <file>Ressources/Icon/ProjectDefault.png</file>
         <file>Ressources/Icon/UserDefault.png</file>

@@ -83,7 +83,7 @@ BaseListItem {
         Item {
             id: actionItem
 
-            Layout.preferredWidth: Units.dp(40)
+            Layout.preferredWidth: Units.dp(100)
             Layout.preferredHeight: width
             Layout.alignment: Qt.AlignCenter
 

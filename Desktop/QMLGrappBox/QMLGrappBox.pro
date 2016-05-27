@@ -13,7 +13,9 @@ SOURCES += main.cpp \
     GanttView.cpp \
     TaskData.cpp \
     UserData.cpp \
-    GanttModel.cpp
+    GanttModel.cpp \
+    DashboardModel.cpp \
+    UserModel.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
@@ -42,5 +44,10 @@ HEADERS += \
     GanttView.h \
     TaskData.h \
     UserData.h \
-    GanttModel.h
+    GanttModel.h \
+    ProjectData.h \
+    DashboardModel.h \
+    EventData.h \
+    UserModel.h
 
+RCC_DIR = qrc

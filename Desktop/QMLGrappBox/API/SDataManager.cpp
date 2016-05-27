@@ -9,14 +9,18 @@ static SDataManager *__INSTANCE__SDataManager = nullptr;
 
 SDataManager::SDataManager()
 {
+    _OfflineDataConnector = nullptr;
     _OnlineDataConnector = new DataConnectorOnline;
     _UserId = -1;
-    _CurrentProject = 18;
+    _CurrentProject = -1;
+    m_project = new ProjectData();
+    m_user = new UserData();
 }
 
 SDataManager::~SDataManager()
 {
-    delete _OfflineDataConnector;
+    if (_OfflineDataConnector != nullptr)
+        delete _OfflineDataConnector;
     delete _OnlineDataConnector;
 }
 
@@ -41,8 +45,10 @@ void                       SDataManager::RegisterUserConnected(int id, QString u
     _UserId = id;
     _UserName = userName;
     _UserLastName = userLastName;
+    m_user->setId(id);
+    m_user->setFirstName(userName);
+    m_user->setLastName(userLastName);
     _Token = token;
-    qDebug() << _Token;
 }
 
 void                       SDataManager::LogoutUser()
@@ -91,6 +97,7 @@ void                       SDataManager::SetCurrentProjectId(int id)
     _CurrentProject = id;
     if (_CurrentProject < 0)
         _CurrentProject = -1;
+    emit hasProjectChanged(hasProject());
 }
 
 QJsonObject SDataManager::ParseMapDebug(QMap<QString, QVariant> &data)
@@ -130,6 +137,7 @@ void API::SDataManager::GenerateFileDebug(QByteArray arr)
 {
 	QJsonDocument doc = QJsonDocument::fromJson(arr);
 	QString json = doc.toJson(QJsonDocument::Indented);
+    qDebug() << "==========JSON DEBUG=========";
     qDebug() << json;
 	//QMessageBox::about(nullptr, "Json debug", json);
 }

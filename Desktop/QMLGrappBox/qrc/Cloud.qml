@@ -11,6 +11,8 @@ import GrappBoxController 1.0
 Item {
     id: cloudPage
 
+    property var mouseCursor
+
     Dialog {
         id: getPasswordDownloadFile
         width: Units.dp(300)
@@ -399,7 +401,7 @@ Item {
                             height: 40
                             width: 160
                             text: modelData.fileName
-                            iconName: "file/cloud"
+                            iconName: "editor/insert_drive_file"
                             iconColor: Theme.light.iconColor
                             textColor: Theme.primaryDarkColor
 

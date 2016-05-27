@@ -424,7 +424,7 @@ void CloudController::OnLSSuccess(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
-    if (info["return_code"].toString() == "3.4.9")
+    if (info["return_code"].toString() == "3.4.9" || info["return_code"].toString() == "3.9.9")
     {
         _PasswordSafe = "";
         emit directoryFailedLoad();

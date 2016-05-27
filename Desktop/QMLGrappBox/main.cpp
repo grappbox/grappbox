@@ -8,11 +8,24 @@
 #include "GanttView.h"
 #include "TaskData.h"
 #include "UserData.h"
+#include "ProjectData.h"
 #include "GanttModel.h"
+#include "DashboardModel.h"
+#include "EventData.h"
+#include "UserModel.h"
+#include "API/SDataManager.h"
 
 #define GRAPPBOX_URL "GrappBoxController"
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 0
+
+static QObject *qobject_datamanager_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return API::SDataManager::GetDataManager();
+}
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +42,13 @@ int main(int argc, char *argv[])
     qmlRegisterType<UserData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "UserData");
     qmlRegisterType<TaskTagData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "TaskTagData");
     qmlRegisterType<DependenciesData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "DependenciesData");
+    qmlRegisterType<TaskRessources>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "TaskRessources");
     qmlRegisterType<GanttModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "GanttModel");
+    qmlRegisterType<ProjectData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "ProjectData");
+    qmlRegisterType<EventData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "EventData");
+    qmlRegisterType<DashboardModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "DashboardModel");
+    qmlRegisterType<UserModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "UserModel");
+    qmlRegisterSingletonType<API::SDataManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SDataManager", qobject_datamanager_provider);
 
     QQmlApplicationEngine engine;
     engine.addImportPath("modules/");

@@ -9,12 +9,14 @@ import GrappBoxController 1.0
 Item {
     id: gantt
 
+    property var mouseCursor
     property int heightOfElement: 24
 
     property var currentDate: new Date()
 
     function finishedLoad()
     {
+        ganttModel.loadTasks()
     }
 
     function addDate(date, number)
@@ -25,39 +27,16 @@ Item {
     }
 
     GanttModel {
-        id: model
+        id: ganttModel
 
         Component.onCompleted: {
-            ganttView.setTask(model.tasks)
-        }
-    }
-
-    // Body of the gantt
-    MouseArea {
-        anchors.fill: parent
-
-        property double lastX: 150000
-
-        onWheel: {
-            ganttView.sizeX += wheel.angleDelta.y / 120
-            if (ganttView.sizeX < ganttView.minSizeYear)
-                ganttView.sizeX = ganttView.minSizeYear
-            else if (ganttView.sizeX > 100)
-                ganttView.sizeX = 100
+            ganttModel.loadTasks()
+            ganttModel.loadTaskTag()
+            SDataManager.updateCurrentProject()
         }
 
-        onReleased: {
-            lastX = 150000
-        }
-
-        onMouseXChanged: {
-            if (lastX == 150000)
-            {
-                lastX = mouseX
-                return
-            }
-            ganttView.cursorX += mouseX - lastX
-            lastX = mouseX
+        onTasksChanged: {
+            ganttView.setTask(tasks)
         }
     }
 
@@ -70,14 +49,108 @@ Item {
         sizeYTop: 25
         minSizeWeek: 30
         minSizeYear: 3
-        rectangleColor: "red"
+        rectangleColor: "#2980b9"
         cursorY: 0
         cursorX: 0
+        spaceTask: 3
+        spaceCutArrow: 10
+        sizeTaskBar: 200
         numberOfDraw: 100
+
         Component.onCompleted: {
-            console.log("Component is loaded !")
             ganttView.update()
         }
     }
+
+    MouseArea {
+        anchors.fill: parent
+
+        property double lastX: 150000
+        property bool mouseLeftClicked: false
+
+        cursorShape: Qt.ClosedHandCursor
+
+        hoverEnabled: true
+        onWheel: {
+            ganttView.sizeX += wheel.angleDelta.y / 120
+            if (ganttView.sizeX < ganttView.minSizeYear)
+                ganttView.sizeX = ganttView.minSizeYear
+            else if (ganttView.sizeX > 100)
+                ganttView.sizeX = 100
+        }
+
+        onPressed: {
+            mouseLeftClicked = true
+            ganttView.onClic(Qt.point(mouseX, mouseY))
+        }
+
+        onReleased: {
+            mouseLeftClicked = false
+            ganttView.onRelease(Qt.point(mouseX, mouseY))
+        }
+
+        onDoubleClicked: {
+            ganttView.onDoubleClic(Qt.point(mouseX, mouseY))
+        }
+
+        onMouseXChanged: {
+            mouseCursor.cursorShape = ganttView.refreshTypeAction(Qt.point(mouseX, mouseY), pressedButtons & Qt.LeftButton)
+            if (form.visible)
+                mouseCursor.cursorShape = Qt.ArrowCursor
+            if (pressedButtons & Qt.LeftButton)
+                ganttView.onMove(Qt.point(mouseX, mouseY))
+        }
+
+        onMouseYChanged: {
+            mouseCursor.cursorShape = ganttView.refreshTypeAction(Qt.point(mouseX, mouseY), pressedButtons & Qt.LeftButton)
+            if (form.visible)
+                mouseCursor.cursorShape = Qt.ArrowCursor
+            if (pressedButtons & Qt.LeftButton)
+                ganttView.onMove(Qt.point(mouseX, mouseY))
+        }
+    }
+
+    ActionButton {
+        anchors {
+            right: parent.right
+            bottom: parent.bottom
+            margins: Units.dp(32)
+        }
+
+        iconName: "content/add"
+
+        onClicked: {
+            taskFormDialog.show()
+        }
+    }
+
+
+    TaskForm {
+        id: form
+        anchors.fill: parent
+        modelTaskName: ganttModel.taskName
+        modelTaskTag: ganttModel.taskTags
+
+        onUpdateTaskTag: {
+            ganttModel.loadTaskTag()
+        }
+
+        onModifyTask: {
+            // Here modify the task
+        }
+
+        onAddTask: {
+            // Here add the task
+        }
+
+        onAddTag: {
+            ganttModel.addTag(tagName)
+        }
+
+        onRemoveTag: {
+            ganttModel.removeTag(tagId)
+        }
+    }
+
 }
 

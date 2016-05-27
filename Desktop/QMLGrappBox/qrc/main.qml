@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.1
 import Material 0.2
 import Material.Extras 0.1
 import Material.ListItems 0.1 as ListItem
+import QtQuick.Controls 1.3 as Controls
 import GrappBoxController 1.0
 
 Item {
@@ -11,6 +12,10 @@ Window {
     id: loginPage
 
     visible: true
+
+    height: viewLogin.height
+    width: viewLogin.width
+    flags: Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
 
     color: "#3b3b3b"
     onClosing: {
@@ -24,7 +29,7 @@ Window {
         id: controller
 
         onLoginSuccess: {
-            demo.selectedComponent = demo.sectionTitles[6]
+            demo.selectedComponent = demo.sectionTitles[0]
             loginPage.close()
         }
 
@@ -32,14 +37,21 @@ Window {
             passwordError.visible = true
             loginPage.isLoading = false
         }
+
+        Component.onCompleted: {
+            controller.login(loginName.text, loginPassword.text)
+            loginPage.isLoading = true
+        }
     }
 
     View {
+        id: viewLogin
         anchors.centerIn: parent
 
         width: Units.dp(350)
         height: columnLogin.implicitHeight + Units.dp(32)
 
+        backgroundColor: Theme.primaryDarkColor
 
         elevation: 1
         radius: Units.dp(2)
@@ -53,6 +65,23 @@ Window {
                 bottomMargin: Units.dp(16)
             }
 
+            Image {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    margins: Units.dp(16)
+                }
+                fillMode: Image.PreserveAspectFit
+                source: "qrc:/Logo/Title.png"
+                height: Units.dp(100)
+                horizontalAlignment: Qt.AlignHCenter
+            }
+
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: Units.dp(8)
+            }
+
             Label {
                 anchors {
                     left: parent.left
@@ -61,7 +90,9 @@ Window {
                 }
 
                 style: "title"
-                text: "Please login"
+                text: "Welcome to GrappBox. Please login."
+
+                color: Theme.dark.textColor
             }
 
             Item {
@@ -82,7 +113,7 @@ Window {
                 style: "body2"
                 text: "Your login or your password is invalid."
 
-                color: Theme.accentColor
+                color: Theme.primaryColor
             }
 
             Item {
@@ -94,6 +125,7 @@ Window {
                 action: Icon {
                     anchors.centerIn: parent
                     name: "action/account_circle"
+                    color: Theme.dark.iconColor
                 }
 
                 content: TextField {
@@ -102,6 +134,10 @@ Window {
                     width: parent.width
 
                     text: "leo.nadeau@epitech.eu"
+                    placeholderText: "Login"
+                    floatingLabel: true
+                    color: Theme.dark.textColor
+                    textColor: Theme.dark.textColor
                 }
             }
 
@@ -109,6 +145,7 @@ Window {
                 action: Icon {
                     anchors.centerIn: parent
                     name: "action/lock"
+                    color: Theme.dark.iconColor
                 }
 
                 content: TextField {
@@ -116,7 +153,11 @@ Window {
                     anchors.centerIn: parent
                     width: parent.width
                     echoMode: TextInput.Password
+                    placeholderText: "Password"
+                    floatingLabel: true
                     text: "nadeau_l"
+                    color: Theme.dark.textColor
+                    textColor: Theme.dark.textColor
                 }
             }
 
@@ -136,12 +177,12 @@ Window {
 
                 Button {
                     text: "Quit"
-                    textColor: Theme.accentColor
+                    textColor: Theme.dark.textColor
                     onClicked: loginPage.close()
                 }
 
                 Button {
-                    text: "Done"
+                    text: "Sign in"
                     textColor: Theme.primaryColor
                     onClicked: {
                         controller.login(loginName.text, loginPassword.text)
@@ -182,11 +223,10 @@ ApplicationWindow {
 
     property var sectionTitles: [ "Dashboard", "Calendar", "Whiteboard", "Timeline", "BugTracker", "Cloud", "Gantt" ]
 
+    property string previousSelectedComponent: ""
     property string selectedComponent: ""//sectionTitles[5]
 
     initialPage:
-        /*
-*/
     TabbedPage {
         id: page
 
@@ -194,7 +234,7 @@ ApplicationWindow {
 
         enabled: !loginPage.visible
 
-        actionBar.maxActionCount: 2
+        actionBar.maxActionCount: 3
 
         actions: [
 
@@ -205,6 +245,13 @@ ApplicationWindow {
             },
 
             Action {
+                iconName: "social/notifications"
+                name: "Notification"
+                hoverAnimation: true
+            },
+
+
+            Action {
                 iconName: "action/language"
                 name: "Language"
             },
@@ -212,6 +259,11 @@ ApplicationWindow {
             Action {
                 iconName: "action/account_circle"
                 name: "Accounts"
+
+                onTriggered: {
+                    demo.previousSelectedComponent = demo.selectedComponent
+                    demo.selectedComponent = "UserSettings"
+                }
             }
         ]
 
@@ -240,7 +292,9 @@ ApplicationWindow {
                         delegate: ListItem.Standard {
                             text: modelData
                             selected: modelData == demo.selectedComponent
+                            visible: SDataManager.hasProject || index <= 1
                             onClicked: {
+                                demo.previousSelectedComponent = demo.selectedComponent
                                 demo.selectedComponent = modelData
                                 navDrawer.close()
                             }
@@ -259,6 +313,14 @@ ApplicationWindow {
             active: true
         }
     }
+
+    MouseArea {
+        id: cursorMouseArea
+        anchors.fill: parent
+        cursorShape: Qt.ArrowCursor
+        acceptedButtons: Qt.NoButton
+    }
+
     Component {
         id: tabDelegate
 
@@ -277,7 +339,9 @@ ApplicationWindow {
                         delegate: ListItem.Standard {
                             text: modelData
                             selected: modelData == demo.selectedComponent
+                            enabled: SDataManager.hasProject || index <= 1
                             onClicked: {
+                                demo.previousSelectedComponent = demo.selectedComponent
                                 demo.selectedComponent = modelData
                             }
                         }
@@ -309,8 +373,15 @@ ApplicationWindow {
                     onLoaded: {
                         if (example.item)
                         {
+                            example.item.mouseCursor = cursorMouseArea
                             example.item.finishedLoad()
                         }
+                    }
+                    function returnPage() {
+                        demo.selectedComponent = demo.previousSelectedComponent
+                    }
+                    function info(val) {
+                        snackBar.open(val)
                     }
                 }
 
@@ -323,6 +394,10 @@ ApplicationWindow {
                 flickableItem: flickable
             }
         }
+    }
+
+    Snackbar {
+        id: snackBar
     }
 }
 }

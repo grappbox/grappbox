@@ -5,5 +5,8 @@
         <file>qrc/MainForm.qml</file>
         <file>qrc/IconTextButton.qml</file>
         <file>qrc/Gantt.qml</file>
+        <file>qrc/TaskForm.qml</file>
+        <file>qrc/Dashboard.qml</file>
+        <file>qrc/UserSettings.qml</file>
     </qresource>
 </RCC>

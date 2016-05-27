@@ -22,6 +22,8 @@ signals:
 public slots:
     void OnLoginSuccess(int id, QByteArray response);
     void OnLoginFailure(int id, QByteArray response);
+    void OnUserInfoDone(int id, QByteArray response);
+    void OnUserInfoFail(int id, QByteArray response);
 
 private:
     bool _IsLoged;

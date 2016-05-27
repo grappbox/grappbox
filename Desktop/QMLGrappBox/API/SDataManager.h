@@ -10,6 +10,10 @@
 #include <QMap>
 #include <QStringList>
 #include <QFile>
+#include <QJSEngine>
+#include <QQmlEngine>
+#include "UserData.h"
+#include "ProjectData.h"
 #include "SDebugLog.h"
 #include "IDataConnector.h"
 
@@ -35,16 +39,51 @@
 #define GENERATE_JSON_DEBUG API::SDataManager::GenerateFileDebug(__data)
 #define SHOW_JSON(param) API::SDataManager::GenerateFileDebug(param)
 
+#define JSON_TO_DATETIME(date) QDateTime::fromString(date, "yyyy-MM-dd HH:mm:ss.zzzz")
+#define JSON_TO_DATE(datep) JSON_TO_DATETIME((datep)).date()
+
 namespace API
 {
 
-    class SDataManager
+    class SDataManager : public QObject
     {
+        Q_OBJECT
+
+        Q_PROPERTY(UserData *user READ user WRITE setUser NOTIFY userChanged)
+        Q_PROPERTY(ProjectData *project READ project WRITE setProject NOTIFY projectChanged)
+        Q_PROPERTY(QVariantList projectList READ projectList WRITE setProjectList NOTIFY projectListChanged)
+        Q_PROPERTY(bool hasProject READ hasProject NOTIFY hasProjectChanged)
+
     public:
         static IDataConnector      *GetCurrentDataConnector();
         static SDataManager        *GetDataManager();
         void                       RegisterUserConnected(int id, QString userName, QString userLastName, QString token, QImage *avatar);
         void                       LogoutUser();
+
+        Q_INVOKABLE                updateCurrentProject()
+        {
+            BEGIN_REQUEST;
+            {
+                SET_CALL_OBJECT(this);
+                SET_ON_DONE("UpdateProjectDone");
+                SET_ON_FAIL("UpdateProjectFail");
+                ADD_URL_FIELD(USER_TOKEN);
+                ADD_URL_FIELD(PROJECT);
+                GET(API::DP_PROJECT, API::GR_PROJECT);
+            }
+            END_REQUEST;
+            BEGIN_REQUEST;
+            {
+                SET_CALL_OBJECT(this);
+                SET_ON_DONE("UpdateProjectUserDone");
+                SET_ON_FAIL("UpdateProjectUserFail");
+                ADD_URL_FIELD(USER_TOKEN);
+                ADD_URL_FIELD(PROJECT);
+                GET(API::DP_PROJECT, API::GR_PROJECT_USERS);
+            }
+            END_REQUEST;
+        }
+
         static void                Destroy();
 
 		static QJsonObject ParseMapDebug(QMap<QString, QVariant> &data);
@@ -60,6 +99,105 @@ namespace API
 
         void                       SetCurrentProjectId(int id);
 
+        UserData *user() const
+        {
+            return m_user;
+        }
+
+        ProjectData *project() const
+        {
+            return m_project;
+        }
+
+        QVariantList projectList() const
+        {
+            return m_projectList;
+        }
+
+        bool hasProject() const
+        {
+            return _CurrentProject != -1;
+        }
+
+    public slots:
+        void setUser(UserData *user)
+        {
+            m_user = user;
+            emit userChanged(user);
+        }
+
+        void setProject(ProjectData *project)
+        {
+            m_project = project;
+            _CurrentProject = project->id();
+            emit hasProjectChanged(hasProject());
+            emit projectChanged(project);
+        }
+
+        void setProjectList(QVariantList projectList)
+        {
+            if (m_projectList == projectList)
+                return;
+
+            m_projectList = projectList;
+            emit projectListChanged(projectList);
+        }
+
+        void UpdateProjectDone(int id, QByteArray data)
+        {
+            QJsonDocument doc;
+            doc = QJsonDocument::fromJson(data);
+            QJsonObject obj = doc.object()["data"].toObject();
+            m_project->setName(obj["name"].toString());
+            m_project->setDescription(obj["description"].toString());
+            m_project->setPhone(obj["phone"].toString());
+            m_project->setCompany(obj["company"].toString());
+            m_project->setMail(obj["contact_mail"].toString());
+            m_project->setFacebook(obj["facebook"].toString());
+            m_project->setTwitter(obj["twitter"].toString());
+            m_project->setColor(QColor("#" + obj["color"].toString()));
+            emit projectChanged(m_project);
+        }
+
+        void UpdateProjectFail(int id, QByteArray data)
+        {
+            Q_UNUSED(id)
+            Q_UNUSED(data)
+        }
+
+        void UpdateProjectUserDone(int id, QByteArray data)
+        {
+            QJsonDocument doc;
+            doc = QJsonDocument::fromJson(data);
+            QJsonObject obj = doc.object()["data"].toObject();
+            QVariantList list;
+            for (QJsonValueRef ref : obj["array"].toArray())
+            {
+                UserData *data = new UserData();
+                data->setId(ref.toObject()["id"].toInt());
+                data->setFirstName(ref.toObject()["firstname"].toString());
+                data->setLastName(ref.toObject()["lastname"].toString());
+                list.push_back(qVariantFromValue(data));
+            }
+            m_project->setUsers(list);
+            emit projectChanged(m_project);
+        }
+
+        void UpdateProjectUserFail(int id, QByteArray data)
+        {
+            Q_UNUSED(id)
+            Q_UNUSED(data)
+        }
+
+    signals:
+        void userChanged(UserData *user);
+
+        void projectChanged(ProjectData *project);
+
+        void projectListChanged(QVariantList projectList);
+
+        void hasProjectChanged(bool hasProject);
+
     private:
         SDataManager();
         ~SDataManager();
@@ -74,8 +212,10 @@ namespace API
         QImage              *_Avatar;
         int                 _CurrentProject;
 
+        UserData *m_user;
+        ProjectData *m_project;
+        QVariantList m_projectList;
     };
-
 }
 
 #endif // SDATAMANAGER_H

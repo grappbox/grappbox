@@ -24,12 +24,15 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_CALENDAR_DAY] = "";
 	_GetMap[GR_LIST_GANTT] = "";
 	_GetMap[GR_LIST_PROJECT] = "dashboard/getprojectsglobalprogress";
+    _GetMap[GR_TEAM_OCCUPATION] = "dashboard/getteamoccupation";
+    _GetMap[GR_NEXT_MEETING] = "dashboard/getnextmeetings";
     _GetMap[GR_PROJECT] = "projects/getinformations";
 	_GetMap[GR_CREATOR_PROJECT] = "";
 	_GetMap[GR_LIST_MEMBER_PROJECT] = "dashboard/getteamoccupation";
 	_GetMap[GR_LIST_MEETING] = "dashboard/getnextmeetings";
-	_GetMap[GR_LIST_TASK] = "";
+    _GetMap[GR_LIST_TASK] = "tasks/getprojecttasks";
     _GetMap[GR_LIST_TIMELINE] = "timeline/gettimelines";
+    _GetMap[GR_LIST_TASK_TAG] = "tasks/getprojecttags";
 	_GetMap[GR_TASK] = "";
     _GetMap[GR_TIMELINE] = "timeline/getlastmessages";
 	_GetMap[GR_COMMENT_TIMELINE] = "timeline/getcomments";
@@ -39,7 +42,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_USER_SETTINGS] = "";
 	_GetMap[GR_PROJECTS_USER] = "";
 	_GetMap[GR_PROJECT_ROLE] = "";
-	_GetMap[GR_PROJECT_USERS] = "";
+    _GetMap[GR_PROJECT_USERS] = "projects/getusertoproject";
 	_GetMap[GR_PROJECT_CANCEL_DELETE] = "";
 	_GetMap[GR_PROJECT_USER_ROLE] = "";
 	_GetMap[GR_CUSTOMER_ACCESSES] = "";
@@ -72,6 +75,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_PostMap[PR_NEW_WHITEBOARD] = "";
     _PostMap[PR_CREATE_DIRECTORY] = "cloud/createdir";
     _PostMap[PR_OPEN_STREAM] = "cloud/stream";
+    _PostMap[PR_ADD_TAG_TASK] = "tasks/tagcreation";
 
 	// Initialize Delete request
 	_DeleteMap[DR_PROJECT_ROLE] = "";
@@ -86,9 +90,10 @@ DataConnectorOnline::DataConnectorOnline()
     _DeleteMap[DR_CLOSE_STREAM] = "cloud/stream";
     _DeleteMap[DR_DELETE_ITEM] = "cloud/file";
     _DeleteMap[DR_DELETE_SECURE_ITEM] = "cloud/filesecured";
+    _DeleteMap[DR_TASK_TAG] = "tasks/deletetag";
 
 	// Initialize Put request
-	_PutMap[PUTR_USERSETTINGS] = "";
+    _PutMap[PUTR_USERSETTINGS] = "user/basicinformations";
 	_PutMap[PUTR_PROJECTSETTINGS] = "";
 	_PutMap[PUTR_INVITE_USER] = "";
 	_PutMap[PUTR_ASSIGNTAG] = "bugtracker/assigntag";

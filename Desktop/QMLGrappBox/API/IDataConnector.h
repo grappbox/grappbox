@@ -31,10 +31,13 @@ namespace API
         GR_PROJECT,
         GR_CREATOR_PROJECT,
         GR_LIST_MEMBER_PROJECT,
+        GR_NEXT_MEETING,
+        GR_TEAM_OCCUPATION,
         GR_LIST_MEETING,
         GR_LIST_TASK,
         GR_LIST_TIMELINE,
         GR_TASK,
+        GR_LIST_TASK_TAG,
         GR_TIMELINE,
         GR_COMMENT_TIMELINE,
         GR_USER_DATA,
@@ -62,7 +65,7 @@ namespace API
         GR_TYPE_EVENT,
         GR_LIST_CLOUD,
         GR_DOWNLOAD_FILE,
-        GR_DOWNLOAD_SECURE_FILE
+        GR_DOWNLOAD_SECURE_FILE,
     };
 
     enum PostRequest
@@ -79,7 +82,8 @@ namespace API
 		PR_POST_EVENT,
         PR_NEW_WHITEBOARD,
         PR_CREATE_DIRECTORY,
-        PR_OPEN_STREAM
+        PR_OPEN_STREAM,
+        PR_ADD_TAG_TASK
     };
 
     enum DeleteRequest
@@ -95,7 +99,8 @@ namespace API
         DR_ARCHIVE_MESSAGE_TIMELINE,
         DR_CLOSE_STREAM,
         DR_DELETE_ITEM,
-        DR_DELETE_SECURE_ITEM
+        DR_DELETE_SECURE_ITEM,
+        DR_TASK_TAG
     };
 
     enum PutRequest

@@ -15,6 +15,17 @@ class GanttView : public QQuickPaintedItem
 {
     Q_OBJECT
 
+    enum MovementType
+    {
+        NONE,
+        MOVE,
+        SET_DEPENDANCE,
+        SET_PROGRESSION,
+        CHANGE_DEADLINE,
+        EXPAND,
+        CLIC
+    };
+
     Q_PROPERTY(float sizeX READ sizeX WRITE setSizeX NOTIFY sizeXChanged)
     Q_PROPERTY(float sizeY READ sizeY WRITE setSizeY NOTIFY sizeYChanged)
     Q_PROPERTY(float sizeYTop READ sizeYTop WRITE setSizeYTop NOTIFY sizeYTopChanged)
@@ -23,8 +34,12 @@ class GanttView : public QQuickPaintedItem
     Q_PROPERTY(QColor rectangleColor READ rectangleColor WRITE setRectangleColor NOTIFY rectangleColorChanged)
     Q_PROPERTY(float cursorY READ cursorY WRITE setCursorY NOTIFY cursorYChanged)
     Q_PROPERTY(float cursorX READ cursorX WRITE setCursorX NOTIFY cursorXChanged)
+    Q_PROPERTY(float spaceTask READ spaceTask WRITE setSpaceTask NOTIFY spaceTaskChanged)
+    Q_PROPERTY(float spaceCutArrow READ spaceCutArrow WRITE setSpaceCutArrow NOTIFY spaceCutArrowChanged)
     Q_PROPERTY(int numberOfDraw READ numberOfDraw WRITE setNumberOfDraw NOTIFY numberOfDrawChanged)
     Q_PROPERTY(QQmlListProperty<TaskData> tasks READ tasks NOTIFY tasksChanged)
+    Q_PROPERTY(MovementType moveType READ moveType NOTIFY moveTypeChanged)
+    Q_PROPERTY(float sizeTaskBar READ sizeTaskBar WRITE setSizeTaskBar NOTIFY sizeTaskBarChanged)
 
 public:
     explicit GanttView(QQuickItem *parent = 0);
@@ -40,8 +55,16 @@ public:
     void setRectangleColor(QColor value);
     void setCursorY(float value);
     void setCursorX(float value);
+    void setSpaceTask(float value);
+    void setSpaceCutArrow(float value);
     void setNumberOfDraw(int value);
+    void setSizeTaskBar(float value);
     Q_INVOKABLE void setTask(QVariantList task);
+    Q_INVOKABLE Qt::CursorShape refreshTypeAction(QPointF mousePos, bool isLeftClick);
+    Q_INVOKABLE void onMove(QPointF mousePos);
+    Q_INVOKABLE void onClic(QPointF mousePos);
+    Q_INVOKABLE void onRelease(QPointF mousePos);
+    Q_INVOKABLE void onDoubleClic(QPointF mousePos);
 
     // Getter
     float sizeX() const;
@@ -52,7 +75,11 @@ public:
     QColor rectangleColor() const;
     float cursorY() const;
     float cursorX() const;
+    float spaceTask() const;
+    float spaceCutArrow() const;
+    MovementType moveType() const;
     int numberOfDraw() const;
+    float sizeTaskBar() const;
     QQmlListProperty<TaskData> tasks();
 
 signals:
@@ -65,8 +92,12 @@ signals:
     void rectangleColorChanged();
     void cursorYChanged();
     void cursorXChanged();
+    void spaceTaskChanged();
+    void spaceCutArrowChanged();
     void numberOfDrawChanged();
     void tasksChanged();
+    void moveTypeChanged();
+    void sizeTaskBarChanged();
 
 public slots:
 
@@ -75,6 +106,14 @@ private:
     void DrawDate(QPainter *painter);
     void DrawTaskRectangles(QPainter *painter);
     void DrawArrow(QPainter *painter);
+    void DrawTaskBar(QPainter *painter);
+    void DrawNewDependenciesArrow(QPainter *painter);
+    QPoint GetStartAnchorTask(TaskData *task);
+    QPoint GetEndAnchorTask(TaskData *task);
+    TaskData *GetTaskByID(int id);
+    void SetDependance(QPointF mousePos);
+    void SetProgression(QPointF mousePos);
+    void SetDeadline(QPointF mousePos);
 
     float _SizeX;
     float _SizeY;
@@ -84,6 +123,14 @@ private:
     QColor _RectangleColor;
     float _CursorX;
     float _CursorY;
+    float _SpaceTask;
+    float _SpaceCutArrow;
+    float _SizeTaskSlideBar;
+
+    MovementType _Type;
+    QPointF _StartMousePos;
+    QPointF _LastMousePos;
+    TaskData *_SelectedTaskData;
 
     int _NumberOfDraw;
 
