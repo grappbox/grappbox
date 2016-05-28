@@ -1,7 +1,7 @@
 /**
  * angular-ui-notification - Angular.js service providing simple notifications using Bootstrap 3 styles with css transitions for animating
  * @author Alex_Crack
- * @version v0.1.0
+ * @version v0.2.0
  * @link https://github.com/alexcrack/angular-ui-notification
  * @license MIT
  */
@@ -18,7 +18,10 @@ angular.module('ui-notification').provider('Notification', function() {
         positionX: 'right',
         positionY: 'top',
         replaceMessage: false,
-        templateUrl: 'angular-ui-notification.html'
+        templateUrl: 'angular-ui-notification.html',
+        onClose: undefined,
+        closeOnClick: true,
+        maxCount: 0 // 0 - Infinite
     };
 
     this.setOptions = function(options) {
@@ -52,6 +55,8 @@ angular.module('ui-notification').provider('Notification', function() {
             args.positionY = args.positionY ? args.positionY : options.positionY;
             args.positionX = args.positionX ? args.positionX : options.positionX;
             args.replaceMessage = args.replaceMessage ? args.replaceMessage : options.replaceMessage;
+            args.onClose = args.onClose ? args.onClose : options.onClose;
+            args.closeOnClick = (args.closeOnClick !== null && args.closeOnClick !== undefined) ? args.closeOnClick : options.closeOnClick;
 
             $http.get(args.template,{cache: $templateCache}).success(function(template) {
 
@@ -60,6 +65,7 @@ angular.module('ui-notification').provider('Notification', function() {
                 scope.title = $sce.trustAsHtml(args.title);
                 scope.t = args.type.substr(0,1);
                 scope.delay = args.delay;
+                scope.onClose = args.onClose;
 
                 var reposite = function() {
                     var j = 0;
@@ -95,6 +101,10 @@ angular.module('ui-notification').provider('Notification', function() {
 
                         lastPosition[element._positionY+element._positionX] = top + elHeight;
 
+                        if (options.maxCount > 0 && messageElements.length > options.maxCount && i === 0) {
+                            element.scope().kill(true);
+                        }
+
                         j ++;
                     }
                 };
@@ -103,30 +113,64 @@ angular.module('ui-notification').provider('Notification', function() {
                 templateElement._positionY = args.positionY;
                 templateElement._positionX = args.positionX;
                 templateElement.addClass(args.type);
-                templateElement.bind('webkitTransitionEnd oTransitionEnd otransitionend transitionend msTransitionEnd click', function(e){
+
+                var closeEvent = function(e) {
                     e = e.originalEvent || e;
                     if (e.type === 'click' || (e.propertyName === 'opacity' && e.elapsedTime >= 1)){
+                        if (scope.onClose) {
+                            scope.$apply(scope.onClose(templateElement));
+                        }
+
                         templateElement.remove();
                         messageElements.splice(messageElements.indexOf(templateElement), 1);
                         scope.$destroy();
                         reposite();
                     }
-                });
+                };
+
+                if (args.closeOnClick) {
+                    templateElement.addClass('clickable');
+                    templateElement.bind('click', closeEvent);
+                }
+
+                templateElement.bind('webkitTransitionEnd oTransitionEnd otransitionend transitionend msTransitionEnd', closeEvent);
+
                 if (angular.isNumber(args.delay)) {
                     $timeout(function() {
                         templateElement.addClass('killed');
                     }, args.delay);
                 }
 
+                setCssTransitions('none');
+
                 angular.element(document.getElementsByTagName('body')).append(templateElement);
                 var offset = -(parseInt(templateElement[0].offsetHeight) + 50);
                 templateElement.css(templateElement._positionY, offset + "px");
                 messageElements.push(templateElement);
 
+                if(args.positionX == 'center'){
+                    var elWidth = parseInt(templateElement[0].offsetWidth);
+                    templateElement.css('left', parseInt(window.innerWidth / 2 - elWidth / 2) + 'px');
+                }
+
+                $timeout(function(){
+                    setCssTransitions('');
+                });
+
+                function setCssTransitions(value){
+                    ['-webkit-transition', '-o-transition', 'transition'].forEach(function(prefix){
+                        templateElement.css(prefix, value);
+                    });
+                }
+
                 scope._templateElement = templateElement;
 
                 scope.kill = function(isHard) {
                     if (isHard) {
+                        if (scope.onClose) {
+                            scope.$apply(scope.onClose(scope._templateElement));
+                        }
+
                         messageElements.splice(messageElements.indexOf(scope._templateElement), 1);
                         scope._templateElement.remove();
                         scope.$destroy();
