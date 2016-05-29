@@ -50,6 +50,11 @@ class Bug
     private $deletedAt;
 
     /**
+     * @var \Boolean
+     */
+    private $clientOrigin;
+
+    /**
      * @var \GrappboxBundle\Entity\Project
      */
     private $projects;
@@ -94,14 +99,15 @@ class Bug
         "parentId" => $this->parentId,
         "createdAt" => $this->createdAt,
         "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt
+        "deletedAt" => $this->deletedAt,
+        "clientOrigin" => $this->clientOrigin
       );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -124,7 +130,7 @@ class Bug
     /**
      * Get parentId
      *
-     * @return integer 
+     * @return integer
      */
     public function getParentId()
     {
@@ -147,7 +153,7 @@ class Bug
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -170,7 +176,7 @@ class Bug
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -193,7 +199,7 @@ class Bug
     /**
      * Get stateId
      *
-     * @return integer 
+     * @return integer
      */
     public function getStateId()
     {
@@ -216,7 +222,7 @@ class Bug
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -239,7 +245,7 @@ class Bug
     /**
      * Get editedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEditedAt()
     {
@@ -262,11 +268,34 @@ class Bug
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * Set clientOrigin
+     *
+     * @param integer $clientOrigin
+     * @return Bug
+     */
+    public function setClientOrigin($clientOrigin)
+    {
+        $this->clientOrigin = $clientOrigin;
+
+        return $this;
+    }
+
+    /**
+     * Get clientOrigin
+     *
+     * @return integer
+     */
+    public function getClientOrigin()
+    {
+        return $this->clientOrigin;
     }
 
     /**
@@ -285,7 +314,7 @@ class Bug
     /**
      * Get projects
      *
-     * @return \GrappboxBundle\Entity\Project 
+     * @return \GrappboxBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -308,7 +337,7 @@ class Bug
     /**
      * Get creator
      *
-     * @return \GrappboxBundle\Entity\User 
+     * @return \GrappboxBundle\Entity\User
      */
     public function getCreator()
     {
@@ -341,7 +370,7 @@ class Bug
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -374,7 +403,7 @@ class Bug
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTags()
     {
