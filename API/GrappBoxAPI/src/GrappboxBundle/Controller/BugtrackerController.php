@@ -303,6 +303,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 
 		$em->persist($bug);
+		$project->addBug($bug);
 		$em->flush();
 
 		$ticket = $bug->objectToArray();

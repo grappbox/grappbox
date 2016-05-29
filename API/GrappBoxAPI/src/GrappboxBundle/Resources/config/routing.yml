@@ -272,10 +272,11 @@ v2_dashboard_getTeamOccupation:
     methods: [GET]
 
 v2_dashboard_getNextMeetings:
-    path:       dashboard/getnextmeetings/{token}
+    path:       dashboard/getnextmeetings/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getNextMeetings, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
+        id:     \d+
     methods: [GET]
 
 v2_dashboard_getProjectsGlobalProgress:
