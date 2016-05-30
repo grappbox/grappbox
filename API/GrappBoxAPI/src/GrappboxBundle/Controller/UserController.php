@@ -56,7 +56,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
 	* @apiSuccess {String} linkedin Linkedin of the person
 	* @apiSuccess {String} viadeo Viadeo of the person
@@ -126,7 +126,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
 	* @apiSuccess {String} linkedin Linkedin of the person
 	* @apiSuccess {String} viadeo Viadeo of the person
@@ -182,10 +182,9 @@ class UserController extends RolesAndTokenVerificationController
 
 		$firstName = $userInfos->getFirstname();
 		$lastName = $userInfos->getLastname();
-		if ($userInfos->getBirthday() instanceof DateTime)
-			$birthday = $userInfos->getBirthday()->format('Y-m-d');
-		else
-			$birthday = null;
+		$birthday = $user->getBirthday();
+		if ($birthday!= null)
+			$birthday = $birthday->format('Y-m-d');
 		$avatar = $userInfos->getAvatar();
 		$email = $userInfos->getEmail();
 		$phone = $userInfos->getPhone();
@@ -213,7 +212,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiParam {String} [email] Email of the person
 	* @apiParam {String} [oldPassword] Old password of the person. oldPassword and password must be set if you want to change password
 	* @apiParam {String} [password] New password of the person. oldPassword and password must be set if you want to change password
-	* @apiParam {Number} [phone] Phone number of the person
+	* @apiParam {String} [phone] Phone number of the person
 	* @apiParam {String} [country] Country the person in living in
 	* @apiParam {String} [linkedin] Linkedin of the person
 	* @apiParam {String} [viadeo] Viadeo of the person
@@ -259,7 +258,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
 	* @apiSuccess {String} linkedin Linkedin of the person
 	* @apiSuccess {String} viadeo Viadeo of the person

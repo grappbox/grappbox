@@ -93,8 +93,6 @@ class EventRepository extends EntityRepository
 		$ret = array();
 		$arr = array();
 
-		print(count($meetings));
-
 		if ($meetings === null || count($meetings) == 0)
 		{
 			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
