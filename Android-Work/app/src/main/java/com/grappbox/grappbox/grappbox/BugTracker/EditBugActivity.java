@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 public class EditBugActivity extends AppCompatActivity {
 
-    private BugEntity _bug;
+    private static BugEntity _bug;
     private FragmentTransaction _transactions;
     private FragmentManager _fragmentManager;
 
@@ -61,10 +61,10 @@ public class EditBugActivity extends AppCompatActivity {
             onBackPressed();
             return;
         }
-
-        //Set base fragment
-        _fragmentManager.beginTransaction().replace(R.id.fragment_container, new EditBugActivityFragment()).addToBackStack(null).commit();
-
+        if (savedInstanceState == null)
+        {
+            _fragmentManager.beginTransaction().replace(R.id.fragment_container, new EditBugActivityFragment()).addToBackStack(null).commit();
+        }
         String bugId = intent.getStringExtra(BugEntity.EXTRA_GRAPPBOX_BUG_ID);
 
 

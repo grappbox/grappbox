@@ -29,15 +29,23 @@ public class EditBugActivityFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     public void SetBugEntity(BugEntity bugEntity)
     {
         TextView title, description;
         View v;
 
-        assert getView() != null;
+
         v = getView();
-        title = (TextView) getView().findViewById(R.id.et_title);
-        description = (TextView) getView().findViewById(R.id.et_description);
+        if (v == null)
+            return;
+        title = (TextView) v.findViewById(R.id.et_title);
+        description = (TextView) v.findViewById(R.id.et_description);
 
         _bug = bugEntity;
         title.setText(_bug.GetTitle());

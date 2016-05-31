@@ -3,20 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.grappbox.grappbox.grappbox.BugTracker.SeeCommentFragment"
-    android:orientation="vertical"
-    android:visibility="visible">
+    android:orientation="vertical">
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/lv_comment"
-        android:layout_weight="3" />
+        android:layout_weight="1" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Write a new comment"
         android:id="@+id/btn_comment"
-        android:layout_weight="1"
+        android:layout_weight="10"
         android:textColor="#fff"
-        android:background="@color/colorGrappboxBlack" />
+        android:background="@color/colorGrappboxBlack"
+        android:layout_gravity="bottom"
+        android:foregroundGravity="bottom"
+        android:gravity="center_vertical|center_horizontal" />
 </LinearLayout>

@@ -25,10 +25,17 @@ public class SeeCategoryFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     public void InitCheckboxes()
     {
         View v = getView();
-        assert v != null;
+        if (v == null)
+            return;
         LinearLayout lay = (LinearLayout) v.findViewById(R.id.category_container);
         BugEntity _bug = ((EditBugActivity) getActivity()).GetModel();
 

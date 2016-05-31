@@ -1,18 +1,17 @@
 package com.grappbox.grappbox.grappbox.BugTracker;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.grappbox.grappbox.grappbox.R;
+
+import java.util.ArrayList;
 
 public class BugClosedListFragment extends Fragment {
     private BugListAdapter bugListAdapter;
@@ -52,34 +51,23 @@ public class BugClosedListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_bug_open_list, container, false);
         swiper = (SwipeRefreshLayout) v.findViewById(R.id.pull_refresher);
-        ListView bugListView = (ListView) swiper.findViewById(R.id.lv_buglist);
-        bugListView.setClickable(true);
-        bugListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BugEntity bug = (BugEntity) parent.getItemAtPosition(position);
-
-                if (!bug.IsValid())
-                    return;
-                Intent intent = new Intent(getContext(), EditBugActivity.class);
-                intent.putExtra(BugEntity.EXTRA_GRAPPBOX_BUG_ID, bug.GetId());
-                startActivity(intent);
-            }
-        });
+        RecyclerView bugListView = (RecyclerView) swiper.findViewById(R.id.lv_buglist);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        bugListView.setLayoutManager(layoutManager);
         refresher = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20, true);
+                GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 2000, true);
                 task.SetRefreshSwiper(swiper);
                 task.execute();
             }
         };
         swiper.setOnRefreshListener(refresher);
         if (bugListAdapter == null)
-            bugListAdapter = new BugListAdapter(getContext(), R.layout.lvitem_bug);
+            bugListAdapter = new BugListAdapter(_parent, new ArrayList<>());
         bugListView.setAdapter(bugListAdapter);
-        bugListAdapter.SetParentFragment(_parent);
-        GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20, true);
+        GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 2000, true);
         task.execute();
 
         return v;

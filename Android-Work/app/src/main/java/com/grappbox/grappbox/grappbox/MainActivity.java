@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
             }
+
             MenuItem item_settings = menu.add(R.string.str_project_settings).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_settings, getTheme()));
             item_settings.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override

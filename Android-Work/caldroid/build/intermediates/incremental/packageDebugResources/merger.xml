@@ -77,7 +77,7 @@
     </style><style name="CaldroidDefaultSquareCell" parent="CaldroidDefaultCell"/><style name="CaldroidDefaultDarkNormalCell" parent="CaldroidDefaultDarkCell">
         <item name="android:padding">5dp</item>
     </style></file><file path="D:\Users\wieser_m\AndroidStudioProjects\Grappbox\Android-Work\caldroid\src\main\res\values-v11\styles.xml" qualifiers="v11"><style name="AppBaseTheme" parent="android:Theme.Holo.Light">
-        <!-- API 11 theme customizations can go here. -->
+        
     </style></file><file path="D:\Users\wieser_m\AndroidStudioProjects\Grappbox\Android-Work\caldroid\src\main\res\values-v14\styles.xml" qualifiers="v14"><style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- API 14 theme customizations can go here. -->
+        
     </style></file></source><source path="D:\Users\wieser_m\AndroidStudioProjects\Grappbox\Android-Work\caldroid\build\generated\res\rs\debug"/><source path="D:\Users\wieser_m\AndroidStudioProjects\Grappbox\Android-Work\caldroid\build\generated\res\resValues\debug"/></dataSet><dataSet config="debug" generated-set="debug$Generated"><source path="D:\Users\wieser_m\AndroidStudioProjects\Grappbox\Android-Work\caldroid\src\debug\res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="DateState"><attr format="boolean" name="state_date_today"/><attr format="boolean" name="state_date_selected"/><attr format="boolean" name="state_date_disabled"/><attr format="boolean" name="state_date_prev_next_month"/></declare-styleable><declare-styleable name="Cell"><attr name="android:textColor"/><attr name="android:background"/></declare-styleable></configuration></mergedItems></merger>

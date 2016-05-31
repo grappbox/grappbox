@@ -30,10 +30,17 @@ public class SeeAssigneeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     public void InitCheckboxes()
     {
         View v = getView();
-        assert v != null;
+        if (v == null)
+            return;
         LinearLayout lay = (LinearLayout) v.findViewById(R.id.assignee_container);
 
         for (int i = 0; i < lay.getChildCount(); ++i)

@@ -35,6 +35,8 @@
         android:text="New Issue"
         android:id="@+id/btn_new_issue"
         android:padding="0dp"
-        android:layout_margin="0dp" />
+        android:layout_margin="0dp"
+        android:background="@color/colorGrappboxBlack"
+        android:textColor="#ffffff" />
 
 </LinearLayout>
