@@ -102,68 +102,32 @@ public class TimelineListFragment extends TimelineMessage {
         SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         _value = listMessage;
-        for (ContentValues item : _value){
+        ArrayList<MessageModel> messageModels = new ArrayList<MessageModel>();
+        for (ContentValues item : _value) {
+            final MessageModel model = new MessageModel();
             Calendar dateMessage = Calendar.getInstance();
-            HashMap<String, String> map = new HashMap<String, String>();
 
             _idValue.add(Integer.parseInt(item.get("id").toString()));
             try {
                 dateMessage.setTime(dateformat.parse(item.get("Date").toString()));
-                map.put("timeline_edit_date", dayFormat.format(dateMessage.getTime()));
-                map.put("timeline_edit_hour", hourFormat.format(dateMessage.getTime()));
-
+                model.setDate(dayFormat.format(dateMessage.getTime()));
+                model.setHour(hourFormat.format(dateMessage.getTime()));
             } catch (ParseException p) {
                 Log.e("Date parse", "Parsing error");
             }
-            map.put("timeline_message_title", item.get("title").toString());
-            map.put("timeline_message_description", item.get("message").toString());
-            map.put("timeline_message_user", item.get("creator").toString());
-            listTimelineMessage.add(map);
+            model.setTitle(item.get("title").toString());
+            model.setDesc(item.get("message").toString());
+            model.setUser(item.get("creator").toString());
+            messageModels.add(model);
         }
 
-        SimpleAdapter messageAdapter = new SimpleAdapter(_rootView.getContext(), listTimelineMessage, R.layout.item_timeline_message,
-                new String[] {"timeline_message_title", "timeline_message_description", "timeline_edit_date", "timeline_edit_hour", "timeline_message_user"},
-                new int[] {R.id.timelie_message_title, R.id.timelie_message_description, R.id.timeline_edit_date, R.id.timeline_edit_hour, R.id.timeline_message_user});
-        message.setAdapter(messageAdapter);
-        message.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Timeline message").setItems(R.array.timeline_message_action, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-
-                            case 0:
-                                editTimelineMessage(_idValue.get(position));
-                                break;
-
-                            case 1:
-                                showCommentMessage(_idValue.get(position));
-                                break;
-
-                            case 2:
-                                archiveTimelineMessage(_idValue.get(position));
-                                break;
-
-                            case 3:
-                                convertToTicketBugtracker(_idValue.get(position));
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-                });
-                builder.show();
-            }
-        });
-        message.setSelection(messageAdapter.getCount() - 1);
-
+        MessageAdapter adapter = new MessageAdapter(this.getActivity(), messageModels, getResources(), this);
+        message.setAdapter(adapter);
     }
 
-    private void showCommentMessage(int idMessage)
+    public void showCommentMessage(int position)
     {
+        int idMessage = _idValue.get(position);
         String title = "unknow";
         String content = "unknow";
 
@@ -176,8 +140,9 @@ public class TimelineListFragment extends TimelineMessage {
         _context.TimelineShowCommentMessage(idMessage, _idTimeline, title, content);
     }
 
-    private void convertToTicketBugtracker(int idMessage)
+    public void convertToTicketBugtracker(int position)
     {
+        int idMessage = _idValue.get(position);
         String title = "";
         String content = "";
 
@@ -190,8 +155,9 @@ public class TimelineListFragment extends TimelineMessage {
         _context.TimelineConvertToTicketBugtracker(title, content);
     }
 
-    private void archiveTimelineMessage(int idMessage)
+    public void archiveTimelineMessage(int position)
     {
+        int idMessage = _idValue.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Timeline message").setMessage("Are you sure you want to archive this message ?");
         builder.setPositiveButton("Archive", new DialogInterface.OnClickListener() {
@@ -209,8 +175,9 @@ public class TimelineListFragment extends TimelineMessage {
         builder.show();
     }
 
-    private void editTimelineMessage(int idMessage)
+    public void editTimelineMessage(int position)
     {
+        int idMessage = _idValue.get(position);
         final Dialog TimelineEditMessage = new Dialog(getActivity());
         TimelineEditMessage.setTitle("Send Message : ");
         TimelineEditMessage.setContentView(R.layout.dialog_timeline_send_message);

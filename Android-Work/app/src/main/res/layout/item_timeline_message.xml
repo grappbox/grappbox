@@ -129,24 +129,26 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/timeline_button_comment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:text="Comment"/>
 
         <Button
+            android:id="@+id/timeline_button_edit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:text="Edit"/>
 
         <Button
+            android:id="@+id/timeline_button_delete"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:text="Delete"/>
 
     </LinearLayout>
-
 
 </LinearLayout>
