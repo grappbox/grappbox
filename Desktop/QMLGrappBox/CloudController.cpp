@@ -15,6 +15,11 @@ FileData::FileData(QString title, bool protect, bool directory)
     _IsProtected = protect;
 }
 
+FileData::~FileData()
+{
+    API::SDataManager::GetCurrentDataConnector()->unregisterObjectRequest(this);
+}
+
 QString FileData::fileName() const
 {
     return _FileName;
@@ -113,6 +118,11 @@ CloudController::CloudController(QObject *parent) : QObject(parent)
     _CurrentTransit = nullptr;
     _DataRead = nullptr;
 
+}
+
+CloudController::~CloudController()
+{
+    API::SDataManager::GetCurrentDataConnector()->unregisterObjectRequest(this);
 }
 
 void CloudController::loadDirectory()

@@ -86,6 +86,10 @@ Item {
                         elevation: viewMouseArea.containsMouse ? 2 : 1
                         radius: Units.dp(2)
 
+                        onElevationChanged: {
+
+                        }
+
                         MouseArea {
                             id: viewMouseArea
                             anchors.fill: parent
@@ -97,6 +101,20 @@ Item {
                                 {
                                     dashboardModel.selectProject(modelData)
                                 }
+                            }
+
+                            onHoveredChanged: {
+                                if (containsMouse)
+                                    mouseCursor.cursorShape = Qt.PointingHandCursor
+                                else
+                                    mouseCursor.cursorShape = Qt.ArrowCursor
+                            }
+
+                            Component.onCompleted: {
+                                if (containsMouse)
+                                    mouseCursor.cursorShape = Qt.PointingHandCursor
+                                else
+                                    mouseCursor.cursorShape = Qt.ArrowCursor
                             }
                         }
 

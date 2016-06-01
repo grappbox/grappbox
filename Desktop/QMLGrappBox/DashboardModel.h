@@ -18,6 +18,10 @@ class DashboardModel : public QObject
 
 public:
     DashboardModel();
+    ~DashboardModel()
+    {
+        API::SDataManager::GetCurrentDataConnector()->unregisterObjectRequest(this);
+    }
 
     Q_INVOKABLE void loadProjectList();
     Q_INVOKABLE void loadUserProjectList();

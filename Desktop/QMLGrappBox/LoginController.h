@@ -2,6 +2,7 @@
 #define LOGINCONTROLLER_H
 
 #include <QObject>
+#include "API/SDataManager.h"
 
 class LoginController : public QObject
 {
@@ -9,6 +10,10 @@ class LoginController : public QObject
     Q_PROPERTY(bool isLoged READ isLoged NOTIFY isLogedChanged)
 public:
     explicit LoginController(QWidget *parent = 0);
+    ~LoginController()
+    {
+        API::SDataManager::GetCurrentDataConnector()->unregisterObjectRequest(this);
+    }
 
     Q_INVOKABLE void login(QString name, QString password);
 

@@ -19,6 +19,10 @@ class GanttModel : public QObject
 
 public:
     explicit GanttModel(QObject *parent = 0);
+    ~GanttModel()
+    {
+        API::SDataManager::GetCurrentDataConnector()->unregisterObjectRequest(this);
+    }
 
     // Getter
     QVariantList tasks();

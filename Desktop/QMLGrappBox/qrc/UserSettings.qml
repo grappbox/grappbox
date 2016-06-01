@@ -11,6 +11,11 @@ Item {
     property UserData user
     property var mouseCursor
 
+    function finishedLoad()
+    {
+
+    }
+
     Component.onCompleted: {
         user = SDataManager.user
     }
@@ -268,9 +273,9 @@ Item {
                         width: parent.width
                         placeholderText: "Twitter"
                         floatingLabel: true
-                        text: user.linkedin
+                        text: user.twitter
                         onTextChanged: {
-                            user.linkedin = text
+                            user.twitter = text
                         }
                     }
                 }
@@ -292,9 +297,9 @@ Item {
                         width: parent.width
                         placeholderText: "Viadeo"
                         floatingLabel: true
-                        text: user.linkedin
+                        text: user.viadeo
                         onTextChanged: {
-                            user.linkedin = text
+                            user.viadeo = text
                         }
                     }
                 }
@@ -329,6 +334,7 @@ Item {
                         width: parent.width
                         placeholderText: "Previous password"
                         floatingLabel: true
+                        echoMode: TextInput.Password
                     }
                 }
 
@@ -349,6 +355,8 @@ Item {
                         width: parent.width
                         placeholderText: "New password"
                         floatingLabel: true
+                        echoMode: TextInput.Password
+                        hasError: labelConfirmError.visible
                     }
                 }
 
@@ -367,8 +375,19 @@ Item {
                         id: confirmNewPassword
                         anchors.centerIn: parent
                         width: parent.width
-                        placeholderText: "New password"
+                        placeholderText: "Confirm password"
                         floatingLabel: true
+                        echoMode: TextInput.Password
+                        hasError: labelConfirmError.visible
+                    }
+
+                    secondaryItem: Label {
+                        id: labelConfirmError
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "Password doesn't match"
+                        color: Theme.primaryColor
+                        visible: confirmNewPassword.text !== "" && confirmNewPassword.text !== newPassword.text
+                        enabled: visible
                     }
                 }
 

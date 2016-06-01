@@ -29,6 +29,7 @@ signals:
 
 public:
     FileData(QString title = "", bool protect = false, bool directory = false);
+    ~FileData();
 
     QString fileName() const;
     bool isDirectory() const;
@@ -99,6 +100,7 @@ class CloudController : public QObject
 
 public:
     explicit CloudController(QObject *parent = 0);
+    ~CloudController();
 
     Q_INVOKABLE void loadDirectory();
     Q_INVOKABLE void createDirectory(QString dirName);

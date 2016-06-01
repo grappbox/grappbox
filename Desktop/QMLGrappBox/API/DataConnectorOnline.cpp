@@ -105,6 +105,15 @@ DataConnectorOnline::DataConnectorOnline()
     _PutMap[PUTR_SEND_CHUNK] = "cloud/file";
 }
 
+void DataConnectorOnline::unregisterObjectRequest(QObject *obj)
+{
+    for (QMap<QNetworkReply*, DataConnectorCallback>::iterator it = _CallBack.begin(); it != _CallBack.end(); ++it)
+    {
+        if (it.value()._Request == obj)
+            it.value()._Request = nullptr;
+    }
+}
+
 void DataConnectorOnline::OnResponseAPI()
 {
 	QNetworkReply *request = dynamic_cast<QNetworkReply*>(QObject::sender());
@@ -132,7 +141,8 @@ void DataConnectorOnline::OnResponseAPI()
 #else
 		qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString();
 #endif
-		QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
+        if (_CallBack[request]._Request != nullptr)
+            QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
 	}
 	else
     {
@@ -141,7 +151,8 @@ void DataConnectorOnline::OnResponseAPI()
             req = QByteArray::fromStdString(request->header(QNetworkRequest::LocationHeader).toString().toStdString());
             qDebug() << req;
         }
-        QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotSuccess, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
+        if (_CallBack[request]._Request != nullptr)
+            QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotSuccess, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
     }
 }
 

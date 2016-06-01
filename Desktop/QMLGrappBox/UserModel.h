@@ -12,6 +12,11 @@ class UserModel : public QObject
 
 public:
     explicit UserModel(QObject *parent = 0);
+    ~UserModel()
+    {
+        API::SDataManager::GetCurrentDataConnector()->unregisterObjectRequest(this);
+    }
+
     Q_INVOKABLE void getUserModel();
     Q_INVOKABLE void setUserModel(UserData *user, QString oldPassword = "", QString newPassword = "");
 
