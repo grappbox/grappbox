@@ -44,6 +44,17 @@ class StatLateTasks
      */
     private $project;
 
+    public function objectToArray()
+    {
+      return array(
+        "user" => $this->user,
+        "role" => $this->role,
+        "date" => $this->date,
+        "lateTasks" => $this->lateTasks,
+        "ontimeTasks" => $this->ontimeTasks,
+      );
+    }
+
     /**
      * Get id
      *

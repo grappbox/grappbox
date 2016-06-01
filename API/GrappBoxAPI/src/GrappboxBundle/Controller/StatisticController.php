@@ -17,6 +17,7 @@ use GrappboxBundle\Entity\StatBugsUsersRepartition;
 use GrappboxBundle\Entity\StatTasksRepartition;
 use GrappboxBundle\Entity\StatUserWorkingCharge;
 use GrappboxBundle\Entity\StatUserTasksAdvancement;
+use GrappboxBundle\Entity\StatStorageSize;
 use DateTime;
 
 /**
@@ -39,16 +40,17 @@ class StatisticController extends RolesAndTokenVerificationController
   // -----------------------------------------------------------------------
 
   /**
-  * @api {get} /V0.2/statistics/getall/:token/:projectId get all stats info
+  * @api {get} /V0.2/statistics/getall/:token/:projectId Get all statistics
   * @apiName getAllStat
   * @apiGroup Stat
-  * @apiDescription Get all statistics info
+  * @apiDescription Get all statistics of a project.
+  * See ["API - Statistic Content Description"](https://docs.google.com/document/d/1BqN96XF1GJmVVYN-NALbyzE8d_UVp3LHhli15B1OBJU/edit) for more details about the return content related to each statistic
   * @apiVersion 0.2.0
   *
   * @apiParam {String} token token of the person connected
   * @apiParam {int} projectId id of the related project
   *
-  * @apiSuccess {Object} statName stat data asked
+  * @apiSuccess {Object[]/Integer} statName stat data asked
   *
   * @apiSuccessExample Success-Response:
   *	HTTP/1.1 200 OK
@@ -58,12 +60,9 @@ class StatisticController extends RolesAndTokenVerificationController
   *			"return_message": "Stat - getAll - Complete Success"
   *		},
   *		"data": {
-  *		 "array": {
-  *		   "statName": {
-  *		     "data content"
-  *		   },
-  *		   ...
-  *		 }
+  *		  "projectTimeLimits": {...},
+  *		  "clientBugTracker": 12,
+  *		  ...
   *		}
   *	}
   *
@@ -84,7 +83,7 @@ class StatisticController extends RolesAndTokenVerificationController
   *		}
   *	}
   */
-  public function getAllStatAction(Request $request, $projectId)
+  public function getAllStatAction(Request $request, $token, $projectId)
   {
     $user = $this->checkToken($token);
     if (!$user)
@@ -96,36 +95,117 @@ class StatisticController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("16.1.4", "Stat", "getAll", "Bad Parameter: projectId");
 
-    return $this->setSuccess("1.16.1", "Stat", "getAll", "Complete Success", "Here will be statistics data");
+    $stat["projectTimeLimits"] = $this->getProjectTimeLimits($project);
+
+    $stat["timelinesMessageNumber"] = $this->getTimelinesMessageNumber($project);
+
+    $stat["customerAccessNumber"] = $this->getCustomerAccessNumber($project);
+
+    $stat["openCloseBug"] = $this->getOpenCloseBug($project);
+
+    $stat["taskStatus"] = $this->getTaskStatus($project);
+
+    $stat["totalTasks"] = $this->getTotalTasks($project);
+
+    $stat["clientBugTracker"] = $this->getClientBugTracker($project);
+
+    $data = $em->getRepository('GrappboxBundle:StatStorageSize')->findBy(array("project" => $project));
+    if (!count($data))
+      $stat["storageSize"] = array("occupied" => 0, "total" => 1000000000);
+    else
+      $stat["storageSize"] = array("occupied" => $data[0]->getValue(), "total" => 1000000000);
+
+    $stat["userTasksAdvancement"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatUserTasksAdvancement')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["userTasksAdvancement"][] = $value->objectToArray();
+    }
+
+    $stat["lateTask"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatLateTasks')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["lateTask"][] = $value->objectToArray();
+    }
+
+    $stat["bugsEvolution"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatBugsEvolution')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["bugsEvolution"][] = $value->objectToArray();
+    }
+
+    $stat["bugsTagsRepartition"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatBugsTagsRepartition')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["bugsTagsRepartition"][] = $value->objectToArray();
+    }
+
+    $data = $em->getRepository('GrappboxBundle:StatBugAssignationTracker')->findBy(array("project" => $project));
+    if (!count($data))
+      $stat["bugAssignationTracker"] = array("assigned" => 0, "unassigned" => 0);
+    else
+      $stat["bugAssignationTracker"] = array("assigned" => $data[0]->getAssignedBugs(), "unassigned" => $data[0]->getUnassignedBugs());
+
+    $stat["bugsUsersRepartition"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatBugsUsersRepartition')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["bugsUsersRepartition"][] = $value->objectToArray();
+    }
+
+    $stat["tasksRepartition"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatTasksRepartition')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["tasksRepartition"][] = $value->objectToArray();
+    }
+
+    $stat["userWorkingCharge"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatUserWorkingCharge')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["userWorkingCharge"][] = $value->objectToArray();
+    }
+
+    $stat["projectAdvancement"] = array();
+    $data = $em->getRepository('GrappboxBundle:StatProjectAdvancement')->findBy(array("project" => $project));
+    foreach ($data as $key => $value) {
+      $stat["projectAdvancement"][] = $value->objectToArray();
+    }
+
+    return $this->setSuccess("1.16.1", "Stat", "getAll", "Complete Success", $stat);
   }
 
   /**
   * @api {get} /V0.2/statistics/getStat/:token/:projectId/:statName Get a stat info
-  * @apiName getAllStat
+  * @apiName getStat
   * @apiGroup Stat
-  * @apiDescription Get a particaular statistics info
+  * @apiDescription Get a particaular statistics info.
+  * See ["API - Statistic Content Description"](https://docs.google.com/document/d/1BqN96XF1GJmVVYN-NALbyzE8d_UVp3LHhli15B1OBJU/edit) for more details about statName and return content related to each statistic
   * @apiVersion 0.2.0
   *
   * @apiParam {String} token token of the person connected
   * @apiParam {int} projectId id of the related project
   * @apiParam {string} statName name of the statistic
   *
-  * @apiSuccess {Object} statName stat data asked
+  * @apiSuccess {Object[]/Integer} statName stat data asked
   *
-  * @apiSuccessExample Success-Response:
+  * @apiSuccessExample Success-Object-Response:
   *	HTTP/1.1 200 OK
-  *
-  *	/!\ following is just an exemple, refer to getAll request for complete list of each stat data content
-  *
   *	{
   *		"info": {
   *			"return_code": "1.16.1",
   *			"return_message": "Stat - getStat - Complete Success"
   *		},
   *		"data": {
-  *		 "statName": {
-  *		   "dataName": "datacontent"
-  *		 }
+  *		 "projectTimeLimits": {...}
+  *		}
+  *	}
+  * @apiSuccessExample Success-Integer-Response:
+  *	HTTP/1.1 200 OK
+  *	{
+  *		"info": {
+  *			"return_code": "1.16.1",
+  *			"return_message": "Stat - getStat - Complete Success"
+  *		},
+  *		"data": {
+  *		 "clientBugTracker": 12
   *		}
   *	}
   *
@@ -149,12 +229,12 @@ class StatisticController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "7.2.4",
-	*			"return_message": "Stat - getStat- Bad Parameter: statName"
+	*			"return_code": "16.2.4",
+	*			"return_message": "Stat - getStat - Bad Parameter: statName"
 	*		}
 	*	}
   */
-  public function getStatAction(Request $request, $projectId, $statName)
+  public function getStatAction(Request $request, $token, $projectId, $statName)
   {
     $user = $this->checkToken($token);
     if (!$user)
@@ -166,49 +246,112 @@ class StatisticController extends RolesAndTokenVerificationController
     if ($project === null)
       return $this->setBadRequest("16.2.4", "Stat", "getStat", "Bad Parameter: projectId");
 
-    return $this->setSuccess("1.16.1", "Stat", "getStat", "Complete Success", "Here will be statistic data");
-
     $stat = array();
     switch ($statName) {
-      case 'ProjectAdvancement':
-        $stat["ProjectAdvancement"] = $em->getRepository('GrappboxBundle:statProjectAdvancement')->findBy(array("project" => $project));
+      case 'projecttimelimits':
+        $stat["projectTimeLimits"] = $this->getProjectTimeLimits($project);
         break;
-      case 'LateTasks':
-        $stat["Latetasks"] = $em->getRepository('GrappboxBundle:statLateTasks')->findBy(array("project" => $project));
+      case 'timelinesmessagenumber':
+        $stat["timelinesMessageNumber"] = $this->getTimelinesMessageNumber($project);
         break;
-      case 'ProjectTimeLimits':
-        $stat["ProjectTimeLimits"] = $this->getProjectTimeLimits($project);
+      case 'customeraccessnumber':
+        $stat["customerAccessNumber"] = $this->getCustomerAccessNumber($project);
         break;
-      case 'TimelinesMessageNumber':
-        $stat["TimelinesMessageNumber"] = $this->getTimelineMessageNumber($project);
+      case 'openclosebug':
+        $stat["openCloseBug"] = $this->getOpenCloseBug($project);
         break;
-      case 'CustomerAccesseNumber':
-        $stat["CustomerAccesseNumber"] = $this->getCustomerAccesseNumber($project);
+      case 'taskstatus':
+        $stat["taskStatus"] = $this->getTaskStatus($project);
+        break;
+      case 'totaltasks':
+        $stat["totalTasks"] = $this->getTotalTasks($project);
+        break;
+      case 'clientbugtracker':
+        $stat["clientBugTracker"] = $this->getClientBugTracker($project);
+        break;
+      case 'storagesize':
+        $data = $em->getRepository('GrappboxBundle:StatStorageSize')->findBy(array("project" => $project));
+        if (!count($data))
+          $stat["storageSize"] = array("occupied" => 0, "total" => 1000000000);
+        else
+          $stat["storageSize"] = array("occupied" => $data[0]->getValue(), "total" => 1000000000);
+        break;
+      case 'usertasksadvancement':
+        $stat["userTasksAdvancement"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatUserTasksAdvancement')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["userTasksAdvancement"][] = $value->objectToArray();
+        }
+        break;
+      case 'latetask':
+        $stat["lateTask"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatLateTasks')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["lateTask"][] = $value->objectToArray();
+        }
+        break;
+      case 'bugsevolution':
+        $stat["bugsEvolution"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatBugsEvolution')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["bugsEvolution"][] = $value->objectToArray();
+        }
+        break;
+      case 'bugstagsrepartition':
+        $stat["bugsTagsRepartition"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatBugsTagsRepartition')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["bugsTagsRepartition"][] = $value->objectToArray();
+        }
+        break;
+      case 'bugassignationtracker':
+        $data = $em->getRepository('GrappboxBundle:StatBugAssignationTracker')->findBy(array("project" => $project));
+        if (!count($data))
+          $stat["bugAssignationTracker"] = array("assigned" => 0, "unassigned" => 0);
+        else
+          $stat["bugAssignationTracker"] = array("assigned" => $data[0]->getAssignedBugs(), "unassigned" => $data[0]->getUnassignedBugs());
+        break;
+      case 'bugsusersrepartition':
+        $stat["bugsUsersRepartition"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatBugsUsersRepartition')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["bugsUsersRepartition"][] = $value->objectToArray();
+        }
+        break;
+      case 'tasksrepartition':
+        $stat["tasksRepartition"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatTasksRepartition')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["tasksRepartition"][] = $value->objectToArray();
+        }
+        break;
+      case 'userworkingcharge':
+        $stat["userWorkingCharge"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatUserWorkingCharge')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["userWorkingCharge"][] = $value->objectToArray();
+        }
+        break;
+      case 'projectadvancement':
+        $stat["projectAdvancement"] = array();
+        $data = $em->getRepository('GrappboxBundle:StatProjectAdvancement')->findBy(array("project" => $project));
+        foreach ($data as $key => $value) {
+          $stat["projectAdvancement"][] = $value->objectToArray();
+        }
         break;
       default:
         return $this->setBadRequest("16.2.4", "Stat", "getStat", "Bad Parameter: statName");
         break;
     }
+
+    return $this->setSuccess("1.16.1", "Stat", "getStat", "Complete Success", $stat);
   }
 
 
 
   // -----------------------------------------------------------------------
-  //                 STATISTICS DATA - GET INSTANT VALUES
+  //                 STATISTICS DATA - INSTANT VALUES
   // -----------------------------------------------------------------------
-
-  // GENERIC INSTANT GETTER FOR ALL PROJECTS
-  public function instantValuesAction(Request $request)
-  {
-    $em = $this->getDoctrine()->getManager();
-    $projects = $em->getRepository('GrappboxBundle:Project')->findBy(array('deletedAt' => NULL));
-
-    $result = array();
-    foreach ($projects as $key => $project) {
-      $result['project'.$project->getId()] = $this->getClientBugTracker($project);
-    }
-    return $this->setSuccess("1.16.1", "Stat", "instantUpdate", "Complete Success", $result);
-  }
 
   private function getProjectTimeLimits($project)
   {
@@ -251,7 +394,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result['actual'] = $project->getCustomersAccess()->count();
 
-    $result['maximum'] = "XX";
+    $result['maximum'] = 10;
 
     return $result;
   }
@@ -280,25 +423,25 @@ class StatisticController extends RolesAndTokenVerificationController
     $em = $this->getDoctrine()->getManager();
     $date = new DateTime('now');
 
-    $result['Done'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+    $result['done'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
                         ->select('count(t)')
                         ->where('t.finishedAt IS NOT NULL AND t.projects = :project')
                         ->setParameters(array('project' => $project))
                         ->getQuery()->getSingleScalarResult();
 
-    $result['Doing'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+    $result['doing'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
                         ->select('count(t)')
                         ->where('t.finishedAt IS NULL AND t.startedAt IS NOT NULL AND t.dueDate > :date AND t.projects = :project')
                         ->setParameters(array('project' => $project, 'date' => $date))
                         ->getQuery()->getSingleScalarResult();
 
-    $result['ToDo'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+    $result['toDo'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
                         ->select('count(t)')
                         ->where('t.startedAt IS NULL AND t.dueDate > :date AND t.projects = :project')
                         ->setParameters(array('project' => $project, 'date' => $date))
                         ->getQuery()->getSingleScalarResult();
 
-    $result['Late'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+    $result['late'] = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
                         ->select('count(t)')
                         ->where('t.finishedAt IS NULL AND t.dueDate <= :date AND t.projects = :project')
                         ->setParameters(array('project' => $project, 'date' => $date))
@@ -334,74 +477,44 @@ class StatisticController extends RolesAndTokenVerificationController
       return $result;
   }
 
+
   // -----------------------------------------------------------------------
-  //                    STATISTICS DATA - INSTANT UPDATE
+  //                    STATISTICS DATA - CUSTOM UPDATE
   // -----------------------------------------------------------------------
 
-  // GENERIC INSTANT UPDATE FOR ALL PROJECTS
-  public function instantUpdateAction(Request $request)
+  public function updateStat($projectId, $statName)
   {
     $em = $this->getDoctrine()->getManager();
-    $projects = $em->getRepository('GrappboxBundle:Project')->findBy(array('deletedAt' => NULL));
+    $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
 
-    $result = array();
-    foreach ($projects as $key => $project) {
-      $result['project '.$project->getId()]['StorageSize'] = $this->updateStorageSize($project, "ThisIsMyToken", ",", $request);
-      //$result['UserTasksAdvancement'] = $this->updateUserTasksAdvancement($project);
-    }
-    return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
-  }
+    if ($project === null)
+      return "Error: Bad project Id";
 
-  private function updateStorageSize($project, $token, $path, Request $request)
-  {
-    $res = $this->calculateStorageSize();
-
-    $em = $this->getDoctrine()->getManager();
-    $statStorageSize = $em->getRepository('GrappboxBundle:StatStorageSize')->findOneBy(array('project' => $project));
-
-    if ($statStorageSize === null)
-    {
-      $statStorageSize = new $statStorageSize();
-      $statStorageSize->setProject($project);
-      $statStorageSize->setValue(0);
-    }
-
-    if ($res->result != "error")
-      $statStorageSize->setValue($res->result->data);
-
-    $em->persist($statStorageSize);
-    $em->flush();
-
-    return "Data updated";
-  }
-
-  private function calculateStorageSize($project, $token, $path, Request $request)
-  {
-    $response = $this->get('service_cloud')->getListAction($token, $project->getId(), $path, $project->getSafePassword(), $request);
-    $response = json_decode($response->getContent());
-
-    if ($response->info->return_code != "1.3.1")
-         return array("result" => "error", "data" => $response);
-
-    $results = $response->data->array;
-    $size = 0;
-
-    foreach ($results as $key => $result) {
-      if ($result->type == "dir")
-      {
-        $newPath = $path.$result->filename.",";
-        $subResult = $this->calculateStorageSize($project, $token, $newPath, $request);
-
-        if ($subResult['result'] == "error")
-          return $subResult;
-        else
-          $size += $subResult['data'];
-      }
-      else
-        $size += $result->size;
+    switch ($statName) {
+      case 'UserTasksAdvancement':
+        $this->updateUserTasksAdvancement($project);
+        break;
+      case 'UserWorkingCharge':
+        $this->updateUserWorkingCharge($project);
+          break;
+      case 'TasksRepartition':
+        $this->updateTasksRepartition($project);
+          break;
+      case 'BugsUsersRepartition':
+        $this->updateBugsUsersRepartition($project);
+          break;
+      case 'BugAssignationTracker':
+        $this->updateBugAssignationTracker($project);
+          break;
+      case 'BugsTagsRepartition':
+        $this->updateBugsTagsRepartition($project);
+          break;
+      default:
+        return "Error: Bad statName";
+        break;
     }
 
-    return array("result" => "success", "data" => $size);
+    return "Success: Stat '".$statName."' updated.";
   }
 
   private function updateUserTasksAdvancement($project)
@@ -451,11 +564,273 @@ class StatisticController extends RolesAndTokenVerificationController
     return "Data updated";
   }
 
+  private function updateUserWorkingCharge($project)
+  {
+    //em = $this->getDoctrine()->getManager();
+    $em = $this->em;
+
+    $users = $project->getUsers();
+
+    foreach ($users as $key => $user) {
+      $charge = 0;
+      $resources = $user->getRessources();
+      foreach ($resources as $key => $res) {
+        $task = $res->getTask();
+          if ($task->getProjects()->getId() == $project->getId())
+            $charge += $res->getResource();
+      }
+
+      $userFullname = $user->getFirstname().' '.$user->getLastName();
+      $statUserWorkingCharge = $em->getRepository('GrappboxBundle:StatUserWorkingCharge')->findOneBy(array('project' => $project, 'user' => $userFullname));
+      if ($statUserWorkingCharge === null)
+      {
+        $statUserWorkingCharge = new StatUserWorkingCharge();
+        $statUserWorkingCharge->setProject($project);
+        $statUserWorkingCharge->setUser($userFullname);
+      }
+      $statUserWorkingCharge->setCharge($charge);
+
+      $em->persist($statUserWorkingCharge);
+      $em->flush();
+    }
+    return "Data updated";
+  }
+
+  private function updateTasksRepartition($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $users = $project->getUsers();
+
+    $tasks = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
+                   ->where("t.projects = :project")
+                   ->setParameters(array('project' => $project))
+                   ->getQuery()->getResult();
+
+    foreach ($users as $key => $user) {
+      $number = 0;
+      $role = $em->getRepository('GrappboxBundle:ProjectUserRole')->createQueryBuilder('u')
+              ->select('r.name')
+              ->join('GrappboxBundle\Entity\Role', 'r', 'WITH', 'r.id = u.roleId')
+              ->where('u.projectId = :projectId')
+              ->setParameter('projectId', $project->getId())
+              ->setMaxResults(1)
+              ->getQuery()->getResult();
+
+      foreach ($tasks as $key => $task) {
+        foreach ($task->getRessources() as $key => $res) {
+          if ($res->getUser()->getId() == $user->getId())
+            $number += 1;
+        }
+      }
+
+      if (count($tasks) != 0)
+        $percentage = ($number * 100) / count($tasks);
+      else {
+        $percentage = 0;
+      }
+
+      $userFullname = $user->getFirstname().' '.$user->getLastName();
+      $statTasksRepartition = $em->getRepository('GrappboxBundle:StatTasksRepartition')->findOneBy(array('project' => $project, 'user' => $userFullname));
+      if ($statTasksRepartition === null)
+      {
+        $statTasksRepartition = new StatTasksRepartition();
+        $statTasksRepartition->setProject($project);
+        $statTasksRepartition->setUser($userFullname);
+        $statTasksRepartition->setRole($role[0]['name']);
+      }
+      $statTasksRepartition->setValue($number);
+      $statTasksRepartition->setPercentage($percentage);
+
+      $em->persist($statTasksRepartition);
+      $em->flush();
+    }
+    return "Data updated";
+  }
+
+  private function updateBugsUsersRepartition($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $users = $project->getUsers();
+
+    $totalBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                   ->select('count(b)')
+                   ->where("b.projects = :project")
+                   ->setParameters(array('project' => $project))
+                   ->getQuery()->getSingleScalarResult();
+
+    foreach ($users as $key => $user) {
+      if ($totalBugs != 0)
+      {
+        $number = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+                       ->select('count(b)')
+                       ->where("b.projects = :project")
+                       ->andWhere(':user MEMBER OF b.users')
+                       ->setParameters(array('project' => $project, 'user' => $user))
+                       ->getQuery()->getSingleScalarResult();
+
+        $percentage = ($number * 100) / $totalBugs;
+      }
+      else {
+        $number = 0;
+        $percentage = 0;
+      }
+
+      $statBugsTagsRepartition = $em->getRepository('GrappboxBundle:StatBugsUsersRepartition')->findOneBy(array('project' => $project, "user" => $user->getFirstname().' '.$user->getLastName()));
+      if ($statBugsTagsRepartition === null)
+      {
+        $statBugsTagsRepartition = new StatBugsUsersRepartition();
+        $statBugsTagsRepartition->setProject($project);
+        $statBugsTagsRepartition->setUser($user->getFirstname().' '.$user->getLastName());
+      }
+      $statBugsTagsRepartition->setValue($number);
+      $statBugsTagsRepartition->setPercentage($percentage);
+
+      $em->persist($statBugsTagsRepartition);
+      $em->flush();
+    }
+  }
+
+  private function updateBugAssignationTracker($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $bugs = $em->getRepository('GrappboxBundle:Bug')->findBy(array('projects' => $project, 'deletedAt' => NULL));
+
+    $assigned = 0;
+    $unassigned = 0;
+    foreach ($bugs as $key => $bug) {
+      if($bug->getUsers() != null)
+        $assigned += 1;
+      else
+        $unassigned += 1;
+    }
+
+    $statBugAssignationTracker = $em->getRepository('GrappboxBundle:StatBugAssignationTracker')->findOneBy(array('project' => $project));
+    if ($statBugAssignationTracker === null)
+    {
+      $statBugAssignationTracker = new StatBugAssignationTracker();
+      $statBugAssignationTracker->setProject($project);
+    }
+    $statBugAssignationTracker->setAssignedBugs($assigned);
+    $statBugAssignationTracker->setUnassignedBugs($unassigned);
+
+    $em->persist($statBugAssignationTracker);
+    $em->flush();
+
+    return array('assignedBug' => $assigned, "unassignedBug" => $unassigned);
+  }
+
+  private function updateBugsTagsRepartition($project)
+  {
+    $em = $this->getDoctrine()->getManager();
+
+    $tags = $em->getRepository('GrappboxBundle:Tag')->findBy(array('project' => $project));
+
+    $totalBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('t')
+                   ->select('count(t)')
+                   ->where("t.projects = :project")
+                   ->setParameters(array('project' => $project))
+                   ->getQuery()->getSingleScalarResult();
+
+    foreach ($tags as $key => $tag) {
+      $number = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('t')
+                     ->select('count(t)')
+                     ->where("t.projects = :project")
+                     ->andWhere(":tag MEMBER OF t.tags")
+                     ->setParameters(array('project' => $project, 'tag' => $tag))
+                     ->getQuery()->getSingleScalarResult();
+
+      $percentage = ($number * 100) / $totalBugs;
+
+      $statBugsTagsRepartition = $em->getRepository('GrappboxBundle:StatBugsTagsRepartition')->findOneBy(array('project' => $project, 'name' => $tag->getName()));
+      if ($statBugsTagsRepartition === null)
+      {
+        $statBugsTagsRepartition = new StatBugsTagsRepartition();
+        $statBugsTagsRepartition->setProject($project);
+        $statBugsTagsRepartition->setName($tag->getName());
+      }
+      $statBugsTagsRepartition->setValue($number);
+      $statBugsTagsRepartition->setPercentage($percentage);
+
+      $em->persist($statBugsTagsRepartition);
+      $em->flush();
+    }
+  }
+
+  // ------------ CLOUD STATISTICS UPDATE METHODS --------------------
+
+  public function updateCloudStat($projectId, $token, Request $request)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+
+    if ($project === null)
+      return "Error: Bad project Id";
+
+    $this->updateStorageSize($project, $token, $request);
+    return "Success: Stat 'StorrageSize' updated.";
+  }
+
+  private function updateStorageSize($project, $token, Request $request)
+  {
+    $res = $this->calculateStorageSize($project, $token, ",", $request);
+
+    $em = $this->getDoctrine()->getManager();
+    $statStorageSize = $em->getRepository('GrappboxBundle:StatStorageSize')->findOneBy(array('project' => $project));
+
+    if ($statStorageSize === null)
+    {
+      $statStorageSize = new StatStorageSize();
+      $statStorageSize->setProject($project);
+      $statStorageSize->setValue(0);
+    }
+
+    if ($res["result"] != "error")
+    {
+      $statStorageSize->setValue($res["data"]);
+      $em->persist($statStorageSize);
+      $em->flush();
+    }
+
+    return "Data updated";
+  }
+
+  private function calculateStorageSize($project, $token, $path, Request $request)
+  {
+    $response = $this->get('service_cloud')->getListAction($token, $project->getId(), $path, $project->getSafePassword(), $request);
+    $response = json_decode($response->getContent());
+
+    if ($response->info->return_code != "1.3.1")
+         return array("result" => "error", "data" => $response);
+
+    $results = $response->data->array;
+    $size = 0;
+
+    foreach ($results as $key => $result) {
+      if ($result->type == "dir")
+      {
+        $newPath = $path.$result->filename.",";
+        $subResult = $this->calculateStorageSize($project, $token, $newPath, $request);
+
+        if ($subResult['result'] == "error")
+          return $subResult;
+        else
+          $size += $subResult['data'];
+      }
+      else
+        $size += $result->size;
+    }
+
+    return array("result" => "success", "data" => $size);
+  }
+
+
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - DAILY UPDATE
   // -----------------------------------------------------------------------
 
-  // GENERIC DAYLY UPDATE FOR ALL PROJECTS
   public function dailyUpdateAction(Request $request)
   {
     $em = $this->getDoctrine()->getManager();
@@ -463,13 +838,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($projects as $key => $project) {
-      //$result['LateTasks'] = $this->updateLateTasks($project);
-      //$result['BugsEvolution'] = $this->updateBugsEvolution($project);
-      //$result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
-      //$result['StatBugAssignationTracker'] = $this->updateBugAssignationTracker($project);
-      //$result['BugsTagsRepartition'] = $this->updateBugsUsersRepartition($project);
-      //$result['TasksRepartition'] = $this->updateTasksRepartition($project);
-      //$result['UserWorkingCharge'] = $this->updateUserWorkingCharge($project);
+      $result['BugsEvolution'] = $this->updateBugsEvolution($project);
+      $result['LateTasks'] = $this->updateLateTasks($project);
     }
     return $this->setSuccess("1.16.1", "Stat", "dailyUpdate", "Complete Success", $result);
   }
@@ -541,7 +911,7 @@ class StatisticController extends RolesAndTokenVerificationController
     $em = $this->getDoctrine()->getManager();
 
     $date = new DateTime('now');
-    // remove one day
+    //TODO remove one day
 
     $createdBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
                    ->select('count(b)')
@@ -569,205 +939,11 @@ class StatisticController extends RolesAndTokenVerificationController
     return "Data updated";
   }
 
-  private function updateBugsTagsRepartition($project)
-  {
-    $em = $this->getDoctrine()->getManager();
-
-    $tags = $em->getRepository('GrappboxBundle:Tag')->findBy(array('project' => $project));
-
-    $totalBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('t')
-                   ->select('count(t)')
-                   ->where("t.projects = :project")
-                   ->setParameters(array('project' => $project))
-                   ->getQuery()->getSingleScalarResult();
-
-    foreach ($tags as $key => $tag) {
-      $number = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('t')
-                     ->select('count(t)')
-                     ->where("t.projects = :project")
-                     ->andWhere(":tag MEMBER OF t.tags")
-                     ->setParameters(array('project' => $project, 'tag' => $tag))
-                     ->getQuery()->getSingleScalarResult();
-
-      $percentage = ($number * 100) / $totalBugs;
-
-      $statBugsTagsRepartition = $em->getRepository('GrappboxBundle:StatBugsTagsRepartition')->findOneBy(array('project' => $project, 'name' => $tag->getName()));
-      if ($statBugsTagsRepartition === null)
-      {
-        $statBugsTagsRepartition = new StatBugsTagsRepartition();
-        $statBugsTagsRepartition->setProject($project);
-        $statBugsTagsRepartition->setName($tag->getName());
-      }
-      $statBugsTagsRepartition->setValue($number);
-      $statBugsTagsRepartition->setPercentage($percentage);
-
-      $em->persist($statBugsTagsRepartition);
-      $em->flush();
-    }
-  }
-
-  private function updateBugAssignationTracker($project)
-  {
-    $em = $this->getDoctrine()->getManager();
-
-    $bugs = $em->getRepository('GrappboxBundle:Bug')->findBy(array('projects' => $project, 'deletedAt' => NULL));
-
-    $assigned = 0;
-    $unassigned = 0;
-    foreach ($bugs as $key => $bug) {
-      if($bug->getUsers() != null)
-        $assigned += 1;
-      else
-        $unassigned += 1;
-    }
-
-    $statBugAssignationTracker = $em->getRepository('GrappboxBundle:StatBugAssignationTracker')->findOneBy(array('project' => $project));
-    if ($statBugAssignationTracker === null)
-    {
-      $statBugAssignationTracker = new StatBugAssignationTracker();
-      $statBugAssignationTracker->setProject($project);
-    }
-    $statBugAssignationTracker->setAssignedBugs($assigned);
-    $statBugAssignationTracker->setUnassignedBugs($unassigned);
-
-    $em->persist($statBugAssignationTracker);
-    $em->flush();
-
-    return array('assignedBug' => $assigned, "unassignedBug" => $unassigned);
-  }
-
-  private function updateBugsUsersRepartition($project)
-  {
-    $em = $this->getDoctrine()->getManager();
-
-    $users = $project->getUsers();
-
-    $totalBugs = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
-                   ->select('count(b)')
-                   ->where("b.projects = :project")
-                   ->setParameters(array('project' => $project))
-                   ->getQuery()->getSingleScalarResult();
-
-    foreach ($users as $key => $user) {
-      if ($totalBugs != 0)
-      {
-        $number = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
-                       ->select('count(b)')
-                       ->where("b.projects = :project")
-                       ->andWhere(':user MEMBER OF b.users')
-                       ->setParameters(array('project' => $project, 'user' => $user))
-                       ->getQuery()->getSingleScalarResult();
-
-        $percentage = ($number * 100) / $totalBugs;
-      }
-      else {
-        $number = 0;
-        $percentage = 0;
-      }
-
-      $statBugsTagsRepartition = $em->getRepository('GrappboxBundle:StatBugsUsersRepartition')->findOneBy(array('project' => $project));
-      if ($statBugsTagsRepartition === null)
-      {
-        $statBugsTagsRepartition = new StatBugsUsersRepartition();
-        $statBugsTagsRepartition->setProject($project);
-        $statBugsTagsRepartition->setUser($user->getFirstname().' '.$user->getLastName());
-      }
-      $statBugsTagsRepartition->setValue($number);
-      $statBugsTagsRepartition->setPercentage($percentage);
-
-      $em->persist($statBugsTagsRepartition);
-      $em->flush();
-    }
-  }
-
-  private function updateTasksRepartition($project)
-  {
-    $em = $this->getDoctrine()->getManager();
-
-    $users = $project->getUsers();
-
-    $tasks = $em->getRepository('GrappboxBundle:Task')->createQueryBuilder('t')
-                   ->where("t.projects = :project")
-                   ->setParameters(array('project' => $project))
-                   ->getQuery()->getResult();
-
-    foreach ($users as $key => $user) {
-      $number = 0;
-      $role = $em->getRepository('GrappboxBundle:ProjectUserRole')->createQueryBuilder('u')
-              ->select('r.name')
-              ->join('GrappboxBundle\Entity\Role', 'r', 'WITH', 'r.id = u.roleId')
-              ->where('u.projectId = :projectId')
-              ->setParameter('projectId', $project->getId())
-              ->setMaxResults(1)
-              ->getQuery()->getResult();
-
-      foreach ($tasks as $key => $task) {
-        foreach ($task->getRessources() as $key => $res) {
-          if ($res->getUser()->getId() == $user->getId())
-            $number += 1;
-        }
-      }
-
-      if (count($tasks) != 0)
-        $percentage = ($number * 100) / count($tasks);
-      else {
-        $percentage = 0;
-      }
-
-      $userFullname = $user->getFirstname().' '.$user->getLastName();
-      $statTasksRepartition = $em->getRepository('GrappboxBundle:StatTasksRepartition')->findOneBy(array('project' => $project, 'user' => $userFullname));
-      if ($statTasksRepartition === null)
-      {
-        $statTasksRepartition = new StatTasksRepartition();
-        $statTasksRepartition->setProject($project);
-        $statTasksRepartition->setUser($userFullname);
-        $statTasksRepartition->setRole($role[0]['name']);
-      }
-      $statTasksRepartition->setValue($number);
-      $statTasksRepartition->setPercentage($percentage);
-
-      $em->persist($statTasksRepartition);
-      $em->flush();
-    }
-    return "Data updated";
-  }
-
-  private function updateUserWorkingCharge($project)
-  {
-    $em = $this->getDoctrine()->getManager();
-
-    $users = $project->getUsers();
-
-    foreach ($users as $key => $user) {
-      $charge = 0;
-      $resources = $user->getRessources();
-      foreach ($resources as $key => $res) {
-        $task = $res->getTask();
-          if ($task->getProjects()->getId() == $project->getId())
-            $charge += $res->getResource();
-      }
-
-      $userFullname = $user->getFirstname().' '.$user->getLastName();
-      $statUserWorkingCharge = $em->getRepository('GrappboxBundle:StatUserWorkingCharge')->findOneBy(array('project' => $project, 'user' => $userFullname));
-      if ($statUserWorkingCharge === null)
-      {
-        $statUserWorkingCharge = new StatUserWorkingCharge();
-        $statUserWorkingCharge->setProject($project);
-        $statUserWorkingCharge->setUser($userFullname);
-      }
-      $statUserWorkingCharge->setCharge($charge);
-
-      $em->persist($statUserWorkingCharge);
-      $em->flush();
-    }
-    return "Data updated";
-  }
 
   // -----------------------------------------------------------------------
   //                    STATISTICS DATA - WEEKLY UPDATE
   // -----------------------------------------------------------------------
 
-  // GENERIC WEEKLY UPDATE FOR ALL PROJECTS
   public function weeklyUpdateAction(Request $request)
   {
     $em = $this->getDoctrine()->getManager();
@@ -780,7 +956,6 @@ class StatisticController extends RolesAndTokenVerificationController
     return $this->setSuccess("1.16.1", "Stat", "weeklyUpdate", "Complete Success", $result);
   }
 
-  // INDIVIDUAL UPDATE METHODS
   private function updateProjectAdvancement($project)
   {
     $em = $this->getDoctrine()->getManager();
@@ -823,6 +998,34 @@ class StatisticController extends RolesAndTokenVerificationController
 		$em->flush();
 
     return "Data updated";
+  }
+
+
+  // -----------------------------------------------------------------------
+  //                    STATISTICS DATA - INITIATE PROJECT
+  // -----------------------------------------------------------------------
+
+  static function initiateStatistics($project)
+  {
+    // INITIATE CUSTOM UPDATE STAT
+    $this->updateUserTasksAdvancement($project);
+    $this->updateUserWorkingCharge($project);
+    $this->updateTasksRepartition($project);
+    $this->updateBugsUsersRepartition($project);
+    $this->updateBugAssignationTracker($project);
+    $this->updateBugsTagsRepartition($project);
+
+    // INITIATE CLOUD UPDATE STAT
+    $this->updateStorageSize($project, $token, $request);
+
+    // INITIATE DAILY UPDATE STAT
+    $this->updateBugsEvolution($project);
+    $this->updateTasksRepartition($project);
+
+    // INITIATE WEEKLY UDATE STAT
+    $this->updateProjectAdvancement($project);
+
+    return "Statistics initiated";
   }
 
 }

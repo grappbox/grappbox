@@ -34,6 +34,15 @@ class StatBugsEvolution
      */
     private $project;
 
+    public function objectToArray()
+    {
+        return array(
+          "date" => $this->date,
+          "createdBugs" => $this->createdBugs,
+          "closedBugs" => $this->closedBugs
+        );
+    }
+
     /**
      * Get id
      *

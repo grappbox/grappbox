@@ -218,6 +218,8 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->persist($customerTimeline);
 		$em->flush();
 
+		$this->get('service_stat')->initiateStatistics($project);
+
 		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id));
 	}
 

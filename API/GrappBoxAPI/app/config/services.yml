@@ -8,6 +8,10 @@ services:
     class: GrappboxBundle\Controller\CloudController
     calls:
             - [setContainer, ["@service_container"]]
+  service_stat:
+    class: GrappboxBundle\Controller\StatisticController
+    calls:
+            - [setContainer, ["@service_container"]]
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

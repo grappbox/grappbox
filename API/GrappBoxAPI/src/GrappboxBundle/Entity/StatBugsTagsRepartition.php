@@ -35,6 +35,15 @@ class StatBugsTagsRepartition
     private $project;
 
 
+    public function objectToArray()
+    {
+      return array(
+        "name" => $this->name,
+        "value" => $this->value,
+        "percentage" => $this->percentage
+      );
+    }
+
     /**
      * Get id
      *

@@ -44,6 +44,17 @@ class StatUserTasksAdvancement
      */
     private $project;
 
+    public function objectToArray()
+    {
+        return array(
+          "user" => $this->user,
+          "tasksToDo" => $this->tasksToDo,
+          "tasksDoing" => $this->tasksDoing,
+          "tasksDone" => $this->tasksDone,
+          "tasksLate" => $this->tasksLate
+        );
+    }
+
     /**
      * Get id
      *

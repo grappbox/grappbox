@@ -247,6 +247,9 @@ class CloudController extends Controller
 					 ->setDeletionDate(null);
 		$em->persist($stream);
 		$em->flush();
+
+		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - openStreamAction - Complete Success";
 		$response["data"]["stream_id"] = $stream->getId();
@@ -831,6 +834,8 @@ class CloudController extends Controller
 			return new JsonResponse($response);
 		}
 
+		$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
 		return new JsonResponse($response);
@@ -917,6 +922,9 @@ class CloudController extends Controller
 		$flysystem->delete($path);
 		$this->getDoctrine()->getManager()->remove($file);
 		$this->getDoctrine()->getManager()->flush();
+
+		$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
 		return new JsonResponse($response);
@@ -1004,6 +1012,9 @@ class CloudController extends Controller
 		$rpath = "/GrappBox|Projects/".(string)($idProject).(string)($path)."/".$dirName;
 		//HERE Create the dir in the cloud
 		$flysystem->createDir($rpath);
+
+		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - createDirAction - Complete Success";
 		return new JsonResponse($response);

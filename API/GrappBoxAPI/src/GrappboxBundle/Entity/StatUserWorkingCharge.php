@@ -29,6 +29,14 @@ class StatUserWorkingCharge
      */
     private $project;
 
+    public function objectToArray()
+    {
+      return array(
+        "user" => $this->user,
+        "charge" => $this->charge
+      );
+    }
+
     /**
      * Get id
      *

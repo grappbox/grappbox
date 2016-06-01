@@ -1615,6 +1615,11 @@ class TaskController extends RolesAndTokenVerificationController
 		$task->setDeletedAt(new \Datetime);
 
 		$em->flush();
+
+		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+
 		return $this->setSuccess("1.12.1", "Task", "archivetask", "Complete Success", array("id" => $task->getId()));
 	}
 
@@ -1680,6 +1685,11 @@ class TaskController extends RolesAndTokenVerificationController
 		$em->remove($task);
 
 		$em->flush();
+
+		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - taskdelete - Complete Success";
 		return new JsonResponse($response);
@@ -1848,6 +1858,10 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
+		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+
 		return $this->setSuccess("1.12.1", "Task", "assignusertotask", "Complete Success",
 			array("id" => $task->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "percent" => $resource->getResource())));
 	}
@@ -1957,6 +1971,10 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
+		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - removeusertotask - Complete Success";
 		return new JsonResponse($response);
@@ -2057,6 +2075,8 @@ class TaskController extends RolesAndTokenVerificationController
 		$em->persist($tag);
 		$em->flush();
 
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
 		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", array("id" => $tag->getId()));
 	}
 
@@ -2153,6 +2173,8 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$tag->setName($content->name);
 		$em->flush();
+
+		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
 	}
@@ -2286,6 +2308,8 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em->remove($tag);
 		$em->flush();
+
+		$this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - deletetag - Complete Success";

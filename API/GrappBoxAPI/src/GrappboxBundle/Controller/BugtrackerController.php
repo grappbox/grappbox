@@ -330,6 +330,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 		$ticket["users"] = $participants;
 
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
 		return $this->setCreated("1.4.1", "Bugtracker", "postTicket", "Complete Success", $ticket);
 	}
 
@@ -523,6 +527,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "editTicket", "Complete Success", $ticket);
 	}
@@ -1113,6 +1121,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 		$object["users"] = $participants;
 
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+
 		return $this->setSuccess("1.4.1", "Bugtracker", "setParticipants", "Complete Success", $object);
 	}
 
@@ -1196,6 +1207,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - closeTicket - Complete Success";
@@ -2347,6 +2362,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - reopenTicket - Complete Success";
 		return new JsonResponse($response);
@@ -2453,6 +2472,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($tag);
 		$em->flush();
 
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
 		return $this->setCreated("1.4.1", "Bugtracker", "tagCreation", "Complete Success", array("tag_id" => $tag->getId()));
 	}
 
@@ -2549,6 +2570,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$tag->setName($content->name);
 		$em->flush();
+
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "tagUpdate", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
 	}
@@ -2683,6 +2706,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->remove($tag);
 		$em->flush();
 
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - deleteTag - Complete Success";
 		return new JsonResponse($response);
@@ -2815,6 +2840,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
 		return $this->setSuccess("1.4.1", "Bugtracker", "assignTagToBug", "Complete Success",
 			array("id" => $bug->getId(), "tag" => array("id" => $tagToAdd->getId(), "name" => $tagToAdd->getName())));
 	}
@@ -2906,6 +2933,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->removeTag($tagToRemove);
 
 		$em->flush();
+
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - removeTagToBug - Complete Success";
 		return new JsonResponse($response);

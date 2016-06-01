@@ -34,6 +34,15 @@ class StatBugsUsersRepartition
      */
     private $project;
 
+    public function objectToArray()
+    {
+      return array(
+        "user" => $this->user,
+        "value" => $this->value,
+        "percentage" => $this->percentage
+      );
+    }
+
     /**
      * Get id
      *

@@ -44,6 +44,17 @@ class StatProjectAdvancement
      */
     private $project;
 
+    public function objectToArray()
+    {
+      return array(
+        "date" => $this->date,
+        "percentage" => $this->percentage,
+        "progress" => $this->progress,
+        "totalTasks" => $this->totalTasks,
+        "finishedTasks" => $this->finishedTasks,
+      );
+    }
+
     /**
      * Get id
      *

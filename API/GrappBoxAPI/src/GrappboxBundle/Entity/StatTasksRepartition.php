@@ -39,6 +39,16 @@ class StatTasksRepartition
      */
     private $project;
 
+    public function objectToArray()
+    {
+      return array(
+        "user" => $this->user,
+        //"role" => $this->role,
+        "value" => $this->value,
+        "percentage" => $this->percentage
+      );
+    }
+
     /**
      * Get id
      *

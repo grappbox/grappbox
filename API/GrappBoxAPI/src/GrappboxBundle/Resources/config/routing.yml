@@ -770,11 +770,6 @@ v2_stat_dailyUpdate:
     methods: [GET]
 
 
-# FOR DEVELOPMENT ONLY
-v2_stat_instantValues:
-    path:       statistics/update/instant
-    defaults:   { _controller: GrappboxBundle:Statistic:instantUpdate }
-    methods: [GET]
 
 # -----------------------------------------------------------------------
 #                           TASK CONTROLLER
