@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
@@ -21,7 +22,7 @@ import org.json.JSONObject;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class EditBugActivityFragment extends Fragment {
+public class EditBugActivityFragment extends LoadingFragment {
 
     private BugEntity _bug;
 
@@ -135,8 +136,8 @@ public class EditBugActivityFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_edit_bug, container, false);
         Button btn_assignee, btn_category, btn_comments;
         View.OnClickListener assigneeListener, categoryListener, commentListener;
-
-
+        //TODO: Put Loader on EditScreen
+        //startLoading(v, R.id.loader, R.id.lay_assignees, R.id.lay_categories, R.id.lay_comments, R.id.btn_save, R.id.btn_close, R.id.et_description, R.id.et_title, R.id.lay_status);
         _bug = ((EditBugActivity) getActivity()).GetModel();
         assigneeListener = new OnAssigneeClickListener();
         categoryListener = new OnCategoryClickListener();
@@ -145,6 +146,8 @@ public class EditBugActivityFragment extends Fragment {
         btn_assignee = (Button) v.findViewById(R.id.btn_assignee);
         btn_category = (Button) v.findViewById(R.id.btn_categories);
         btn_comments = (Button) v.findViewById(R.id.btn_comments);
+
+
 
         btn_assignee.setOnClickListener(assigneeListener);
         btn_category.setOnClickListener(categoryListener);

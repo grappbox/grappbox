@@ -63,7 +63,7 @@ public class EditBugActivity extends AppCompatActivity {
         }
         if (savedInstanceState == null)
         {
-            _fragmentManager.beginTransaction().replace(R.id.fragment_container, new EditBugActivityFragment()).addToBackStack(null).commit();
+            _fragmentManager.beginTransaction().replace(R.id.fragment_container, new EditBugActivityFragment()).commit();
         }
         String bugId = intent.getStringExtra(BugEntity.EXTRA_GRAPPBOX_BUG_ID);
 

@@ -23,6 +23,12 @@ public class GetUserTicketTask extends AsyncTask<String, Void, String> {
     private BugListAdapter _adapter;
     private Context _context;
     private SwipeRefreshLayout _swiper;
+    private UserTicketTaskListener _listener;
+
+    public interface UserTicketTaskListener
+    {
+        void finished();
+    }
 
     public GetUserTicketTask(Context context, BugListAdapter adapter, boolean needClear)
     {
@@ -38,6 +44,7 @@ public class GetUserTicketTask extends AsyncTask<String, Void, String> {
     {
         _swiper = swiper;
     }
+    public void SetListener(UserTicketTaskListener listener){ _listener = listener; }
 
     @Override
     protected String doInBackground(String... params) {
@@ -91,6 +98,8 @@ public class GetUserTicketTask extends AsyncTask<String, Void, String> {
             }
             if (_swiper != null)
                 _swiper.setRefreshing(false);
+            if (_listener != null)
+                _listener.finished();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

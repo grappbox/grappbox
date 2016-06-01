@@ -2,6 +2,7 @@
 <resources>
     <color name="colorAccent">#FF4081</color>
     <color name="colorGrappboxRed">#c0392b</color>
+    <color name="colorGrappboxTransparent">#00c0392b</color>
     <color name="colorGrappboxBlack">#3c3b3b</color>
     <color name="colorGrappboxGrey">#d9d9d9</color>
     <color name="colorGrappboxGreen">#27ae60</color>

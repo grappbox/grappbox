@@ -2,16 +2,21 @@ package com.grappbox.grappbox.grappbox.BugTracker;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.R;
@@ -22,9 +27,18 @@ import java.util.List;
 /**
  * Created by wieser_m on 18/02/2016.
  */
-public class BugListAdapter extends RecyclerView.Adapter<BugListAdapter.ViewHolder> {
+public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<BugEntity> mDataset;
     private BugTrackerFragment context;
+    private BugListListener _eventListener;
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
+    private boolean isLoading = true;
+
+    public interface BugListListener
+    {
+        void onLoadMore();
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -125,10 +139,50 @@ public class BugListAdapter extends RecyclerView.Adapter<BugListAdapter.ViewHold
         }
     }
 
+    static class LoadingViewHolder extends RecyclerView.ViewHolder {
+        public ProgressBar progressBar;
+
+        public LoadingViewHolder(View itemView) {
+            super(itemView);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progress);
+            Drawable dpb = progressBar.getIndeterminateDrawable();
+            dpb.setColorFilter(ContextCompat.getColor(itemView.getContext(), R.color.colorGrappboxRed), PorterDuff.Mode.OVERLAY);
+            progressBar.setIndeterminateDrawable(dpb);
+        }
+    }
+
     // Provide a suitable constructor (depends on the kind of dataset)
-    public BugListAdapter(BugTrackerFragment context, ArrayList<BugEntity> dataset) {
+    public BugListAdapter(BugTrackerFragment context, ArrayList<BugEntity> dataset, RecyclerView recyclerView) {
         mDataset = dataset;
         this.context = context;
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                Log.e("BugListAdapter", "totalItemCount = " + String.valueOf(totalItemCount));
+                Log.e("BugListAdapter", "lastVisibleItem = " + String.valueOf(lastVisibleItem + 5));
+                if (!isLoading && totalItemCount <= (lastVisibleItem + 5)) {
+                    if (_eventListener != null) {
+                        _eventListener.onLoadMore();
+                    }
+                    isLoading = true;
+                }
+            }
+        });
+    }
+
+    public void setListener(BugListListener listener)
+    {
+        _eventListener = listener;
+    }
+
+    public void setLoaded()
+    {
+        isLoading = false;
     }
 
     public void insertData(BugEntity data, int position)
@@ -154,26 +208,40 @@ public class BugListAdapter extends RecyclerView.Adapter<BugListAdapter.ViewHold
 
     // Create new views (invoked by the layout manager)
     @Override
-    public BugListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_bugtracker_list, parent, false);
-        ViewHolder vh = new ViewHolder(this, (CardView) v);
-        return vh;
+        if (viewType == VIEW_TYPE_ITEM)
+        {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.card_bugtracker_list, parent, false);
+            ViewHolder vh = new ViewHolder(this, (CardView) v);
+            return vh;
+        }
+        View view = LayoutInflater.from(context.getContext()).inflate(R.layout.progress_recyclerviews, parent, false);
+        return new LoadingViewHolder(view);
     }
-
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.ConstructView(context, mDataset.get(position));
+        if (holder instanceof BugListAdapter.ViewHolder)
+            ((BugListAdapter.ViewHolder)holder).ConstructView(context, mDataset.get(position));
+        else if (holder instanceof LoadingViewHolder) {
+            LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
+            loadingViewHolder.progressBar.setIndeterminate(true);
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mDataset.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 }

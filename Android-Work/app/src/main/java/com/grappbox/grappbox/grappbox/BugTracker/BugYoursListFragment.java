@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BugYoursListFragment extends Fragment {
+public class BugYoursListFragment extends LoadingFragment implements GetUserTicketTask.UserTicketTaskListener {
 
     private BugListAdapter bugListAdapter;
     private SwipeRefreshLayout swiper;
@@ -56,6 +57,7 @@ public class BugYoursListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_bug_open_list, container, false);
         swiper = (SwipeRefreshLayout) v.findViewById(R.id.pull_refresher);
+        startLoading(v, R.id.loader, swiper);
         RecyclerView bugListView = (RecyclerView) swiper.findViewById(R.id.lv_buglist);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -70,12 +72,24 @@ public class BugYoursListFragment extends Fragment {
         };
         swiper.setOnRefreshListener(refresher);
         if (bugListAdapter == null)
-            bugListAdapter = new BugListAdapter(_parent, new ArrayList<>());
+            bugListAdapter = new BugListAdapter(_parent, new ArrayList<>(), bugListView);
         bugListView.setAdapter(bugListAdapter);
+        bugListAdapter.setListener(new BugListAdapter.BugListListener() {
+            @Override
+            public void onLoadMore() {
+                GetUserTicketTask task = new GetUserTicketTask(getActivity(), bugListAdapter, false);
+                task.execute();
+            }
+        });
         GetUserTicketTask task = new GetUserTicketTask(getActivity(), bugListAdapter, true);
+        task.SetListener(this);
         task.execute();
 
         return v;
     }
 
+    @Override
+    public void finished() {
+        endLoading();
+    }
 }

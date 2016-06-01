@@ -25,6 +25,12 @@ public class GetLastTicketsTask extends AsyncTask<String, Void, String>{
     private Context _context;
     private SwipeRefreshLayout _swiper;
     private boolean _closed;
+    private LastTicketTaskListener _listener;
+
+    public interface LastTicketTaskListener
+    {
+        void finished();
+    }
 
     public GetLastTicketsTask(Context context, BugListAdapter adapter, boolean needClear, int offset, int limit, boolean... closed)
     {
@@ -39,12 +45,14 @@ public class GetLastTicketsTask extends AsyncTask<String, Void, String>{
         _context = context;
         _swiper = null;
         _api.setVersion("V0.2");
+        _listener = null;
     }
 
     public void SetRefreshSwiper(SwipeRefreshLayout swiper)
     {
         _swiper = swiper;
     }
+    public void SetListener(LastTicketTaskListener listener){ _listener = listener; }
 
     @Override
     protected String doInBackground(String... params) {
@@ -93,15 +101,18 @@ public class GetLastTicketsTask extends AsyncTask<String, Void, String>{
                 return;
             }
             JSONArray array = data.getJSONArray("array");
-            if (array != null)
+            if (array != null && _adapter != null)
             {
                 if (_needClear)
                     _adapter.clearData();
                 for (int i = 0; i < array.length(); ++i)
                     _adapter.insertData(new BugEntity(array.getJSONObject(i)), -1);
+                _adapter.setLoaded();
             }
             if (_swiper != null)
                 _swiper.setRefreshing(false);
+            if (_listener != null)
+                _listener.finished();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

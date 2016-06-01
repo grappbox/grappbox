@@ -10,11 +10,20 @@
     tools:context="com.grappbox.grappbox.grappbox.BugTracker.EditBugActivityFragment">
 
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loader"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/lay_status">
 
         <TextView
             android:layout_width="match_parent"
@@ -34,7 +43,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="by"
             android:id="@+id/txt_owner"
-            android:gravity="right"
+            android:gravity="end"
             android:foregroundGravity="right"
             android:layout_gravity="right"
             android:layout_marginRight="0dp"
@@ -77,19 +86,21 @@
         android:textColor="#fff"
         android:visibility="gone" />
 
-    <FrameLayout
+    <LinearLayout
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="2dp">
+        android:layout_marginTop="2dp"
+        android:id="@+id/lay_assignees"
+        android:orientation="horizontal">
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="See Assignees"
             android:id="@+id/btn_assignee"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="start"
             android:textAlignment="textStart"
             android:background="#ffffff"
             android:layout_weight="1"
@@ -97,14 +108,15 @@
             android:paddingRight="0dp"
             android:paddingLeft="5dp" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:id="@+id/lay_categories">
 
         <Button
             android:layout_width="match_parent"
@@ -116,16 +128,17 @@
             android:paddingRight="0dp"
             android:paddingLeft="5dp"
             android:background="#ffffff"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="start" />
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:id="@+id/lay_comments">
 
         <Button
             android:layout_width="match_parent"
@@ -137,13 +150,13 @@
             android:paddingRight="0dp"
             android:paddingLeft="5dp"
             android:background="#ffffff"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="start"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="0dp"
             android:layout_alignParentTop="true"
             android:layout_marginTop="0dp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <Button
         android:layout_width="match_parent"
