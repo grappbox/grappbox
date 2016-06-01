@@ -273,7 +273,7 @@ class ProjectRepository extends EntityRepository
 			}
 
 			foreach ($bugs as $bug) {
-				if ($bug->getDeletedAt() == $defaultDate)
+				if ($bug->getDeletedAt() == $defaultDate || $bug->getDeletedAt() == null)
 				{
 					$nbBugs++;
 				}

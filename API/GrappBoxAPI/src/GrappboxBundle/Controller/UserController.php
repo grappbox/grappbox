@@ -56,7 +56,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
 	* @apiSuccess {String} linkedin Linkedin of the person
 	* @apiSuccess {String} viadeo Viadeo of the person
@@ -126,7 +126,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
 	* @apiSuccess {String} linkedin Linkedin of the person
 	* @apiSuccess {String} viadeo Viadeo of the person
@@ -182,10 +182,9 @@ class UserController extends RolesAndTokenVerificationController
 
 		$firstName = $userInfos->getFirstname();
 		$lastName = $userInfos->getLastname();
-		if ($userInfos->getBirthday() instanceof DateTime)
-			$birthday = $userInfos->getBirthday()->format('Y-m-d');
-		else
-			$birthday = null;
+		$birthday = $user->getBirthday();
+		if ($birthday!= null)
+			$birthday = $birthday->format('Y-m-d');
 		$avatar = $userInfos->getAvatar();
 		$email = $userInfos->getEmail();
 		$phone = $userInfos->getPhone();
@@ -211,8 +210,9 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiParam {Date} [birthday] Birthday of the person
 	* @apiParam {Text} [avatar] Avatar of the person
 	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [password] Password of the person
-	* @apiParam {Number} [phone] Phone number of the person
+	* @apiParam {String} [oldPassword] Old password of the person. oldPassword and password must be set if you want to change password
+	* @apiParam {String} [password] New password of the person. oldPassword and password must be set if you want to change password
+	* @apiParam {String} [phone] Phone number of the person
 	* @apiParam {String} [country] Country the person in living in
 	* @apiParam {String} [linkedin] Linkedin of the person
 	* @apiParam {String} [viadeo] Viadeo of the person
@@ -226,6 +226,7 @@ class UserController extends RolesAndTokenVerificationController
 	*			"birthday": "1945-06-18",
 	*			"avatar": "10001111001100110010101010",
 	*			"email": "john.doe@gmail.com",
+	*			"oldPassword": "toto",
 	*			"password": "azertyuiop",
 	*			"phone": +33984231475,
 	*			"country": "France",
@@ -257,7 +258,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {Date} birthday Birthday of the person
 	* @apiSuccess {Text} avatar Avatr of the person
 	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {Number} phone Phone number of the person
+	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
 	* @apiSuccess {String} linkedin Linkedin of the person
 	* @apiSuccess {String} viadeo Viadeo of the person
@@ -329,11 +330,15 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setViadeo($content->viadeo);
 		if (array_key_exists('twitter', $content))
 			$user->setTwitter($content->twitter);
-		if (array_key_exists('password', $content))
+		if (array_key_exists('password', $content) && array_key_exists('oldPassword', $content))
 		{
-			$encoder = $this->container->get('security.password_encoder');
-   			$encoded = $encoder->encodePassword($user, $content->password);
-			$user->setPassword($encoded);
+			if ($this->container->get('security.password_encoder')->isPasswordValid($user, $content->oldPassword))
+			{
+				print("op = password\n");
+				$encoder = $this->container->get('security.password_encoder');
+				$encoded = $encoder->encodePassword($user, $content->password);
+				$user->setPassword($encoded);
+			}
 		}
 
 		$em->flush();

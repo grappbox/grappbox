@@ -81,12 +81,12 @@ class EventRepository extends EntityRepository
 		return ($arr);
 	}
 
-	public function findNextMeetingsV2($id, $code, $part, $function)
+	public function findNextMeetingsV2($id, $projectId, $code, $part, $function)
 	{
 		$defaultDate = new \DateTime;
 		$date_end = new \DateTime($defaultDate->format('Y-m-d'));
 		$date_end->add(new \DateInterval('P7D'));
-		$qb = $this->createQueryBuilder('e')->where('e.beginDate < :end_day AND e.endDate > :begin_day')->setParameter('begin_day', $defaultDate)->setParameter('end_day', $date_end)->andWhere('e.deletedAt IS NULL')->orderBy('e.beginDate', 'ASC');;
+		$qb = $this->createQueryBuilder('e')->where('e.projects = :projectId AND e.beginDate < :end_day AND e.endDate > :begin_day')->setParameter('projectId', $projectId)->setParameter('begin_day', $defaultDate)->setParameter('end_day', $date_end)->andWhere('e.deletedAt IS NULL')->orderBy('e.beginDate', 'ASC');
 		$meetings = $qb->getQuery()->getResult();
 
 		$resp = new JsonResponse();
@@ -109,22 +109,14 @@ class EventRepository extends EntityRepository
 
 			if ($creatorId == $id)
 			{
-				$project = $meeting->getProjects();
 				$eventType = $meeting->getEventtypes();
-				$projectName = null;
-				$projectLogo = null;
 
 			 	$typeName = $eventType->getName();
-			 	if ($project)
-			 	{
-					$projectName = $project->getName();
-					//$projectLogo = $project->getLogo();
-				}
 				$eventTitle = $meeting->getTitle();
 				$eventDescription = $meeting->getDescription();
 				$beginDate = $meeting->getBeginDate();
 
-				$arr[] = array("projects" => array("name" => $projectName, "logo" => null), "type" => $typeName, "title" => $eventTitle,
+				$arr[] = array("id" => $meeting->getId(), "type" => $typeName, "title" => $eventTitle,
 					"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 			}
 			else
@@ -136,22 +128,14 @@ class EventRepository extends EntityRepository
 
 					if ($userId == $id)
 					{
-						$project = $meeting->getProjects();
 						$eventType = $meeting->getEventtypes();
-						$projectName = null;
-						$projectLogo = null;
 
 					 	$typeName = $eventType->getName();
-					 	if ($project)
-					 	{
-							$projectName = $project->getName();
-							//$projectLogo = $project->getLogo();
-						}
 						$eventTitle = $meeting->getTitle();
 						$eventDescription = $meeting->getDescription();
 						$beginDate = $meeting->getBeginDate();
 
-						$arr[] = array("projects" => array("name" => $projectName, "logo" => null), "type" => $typeName, "title" => $eventTitle,
+						$arr[] = array("id" => $meeting->getId(), "type" => $typeName, "title" => $eventTitle,
 							"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 					}
 				}

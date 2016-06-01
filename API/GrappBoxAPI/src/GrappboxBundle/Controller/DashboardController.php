@@ -114,18 +114,17 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/dashboard/getnextmeetings/:token Get next meetings
+	* @api {get} /V0.2/dashboard/getnextmeetings/:token/:id Get next meetings
 	* @apiName getNextMeetings
 	* @apiGroup Dashboard
 	* @apiDescription Get all next meetings, in 7 days, of the connected user
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of events
-	* @apiSuccess {Object[]} array.projects Informations of the project of the event
-	* @apiSuccess {String} array.projects.name Name of the project
-	* @apiSuccess {String} array.projects.logo Logo of the project
+	* @apiSuccess {Number} array.Id Id of the event
 	* @apiSuccess {String} array.type Type of the event
 	* @apiSuccess {String} array.title Title of the event
 	* @apiSuccess {String} array.description Description of the event
@@ -142,10 +141,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	*		{
 	*			"array": [
 	*				{
-	*					"projects": {
-	*						"name": "Grappbox",
-	*						"logo": "data"
-	*					},
+	*					"id": 1,
 	*					"type": "Customer",
 	*					"title": "Project presentation",
 	*					"description": "Project presentation to the customer",
@@ -163,13 +159,10 @@ class DashboardController extends RolesAndTokenVerificationController
 	*					}
 	*				},
 	*				{
-	*					"projects": {
-	*						"name": "",
-	*						"logo": ""
-	*					},
-	*					"type": "Personnal",
-	*					"title": "Doctor",
-	*					"description": "Meeting with the doctor for annual full checkup",
+	*					"id": 3,
+	*					"type": "Internal",
+	*					"title": "Weekly meeting",
+	*					"description": "Weekly meeting with the team",
 	*					"begin_date":
 	*					{
 	*						"date":"2015-10-17 11:30:00",
@@ -209,13 +202,13 @@ class DashboardController extends RolesAndTokenVerificationController
 	*	}
 	*
   */
-	public function getNextMeetingsAction(Request $request, $token)
+	public function getNextMeetingsAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("2.2.3", "Dashboard", "getnextmeetings"));
 
-		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetingsV2($user->getId(), "2", "Dashboard", "getnextmeetings");
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Event')->findNextMeetingsV2($user->getId(), $id, "2", "Dashboard", "getnextmeetings");
 	}
 
 	/**
@@ -571,7 +564,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {Date} birthday birthday date of the user
 	* @apiSuccess {String} avatar avatar of the user
 	* @apiSuccess {String} email Email of the user
-	* @apiSuccess {Number} phone Phone number of the user
+	* @apiSuccess {String} phone Phone number of the user
 	* @apiSuccess {String} country Country of the user
 	* @apiSuccess {String} linkedin Linkedin of the user
 	* @apiSuccess {String} viadeo Viadeo of the user
@@ -624,6 +617,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		$avatar = $user->getAvatar();
 		$mail = $user->getEmail();
 		$phone = $user->getPhone();
+		print(gettype($phone));
 		$country = $user->getCountry();
 		$linkedin = $user->getLinkedin();
 		$viadeo = $user->getViadeo();
