@@ -2482,7 +2482,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
-		return $this->setCreated("1.4.1", "Bugtracker", "tagCreation", "Complete Success", array("tag_id" => $tag->getId()));
+		return $this->setCreated("1.4.1", "Bugtracker", "tagCreation", "Complete Success", array("id" => $tag->getId()));
 	}
 
 	/**
