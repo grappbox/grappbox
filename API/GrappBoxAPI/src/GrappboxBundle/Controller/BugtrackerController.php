@@ -2020,7 +2020,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.12.9", "Bugtracker", "getTicketsByUser"));
 
-		$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user));
+		//$tickets = $em->getRepository("GrappboxBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user));
+
+		$tickets = $em->getRepository('GrappboxBundle:Bug')->createQueryBuilder('b')
+									 ->where("b.projects = :project")
+									 ->andWhere(':user MEMBER OF b.users')
+									 ->setParameters(array('project' => $project, 'user' => $userId))
+									 ->getQuery()->getResult();
+
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
