@@ -7,5 +7,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="New CheckBox"
-        android:id="@+id/cb_assigned" />
+        android:id="@+id/cb_assigned"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1" />
+
+    <ImageButton
+        android:src="@drawable/ic_delete_action"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/btn_delete_tag"
+        android:layout_weight="10"
+        android:tint="@color/colorGrappboxRed"
+        android:background="@color/colorGrappboxTransparent"
+        android:visibility="gone" />
 </LinearLayout>

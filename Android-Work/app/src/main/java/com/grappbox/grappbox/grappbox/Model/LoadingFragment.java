@@ -37,7 +37,11 @@ public class LoadingFragment extends Fragment {
 
         for (int id : hideIDs)
             toHide.add(rootView.findViewById(id));
-        _hiddenInLoading = (View[])toHide.toArray();
+        Object[] toConvert = toHide.toArray();
+        _hiddenInLoading = new View[toHide.size()];
+        int i = 0;
+        for (Object obj : toConvert)
+            _hiddenInLoading[i++] = (View) obj;
         for (View v : _hiddenInLoading)
             v.setVisibility(View.GONE);
         _loader = (ProgressBar)rootView.findViewById(progressID);

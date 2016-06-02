@@ -4,10 +4,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.grappbox.grappbox.grappbox.BugTracker.SeeAssigneeFragment">
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/loader"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:visibility="gone" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/scroller" >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

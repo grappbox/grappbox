@@ -35,7 +35,7 @@ public class BugCommentEntity {
         id = data.getString("id");
         authorName = creator.getString("fullname");
         authorId = creator.getString("id");
-        date = jDate.getString("date");
+        date = jDate.getString("date").substring(0, 19);
         title = data.getString("title");
         content = data.getString("description");
     }

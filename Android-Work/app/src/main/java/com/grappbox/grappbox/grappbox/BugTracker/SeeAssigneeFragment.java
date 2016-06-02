@@ -3,6 +3,7 @@ package com.grappbox.grappbox.grappbox.BugTracker;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.R;
 
 import org.json.JSONException;
@@ -23,7 +25,7 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SeeAssigneeFragment extends Fragment {
+public class SeeAssigneeFragment extends LoadingFragment {
     private BugEntity _bug;
 
     public SeeAssigneeFragment() {
@@ -34,6 +36,7 @@ public class SeeAssigneeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
     }
 
     public void InitCheckboxes()
@@ -99,14 +102,35 @@ public class SeeAssigneeFragment extends Fragment {
             getActivity().onBackPressed();
             return v;
         }
-        _bug = ((EditBugActivity) getActivity()).GetModel();
-        GetProjectUserTask task = new GetProjectUserTask(getActivity(), (LinearLayout) v.findViewById(R.id.assignee_container), new OnTaskListener() {
+        startLoading(v, R.id.loader, R.id.scroller);
+        GetTicketTask task = new GetTicketTask(this.getActivity(), new OnTaskListener() {
             @Override
             public void OnTaskEnd(boolean isErrorOccured, String... params) {
-                InitCheckboxes();
+
+                if (isErrorOccured || params.length < 1) {
+                    getActivity().onBackPressed();
+                    return;
+                }
+                try {
+                    JSONObject data = new JSONObject(params[0]);
+                    _bug = new BugEntity(data);
+                    GetProjectUserTask utask = new GetProjectUserTask(getActivity(), (LinearLayout) v.findViewById(R.id.assignee_container), new OnTaskListener() {
+                        @Override
+                        public void OnTaskEnd(boolean isErrorOccured, String... params) {
+                            InitCheckboxes();
+                            endLoading();
+                        }
+                    });
+                    utask.execute();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
-        task.execute();
+        if (getActivity() instanceof EditBugActivity)
+            task.execute(((EditBugActivity) getActivity()).GetModelId());
+
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,8 +144,6 @@ public class SeeAssigneeFragment extends Fragment {
                             return;
                         try {
                             JSONObject data = new JSONObject(params[0]);
-
-                            ((EditBugActivity) getActivity()).RefreshBug();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

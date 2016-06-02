@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
@@ -24,7 +25,7 @@ import org.json.JSONObject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SeeCommentFragment extends Fragment {
+public class SeeCommentFragment extends LoadingFragment {
     private BugCommentAdapter _adapter;
 
     public SeeCommentFragment() {
@@ -39,7 +40,7 @@ public class SeeCommentFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_see_comment, container, false);
         ListView commentList = (ListView) v.findViewById(R.id.lv_comment);
         Button btnNew = (Button) v.findViewById(R.id.btn_comment);
-
+        startLoading(v, R.id.loader, commentList);
         _adapter = new BugCommentAdapter(getContext(), R.layout.li_bug_comment);
         commentList.setAdapter(_adapter);
 
@@ -54,13 +55,15 @@ public class SeeCommentFragment extends Fragment {
 
                     for (int i = 0; i < array.length(); ++i)
                         _adapter.add(new BugCommentEntity(array.getJSONObject(i)));
+                    endLoading();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
         });
-        task.execute(((EditBugActivity)getActivity()).GetModel().GetId());
+        if (getActivity() instanceof EditBugActivity)
+            task.execute(((EditBugActivity)getActivity()).GetModelId());
 
         commentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -121,7 +124,7 @@ public class SeeCommentFragment extends Fragment {
                                 }
                             }
                         });
-                        task.execute(title.getText().toString(), desc.getText().toString(), ((EditBugActivity) getActivity()).GetModel().GetId());
+                        task.execute(title.getText().toString(), desc.getText().toString(), ((EditBugActivity) getActivity()).GetModelId());
                     }
                 });
                 builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
