@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.design.widget.TabLayout;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
@@ -17,6 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.ProtocolException;
+import java.util.Comparator;
 
 /**
  * Created by wieser_m on 17/01/2016.
@@ -26,12 +29,32 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
     private CloudFileAdapter        _adapter;
     private String                  _askedPath;
     private CloudExplorerFragment   _cloudExplorerFragment;
+    private CloudFileListListener   _listener;
+
+    public interface CloudFileListListener
+    {
+        public void onFetchedSuccess();
+    }
 
     GetCloudFileListTask(CloudExplorerFragment context, CloudFileAdapter adapter)
     {
         _adapter = adapter;
         _cloudExplorerFragment = context;
+        _listener = null;
     }
+
+    void SetListener(CloudFileListListener listener)
+    {
+        _listener = listener;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        _cloudExplorerFragment.startLoading(_cloudExplorerFragment.getRootView(), R.id.loader, _cloudExplorerFragment.getRefresher());
+        _cloudExplorerFragment.scrollLast();
+    }
+
     @Override
     protected String doInBackground(String... params) {
         if (params.length < 2)
@@ -40,7 +63,7 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
         String projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
         String path = params[0];
         String passwordSafe = params[1];
-        APIConnectAdapter api = APIConnectAdapter.getInstance();
+        APIConnectAdapter api = APIConnectAdapter.getInstance(true);
 
 
         Log.e("API", path);
@@ -124,12 +147,36 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
                 FileItem file = new FileItem();
 
                 file.fromJson(data.getJSONObject(i));
-
                 _adapter.add(file);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        _adapter.sort(new Comparator<FileItem>() {
+            @Override
+            public int compare(FileItem lhs, FileItem rhs) {
+                int ret = 0;
+                if (lhs.get_type() == rhs.get_type())
+                {
+                    if (lhs.get_filename().equals("Safe"))
+                        return -1;
+                    else if (rhs.get_filename().equals("Safe"))
+                        return 1;
+                    return lhs.get_filename().compareTo(rhs.get_filename());
+                }
+
+                else if (lhs.get_type() == FileItem.EFileType.DIR && rhs.get_type() == FileItem.EFileType.BACK)
+                    return 1;
+                else if (lhs.get_type() == FileItem.EFileType.DIR)
+                    return -1;
+                return 1;
+            }
+        });
+        _cloudExplorerFragment.onRefreshEnd();
+        if (_listener != null)
+            _listener.onFetchedSuccess();
+        if (_askedPath.equals(_cloudExplorerFragment.getPath()))
+            _cloudExplorerFragment.endLoading();
         super.onPostExecute(s);
     }
 }

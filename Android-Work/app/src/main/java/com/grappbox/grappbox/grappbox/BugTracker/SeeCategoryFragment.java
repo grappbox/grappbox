@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,6 +156,7 @@ public class SeeCategoryFragment extends LoadingFragment {
                                 });
                                 cb.setText(tag_title.getText().toString());
                                 cb.SetId(id);
+                                _adapter.addView(lay);
                             }
                         }, getActivity());
                         task.execute(tag_title.getText().toString());
