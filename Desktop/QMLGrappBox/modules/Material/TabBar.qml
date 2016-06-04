@@ -27,6 +27,11 @@ Item {
     property bool centered: false
 
     property var tabs: []
+
+    onTabsChanged: {
+        console.log(tabs)
+    }
+
     property int leftKeyline
 
     property bool isLargeDevice: Device.type == Device.desktop || Device.type == Device.tablet

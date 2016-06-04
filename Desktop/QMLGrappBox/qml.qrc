@@ -10,6 +10,10 @@
         <file>qrc/UserSettings.qml</file>
         <file>qrc/Timeline.qml</file>
         <file>qrc/TimelineBlock.qml</file>
+        <file>qrc/TimelineCommentary.qml</file>
+        <file>qrc/TextArea.qml</file>
+        <file>qrc/TextAreaStyle.qml</file>
+        <file>qrc/InvertedMouseArea.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

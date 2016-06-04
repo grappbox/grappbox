@@ -42,6 +42,8 @@ Item {
 
     signal readMore();
 
+    height: Math.max(iconItem.height, textView.height)
+
     Item {
 
         id: iconItem
