@@ -2,6 +2,7 @@ package com.grappbox.grappbox.grappbox.Timeline;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -41,17 +43,24 @@ public class TimelineListFragment extends TimelineMessage {
     private List<ContentValues> _value = null;
     private TimelineListFragment _currentContext = this;
     private Vector<Integer> _idValue = new Vector<Integer>();
+    private FloatingActionButton _fab;
+    ProgressDialog _progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _rootView = inflater.inflate(R.layout.fragment_list_timeline, container, false);
 
-        FloatingActionButton fab = (FloatingActionButton) _rootView.findViewById(R.id.add_timeline_message);
-        fab.setOnClickListener((View v) -> {
+        _fab = (FloatingActionButton) _rootView.findViewById(R.id.add_timeline_message);
+        _fab.setOnClickListener((View v) -> {
             addMessage();
         });
-
+        _fab.hide();
+        _progress = new ProgressDialog(this.getContext());
+        _progress.setMessage(getString(R.string.login_progress_label));
+        _progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        _progress.setIndeterminate(true);
+        _progress.show();
         return _rootView;
     }
 
@@ -101,6 +110,7 @@ public class TimelineListFragment extends TimelineMessage {
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm");
         SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+        Collections.reverse(listMessage);
         _value = listMessage;
         ArrayList<MessageModel> messageModels = new ArrayList<MessageModel>();
         for (ContentValues item : _value) {
@@ -121,8 +131,12 @@ public class TimelineListFragment extends TimelineMessage {
             messageModels.add(model);
         }
 
+
         MessageAdapter adapter = new MessageAdapter(this.getActivity(), messageModels, getResources(), this);
         message.setAdapter(adapter);
+        message.setSelection(adapter.getCount() - 1);
+        _fab.show();
+        _progress.hide();
     }
 
     public void showCommentMessage(int position)

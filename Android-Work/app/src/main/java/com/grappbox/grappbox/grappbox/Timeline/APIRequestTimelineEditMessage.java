@@ -18,9 +18,10 @@ import java.io.IOException;
 /**
  * Created by tan_f on 17/02/2016.
  */
-public class APIRequestTimelineEditMessage  extends AsyncTask<String, Void, String> {
+public class APIRequestTimelineEditMessage extends AsyncTask<String, Void, String> {
 
     private TimelineMessage _context;
+    private TimelineCommentActivity _contextComment;
     private int _idTimeline;
     private Dialog _dialog;
     private boolean _isComment = false;
@@ -34,9 +35,9 @@ public class APIRequestTimelineEditMessage  extends AsyncTask<String, Void, Stri
         _isComment = false;
     }
 
-    APIRequestTimelineEditMessage(TimelineMessage context, int idTimeline, int idMessage, Dialog dialog)
+    APIRequestTimelineEditMessage(TimelineCommentActivity context, int idTimeline, int idMessage, Dialog dialog)
     {
-        _context = context;
+        _contextComment = context;
         _idTimeline = idTimeline;
         _idMessage = idMessage;
         _dialog = dialog;
@@ -49,7 +50,7 @@ public class APIRequestTimelineEditMessage  extends AsyncTask<String, Void, Stri
         super.onPostExecute(result);
         if (result != null){
             if (_isComment) {
-                APIRequestGetMessageComment apiGet = new APIRequestGetMessageComment(_context, _idTimeline, _idMessage);
+                APIRequestGetCommentMessage apiGet = new APIRequestGetCommentMessage(_contextComment, _idTimeline, _idMessage);
                 apiGet.execute();
             } else {
                 APIRequestGetListMessageTimeline apiGet = new APIRequestGetListMessageTimeline(_context, _idTimeline);
@@ -57,7 +58,11 @@ public class APIRequestTimelineEditMessage  extends AsyncTask<String, Void, Stri
             }
             _dialog.dismiss();
         } else {
-            Context context = _context.getContext();
+            Context context;
+            if (_isComment)
+                context = _contextComment;
+            else
+                context = _context.getContext();
             CharSequence text = "An error occured during the send message";
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
         }

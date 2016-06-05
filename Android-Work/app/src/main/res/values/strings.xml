@@ -244,6 +244,7 @@
     <string name="str_loading_text">Loading...</string>
     <string name="str_team_timeline_title">Team timeline</string>
     <string name="str_customer_timeline_title">Customer timeline</string>
+    <string name="str_edit_message_timeline_option">Edit message</string>
     <string name="str_gantt_title">GANTT</string>
     <string name="str_cloud_title">Cloud</string>
     <string name="str_task_title">Task</string>

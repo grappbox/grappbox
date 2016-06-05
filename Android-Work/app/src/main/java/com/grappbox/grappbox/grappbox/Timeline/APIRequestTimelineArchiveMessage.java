@@ -19,6 +19,7 @@ import java.io.IOException;
 public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, String> {
 
     private TimelineMessage _context;
+    private TimelineCommentActivity _contextComment;
     private int _idMessage;
     private int _idTimeline;
     private Integer _APIRespond;
@@ -33,9 +34,9 @@ public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, St
         _isComment = false;
     }
 
-    APIRequestTimelineArchiveMessage(TimelineMessage context, int idTimeline, int idMessage, int idComment)
+    APIRequestTimelineArchiveMessage(TimelineCommentActivity context, int idTimeline, int idMessage, int idComment)
     {
-        _context = context;
+        _contextComment = context;
         _idMessage = idMessage;
         _idTimeline = idTimeline;
         _idComment = idComment;
@@ -51,7 +52,10 @@ public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, St
             switch (_APIRespond){
                 case 206:
                     CharSequence text = "No timeline exist for this project";
-                    Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
+                    if (_isComment)
+                        Toast.makeText(_contextComment, text, Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
                     break;
 
                 default:
@@ -59,11 +63,13 @@ public class APIRequestTimelineArchiveMessage extends AsyncTask<String, Void, St
             }
             return;
         }
-        Toast.makeText(_context.getContext(), "Archive message complete", Toast.LENGTH_SHORT).show();
+
         if (_isComment) {
-            APIRequestGetMessageComment apiGet = new APIRequestGetMessageComment(_context, _idTimeline, _idMessage);
+            Toast.makeText(_contextComment, "Archive message complete", Toast.LENGTH_SHORT).show();
+            APIRequestGetCommentMessage apiGet = new APIRequestGetCommentMessage(_contextComment, _idTimeline, _idMessage);
             apiGet.execute();
         } else {
+            Toast.makeText(_context.getContext(), "Archive message complete", Toast.LENGTH_SHORT).show();
             APIRequestGetListMessageTimeline apiGet = new APIRequestGetListMessageTimeline(_context, _idTimeline);
             apiGet.execute();
         }

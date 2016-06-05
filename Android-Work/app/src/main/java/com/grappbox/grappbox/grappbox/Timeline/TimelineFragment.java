@@ -65,17 +65,14 @@ public class TimelineFragment extends Fragment {
 
     public void TimelineShowCommentMessage(int idMessage, int idTimeline, String titleMessage, String contentMessage)
     {
-        Fragment fragment = new TimelineCommentFragment();
-        android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
-        android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+        Intent intent = new Intent(getActivity(), TimelineCommentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt("idTimeline", idTimeline);
         bundle.putInt("idMessage", idMessage);
         bundle.putString("titleMessage", titleMessage);
         bundle.putString("contentMessage", contentMessage);
-        fragment.setArguments(bundle);
-
-        ft.replace(R.id.content_frame, fragment).commit();
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private class TimelinePagerAdapter extends FragmentPagerAdapter {

@@ -19,12 +19,12 @@ import java.io.IOException;
  */
 public class APIRequestAddMessageComment extends AsyncTask<String, Void, String> {
 
-    private TimelineCommentFragment _context;
+    private TimelineCommentActivity _context;
     private int _idTimeline;
     private int _idMessage;
     private Dialog _dialog;
 
-    APIRequestAddMessageComment(TimelineCommentFragment context, int idTimeline, int idMessage, Dialog dialog)
+    APIRequestAddMessageComment(TimelineCommentActivity context, int idTimeline, int idMessage, Dialog dialog)
     {
         _context = context;
         _idTimeline = idTimeline;
@@ -36,10 +36,10 @@ public class APIRequestAddMessageComment extends AsyncTask<String, Void, String>
     protected void onPostExecute(String result)
     {
         super.onPostExecute(result);
-        Context context = _context.getContext();
+        Context context = _context;
 
         if (result != null){
-            APIRequestGetMessageComment getApi = new APIRequestGetMessageComment(_context, _idTimeline, _idMessage);
+            APIRequestGetCommentMessage getApi = new APIRequestGetCommentMessage(_context, _idTimeline, _idMessage);
             getApi.execute();
             CharSequence text = "Comment send success";
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
