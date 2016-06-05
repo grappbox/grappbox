@@ -62,9 +62,9 @@ public class BugEntity {
         _title = data.getString("title");
         _description = data.getString("description");
         _parentId = data.getString("parentId");
-        _createdAt = createdAt.getString("date");
-        _editedAt = (editedAt == null ? null : editedAt.getString("date"));
-        _deletedAt = (deletedAt == null ? null : deletedAt.getString("date"));
+        _createdAt = createdAt.getString("date").substring(0, 10);
+        _editedAt = (editedAt == null ? null : editedAt.getString("date").substring(0, 10));
+        _deletedAt = (deletedAt == null ? null : deletedAt.getString("date").substring(0, 10));
         _creatorId = creator.getString("id");
         _creatorFullname = creator.getString("fullname");
 

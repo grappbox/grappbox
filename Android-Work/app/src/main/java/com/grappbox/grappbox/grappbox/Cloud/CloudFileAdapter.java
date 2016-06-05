@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.R;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,4 +62,9 @@ public class CloudFileAdapter extends ArrayAdapter<FileItem> {
         return v;
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+
+        super.notifyDataSetChanged();
+    }
 }

@@ -14,60 +14,48 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 /**
- * Created by wieser_m on 19/02/2016.
+ * Created by wieser_m on 31/05/2016.
  */
-public class GetLastTicketsTask extends AsyncTask<String, Void, String>{
 
-    private int _offset, _limit;
-    private APIConnectAdapter   _api;
+public class GetUserTicketTask extends AsyncTask<String, Void, String> {
+    private APIConnectAdapter _api;
     private boolean _needClear;
     private BugListAdapter _adapter;
     private Context _context;
     private SwipeRefreshLayout _swiper;
-    private boolean _closed;
-    private LastTicketTaskListener _listener;
+    private UserTicketTaskListener _listener;
 
-    public interface LastTicketTaskListener
+    public interface UserTicketTaskListener
     {
         void finished();
     }
 
-    public GetLastTicketsTask(Context context, BugListAdapter adapter, boolean needClear, int offset, int limit, boolean... closed)
+    public GetUserTicketTask(Context context, BugListAdapter adapter, boolean needClear)
     {
-        _closed = false;
-        if (closed.length > 0)
-            _closed = closed[0];
-        _offset = offset;
-        _limit = limit;
         _api = APIConnectAdapter.getInstance(true);
         _adapter = adapter;
         _needClear = needClear;
         _context = context;
         _swiper = null;
         _api.setVersion("V0.2");
-        _listener = null;
     }
 
     public void SetRefreshSwiper(SwipeRefreshLayout swiper)
     {
         _swiper = swiper;
     }
-    public void SetListener(LastTicketTaskListener listener){ _listener = listener; }
+    public void SetListener(UserTicketTaskListener listener){ _listener = listener; }
 
     @Override
     protected String doInBackground(String... params) {
-        String token, id, state, offset, limit;
+        String token, id, user;
 
         token = SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN);
         id = String.valueOf(SessionAdapter.getInstance().getCurrentSelectedProject());
-        state = "1";
-        offset = String.valueOf(_offset);
-        limit = String.valueOf(_limit);
+        user = SessionAdapter.getInstance().getUserID();
+
         try {
-            if (_closed)
-                _api.startConnection("bugtracker/getlastclosedtickets/" + token + "/" + id + "/" + offset + "/" + limit);
-            else
-                _api.startConnection("bugtracker/getticketsbystate/" + token + "/" + id + "/" + state + "/" + offset + "/" + limit);
+            _api.startConnection("bugtracker/getticketsbyuser/"+token+"/"+id+"/"+user);
             _api.setRequestConnection("GET");
             return _api.getInputSream();
         } catch (IOException e) {
@@ -101,13 +89,12 @@ public class GetLastTicketsTask extends AsyncTask<String, Void, String>{
                 return;
             }
             JSONArray array = data.getJSONArray("array");
-            if (array != null && _adapter != null)
+            if (array != null)
             {
                 if (_needClear)
                     _adapter.clearData();
                 for (int i = 0; i < array.length(); ++i)
                     _adapter.insertData(new BugEntity(array.getJSONObject(i)), -1);
-                _adapter.setLoaded();
             }
             if (_swiper != null)
                 _swiper.setRefreshing(false);

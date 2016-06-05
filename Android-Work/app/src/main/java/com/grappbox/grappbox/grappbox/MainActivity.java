@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
             }
+
             MenuItem item_settings = menu.add(R.string.str_project_settings).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_settings, getTheme()));
             item_settings.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity
         _bMenuClosed = true;
         _toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(_toolbar);
-        changeToolbarTitle("Grappbox");
+
         _projectMenuList = new ArrayList<>();
 
         _Drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -213,8 +214,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) { OnHeaderClicked(v); }
         });
 
-
-
         if (this.getIntent() != null)
         {
             Intent loader = this.getIntent();
@@ -224,8 +223,7 @@ public class MainActivity extends AppCompatActivity
                 CloudExplorerFragment fragment = new CloudExplorerFragment();
                 fragment.setPath(cloudPath);
                 _fragmentManager = getSupportFragmentManager();
-                changeToolbarTitle("Cloud");
-                _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
+                _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 return;
             }
         }
@@ -257,8 +255,6 @@ public class MainActivity extends AppCompatActivity
         _actionBarDrawerToggle.syncState();
     }
 
-
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -280,6 +276,20 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.e("MainActivity", "onSaveInstanceState : " + _toolbar.getTitle().toString());
+        outState.putString("activity_title", _toolbar.getTitle().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.e("MainActivity", "onRestoreInstanceState : " + savedInstanceState.getString("activity_title"));
+        getSupportActionBar().setTitle(savedInstanceState.getString("activity_title"));
     }
 
     @Override
@@ -383,11 +393,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackStackChanged() {
+        if (_fragmentManager == null)
+            _fragmentManager = getSupportFragmentManager();
         Fragment fragment = _fragmentManager.findFragmentById(R.id.content_frame);
-        Log.i("MainActivity", "onBackStackChanged called!");
         if (fragment == null)
             return;
-        Log.i("MainActivity", "fragment not null");
         _toolbarTitleHandler.get(fragment.getClass().getName()).run();
     }
 

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorGrappboxRed">#c0392b</color>
+    <color name="colorGrappboxTransparent">#00c0392b</color>
     <color name="colorGrappboxBlack">#3c3b3b</color>
     <color name="colorGrappboxGrey">#d9d9d9</color>
     <color name="colorGrappboxGreen">#27ae60</color>
@@ -61,9 +60,5 @@
         <item>@color/Grey_80</item>
         <item>@color/Black</item>
     </array>
-
-    <color name="green_calendar">#8FCC85</color>
-    <color name="blue_calendar">#ff33b5e5</color>
-    <color name="white_calendar">#ffffff</color>
 
 </resources>

@@ -76,6 +76,7 @@ public class CreateBugTask extends AsyncTask<String, Void, String> {
             data.put("description", _description);
             data.put("stateId", 1);
             data.put("stateName", "");
+            data.put("clientOrigin", false);
             json.put("data", data);
             _api.startConnection("bugtracker/postticket");
             _api.setRequestConnection("POST");

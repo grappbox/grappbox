@@ -1,24 +1,23 @@
 package com.grappbox.grappbox.grappbox.BugTracker;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.R;
 
-public class BugOpenListFragment extends Fragment {
+import java.util.ArrayList;
+
+public class BugOpenListFragment extends LoadingFragment implements GetLastTicketsTask.LastTicketTaskListener {
     private BugListAdapter bugListAdapter;
     public SwipeRefreshLayout.OnRefreshListener refresher;
     private BugTrackerFragment _parent;
-
+    private int offset = 6;
     public BugOpenListFragment() {
         // Required empty public constructor
     }
@@ -40,42 +39,50 @@ public class BugOpenListFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        BugOpenListFragment currentFrag = this;
         View v = inflater.inflate(R.layout.fragment_bug_open_list, container, false);
         SwipeRefreshLayout swiper = (SwipeRefreshLayout) v.findViewById(R.id.pull_refresher);
-        ListView bugListView = (ListView) swiper.findViewById(R.id.lv_buglist);
-        bugListView.setClickable(true);
-        bugListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BugEntity bug = (BugEntity) parent.getItemAtPosition(position);
-
-                if (!bug.IsValid())
-                    return;
-                Intent intent = new Intent(getContext(), EditBugActivity.class);
-                intent.putExtra(BugEntity.EXTRA_GRAPPBOX_BUG_ID, bug.GetId());
-                startActivity(intent);
-            }
-        });
+        startLoading(v, R.id.loader, swiper);
+        RecyclerView bugListView = (RecyclerView) swiper.findViewById(R.id.lv_buglist);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        bugListView.setLayoutManager(layoutManager);
         refresher = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20);
                 task.SetRefreshSwiper(swiper);
+                offset = 21;
                 task.execute();
             }
         };
         swiper.setOnRefreshListener(refresher);
         if (bugListAdapter == null)
-            bugListAdapter = new BugListAdapter(getContext(), R.layout.lvitem_bug);
+            bugListAdapter = new BugListAdapter(_parent, new ArrayList<>(), bugListView);
+        bugListAdapter.setListener(new BugListAdapter.BugListListener() {
+            @Override
+            public void onLoadMore() {
+                GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, false, offset, offset + 20, true);
+                task.execute();
+                offset += 20;
+            }
+        });
         bugListView.setAdapter(bugListAdapter);
-        bugListAdapter.SetParentFragment(_parent);
         GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20);
+        task.SetListener(this);
         task.execute();
 
         return v;
+    }
+
+    @Override
+    public void finished() {
+        endLoading();
     }
 }

@@ -9,8 +9,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.OpenableColumns;
+import android.support.design.widget.TabItem;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -23,13 +29,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.grappbox.grappbox.grappbox.MainActivity;
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CloudExplorerFragment extends Fragment {
+public class CloudExplorerFragment extends LoadingFragment implements TabLayout.OnTabSelectedListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String _APISafeDirectoryPath = "/Safe";
     public static final String CLOUDEXPLORER_PATH = "key_cloudexplorer_path";
@@ -37,7 +44,10 @@ public class CloudExplorerFragment extends Fragment {
     private CloudFileAdapter _adapter;
     private GetCloudFileListTask _currentLSTask = null;
     private String _safePassword = "";
+    private SwipeRefreshLayout _refresher;
     CloudExplorerFragment _childrenContext;
+    private View _root;
+    private TabLayout          _tabs;
 
     public CloudExplorerFragment() {
         _path = "/";
@@ -46,7 +56,12 @@ public class CloudExplorerFragment extends Fragment {
     public void setPath(String path)
     {
         _path = path;
+        synchronizeBreacrumb();
     }
+
+    public String getPath() { return _path; }
+
+    public TabLayout getTabs() { return _tabs; }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +76,7 @@ public class CloudExplorerFragment extends Fragment {
 
     public void resetPath()
     {
-        _path = "/";
+        setPath("/");
     }
 
     private void handleSafe(GetCloudFileListTask currentTask)
@@ -114,7 +129,8 @@ public class CloudExplorerFragment extends Fragment {
         Collections.addAll(list, path);
 
         list.remove(list.size() - 1);
-        _path = TextUtils.join("/", list.toArray());
+        _tabs.removeTabAt(_tabs.getTabCount() - 1);
+        setPath(TextUtils.join("/", list.toArray()));
     }
 
     public void createDirectory()
@@ -226,12 +242,25 @@ public class CloudExplorerFragment extends Fragment {
         startActivityForResult(intent, MainActivity.PICK_DOCUMENT_SECURED_FROM_SYSTEM);
     }
 
+    public void onRefreshEnd()
+    {
+        _refresher.setRefreshing(false);
+    }
+
+    public SwipeRefreshLayout getRefresher() { return _refresher; }
+    public View getRootView() { return _root; }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_cloud_explorer, container, false);
+        _root = view;
         ListView list = (ListView) view.findViewById(R.id.cloudexplorer_itemlist);
+        CloudExplorerFragment me = this;
+        _refresher = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
+        startLoading(view, R.id.loader, _refresher);
+
         final CloudFileAdapter adapter = new CloudFileAdapter(getContext(), R.id.cloudexplorer_item_filename);
         ImageButton btnCreateDir = (ImageButton) view.findViewById(R.id.btn_createDir);
         ImageButton btnUpload = (ImageButton) view.findViewById(R.id.btn_import);
@@ -239,6 +268,19 @@ public class CloudExplorerFragment extends Fragment {
 
         _adapter = adapter;
         GetCloudFileListTask task = new GetCloudFileListTask(this, adapter);
+        task.SetListener(new GetCloudFileListTask.CloudFileListListener() {
+            @Override
+            public void onFetchedSuccess() {
+                endLoading();
+            }
+        });
+        _refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                GetCloudFileListTask refreshTask = new GetCloudFileListTask(me, adapter);
+                refreshTask.execute(_path, _safePassword);
+            }
+        });
         if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
             handleSafe(task);
         else
@@ -263,7 +305,6 @@ public class CloudExplorerFragment extends Fragment {
                 importFileSecure();
             }
         });
-
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -285,7 +326,6 @@ public class CloudExplorerFragment extends Fragment {
                 return false;
             }
         });
-
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -296,7 +336,7 @@ public class CloudExplorerFragment extends Fragment {
                 {
                     goToParent();
                     if (_path == "")
-                        _path = "/";
+                        resetPath();
                     GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
                     if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
                         handleSafe(task);
@@ -305,9 +345,9 @@ public class CloudExplorerFragment extends Fragment {
                 }
                 else if (clickedItem.get_type() == FileItem.EFileType.DIR) {
                     if (_path == "/")
-                        _path += clickedItem.get_filename();
+                        setPath(_path + clickedItem.get_filename());
                     else
-                        _path += ("/" + clickedItem.get_filename());
+                        setPath(_path + "/" + clickedItem.get_filename());
                     GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
                     if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
                         handleSafe(task);
@@ -387,7 +427,24 @@ public class CloudExplorerFragment extends Fragment {
 
         });
 
+        //Set tabs for breadcrumbs
+        _tabs = (TabLayout) view.findViewById(R.id.breadcrumb);
+        _tabs.setOnTabSelectedListener(this);
+        synchronizeBreacrumb();
         return view;
+    }
+
+    public void scrollLast()
+    {
+        if (_tabs == null)
+            return;
+        _tabs.setSmoothScrollingEnabled(true);
+        new Handler().postDelayed(
+                new Runnable() {
+                    @Override public void run() {
+                        _tabs.getTabAt(_tabs.getTabCount() - 1).select();
+                    }
+                }, 100);
     }
 
     @Override
@@ -398,5 +455,66 @@ public class CloudExplorerFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    public void synchronizeBreacrumb()
+    {
+        String[] pathArray = _path.split("/");
+        int tabCount = _tabs.getTabCount();
+
+        if (pathArray.length < tabCount)
+        {
+            for (int i = _tabs.getTabCount() - 1; i > pathArray.length; --i)
+            {
+                if (_tabs.getTabAt(i).getText().toString().equals("/"))
+                    continue;
+                Log.e("Synchro", _tabs.getTabAt(i).getText().toString() + " Removed!");
+                _tabs.removeTabAt(i);
+            }
+
+        }
+        else if (pathArray.length > tabCount)
+        {
+            for (int i = tabCount; i < pathArray.length; ++i)
+            {
+                String addstr = pathArray[i];
+                if (addstr.length() == 0)
+                    continue;
+                if (addstr.charAt(addstr.length() - 1) != '/')
+                    addstr += "/";
+                _tabs.addTab(_tabs.newTab().setText(addstr), i == (pathArray.length - 1));
+            }
+        }
+    }
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+
+        int index = tab.getPosition();
+        String newPath = "";
+
+        for (int i = 0; i <= index; ++i)
+            newPath += _tabs.getTabAt(i).getText().toString();
+        if (newPath.equals(_path))
+            return;
+        Log.e("TabSelected", newPath);
+        setPath(newPath);
+        for (int i = _tabs.getTabCount() - 1; i > 0; --i)
+        {
+            if (_tabs.getTabAt(i).isSelected())
+                break;
+            _tabs.removeTabAt(i);
+        }
+        GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
+        task.execute(_path, _safePassword);
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 }

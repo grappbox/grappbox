@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
@@ -78,8 +79,26 @@ public class GetBugTagTask extends AsyncTask<String, Void, String> {
                     JSONObject current = array.getJSONObject(i);
                     View lay = LayoutInflater.from(_context).inflate(R.layout.li_checkable_item, null);
                     BugIdCheckbox cb = (BugIdCheckbox) lay.findViewById(R.id.cb_assigned);
+                    ImageButton btnDelete = (ImageButton) lay.findViewById(R.id.btn_delete_tag);
+                    btnDelete.setVisibility(View.VISIBLE);
+                    String tagId = current.getString("id");
+                    btnDelete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int position = _adapter.indexOfChild(lay);
+                            _adapter.removeView(lay);
+                            DeleteTagTask deleteTask = new DeleteTagTask(_context, new DeleteTagTask.DeleteTagListener() {
+                                @Override
+                                public void onDeletionEnd(boolean success) {
+                                    if (!success)
+                                        _adapter.addView(lay, position);
+                                }
+                            });
+                            deleteTask.execute(tagId);
+                        }
+                    });
                     cb.setText(current.getString("name"));
-                    cb.SetId(current.getString("id"));
+                    cb.SetId(tagId);
                     _adapter.addView(lay);
                 }
                 if (_listener != null)

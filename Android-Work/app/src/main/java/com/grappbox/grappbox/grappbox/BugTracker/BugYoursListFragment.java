@@ -1,11 +1,11 @@
 package com.grappbox.grappbox.grappbox.BugTracker;
 
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +15,17 @@ import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
 
-public class BugClosedListFragment extends LoadingFragment implements GetLastTicketsTask.LastTicketTaskListener {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class BugYoursListFragment extends LoadingFragment implements GetUserTicketTask.UserTicketTaskListener {
+
     private BugListAdapter bugListAdapter;
     private SwipeRefreshLayout swiper;
     public SwipeRefreshLayout.OnRefreshListener refresher;
     private BugTrackerFragment _parent;
-    private int offset = 21;
-    public BugClosedListFragment() {
+
+    public BugYoursListFragment() {
         // Required empty public constructor
     }
 
@@ -31,7 +35,7 @@ public class BugClosedListFragment extends LoadingFragment implements GetLastTic
         return fragment;
     }
 
-    public BugClosedListFragment SetParent(BugTrackerFragment parent)
+    public BugYoursListFragment SetParent(BugTrackerFragment parent)
     {
         _parent = parent;
         return this;
@@ -51,7 +55,6 @@ public class BugClosedListFragment extends LoadingFragment implements GetLastTic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View v = inflater.inflate(R.layout.fragment_bug_open_list, container, false);
         swiper = (SwipeRefreshLayout) v.findViewById(R.id.pull_refresher);
         startLoading(v, R.id.loader, swiper);
@@ -62,10 +65,9 @@ public class BugClosedListFragment extends LoadingFragment implements GetLastTic
         refresher = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20, true);
+                GetUserTicketTask task = new GetUserTicketTask(getActivity(), bugListAdapter, true);
                 task.SetRefreshSwiper(swiper);
                 task.execute();
-                offset = 21;
             }
         };
         swiper.setOnRefreshListener(refresher);
@@ -75,12 +77,11 @@ public class BugClosedListFragment extends LoadingFragment implements GetLastTic
         bugListAdapter.setListener(new BugListAdapter.BugListListener() {
             @Override
             public void onLoadMore() {
-                GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, false, offset, offset + 20, true);
+                GetUserTicketTask task = new GetUserTicketTask(getActivity(), bugListAdapter, false);
                 task.execute();
-                offset += 20;
             }
         });
-        GetLastTicketsTask task = new GetLastTicketsTask(getActivity(), bugListAdapter, true, 0, 20, true);
+        GetUserTicketTask task = new GetUserTicketTask(getActivity(), bugListAdapter, true);
         task.SetListener(this);
         task.execute();
 

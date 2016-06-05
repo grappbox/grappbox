@@ -32,7 +32,7 @@ public class TaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_task, container, false);
-        getActivity().setTitle("Task - List");
+
         recycler = (RecyclerView) v.findViewById(R.id.tasklist_recycler);
         layoutManager = new LinearLayoutManager(getActivity());
         recycler.setLayoutManager(layoutManager);

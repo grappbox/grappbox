@@ -1,25 +1,65 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.grappbox.grappbox.grappbox.BugTracker.SeeAssigneeFragment">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/category_container"
-            android:orientation="vertical" />
-    </ScrollView>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.grappbox.grappbox.grappbox.BugTracker.SeeAssigneeFragment"
+    android:id="@+id/constraintLayout">
+
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loader"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+        app:layout_constraintRight_toRightOf="@+id/constraintLayout"
+        app:layout_constraintBottom_toTopOf="@+id/btn_save" />
+
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:text="Save and go back"
         android:id="@+id/btn_save"
         android:textColor="#fff"
         android:background="@color/colorGrappboxBlack"
-        android:layout_weight="10" />
-</LinearLayout>
+        app:layout_constraintLeft_toLeftOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+        app:layout_constraintRight_toRightOf="@+id/constraintLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/scroller"
+        android:fillViewport="false"
+        app:layout_constraintLeft_toLeftOf="@+id/constraintLayout"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+        app:layout_constraintRight_toRightOf="@+id/constraintLayout"
+        app:layout_constraintBottom_toTopOf="@+id/btn_save">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/category_container"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+    <android.support.design.widget.FloatingActionButton
+        android:src="@drawable/ic_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:id="@+id/add_tag"
+        app:backgroundTint="@color/colorGrappboxGreen"
+        app:fabSize="normal"
+        android:tint="#ffffff"
+        app:layout_constraintRight_toRightOf="@+id/constraintLayout"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_save"
+        android:layout_marginBottom="32dp" />
+</android.support.constraint.ConstraintLayout>

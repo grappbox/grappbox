@@ -54,6 +54,7 @@
     <string-array name="bugtracker_list_tabs">
         <item>Open</item>
         <item>Closed</item>
+        <item>Yours</item>
     </string-array>
     <string-array name="bugtracker_comment_choice_universal">
         <item>action_edit</item>

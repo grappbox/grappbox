@@ -5,13 +5,16 @@ import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
@@ -21,7 +24,7 @@ import org.json.JSONObject;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class EditBugActivityFragment extends Fragment {
+public class EditBugActivityFragment extends LoadingFragment {
 
     private BugEntity _bug;
 
@@ -29,15 +32,23 @@ public class EditBugActivityFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     public void SetBugEntity(BugEntity bugEntity)
     {
         TextView title, description;
         View v;
 
-        assert getView() != null;
+
         v = getView();
-        title = (TextView) getView().findViewById(R.id.et_title);
-        description = (TextView) getView().findViewById(R.id.et_description);
+        if (v == null)
+            return;
+        title = (TextView) v.findViewById(R.id.et_title);
+        description = (TextView) v.findViewById(R.id.et_description);
 
         _bug = bugEntity;
         title.setText(_bug.GetTitle());
@@ -127,9 +138,8 @@ public class EditBugActivityFragment extends Fragment {
         View v =  inflater.inflate(R.layout.fragment_edit_bug, container, false);
         Button btn_assignee, btn_category, btn_comments;
         View.OnClickListener assigneeListener, categoryListener, commentListener;
-
-
-        _bug = ((EditBugActivity) getActivity()).GetModel();
+        //TODO: Put Loader on EditScreen
+        startLoading(v, R.id.loader, R.id.lay_assignees, R.id.lay_categories, R.id.lay_comments, R.id.btn_save, R.id.btn_close, R.id.et_description, R.id.et_title, R.id.lay_status);
         assigneeListener = new OnAssigneeClickListener();
         categoryListener = new OnCategoryClickListener();
         commentListener = new OnCommentClickListener();
@@ -138,6 +148,32 @@ public class EditBugActivityFragment extends Fragment {
         btn_category = (Button) v.findViewById(R.id.btn_categories);
         btn_comments = (Button) v.findViewById(R.id.btn_comments);
 
+        GetTicketTask task = new GetTicketTask(this.getActivity(), new OnTaskListener() {
+            @Override
+            public void OnTaskEnd(boolean isErrorOccured, String... params) {
+
+                if (isErrorOccured || params.length < 1) {
+                    getActivity().onBackPressed();
+                    return;
+                }
+                try {
+                    JSONObject data = new JSONObject(params[0]);
+                    _bug = new BugEntity(data);
+                    if (getActivity() instanceof EditBugActivity)
+                    {
+                        ActionBar toolbar = ((EditBugActivity) getActivity()).getSupportActionBar();
+                        toolbar.setTitle("Edit " + _bug.GetTitle());
+                    }
+                    SetBugEntity(_bug);
+                    endLoading();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        if (getActivity() instanceof EditBugActivity)
+            task.execute(((EditBugActivity) getActivity()).GetModelId());
         btn_assignee.setOnClickListener(assigneeListener);
         btn_category.setOnClickListener(categoryListener);
         btn_comments.setOnClickListener(commentListener);

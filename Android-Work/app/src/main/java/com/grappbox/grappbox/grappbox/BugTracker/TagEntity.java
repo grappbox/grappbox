@@ -1,7 +1,11 @@
 package com.grappbox.grappbox.grappbox.BugTracker;
 
+import android.graphics.Color;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Random;
 
 /**
  * Created by wieser_m on 18/02/2016.
@@ -10,11 +14,28 @@ public class TagEntity {
     String  _id;
     String  _name;
     String  _projectId;
+    String _color;
     boolean _onBug;
 
     public TagEntity()
     {
         _id = "";
+    }
+
+    private String randomColor()
+    {
+        String[] chars = {"a", "b", "c", "d", "e", "f"};
+        Random rnd = new Random();
+        String ret = "";
+
+        while (ret.length() < 6)
+        {
+            int rand = rnd.nextInt(6);
+            if (rand >= 6)
+                rand = 6;
+            ret += chars[rand];
+        }
+        return ret;
     }
 
     public TagEntity(JSONObject data) throws JSONException
@@ -23,6 +44,8 @@ public class TagEntity {
         _id = data.getString("id");
         if (data.has("projectId"))
             _projectId = data.getString("projectId");
+        Random rnd = new Random();
+        _color = "#" + randomColor(); //TODO : Change with API Color when API did it...
     }
 
     public boolean IsValid()
@@ -54,4 +77,8 @@ public class TagEntity {
     {
         _onBug = onbug;
     }
+
+    public void SetColor(String color){ _color = color;}
+
+    public String GetColor(){ return _color; }
 }

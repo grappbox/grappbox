@@ -74,6 +74,7 @@ public class BugTrackerFragment extends Fragment {
 
         pages.add(((BugOpenListFragment)Fragment.instantiate(getActivity(), BugOpenListFragment.class.getName())).SetParent(this));
         pages.add(((BugClosedListFragment)Fragment.instantiate(getActivity(), BugClosedListFragment.class.getName())).SetParent(this));
+        pages.add(((BugYoursListFragment)Fragment.instantiate(getActivity(), BugYoursListFragment.class.getName())).SetParent(this));
 
         _SectionPagerAdapter = new SectionsPagerAdapter(super.getChildFragmentManager(), pages);
         _viewPager = (ViewPager)v.findViewById(R.id.pager);
