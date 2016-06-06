@@ -35,6 +35,7 @@ public class APIRequestGetTimeline extends AsyncTask<String, Void, String> {
         super.onPostExecute(result);
 
         if (result == null) {
+            Log.v("APIRespond", String.valueOf(_APIRespond));
             switch (_APIRespond){
                 case 206:
                     CharSequence text = "No timeline exist for this project";

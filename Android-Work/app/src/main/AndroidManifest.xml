@@ -81,6 +81,7 @@
                 android:value="com.grappbox.grappbox.grappbox.MainActivity" />
         </activity>
         <activity android:name=".Gantt.GanttActivity"></activity>
+        <activity android:name=".Timeline.TimelineCommentActivity"></activity>
     </application>
 
 </manifest>

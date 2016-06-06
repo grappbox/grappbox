@@ -1,9 +1,7 @@
 package com.grappbox.grappbox.grappbox.Timeline;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,13 +16,11 @@ import com.grappbox.grappbox.grappbox.R;
 import java.util.ArrayList;
 
 /**
- * Created by tan_f on 30/05/2016.
+ * Created by tan_f on 05/06/2016.
  */
+public class CommentAdapter extends BaseAdapter implements View.OnClickListener {
 
-public class MessageAdapter extends BaseAdapter implements View.OnClickListener {
-
-    private Activity _ac;
-    private TimelineListFragment _context;
+    private TimelineCommentActivity _context;
     private ArrayList _data;
     private static LayoutInflater _inflater = null;
     public Resources _res;
@@ -38,12 +34,10 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         public TextView timeline_message_user;
         public Button   timeline_message_edit;
         public Button   timeline_message_delete;
-        public Button   timeline_message_comment;
     }
 
-    public MessageAdapter(Activity activity, ArrayList arrayList, Resources resLocal, TimelineListFragment context){
+    public CommentAdapter(Activity activity, ArrayList arrayList, Resources resLocal, TimelineCommentActivity context){
 
-        _ac = activity;
         _data = arrayList;
         _res = resLocal;
 
@@ -58,10 +52,9 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         ViewHolder holder;
         Button editMessage;
         Button deleteMessage;
-        Button commentMessage;
 
         if (convertView == null){
-            v = _inflater.inflate(R.layout.item_timeline_message, null);
+            v = _inflater.inflate(R.layout.item_timeline_comment, null);
             holder = new ViewHolder();
             holder.timeline_edit_date = (TextView)v.findViewById(R.id.timeline_edit_date);
             holder.timeline_edit_hour = (TextView)v.findViewById(R.id.timeline_edit_hour);
@@ -69,14 +62,12 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             holder.timeline_message_description = (TextView)v.findViewById(R.id.timelie_message_description);
             holder.timeline_message_user = (TextView)v.findViewById(R.id.timeline_message_user);
             editMessage = (Button) v.findViewById(R.id.timeline_button_edit);
-            commentMessage = (Button) v.findViewById(R.id.timeline_button_comment);
             deleteMessage = (Button) v.findViewById(R.id.timeline_button_delete);
-            holder.timeline_message_comment = commentMessage;
             holder.timeline_message_delete = deleteMessage;
             holder.timeline_message_edit = editMessage;
             v.setTag(holder);
         } else {
-          holder = (ViewHolder)v.getTag();
+            holder = (ViewHolder)v.getTag();
         }
 
         if (_data.size() <= 0){
@@ -90,38 +81,14 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             holder.timeline_message_description.setText(tmpValue.getDesc());
             holder.timeline_message_user.setText(tmpValue.getUser());
             editMessage = (Button) v.findViewById(R.id.timeline_button_edit);
-            commentMessage = (Button) v.findViewById(R.id.timeline_button_comment);
             deleteMessage = (Button) v.findViewById(R.id.timeline_button_delete);
-            holder.timeline_message_comment = commentMessage;
             holder.timeline_message_delete = deleteMessage;
             holder.timeline_message_edit = editMessage;
             editMessage.setOnClickListener((View view) -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(_ac);
-                builder.setTitle(R.string.str_edit_message_timeline_option);
-                builder.setItems(R.array.edit_message_timeline,new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
-                            case 0:
-                                _context.editTimelineMessage(position);
-                                break;
-
-                            case 1:
-                                _context.convertToTicketBugtracker(position);
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-                });
-                builder.show();
-            });
-            commentMessage.setOnClickListener((View view) -> {
-                _context.showCommentMessage(position);
+                _context.editTimelineComment(position);
             });
             deleteMessage.setOnClickListener((View view) -> {
-                _context.archiveTimelineMessage(position);
+                _context.archiveTimelineComment(position);
             });
         }
         return v;

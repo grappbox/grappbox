@@ -16,16 +16,16 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * Created by tan_f on 22/02/2016.
+ * Created by tan_f on 05/06/2016.
  */
-public class APIRequestGetMessageComment extends AsyncTask<String, Void, String> {
+public class APIRequestGetCommentMessage extends AsyncTask<String, Void, String> {
 
-    private TimelineMessage _context;
+    private TimelineCommentActivity _context;
     private int _idTimeline;
     private int _idMessage;
     private Integer _APIRespond;
 
-    APIRequestGetMessageComment(TimelineMessage context, int idTimeline, int idMessage)
+    APIRequestGetCommentMessage(TimelineCommentActivity context, int idTimeline, int idMessage)
     {
         _context = context;
         _idTimeline = idTimeline;
