@@ -21,6 +21,7 @@ var login_onSuccessRedirect = function($q, $location) {
 
 login_onSuccessRedirect['$inject'] = ['$q', '$location'];
 
+
 // Redirect user after successful logout
 var logout_onSuccessRedirect = function($q, $http, $rootScope, $cookies, $window) {
 	var deferred = $q.defer();

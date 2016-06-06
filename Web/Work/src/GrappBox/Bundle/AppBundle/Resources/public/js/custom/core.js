@@ -4,14 +4,33 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
+/* ================================================== */
+/* ==================== GRAPPBOX ==================== */
+/* ================================================== */
+
 /**
 * GRAPPBOX
-* APP and main controller definition
+* APP definition
 *
 */
-var app = angular.module("grappbox", ["ngRoute", "ngCookies", "ngAnimate", "mwl.calendar", "ui.bootstrap", "panhandler", "ui-notification", "naif.base64", "ngTagsInput", "angularBootstrapMaterial"]);
+var app = angular.module("grappbox", [
+  "ngRoute",
+  "ngCookies",
+  "ngAnimate",
+  "ngTagsInput",
+  "ngAside",
+  "panhandler",
+  "naif.base64",
+  "mwl.calendar",
+  "ui.bootstrap",
+  "ui-notification",
+  "ngHamburger",
+  "angularBootstrapMaterial"
+]);
 
-/* ==================== INITIALIZATION ==================== */
+
+
+/* ==================== CONFIGURATION ==================== */
 
 // TWIG template conflict fix
 app.config(["$interpolateProvider", function($interpolateProvider) {
@@ -37,13 +56,57 @@ app.config(["NotificationProvider", function(NotificationProvider) {
   });
 }]);
 
+
+
+/* ==================== INITIALIZATION ==================== */
+
 // Controller definition
 // GrappBox (main)
-app.controller("grappboxController", ["$scope", "$location", function($scope, $location) {
+app.controller("grappboxController", ["$scope", "$aside", "$location", function($scope, $aside, $location) {
+  var modalInstance_asideMenu = "";
 
-  $scope.routeActiveList  = { "/": false, "/bugtracker": false, "/calendar": false, "/cloud": false, "/notifications": false, "/profile": false, "/project": false, "/timeline": false, "/whiteboard": false };
-  $scope.routeIconList    = { "/": "fa-bolt", "/bugtracker": "fa-code", "/calendar": "fa-calendar", "/cloud": "fa-upload", "/notifications": "fa-exclamation", "/profile": "fa-sliders", "/project": "fa-folder", "/timeline": "fa-sort-amount-asc", "/whiteboard": "fa-pencil" };
-  $scope.routeCurrentIcon = "";
+  $scope.routeList = {
+    "/": false,
+    "/bugtracker": false,
+    "/calendar": false,
+    "/cloud": false,
+    "/notifications": false,
+    "/profile": false,
+    "/project": false,
+    "/timeline": false,
+    "/whiteboard": false
+  };
+  
+  $scope.iconList = {
+    "/": "dashboard",
+    "/bugtracker": "computer",
+    "/calendar": "event",
+    "/cloud": "cloud_upload",
+    "/notifications": "notifications",
+    "/profile": "person",
+    "/project": "folder",
+    "/timeline": "vertical_align_center",
+    "/whiteboard": "create",
+    "/logout" : "exit_to_app"
+  };
+
+  $scope.app_toggleAsideMenu = function() {
+    modalInstance_asideMenu = $aside.open({
+      placement: "left",
+      size: "sm",
+      backdrop: "true",
+      templateUrl: "app_asideMenu.html",
+      controller: "app_asideMenu",
+      resolve: {
+         routeList: function () {
+           return $scope.routeList;
+         },
+         iconList: function () {
+           return $scope.iconList;
+         }
+       }
+     });
+  };
 
   // Routine definition
   // Check if the request route is not a subsection of another one
@@ -51,8 +114,7 @@ app.controller("grappboxController", ["$scope", "$location", function($scope, $l
     var isRouteKnown = false;
 
     if (newRoute.indexOf(routeToTest) > -1) { 
-      $scope.routeActiveList["/" + routeToTest] = true;
-      $scope.routeCurrentIcon = $scope.routeIconList["/" + routeToTest];
+      $scope.routeList["/" + routeToTest] = true;
       isRouteKnown = true;
     }
     return isRouteKnown;
@@ -63,25 +125,23 @@ app.controller("grappboxController", ["$scope", "$location", function($scope, $l
     var newRoute = $location.path();
     var isRouteKnown = false;
 
-    $scope.routeCurrentIcon = "";
-    angular.forEach($scope.routeActiveList, function(isCurrentPathActive, currentPath) {
+    angular.forEach($scope.routeList, function(isCurrentPathActive, currentPath) {
       if (currentPath === newRoute) {
         isRouteKnown = true;
-        $scope.routeActiveList[currentPath] = true;
-        $scope.routeCurrentIcon = $scope.routeIconList[currentPath];
+        $scope.routeList[currentPath] = true;
       }
       else
-        $scope.routeActiveList[currentPath] = false;
+        $scope.routeList[currentPath] = false;
     });
     if (!isRouteKnown)
       isRouteKnown = (isSubRouteOf("bugtracker", newRoute) ? true : (isSubRouteOf("cloud", newRoute) ? true : (isSubRouteOf("whiteboard", newRoute) ? true : false)));
-    if (!isRouteKnown)
-      $scope.routeCurrentIcon = $scope.routeIconList["error"];
   });
 
 }]);
 
 
+
+/* ==================== ROOTSCOPE DEFINITION ==================== */
 
 /**
 * ROOTSCOPE definition
