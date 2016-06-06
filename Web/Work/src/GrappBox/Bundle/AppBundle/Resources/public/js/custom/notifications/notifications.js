@@ -9,10 +9,4 @@
 * APP notifications page content
 *
 */
-app.controller('notificationsController', ['$scope', function($scope) {
-	$scope.alertList = [];
-	$scope.alertList.push({
-		type: 'warning',
-		message: 'This section is under construction.'
-	});
-}]);
+app.controller('notificationsController', ['$scope', function($scope) { }]);

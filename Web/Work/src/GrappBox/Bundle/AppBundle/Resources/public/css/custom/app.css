@@ -27,6 +27,7 @@ p { font-weight: 400; }
 
 .panel { font-weight: 400; }
 .panel > .panel-heading, .panel.panel-default > .panel-heading { background-color: #BDBDBD; }
+.panel.panel-warning > .panel-heading { background-color: #FF9800; }
 
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
 .bold { font-weight: 700; }

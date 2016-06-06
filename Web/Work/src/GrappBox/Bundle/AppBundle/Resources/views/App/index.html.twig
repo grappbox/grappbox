@@ -100,9 +100,9 @@
 			    </div>
 			    <div class="navbar-collapse collapse navbar-responsive-collapse">
 			      <ul class="nav navbar-nav navbar-right">
-			        <li><a href="notifications"><i class="material-icons">notifications</i></a></li>
-			        <li><a href="profile"><i class="material-icons">settings</i></a></li>
-			        <li><a href="logout"><i class="material-icons">exit_to_app</i></a></li>
+			        <li><a href="notifications" title="See all your notifications"><i class="material-icons">notifications</i></a></li>
+			        <li><a href="profile" title="View and edit your profile"><i class="material-icons">settings</i></a></li>
+			        <li><a href="logout" title="Sign out of GrappBox"><i class="material-icons">exit_to_app</i></a></li>
 			      </ul>
 			    </div>
 			  </div>
@@ -117,10 +117,8 @@
 						    <div class="container">
 						      <div class="row">
 						        <div class="col-lg-12">
-						        	<div class="container-header">
-					        			<h1>
-					        				{[{ onLoad ? "Loading..." : (title ? title : "Error") }]}
-						        		</h1>
+						        	<div class="container-header" data-ng-cloak>
+					        			<h1>{[{ onLoad ? "Loading..." : (title ? title : "Error") }]}</h1>
 						      		</div>
 						      	</div>
 						      </div>
@@ -202,7 +200,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="profile" title="View and edit your profile information" class="btn {[{ routeList['/profile'] ? 'active' : '' }]}">
+							<a href="profile" title="View and edit your profile" class="btn {[{ routeList['/profile'] ? 'active' : '' }]}">
 								<i class="material-icons">{[{ iconList['/profile'] ? iconList['/profile'] : 'clear' }]}</i>
 								Profile
 							</a>
