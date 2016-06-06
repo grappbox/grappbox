@@ -53,7 +53,7 @@ public class FileItem {
 
     private int             _size;
     private String          _mimetype;
-    private int             _timestamp;
+    private String             _timestamp;
     private EFileType       _type;
     private String          _filename;
     private boolean         _isSecured;
@@ -89,7 +89,7 @@ public class FileItem {
             {
                 _mimetype = item.getString(stringJsonKeys.get(EJsonKeys.MIMETYPE));
                 _size = item.getInt(stringJsonKeys.get(EJsonKeys.FILESIZE));
-                _timestamp = item.getInt(stringJsonKeys.get(EJsonKeys.TIMESTAMP));
+                _timestamp = item.getJSONObject("last_modified").getString("date").substring(0, 19);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -124,11 +124,11 @@ public class FileItem {
         this._mimetype = _mimetype;
     }
 
-    public int get_timestamp() {
+    public String get_timestamp() {
         return _timestamp;
     }
 
-    public void set_timestamp(int _timestamp) {
+    public void set_timestamp(String _timestamp) {
         this._timestamp = _timestamp;
     }
 

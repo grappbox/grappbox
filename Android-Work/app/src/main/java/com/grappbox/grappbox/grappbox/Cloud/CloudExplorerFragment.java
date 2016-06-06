@@ -16,6 +16,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.MainActivity;
 import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
@@ -267,6 +269,33 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
         ImageButton btnUploadSecure = (ImageButton) view.findViewById(R.id.btn_import_secure);
 
         _adapter = adapter;
+        _adapter.setListener(new CloudFileAdapter.CloudAdapterListener() {
+            @Override
+            public void onInfoButtonClicked(FileItem item) {
+                Builder dialog = new Builder(me.getActivity());
+                dialog.setTitle(item.get_filename() + " informations");
+                dialog.setPositiveButton(getString(R.string.positive_response), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                View dialogView = inflater.inflate(R.layout.dialog_cloud_file, null);
+                ((TextView)dialogView.findViewById(R.id.filename)).setText(item.get_filename());
+                String size = String.format("%.2f", item.get_size() / 1024.0f / 1024.0f) + " Mb";
+                ((TextView)dialogView.findViewById(R.id.filesize)).setText(size);
+                ((TextView)dialogView.findViewById(R.id.mimetype)).setText(item.get_mimetype());
+                ((TextView)dialogView.findViewById(R.id.lastdate)).setText(item.get_timestamp());
+                dialog.setView(dialogView);
+                dialog.show();
+            }
+
+            @Override
+            public void onOtherClick(FileItem item, int position, View convertView, ViewGroup parent) {
+                list.performItemClick(_adapter.getView(position, convertView, parent), position, list.getItemIdAtPosition(position));
+            }
+
+        });
         GetCloudFileListTask task = new GetCloudFileListTask(this, adapter);
         task.SetListener(new GetCloudFileListTask.CloudFileListListener() {
             @Override
@@ -516,5 +545,21 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    public boolean onBackPressed()
+    {
+        Log.e("Cloud", "onBackPresed");
+        if (_path.equals("/"))
+            return false;
+        goToParent();
+        if (_path.equals(""))
+            resetPath();
+        GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
+        if (_path.startsWith(_APISafeDirectoryPath) && _safePassword.equals(""))
+            handleSafe(task);
+        else
+            task.execute(_path, _safePassword);
+        return true;
     }
 }

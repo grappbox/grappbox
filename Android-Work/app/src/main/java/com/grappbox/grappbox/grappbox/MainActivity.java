@@ -267,11 +267,18 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         int nbrFrag = getSupportFragmentManager().getBackStackEntryCount();
-
+        Fragment currentFrag = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         Log.v("Count Fragment : ", String.valueOf(nbrFrag));
+        Log.v("MainActivity", String.valueOf(currentFrag == null));
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (nbrFrag > 0) {
+        }
+        else if (currentFrag != null && currentFrag instanceof CloudExplorerFragment)
+        {
+            if (!((CloudExplorerFragment) currentFrag).onBackPressed())
+                getSupportFragmentManager().popBackStack();
+        }
+        else if (nbrFrag > 0) {
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
