@@ -156,6 +156,7 @@ angular.module('GrappBox.controllers')
     canvas.isDrawingMode = false;
     canvas.freeDrawingBrush.width = 6; //Size of the drawing brush
     $scope.brushcolor = '#000000'; //Set brushcolor to black at the beginning
+    $scope.brushSize = 2; //Set brush size to by default
 
     //Get "colorsPopup" html templateUrl in whiteboard.html
     $scope.popoverColors = $ionicPopover.fromTemplateUrl('colorsPopup.html', {
@@ -255,6 +256,9 @@ angular.module('GrappBox.controllers')
         var rect;
         var mouse_pos_init;
         var mouse_pos;
+        var real_init;
+        var width;
+        var height;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -278,9 +282,23 @@ angular.module('GrappBox.controllers')
         canvas.on('mouse:move', function (option) {
             if (!started) return;
             mouse_pos = canvas.getPointer(option.e);
+            real_init = { x: 0, y: 0 };
+            real_init.x = mouse_pos_init.x;
+            real_init.y = mouse_pos_init.y;
+            width = mouse_pos.x - mouse_pos_init.x;
+            height = mouse_pos.y - mouse_pos_init.y;
+            // We take abs to always show a positive rectangle (or fabric crash)
+            if (width < 0) {
+                real_init.x = mouse_pos_init.x - Math.abs(width);
+            }
+            if (height < 0) {
+                real_init.y = mouse_pos_init.y - Math.abs(height);
+            }
             rect.set({
-                'width': mouse_pos.x - mouse_pos_init.x,
-                'height': mouse_pos.y - mouse_pos_init.y
+                'top': real_init.y,
+                'left': real_init.x,
+                'width': width,
+                'height': height
             });
             canvas.renderAll();
         });
@@ -288,8 +306,12 @@ angular.module('GrappBox.controllers')
         canvas.on('mouse:up', function (option) {
             started = false;
             var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
-            var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
-            $scope.PushOnWhiteboard("rectangle", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
+            if (width > 0)
+                real_init.x = mouse_pos.x;
+            if (height > 0)
+                real_init.y = mouse_pos.y;
+            var positionEnd = { "x": real_init.x, "y": real_init.y };
+            $scope.PushOnWhiteboard("RECTANGLE", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
         });
         $scope.popoverShapes.hide();
     }
@@ -300,6 +322,9 @@ angular.module('GrappBox.controllers')
         var ellipse;
         var mouse_pos_init;
         var mouse_pos;
+        var real_init;
+        var width;
+        var height;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -322,18 +347,44 @@ angular.module('GrappBox.controllers')
         canvas.on('mouse:move', function (option) {
             if (!started) return;
             mouse_pos = canvas.getPointer(option.e);
-            ellipse.set({ 'rx': mouse_pos.x - mouse_pos_init.x, 'ry': mouse_pos.y - mouse_pos_init.y });
+            real_init = { x: 0, y: 0 };
+            real_init.x = mouse_pos_init.x;
+            real_init.y = mouse_pos_init.y;
+            width = mouse_pos.x - mouse_pos_init.x;
+            height = mouse_pos.y - mouse_pos_init.y;
+            // We take abs to always show a positive ellipse (or fabric crash)
+            if (width < 0) {
+                real_init.x = mouse_pos_init.x - Math.abs(width);
+            }
+            if (height < 0) {
+                real_init.y = mouse_pos_init.y - Math.abs(height);
+            }
+            ellipse.set({
+                'top': real_init.y,
+                'left': real_init.x,
+                'rx': Math.abs(width / 2),
+                'ry': Math.abs(height / 2)
+            });
+
             canvas.renderAll();
         });
 
         canvas.on('mouse:up', function (option) {
             started = false;
+            var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
+            if (width > 0)
+                real_init.x = mouse_pos.x;
+            if (height > 0)
+                real_init.y = mouse_pos.y;
+            var positionEnd = { "x": real_init.x, "y": real_init.y };
+            var radius = { "x": Math.abs(real_init.x - mouse_pos_init.x) / 2, "y": Math.abs(real_init.y - mouse_pos_init.y) / 2 };
+            $scope.PushOnWhiteboard("ELLIPSE", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd, radius);
         });
         $scope.popoverShapes.hide();
     }
 
     //Draw Triangle shape
-    $scope.drawTriangle = function (isTransparent) {
+    /*$scope.drawTriangle = function (isTransparent) {
         var started = false;
         var triangle;
         var mouse_pos_init;
@@ -368,13 +419,14 @@ angular.module('GrappBox.controllers')
             started = false;
         });
         $scope.popoverShapes.hide();
-    }
+    }*/
 
     //Draw Diamond shape
-    /*$scope.drawDiamond = function (isTransparent) {
+    $scope.drawDiamond = function (isTransparent) {
         var started = false;
         var diamond;
         var mouse_pos_init;
+        var mouse_pos;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -384,47 +436,43 @@ angular.module('GrappBox.controllers')
             started = true;
             mouse_pos_init = canvas.getPointer(option.e);
             diamond = new fabric.Polygon(
-                [*/
-    /*{ x: 25, y: 0 },
-    { x: 50, y: 50 },
-    { x: 25, y: 100 },
-    { x: 0, y: 50 }*/
-    /*{ x: 0, y: 0 },
-    { x: 0, y: 0 },
-    { x: 0, y: 0 },
-    { x: 0, y: 0 }
-],
-{
-    top: mouse_pos_init.y,
-    left: mouse_pos_init.x,
-    fill: isTransparent ? 'transparent' : $scope.brushcolor,
-    /*hasBorders: false,
-    hasControls: false,
-    hasRotatingPoint: false,
-    lockMovementX: true,
-    lockMovementY: true,
-});
-canvas.add(diamond);
-});
+                [{ x: 25, y: 0 },
+                { x: 50, y: 50 },
+                { x: 25, y: 100 },
+                { x: 0, y: 50 }],
+                {
+                    top: mouse_pos_init.y,
+                    left: mouse_pos_init.x,
+                    fill: isTransparent ? 'transparent' : $scope.brushcolor,
+                    hasBorders: true,
+                    hasControls: false,
+                    hasRotatingPoint: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                });
+            canvas.add(diamond);
+        });
 
-canvas.on('mouse:move', function (option) {
-if (!started) return;
-var mouse_pos = canvas.getPointer(option.e);
-diamond.set({ 'x': mouse_pos.x - mouse_pos_init.x, 'y': mouse_pos.y - mouse_pos_init.y });
-canvas.renderAll();
-});
+        canvas.on('mouse:move', function (option) {
+            if (!started) return;
+            mouse_pos = canvas.getPointer(option.e);
+            diamond.set({ 'x': mouse_pos.x - mouse_pos_init.x, 'y': mouse_pos.y - mouse_pos_init.y });
+            canvas.renderAll();
+        });
 
-canvas.on('mouse:up', function (option) {
-started = false;
-});
-$scope.popoverShapes.hide();
-}*/
+        canvas.on('mouse:up', function (option) {
+            started = false;
+        });
+        $scope.popoverShapes.hide();
+    }
 
     //Draw Line
     $scope.drawLine = function () {
         var started = false;
         var line;
+        var mouse_pos_init;
         var mouse_pos;
+        var points;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -432,11 +480,11 @@ $scope.popoverShapes.hide();
 
         canvas.on('mouse:down', function (option) {
             started = true;
-            var mouse_pos = canvas.getPointer(option.e);
-            var points = [mouse_pos.x, mouse_pos.y, mouse_pos.x, mouse_pos.y];
+            mouse_pos_init = canvas.getPointer(option.e);
+            points = [mouse_pos_init.x, mouse_pos_init.y, mouse_pos_init.x, mouse_pos_init.y];
             line = new fabric.Line(points, {
                 stroke: $scope.brushcolor,
-                strokeWidth: 6
+                strokeWidth: $scope.brushSize
             });
             canvas.add(line);
         });
@@ -444,12 +492,18 @@ $scope.popoverShapes.hide();
         canvas.on('mouse:move', function (option) {
             if (!started) return;
             mouse_pos = canvas.getPointer(option.e);
-            line.set({ x2: mouse_pos.x, y2: mouse_pos.y });
+            line.set({
+                x2: mouse_pos.x,
+                y2: mouse_pos.y
+            });
             canvas.renderAll();
         });
 
         canvas.on('mouse:up', function (e) {
             started = false;
+            var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
+            var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
+            $scope.PushOnWhiteboard("LINE", $scope.brushcolor, "", $scope.brushSize, positionStart, positionEnd);
         });
         $scope.popoverShapes.hide();
     }
@@ -539,29 +593,9 @@ $scope.popoverShapes.hide();
                 console.log('Open whiteboard successful !');
                 console.log(data.data);
                 $scope.openWhiteboardData = data.data;
-                $scope.objects = data.data.content;
-                console.log($scope.objects);
-                var rect = new fabric.Rect({
-                    top: data.data.content[0].object.positionStart.y,
-                    left: data.data.content[0].object.positionStart.x,
-                    width: data.data.content[0].object.positionEnd.x,
-                    height: data.data.content[0].object.positionEnd.y,
-                    fill: data.data.content[0].object.background,
-                    stroke: data.data.content[0].object.color,
-                });
-                console.log(rect);
-                canvas.add(rect);
-                var rect2 = new fabric.Rect({
-                    top: data.data.content[1].object.positionStart.y,
-                    left: data.data.content[1].object.positionStart.x,
-                    width: data.data.content[1].object.positionEnd.x,
-                    height: data.data.content[1].object.positionEnd.y,
-                    fill: data.data.content[1].object.background,
-                    stroke: data.data.content[1].object.color,
-                });
-                console.log(rect2);
-                canvas.add(rect2);
-                canvas.renderAll();
+                var objects = data.data.content;
+                console.log(objects);
+                $scope.addOnWhiteboard(objects);
             })
             .catch(function (error) {
                 console.error('Open whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -574,12 +608,61 @@ $scope.popoverShapes.hide();
     }
     $scope.OpenWhiteboard();
 
+    $scope.addOnWhiteboard = function (obj) {
+        for (var i = 0; i < obj.length; i++) {
+            if (obj[i].object.type == "RECTANGLE") {
+                var rect = new fabric.Rect({
+                    top: obj[i].object.positionStart.y > obj[i].object.positionEnd.y ? obj[i].object.positionEnd.y : obj[i].object.positionStart.y,
+                    left: obj[i].object.positionStart.x > obj[i].object.positionEnd.x ? obj[i].object.positionEnd.x : obj[i].object.positionStart.x,
+                    width: obj[i].object.positionEnd.x - obj[i].object.positionStart.x,
+                    height: obj[i].object.positionEnd.y - obj[i].object.positionStart.y,
+                    fill: obj[i].object.background,
+                    stroke: obj[i].object.color,
+                });
+                canvas.add(rect);
+            }
+            else if (obj[i].object.type == "ELLIPSE") {
+                var ellipse = new fabric.Ellipse({
+                    top: obj[i].object.positionStart.y > obj[i].object.positionEnd.y ? obj[i].object.positionEnd.y : obj[i].object.positionStart.y,
+                    left: obj[i].object.positionStart.x > obj[i].object.positionEnd.x ? obj[i].object.positionEnd.x : obj[i].object.positionStart.x,
+                    fill: obj[i].object.background,
+                    stroke: obj[i].object.color,
+                    rx: obj[i].object.radius.x,
+                    ry: obj[i].object.radius.y
+                });
+                canvas.add(ellipse);
+            }
+            else if (obj[i].object.type == "LINE") {
+                var points = [
+                    obj[i].object.positionStart.x,
+                    obj[i].object.positionStart.y,
+                    obj[i].object.positionEnd.x,
+                    obj[i].object.positionEnd.y];
+                var line = new fabric.Line(points, {
+                    stroke: obj[i].object.color,
+                    strokeWidth: obj[i].object.lineWeight
+                });
+                canvas.add(line);
+            }
+            else if (obj[i].object.type == "HANDWRITE") {
+
+            }
+            else if (obj[i].object.type == "DIAMOND") {
+
+            }
+            else if (obj[i].object.type == "TEXT") {
+
+            }
+        }
+        canvas.renderAll();
+    }
+
     /*
     ** Push a modification on whiteboard
     ** Method: PUT
     */
     $scope.pushOnWhiteboardData = {};
-    $scope.PushOnWhiteboard = function (type, color, background, lineWeight, positionStart, positionEnd) {
+    $scope.PushOnWhiteboard = function (type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold) {
         $rootScope.showLoading();
         Whiteboard.Push().update({
             id: $scope.whiteboardId,
@@ -590,10 +673,16 @@ $scope.popoverShapes.hide();
                 object: {
                     type: type,
                     color: color,
-                    background: background,
-                    lineWeight: lineWeight,
-                    positionStart: positionStart,
-                    positionEnd: positionEnd
+                    background: background ? background : "",
+                    lineWeight: lineWeight ? lineWeight : "",
+                    positionStart: positionStart ? positionStart : "",
+                    positionEnd: positionEnd ? positionEnd : "",
+                    points: points ? points : "",
+                    radius: radius ? radius : "",
+                    text: text ? text : "",
+                    size: size ? size : "",
+                    isItalic: isItalic ? isItalic : "",
+                    isBold: isBold ? isBold : ""
                 }
             }
         }).$promise
