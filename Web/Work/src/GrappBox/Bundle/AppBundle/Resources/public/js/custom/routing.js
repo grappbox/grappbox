@@ -14,6 +14,12 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 	$routeProvider
 	// Homepage
 	.when("/", {
+		title: "Welcome to GrappBox",
+		templateUrl : "../resources/pages/dashboard-list.html",
+		controller  : "dashboardListController",
+		caseInsensitiveMatch : true
+	})
+	.when("/dashboard/:projectId", {
 		title: "Dashboard",
 		templateUrl : "../resources/pages/dashboard.html",
 		controller  : "dashboardController",

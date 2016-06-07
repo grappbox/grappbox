@@ -14,10 +14,15 @@
 .x-ng-cloak { display: none!important; }
 
 
+
 /* ==================== GENERAL LAYOUT ==================== */
 
 body { overflow-x: hidden; }
-body #app-wrapper { background: #f3f3f3; transition: all .3s ease; }
+
+body .container .well p,
+body .container-fluid .well p,
+body .container .jumbotron p,
+body .container-fluid .jumbotron p { font-weight: 400; }
 
 label { display: inline; margin: 0; font-weight: 400; }
 p { font-weight: 400; }
@@ -29,45 +34,37 @@ p { font-weight: 400; }
 .panel > .panel-heading, .panel.panel-default > .panel-heading { background-color: #BDBDBD; }
 .panel.panel-warning > .panel-heading { background-color: #FF9800; }
 
+.btn.btn-raised.btn-danger,
+.input-group-btn .btn.btn-raised.btn-danger,
+.btn.btn-fab.btn-danger,
+.input-group-btn .btn.btn-fab.btn-danger,
+.btn-group-raised .btn.btn-danger,
+.btn-group-raised .input-group-btn .btn.btn-danger { background-color: #c0392b; }
+
+.btn-fixed { position: fixed!important; right: 46px; bottom: 46px; z-index: 998; }
+
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
-.bold { font-weight: 700; }
+.centered { text-align: center; }
 .clearfix { background: #fff; }
 .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.floating { transform: translateZ(0); backface-visibility: hidden; transition-duration: .2s; transition-property: transform; transition-timing-function: ease-out; }
-.floating:active,
-.floating:focus,
-.floating:hover { transform: translateY(-8px); }
-.help { padding: 20px; border: 1px solid #e0e0e0; }
-.left { float: left; }
-.lower { text-transform: lowercase; }
-.right { float: right; }
+
 .ui-notification > .message { overflow: hidden!important; text-overflow: ellipsis; }
 .ui-notification { color: #fafafa; }
 .ui-notification.info { background: #29B6F6; }
 .ui-notification.success { background: #7CB342; }
-.upper { text-transform: uppercase; }
-
-.shadow {
-  -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 2px;
-  border: 0;
-}
 
 
 
 /* ==================== GENERAL LAYOUT (LOADING) ==================== */
 
-.loading-content,
-.loading-content > div { position: relative; box-sizing: border-box; }
-.loading-content { display: block; font-size: 0; color: #fff; top: 30px; margin: 0 auto; border: none!important; }
-.loading-content > div { display: inline-block; float: none; border: 0 solid #616161; }
-.loading-content { width: 48px; height: 48px; }
-.loading-content > div { width: 48px; height: 48px; background: transparent; border-width: 3px; border-bottom-color: transparent; border-radius: 100%; animation: ball-clip-rotate .75s linear infinite; }
-.loading-content.master { width: 40px; height: 40px; top: 50px; margin: 0 auto; }
-.loading-content.master > div { width: 40px; height: 40px; border-width: 3px; }
-.loading-content.section { top: 90px; }
-.loading-content.data { top: 30px; }
+.spinner,
+.spinner > div { position: relative; box-sizing: border-box; }
+.spinner { display: block; width: 48px; height: 48px; font-size: 0; color: #fff; top: 30px; margin: 0 auto; border: none!important; }
+.spinner > div { display: inline-block; float: none; border: 0 solid #616161; width: 48px; height: 48px; background: transparent; border-width: 3px; border-bottom-color: transparent; border-radius: 100%; animation: ball-clip-rotate .75s linear infinite; }
+.spinner.master { width: 40px; height: 40px; top: 50px; margin: 0 auto; }
+.spinner.master > div { width: 40px; height: 40px; border-width: 3px; }
+.spinner.section { top: 90px; }
+.spinner.data { top: 30px; }
 
 @keyframes ball-clip-rotate { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
 
@@ -78,16 +75,16 @@ p { font-weight: 400; }
 body.modal-open { padding: 0!important; overflow: auto!important; }
 .modal-backdrop.fade.in { display: none!important; }
 
-.navbar,
-.navbar.navbar-default { background-color: #c0392b; color: #fff; }
-.navbar-toggle { float: left; padding: 15px 10px; }
-.navbar-brand { float: right; }
-
 .aside-toggle { padding: 11px 10px 7px 15px; }
 .aside-menu { list-style: none; padding: 0; }
 .aside-menu a { width: 100%; text-transform: none; padding: 15px 30px; margin: 5px 1px; }
 .aside-menu a i { float: left; }
 .aside-menu a.active { background-color: rgba(153, 153, 153, 0.2); }
+
+.navbar,
+.navbar.navbar-default { background-color: #c0392b; color: #fff; }
+.navbar-toggle { float: left; padding: 15px 10px; }
+.navbar-brand { float: right; font-weight: 400; }
 
 @media (min-width: 768px) {
   .navbar-toggle { display: block; }
@@ -96,6 +93,33 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
   .navbar .navbar-brand { padding: 14px 15px; }
   .aside-toggle { padding: 11px 10px 3px 15px; }
 }
+
+
+
+/* ==================== SECTION: DASHBOARD ==================== */
+
+.each-project .well { padding: 19px 19px 5px 19px!important; }
+.each-project a { float: right; color: #c0392b!important; }
+.each-project ul { list-style: none; font-weight: 400; padding: 0; }
+.each-project ul li { padding: 5px 0; }
+.each-project ul li i { vertical-align: middle!important; margin: 0 10px 0 0; }
+.each-project ul .logo { padding: 5px 0 15px 0; }
+.each-project ul .logo img { border-radius: 50%; }
+.each-project ul .title { font-weight: 900; }
+
+@media (min-width: 1199px) {
+	.each-project ul .logo { float: left; margin: 5px 15px 0 0; }
+	.each-project ul .title { margin: 0 0 5px 0; }
+}
+
+
+
+/* ==================== SECTION: PROFILE ==================== */
+
+#profile .well { min-height: 260px; }
+#profile .form-group input[type=file] { opacity: initial; position: initial; }
+#profile .form-group button[type=submit] { color: #c0392b; }
+
 
 
 /* ==================== GENERAL LAYOUT (DIALOGS) ==================== */
@@ -119,7 +143,7 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 
 section { margin: 30px 0; }
 
-.container-header { padding-bottom: 9px; margin: 30px 0 5px; border-bottom: 1px solid #eee; }
+.container-header { padding-bottom: 9px; margin: 30px 0 5px; }
 .container-header h1 { font-size: 4em; }
 
 .tiles .section-heading h2,
@@ -140,24 +164,6 @@ section { margin: 30px 0; }
 .tiles .data-wrapper:first-child .data-content { margin: 20px 10px 20px 30px; }
 .tiles .data-wrapper:last-child .data-content { margin: 20px 30px 20px 10px; }
 .tiles .data-content { display: inline-block; vertical-align: middle; margin: 20px 10px; width: 350px; height: 190px; }
-
-
-
-/* ==================== SECTION: DASHBOARD ==================== */
-
-#dashboard-view .section-heading h3 { margin: 15px 15px 0 15px; }
-#dashboard-view .content-img { padding: 10px; }
-#dashboard-view .content-img img { max-width: 120px; border-radius: 50%; }
-
-#dashboard-view #team-occupation .title { background: #00ACC1; }
-#dashboard-view #team-occupation .content-view:not(.even) { padding: 15px 15px 0 15px; }
-#dashboard-view #team-occupation .content-view.even { padding: 15px 15px 0 15px; }
-#dashboard-view #next-meetings .title { background: #26A69A; }
-#dashboard-view #next-meetings .content-view:not(.even) { padding: 15px 15px 0 15px; }
-#dashboard-view #next-meetings .content-view.even { padding: 10px 15px 0 15px; }
-#dashboard-view #global-progress .title { background: #7CB342; }
-#dashboard-view #global-progress .content-view:not(.even) { padding: 15px 10px 0 10px; }
-#dashboard-view #global-progress .content-view.even { padding: 10px; }
 
 
 
@@ -327,10 +333,7 @@ section { margin: 30px 0; }
 
 
 
-/* ==================== SECTION: PROFILE ==================== */
 
-#profile .well { min-height: 260px; }
-#profile .form-group input[type=file] { opacity: initial; position: initial; }
 
 
 /* ==================== SECTION: PROJECT ==================== */
@@ -341,9 +344,9 @@ section { margin: 30px 0; }
 #project-list .project-data { max-width: 60%; padding: 15px 0 0 10px; }
 #project-list a:not(.standalone) { margin: 13px 0 0 0; }
 
-#project-content #customers-list .loading-content,
-#project-content #users-list .loading-content,
-#project-content #roles-list .loading-content {top: 0px;}
+#project-content #customers-list .spinner,
+#project-content #users-list .spinner,
+#project-content #roles-list .spinner {top: 0px;}
 #project-content #customers-list .title,
 #project-content #users-list .title,
 #project-content #roles-list .title { background: #7CB342; margin: 0 0 15px 0; }

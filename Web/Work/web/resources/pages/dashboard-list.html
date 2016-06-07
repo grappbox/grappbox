@@ -1,0 +1,60 @@
+<!-- This file is subject to the terms and conditions defined in file "LICENSE.txt",
+which is part of the GRAPPBOX source code package.
+COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
+
+<div data-ng-controller="dashboardListController">
+
+  <!-- grappbox.data : dashboard information -->
+  <section class="centered">
+    <p>Choose a project to begin, or create one.</p>
+    <a href="project/0" class="btn btn-raised btn-danger" title="Go to the creation process page">Create a new project</a>
+    <a href="project/0" class="btn btn-danger btn-fab btn-fixed" title="Create a new project"><i class="material-icons">add</i></a>
+  </section>
+
+  <section id="dashboard-list">
+    <div class="row">
+      <div class="col-lg-12">
+        <!-- grappbox.data : (dashboard) user projects progress -->
+        <div ng-show="content.onLoad">
+          <div class="spinner section">
+            <div></div>
+          </div>
+        </div>
+        <div ng-show="!content.onLoad">
+          <div data-ng-if="content.isValid && data.projects">
+            <div class="each-project col-md-4" ng-repeat="project in data.projects">
+              <div class="well">
+                <ul>
+                  <li class="col-xs-offset-2 logo" ng-if="!project.project_logo">
+                    <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                  </li>
+                  <li class="col-xs-offset-2 logo" ng-if="project.project_logo">
+                    <img data-ng-src="data:image/png;base64,{[{ project.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                  </li>
+                  <li class="col-xs-offset-2 ellipsis title">"{[{ project.project_name }]}"</li>
+                  <li class="col-xs-offset-2"><i class="material-icons">bug_report</i>{[{ project.number_messages > 0 ? project.number_bugs : "No" }]} issues</li>
+                  <li class="col-xs-offset-2"><i class="material-icons">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</li>
+                  <li class="col-xs-offset-2"><i class="material-icons">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</li>
+                </ul>
+                <a href="dashboard/{[{ project.project_id }]}" title="Use this project" class="btn btn-default">Open</a>
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
+
+          <div data-ng-if="content.isValid && !data.projects">
+            <div class="well centered">
+              <p><i class="material-icons">sentiment_satisfied</i><br>You don't have any project.</p>
+            </div>
+          </div>
+          <div data-ng-if="!content.isValid">
+            <div class="well centered">
+              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

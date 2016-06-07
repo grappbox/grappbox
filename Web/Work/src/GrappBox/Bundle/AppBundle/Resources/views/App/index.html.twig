@@ -41,19 +41,20 @@
 		'@HomeBundle/Resources/public/js/vendor/smooth-scroll.js'
 		'@AppBundle/Resources/public/js/vendor/moment.js'
 		'@AppBundle/Resources/public/js/vendor/angular.js'
-		'@AppBundle/Resources/public/js/vendor/angular-aside.js'
 		'@AppBundle/Resources/public/js/vendor/angular-animate.js'
+		'@AppBundle/Resources/public/js/vendor/angular-aside.js'
 		'@AppBundle/Resources/public/js/vendor/angular-base64-upload.js'
 		'@AppBundle/Resources/public/js/vendor/angular-bootstrap-calendar-tpls.js'
-		'@AppBundle/Resources/public/js/vendor/angular-hamburger-toggle.js'
+		'@AppBundle/Resources/public/js/vendor/angular-bootstrap-material.js'
 		'@AppBundle/Resources/public/js/vendor/angular-cookies.js'
+		'@AppBundle/Resources/public/js/vendor/angular-hamburger-toggle.js'
+		'@AppBundle/Resources/public/js/vendor/angular-local-storage.js'
 		'@AppBundle/Resources/public/js/vendor/angular-messages.js'
 		'@AppBundle/Resources/public/js/vendor/angular-panhandler.js'
 		'@AppBundle/Resources/public/js/vendor/angular-route.js'
 		'@AppBundle/Resources/public/js/vendor/angular-tags-input.js'
 		'@AppBundle/Resources/public/js/vendor/angular-ui-bootstrap-tpls.js'
 		'@AppBundle/Resources/public/js/vendor/angular-ui-notification.js'
-		'@AppBundle/Resources/public/js/vendor/angular-bootstrap-material.js'
 		'@AppBundle/Resources/public/js/custom/core.js'
 		'@AppBundle/Resources/public/js/custom/login.js'
 		'@AppBundle/Resources/public/js/custom/menu.js'
@@ -64,6 +65,7 @@
 		'@AppBundle/Resources/public/js/custom/cloud/cloud.js'
 		'@AppBundle/Resources/public/js/custom/cloud/cloud-list.js'
 		'@AppBundle/Resources/public/js/custom/dashboard/dashboard.js'
+		'@AppBundle/Resources/public/js/custom/dashboard/dashboard-list.js'
 		'@AppBundle/Resources/public/js/custom/notifications/notifications.js'
 		'@AppBundle/Resources/public/js/custom/profile/profile.js'
 		'@AppBundle/Resources/public/js/custom/project/project.js'
@@ -80,8 +82,8 @@
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
 		<![endif]-->
 	</head>
 
@@ -96,7 +98,7 @@
 			        <span class="icon-bar"></span>
 			        <span class="icon-bar"></span>
 			      </button>
-			      <a class="navbar-brand">GrappBox</a>
+			      <a href="./" class="navbar-brand">GrappBox</a>
 			    </div>
 			    <div class="navbar-collapse collapse navbar-responsive-collapse">
 			      <ul class="nav navbar-nav navbar-right">
@@ -118,7 +120,7 @@
 						      <div class="row">
 						        <div class="col-lg-12">
 						        	<div class="container-header" data-ng-cloak>
-					        			<h1>{[{ onLoad ? "Loading..." : (title ? title : "Error") }]}</h1>
+					        			<h1 class="{[{ routeList['/'] ? 'centered' : '' }]}">{[{ onLoad ? 'Loading...' : (title ? title : 'Error') }]}</h1>
 						      		</div>
 						      	</div>
 						      </div>

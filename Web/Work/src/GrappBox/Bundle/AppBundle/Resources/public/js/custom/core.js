@@ -25,6 +25,7 @@ var app = angular.module("grappbox", [
   "ui.bootstrap",
   "ui-notification",
   "ngHamburger",
+  "LocalStorageModule",
   "angularBootstrapMaterial"
 ]);
 
@@ -43,6 +44,15 @@ app.config(["$httpProvider", function($httpProvider) {
   $httpProvider.defaults.useXDomain = true;
   delete $httpProvider.defaults.headers.common["X-Requested-With"];
 }]);
+
+// Local storage settings
+app.config(function (localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('grappbox')
+    .setStorageCookie(30, '/')
+    .setStorageType('localStorage')
+    .setNotify(true, true);
+});
 
 // Bootstrap notifications settings
 app.config(["NotificationProvider", function(NotificationProvider) {
