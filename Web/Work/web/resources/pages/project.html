@@ -4,7 +4,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <div data-ng-controller="projectController">
 
-  <!-- grappbox.data : project creation information -->
+  <!-- grappbox.data: project creation information -->
   <div data-ng-if="data.project_new">
     <div class="panel panel-default">
       <div class="panel-heading">Create your project</div>
@@ -15,35 +15,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
     </div>
   </div>
-  <!-- grappbox.data : project edition information -->
-  <div data-ng-if="!data.project_new && !data.project_error" data-ng-cloak>
-    <div class="well">
-      <div data-ng-if="data.onLoad">
-        <div class="spinner"><div></div></div>
-      </div>
-      <div data-ng-if="!data.onLoad">
-        <p>
-          Project: <span class="bold">'{[{ data.project.name }]}'</span><br>Created: {[{ formatObjectDate(data.project.creation_date.date) }]}.
-          <span data-ng-if="data.project.deleted_at"><br>Deleted: {[{ formatObjecctDate(data.project.deleted_at.data) }]}</span>
-        </p>
-        <ul>
-          <li>
-            <a data-ng-if="!data.project.deleted_at && data.canEdit" href="" data-ng-click="deleteProject()" class="btn btn-raised btn-danger">
-              <i class="material-icons">delete</i>Delete
-            </a>
-          </li>
-          <li>
-            <a data-ng-if="data.project.deleted_at && data.canEdit" href="" data-ng-click="retrieveProject()" class="btn btn-raised btn-success">
-              <i class="material-icons">refresh</i>Retrieve
-            </a>
-          </li>
-        </ul>
+  <!-- grappbox.data: project edition information -->
+  <div data-ng-if="!data.project_new && !data.project_error">
+    <div class="panel panel-default">
+      <div class="panel-heading">Edit your project</div>
+      <div class="panel-body">
+        <p>This page allows you to edit any part of your project.<br>Use the tabs to navigate between all settings, and validate using buttons at the end of pages when you're done.</p>
       </div>
     </div>
   </div>
 
-  <!-- grappbox.data : project creation -->
-  <!-- TODO: password mandatory? To generate if not provided? -->
+  <!-- grappbox.data: project creation -->
   <section id="project-creation" data-ng-if="data.project_new">
     <div class="row">
       <div class="col-lg-12">
@@ -121,152 +103,112 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </section>
 
-  <!-- grappbox.data : project edition -->
+  <!-- grappbox.data: project edition -->
+  <section id="project-edition" data-ng-if="!data.project_new">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="well">
+          <div id="tab-pannel">
+            <!-- project edition: all tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+              <li id="general-title" role="presentation" class="col-md-3 col-xs-12 active">
+                <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#general-content', '#general-title')">General</a>
+              </li>
+              <li id="users-title" role="presentation" class="col-md-3 col-xs-12">
+                <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#users-content', '#users-title')">Users</a>
+              </li>
+              <li id="roles-title" role="presentation" class="col-md-3 col-xs-12">
+                <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#roles-content', '#roles-title')">Roles</a>
+              </li>
+              <li id="customers-title" role="presentation" class="col-md-3 col-xs-12">
+                <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#customers-content', '#customers-title')">Customers acccess</a>
+              </li>
+            </ul>
 
-
-                <div class="" ng-if="!data.project_new">
-
-                  <div id="tab-pannel">
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                      <li id="general-title" role="presentation" class="active"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#general-content', '#general-title')">General</a></li>
-                      <li id="users-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#users-content', '#users-title')">Users</a></li>
-                      <li id="roles-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#roles-content', '#roles-title')">Roles</a></li>
-                      <li id="customers-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#customers-content', '#customers-title')">Customers Acccess</a></li>
-                    </ul>
-
-                    <!-- Tab panes -->
-                    <div class="tab-content">
-                      <div role="tabpanel" class="tab-pane active" id="general-content">
-                        <div data-ng-if="data.onLoad">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-                            <div class="loading-content section">
-                              <div></div>
-                            </div>
-                          </div>
+            <div class="tab-content">
+              <!-- project edition: general -->
+              <div role="tabpanel" class="tab-pane active" id="general-content">
+                <div data-ng-if="data.onLoad">
+                  <div class="spinner data"><div></div></div>
+                </div>
+                <div data-ng-if="(!data.onLoad && !data.project_error)">
+                  <form class="form-horizontal" novalidate>
+                    <fieldset>
+                      <div class="form-group">
+                        <label for="name" class="col-md-1 control-label">Name</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.name" id="name" placeholder="Name">
                         </div>
-                        <div data-ng-if="(!data.onLoad && !data.project_error)">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div data-ng-if="!data.editMode">
-                                <div ng-if="!data.project.deleted_at && data.canEdit">
-                                  <button class="btn-default btn-access" ng-click="project_switchEditMode()"><i class="fa fa-pencil-square-o"></i>Edit</button>
-                                </div>
-                                <div>
-                                  <div ng-if="data.project.logo">
-                                    <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                  </div>
-                                  <div ng-if="!data.project.logo">
-                                    <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                  </div>
-                                </div>
-                                <div>
-                                  <h4>Creation Date</h4>
-                                  <p>{[{ formatObjectDate(data.project.creation_date.date) }]}</p>
-                                </div>
-                                <div data-ng-if="data.project.deleted_at">
-                                  <h4>Deletion Date</h4>
-                                  <p>{[{ formatObjecctDate(data.project.deleted_at.data) }]}</p>
-                                </div>
-                                <div>
-                                  <h4>Name</h4>
-                                  <p>{[{data.project.name}]}</p>
-                                </div>
-                                <div>
-                                  <h4>Description</h4>
-                                  <p>{[{data.project.description}]}</p>
-                                </div>
-                                <div>
-                                  <h4>Company</h4>
-                                  <p>{[{data.project.company}]}</p>
-                                </div>
-                                <div>
-                                  <h4>Phone</h4>
-                                  <p>{[{data.project.phone}]}</p>
-                                </div>
-                                <div>
-                                  <h4>Email</h4>
-                                  <p>{[{data.project.contact_mail}]}</p>
-                                </div>
-                                <div>
-                                  <h4>Facebook</h4>
-                                  <p>{[{data.project.facebook}]}</p>
-                                </div>
-                                <div>
-                                  <h4>Twitter</h4>
-                                  <p>{[{data.project.twitter}]}</p>
-                                </div>
-                              </div><!-- !data-ng-if="!data.editMode" -->
-                              <div data-ng-if="data.editMode">
-                                <form novalidate>
-                                  <div class-"form-group" ng-if="!data.project.deleted_at && data.canEdit">
-                                    <button class="btn-default button cancel-button" href="" ng-click="project_switchEditMode()"><i class=" fa fa-close"></i>Cancel</button>
-                                    <button class="btn-default button save-button" href="" ng-click="updateProject(data.project)"><i class="fa fa-check"></i>Save</button>
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <div ng-if="data.project.logo">
-                                      <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                    </div>
-                                    <div ng-if="!data.project.logo">
-                                      <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                    </div>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" class="form-control" type="file" ng-model="data.project.logo">
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <h4>Name</h4>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" ng-model="data.project.name">
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <h4>Description</h4>
-                                    <textarea ng-disabled="!data.editMode || data.project.deleted_at" class="form-control" ng-model="data.project.description"></textarea>
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <h4>Company</h4>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" ng-model="data.project.company">
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <h4>Phone</h4>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" type="phone" class="form-control" ng-model="data.project.phone">
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <h4>Email</h4>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" type="email" class="form-control" ng-model="data.project.contact_mail">
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <h4>Facebook</h4>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" type="url" class="form-control" ng-model="data.project.facebook">
-                                  </div><!-- !form-group -->
-                                  <div class="form-group">
-                                    <h4>Twitter</h4>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" type="url" class="form-control" ng-model="data.project.twitter">
-                                  </div><!-- !form-group -->
-                                  <div class="form-group" ng-if="data.canEdit">
-                                    <h4>Password</h4>
-                                    <p>Used for the cloud</p>
-                                    <label for="old_pswd">Actual password</label>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" id="old_pswd" type="password" class="form-control" ng-model="data.project.old_password">
-                                    <label for="new_pswd">New password</label>
-                                    <input ng-disabled="!data.editMode || data.project.deleted_at" id="new_pswd" type="password" class="form-control" ng-model="data.project.new_password">
-                                  </div><!-- !form-group -->
-                                  <div class-"form-group" ng-if="!data.project.deleted_at && data.canEdit">
-                                    <button class="btn-default button cancel-button" href="" ng-click="project_switchEditMode()"><i class=" fa fa-close"></i>Cancel</button>
-                                    <button class="btn-default button save-button" href="" ng-click="updateProject(data.project)"><i class="fa fa-check"></i>Save</button>
-                                  </div><!-- !form-group -->
-                                </form>
-                              </div><!-- !data-ng-if="data.editMode" -->
-                            </div><!-- !section-content -->
-                        </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
-                        <div data-ng-if="data.project_error">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-                            <div class="app-data error">
-                                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                            </div>
-                          </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="description" class="col-md-1 control-label">Description</label>
+                        <div class="col-md-11">
+                          <textarea data-ng-disabled="!data.editMode || data.project.deleted_at" class="form-control" rows="3" data-ng-model="data.project.description" id="description" placeholder="Description"></textarea>
                         </div>
-                      </div><!-- ! #general-content-->
+                      </div>
+                      <div class="form-group">
+                        <label for="logo" class="col-md-1 control-label">Logo</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="file" class="form-control" data-ng-model="data.project.logo" id="logo" placeholder="Browse">
+                        </div>
+                      </div>                
+                      <div class="form-group">
+                        <label for="company" class="col-md-1 control-label">Company</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.company" id="company" placeholder="Company">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="password" class="col-md-1 control-label">Cloud password</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="password" class="form-control" data-ng-model="data.project.password" id="password" placeholder="Password">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="email" class="col-md-1 control-label">Email</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="email" class="form-control" data-ng-model="data.project.contact_mail" id="email" placeholder="Email">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="phone" class="col-md-1 control-label">Phone</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="phone" class="form-control" data-ng-model="data.project.phone" id="phone" placeholder="+000 00 000 0000">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="facebook" class="col-md-1 control-label">Facebook</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.facebook" id="facebook" placeholder="Link">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="twitter" class="col-md-1 control-label">Twitter</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.twitter" id="twitter" placeholder="Link">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-md-2 col-md-offset-10" data-ng-if="!data.editMode && data.canEdit">
+                          <a class="btn btn-default" data-ng-click="project_switchEditMode()">Edit</a>
+                        </div>
+                        <div class="col-md-3 col-md-offset-9" data-ng-if="data.editMode && data.canEdit">
+                          <a class="btn" data-ng-click="project_switchEditMode()">Cancel</a>
+                          <a class="btn btn-default" data-ng-click="updateProject(data.project)">Update</a>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </form>
+                </div>
+                <div data-ng-if="data.project_error">
+                  <div class="well centered">
+                    <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+            </div>
 
+            <div class="tab-content">
+              <!-- project edition: general -->
                       <div role="tabpanel" class="tab-pane" id="users-content">
                         <div data-ng-if="data.usersLoad">
                           <div class="section-heading app-section-heading"><h2></h2></div>

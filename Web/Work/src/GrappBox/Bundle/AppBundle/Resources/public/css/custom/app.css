@@ -104,6 +104,11 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
   .aside-toggle { padding: 11px 10px 3px 15px; }
 }
 
+.well .nav.nav-tabs { background: #bdbdbd; margin: -20px -19px 30px -19px; border: 0; }
+.well .nav.nav-tabs > li.active > a { border: 0!important; border-bottom: solid 4px #c0392b!important; color: #c0392b!important; }
+.well .nav.nav-tabs > li > a { padding: 18px; text-align: center; color: #000!important; font-weight: 400; }
+.well .nav.nav-tabs > li { margin: 0; }
+
 
 
 /* ============================================================ */
@@ -111,7 +116,8 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 /* ============================================================ */
 
 .each-project .well { padding: 19px 19px 5px 19px!important; }
-.each-project a { float: right; color: #c0392b!important; }
+.each-project a { float: right; }
+.each-project .btn-default { color: #c0392b!important; }
 .each-project ul { list-style: none; font-weight: 400; padding: 0; }
 .each-project ul li { padding: 5px 0; }
 .each-project ul li i { vertical-align: middle!important; margin: 0 10px 0 0; }
@@ -132,7 +138,7 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 
 #profile .well { min-height: 260px; }
 #profile .form-group input[type=file] { opacity: initial; position: initial; }
-#profile .form-group button[type=submit] { color: #c0392b; }
+#profile .form-group .btn-default { color: #c0392b; }
 
 
 
@@ -140,13 +146,13 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 /* ==================== SECTION: PROJECT ==================== */
 /* ========================================================== */
 
-#project-data .well { min-height: 110px; }
-#project-data .well ul { list-style: none; margin: 0; padding: 0; }
-#project-data .well ul li { display: inline; padding: 0 5px 0 0; }
-
 #project-creation .well { min-height: 260px; }
 #project-creation .form-group input[type=file] { opacity: initial; position: initial; }
-#project-creation .form-group button[type=submit] { color: #c0392b; }
+#project-creation .form-group .btn-default { color: #c0392b; }
+
+#project-edition .well { min-height: 260px; }
+#project-edition .form-group input[type=file] { opacity: initial; position: initial; }
+#project-edition .form-group .btn-default { color: #c0392b; }
 
 #project-list .section-content { margin: 30px -20px; }
 #project-list .project-picture { padding: 10px; }
