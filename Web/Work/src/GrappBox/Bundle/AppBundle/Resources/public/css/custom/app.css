@@ -278,9 +278,11 @@ section { margin: 30px 0; }
 #bugtracker-list .title { background: #009688; margin: 0 0 15px 0; }
 #bugtracker-list .data-content .btn-default { margin: 28px 0 0 0; }
 #bugtracker-list .create-btn { min-width: 240px; padding-left: 10px; }
+#bugtracker-list .ticket-list { margin-top: 10px; }
 
 #bugtracker-content .app-actions-list li { display: inline; }
 #bugtracker-content .app-actions-list ul { padding: 0; margin: 0; }
+
 
 /*#bugtracker-content #existing-ticket {}
 #bugtracker-content #existing-ticket #editable-data-list {}
@@ -352,3 +354,8 @@ section { margin: 30px 0; }
 #project-content #roles-list .title { background: #7CB342; margin: 0 0 15px 0; }
 
 #project-content #roles-lists .roles-details { }
+
+.nav-tabs > .active {
+  /*background-color: #006E63;*/
+  background-color: rgba(255, 255, 255, 0.1);
+}

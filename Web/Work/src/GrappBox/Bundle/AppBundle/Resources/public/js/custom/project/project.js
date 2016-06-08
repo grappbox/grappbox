@@ -104,7 +104,8 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
     $http.delete($rootScope.apiBaseURL + '/projects/delproject/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID)
       .then(function successCallback(response) {
         Notification.success({ message: 'Project deleted', delay: 5000 });
-        $location.path('/project/' + $scope.projectID);
+        //$location.path('/project/' + $scope.projectID);
+        $route.reload();
       },
       function errorCallback(response) {
         Notification.warning({ message: 'Unable to delete project. Please try again.', delay: 5000 });
@@ -411,14 +412,18 @@ app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$h
   //                TAB MANAGEMENT
   // ------------------------------------------------------
 
-    $scope.lastTab = "#general-content";
-    $scope.displayTab = function(tabContent) {
+    $scope.lastTabContent = "#general-content";
+    $scope.lastTabTitle = "#general-title";
+    
+    $scope.displayTab = function(tabContent, tabTitle) {
 
-      $($scope.lastTab)[0].classList.remove("active");
+      $($scope.lastTabContent)[0].classList.remove("active");
+      $($scope.lastTabTitle)[0].classList.remove("active");
 
       $(tabContent)[0].classList.add("active");
-      $scope.lastTab = tabContent;
-
+      $(tabTitle)[0].classList.add("active");
+      $scope.lastTabContent = tabContent;
+      $scope.lastTabTitle = tabTitle;
     };
 
   // ------------------------------------------------------

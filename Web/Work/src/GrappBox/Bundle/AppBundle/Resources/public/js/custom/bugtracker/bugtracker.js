@@ -91,6 +91,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
     return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
   };
 
+
   // ------------------------------------------------------
   //                 TAGS ASSIGNATION
   // ------------------------------------------------------

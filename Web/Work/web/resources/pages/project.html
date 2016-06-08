@@ -17,137 +17,161 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <h2>{[{data.project.name + " settings"}]}</h2>
               <div data-ng-if="!data.onLoad">
                 <div class="row">
-                  <p>Created at {[{ formatObjectDate(data.project.creation_date.date) }]}</p>
-                </div>
-                <div class="row">
-                  <p data-ng-if="data.project.deleted_at">Deleted at {[{ formatObjecctDate(data.project.deleted_at.data) }]}</p>
                   <p>
-                    <a ng-if="!data.project.deleted_at && data.canEdit" href="" ng-click="deleteProject()" class="btn-default btn-access"><i class="fa fa-times"></i>Delete</a>
-                    <a ng-if="data.project.deleted_at && data.canEdit" href="" ng-click="retrieveProject()" class="btn-default btn-access"><i class="fa fa-undo"></i>Retrieve</a>
-                  </p>
+                    <button ng-if="!data.project.deleted_at && data.canEdit" ng-click="deleteProject()" class="btn-default btn-access"><i class="fa fa-times"></i>Delete</button>
+                    <button ng-if="data.project.deleted_at && data.canEdit" ng-click="retrieveProject()" class="btn-default btn-access"><i class="fa fa-undo"></i>Retrieve</button>
+                  </p><br/>
                 </div>
-              </div>
+              </div><!-- !data.onload -->
             </div>
           </div>
-            <div class="row">
-                <div class="col-lg-12">
-                  <!-- grappbox.data : project content -->
-                  <div  data-ng-if="data.project_new">
-                    <div data-ng-if="data.onLoad">
-                      <div class="section-heading app-section-heading"><h2></h2></div>
+          <div class="row">
+              <div class="col-lg-12">
+                <!-- grappbox.data : project content -->
+                <div  data-ng-if="data.project_new">
+                  <div data-ng-if="data.onLoad">
+                    <div class="section-heading app-section-heading"><h2></h2></div>
+                    <div class="section-content app-section-content">
+                      <div class="loading-content section">
+                        <div></div>
+                      </div>
+                    </div>
+                  </div><!-- data-ng-if="data.onLoad" -->
+                  <div data-ng-if="!data.onLoad">
+                    <div class="col-lg-12">
+                      <div class="section-heading app-section-heading"></div>
                       <div class="section-content app-section-content">
-                        <div class="loading-content section">
-                          <div></div>
-                        </div>
-                      </div>
-                    </div><!-- data-ng-if="data.onLoad" -->
-                    <div data-ng-if="!data.onLoad">
-                      <div class="col-lg-6">
-                        <div class="section-heading app-section-heading"><h2>General informations</h2></div>
-                        <div class="section-content app-section-content">
-                            <form novalidate>
-                              <div class="form-group">
-                                <div ng-if="data.project.logo">
-                                  <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                </div>
-                                <div ng-if="!data.project.logo">
-                                  <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
-                                </div>
-                                <input class="form-control" type="file" ng-model="data.project.logo">
-                              </div><!-- !form-group -->
-                              <div class="form-group">
-                                <h4>Name</h4>
-                                <input type="text" class="form-control" ng-model="data.project.name">
-                              </div><!-- !form-group -->
-                              <div class="form-group">
-                                <h4>Description</h4>
-                                <textarea class="form-control" ng-model="data.project.description"></textarea>
-                              </div><!-- !form-group -->
-                              <div class="form-group">
-                                <h4>Company</h4>
-                                <input type="text" class="form-control" ng-model="data.project.company">
-                              </div><!-- !form-group -->
-                              <div class="form-group">
-                                <h4>Phone</h4>
-                                <input type="phone" class="form-control" ng-model="data.project.phone">
-                              </div><!-- !form-group -->
-                              <div class="form-group">
-                                <h4>Email</h4>
-                                <input type="email" class="form-control" ng-model="data.project.contact_mail">
-                              </div><!-- !form-group -->
-                              <div class="form-group">
-                                <h4>Facebook</h4>
-                                <input type="url" class="form-control" ng-model="data.project.facebook">
-                              </div><!-- !form-group -->
-                              <div class="form-group">
-                                <h4>Twitter</h4>
-                                <input type="url" class="form-control" ng-model="data.project.twitter">
-                              </div><!-- !form-group -->
-                              <!-- TODO password mandatory ? generate if not provide ? -->
-                              <div class="form-group">
-                                <h4>Password</h4>
-                                <p>Used for the cloud</p>
-                                <input type="password" class="form-control" ng-model="data.project.password">
-                              </div><!-- !form-group -->
-                              <div>
-                                <p><a class="btn-default button save-button" href="" ng-click="createProject(data.project)"><i class="fa fa-check"></i>Create</a></p>
+                          <form novalidate>
+                            <div class="form-group col-lg-6">
+                              <h4>Name</h4>
+                              <input type="text" class="form-control" ng-model="data.project.name">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-6">
+                              <div ng-if="data.project.logo">
+                                <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                               </div>
-                            </form>
-                        </div><!-- !section-content -->
-                      </div>
-                      <div class="col-lg-6">
-                        <div class="row">
-                          <div class="section-heading app-section-heading">
-                            <h2>Participants</h2>
-                          </div>
-                          <div class="section-content app-section-content">
-                            <p>
-
-                            </p>
-                          </div><!-- !section-content -->
-                        </div><!-- !row -->
-                        <div class="row">
-                          <div class="section-heading app-section-heading">
-                            <h2>Customers Access</h2>
-                          </div>
-                          <div class="section-content app-section-content">
-                            <p>
-
-                            </p>
-                          </div><!-- !section-content -->
-                        </div><!-- !row -->
-                      </div><!-- !col-lg-6 -->
-                    </div><!-- ! data-ng-if="!data.onLoad"-->
-                  </div><!-- ! ng-if="!data.project_new" -->
-
-                  <div class="" ng-if="!data.project_new">
-
-                    <div id="tab-pannel">
-                      <!-- Nav tabs -->
-                        <ul class="nav nav-tabs" role="tablist">
-                          <li id="general-title" role="presentation" class="active"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#general-content')">General</a></li>
-                          <li id="users-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#users-content')">Users</a></li>
-                          <li id="roles-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#roles-content')">Roles</a></li>
-                          <li id="customers-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#customers-content')">Customers Acccess</a></li>
-                        </ul>
-
-                      <!-- Tab panes -->
-                      <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="general-content">
-                          <div data-ng-if="data.onLoad">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="loading-content section">
-                                <div></div>
+                              <div ng-if="!data.project.logo">
+                                <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                               </div>
+                              <input class="form-control" type="file" ng-model="data.project.logo">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-12">
+                              <h4>Description</h4>
+                              <textarea class="form-control" ng-model="data.project.description"></textarea>
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-4">
+                              <h4>Company</h4>
+                              <input type="text" class="form-control" ng-model="data.project.company">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-4">
+                              <h4>Phone</h4>
+                              <input type="phone" class="form-control" ng-model="data.project.phone">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-4">
+                              <h4>Email</h4>
+                              <input type="email" class="form-control" ng-model="data.project.contact_mail">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-6">
+                              <h4>Facebook</h4>
+                              <input type="url" class="form-control" ng-model="data.project.facebook">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-6">
+                              <h4>Twitter</h4>
+                              <input type="url" class="form-control" ng-model="data.project.twitter">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-6">
+                              <h4>Password</h4>
+                              <input type="password" class="form-control" ng-model="data.project.password">
+                            </div><!-- !form-group -->
+                            <div class="form-group col-lg-12">
+                              <button class="btn-default button save-button" ng-click="createProject(data.project)"><i class="fa fa-check"></i>Create</button>
+                            </div><!-- !form-group -->
+                          </form>
+                      </div><!-- !section-content -->
+                    </div>
+                  </div><!-- ! data-ng-if="!data.onLoad"-->
+                </div><!-- ! ng-if="!data.project_new" -->
+
+                <div class="" ng-if="!data.project_new">
+
+                  <div id="tab-pannel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li id="general-title" role="presentation" class="active"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#general-content', '#general-title')">General</a></li>
+                      <li id="users-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#users-content', '#users-title')">Users</a></li>
+                      <li id="roles-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#roles-content', '#roles-title')">Roles</a></li>
+                      <li id="customers-title" role="presentation"><a href="" role="tab" data-toggle="tab" ng-click="displayTab('#customers-content', '#customers-title')">Customers Acccess</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                      <div role="tabpanel" class="tab-pane active" id="general-content">
+                        <div data-ng-if="data.onLoad">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="loading-content section">
+                              <div></div>
                             </div>
                           </div>
-                          <div data-ng-if="(!data.onLoad && !data.project_error)">
-                              <div class="section-heading app-section-heading">
-                                <h2>General informations</h2>
-                              </div>
-                              <div class="section-content app-section-content">
+                        </div>
+                        <div data-ng-if="(!data.onLoad && !data.project_error)">
+                            <div class="section-heading app-section-heading"><h2></h2></div>
+                            <div class="section-content app-section-content">
+                              <div data-ng-if="!data.editMode">
+                                <div ng-if="!data.project.deleted_at && data.canEdit">
+                                  <button class="btn-default btn-access" ng-click="project_switchEditMode()"><i class="fa fa-pencil-square-o"></i>Edit</button>
+                                </div>
+                                <div>
+                                  <div ng-if="data.project.logo">
+                                    <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                                  </div>
+                                  <div ng-if="!data.project.logo">
+                                    <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                                  </div>
+                                </div>
+                                <div>
+                                  <h4>Creation Date</h4>
+                                  <p>{[{ formatObjectDate(data.project.creation_date.date) }]}</p>
+                                </div>
+                                <div data-ng-if="data.project.deleted_at">
+                                  <h4>Deletion Date</h4>
+                                  <p>{[{ formatObjecctDate(data.project.deleted_at.data) }]}</p>
+                                </div>
+                                <div>
+                                  <h4>Name</h4>
+                                  <p>{[{data.project.name}]}</p>
+                                </div>
+                                <div>
+                                  <h4>Description</h4>
+                                  <p>{[{data.project.description}]}</p>
+                                </div>
+                                <div>
+                                  <h4>Company</h4>
+                                  <p>{[{data.project.company}]}</p>
+                                </div>
+                                <div>
+                                  <h4>Phone</h4>
+                                  <p>{[{data.project.phone}]}</p>
+                                </div>
+                                <div>
+                                  <h4>Email</h4>
+                                  <p>{[{data.project.contact_mail}]}</p>
+                                </div>
+                                <div>
+                                  <h4>Facebook</h4>
+                                  <p>{[{data.project.facebook}]}</p>
+                                </div>
+                                <div>
+                                  <h4>Twitter</h4>
+                                  <p>{[{data.project.twitter}]}</p>
+                                </div>
+                              </div><!-- !data-ng-if="!data.editMode" -->
+                              <div data-ng-if="data.editMode">
                                 <form novalidate>
+                                  <div class-"form-group" ng-if="!data.project.deleted_at && data.canEdit">
+                                    <button class="btn-default button cancel-button" href="" ng-click="project_switchEditMode()"><i class=" fa fa-close"></i>Cancel</button>
+                                    <button class="btn-default button save-button" href="" ng-click="updateProject(data.project)"><i class="fa fa-check"></i>Save</button>
+                                  </div><!-- !form-group -->
                                   <div class="form-group">
                                     <div ng-if="data.project.logo">
                                       <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
@@ -193,255 +217,242 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                     <label for="new_pswd">New password</label>
                                     <input ng-disabled="!data.editMode || data.project.deleted_at" id="new_pswd" type="password" class="form-control" ng-model="data.project.new_password">
                                   </div><!-- !form-group -->
-                                  <div class-"form-group" ng-if="!data.project.deleted_at && data.canEdit" ng-switch="data.editMode">
-                                      <div ng-switch-default >
-                                        <p><a href="" class="btn-default btn-access" ng-click="project_switchEditMode()"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
-                                      </div>
-                                      <div ng-switch-when="true">
-                                        <p><a class="btn-default button cancel-button" href="" ng-click="project_switchEditMode()"><i class=" fa fa-close"></i>Cancel</a>
-                                        <a class="btn-default button save-button" href="" ng-click="updateProject(data.project)"><i class="fa fa-check"></i>Save</a></p>
-                                      </div>
-                                  </div><!-- ng-switch -->
+                                  <div class-"form-group" ng-if="!data.project.deleted_at && data.canEdit">
+                                    <button class="btn-default button cancel-button" href="" ng-click="project_switchEditMode()"><i class=" fa fa-close"></i>Cancel</button>
+                                    <button class="btn-default button save-button" href="" ng-click="updateProject(data.project)"><i class="fa fa-check"></i>Save</button>
+                                  </div><!-- !form-group -->
                                 </form>
-                              </div><!-- !section-content -->
-                          </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
-                          <div data-ng-if="data.project_error">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="app-data error">
-                                  <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div><!-- ! #general-content-->
-
-                        <div role="tabpanel" class="tab-pane" id="users-content">
-                          <div data-ng-if="data.usersLoad">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="loading-content section">
-                                <div></div>
-                              </div>
-                            </div>
-                          </div>
-                          <div data-ng-if="(!data.usersLoad && !data.users_error)" id="users-list">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="data-wrapper">
-                                <form class="form-inline" novalidate>
-                                  <label for="newUser">Enter the user's email:</label>
-                                  <input class="form-control" type="email" name="newUser" ng-model="new_user">
-                                  <button type="submit" class="btn btn-default" ng-click="addUser(new_user)"><i class="fa fa-plus"></i>Add</button>
-                                </form>
-                              </div>
-                              <div class="data-wrapper" ng-repeat="user in data.users">
-                                  <ul class="data-content shadow">
-                                      <li>
-                                        <span class="title">{[{user.firstname + " " + user.lastname}]}</span>
-                                      </li>
-                                  </ul>
-                                  <div class="">
-                                    <form class="form-inline" novalidate>
-                                      <div class="form-group">
-                                        <label for="role">Role</label>
-                                        <select class="form-control" name="role" ng-model="user.role" ng-options="role.id as role.name for role in data.roles"></select>
-                                      </div>
-                                      <button type="submit" class="btn btn-default" ng-click="assignRoleToUser(user)"><i class="fa fa-floppy-o"></i>Save change</button>
-                                      <button type="button" class="btn btn-default" ng-click="removeUser(user)"><i class="fa fa-times"></i>Remove</button>
-                                    </form>
-                                  </div>
-                              </div>
+                              </div><!-- !data-ng-if="data.editMode" -->
                             </div><!-- !section-content -->
-                          </div><!-- !data-ng-if="data.onLoad && !data.users_error" -->
-                          <div data-ng-if="data.users_error">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="app-data error">
-                                  <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                              </div>
-                            </div>
-                          </div><!-- !data-ng-if="data.users_erroe-->
-                        </div><!-- ! #users-content-->
-
-                        <div role="tabpanel" class="tab-pane" id="roles-content">
-                          <div data-ng-if="data.rolesLoad">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="loading-content section">
-                                <div></div>
-                              </div>
+                        </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
+                        <div data-ng-if="data.project_error">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="app-data error">
+                                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                             </div>
                           </div>
-                          <div data-ng-if="(!data.rolesLoad && !data.roles_error)" id="roles-list">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="data-wrapper"><!-- new role -->
-                                <ul class="data-content shadow">
-                                    <li>
-                                      <span class="title">New Role</span>
-                                    </li>
-                                </ul>
-                                <div class="roles-details">
-                                  <form class="form-inline" novalidate>
+                        </div>
+                      </div><!-- ! #general-content-->
+
+                      <div role="tabpanel" class="tab-pane" id="users-content">
+                        <div data-ng-if="data.usersLoad">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="loading-content section">
+                              <div></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div data-ng-if="(!data.usersLoad && !data.users_error)" id="users-list">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+
+                            <div class="col-lg-12" ng-if="data.canEdit">
+                              <h4>Add a user</h4>
+                              <form class="col-lg-6" novalidate>
+                                <div class="form-group">
+                                  <input class="form-control col-lg-4" type="email" name="newUser" ng-model="new_user" placeholder="New user's email">
+                                  <button type="submit" class="btn-default btn-access" ng-click="addUser(new_user)"><i class="fa fa-plus"></i>Add</button>
+                                </div>
+                              </form>
+                            </div>
+                            <div class="col-lg-12">
+                              <h4>Registered user(s)</h4>
+                              <div class="panel panel-default col-lg-6" ng-repeat="user in data.users">
+                                <div class="panel-heading">{[{user.firstname + " " + user.lastname}]}</div>
+                                <div class="panel-body">
+                                  <form novalidate>
                                     <div class="form-group">
-                                      <label for="name">Name</label>
-                                      <input class="form-control" type="text" name="name" ng-model="new_role.name">
+                                      <select class="form-control" ng-disabled="!data.canEdit" ng-model="user.role" ng-options="role.id as role.name for role in data.roles"></select>
+                                      <button type="button" class="btn-default btn-access" ng-if="data.canEdit" ng-click="removeUser(user)"><i class="fa fa-times"></i>Remove</button>
+                                      <button type="submit" class="btn-default btn-access" ng-if="data.canEdit" ng-click="assignRoleToUser(user)"><i class="fa fa-floppy-o"></i>Save change</button>
                                     </div>
-                                    <div class="form-group">
-                                      <label for="team-timeline">Team Timeline</label>
-                                      <select name="team-timeline" class="form-control" ng-model="new_role.team_timeline" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="customer-timeline">Customer Timeline</label>
-                                      <select name="customer-timeline" class="form-control" ng-model="new_role.customer_timeline" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="gantt">Gantt</label>
-                                      <select name="gantt" class="form-control" ng-model="new_role.gantt" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="whiteboard">Whiteboard</label>
-                                      <select name="whiteboard" class="form-control" ng-model="new_role.whiteboard" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="bugtracker">Bugtracker</label>
-                                      <select name="bugtracker" class="form-control" ng-model="new_role.bugtracker" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="event">Event</label>
-                                      <select name="event" class="form-control" ng-model="new_role.event" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="task">Task</label>
-                                      <select name="task" class="form-control" ng-model="new_role.task" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="project-settings">Project Settings</label>
-                                      <select name="project-settings" class="form-control" ng-model="new_role.project_settings" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="cloud">Cloud</label>
-                                      <select name="cloud" class="form-control" ng-model="new_role.cloud" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                    </div>
-                                    <button type="submit" class="btn btn-default" ng-click="createRole(new_role)"><i class="fa fa-plus"></i>Create</button>
                                   </form>
-                                </div><!-- !#roles-details -->
-                              </div><!-- !new role -->
-                              <div class="data-wrapper" ng-repeat="role in data.roles">
-                                <ul class="data-content shadow">
-                                    <li>
-                                      <span class="title">{[{role.name}]}</span>
-                                    </li>
-                                </ul>
-                                <div class="roles-details">
-                                  <form class="form-inline" novalidate>
-                                    <div class="form-group">
+                                </div>
+                              </div>
+                            </div>
+                          </div><!-- !section-content -->
+                        </div><!-- !data-ng-if="data.onLoad && !data.users_error" -->
+                        <div data-ng-if="data.users_error">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="app-data error">
+                                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                            </div>
+                          </div>
+                        </div><!-- !data-ng-if="data.users_erroe-->
+                      </div><!-- ! #users-content-->
+
+                      <div role="tabpanel" class="tab-pane" id="roles-content">
+                        <div data-ng-if="data.rolesLoad">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="loading-content section">
+                              <div></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div data-ng-if="(!data.rolesLoad && !data.roles_error)" id="roles-list">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="col-lg-12" ng-if="data.canEdit">
+                              <h4>Create new role</h4>
+                              <form class="col-lg-6"novalidate>
+                                <div class="form-group col-lg-12">
+                                  <input class="form-control" type="text" ng-model="new_role.name" placeholder="Role name">
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="team-timeline">Team Timeline</label>
+                                  <select name="team-timeline" class="form-control" ng-model="new_role.team_timeline" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="customer-timeline">Customer Timeline</label>
+                                  <select name="customer-timeline" class="form-control" ng-model="new_role.customer_timeline" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="gantt">Gantt</label>
+                                  <select name="gantt" class="form-control" ng-model="new_role.gantt" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="whiteboard">Whiteboard</label>
+                                  <select name="whiteboard" class="form-control" ng-model="new_role.whiteboard" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="bugtracker">Bugtracker</label>
+                                  <select name="bugtracker" class="form-control" ng-model="new_role.bugtracker" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="event">Event</label>
+                                  <select name="event" class="form-control" ng-model="new_role.event" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="task">Task</label>
+                                  <select name="task" class="form-control" ng-model="new_role.task" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="project-settings">Project Settings</label>
+                                  <select name="project-settings" class="form-control" ng-model="new_role.project_settings" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-4">
+                                  <label for="cloud">Cloud</label>
+                                  <select name="cloud" class="form-control" ng-model="new_role.cloud" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </div>
+                                <div class="form-group col-lg-12">
+                                  <button type="submit" class="btn-default btn-access" ng-click="createRole(new_role)"><i class="fa fa-plus"></i>Create</button>
+                                </div>
+                              </form>
+                            </div>
+                            <div class="col-lg-12">
+                              <h4>Registered role(s)</h4>
+                              <div class="panel panel-default col-lg-6" ng-repeat="role in data.roles">
+                                <div class="panel-heading">{[{role.name}]}</div>
+                                <div class="panel-body">
+                                  <form novalidate>
+                                    <div class="form-group col-lg-4">
                                       <label for="team-timeline">Team Timeline</label>
                                       <select name="team-timeline" class="form-control" ng-model="role.team_timeline" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="customer-timeline">Customer Timeline</label>
                                       <select name="customer-timeline" class="form-control" ng-model="role.customer_timeline" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="gantt">Gantt</label>
                                       <select name="gantt" class="form-control" ng-model="role.gantt" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="whiteboard">Whiteboard</label>
                                       <select name="whiteboard" class="form-control" ng-model="role.whiteboard" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="bugtracker">Bugtracker</label>
                                       <select name="bugtracker" class="form-control" ng-model="role.bugtracker" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="event">Event</label>
                                       <select name="event" class="form-control" ng-model="role.event" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="task">Task</label>
                                       <select name="task" class="form-control" ng-model="role.task" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="project-settings">Project Settings</label>
                                       <select name="project-settings" class="form-control" ng-model="role.project_settings" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-lg-4">
                                       <label for="cloud">Cloud</label>
                                       <select name="cloud" class="form-control" ng-model="role.cloud" ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
-                                    <button type="submit" class="btn btn-default" ng-click="editRole(role)"><i class="fa fa-floppy-o"></i>Save changes</button>
-                                    <button type="button" class="btn btn-default" ng-click="deleteRole(role)"><i class="fa fa-trash"></i>Delete</button>
+                                    <div class="form-group col-lg-12">
+                                      <button type="submit" class="btn-default btn-access" ng-click="editRole(role)"><i class="fa fa-floppy-o"></i>Save changes</button>
+                                      <button type="button" class="btn-default btn-access" ng-click="deleteRole(role)"><i class="fa fa-trash"></i>Delete</button>
+                                    </div>
                                   </form>
-                                </div><!-- !#roles-details -->
-                              </div><!-- !ng-repeat="role in data.roles"-->
-                            </div><!-- !section-content -->
-                          </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
-                          <div data-ng-if="data.roles_error">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="app-data error">
-                                  <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                                </div>
                               </div>
                             </div>
+                          </div><!-- !section-content -->
+                        </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
+                        <div data-ng-if="data.roles_error">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="app-data error">
+                                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                            </div>
                           </div>
-                        </div><!-- ! #roles-content-->
+                        </div>
+                      </div><!-- ! #roles-content-->
 
-                        <div role="tabpanel" class="tab-pane" id="customers-content">
-                          <div data-ng-if="data.customersLoad">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="loading-content section">
-                                <div></div>
-                              </div>
+                      <div role="tabpanel" class="tab-pane" id="customers-content">
+                        <div data-ng-if="data.customersLoad">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="loading-content section">
+                              <div></div>
                             </div>
                           </div>
-                          <div data-ng-if="(!data.customersLoad && !data.customers_error)" id="customers-list">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                                <div class="data-wrapper">
-                                  <ul class="data-content shadow">
-                                    <li><span class="title">New Customer Access</span></li>
-                                  </ul>
-                                  <div class="">
-                                    <form class="form-inline" novalidate>
-                                      <div class="form-group">
-                                          <label for="name">Name</label>
-                                          <input class="form-control" type="text" name="name" ng-model="new_customer.name">
-                                      </div>
-                                      <button type="submit"class="btn btn-default" ng-click="createCustomersAccess(new_customer)"><i class="fa fa-plus"></i>Create</button>
-                                    </form>
-                                  </div>
+                        </div>
+                        <div data-ng-if="(!data.customersLoad && !data.customers_error)" id="customers-list">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="col-lg-12" ng-if="data.canEdit">
+                              <h4>Create customer access</h4>
+                              <form class="col-lg-6" novalidate>
+                                <div class="form-group">
+                                    <input class="form-control" type="text" ng-model="new_customer.name" placeholder="Customer access name">
+                                    <button type="submit"class="btn-default btn-access" ng-click="createCustomersAccess(new_customer)"><i class="fa fa-plus"></i>Create</button>
                                 </div>
-                                <div class="data-wrapper" ng-repeat="customer in data.customers">
-                                    <ul class="data-content shadow">
-                                        <li>
-                                          <span class="title">{[{customer.name}]}</span>
-                                        </li>
-                                        <li>
-                                          <span>Token: {[{customer.customer_token}]}</span>
-                                        </li>
-                                    </ul>
-                                    <a href="" class="btn btn-default" ng-click="deleteCustomerAccess(customer)"><i class="fa fa-trash-o"></i>Supprimer</a>
+                              </form>
+                            </div>
+                            <div class="col-lg-12">
+                              <h4>Registered customer access(es)</h4>
+                              <div class="panel panel-default col-lg-6" ng-repeat="customer in data.customers">
+                                <div class="panel-heading">{[{customer.name}]}</div>
+                                <div class="panel-body">
+                                  <p>Token: {[{customer.customer_token}]}</p>
+                                  <button class="btn-default btn-access" ng-click="deleteCustomerAccess(customer)"><i class="fa fa-trash-o"></i>Delete</button>
                                 </div>
-                            </div><!-- !section-content -->
-                          </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
-                          <div data-ng-if="data.customers_error">
-                            <div class="section-heading app-section-heading"><h2></h2></div>
-                            <div class="section-content app-section-content">
-                              <div class="app-data error">
-                                  <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                               </div>
                             </div>
+                          </div><!-- !section-content -->
+                        </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
+                        <div data-ng-if="data.customers_error">
+                          <div class="section-heading app-section-heading"><h2></h2></div>
+                          <div class="section-content app-section-content">
+                            <div class="app-data error">
+                                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                            </div>
                           </div>
-                        </div><!-- ! #customers-content-->
-                      </div>
+                        </div>
+                      </div><!-- ! #customers-content-->
                     </div>
+                  </div>
 
-                  </div><!-- ! ng-if="data.project_new"-->
-                </div><!-- !col-lg-12 -->
-            </div><!-- row -->
+                </div><!-- ! ng-if="data.project_new"-->
+              </div><!-- !col-lg-12 -->
+          </div><!-- row -->
         </div><!-- container app-container-->
     </section>
 

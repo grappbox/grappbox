@@ -36,60 +36,59 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="section-heading">
               <h3><i class="fa fa-folder-o"></i>"{[{ project.name }]}"</h3>
             </div>
-
-            <div class="section-content tiles">
-              <div id="all-bugtracker-data">
+            <div class="section-content">
+              <div id="all-bugtracker-data" class="col-lg-12">
                 <div ng-show="data.projectsBugtracker_onLoad[project.name]">
                   <div class="loading-content section"><div></div></div>
                 </div>
                 <div ng-show="!data.projectsBugtracker_onLoad[project.name]">
-                  <div ng-if="data.projectsBugtracker_message[project.name] == '_valid'" panhandler>
-                    <div class="data-wrapper create-btn" >
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_valid'">
+                    <div class="">
                       <a href="bugtracker/{[{ project.project_id }]}/0" title="Create new ticket" class="btn-default btn-access">
                         <i class="fa fa-plus fa-fw"></i>Create new ticket</a>
-                    </div> <!-- data-wrapper-->
-                    <div class="data-wrapper" ng-repeat="bugtracker in data.projectsBugtracker_content[project.name]">
-                      <ul class="data-content each-available-bugtracker shadow">
-                        <li>
-                          <span class="title">"{[{ bugtracker.title }]}"</span>
-                        </li>
-                        <li>
-                          <span><i class="fa fa-tags"></i>{[{ formatTagsinString(bugtracker.tags) }]}</span>
-                        </li>
-                        <li>
-                          <span><i class="fa fa-clock-o"></i>Created: {[{ formatObjectDate(bugtracker.createdAt.date) }]}</span>
-                        </li>
-                        <li>
-                          <span><i class="fa fa-clock-o"></i>Updated: {[{ formatObjectDate(bugtracker.updatedAt.date) }]}</span>
-                        </li>
-                        <li>
-                          <a href="bugtracker/{[{ project.project_id }]}/{[{ bugtracker.id }]}" title="Open Ticket #{[{ bugtracker.id }]}" class="btn-default btn-access">
-                            <i class="fa fa-edit fa-fw"></i>Open</a>
-                        </li>
-                      </ul>
-                    </div><!-- data-wrapper-->
-                  </div><!-- panhandler -->
-
+                    </div>
+                    <div class="ticket-list">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th class="col-lg-4"><i class="fa fa-ticket"></i>Title</th>
+                            <th class="col-lg-3"><i class="fa fa-tags"></i>Tags</th>
+                            <th class="col-lg-3"><i class="fa fa-user"></i>Assigned user(s)</th>
+                            <th class="col-lg-2"><i class="fa fa-calendar"></i>Creation date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="bugtracker in data.projectsBugtracker_content[project.name]" ng-click="openTicket(project.project_id, bugtracker.id)">
+                            <td>{[{ bugtracker.title }]}</td>
+                            <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
+                            <td>{[{ formatUsersinString(bugtracker.users) }]}</td>
+                            <td>{[{ formatObjectDate(bugtracker.createdAt.date) }]}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                   <div ng-if="data.projectsBugtracker_message[project.name] == '_empty'">
-                    <div class="data-wrapper error">
-                      <p><i class="fa fa-frown-o"></i>There is no bug ticket for this project. <a href="bugtracker/{[{ project.project_id }]}/0" title="Create new ticket" class="btn-default btn-access">
-                        <i class="fa fa-plus fa-fw"></i>Create new ticket</a></p>
+                    <div class="error">
+                      <p><a href="bugtracker/{[{ project.project_id }]}/0" title="Create new ticket" class="btn-default btn-access"><i class="fa fa-plus fa-fw"></i>Create new ticket</a></p>
+                      <p><i class="fa fa-frown-o"></i>There is no bug ticket for this project.</p>
                     </div>
                   </div>
                   <div ng-if="data.projectsBugtracker_message[project.name] == '_denied'">
-                    <div class="data-wrapper error">
+                    <div class="error">
                       <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
                     </div>
                   </div>
                   <div ng-if="data.projectsBugtracker_message[project.name] == '_invalid'">
-                    <div class="data-wrapper error">
+                    <div class="error">
                       <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
                     </div>
                   </div>
-
                 </div>
-              </div><!-- allbugtracker-data -->
-            </div><!-- section-content tiles-->
+              </div>
+            </div>
+
+
           </div>
         </div>
 

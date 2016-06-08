@@ -8,193 +8,214 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
     <section class="app-section" id="bugtracker-content">
         <div class="container app-container">
-            <div class="row">
-                <div class="col-lg-12">
-                  <!-- grappbox.data : bugtracker content -->
-                  <div ng-if="bugtracker_new">
-                      <div class="section-heading app-section-heading"><h2>New ticket</h2></div>
-                      <div class="section-content app-section-content">
+          <a href="bugtracker" class="btn-default btn-access"><i class="fa fa-arrow-left"></i>Back</a>
+          <!-- <button class="btn-default btn-access" ng-click="bugtracker_backToList()"><i class="fa fa-arrow-left"></i>Back</button> -->
+          <div class="row">
+              <div class="col-lg-12">
+                <!-- grappbox.data : bugtracker content -->
+                <div ng-if="bugtracker_new">
+                    <div class="section-heading app-section-heading"><h2>New ticket</h2></div>
+                    <div class="section-content app-section-content">
+                      <form novalidate>
+                          <div class="form-group">
+                              <h4>Title</h4>
+                              <input class="form-control" type="text" ng-model="new_ticket.title"/>
+                          </div>
+                          <div class="form-group">
+                              <h4>Description</h4>
+                              <textarea class="form-control" ng-model="new_ticket.description"/></textarea>
+                          </div>
+
+                          <div class="form-group">
+                              <h4>Tag(s)</h4>
+                              <div class="">
+                                <tags-input ng-model="tags"
+                                            display-property="name"
+                                            replace-spaces-with-dashes="false"
+                                            on-tag-added="tagAdded($tag)"
+                                            on-tag-removed="tagRemoved($tag)">
+                                  <auto-complete source="tagsList"></auto-complete>
+                                </tags-input>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <h4>User(s) assigned</h4>
+                              <div class="">
+                                <tags-input ng-model="users"
+                                            display-property="name"
+                                            placeholder="Assign a user"
+                                            replace-spaces-with-dashes="false"
+                                            add-from-autocomplete-only="true"
+                                            on-tag-added="userAdded($tag)"
+                                            on-tag-removed="userRemoved($tag)">
+                                  <auto-complete source="usersList"></auto-complete>
+                                </tags-input>
+                              </div>
+                          </div>
+
+                          <div class="form-group">
+                            <button class="btn-default" href="" ng-click="bugtracker_post_ticket(new_ticket)"><i class="fa fa-check"></i>Create</button>
+                          </div>
+                      </form>
+                    </div>
+                </div>
+
+                <div ng-if="!bugtracker_new && !bugtracker_error">
+                  <div class="section-heading app-section-heading"><h2>{[{ticket.title}]}</h2></div>
+                  <div class="section-content app-section-content">
+                    <div id="ticket-information" class="col-lg-12">
+                      <div data-ng-if="!editMode['ticket']">
+                        <div><!-- TODO add a canEdit to check writting rights of the user -->
+                          <button ng-if="!ticket.deletedAt" ng-click="bugtracker_close_ticket()" class="btn-default btn-access"><i class="fa fa-times"></i>Close</button>
+                          <button ng-if="ticket.deletedAt" ng-click="bugtracker_reopen_ticket()" class="btn-default btn-access"><i class="fa fa-undo"></i>Reopen</button>
+                          <button class="btn-default button edit-button" ng-click="bugtracker_switchEditMode('ticket')"><i class="fa fa-pencil-square-o"></i>Edit</button>
+                        </div>
+                        <div class="col-lg-3">
+                          <h4>Author</h4>
+                          <p>{[{ticket.creator.fullname}]}</p>
+                        </div>
+                        <div class="col-lg-3">
+                          <h4>Creation date</h4>
+                          <p>{[{ formatObjectDate(ticket.createdAt.date) }]}</p>
+                        </div>
+                        <div  ng-if="ticket.editedAt" class="col-lg-3">
+                          <h4>Last edition date</h4>
+                          <p>{[{ formatObjectDate(ticket.editedAt.date) }]}</p>
+                        </div>
+                        <div ng-if="ticket.deletedAt" class="col-lg-3">
+                          <h4>Last edition date</h4>
+                          <p>{[{ formatObjectDate(ticket.deletedAt.date) }]}</p>
+                        </div>
+                        <div class="col-lg-12">
+                          <h4>Description</h4>
+                          <p>{[{ ticket.description}]}</p>
+                        </div>
+                        <div class="col-lg-12">
+                          <h4>Tag(s)</h4>
+                          <div class="panel panel-default col-lg-2" ng-repeat="tag in ticket.tags">
+                            <div class="panel-body">{[{tag.name}]}</div>
+                          </div>
+                        </div>
+                        <div class="col-lg-12">
+                          <h4>Assigned user(s)</h4>
+                          <div class="panel panel-default col-lg-3" ng-repeat="user in ticket.users">
+                            <div class="panel-body">{[{user.name}]}</div>
+                          </div>
+                        </div>
+                      </div><!-- data-ng-if="!editMode['ticket']" -->
+                      <div data-ng-if="editMode['ticket']">
                         <form novalidate>
-                            <div class="form-group">
-                                <h4>Title</h4>
-                                <input class="form-control" type="text" ng-model="new_ticket.title"/>
-                            </div>
-                            <div class="form-group">
-                                <h4>Description</h4>
-                                <textarea class="form-control" ng-model="new_ticket.description"/></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <h4>Tag(s)</h4>
-                                <div class="">
-                                  <tags-input ng-model="tags"
-                                              display-property="name"
-                                              replace-spaces-with-dashes="false"
-                                              on-tag-added="tagAdded($tag)"
-                                              on-tag-removed="tagRemoved($tag)">
-                                    <auto-complete source="tagsList"></auto-complete>
-                                  </tags-input>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <h4>User(s) assigned</h4>
-                                <div class="">
-                                  <tags-input ng-model="users"
-                                              display-property="name"
-                                              placeholder="Assign a user"
-                                              replace-spaces-with-dashes="false"
-                                              add-from-autocomplete-only="true"
-                                              on-tag-added="userAdded($tag)"
-                                              on-tag-removed="userRemoved($tag)">
-                                    <auto-complete source="usersList"></auto-complete>
-                                  </tags-input>
-                                </div>
-                            </div>
-
-                            <div>
-                              <p><a class="btn-default" href="" ng-click="bugtracker_post_ticket(new_ticket)"><i class="fa fa-check"></i>Post</a></p>
-                            </div>
+                          <div>
+                            <button class="btn-default button cancel-button"ng-click="bugtracker_switchEditMode('ticket')"><i class=" fa fa-close"></i>Cancel</button>
+                            <button class="btn-default button save-button" ng-click="bugtracker_save(ticket)"><i class="fa fa-check"></i>Save</button>
+                          </div>
+                          <div class="form-group">
+                              <h4>Title</h4>
+                              <input class="form-control" type="text" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.title"/>
+                          </div>
+                          <div class="form-group">
+                              <h4>Description</h4>
+                              <textarea class="form-control" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.description"/></textarea>
+                          </div>
+                          <div class="form-group">
+                              <h4>Tag(s)</h4>
+                              <div class="">
+                                <tags-input ng-model="ticket.tags"
+                                            display-property="name"
+                                            replace-spaces-with-dashes="false"
+                                            on-tag-added="tagAdded($tag)"
+                                            on-tag-removed="tagRemoved($tag)"
+                                            ng-disabled="!editMode['ticket'] || ticket.deletedAt">
+                                  <auto-complete source="tagsList"></auto-complete>
+                                </tags-input>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <h4>User(s) assigned</h4>
+                              <div class="">
+                                <tags-input ng-model="ticket.users"
+                                            display-property="name"
+                                            placeholder="Assign a user"
+                                            replace-spaces-with-dashes="false"
+                                            add-from-autocomplete-only="true"
+                                            on-tag-added="userAdded($tag)"
+                                            on-tag-removed="userRemoved($tag)"
+                                            ng-disabled="!editMode['ticket'] || ticket.deletedAt">
+                                  <auto-complete source="usersList"></auto-complete>
+                                </tags-input>
+                              </div>
+                          </div>
+                          <div>
+                            <button class="btn-default button cancel-button"ng-click="bugtracker_switchEditMode('ticket')"><i class=" fa fa-close"></i>Cancel</button>
+                            <button class="btn-default button save-button" ng-click="bugtracker_save(ticket)"><i class="fa fa-check"></i>Save</button>
+                          </div>
                         </form>
                       </div>
-                  </div>
-
-                  <div ng-if="!bugtracker_new && !bugtracker_error">
-                      <div class="section-heading app-section-heading"><h2>Ticket #{[{ticket.id + " : " + ticket.title}]}</h2></div>
-                      <div class="section-content app-section-content">
-                          <div id="static-data-list">
-                            <div class="">
-                                <p>Posted by {[{ticket.creator.fullname}]}</p>
+                    </div><!-- :ticket-information -->
+                    <div id="ticket-comment" class="col-lg-12" data-ng-if="!editMode['ticket']">
+                      <h4>Comment(s)</h4>
+                      <div class="no-comment-msg" ng-if="!commentsList.length">
+                        <div class="form-group data-wrapper">
+                            <p><i class="fa fa-times"></i>No comment for the moment.</p>
+                        </div>
+                      </div>
+                      <div ng-if="commentsList.length">
+                        <div class="panel panel-default col-lg-12" ng-repeat="comment in commentsList">
+                          <div data-ng-if="!editMode[comment.id]">
+                            <div class="panel-heading">{[{comment.title}]}</div>
+                            <div class="panel-body">
+                              <p>{[{comment.description}]}</p>
+                              <button class="btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)"><i class="fa fa-pencil-square-o"></i>Edit</button>
+                              <button class="btn-default btn-access" ng-click="bugtracker_delete_comment(comment.id)"><i class="fa fa-trash-o"></i>Delete</button>
                             </div>
-                            <div class="">
-                                <p>Created at {[{ formatObjectDate(ticket.createdAt.date) }]}</p>
-                            </div>
-                            <div ng-if="ticket.editedAt" class="">
-                                <p>Edited at {[{ formatObjectDate(ticket.editedAt.date) }]}</p>
-                            </div>
-                            <div>
-                              <div ng-if="ticket.deletedAt" class="">
-                                <p>Closed at {[{ formatObjectDate(ticket.deletedAt.date) }]}</p>
-                              </div>
-                              <div class="">
-                                <p><a ng-if="!ticket.deletedAt" href="" ng-click="bugtracker_close_ticket()" class="btn-default btn-access"><i class="fa fa-times"></i>Close</a>
-                                <a ng-if="ticket.deletedAt" href="" ng-click="bugtracker_reopen_ticket()" class="btn-default btn-access"><i class="fa fa-undo"></i>Reopen</a></p>
-                              </div>
-                            </div>
+                            <div class="panel-footer">{[{"Posted by " + comment.creator.fullname + " At " + (comment.editedAt ? formatObjectDate(comment.editedAt.date) : formatObjectDate(comment.createdAt.date)) }]}</div>
                           </div>
-                          <div id="editable-data-list">
-                              <form novalidate>
-                                  <div class="form-group">
-                                      <h4>Title</h4>
-                                      <input class="form-control" type="text" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.title"/>
-                                  </div>
-                                  <div class="form-group">
-                                      <h4>Description</h4>
-                                      <textarea class="form-control" ng-disabled="!editMode['ticket'] || ticket.deletedAt" ng-model="ticket.description"/></textarea>
-                                  </div>
-
-                                  <div class="form-group">
-                                      <h4>Tag(s)</h4>
-                                      <div class="">
-                                        <tags-input ng-model="ticket.tags"
-                                                    display-property="name"
-                                                    replace-spaces-with-dashes="false"
-                                                    on-tag-added="tagAdded($tag)"
-                                                    on-tag-removed="tagRemoved($tag)"
-                                                    ng-disabled="!editMode['ticket'] || ticket.deletedAt">
-                                          <auto-complete source="tagsList"></auto-complete>
-                                        </tags-input>
-                                      </div>
-                                  </div>
-                                  <div class="form-group">
-                                      <h4>User(s) assigned</h4>
-                                      <div class="">
-                                        <tags-input ng-model="ticket.users"
-                                                    display-property="name"
-                                                    placeholder="Assign a user"
-                                                    replace-spaces-with-dashes="false"
-                                                    add-from-autocomplete-only="true"
-                                                    on-tag-added="userAdded($tag)"
-                                                    on-tag-removed="userRemoved($tag)"
-                                                    ng-disabled="!editMode['ticket'] || ticket.deletedAt">
-                                          <auto-complete source="usersList"></auto-complete>
-                                        </tags-input>
-                                      </div>
-                                  </div>
-
-                                  <div ng-if="!ticket.deletedAt" ng-switch="editMode['ticket']">
-                                      <div ng-switch-default >
-                                        <p><a class="btn-default button edit-button" href="" ng-click="bugtracker_switchEditMode('ticket')"><i class="fa fa-pencil-square-o"></i>Edit</a></p>
-                                      </div>
-                                      <div ng-switch-when="true">
-                                        <p><a class="btn-default button cancel-button" href="" ng-click="bugtracker_switchEditMode('ticket')"><i class=" fa fa-close"></i>Cancel</a>
-                                        <a class="btn-default button save-button" href="" ng-click="bugtracker_save(ticket)"><i class="fa fa-check"></i>Save</a></p>
-                                      </div>
-                                  </div><!-- ng-switch -->
-
-                              </form>
-                          </div>
-                          <div class="comments-list">
-                            <div class="comment-list-title"><h4>Comment(s)</h4></div>
-                            <div class="comment" ng-if="commentsList.length">
-                                <div ng-repeat="comment in commentsList">
-                                  <form novalidate>
-                                      <div class="form-group">
-                                          <h4>Title</h4>
-                                          <input class="form-control" type="text" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.title"/>
-                                      </div>
-                                      <div class="form-group">
-                                          <h4>Description</h4>
-                                          <textarea class="form-control" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.description"/></textarea>
-                                      </div>
-                                      <div>
-                                        <p>{[{"Posted by " + comment.creator.fullname + " At " + (comment.editedAt ? formatObjectDate(comment.editedAt.date) : formatObjectDate(comment.createdAt.date)) }]}</p>
-                                      </div>
-
-                                      <div ng-if="!ticket.deletedAt" ng-switch="editMode[comment.id]">
-                                          <div ng-switch-default >
-                                            <p><a href="" class="btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)"><i class="fa fa-pencil-square-o"></i>Edit</a>
-                                            <a class="btn-default btn-access" href="" ng-click="bugtracker_delete_comment(comment.id)"><i class="fa fa-trash-o"></i>Delete</a></p>
-                                          </div>
-                                          <div ng-switch-when="true">
-                                            <p><a class="btn-default button cancel-button" href="" ng-click="bugtracker_switchEditMode(comment.id)"><i class=" fa fa-close"></i>Cancel</a>
-                                            <a class="btn-default button save-button" href="" ng-click="bugtracker_edit_comment(comment)"><i class="fa fa-check"></i>Save</a></p>
-                                          </div>
-                                      </div><!-- ng-switch -->
-                                  </form>
+                          <div data-ng-if="editMode[comment.id]">
+                            <form novalidate>
+                              <div class="panel-heading">
+                                  <label>Title</label>
+                                  <input class="form-control" type="text" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.title"/>
+                              </div>
+                              <div class="panel-body">
+                                <label>Comment</label>
+                                <textarea class="form-control" ng-disabled="!editMode[comment.id] || ticket.deletedAt" ng-model="comment.description"/></textarea>
+                                <div class="form-group">
+                                  <button class="btn-default button cancel-button" ng-click="bugtracker_switchEditMode(comment.id)"><i class=" fa fa-close"></i>Cancel</button>
+                                  <button class="btn-default button save-button" ng-click="bugtracker_edit_comment(comment)"><i class="fa fa-check"></i>Save</button>
                                 </div>
-                            </div>
-                            <div class="no-comment-msg" ng-if="!commentsList.length">
-                              <div class="form-group data-wrapper">
-                                  <p><i class="fa fa-times"></i>No comment for the moment.</p>
                               </div>
-                            </div>
-                            <div class="form-new-comment" ng-if="!ticket.deletedAt">
-                              <form novalidate>
-                                  <div class="form-group">
-                                      <h4>Title</h4>
-                                      <input class="form-control" type="text" ng-model="new_comment.title"/>
-                                  </div>
-                                  <div class="form-group">
-                                      <h4>Description</h4>
-                                      <textarea class="form-control" ng-model="new_comment.description"/></textarea>
-                                  </div>
-                                  <div>
-                                    <p><a class="btn-default btn-access" ref="" ng-click="bugtracker_post_comment(new_comment)"><i class="fa fa-check"></i>Post</a></p>
-                                  </div>
-                              </form>
-                            </div>
+                            </form>
                           </div>
+                        </div>
                       </div>
-                  </div>
-
-                  <div ng-if="!bugtracker_new && bugtracker_error">
-                      <div class="app-data error">
-                          <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                      <div>
+                        <div class="panel panel-default col-lg-12">
+                          <div class="panel-heading">New comment</div>
+                          <div class="panel-body">
+                            <form novalidate>
+                              <label>Title</label>
+                              <input class="form-control" type="text" ng-model="new_comment.title"/>
+                              <label>Comment</label>
+                              <textarea class="form-control" ng-model="new_comment.description"/></textarea>
+                              <div class="form-group">
+                                <button  class="btn-default btn-access" ref="" ng-click="bugtracker_post_comment(new_comment)"><i class="fa fa-check"></i>Comment</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
                       </div>
+                    </div><!-- !ticket-comments -->
                   </div>
+                </div>
 
-                </div><!-- col-lg-12 -->
-            </div><!-- row -->
+                <div ng-if="!bugtracker_new && bugtracker_error">
+                    <div class="app-data error">
+                        <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                    </div>
+                </div>
+
+              </div><!-- col-lg-12 -->
+          </div><!-- row -->
 
         </div>
     </section>

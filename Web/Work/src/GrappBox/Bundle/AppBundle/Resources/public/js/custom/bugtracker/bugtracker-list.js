@@ -9,7 +9,7 @@
 * APP bugtracker page list (one per project)
 *
 */
-app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', function($rootScope, $scope, $routeParams, $http, $cookies, Notification) {
+app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', '$location', function($rootScope, $scope, $routeParams, $http, $cookies, Notification, $location) {
 
   var content = "";
 
@@ -130,6 +130,18 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
     return tagsInString;
   };
 
+  // Users in string format
+  $scope.formatUsersinString = function(users) {
+    var usersInString = "";
+
+    for(var i = 0; i < users.length; ++i) {
+      usersInString += (i != 0 ? ", " : "") + users[i].name;
+    }
+    if (users.length <= 0)
+      usersInString = "N/A";
+    return usersInString;
+  };
+
   $scope.getOpenTickets = function() {
     getOpenTicketsContent();
   };
@@ -138,7 +150,12 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
     getClosedTicketsContent();
   };
 
+  $scope.openTicket = function(project, ticket){
+    $location.path('/bugtracker/' + project + '/' + ticket);
+  }
+
 }]);
+
 
 
 /**
