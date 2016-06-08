@@ -2,95 +2,127 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="project-content-view" data-ng-controller="projectController">
+<div data-ng-controller="projectController">
 
-    <uib-alert ng-repeat="alert in alertList" type="{[{ alert.type }]}">{[{ alert.message }]}</uib-alert>
+  <!-- grappbox.data : project creation information -->
+  <div data-ng-if="data.project_new">
+    <div class="panel panel-default">
+      <div class="panel-heading">Create your project</div>
+      <div class="panel-body">
+        <p>
+          This page allows you to create a brand new project. A name, email and Cloud password are required to proceed.<br>Use the <strong>"Create"</strong> button at the end of this page when you're done.
+        </p>
+        </div>
+    </div>
+  </div>
+  <!-- grappbox.data : project edition information -->
+  <div data-ng-if="!data.project_new && !data.project_error" data-ng-cloak>
+    <div class="well">
+      <div data-ng-if="data.onLoad">
+        <div class="spinner"><div></div></div>
+      </div>
+      <div data-ng-if="!data.onLoad">
+        <p>
+          Project: <span class="bold">'{[{ data.project.name }]}'</span><br>Created: {[{ formatObjectDate(data.project.creation_date.date) }]}.
+          <span data-ng-if="data.project.deleted_at"><br>Deleted: {[{ formatObjecctDate(data.project.deleted_at.data) }]}</span>
+        </p>
+        <ul>
+          <li>
+            <a data-ng-if="!data.project.deleted_at && data.canEdit" href="" data-ng-click="deleteProject()" class="btn btn-raised btn-danger">
+              <i class="material-icons">delete</i>Delete
+            </a>
+          </li>
+          <li>
+            <a data-ng-if="data.project.deleted_at && data.canEdit" href="" data-ng-click="retrieveProject()" class="btn btn-raised btn-success">
+              <i class="material-icons">refresh</i>Retrieve
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
-    <section class="app-section" id="project-content">
-        <div class="container app-container">
-          <div class="row">
-            <div ng-if="data.project_new" class="section-heading app-section-heading">
-              <h2>New project: {[{data.project.name}]}</h2>
-              <p></p>
-            </div>
-            <div data-ng-if="!data.project_new && !data.project_error" class="section-heading app-section-heading">
-              <h2>{[{data.project.name + " settings"}]}</h2>
-              <div data-ng-if="!data.onLoad">
-                <div class="row">
-                  <p>
-                    <button ng-if="!data.project.deleted_at && data.canEdit" ng-click="deleteProject()" class="btn-default btn-access"><i class="fa fa-times"></i>Delete</button>
-                    <button ng-if="data.project.deleted_at && data.canEdit" ng-click="retrieveProject()" class="btn-default btn-access"><i class="fa fa-undo"></i>Retrieve</button>
-                  </p><br/>
-                </div>
-              </div><!-- !data.onload -->
-            </div>
+  <!-- grappbox.data : project creation -->
+  <!-- TODO: password mandatory? To generate if not provided? -->
+  <section id="project-creation" data-ng-if="data.project_new">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="well">
+          <div data-ng-if="data.onLoad">
+            <div class="spinner section"><div></div></div>
           </div>
-          <div class="row">
-              <div class="col-lg-12">
-                <!-- grappbox.data : project content -->
-                <div  data-ng-if="data.project_new">
-                  <div data-ng-if="data.onLoad">
-                    <div class="section-heading app-section-heading"><h2></h2></div>
-                    <div class="section-content app-section-content">
-                      <div class="loading-content section">
-                        <div></div>
-                      </div>
-                    </div>
-                  </div><!-- data-ng-if="data.onLoad" -->
-                  <div data-ng-if="!data.onLoad">
-                    <div class="col-lg-12">
-                      <div class="section-heading app-section-heading"></div>
-                      <div class="section-content app-section-content">
-                          <form novalidate>
-                            <div class="form-group col-lg-6">
-                              <h4>Name</h4>
-                              <input type="text" class="form-control" ng-model="data.project.name">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-6">
-                              <div ng-if="data.project.logo">
-                                <img class="shadow" data-ng-src="data:image/png;base64,{[{ data.project.logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
-                              </div>
-                              <div ng-if="!data.project.logo">
-                                <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
-                              </div>
-                              <input class="form-control" type="file" ng-model="data.project.logo">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-12">
-                              <h4>Description</h4>
-                              <textarea class="form-control" ng-model="data.project.description"></textarea>
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-4">
-                              <h4>Company</h4>
-                              <input type="text" class="form-control" ng-model="data.project.company">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-4">
-                              <h4>Phone</h4>
-                              <input type="phone" class="form-control" ng-model="data.project.phone">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-4">
-                              <h4>Email</h4>
-                              <input type="email" class="form-control" ng-model="data.project.contact_mail">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-6">
-                              <h4>Facebook</h4>
-                              <input type="url" class="form-control" ng-model="data.project.facebook">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-6">
-                              <h4>Twitter</h4>
-                              <input type="url" class="form-control" ng-model="data.project.twitter">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-6">
-                              <h4>Password</h4>
-                              <input type="password" class="form-control" ng-model="data.project.password">
-                            </div><!-- !form-group -->
-                            <div class="form-group col-lg-12">
-                              <button class="btn-default button save-button" ng-click="createProject(data.project)"><i class="fa fa-check"></i>Create</button>
-                            </div><!-- !form-group -->
-                          </form>
-                      </div><!-- !section-content -->
-                    </div>
-                  </div><!-- ! data-ng-if="!data.onLoad"-->
-                </div><!-- ! ng-if="!data.project_new" -->
+          <div data-ng-if="!data.onLoad">
+            <form class="form-horizontal" novalidate>
+              <fieldset>
+                <div class="form-group">
+                  <label for="name" class="col-md-1 control-label">Name</label>
+                  <div class="col-md-11">
+                    <input type="text" class="form-control" data-ng-model="data.project.name" id="name" placeholder="Name">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="description" class="col-md-1 control-label">Description</label>
+                  <div class="col-md-11">
+                    <textarea class="form-control" rows="3" data-ng-model="data.project.description" id="description" placeholder="Description"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="logo" class="col-md-1 control-label">Logo</label>
+                  <div class="col-md-11">
+                    <input type="file" class="form-control" data-ng-model="data.project.logo" id="logo" placeholder="Browse">
+                  </div>
+                </div>                
+                <div class="form-group">
+                  <label for="company" class="col-md-1 control-label">Company</label>
+                  <div class="col-md-11">
+                    <input type="text" class="form-control" data-ng-model="data.project.company" id="company" placeholder="Company">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="password" class="col-md-1 control-label">Cloud password</label>
+                  <div class="col-md-11">
+                    <input type="password" class="form-control" data-ng-model="data.project.password" id="password" placeholder="Password">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="email" class="col-md-1 control-label">Email</label>
+                  <div class="col-md-11">
+                    <input type="email" class="form-control" data-ng-model="data.project.contact_mail" id="email" placeholder="Email">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="phone" class="col-md-1 control-label">Phone</label>
+                  <div class="col-md-11">
+                    <input type="phone" class="form-control" data-ng-model="data.project.phone" id="phone" placeholder="+000 00 000 0000">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="facebook" class="col-md-1 control-label">Facebook</label>
+                  <div class="col-md-11">
+                    <input type="text" class="form-control" data-ng-model="data.project.facebook" id="facebook" placeholder="Link">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="twitter" class="col-md-1 control-label">Twitter</label>
+                  <div class="col-md-11">
+                    <input type="text" class="form-control" data-ng-model="data.project.twitter" id="twitter" placeholder="Link">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-2 col-md-offset-10">
+                    <button type="submit" class="btn btn-default" data-ng-click="createProject(data.project)">Create</button>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- grappbox.data : project edition -->
+
 
                 <div class="" ng-if="!data.project_new">
 
