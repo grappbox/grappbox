@@ -9,7 +9,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="panel-heading">View and edit your account settings</div>
     <div class="panel-body">
       <p>
-        This page shows you all the information we have on you. You can edit and change any field. Only your first name, last name and email are mandatory (required to access and use GrappBox).<br>Use the <strong>"Done"</strong> button at the end of this page to submit your changes.     
+        This page shows you all the information we have on you. You can edit and change any field. Only your first name, last name and email are mandatory (required to access and use GrappBox).<br>Use the <strong>"Update"</strong> button at the end of this page to submit your changes.     
       </p>
     </div>
   </div>
@@ -19,10 +19,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div class="col-lg-12">
         <div class="well">
           <!-- grappbox.data : profile settings -->
-          <div ng-show="data.onLoad">
+          <div data-ng-if="data.onLoad">
             <div class="spinner section"><div></div></div>
           </div>
-          <div ng-show="!data.onLoad">
+          <div data-ng-if="!data.onLoad">
             <div data-ng-if="data.isValid && data.userInformation">
               <form class="form-horizontal">
                 <fieldset>
@@ -53,7 +53,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div class="form-group">
                     <label for="avatar" class="col-md-1 control-label">Avatar</label>
                     <div class="col-md-11">
-                      <input type="file" class="form-control" multiple="" data-ng-model="data.toUpdate.avatar" id="avatar" placeholder="Browse" base-sixty-four-input>
+                      <input type="file" class="form-control" data-ng-model="data.toUpdate.avatar" id="avatar" placeholder="Browse" base-sixty-four-input>
                     </div>
                   </div>
                   <div class="form-group">
@@ -327,7 +327,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </div>
                   <div class="form-group">
                     <div class="col-md-2 col-md-offset-10">
-                      <button type="submit" class="btn btn-default" data-ng-click="view_updateUserProfile()">Submit</button>
+                      <button type="submit" class="btn btn-default" data-ng-click="view_updateUserProfile()">Update</button>
                     </div>
                   </div>
                 </fieldset>

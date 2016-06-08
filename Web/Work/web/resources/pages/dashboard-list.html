@@ -15,20 +15,20 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="row">
       <div class="col-lg-12">
         <!-- grappbox.data : (dashboard) user projects progress -->
-        <div ng-show="content.onLoad">
+        <div data-ng-if="content.onLoad">
           <div class="spinner section">
             <div></div>
           </div>
         </div>
-        <div ng-show="!content.onLoad">
+        <div data-ng-if="!content.onLoad">
           <div data-ng-if="content.isValid && data.projects">
-            <div class="each-project col-md-4" ng-repeat="project in data.projects">
+            <div class="each-project col-md-4" data-ng-repeat="project in data.projects">
               <div class="well">
                 <ul>
-                  <li class="col-xs-offset-2 logo" ng-if="!project.project_logo">
+                  <li class="col-xs-offset-2 logo" data-ng-if="!project.project_logo">
                     <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                   </li>
-                  <li class="col-xs-offset-2 logo" ng-if="project.project_logo">
+                  <li class="col-xs-offset-2 logo" data-ng-if="project.project_logo">
                     <img data-ng-src="data:image/png;base64,{[{ project.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                   </li>
                   <li class="col-xs-offset-2 ellipsis title">"{[{ project.project_name }]}"</li>

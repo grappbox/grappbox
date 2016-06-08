@@ -90,7 +90,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		caseInsensitiveMatch : true
 	})
 	.when("/project/:id", {
-		title: "Project",
+		title: "Project settings",
 		templateUrl : "../resources/pages/project.html",
 		controller  : "projectController",
 		caseInsensitiveMatch : true,
