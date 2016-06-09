@@ -30,9 +30,16 @@ body .container-fluid .jumbotron p { font-weight: 400; }
 
 label { display: inline; margin: 0; font-weight: 400; }
 p { font-weight: 400; }
+table { font-weight: 400; }
 
 .form-group { font-weight: 400; }
 .form-group label { color: #777; }
+
+.form-group select {
+   -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  appearance: normal;
+}
 
 .panel { font-weight: 400; }
 .panel > .panel-heading, .panel.panel-default > .panel-heading { background-color: #BDBDBD; }
@@ -105,8 +112,8 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 }
 
 .well .nav.nav-tabs { background: #bdbdbd; margin: -20px -19px 30px -19px; border: 0; }
-.well .nav.nav-tabs > li.active > a { border: 0!important; border-bottom: solid 4px #c0392b!important; color: #c0392b!important; }
-.well .nav.nav-tabs > li > a { padding: 18px; text-align: center; color: #000!important; font-weight: 400; }
+.well .nav.nav-tabs > li.active > a { padding: 18px; border: 0!important; border-top: solid 4px #c0392b!important; color: #c0392b!important; background: #fff!important; border-radius: 0; }
+.well .nav.nav-tabs > li > a { padding: 22px 18px 18px 18px; text-align: center; font-weight: 400; }
 .well .nav.nav-tabs > li { margin: 0; }
 
 
@@ -148,11 +155,18 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 
 #project-creation .well { min-height: 260px; }
 #project-creation .form-group input[type=file] { opacity: initial; position: initial; }
-#project-creation .form-group .btn-default { color: #c0392b; }
+#project-creation .btn-default { color: #c0392b; }
 
 #project-edition .well { min-height: 260px; }
 #project-edition .form-group input[type=file] { opacity: initial; position: initial; }
 #project-edition .form-group .btn-default { color: #c0392b; }
+#project-edition .tab-content > .active { display: table; width: 100%; }
+#project-edition h4 { font-weight: 400; margin: 30px 0 15px 0; }
+#project-edition .btn-default { color: #c0392b; }
+#project-edition table .form-horizontal .form-group { margin: 5px 1px; }
+#project-edition table th { font-weight: 500; }
+#project-edition table th,
+#project-edition table td { vertical-align: middle; text-align: center; }
 
 #project-list .section-content { margin: 30px -20px; }
 #project-list .project-picture { padding: 10px; }

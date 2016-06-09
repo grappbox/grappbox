@@ -200,63 +200,81 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </fieldset>
                   </form>
                 </div>
-                <div data-ng-if="data.project_error">
-                  <div class="well centered">
+                <div data-ng-if="!data.onLoad && data.project_error">
+                  <div class="centered">
                     <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
                   </div>
                 </div>
-            </div>
+              </div>
 
-            <div class="tab-content">
-              <!-- project edition: general -->
-                      <div role="tabpanel" class="tab-pane" id="users-content">
-                        <div data-ng-if="data.usersLoad">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-                            <div class="loading-content section">
-                              <div></div>
-                            </div>
+              <!-- project edition: users -->
+              <div role="tabpanel" class="tab-pane" id="users-content">
+                <div data-ng-if="data.onLoad">
+                  <div class="spinner data"><div></div></div>
+                </div>
+                <div data-ng-if="!data.usersLoad && !data.users_error && data.canEdit">
+                  <div class="col-md-12">
+                    <h4>Add a user</h4>
+                  </div>
+                  <div class="col-md-12">
+                    <form class="form-horizontal" novalidate>
+                      <fieldset>
+                        <div class="form-group">
+                          <label for="new_email" class="col-md-1 control-label">Email</label>
+                          <div class="col-md-9">
+                            <input type="email" class="form-control" data-ng-model="newUser" id="new_email" placeholder="New user's email">
+                          </div>
+                          <div class="col-md-1">
+                            <a href="" class="btn btn-default" data-ng-click="addUser(new_user)">Add</a>  
                           </div>
                         </div>
-                        <div data-ng-if="(!data.usersLoad && !data.users_error)" id="users-list">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-
-                            <div class="col-lg-12" ng-if="data.canEdit">
-                              <h4>Add a user</h4>
-                              <form class="col-lg-6" novalidate>
-                                <div class="form-group">
-                                  <input class="form-control col-lg-4" type="email" name="newUser" ng-model="new_user" placeholder="New user's email">
-                                  <button type="submit" class="btn-default btn-access" ng-click="addUser(new_user)"><i class="fa fa-plus"></i>Add</button>
-                                </div>
-                              </form>
-                            </div>
-                            <div class="col-lg-12">
-                              <h4>Registered user(s)</h4>
-                              <div class="panel panel-default col-lg-6" ng-repeat="user in data.users">
-                                <div class="panel-heading">{[{user.firstname + " " + user.lastname}]}</div>
-                                <div class="panel-body">
-                                  <form novalidate>
+                      </fieldset>
+                    </form>
+                  </div>
+                  <div class="col-md-12">
+                    <h4>Registered users</h4>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                          <tr>
+                            <th class="col-md-2 col-xs-12">Name</th>
+                            <th class="col-md-8 col-xs-12">Role</th>
+                            <th class="col-md-2 col-xs-12">Deletion</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr data-ng-repeat="user in data.users">
+                            <td class="col-md-2 col-xs-12 ellipsis">{[{user.firstname + " " + user.lastname}]}</td>
+                            <td class="col-md-8 col-xs-12">
+                              <div class="col-md-9 col-xs-12">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
                                     <div class="form-group">
-                                      <select class="form-control" ng-disabled="!data.canEdit" ng-model="user.role" ng-options="role.id as role.name for role in data.roles"></select>
-                                      <button type="button" class="btn-default btn-access" ng-if="data.canEdit" ng-click="removeUser(user)"><i class="fa fa-times"></i>Remove</button>
-                                      <button type="submit" class="btn-default btn-access" ng-if="data.canEdit" ng-click="assignRoleToUser(user)"><i class="fa fa-floppy-o"></i>Save change</button>
+                                      <select class="form-control" data-ng-disabled="!data.canEdit" data-ng-model="user.role" data-ng-options="role.id as role.name for role in data.roles"></select>
                                     </div>
-                                  </form>
-                                </div>
+                                  </fieldset>
+                                </form>
                               </div>
-                            </div>
-                          </div><!-- !section-content -->
-                        </div><!-- !data-ng-if="data.onLoad && !data.users_error" -->
-                        <div data-ng-if="data.users_error">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-                            <div class="app-data error">
-                                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                            </div>
-                          </div>
-                        </div><!-- !data-ng-if="data.users_erroe-->
-                      </div><!-- ! #users-content-->
+                              <div class="col-md-3 col-xs-12">
+                                <a href="" class="btn" data-ng-if="data.canEdit" data-ng-click="assignRoleToUser(user)">Update</a>
+                              </div>
+                            </td>
+                            <td class="col-md-2 col-xs-12"><a href="" class="btn btn-default" data-ng-if="data.canEdit" data-ng-click="removeUser(user)">Delete</a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="!data.usersLoad && data.users_error">
+                  <div class="centered">
+                    <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+              </div>
+
 
                       <div role="tabpanel" class="tab-pane" id="roles-content">
                         <div data-ng-if="data.rolesLoad">
