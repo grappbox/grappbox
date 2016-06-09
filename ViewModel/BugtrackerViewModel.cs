@@ -32,7 +32,10 @@ namespace GrappBox.ViewModel
 
         static public BugtrackerViewModel GetViewModel()
         {
-            return instance;
+            if (instance != null)
+                return instance;
+            else
+                return new BugtrackerViewModel();
         }
         public BugtrackerViewModel()
         {

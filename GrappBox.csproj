@@ -144,10 +144,10 @@
     <Compile Include="Model\UserSettingsModel.cs" />
     <Compile Include="Model\WhiteBoardListModel.cs" />
     <Compile Include="Model\WhiteBoardModel.cs" />
-    <Compile Include="Navigation_Test.xaml.cs">
-      <DependentUpon>Navigation_Test.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Ressources\NavigationHelper.cs" />
+    <Compile Include="Ressources\RelayCommand.cs" />
     <Compile Include="Ressources\SettingsManager.cs" />
+    <Compile Include="Ressources\SuspensionManager.cs" />
     <Compile Include="ViewModel\BugtrackerViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\CloudViewModel.cs" />
@@ -242,10 +242,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControler\WhiteBoardText.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Navigation_Test.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

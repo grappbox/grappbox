@@ -38,7 +38,10 @@ namespace GrappBox.ViewModel
 
         static public CloudViewModel GetViewModel()
         {
-            return instance;
+            if (instance != null)
+                return instance;
+            else
+                return new CloudViewModel();
         }
         public CloudViewModel()
         {

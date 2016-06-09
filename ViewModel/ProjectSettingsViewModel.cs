@@ -36,7 +36,10 @@ namespace GrappBox.ViewModel
 
         static public ProjectSettingsViewModel GetViewModel()
         {
-            return instance;
+            if (instance != null)
+                return instance;
+            else
+                return new ProjectSettingsViewModel();
         }
         public ProjectSettingsViewModel()
         {

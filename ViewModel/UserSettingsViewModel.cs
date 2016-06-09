@@ -17,9 +17,11 @@ namespace GrappBox.ViewModel
         static private UserSettingsViewModel instance = null;
         private UserSettingsModel model;
 
-        static public UserSettingsViewModel GetUserSettingsViewModel()
+        static public UserSettingsViewModel GetViewModel()
         {
-            return instance;
+            if (instance != null)
+                return instance;
+            else return new UserSettingsViewModel();
         }
         public UserSettingsViewModel()
         {

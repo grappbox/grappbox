@@ -28,7 +28,10 @@ namespace GrappBox.ViewModel
 
         static public TimelineViewModel GetViewModel()
         {
-            return instance;
+            if (instance != null)
+                return instance;
+            else
+                return new TimelineViewModel();
         }
         public TimelineViewModel()
         {

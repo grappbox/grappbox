@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -37,11 +38,8 @@ namespace GrappBox.CustomControler
         {
             frame.Navigate(typeof(WhiteBoardView));
         }
-
         private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
             frame.Navigate(typeof(UserView));
         }
 
@@ -52,22 +50,11 @@ namespace GrappBox.CustomControler
 
         private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
             frame.Navigate(typeof(ProjectSettingsView));
         }
 
         private void BugtrackerButton_Click(object sender, RoutedEventArgs e)
         {
-            BugtrackerViewModel vm = new BugtrackerViewModel();
-            vm.getOpenTickets();
-            vm.getClosedTickets();
-            vm.getStateList();
-            vm.getTagList();
-            vm.getUsers();
             frame.Navigate(typeof(BugtrackerView));
         }
         private void TimelineButton_Click(object sender, RoutedEventArgs e)
@@ -76,8 +63,6 @@ namespace GrappBox.CustomControler
         }
         private void CloudButton_Click(object sender, RoutedEventArgs e)
         {
-            CloudViewModel vm = new CloudViewModel();
-            vm.getLS();
             frame.Navigate(typeof(CloudView));
         }
         #endregion menuClicked
@@ -97,7 +82,8 @@ namespace GrappBox.CustomControler
                 frame.Navigate(typeof(MainPage));
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
     }
