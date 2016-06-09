@@ -133,35 +133,6 @@ namespace GrappBox.View
             }
         }
 
-        #region menuClicked
-        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-        #endregion menuClicked
-
         private void Button_Checked(object sender, RoutedEventArgs e)
         {
             RadioButton btn = sender as RadioButton;
@@ -209,11 +180,13 @@ namespace GrappBox.View
 
         private void Remove_Click(object sender, RoutedEventArgs e)
         {
+            vm.UserAssignedSelected = (sender as Button).DataContext as ProjectUserModel;
             vm.removeUserRole();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
+            vm.UserNonAssignedSelected = (sender as Button).DataContext as ProjectUserModel;
             vm.assignUserRole();
         }
 
@@ -229,31 +202,31 @@ namespace GrappBox.View
 
         private void Update_Click(object sender, RoutedEventArgs e)
         {
-            if (Name.Text != "")
+            if (RoleName.Text != "")
             {
-                Name.BorderBrush = new SolidColorBrush();
+                RoleName.BorderBrush = new SolidColorBrush();
                 setValues();
                 vm.updateRole();
             }
             else
-                Name.BorderBrush = new SolidColorBrush(Colors.Red);
+                RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
         }
 
         private void AddRole_Click(object sender, RoutedEventArgs e)
         {
-            if (Name.Text != "")
+            if (RoleName.Text != "")
             {
-                Name.BorderBrush = new SolidColorBrush();
+                RoleName.BorderBrush = new SolidColorBrush();
                 setValues();
                 vm.addRole();
             }
             else
-                Name.BorderBrush = new SolidColorBrush(Colors.Red);
+                RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
         }
 
         private void setValues()
         {
-            vm.RoleName = Name.Text;
+            vm.RoleName = RoleName.Text;
 
             //TeamTimeline
             if (TTNButton.IsChecked == true)

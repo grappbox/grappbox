@@ -22,7 +22,9 @@ namespace GrappBox.ApiCom
         private HttpClient webclient;
         private ApiCommunication()
         {
-            webclient = new HttpClient();
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.AllowAutoRedirect = false;
+            webclient = new HttpClient(handler);
             webclient.BaseAddress = new Uri("http://api.grappbox.com/app_dev.php/" + version + "/");
             webclient.DefaultRequestHeaders.Accept.Clear();
             webclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

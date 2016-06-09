@@ -68,46 +68,6 @@ namespace GrappBox.View
             }
         }
 
-        #region menuClicked
-        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-
-        private void BugtrackerButton_Click(object sender, RoutedEventArgs e)
-        {
-            BugtrackerViewModel vm = new BugtrackerViewModel();
-            vm.getOpenTickets();
-            vm.getClosedTickets();
-            vm.getStateList();
-            vm.getTagList();
-            vm.getUsers();
-            this.Frame.Navigate(typeof(BugtrackerView));
-        }
-        #endregion menuClicked
-
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
@@ -313,6 +273,22 @@ namespace GrappBox.View
         private void PostComment_Click(object sender, RoutedEventArgs e)
         {
             vm.addComment(CommentTitle.Text, CommentDescription.Text);
+            PostComPopUp.Visibility = Visibility.Collapsed;
+            Pivot.IsLocked = false;
+            CommentListView.IsEnabled = true;
+        }
+
+        private void CancelCom_Click(object sender, RoutedEventArgs e)
+        {
+            PostComPopUp.Visibility = Visibility.Collapsed;
+            Pivot.IsLocked = false;
+            CommentListView.IsEnabled = true;
+        }
+        private void Post_Click(object sender, RoutedEventArgs e)
+        {
+            PostComPopUp.Visibility = Visibility.Visible;
+            Pivot.IsLocked = true;
+            CommentListView.IsEnabled = false;
         }
 
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)
@@ -333,5 +309,23 @@ namespace GrappBox.View
             }
         }
         #endregion
+
+        private void checkBox_Click(object sender, RoutedEventArgs e)
+        {
+            IdNameModel model = (sender as CheckBox).DataContext as IdNameModel;
+            bool isInTags = false;
+
+            foreach (var item in vm.Tags)
+            {
+                if (model.Id == item.Id)
+                {
+                    vm.removeAssignTag(model);
+                    isInTags = true;
+                    break;
+                }
+            }
+            if (isInTags == false)
+                vm.assignTag(model);
+        }
     }
 }

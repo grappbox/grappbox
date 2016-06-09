@@ -8,8 +8,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 {
     public enum MenuState
     {
-        Left, 
-        Right,
+        Left,
         Both
     }
 }

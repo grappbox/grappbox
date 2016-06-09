@@ -7,33 +7,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    xmlns:customControler="using:GrappBox.CustomControler">
 
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl">
         <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Button Content="Dashboard" Click="DashboardButton_Click" Grid.Row="0" HorizontalAlignment="Center"/>
-                <Button Content="WhiteBoard" Click="WhiteboardButton_Click" Grid.Row="1" HorizontalAlignment="Center"/>
-                <Button Content="User Settings" Click="UserSettingsButton_Click" Grid.Row="2" HorizontalAlignment="Center"/>
-                <Button Content="Project Settings" Click="ProjectSettingsButton_Click" Grid.Row="3" HorizontalAlignment="Center"/>
-            </Grid>
+            <customControler:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
-        <slideMenu:SlideInMenuContentControl.RightMenuContent>
-            <Grid/>
-        </slideMenu:SlideInMenuContentControl.RightMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
             <Pivot Name="Pivot" Title="Roles management" Background="#FF0C0C0C">
                 <PivotItem Header="Role">
                     <ScrollViewer>
                         <StackPanel>
                             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Name" FontFamily="Segoe WP" FontSize="18"/>
-                            <TextBox x:Name="Name" PlaceholderText="Name" Text="{Binding RoleName, Mode=TwoWay}"/>
+                            <TextBox x:Name="RoleName" PlaceholderText="Name" Text="{Binding RoleName, Mode=TwoWay}"/>
                             <Line Margin="15"/>
                             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Team Timeline" FontFamily="Segoe WP" FontSize="18"/>
                             <RadioButton x:Name="TTNButton" Content="None" IsChecked="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" GroupName="TeamTimeline" Checked="Button_Checked"/>

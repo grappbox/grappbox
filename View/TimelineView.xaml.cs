@@ -55,55 +55,26 @@ namespace GrappBox.View
             vm.getTeamMessages();
         }
 
-        #region menuClicked
-        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-
-        private void BugtrackerButton_Click(object sender, RoutedEventArgs e)
-        {
-            BugtrackerViewModel vm = new BugtrackerViewModel();
-            vm.getOpenTickets();
-            vm.getClosedTickets();
-            vm.getStateList();
-            vm.getTagList();
-            vm.getUsers();
-            this.Frame.Navigate(typeof(BugtrackerView));
-        }
-        private void TimelineButton_Click(object sender, RoutedEventArgs e)
-        {
-            TimelineViewModel vm = new TimelineViewModel();
-            vm.getTimelines();
-        }
-        #endregion menuClicked
-
         #region Selection changed
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.MessageSelected = (sender as ListBox).SelectedItem as TimelineModel;
+        }
+
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int num = Pivot.SelectedIndex;
+
+            if (num == 0)
+            {
+                AddTeamMessage.Visibility = Visibility.Visible;
+                AddCustomerMessage.Visibility = Visibility.Collapsed;
+            }
+            else if (num == 1)
+            {
+                AddTeamMessage.Visibility = Visibility.Collapsed;
+                AddCustomerMessage.Visibility = Visibility.Visible;
+            }
         }
         #endregion
 
@@ -111,13 +82,23 @@ namespace GrappBox.View
         private void PostTeamMessage_Click(object sender, RoutedEventArgs e)
         {
             if (MessageTitle.Text != "" && Message.Text != "")
+            {
                 vm.postMessage(vm.TeamId, MessageTitle.Text, Message.Text);
+                Pivot.IsLocked = false;
+                PostTeamMesPopUp.Visibility = Visibility.Collapsed;
+                TeamListView.IsEnabled = true;
+            }
         }
 
         private void PostCustomerMessage_Click(object sender, RoutedEventArgs e)
         {
             if (CustomerTitle.Text != "" && CustomerMessage.Text != "")
+            {
                 vm.postMessage(vm.CustomerId, CustomerTitle.Text, CustomerMessage.Text);
+                Pivot.IsLocked = false;
+                PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
+                CustomerListView.IsEnabled = true;
+            }
         }
 
         private void EditMessage_Click(object sender, RoutedEventArgs e)
@@ -154,6 +135,34 @@ namespace GrappBox.View
             bvm.Description = vm.MessageSelected.Message;
             this.Frame.Navigate(typeof(BugView));
         }
+
+        private void CancelTeam_Click(object sender, RoutedEventArgs e)
+        {
+            Pivot.IsLocked = false;
+            PostTeamMesPopUp.Visibility = Visibility.Collapsed;
+            TeamListView.IsEnabled = true;
+        }
+
+        private void AddTeam_Click(object sender, RoutedEventArgs e)
+        {
+            Pivot.IsLocked = true;
+            PostTeamMesPopUp.Visibility = Visibility.Visible;
+            TeamListView.IsEnabled = false;
+        }
+
+        private void CancelCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            Pivot.IsLocked = false;
+            PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
+            CustomerListView.IsEnabled = true;
+        }
+
+        private void AddCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            Pivot.IsLocked = true;
+            PostCustomerMesPopUp.Visibility = Visibility.Visible;
+            CustomerListView.IsEnabled = false;
+        }
         #endregion
 
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)
@@ -173,7 +182,5 @@ namespace GrappBox.View
                 }
             }
         }
-
-        
     }
 }

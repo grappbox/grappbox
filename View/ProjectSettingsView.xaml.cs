@@ -22,6 +22,7 @@ using Windows.Storage.Streams;
 using System.Diagnostics;
 using GrappBox.Model;
 using System.Collections.ObjectModel;
+using Windows.UI.Popups;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -59,35 +60,6 @@ namespace GrappBox.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
         }
-
-        #region menuClicked
-        private void Whiteboard_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettings_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void Dashboard_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettings_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-        #endregion menuClicked
 
         #region imgClicked
         private void Img_Click(object sender, RoutedEventArgs e)
@@ -156,7 +128,7 @@ namespace GrappBox.View
 
         private void AddUser_Click(object sender, RoutedEventArgs e)
         {
-            vm.addProjectUser(UserMail.Text, infoBlock);
+            vm.addProjectUser(UserMail.Text);
         }
 
         private void RemoveUserButton_Click(object sender, RoutedEventArgs e)
@@ -251,7 +223,7 @@ namespace GrappBox.View
 
         private void RegenerateCU_Click(object sender, RoutedEventArgs e)
         {
-            vm.regenerateCustomerAccess(errorBlock);
+            vm.regenerateCustomerAccess();
         }
 
         private void RemoveCustomerButton_Click(object sender, RoutedEventArgs e)
@@ -259,7 +231,7 @@ namespace GrappBox.View
             vm.removeCustomerAccess();
         }
 
-        private void AddCU_Click(object sender, RoutedEventArgs e)
+        private async void AddCU_Click(object sender, RoutedEventArgs e)
         {
             ObservableCollection<CustomerAccessModel> cuList = vm.CustomerList;
             bool exist = false;
@@ -270,13 +242,19 @@ namespace GrappBox.View
                     exist = true;
             }
             if (CustomerName.Text != "" && CustomerName.Text != null && exist == false)
-                vm.addCustomerAccess(CustomerName.Text, errorBlock);
+                vm.addCustomerAccess(CustomerName.Text);
             else
             {
                 if (CustomerName.Text == "" && CustomerName.Text == null)
-                    errorBlock.Text = "The name must not be empty";
+                {
+                    MessageDialog msgbox = new MessageDialog("The name must not be empty");
+                    await msgbox.ShowAsync();
+                }
                 else
-                    errorBlock.Text = "The name must be different from an existing one";
+                {
+                    MessageDialog msgbox = new MessageDialog("The name must be different from an existing one");
+                    await msgbox.ShowAsync();
+                }
             }
         }
 

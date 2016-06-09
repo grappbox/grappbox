@@ -12,7 +12,7 @@ using Windows.UI;
 using GrappBox.Ressources;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
-using GrappBox.Model;
+using Windows.UI.Popups;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -49,21 +49,6 @@ namespace GrappBox.View
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-        }
-
-        private void Dashboard_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void Whiteboard_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettings_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(UserView));
         }
 
         private void Update_Click(object sender, RoutedEventArgs e)
@@ -193,17 +178,23 @@ namespace GrappBox.View
             return Base64String;
         }
 
-        public void affMessage(bool isError, string message)
+        public async void affMessage(bool isError, string message)
         {
             if (isError == true)
             {
-                infoBlock.Foreground = new SolidColorBrush(Colors.Red);
-                infoBlock.Text = message;
+                MessageDialog msgbox = new MessageDialog(message);
+                await msgbox.ShowAsync();
             }
             else
             {
-                infoBlock.Foreground = new SolidColorBrush(Colors.Green);
-                infoBlock.Text = message;
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = message;
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
         }
     }

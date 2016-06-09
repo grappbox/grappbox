@@ -41,49 +41,5 @@ namespace GrappBox.View
         {
             tvm.getTimelines();
         }
-
-        #region menuClicked
-        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-
-        private void BugtrackerButton_Click(object sender, RoutedEventArgs e)
-        {
-            BugtrackerViewModel vm = new BugtrackerViewModel();
-            vm.getOpenTickets();
-            vm.getClosedTickets();
-            vm.getStateList();
-            vm.getTagList();
-            vm.getUsers();
-            this.Frame.Navigate(typeof(BugtrackerView));
-        }
-        private void TimelineButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(TimelineView));
-        }
-        #endregion menuClicked
     }
 }

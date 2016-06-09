@@ -53,51 +53,6 @@ namespace GrappBox.View
         {
         }
 
-        #region menuClicked
-        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-
-        private void BugtrackerButton_Click(object sender, RoutedEventArgs e)
-        {
-            BugtrackerViewModel vm = new BugtrackerViewModel();
-            vm.getOpenTickets();
-            vm.getClosedTickets();
-            vm.getStateList();
-            vm.getTagList();
-            vm.getUsers();
-            this.Frame.Navigate(typeof(BugtrackerView));
-        }
-        private void TimelineButton_Click(object sender, RoutedEventArgs e)
-        {
-            TimelineViewModel vm = new TimelineViewModel();
-            vm.getTimelines();
-        }
-        #endregion menuClicked
-
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)
         {
             TimelineModel currentModel = (sender as StackPanel).DataContext as TimelineModel;
@@ -145,7 +100,21 @@ namespace GrappBox.View
                 vm.postMessage(vm.MessageSelected.TimelineId, CommentTitle.Text, CommentMessage.Text, vm.MessageSelected.Id);
                 CommentTitle.Text = "";
                 CommentMessage.Text = "";
+                PostComPopUp.Visibility = Visibility.Collapsed;
+                CommentsListView.IsEnabled = true;
             }
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            PostComPopUp.Visibility = Visibility.Visible;
+            CommentsListView.IsEnabled = false;
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            PostComPopUp.Visibility = Visibility.Collapsed;
+            CommentsListView.IsEnabled = true;
         }
     }
 }

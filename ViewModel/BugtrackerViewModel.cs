@@ -9,6 +9,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
 
 namespace GrappBox.ViewModel
 {
@@ -18,7 +20,7 @@ namespace GrappBox.ViewModel
         private BugtrackerModel _model = new BugtrackerModel();
         private ObservableCollection<BugtrackerModel> _openBugs;
         private ObservableCollection<BugtrackerModel> _closeBugs;
-        private ObservableCollection<BugtrackerModel> _commentList;
+        private ObservableCollection<BugtrackerModel> _commentList = new ObservableCollection<BugtrackerModel>();
         private ObservableCollection<IdNameModel> _tagList;
         private ObservableCollection<IdNameModel> _stateList;
         private ObservableCollection<ProjectUserModel> _userList;
@@ -49,7 +51,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("OpenList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -64,7 +67,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("CommentList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -84,7 +88,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("StateList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -99,7 +104,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("TagList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -114,7 +120,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("CommentList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -129,7 +136,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("UserList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
         #endregion
@@ -149,7 +157,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("OpenList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -186,9 +195,19 @@ namespace GrappBox.ViewModel
                     _closeBugs.Insert(range, _model);
                     NotifyPropertyChanged("CloseList");
                 }
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -214,9 +233,19 @@ namespace GrappBox.ViewModel
                 _commentList.Remove(comment);
                 _commentList.Insert(range, _comment);
                 NotifyPropertyChanged("CommentList");
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -239,9 +268,19 @@ namespace GrappBox.ViewModel
                 _tagList.Insert(range, _comment);
                 NotifyPropertyChanged("TagList");
                 _tagSelect = null;
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -258,9 +297,19 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _model.Tags.Add(tag);
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -307,9 +356,18 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Put(props, "bugtracker/setparticipants");
             if (res.IsSuccessStatusCode)
             {
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -327,6 +385,7 @@ namespace GrappBox.ViewModel
             props.Add("description", _model.Description);
             props.Add("stateId", _model.State.Id);
             props.Add("stateName", _model.State.Name);
+            props.Add("clientOrigin", false);
             HttpResponseMessage res = await api.Post(props, "bugtracker/postticket");
             if (res.IsSuccessStatusCode)
             {
@@ -336,7 +395,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("OpenList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -359,7 +419,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("CommentList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -381,7 +442,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("TagList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -402,7 +464,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("OpenList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -417,7 +480,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("CommentList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -433,7 +497,8 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("TagList");
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
@@ -445,9 +510,19 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _model.Tags.Remove(tag);
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
         #endregion

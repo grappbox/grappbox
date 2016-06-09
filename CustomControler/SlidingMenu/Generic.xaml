@@ -31,13 +31,6 @@
                                         Background="Transparent" />
                                 </Grid>
                             </FlipViewItem>
-                            <FlipViewItem
-                                HorizontalAlignment="Left"
-                                x:Name="ContentRightSideMenu"
-                                MaxWidth="{TemplateBinding RightSideMenuWidth}">
-                                <ContentPresenter
-                                    Content="{TemplateBinding RightMenuContent}" />
-                            </FlipViewItem>
                         </FlipView>
                     </Grid>
                 </ControlTemplate>

@@ -77,13 +77,8 @@
     </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1" MenuState="Left" IsDoubleTapEnabled="False">
         <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <Grid>
-                <HyperlinkButton Content="DashBoard" NavigateUri="/DashBoardView.xaml"/>
-            </Grid>
+            <customControler:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
-        <slideMenu:SlideInMenuContentControl.RightMenuContent>
-            <Grid/>
-        </slideMenu:SlideInMenuContentControl.RightMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid Background="#FF292929" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}">
                 <Grid.RowDefinitions>

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using Windows.Storage.Streams;
+using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace GrappBox.ViewModel
@@ -54,11 +56,19 @@ namespace GrappBox.ViewModel
             {
                 model = api.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
                 notifyAll();
-                UserView.GetUser().affMessage(false, "Update Successful");
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                UserView.GetUser().affMessage(true, "Update Fail: " + api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
             props.Clear();
         }
@@ -74,7 +84,8 @@ namespace GrappBox.ViewModel
                 notifyAll();
             }
             else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
