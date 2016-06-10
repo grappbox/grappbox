@@ -193,10 +193,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         </div>
                       </div>
                       <div class="form-group">
-                        <div class="col-md-2 col-md-offset-10" data-ng-if="!data.editMode && data.canEdit">
-                          <a class="btn btn-default" data-ng-click="project_switchEditMode()">Edit</a>
+                        <div class="col-md-2" data-ng-if="data.canEdit">
+                          <a class="btn btn-default" data-ng-click="deleteProject()">Delete this projet</a>
                         </div>
-                        <div class="col-md-3 col-md-offset-9" data-ng-if="data.editMode && data.canEdit">
+                        <div class="col-md-offset-10" data-ng-if="!data.editMode && data.canEdit">
+                          <a class="btn" data-ng-click="project_switchEditMode()">Edit</a>
+                        </div>
+                        <div class="col-md-offset-9" data-ng-if="data.editMode && data.canEdit">
                           <a class="btn" data-ng-click="project_switchEditMode()">Cancel</a>
                           <a class="btn btn-default" data-ng-click="updateProject(data.project)">Update</a>
                         </div>
@@ -548,7 +551,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             </form>
                           </div>
                         </div>
-                        <div class="col-md-4 col-md-offset-8">
+                        <div class="col-md-3 col-md-offset-9">
                           <a href="" class="btn btn-default" data-ng-click="deleteRole(role)">Delete</a>
                           <a href="" class="btn" data-ng-click="editRole(role)">Update</a>
                         </div>
@@ -561,58 +564,68 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
                   </div>
                 </div>
-              </div> 
+              </div>
 
-
-                      <div role="tabpanel" class="tab-pane" id="customers-content">
-                        <div data-ng-if="data.customersLoad">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-                            <div class="loading-content section">
-                              <div></div>
-                            </div>
+              <!-- project edition: customers -->
+              <div role="tabpanel" class="tab-pane" id="customers-content">
+                <div data-ng-if="data.customersLoad">
+                  <div class="spinner data"><div></div></div>
+                </div>
+                <div data-ng-if="!data.customersLoad && !data.customers_error && data.canEdit">
+                  <div class="col-md-12">
+                    <h4>Add a customer access</h4>
+                  </div>
+                  <div class="col-md-12">
+                    <form class="form-horizontal">
+                      <fieldset>
+                        <div class="form-group">
+                          <label for="newCustomer" class="col-md-1 control-label">Name</label>
+                          <div class="col-md-9">
+                            <input type="text" class="form-control" data-ng-model="new_customer.name" id="newCustomer" placeholder="Customer access name">
+                          </div>
+                          <div class="col-md-1">
+                            <button type="submit" class="btn btn-default" data-ng-click="createCustomersAccess(new_customer)">Add</button>  
                           </div>
                         </div>
-                        <div data-ng-if="(!data.customersLoad && !data.customers_error)" id="customers-list">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-                            <div class="col-lg-12" ng-if="data.canEdit">
-                              <h4>Create customer access</h4>
-                              <form class="col-lg-6" novalidate>
-                                <div class="form-group no-margin">
-                                    <input class="form-control" type="text" data-ng-model="new_customer.name" placeholder="Customer access name">
-                                    <button type="submit"class="btn-default btn-access" ng-click="createCustomersAccess(new_customer)"><i class="fa fa-plus"></i>Create</button>
-                                </div>
-                              </form>
-                            </div>
-                            <div class="col-lg-12">
-                              <h4>Registered customer access(es)</h4>
-                              <div class="panel panel-default col-lg-6" ng-repeat="customer in data.customers">
-                                <div class="panel-heading">{[{ customer.name }]}</div>
-                                <div class="panel-body">
-                                  <p>Token: {[{ customer.customer_token }]}</p>
-                                  <button class="btn-default btn-access" ng-click="deleteCustomerAccess(customer)"><i class="fa fa-trash-o"></i>Delete</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div><!-- !section-content -->
-                        </div><!-- !data-ng-if="data.onLoad && !data.project_error" -->
-                        <div data-ng-if="data.customers_error">
-                          <div class="section-heading app-section-heading"><h2></h2></div>
-                          <div class="section-content app-section-content">
-                            <div class="app-data error">
-                                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div><!-- ! #customers-content-->
+                      </fieldset>
+                    </form>
+                  </div>                  
+                  <div class="col-md-12">
+                    <h4>Registered customer accesses</h4>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                          <tr>
+                            <th class="col-md-2 col-xs-12">Name</th>
+                            <th class="col-md-8 col-xs-12">Token</th>
+                            <th class="col-md-2 col-xs-12">Deletion</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr data-ng-repeat="customer in data.customers">
+                            <td class="col-md-2 col-xs-12 ellipsis">{[{ customer.name }]}</td>
+                            <td class="col-md-8 col-xs-12 ellipsis">{[{ customer.customer_token }]}</td>
+                            <td class="col-md-2 col-xs-12">
+                              <a href="" class="btn btn-default" data-ng-click="deleteCustomerAccess(customer)">Delete</a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
+                </div>
+                <div data-ng-if="!data.customersLoad && data.customers_error">
+                  <div class="centered">
+                    <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+              </div>
 
-                </div><!-- ! ng-if="data.project_new"-->
-              </div><!-- !col-lg-12 -->
-          </div><!-- row -->
-        </div><!-- container app-container-->
-    </section>
-
-</div><!-- !project-content-view -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

@@ -152,7 +152,7 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 #project-creation .well,
 #project-edition .well { min-height: 260px; }
 
-#project-creation .form-group input[type=file]
+#project-creation .form-group input[type=file],
 #project-edition .form-group input[type=file] { opacity: initial; position: initial; }
 
 #project-creation .btn-default,
