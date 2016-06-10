@@ -4,12 +4,91 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
+
+
+/* ===================================================== */
+/* ==================== PAGE ACCESS ==================== */
+/* ===================================================== */
+
+/**
+* Routine definition
+* APP project settings page access
+*
+*/
+
+// Check if requested project is accessible
+var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
+
+  console.log("HELLO");
+  var deferred = $q.defer();
+
+  if ($route.current.params.id == 0) {
+    deferred.reject();
+    $location.path("./");
+    Notification.warning({ message: "Project not found.", delay: 10000 });
+    return deferred.promise;
+  }
+
+  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
+    .then(function onGetSuccess(response) {
+      deferred.resolve();
+    },
+    function onGetFail(response) {
+  console.log(response.data.info.return_code);
+
+      if (response.data.info.return_code) {
+        switch(response.data.info.return_code) {
+          case "6.3.3":
+          deferred.reject();
+          $rootScope.onUserTokenError();
+          break;
+
+          case "6.3.4":
+          deferred.reject();
+          $location.path("./");
+            console.log("response.data.info.return_code");
+
+          Notification.warning({ message: "Project not found.", delay: 10000 });
+          break;
+
+          case "6.3.9":
+          deferred.reject();
+          $location.path("./");
+          Notification.warning({ message: "You don\'t have access to the settings of this project.", delay: 10000 });
+          break;
+
+          default:
+          deferred.reject();
+          $location.path("./");
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          break;
+        }
+      }
+      else {
+        deferred.reject();
+        $location.path("./");
+        Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+      }
+    });
+
+    return deferred.promise;
+};
+
+// "isProjectSettingsPageAccessible" routine injection
+isProjectSettingsPageAccessible["$inject"] = ["$q", "$http", "$rootScope", "$cookies", "$route", "$location", "Notification"];
+
+
+
+/* ====================================================== */
+/* ==================== PAGE CONTENT ==================== */
+/* ====================================================== */
+
 /**
 * Controller definition
 * APP project page
 *
 */
-app.controller('projectController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', '$route', '$location', function($rootScope, $scope, $routeParams, $http, $cookies, Notification, $route, $location) {
+app.controller('projectSettingsController', ['$rootScope', '$scope', '$routeParams', '$http', '$cookies', 'Notification', '$route', '$location', function($rootScope, $scope, $routeParams, $http, $cookies, Notification, $route, $location) {
 
   // ------------------------------------------------------
   //                DATA FORMATING

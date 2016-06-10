@@ -2,117 +2,112 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
+
 <div class="view view-content" id="dashboard-view" data-ng-controller="dashboardController">
 
-  <section class="app-section" id="dashboard-help">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : dashboard information -->
-          <div class="section-heading">
-          <h2>Welcome to GrappBox.</h2>
-            <p>This dashboard shows you all you need to know about... you! Scroll down to see an overview of your team members (and if they chill or not). You'll also find your next meetings, and an global progression on each of your projects.<br>Use the menu on the left to navigate between all the GrappBox tools.</p>
-          </div>
-        </div>
-      </div>
+  <!-- grappbox.data : dashboard information -->
+  <div class="panel panel-success">
+    <div class="panel-heading">Welcome to GrappBox.</div>
+    <div class="panel-body">
+      <p>
+        This dashboard shows you all you need to know about... you! Scroll down to see an overview of your team members (and if they chill or not). You'll also find your next meetings, and an global progression on each of your projects.
+        <br>Use the menu on the left to navigate between all the GrappBox tools.
+      </p>
     </div>
-  </section>
+  </div>
 
   <section class="app-section" id="team-occupation">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : (dashboard) team occupation -->
-          <div class="section-heading">
-            <h3>Team occupation</h3>
-            <p>Hold to navigate between your teams members and see their availability.<br>When a team member is <strong>"Available"</strong>, you can choose tasks to assign to him. A <strong>"Busy"</strong> member cannot accept new tasks until its current task is complete.</p>
+    <div class="row">
+      <div class="col-lg-12">
+        <!-- grappbox.data : (dashboard) team occupation -->
+        <h2>Team occupation</h2>
+        <p>
+          Hold to navigate between your teams members and see their availability.<br>When a team member is <strong>"Available"</strong>, you can choose tasks to assign to him. A <strong>"Busy"</strong> member cannot accept new tasks until its current task is complete.
+        </p>
+        <div class="tiles shadow" data-ng-if="data.teamOccupation.onLoad">
+          <div class="loading-content section">
+            <div></div>
           </div>
-          <div class="section-content tiles" data-ng-if="data.teamOccupation.onLoad">
-            <div class="loading-content section">
-              <div></div>
+        </div>
+        <div class="tiles shadow" data-ng-if="!data.teamOccupation.onLoad">
+          <div data-ng-if="data.teamOccupation.isValid && data.teamOccupation.list" panhandler>
+            <div class="data-wrapper" ng-repeat="team in data.teamOccupation.list">
+              <ul class="data-content shadow">
+                <li>
+                  <div class="title ellipsis"><i class="fa fa-user"></i>"{[{ team.users.firstname }]} {[{ team.users.lastname }]}"</div>
+                </li>
+                <li class="content-img left">
+                  <img class="shadow" data-ng-src="{[{ team.picture ? team.picture : '../resources/images/default-avatar.min.png' }]}" height="120" width="120">
+                </li>
+                <li class="content-view left">
+                  <div class="ellipsis"><i class="fa fa-folder-o"></i>Project: "{[{ team.name }]}"</div>
+                  <div><i class="fa fa-bar-chart"></i>Status: {[{ team.occupation == 'free' ? 'Available' : 'Busy' }]}</div>
+                </li>
+                <li class="content-view left even">
+                  <div><i class="fa fa-play-circle-o"></i>Started tasks: {[{ team.number_of_tasks_begun }]}</div>
+                  <div><i class="fa fa-stop-circle-o"></i>Remaining tasks: {[{ team.number_of_tasks_begun }]}</div>
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="section-content tiles" data-ng-if="!data.teamOccupation.onLoad">
-            <div data-ng-if="data.teamOccupation.isValid && data.teamOccupation.list" panhandler>
-              <div class="data-wrapper" ng-repeat="team in data.teamOccupation.list">
-                <ul class="data-content shadow">
-                  <li>
-                    <div class="title ellipsis"><i class="fa fa-user"></i>"{[{ team.users.firstname }]} {[{ team.users.lastname }]}"</div>
-                  </li>
-                  <li class="content-img left">
-                    <img class="shadow" data-ng-src="{[{ team.picture ? team.picture : '../resources/images/default-avatar.min.png' }]}" height="120" width="120">
-                  </li>
-                  <li class="content-view left">
-                    <div class="ellipsis"><i class="fa fa-folder-o"></i>Project: "{[{ team.name }]}"</div>
-                    <div><i class="fa fa-bar-chart"></i>Status: {[{ team.occupation == 'free' ? 'Available' : 'Busy' }]}</div>
-                  </li>
-                  <li class="content-view left even">
-                    <div><i class="fa fa-play-circle-o"></i>Started tasks: {[{ team.number_of_tasks_begun }]}</div>
-                    <div><i class="fa fa-stop-circle-o"></i>Remaining tasks: {[{ team.number_of_tasks_begun }]}</div>
-                  </li>
-                </ul>
-              </div>
-            </div>
 
-            <div data-ng-if="data.teamOccupation.isValid && !data.teamOccupation.list">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-frown-o"></i>You don't have any collaborator.</p>
-              </div>
+          <div data-ng-if="data.teamOccupation.isValid && !data.teamOccupation.list">
+            <div class="data-wrapper error">
+              <p><i class="material-icons">sentiment_satisfied</i><br>You don't have any collaborator.</p>
             </div>
-            <div data-ng-if="!data.teamOccupation.isValid">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-              </div>
+          </div>
+          <div data-ng-if="!data.teamOccupation.isValid">
+            <div class="data-wrapper error">
+              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+
 
   <section class="app-section" id="next-meetings">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : (dashboard) next meetings -->
-          <div class="section-heading">
-            <h3>Next meetings</h3>
-            <p>Hold to see all future appointments.<br>This list only shows the closest meetings. When one of your appointments is over or cancelled, it'll be automatically deleted from this list.</p>
+    <div class="row">
+      <div class="col-lg-12">
+        <!-- grappbox.data : (dashboard) next meetings -->
+        <h2>Next meetings</h2>
+        <p>
+          Hold to see all future appointments.<br>This list only shows the closest meetings. When one of your appointments is over or cancelled, it'll be automatically deleted from this list.
+        </p>
+        <div class="tiles shadow" data-ng-if="data.nextMeetings.onLoad">
+          <div class="loading-content section">
+            <div></div>
           </div>
-          <div class="section-content tiles" data-ng-if="data.nextMeetings.onLoad">
-            <div class="loading-content section">
-              <div></div>
+        </div>
+        <div class="tiles shadow" data-ng-if="!data.nextMeetings.onLoad">
+          <div data-ng-if="data.nextMeetings.isValid && data.nextMeetings.list" panhandler>
+            <div class="data-wrapper" ng-repeat="meeting in data.nextMeetings.list">
+              <ul class="data-content shadow">
+                <li>
+                  <div class="title ellipsis"><i class="fa fa-calendar"></i>"{[{ meeting.title }]}"</div>
+                </li>
+                <li class="content-view">
+                  <div class="ellipsis"><i class="fa fa-folder-o"></i>Project: "{[{ meeting.projects.name ? meeting.projects.name : 'N/A' }]}"</div>
+                  <div><i class="fa fa-list"></i>Meeting type: {[{ meeting.type }]}</div>
+                  <div><i class="fa fa-clock-o"></i>Begin: {[{ formatObjectDate(meeting.begin_date.date) }]}</div>
+                  <div><i class="fa fa-clock-o"></i>End: {[{ formatObjectDate(meeting.end_date.date) }]}</div>
+                </li>
+                <li class="content-view even">
+                  <div class="ellipsis"><i class="fa fa-commenting-o"></i>Description: "{[{ meeting.description }]}"</div>
+                </li>
+              </ul>
             </div>
           </div>
-          <div class="section-content tiles" data-ng-if="!data.nextMeetings.onLoad">
-            <div data-ng-if="data.nextMeetings.isValid && data.nextMeetings.list" panhandler>
-              <div class="data-wrapper" ng-repeat="meeting in data.nextMeetings.list">
-                <ul class="data-content shadow">
-                  <li>
-                    <div class="title ellipsis"><i class="fa fa-calendar"></i>"{[{ meeting.title }]}"</div>
-                  </li>
-                  <li class="content-view">
-                    <div class="ellipsis"><i class="fa fa-folder-o"></i>Project: "{[{ meeting.projects.name ? meeting.projects.name : 'N/A' }]}"</div>
-                    <div><i class="fa fa-list"></i>Meeting type: {[{ meeting.type }]}</div>
-                    <div><i class="fa fa-clock-o"></i>Begin: {[{ formatObjectDate(meeting.begin_date.date) }]}</div>
-                    <div><i class="fa fa-clock-o"></i>End: {[{ formatObjectDate(meeting.end_date.date) }]}</div>
-                  </li>
-                  <li class="content-view even">
-                    <div class="ellipsis"><i class="fa fa-commenting-o"></i>Description: "{[{ meeting.description }]}"</div>
-                  </li>
-                </ul>
-              </div>
-            </div>
 
-            <div data-ng-if="data.nextMeetings.isValid && !data.nextMeetings.list">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-frown-o"></i>You don't have any object.</p>
-              </div>
+          <div data-ng-if="data.nextMeetings.isValid && !data.nextMeetings.list">
+            <div class="data-wrapper error">
+              <p><i class="material-icons">sentiment_satisfied</i><br>You don't have any object.</p>
             </div>
-            <div data-ng-if="!data.nextMeetings.isValid">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-              </div>
+          </div>
+          <div data-ng-if="!data.nextMeetings.isValid">
+            <div class="data-wrapper error">
+              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
             </div>
           </div>
         </div>
@@ -120,56 +115,54 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </section>
 
-  <section class="app-section" id="global-progress">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : (dashboard) global progress -->
-          <div class="section-heading">
-            <h3>Global progress</h3>
-            <p>Hold to navigate between your projects and see information about them.<br>You can also check your remaining tasks for each project, all your notifications (if any), and your messages.</p>
-          </div>
-          <div class="section-content tiles" data-ng-if="data.globalProgress.onLoad">
-            <div class="loading-content section">
-              <div></div>
-            </div>
-          </div>
-          <div class="section-content tiles" data-ng-if="!data.globalProgress.onLoad">
-            <div data-ng-if="data.globalProgress.isValid && data.globalProgress.list" panhandler>
-              <div class="data-wrapper" ng-repeat="progress in data.globalProgress.list">
-                <ul class="data-content shadow">
-                  <li>
-                    <div class="title ellipsis"><i class="fa fa-folder-o"></i>"{[{ progress.project_name }]}"</div>
-                  </li>
-                  <li class="content-img left" ng-if="!progress.project_logo">
-                    <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
-                  </li>
-                  <li class="content-img left" ng-if="progress.project_logo">
-                    <img class="shadow" data-ng-src="data:image/png;base64,{[{ progress.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
-                  </li>
-                  <li class="content-view left">
-                    <div class="ellipsis">Company: {[{ progress.project_company ? progress.project_company : 'N/A' }]}</div>
-                    <div>Phone: {[{ progress.project_phone ? progress.project_phone : 'N/A' }]}</div>
-                    <div class="ellipsis">Email: {[{ progress.contact_mail ? progress.contact_mail : 'N/A' }]}</div>
-                  </li>
-                  <li class="content-view left even">
-                    <div><i class="fa fa-list-ol"></i>Tasks: {[{ progress.number_ongoing_tasks }]}</div>
-                    <div><i class="fa fa-exclamation-circle"></i>Bugs: {[{ progress.number_bugs }]}</div>
-                    <div><i class="fa fa-envelope-o"></i>Messages: {[{ progress.number_messages }]}</div>
-                  </li>
-                </ul>
-              </div>
-            </div>
 
-            <div data-ng-if="data.globalProgress.isValid && !data.globalProgress.list">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-frown-o"></i>You don't have any project.</p>
-              </div>
+  <section class="app-section" id="global-progress">
+    <div class="row">
+      <div class="col-lg-12">
+        <!-- grappbox.data : (dashboard) global progress -->
+        <h2>Global progress</h2>
+        <p>
+          Hold to navigate between your projects and see information about them.<br>You can also check your remaining tasks for each project, all your notifications (if any), and your messages.
+        </p>
+        <div class="tiles shadow" data-ng-if="data.globalProgress.onLoad">
+          <div class="loading-content section">
+            <div></div>
+          </div>
+        </div>
+        <div class="tiles shadow" data-ng-if="!data.globalProgress.onLoad">
+          <div data-ng-if="data.globalProgress.isValid && data.globalProgress.list" panhandler>
+            <div class="data-wrapper" ng-repeat="progress in data.globalProgress.list">
+              <ul class="data-content shadow">
+                <li>
+                  <div class="title ellipsis"><i class="fa fa-folder-o"></i>"{[{ progress.project_name }]}"</div>
+                </li>
+                <li class="content-img left" ng-if="!progress.project_logo">
+                  <img class="shadow" data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                </li>
+                <li class="content-img left" ng-if="progress.project_logo">
+                  <img class="shadow" data-ng-src="data:image/png;base64,{[{ progress.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                </li>
+                <li class="content-view left">
+                  <div class="ellipsis">Company: {[{ progress.project_company ? progress.project_company : 'N/A' }]}</div>
+                  <div>Phone: {[{ progress.project_phone ? progress.project_phone : 'N/A' }]}</div>
+                  <div class="ellipsis">Email: {[{ progress.contact_mail ? progress.contact_mail : 'N/A' }]}</div>
+                </li>
+                <li class="content-view left even">
+                  <div><i class="fa fa-list-ol"></i>Tasks: {[{ progress.number_ongoing_tasks }]}</div>
+                  <div><i class="fa fa-exclamation-circle"></i>Bugs: {[{ progress.number_bugs }]}</div>
+                  <div><i class="fa fa-envelope-o"></i>Messages: {[{ progress.number_messages }]}</div>
+                </li>
+              </ul>
             </div>
-            <div data-ng-if="!data.globalProgress.isValid">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-              </div>
+          </div>
+          <div data-ng-if="data.globalProgress.isValid && !data.globalProgress.list">
+            <div class="data-wrapper error">
+              <p><i class="material-icons">sentiment_satisfied</i><br>You don't have any project.</p>
+            </div>
+          </div>
+          <div data-ng-if="!data.globalProgress.isValid">
+            <div class="data-wrapper error">
+              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
             </div>
           </div>
         </div>

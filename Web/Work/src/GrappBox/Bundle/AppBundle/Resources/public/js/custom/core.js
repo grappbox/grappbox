@@ -82,7 +82,7 @@ app.controller("grappboxController", ["$scope", "$aside", "$location", function(
     "/cloud": false,
     "/notifications": false,
     "/profile": false,
-    "/project": false,
+    "/settings": false,
     "/timeline": false,
     "/whiteboard": false
   };
@@ -94,7 +94,7 @@ app.controller("grappboxController", ["$scope", "$aside", "$location", function(
     "/cloud": "cloud_upload",
     "/notifications": "notifications",
     "/profile": "person",
-    "/project": "folder",
+    "/settings": "folder",
     "/timeline": "vertical_align_center",
     "/whiteboard": "create",
     "/logout" : "exit_to_app"

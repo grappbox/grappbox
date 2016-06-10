@@ -82,19 +82,13 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		controller  : "profileController",
 		caseInsensitiveMatch : true
 	})
-	// Project-related pages
-	.when("/project", {
-		title: "Project list",
-		templateUrl : "../resources/pages/project-list.html",
-		controller  : "projectListController",
-		caseInsensitiveMatch : true
-	})
-	.when("/project/:id", {
+	// Project settings page
+	.when("/settings/:id", {
 		title: "Project settings",
-		templateUrl : "../resources/pages/project.html",
-		controller  : "projectController",
+		templateUrl : "../resources/pages/project-settings.html",
+		controller  : "projectSettingsController",
 		caseInsensitiveMatch : true,
-		resolve: { factory: isProjectAccessible }
+		resolve: { factory: isProjectSettingsPageAccessible }
 	})
 	// Timeline-related pages
 	.when("/timeline", {
