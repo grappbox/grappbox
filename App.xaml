@@ -7,17 +7,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Ressources/CustomColors.xaml" />
+                <ResourceDictionary Source="Ressources/CustomStyle.xaml" />
                 <ResourceDictionary Source="Ressources/Converters.xaml" />
                 <ResourceDictionary Source="CustomControler/SlidingMenu/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key="Light" >
-                    <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource RedGrappBox}" />
-                    <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="White" />
-                    <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

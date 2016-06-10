@@ -12,22 +12,11 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left">
         <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Button Content="Dashboard" Grid.Row="0" HorizontalAlignment="Center"/>
-                <Button Content="WhiteBoard" Grid.Row="1" HorizontalAlignment="Center"/>
-                <Button Content="User Settings" Grid.Row="2" HorizontalAlignment="Center"/>
-                <Button Content="Project Settings" Grid.Row="3" HorizontalAlignment="Center"/>
-            </Grid>
+            <customControl:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid Background="White" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" >
-                <Pivot x:Name="db_pivot" Background="{StaticResource RedGrappBoxBrush}">
+                <Pivot x:Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" >
                     <PivotItem Background="White" Margin="0,0,0,0" Header="Options">
                         <Grid>
                             <StackPanel Margin="15,0,0,0">

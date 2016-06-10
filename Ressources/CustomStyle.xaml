@@ -2,4 +2,41 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GrappBox">
+    <Color x:Key="RedGrappBox">#c0392b</Color>
+    <Color x:Key="GrayGrappBox">#3c3b3b</Color>
+    <Color x:Key="BackgroundGray">#EEEEEE</Color>
+    <SolidColorBrush x:Key="GrayGrappBoxBrush" Color="{StaticResource GrayGrappBox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="RedGrappBoxBrush" Color="{StaticResource RedGrappBox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="BackgroundGrayBrush" Color="{StaticResource BackgroundGray}"></SolidColorBrush>
+    <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
+        <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
+    </Style>
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style x:Key="LeftMenuButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style TargetType="PivotItem">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Margin" Value="0"/>
+    </Style>
+    <Style x:Key="BlackTextBlockForeground"  TargetType="TextBlock">
+        <Setter Property="Foreground" Value="Black"/>
+    </Style>
+        <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light" >
+            <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource RedGrappBox}" />
+            <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource RedGrappBox}" />
+            <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="White" />
+            <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
+
+            <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="Black" />
+            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="White"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

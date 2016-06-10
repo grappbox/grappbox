@@ -4,10 +4,15 @@
     xmlns:local="using:GrappBox">
     <Color x:Key="RedGrappBox">#c0392b</Color>
     <Color x:Key="GrayGrappBox">#3c3b3b</Color>
+    <Color x:Key="BackgroundGray">#EEEEEE</Color>
     <SolidColorBrush x:Key="GrayGrappBoxBrush" Color="{StaticResource GrayGrappBox}"></SolidColorBrush>
     <SolidColorBrush x:Key="RedGrappBoxBrush" Color="{StaticResource RedGrappBox}"></SolidColorBrush>
-    <Style TargetType="CommandBar">
-        <Setter Property="Background" Value="{StaticResource GrayGrappBox}"/>
-        <Setter Property="Foreground" Value="{StaticResource RedGrappBox}"/>
+    <SolidColorBrush x:Key="BackgroundGrayBrush" Color="{StaticResource BackgroundGray}"></SolidColorBrush>
+    <Style TargetType="Pivot">
+        <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
+    </Style>
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
 </ResourceDictionary>

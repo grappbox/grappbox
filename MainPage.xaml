@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="5*"/>
+            <RowDefinition Height="6*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
@@ -21,7 +21,7 @@
         <TextBox x:Name="loginBlock" Grid.Row="2" PlaceholderText="UserName" Text="valentin.mougenot@epitech.eu"></TextBox>
         <TextBlock Grid.Row="3" FontSize="24" Text="Password" Foreground="Black"></TextBlock>
         <PasswordBox x:Name="pwdBlock" Grid.Row="4" PlaceholderText="Password" Password="mougen_v"></PasswordBox>
-        <Button x:Name="DashBoardButton" Content="Log In" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center" Click="DashBoardButton_Click" Background="{StaticResource RedGrappBoxBrush}" BorderBrush="{x:Null}" Foreground="White"/>
+        <Button x:Name="DashBoardButton" Content="Log In" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center" Click="DashBoardButton_Click"/>
         <TextBlock x:Name="errorBlock" Grid.Row="6" TextAlignment="Center" VerticalAlignment="Center" Foreground="#FFE81123" FontSize="18" />
         <Image x:Name="image" Height="200" Width="200" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/grappbox-logo_gray.png"/>
     </Grid>

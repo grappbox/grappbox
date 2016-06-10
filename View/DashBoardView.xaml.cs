@@ -52,26 +52,15 @@ namespace GrappBox.View
         {
             this.dvm = DashBoardViewModel.GetViewModel();
             await ViewModel.DashBoardViewModel.InitialiseAsync(dvm);
-            if (SettingsManager.getOption<int>("currentProjectId") != 0)
-            {
-                this.dvm.ProjectList = new ObservableCollection<ProjectListModel>(this.dvm.ProjectList);
-                this.project_Combo.ItemsSource = this.dvm.ProjectList;
-                this.project_Combo.SelectedValuePath = "Id";
-                this.project_Combo.DisplayMemberPath = "Name";
-                this.project_Combo.SelectedValue = SettingsManager.getOption<int>("currentProjectId");
-                team = CreateOccupationTab();
-                issues = CreateIssuesTab();
-                tasks = CreateTasksTab();
-                meetings = CreateMeetingsTab();
-            }
-            else
-            {
-                await this.dvm.getProjectList();
-                this.project_Combo.ItemsSource = this.dvm.ProjectList;
-                this.project_Combo.SelectedValuePath = "Id";
-                this.project_Combo.DisplayMemberPath = "Name";
-                this.project_Combo.SelectedValue = SettingsManager.getOption<int>("currentProjectId");
-            }
+            this.dvm.ProjectList = new ObservableCollection<ProjectListModel>(this.dvm.ProjectList);
+            this.project_Combo.ItemsSource = this.dvm.ProjectList;
+            this.project_Combo.SelectedValuePath = "Id";
+            this.project_Combo.DisplayMemberPath = "Name";
+            this.project_Combo.SelectedValue = SettingsManager.getOption<int>("ProjectIdChoosen");
+            team = CreateOccupationTab();
+            issues = CreateIssuesTab();
+            tasks = CreateTasksTab();
+            meetings = CreateMeetingsTab();
         }
 
         #region menuClicked
@@ -142,11 +131,11 @@ namespace GrappBox.View
         private async void project_Combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int p = (int)project_Combo.SelectedValue;
-            SettingsManager.setOption("currentProjectId", p);
-            SettingsManager.setOption("currentProjectName", this.dvm.ProjectList.First(item => item.Id == p).Name);
+            SettingsManager.setOption("ProjectIdChoosen", p);
+            SettingsManager.setOption("ProjectNameChoosen", this.dvm.ProjectList.First(item => item.Id == p).Name);
             await DashBoardViewModel.InitialiseAsync(this.dvm);
-            Debug.WriteLine(SettingsManager.getOption<int>("currentProjectId"));
-            Debug.WriteLine(SettingsManager.getOption<string>("currentProjectName"));
+            Debug.WriteLine(SettingsManager.getOption<int>("ProjectIdChoosen"));
+            Debug.WriteLine(SettingsManager.getOption<string>("ProjectNameChoosen"));
         }
 
         private void initPivotItem(string header, out PivotItem pivotItem)

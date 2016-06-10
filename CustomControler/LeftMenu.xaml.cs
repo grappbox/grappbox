@@ -30,7 +30,7 @@ namespace GrappBox.CustomControler
         public LeftMenu()
         {
             this.InitializeComponent();
-            ProjectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen");
+            //ProjectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen");
         }
 
         #region menuClicked

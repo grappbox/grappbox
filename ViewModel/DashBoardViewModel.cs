@@ -27,7 +27,6 @@ namespace GrappBox.ViewModel
         static public async System.Threading.Tasks.Task InitialiseAsync(DashBoardViewModel dvm)
         {
             await dvm.getProjectList();
-            Debug.WriteLine("TOTO");
             await dvm.getTeam();
             dvm.NotifyPropertyChanged("ProjectList");
         }
@@ -52,7 +51,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getTeam()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("CurrentProjectId") };
+            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "dashboard/getteamoccupation");
             if (res.IsSuccessStatusCode)
             {

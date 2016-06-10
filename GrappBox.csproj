@@ -214,6 +214,7 @@
     <Content Include="Assets\dashboard.png" />
     <Content Include="Assets\file.png" />
     <Content Include="Assets\folder.png" />
+    <Content Include="Assets\grappbox-logo_gray.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\logout.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
