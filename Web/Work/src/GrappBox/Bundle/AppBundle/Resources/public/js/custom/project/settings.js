@@ -18,8 +18,6 @@
 
 // Check if requested project is accessible
 var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
-
-  console.log("HELLO");
   var deferred = $q.defer();
 
   if ($route.current.params.id == 0) {
@@ -34,8 +32,6 @@ var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $cookies, 
       deferred.resolve();
     },
     function onGetFail(response) {
-  console.log(response.data.info.return_code);
-
       if (response.data.info.return_code) {
         switch(response.data.info.return_code) {
           case "6.3.3":
@@ -46,8 +42,6 @@ var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $cookies, 
           case "6.3.4":
           deferred.reject();
           $location.path("./");
-            console.log("response.data.info.return_code");
-
           Notification.warning({ message: "Project not found.", delay: 10000 });
           break;
 
