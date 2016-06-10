@@ -9,43 +9,38 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="viewModel.DashBoardViewModel"
-    xmlns:customControler="using:GrappBox.CustomControler">
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left">
         <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <customControler:LeftMenu/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button Content="Dashboard" Grid.Row="0" HorizontalAlignment="Center"/>
+                <Button Content="WhiteBoard" Grid.Row="1" HorizontalAlignment="Center"/>
+                <Button Content="User Settings" Grid.Row="2" HorizontalAlignment="Center"/>
+                <Button Content="Project Settings" Grid.Row="3" HorizontalAlignment="Center"/>
+            </Grid>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Background="#FF0C0C0C" DataContext="viewModel.DashBoardViewModel" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" >
-                <Pivot Title="DashBoard">
-                    <PivotItem Header="General Menu">
+            <Grid Background="White" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" >
+                <Pivot x:Name="db_pivot" Background="{StaticResource RedGrappBoxBrush}">
+                    <PivotItem Background="White" Margin="0,0,0,0" Header="Options">
                         <Grid>
-                            <ListBox x:Name="listView" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White">
-                                <ListBoxItem Content="Next Meetings"></ListBoxItem>
-                                <ListBoxItem Content="Project Progression"></ListBoxItem>
-                                <ListBoxItem Content="Teams Occupation"></ListBoxItem>
-                                <ListBoxItem Content="Bug Tracker"></ListBoxItem>
-                            </ListBox>
+                            <StackPanel Margin="15,0,0,0">
+                                <TextBlock FontSize="24" Foreground="Black">Displayed Pans</TextBlock>
+                                <CheckBox x:Name="team_cb" Click="team_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Team</CheckBox>
+                                <CheckBox x:Name="meetings_cb" Click="meetings_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Meetings</CheckBox>
+                                <CheckBox x:Name="issues_cb" Click="issues_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Issues</CheckBox>
+                                <CheckBox x:Name="tasks_cb" Click="tasks_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Tasks</CheckBox>
+                                <Border BorderBrush="{StaticResource GrayGrappBoxBrush}" BorderThickness="0,1,0,0" Margin="0,0,10.111,0" />
+                                <TextBlock FontSize="24" Margin="0,10,0,0">Choose Project:</TextBlock>
+                                <ComboBox Grid.Row="0" x:Name="project_Combo" SelectionChanged="project_Combo_SelectionChanged" PlaceholderText="Choose Project" HorizontalAlignment="Left" Width="376"/>
+                            </StackPanel>
                         </Grid>
-                    </PivotItem>
-                    <PivotItem Header="Next Meetings">
-                        <Grid>
-                            <TextBlock>No Meetings</TextBlock>
-                        </Grid>
-                    </PivotItem>
-                    <PivotItem Header="Teams Occupation">
-                        <Grid>
-                            <TextBlock>No Team</TextBlock>
-                        </Grid>
-                    </PivotItem>
-                    <PivotItem Header="Projects Progression">
-                        <Grid>
-                            <TextBlock>No Projects</TextBlock>
-                        </Grid>
-                    </PivotItem>
-                    <PivotItem Header="Bug Tracker">
-                        <Grid/>
                     </PivotItem>
                 </Pivot>
             </Grid>

@@ -24,14 +24,17 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class Calendar : Page
     {
-        private CalendarModel model;
         public Calendar()
         {
-            this.InitializeComponent();
-            model = new CalendarModel();
-            Debug.WriteLine("ViewModel");
-            DateTime day = new DateTime(2016, 02, 01);
-            model.GetDayPlanning(day);
+            try
+            {
+                this.InitializeComponent();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            this.DataContext = new ViewModel.CalendarViewModel();
         }
 
         /// <summary>

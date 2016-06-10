@@ -100,6 +100,7 @@
       <DependentUpon>Colorpan.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControler\CustomCanvas.cs" />
+    <Compile Include="CustomControler\EventPlanPrompt.xaml.cs" />
     <Compile Include="CustomControler\LeftMenu.xaml.cs">
       <DependentUpon>LeftMenu.xaml</DependentUpon>
     </Compile>
@@ -108,6 +109,9 @@
     <Compile Include="CustomControler\SlidingMenu\MenuState.cs" />
     <Compile Include="CustomControler\SlidingMenu\SlideInMenuContentControl.cs" />
     <Compile Include="ApiCommunication\User.cs" />
+    <Compile Include="CustomControler\TeamDashBoard.xaml.cs">
+      <DependentUpon>TeamDashBoard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControler\WBListViewElements.xaml.cs">
       <DependentUpon>WBListViewElements.xaml</DependentUpon>
     </Compile>
@@ -130,6 +134,7 @@
     <Compile Include="Model\EventType.cs" />
     <Compile Include="Model\ICustomShape.cs" />
     <Compile Include="Model\IdNameModel.cs" />
+    <Compile Include="Model\Occupations.cs" />
     <Compile Include="Model\Planning.cs" />
     <Compile Include="Model\ProjectListModel.cs" />
     <Compile Include="Model\ProjectRoleModel.cs" />
@@ -154,11 +159,11 @@
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\WhiteBoardListViewModel.cs" />
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\BugtrackerView.xaml.cs">
       <DependentUpon>BugtrackerView.xaml</DependentUpon>
     </Compile>
@@ -233,9 +238,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControler\EventPlanPrompt.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomControler\LeftMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\TeamDashBoard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControler\WBListViewElements.xaml">
       <SubType>Designer</SubType>

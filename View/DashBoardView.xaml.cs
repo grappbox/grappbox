@@ -1,4 +1,4 @@
-﻿using GrappBox.Resources;
+﻿using GrappBox.Model;
 using GrappBox.Ressources;
 using GrappBox.ViewModel;
 using System;
@@ -17,6 +17,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using GrappBox.CustomControler;
 
 namespace GrappBox.View
 {
@@ -25,86 +28,165 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class DashBoardView : Page
     {
-        TimelineViewModel tvm = new TimelineViewModel();
-
-        //Required for navigation
-        private readonly NavigationHelper navigationHelper;
-
+        PivotItem team;
+        PivotItem issues;
+        PivotItem tasks;
+        PivotItem meetings;
+        DashBoardViewModel dvm;
         public DashBoardView()
         {
             this.InitializeComponent();
             this.DataContext = DashBoardViewModel.GetViewModel();
-
-            //Required for navigation
-            this.NavigationCacheMode = NavigationCacheMode.Required;
-            this.navigationHelper = new NavigationHelper(this);
-            this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
-            this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-        }
-
-        //Required for navigation
-        #region NavigationHelper
-        /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
-        /// </summary>
-        public NavigationHelper NavigationHelper
-        {
-            get { return this.navigationHelper; }
+            team_cb.IsChecked = SettingsManager.getOption<bool>("team_cb");
+            meetings_cb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
+            issues_cb.IsChecked = SettingsManager.getOption<bool>("issues_cb");
+            tasks_cb.IsChecked = SettingsManager.getOption<bool>("tasks_cb");
         }
 
         /// <summary>
-        /// Populates the page with content passed during navigation. Any saved state is also
-        /// provided when recreating a page from a prior session.
+        /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
         /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="NavigationHelper"/>.
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session. The state will be null the first time a page is visited.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        /// <param name="e">Données d’événement décrivant la manière dont l’utilisateur a accédé à cette page.
+        /// Ce paramètre est généralement utilisé pour configurer la page.</param>
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-
+            this.dvm = DashBoardViewModel.GetViewModel();
+            await ViewModel.DashBoardViewModel.InitialiseAsync(dvm);
+            if (SettingsManager.getOption<int>("currentProjectId") != 0)
+            {
+                this.dvm.ProjectList = new ObservableCollection<ProjectListModel>(this.dvm.ProjectList);
+                this.project_Combo.ItemsSource = this.dvm.ProjectList;
+                this.project_Combo.SelectedValuePath = "Id";
+                this.project_Combo.DisplayMemberPath = "Name";
+                this.project_Combo.SelectedValue = SettingsManager.getOption<int>("currentProjectId");
+                team = CreateOccupationTab();
+                issues = CreateIssuesTab();
+                tasks = CreateTasksTab();
+                meetings = CreateMeetingsTab();
+            }
+            else
+            {
+                await this.dvm.getProjectList();
+                this.project_Combo.ItemsSource = this.dvm.ProjectList;
+                this.project_Combo.SelectedValuePath = "Id";
+                this.project_Combo.DisplayMemberPath = "Name";
+                this.project_Combo.SelectedValue = SettingsManager.getOption<int>("currentProjectId");
+            }
         }
 
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache. Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/>.</param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
-        private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
+        #region menuClicked
+        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Frame.Navigate(typeof(WhiteBoardView));
         }
 
-        /// <summary>
-        /// The methods provided in this section are simply used to allow
-        /// NavigationHelper to respond to the page's navigation methods.
-        /// <para>
-        /// Page specific logic should be placed in event handlers for the  
-        /// <see cref="NavigationHelper.LoadState"/>
-        /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
-        /// in addition to page state preserved during an earlier session.
-        /// </para>
-        /// </summary>
-        /// <param name="e">Provides data for navigation methods and event
-        /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            this.navigationHelper.OnNavigatedTo(e);
-            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
-            tvm.getTimelines();
+            UserSettingsViewModel usvm = new UserSettingsViewModel();
+            usvm.getAPI();
+            this.Frame.Navigate(typeof(UserView));
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
         {
-            this.navigationHelper.OnNavigatedFrom(e);
+            this.Frame.Navigate(typeof(DashBoardView));
         }
-        #endregion
+
+        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
+            psvm.getProjectSettings();
+            psvm.getProjectUsers();
+            psvm.getCustomerAccesses();
+            psvm.getRoles();
+            this.Frame.Navigate(typeof(ProjectSettingsView));
+        }
+        #endregion menuClicked
+
+        private void team_cb_Checked(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.setOption("team_cb", team_cb.IsChecked);
+            if (team_cb.IsChecked == true)
+                db_pivot.Items.Add(team);
+            else
+                db_pivot.Items.Remove(team);
+        }
+
+        private void meetings_cb_Checked(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.setOption("meetings_cb", meetings_cb.IsChecked);
+            if (meetings_cb.IsChecked == true)
+                db_pivot.Items.Add(meetings);
+            else
+                db_pivot.Items.Remove(meetings);
+        }
+
+        private void issues_cb_Checked(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.setOption("issues_cb", issues_cb.IsChecked);
+            if (issues_cb.IsChecked == true)
+                db_pivot.Items.Add(issues);
+            else
+                db_pivot.Items.Remove(issues);
+        }
+
+        private void tasks_cb_Checked(object sender, RoutedEventArgs e)
+        {
+            SettingsManager.setOption("tasks_cb", tasks_cb.IsChecked);
+            if (tasks_cb.IsChecked == true)
+                db_pivot.Items.Add(tasks);
+            else
+                db_pivot.Items.Remove(tasks);
+        }
+
+        private async void project_Combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int p = (int)project_Combo.SelectedValue;
+            SettingsManager.setOption("currentProjectId", p);
+            SettingsManager.setOption("currentProjectName", this.dvm.ProjectList.First(item => item.Id == p).Name);
+            await DashBoardViewModel.InitialiseAsync(this.dvm);
+            Debug.WriteLine(SettingsManager.getOption<int>("currentProjectId"));
+            Debug.WriteLine(SettingsManager.getOption<string>("currentProjectName"));
+        }
+
+        private void initPivotItem(string header, out PivotItem pivotItem)
+        {
+            pivotItem = new PivotItem();
+            pivotItem.Header = header;
+            pivotItem.Background = new SolidColorBrush(Colors.White);
+            pivotItem.Margin = new Thickness(0, 0, 0, 0);
+        }
+
+        public PivotItem CreateOccupationTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Occupation", out pivotItem);
+            TeamDashBoard td = new TeamDashBoard();
+            td.HorizontalAlignment = HorizontalAlignment.Center;
+            pivotItem.Content = td;
+            this.dvm.NotifyPropertyChanged("OccupationList");
+            return pivotItem;
+        }
+
+        public PivotItem CreateIssuesTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Issues", out pivotItem);
+            return pivotItem;
+        }
+
+        public PivotItem CreateMeetingsTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Meetings", out pivotItem);
+            return pivotItem;
+        }
+
+        public PivotItem CreateTasksTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Tasks", out pivotItem);
+            return pivotItem;
+        }
     }
 }

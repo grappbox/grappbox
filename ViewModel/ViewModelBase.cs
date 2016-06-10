@@ -18,6 +18,8 @@ using Windows.UI.Text;
 using System.IO;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using GrappBox.Model;
+using Windows.UI;
 
 namespace GrappBox.ViewModel
 {
@@ -34,6 +36,52 @@ namespace GrappBox.ViewModel
         BUGTRACKER
     }
     #region Converter
+    public class OccupationColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            string occup = (string)value;
+            if (occup == "free")
+                return new SolidColorBrush(Colors.Green);
+            else
+                return new SolidColorBrush(Colors.Red);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return null;
+        }
+    }
+    public class IntegerToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            int integer = (int)value;
+            return integer;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return null;
+        }
+    }
+    public class DateModelToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            DateModel dm = (DateModel)value;
+            String date = dm.date.Split(' ')[0];
+            String hour = dm.date.Split(' ')[1];
+            hour = hour.Remove(hour.LastIndexOf(':'));
+            String final = "On " + date + " At " + hour;
+            return final;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return null;
+        }
+    }
     public class DateTimeToDateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)

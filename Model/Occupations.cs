@@ -46,7 +46,7 @@ namespace GrappBox.Model
             set { _name = value; }
         }
         private OccupationUser _user;
-        [JsonProperty("users")]
+        [JsonProperty("user")]
         public OccupationUser User
         {
             get { return _user; }
