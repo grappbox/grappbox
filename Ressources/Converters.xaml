@@ -12,4 +12,7 @@
     <viewModel:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter"/>
     <viewModel:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
     <viewModel:SenderParameterConverter x:Key="SenderParameterConverter"/>
-</ResourceDictionary> 
+    <viewModel:DateModelToStringConverter x:Key="DateModelToStringConverter"/>
+    <viewModel:IntegerToStringConverter x:Key="IntegerToStringConverter"/>
+    <viewModel:OccupationColorConverter x:Key="OccupationColorConverter"/>
+</ResourceDictionary>

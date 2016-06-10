@@ -11,25 +11,25 @@ namespace GrappBox.Model
     {
         [JsonProperty("id")]
         public int Id { get; set; }
-        [JsonProperty("projectId")]
-        public int ProjectId { get; set; }
+       /* [JsonProperty("projectId")]
+        public int ProjectId { get; set; }*/
         [JsonProperty("creator")]
         public Creator Creator { get; set; }
         [JsonProperty("type")]
         public EventType Type { get; set; }
         [JsonProperty("title")]
         public string Title { get; set; }
-        [JsonProperty("desciption")]
+        [JsonProperty("description")]
         public string Description { get; set; }
         [JsonProperty("beginDate")]
-        public DateTime BeginDate { get; set; }
+        public DateModel BeginDate { get; set; }
         [JsonProperty("endDate")]
-        public DateTime EndDate { get; set; }
+        public DateModel EndDate { get; set; }
         [JsonProperty("createdAt")]
-        public DateTime CreatedAt { get; set; }
+        public DateModel CreatedAt { get; set; }
         [JsonProperty("editedAt")]
-        public DateTime EditedAt { get; set; }
+        public DateModel EditedAt { get; set; }
         [JsonProperty("deletedAt")]
-        public DateTime DeletedAt { get; set; }
+        public DateModel DeletedAt { get; set; }
     }
 }

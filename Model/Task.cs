@@ -16,14 +16,14 @@ namespace GrappBox.Model
         public int CreatorId { get; set; }
         [JsonProperty("title")]
         public string Title { get; set; }
-        [JsonProperty("desciption")]
+        [JsonProperty("description")]
         public string Description { get; set; }
         [JsonProperty("startedAt")]
-        public DateTime StartedAt { get; set; }
+        public DateModel StartedAt { get; set; }
         [JsonProperty("dueDate")]
-        public DateTime DueDate { get; set; }
+        public DateModel DueDate { get; set; }
         [JsonProperty("finishedAt")]
-        public DateTime FinishedAt { get; set; }
+        public DateModel FinishedAt { get; set; }
         [JsonProperty("projectId")]
         public int ProjectId { get; set; }
     }
