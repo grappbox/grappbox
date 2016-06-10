@@ -34,12 +34,8 @@ table { font-weight: 400; }
 
 .form-group { font-weight: 400; }
 .form-group label { color: #777; }
-
-.form-group select {
-   -webkit-appearance: menulist;
-  -moz-appearance: menulist;
-  appearance: normal;
-}
+.form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: normal; }
+.form-group.no-margin { margin: 0!important; }
 
 .panel { font-weight: 400; }
 .panel > .panel-heading, .panel.panel-default > .panel-heading { background-color: #BDBDBD; }
@@ -153,35 +149,22 @@ body.modal-open { padding: 0!important; overflow: auto!important; }
 /* ==================== SECTION: PROJECT ==================== */
 /* ========================================================== */
 
-#project-creation .well { min-height: 260px; }
-#project-creation .form-group input[type=file] { opacity: initial; position: initial; }
-#project-creation .btn-default { color: #c0392b; }
-
+#project-creation .well,
 #project-edition .well { min-height: 260px; }
+
+#project-creation .form-group input[type=file]
 #project-edition .form-group input[type=file] { opacity: initial; position: initial; }
-#project-edition .form-group .btn-default { color: #c0392b; }
-#project-edition .tab-content > .active { display: table; width: 100%; }
-#project-edition h4 { font-weight: 400; margin: 30px 0 15px 0; }
+
+#project-creation .btn-default,
 #project-edition .btn-default { color: #c0392b; }
-#project-edition table .form-horizontal .form-group { margin: 5px 1px; }
+
+#project-edition .tab-content > .active { display: table; width: 100%; }
+#project-edition .btn-default { color: #c0392b; }
+#project-edition table .form-group { margin: 5px 1px; }
 #project-edition table th { font-weight: 500; }
 #project-edition table th,
 #project-edition table td { vertical-align: middle; text-align: center; }
-
-#project-list .section-content { margin: 30px -20px; }
-#project-list .project-picture { padding: 10px; }
-#project-list .project-picture img { max-width: 120px; border-radius: 50%; }
-#project-list .project-data { max-width: 60%; padding: 15px 0 0 10px; }
-#project-list a:not(.standalone) { margin: 13px 0 0 0; }
-
-#project-content #customers-list .spinner,
-#project-content #users-list .spinner,
-#project-content #roles-list .spinner {top: 0px;}
-#project-content #customers-list .title,
-#project-content #users-list .title,
-#project-content #roles-list .title { background: #7CB342; margin: 0 0 15px 0; }
-
-#project-content #roles-lists .roles-details { }
+#project-edition h4 { font-weight: 400; margin: 30px 0 15px 0; }
 
 
 
