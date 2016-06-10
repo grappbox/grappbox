@@ -22,7 +22,7 @@
                             </FlipViewItem>
                             <FlipViewItem
                                 x:Name="ContentFrame">
-                                <Grid Background="Pink">
+                                <Grid Background="White">
                                     <ContentControl Margin="-1,0,-4,0"
                                         Content="{TemplateBinding Content}" />
                                     <Border
