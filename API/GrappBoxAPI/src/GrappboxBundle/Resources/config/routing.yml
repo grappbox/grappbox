@@ -265,10 +265,11 @@ v2_cloud_delete_secured:
 #                           DASHBOARD CONTROLLER
 # -----------------------------------------------------------------------
 v2_dashboard_getTeamOccupation:
-    path:       dashboard/getteamoccupation/{token}
+    path:       dashboard/getteamoccupation/{token}/{id}
     defaults:   { _controller: GrappboxBundle:Dashboard:getTeamOccupation, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
+        id: \d+
     methods: [GET]
 
 v2_dashboard_getNextMeetings:

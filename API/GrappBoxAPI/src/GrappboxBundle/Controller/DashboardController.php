@@ -29,20 +29,20 @@ use GrappboxBundle\Entity\Task;
 class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /V0.2/dashboard/getteamoccupation/:token Get team occupation
+	* @api {get} /V0.2/dashboard/getteamoccupation/:token/:id Get team occupation
 	* @apiName getTeamOccupation
 	* @apiGroup Dashboard
-	* @apiDescription Getting a team occupation for all the projects the user connected is the creator
+	* @apiDescription Getting a team occupation for a project for the user connected
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of user occupation
-	* @apiSuccess {String} array.name Name of the project
-	* @apiSuccess {Object[]} array.users User in the team informations
-	* @apiSuccess {Number} array.users.id Id of the user
-	* @apiSuccess {String} array.users.firstname First name of the user
-	* @apiSuccess {String} array.users.lastname Last name of the user
+	* @apiSuccess {Object[]} array.user User in the team informations
+	* @apiSuccess {Number} array.user.id Id of the user
+	* @apiSuccess {String} array.user.firstname First name of the user
+	* @apiSuccess {String} array.user.lastname Last name of the user
 	* @apiSuccess {String} array.occupation Occupation of the user
 	* @apiSuccess {Number} array.number_of_tasks_begun Number of tasks begun
 	* @apiSuccess {Number} array.number_of_ongoing_tasks Number of ongoing tasks
@@ -57,8 +57,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	*		{
 	*			"array": [
 	*				{
-	*					"name": "Grappbox",
-	*					"users": {
+	*					"user": {
 	*						"id": 1,
 	*						"firstname": "John",
 	*						"lastname": "Doe"
@@ -68,8 +67,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	*					"number_of_ongoing_tasks": 0
 	*				},
 	*				{
-	*					"name": "Grappbox",
-	*					"users": {
+	*					"user": {
 	*						"id": 3,
 	*						"firstname": "James",
 	*						"lastname": "Bond"
@@ -102,15 +100,32 @@ class DashboardController extends RolesAndTokenVerificationController
 	*	    "return_message": "Dashboard - getteamoccupation - Bad ID"
 	*	  }
 	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "2.1.9",
+	*			"return_message": "Dashboard - getteamoccupation - Insufficient Rights"
+	*		}
+	*	}
 	*
 	*/
-	public function getTeamOccupationAction(Request $request, $token)
+	public function getTeamOccupationAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("2.1.3", "Dashboard", "getteamoccupation"));
 
-		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findTeamOccupationV2($user->getId());
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($id);
+
+		if ($project === null)
+			return $this->setBadRequest("2.1.4", "Dashboard", "getteamoccupation", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $project->getId(), "projectSettings") < 2)
+			return ($this->setNoRightsError("2.1.9", "Dashboard", "getteamoccupation"));
+
+		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findTeamOccupationV2($project->getId());
 	}
 
 	/**
@@ -229,6 +244,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} contact_mail Contact mail of the project
 	* @apiSuccess {String} facebook Facebook of the project
 	* @apiSuccess {String} twitter Twitter of the project
+	* @apiSuccess {Datetime} deleted_at Date of deletion of the project, null if not deleted
 	* @apiSuccess {Number} number_finished_tasks Number of finished tasks
 	* @apiSuccess {Number} number_ongoing_tasks Number of ongoing tasks
 	* @apiSuccess {Number} number_tasks Total number of tasks
@@ -254,6 +270,11 @@ class DashboardController extends RolesAndTokenVerificationController
 	*				"contact_mail": "contact@grappbox.com",
 	*				"facebook": "http://facebook.com/Grappbox",
 	*				"twitter": "http://twitter.com/Grappbox",
+	*				"deleted_at":{
+	*					"date": "2016-06-14 19:22:00"
+	*					"timezone_type": 3,
+	*					"timezone": "Europe\/Paris"
+	*				}
 	*				"number_finished_tasks": 58,
 	*				"number_ongoing_tasks": 10,
 	*				"number_tasks": 600,

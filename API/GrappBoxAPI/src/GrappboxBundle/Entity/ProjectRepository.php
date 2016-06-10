@@ -76,9 +76,9 @@ class ProjectRepository extends EntityRepository
 		return $arr;
 	}
 
-	public function findTeamOccupationV2($id)
+	public function findTeamOccupationV2($projectId)
 	{
-		$qb = $this->createQueryBuilder('p')->where('p.creator_user = :id')->setParameter('id', $id);
+		$qb = $this->createQueryBuilder('p')->where('p.id = :projectId')->setParameter('projectId', $projectId);
 
 		$projects = $qb->getQuery()->getResult();
 
@@ -100,7 +100,6 @@ class ProjectRepository extends EntityRepository
 
 		foreach ($projects as $project)
 		{
-			$projectName = $project->getName();
 			$projectUsers = $project->getUsers();
 			$projectId = $project->getId();
 			foreach ($projectUsers as $user) {
@@ -127,11 +126,11 @@ class ProjectRepository extends EntityRepository
 				}
 				if ($busy == true)
 				{
-					$arr[] = array("name" => $projectName, "users" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 				else
 				{
-					$arr[] = array("name" => $projectName, "users" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 			}
 		}
@@ -251,6 +250,7 @@ class ProjectRepository extends EntityRepository
 			$contactMail = $project->getContactEmail();
 			$facebook = $project->getFacebook();
 			$twitter = $project->getTwitter();
+			$deletedAt = $project->getDeletedAt();
 			$tasks = $project->getTasks();
 			$bugs = $project->getBugs();
 			$timelines = $project->getTimelines();
@@ -287,7 +287,7 @@ class ProjectRepository extends EntityRepository
 			}
 
 			$arr[] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_phone" => $phone, "project_company" => $company , "project_logo" => $projectLogo, "contact_mail" => $contactMail,
-				"facebook" => $facebook, "twitter" => $twitter, "number_finished_tasks" => $nbFinishedTasks, "number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
+				"facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt, "number_finished_tasks" => $nbFinishedTasks, "number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
 			$i++;
 		}
 
