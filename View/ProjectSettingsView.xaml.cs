@@ -117,6 +117,7 @@ namespace GrappBox.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
             vm.getProjectSettings();
             vm.getProjectUsers();
             vm.getCustomerAccesses();

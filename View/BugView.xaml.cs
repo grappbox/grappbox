@@ -124,6 +124,7 @@ namespace GrappBox.View
                 Tags.Visibility = Visibility.Collapsed;
                 Users.Visibility = Visibility.Collapsed;
             }
+            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

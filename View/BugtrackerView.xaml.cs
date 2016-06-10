@@ -103,6 +103,8 @@ namespace GrappBox.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
+
             vm.getOpenTickets();
             vm.getClosedTickets();
             vm.getStateList();
@@ -189,7 +191,6 @@ namespace GrappBox.View
             {
                 vm.getTicket(vm.CloseSelect);
                 vm.getComments();
-                this.Frame.Navigate(typeof(BugView), vm.CloseSelect.Id);
             }
         }
     }

@@ -49,6 +49,9 @@ namespace GrappBox
 
         private async void DashBoardButton_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("login", loginBlock.Text);
@@ -61,9 +64,16 @@ namespace GrappBox
                 SettingsManager.setOption("password", pwdBlock.Password);
                 DashBoardViewModel usvm = new DashBoardViewModel();
                 usvm.getProjectList();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+
                 this.Frame.Navigate(typeof(View.DashBoardView));
             }
             else {
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }

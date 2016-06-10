@@ -15,6 +15,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="6*"/>
         </Grid.RowDefinitions>
+        <ProgressBar Grid.Row="4" VerticalAlignment="Top" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
         <RichTextBlock Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap">
             <Paragraph FontSize="36">
                 <Run Text="Grapp" FontWeight="Bold" FontFamily="Segoe UI Semibold" Foreground="White"/>
