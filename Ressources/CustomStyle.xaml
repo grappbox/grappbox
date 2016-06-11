@@ -3,30 +3,38 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GrappBox">
     <Color x:Key="RedGrappBox">#c0392b</Color>
+    <Color x:Key="WhiteGrappBox">#ffffff</Color>
     <Color x:Key="GrayGrappBox">#bdbdbd</Color>
-    <Color x:Key="BackgroundGray">#EEEEEE</Color>
-    <SolidColorBrush x:Key="GrayGrappBoxBrush" Color="{StaticResource GrayGrappBox}"></SolidColorBrush>
+    <Color x:Key="LightWhiteGrappBox">#EEEEEE</Color>
+    <Color x:Key="LightBlackGrappbox">#333333</Color>
+    <Color x:Key="BlackGrappbox">#000000</Color>
+    <Color x:Key="GreenGrappbox">#4caf50</Color>
     <SolidColorBrush x:Key="RedGrappBoxBrush" Color="{StaticResource RedGrappBox}"></SolidColorBrush>
-    <SolidColorBrush x:Key="BackgroundGrayBrush" Color="{StaticResource BackgroundGray}"></SolidColorBrush>
+    <SolidColorBrush x:Key="WhiteGrappBoxBrush" Color="{StaticResource WhiteGrappBox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="GrayGrappBoxBrush" Color="{StaticResource GrayGrappBox}"></SolidColorBrush>    
+    <SolidColorBrush x:Key="BackgroundGrayBrush" Color="{StaticResource LightWhiteGrappBox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="BackgroundBlackBrush" Color="{StaticResource LightBlackGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="BlackGrappboxBrush" Color="{StaticResource BlackGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="GreenGrappboxBrush" Color="{StaticResource GreenGrappbox}"></SolidColorBrush>
 
     <Style TargetType="MenuFlyoutPresenter">
         <Setter Property="Background" Value="{StaticResource GrayGrappBox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style TargetType="MenuFlyoutItem">
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
     </Style>
     <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
         <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
     </Style>
     <Style TargetType="Button">
         <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource WhiteGrappBox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style x:Key="LeftMenuButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style TargetType="PivotItem">
@@ -34,18 +42,17 @@
         <Setter Property="Margin" Value="0"/>
     </Style>
     <Style x:Key="BlackTextBlockForeground"  TargetType="TextBlock">
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
     </Style>
         <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light" >
             <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource RedGrappBox}" />
             <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource RedGrappBox}" />
-            <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="White" />
+            <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="{StaticResource WhiteGrappBox}" />
             <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
 
-            <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="Black" />
+            <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource BlackGrappbox}" />
             <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource BackgroundGray}"/>
-            <SolidColorBrush x:Key="FlyoutBorderThemeBrush" Color="Yellow"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>
