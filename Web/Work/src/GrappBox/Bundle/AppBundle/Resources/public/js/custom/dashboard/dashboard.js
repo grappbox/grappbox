@@ -9,38 +9,80 @@
 * APP dashboard
 *
 */
-app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookies', function($rootScope, $scope, $http, $cookies) {
+app.controller('dashboardController', ['$rootScope', '$scope', '$route', '$http', '$cookies', function($rootScope, $scope, $route, $http, $cookies) {
 
 	// Scope variables initialization
-	$scope.data = { teamOccupation: {}, nextMeetings: {}, globalProgress: {} };
+	$scope.occupation = { list: "", onLoad: true, valid: false, message: "" };
+	$scope.meetings = { list: "", onLoad: true, valid: false, message: "" };
+
+	$scope.content = { projectID: "" };
+	$scope.content.projectID = $route.current.params.id;
 
 
 
 	/* ==================== INITIALIZATION (TEAM OCCUPATION) ==================== */
 
-	$scope.data.teamOccupation = { onLoad: true, list: {}, isValid: false };
-
 	// Get current team occupation
-	$http.get($rootScope.apiBaseURL + '/dashboard/getteamoccupation/' + $cookies.get('USERTOKEN'))
-		.then(function teamOccupationReceived(response) {
-			$scope.data.teamOccupation.onLoad = false;
-			$scope.data.teamOccupation.list = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-			$scope.data.teamOccupation.isValid = true;
-		},
-		function teamOccupationNotReceived(response) {
-			$scope.data.teamOccupation.onLoad = false;
-			$scope.data.teamOccupation.list = null;
-			$scope.data.teamOccupation.isValid = false;
+	$http.get($rootScope.apiBaseURL + '/dashboard/getteamoccupation/' + $cookies.get('USERTOKEN') + '/' + $scope.content.projectID)
+		.then(function onGetSuccess(response) {
 
-			if (response.data.info && response.data.info.return_code == "2.1.3")
-				$rootScope.onUserTokenError();
-		});
+      if (response.data.info) {
+        switch(response.data.info.return_code) {
+          case "1.2.1":
+        	$scope.occupation.list = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
+        	$scope.occupation.valid = true;
+        	$scope.occupation.onLoad = false;
+          break;
+
+          case "1.2.3":
+        	$scope.occupation.list = null;
+        	$scope.occupation.message = "You don't have any collaborator."
+        	$scope.occupation.valid = true;
+        	$scope.occupation.onLoad = false;
+          break;
+
+          default:
+        	$scope.occupation.list = null;
+        	$scope.occupation.message = "An error occurred. Please try again."
+        	$scope.occupation.valid = false;
+        	$scope.occupation.onLoad = false;
+          break;
+        }
+      }
+      else {
+	      $scope.occupation.list = null;
+	    	$scope.occupation.message = "An error occurred with the GrappBox API. Please try again."
+	    	$scope.occupation.valid = false;
+	    	$scope.occupation.onLoad = false;
+    	}
+		},
+		function onGetFail(response) {
+			$scope.occupation.list = null;
+			$scope.occupation.onLoad = false;
+			$scope.occupation.valid = false;
+
+      if (response.data.info) {
+        switch(response.data.info.return_code) {
+          case "2.1.3":
+          $rootScope.onUserTokenError()
+          break;
+
+          case "2.1.9":
+        	$scope.occupation.message = "You don't have sufficent rights to perform this operation. Please try again."
+          break;
+
+          default:
+        	$scope.occupation.message = "An error occurred. Please try again."
+          break;
+        }
+      }
+      else
+      	$scope.occupation.message = "An error occurred with the GrappBox API. Please try again."
+    });
 
 
 
 	/* ==================== INITIALIZATION (NEXT MEETINGS) ==================== */
-
-	$scope.data.nextMeetings = { onLoad: true, list: {}, isValid: false };
 
 	// Routine definition
 	// Format date
@@ -48,42 +90,62 @@ app.controller('dashboardController', ['$rootScope', '$scope', '$http', '$cookie
 		return dateToFormat.substring(0, dateToFormat.lastIndexOf(':'));
 	};
 
-	// Get user's next mettings
-	$http.get($rootScope.apiBaseURL + '/dashboard/getnextmeetings/' + $cookies.get('USERTOKEN'))
-		.then(function nextMeetingsReceived(response) {
-			$scope.data.nextMeetings.onLoad = false;
-			$scope.data.nextMeetings.list = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-			$scope.data.nextMeetings.isValid = true;
+	// Get next meetings
+	$http.get($rootScope.apiBaseURL + '/dashboard/getnextmeetings/' + $cookies.get('USERTOKEN') + '/' + $scope.content.projectID)
+		.then(function onGetSuccess(response) {
+
+      if (response.data.info) {
+        switch(response.data.info.return_code) {
+          case "1.2.1":
+        	$scope.meetings.list = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
+        	$scope.meetings.valid = true;
+        	$scope.meetings.onLoad = false;
+          break;
+
+          case "1.2.3":
+        	$scope.meetings.list = null;
+        	$scope.meetings.message = "You don't have any meetings."
+        	$scope.meetings.valid = true;
+        	$scope.meetings.onLoad = false;
+          break;
+
+          default:
+        	$scope.meetings.list = null;
+        	$scope.meetings.message = "An error occurred. Please try again."
+        	$scope.meetings.valid = false;
+        	$scope.meetings.onLoad = false;
+          break;
+        }
+      }
+      else {
+	      $scope.meetings.list = null;
+	    	$scope.meetings.message = "An error occurred with the GrappBox API. Please try again."
+	    	$scope.meetings.valid = false;
+	    	$scope.meetings.onLoad = false;
+    	}
 		},
-		function nextMeetingsNotReceived(response) {
-			$scope.data.teamOccupation.onLoad = false;
-			$scope.data.nextMeetings.list = null;
-			$scope.data.nextMeetings.isValid = false;
+		function onGetFail(response) {
+			$scope.meetings.list = null;
+			$scope.meetings.onLoad = false;
+			$scope.meetings.valid = false;
 
-			if (response.data.info && response.data.info.return_code == "2.2.3")
-				$rootScope.onUserTokenError();	
-		});
+      if (response.data.info) {
+        switch(response.data.info.return_code) {
+          case "2.2.3":
+          $rootScope.onUserTokenError()
+          break;
 
+          case "2.2.9":
+        	$scope.meetings.message = "You don't have sufficent rights to perform this operation. Please try again."
+          break;
 
-
-	/* ==================== INITIALIZATION (GLOBAL PROGRESS) ==================== */
-
-	$scope.data.globalProgress = { onLoad: true, list: {}, isValid: false };
-
-	// Get user's current projects (and progress)
-	$http.get($rootScope.apiBaseURL + '/dashboard/getprojectsglobalprogress/' + $cookies.get('USERTOKEN'))
-		.then(function globalProgressReceived(response) {
-			$scope.data.globalProgress.onLoad = false;
-			$scope.data.globalProgress.list = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-			$scope.data.globalProgress.isValid = true;
-		},
-		function globalProgressNotReceived(response) {
-			$scope.data.teamOccupation.onLoad = false;
-			$scope.data.globalProgress.list = null;
-			$scope.data.globalProgress.isValid = false;
-
-			if (response.data.info && response.data.info.return_code == "2.3.3")
-				$rootScope.onUserTokenError();
-		});
+          default:
+        	$scope.meetings.message = "An error occurred. Please try again."
+          break;
+        }
+      }
+      else
+      	$scope.meetings.message = "An error occurred with the GrappBox API. Please try again."
+    });
 
 }]);

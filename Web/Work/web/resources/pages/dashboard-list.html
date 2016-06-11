@@ -7,14 +7,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <!-- grappbox.data : dashboard information -->
   <section class="centered">
     <p>Choose a project to begin, or create one.</p>
-    <a href="project/0" class="btn btn-raised btn-danger" title="Go to the creation process page">Create a new project</a>
-    <a href="project/0" class="btn btn-danger btn-fab btn-fixed" title="Create a new project"><i class="material-icons">add</i></a>
+    <a href="settings/0" class="btn btn-raised btn-danger" title="Go to the creation process page">Create a new project</a>
+    <a href="settings/0" class="btn btn-danger btn-fab btn-fixed" title="Create a new project"><i class="material-icons">add</i></a>
   </section>
 
   <section id="dashboard-list">
     <div class="row">
       <div class="col-lg-12">
-        <!-- grappbox.data : (dashboard) user projects progress -->
+        <!-- grappbox.data : (dashboard) user projects list -->
         <div data-ng-if="content.onLoad">
           <div class="spinner section">
             <div></div>
@@ -22,13 +22,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
         <div data-ng-if="!content.onLoad">
           <div data-ng-if="content.isValid && data.projects">
-            <div class="each-project col-md-4" data-ng-repeat="project in data.projects">
+            <div class="each-data col-md-4" data-ng-repeat="project in data.projects">
               <div class="well">
                 <ul>
-                  <li class="col-xs-offset-2 logo" data-ng-if="!project.project_logo">
+                  <li class="col-xs-offset-2 avatar" data-ng-if="!project.project_logo">
                     <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
                   </li>
-                  <li class="col-xs-offset-2 logo" data-ng-if="project.project_logo">
+                  <li class="col-xs-offset-2 avatar" data-ng-if="project.project_logo">
                     <img data-ng-src="data:image/png;base64,{[{ project.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
                   </li>
                   <li class="col-xs-offset-2 ellipsis title">"{[{ project.project_name }]}"</li>
@@ -36,7 +36,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <li class="col-xs-offset-2"><i class="material-icons">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</li>
                   <li class="col-xs-offset-2"><i class="material-icons">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</li>
                 </ul>
-                <a href="dashboard/{[{ project.project_id }]}" title="Use this project" class="btn btn-default">Open</a>
+                <a href="" data-ng-click="method.loadProject(project.project_id)" title="Use this project" class="btn btn-default">Open</a>
                 <a href="settings/{[{ project.project_id }]}" title="Edit this project" class="btn">Edit</a>
                 <div class="clearfix"></div>
               </div>

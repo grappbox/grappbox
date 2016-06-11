@@ -4,6 +4,70 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
+/* ===================================================== */
+/* ==================== PAGE ACCESS ==================== */
+/* ===================================================== */
+
+/**
+* Routine definition
+* APP project page access
+*
+*/
+
+// Check if requested project is accessible
+var isProjectAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
+  var deferred = $q.defer();
+
+  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
+    .then(function onGetSuccess(response) {
+      deferred.resolve();
+    },
+    function onGetFail(response) {
+      if (response.data.info.return_code) {
+        switch(response.data.info.return_code) {
+          case "6.3.3":
+          deferred.reject();
+          $rootScope.onUserTokenError();
+          break;
+
+          case "6.3.4":
+          deferred.reject();
+          $location.path("./");
+          Notification.warning({ message: "Project not found.", delay: 10000 });
+          break;
+
+          case "6.3.9":
+          deferred.reject();
+          $location.path("./");
+          Notification.warning({ message: "You don\'t have access to this part of the project.", delay: 10000 });
+          break;
+
+          default:
+          deferred.reject();
+          $location.path("./");
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          break;
+        }
+      }
+      else {
+        deferred.reject();
+        $location.path("./");
+        Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+      }
+    });
+
+    return deferred.promise;
+};
+
+// "isProjectSettingsPageAccessible" routine injection
+isProjectAccessible["$inject"] = ["$q", "$http", "$rootScope", "$cookies", "$route", "$location", "Notification"];
+
+
+
+/* ======================================================= */
+/* ==================== ROUTING TABLE ==================== */
+/* ======================================================= */
+
 /**
 * GRAPPBOX
 * APP routing definition
@@ -19,11 +83,12 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		controller  : "dashboardListController",
 		caseInsensitiveMatch : true
 	})
-	.when("/dashboard/:projectId", {
+	.when("/dashboard/:id", {
 		title: "Dashboard",
 		templateUrl : "../resources/pages/dashboard.html",
 		controller  : "dashboardController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		resolve: { factory: isProjectAccessible }
 	})
 	.when("/login", {
 		caseInsensitiveMatch : true,
@@ -66,7 +131,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		templateUrl : "../resources/pages/cloud.html",
 		controller  : "cloudController",
 		caseInsensitiveMatch : true,
-		resolve: { factory: isCloudAccessible }
+		resolve: { factory: isProjectAccessible }
 	})
 	// Notifications-related pages
 	.when("/notifications", {
@@ -102,7 +167,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		templateUrl : "../resources/pages/timeline.html",
 		controller  : "timelineController",
 		caseInsensitiveMatch : true,
-		resolve: { factory: timeline_isAccessible }
+		resolve: { factory: isProjectAccessible }
 	})
 	// Whiteboard-related pages
 	.when("/whiteboard", {

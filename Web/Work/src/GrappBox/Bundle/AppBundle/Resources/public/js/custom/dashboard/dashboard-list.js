@@ -9,13 +9,14 @@
 * APP dashboard list
 *
 */
-app.controller("dashboardListController", ["$rootScope", "$scope", "$http", "$cookies", function($rootScope, $scope, $http, $cookies) {
+app.controller("dashboardListController", ["$rootScope", "$scope", "$http", "$cookies", "localStorageService", "$base64", "$location", function($rootScope, $scope, $http, $cookies, localStorageService, $base64, $location) {
 
   /* ==================== INITIALIZATION ==================== */
 
   // Scope variables initialization
   $scope.content = { onLoad: true, isValid: false };
   $scope.data = { projects: [] };
+  $scope.method = { loadProject: "" };
 
   // Get user current projects (and progress)
   $http.get($rootScope.apiBaseURL + "/dashboard/getprojectsglobalprogress/" + $cookies.get("USERTOKEN"))
@@ -36,5 +37,14 @@ app.controller("dashboardListController", ["$rootScope", "$scope", "$http", "$co
       $scope.content.isValid = false;
       $scope.content.onLoad = false;
     });
+
+
+    /* ==================== PROJECT LOADING ==================== */
+
+    // Set active project ID local storage
+    $scope.method.loadProject = function(projectID) {
+      localStorageService.set("ACTIVE_PROJECT", $base64.encode(projectID));
+      $location.path("./dashboard/" + projectID);
+    };
 
 }]);

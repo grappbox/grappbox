@@ -20,10 +20,9 @@
 var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
   var deferred = $q.defer();
 
+  // Project creation page
   if ($route.current.params.id == 0) {
-    deferred.reject();
-    $location.path("./");
-    Notification.warning({ message: "Project not found.", delay: 10000 });
+    deferred.resolve();
     return deferred.promise;
   }
 

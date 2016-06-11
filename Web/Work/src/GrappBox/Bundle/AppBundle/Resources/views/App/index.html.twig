@@ -43,6 +43,7 @@
 		'@AppBundle/Resources/public/js/vendor/angular.js'
 		'@AppBundle/Resources/public/js/vendor/angular-animate.js'
 		'@AppBundle/Resources/public/js/vendor/angular-aside.js'
+		'@AppBundle/Resources/public/js/vendor/angular-base64.js'
 		'@AppBundle/Resources/public/js/vendor/angular-base64-upload.js'
 		'@AppBundle/Resources/public/js/vendor/angular-bootstrap-calendar-tpls.js'
 		'@AppBundle/Resources/public/js/vendor/angular-bootstrap-material.js'
@@ -126,7 +127,7 @@
 					      </section>
 
 								<!-- Dynamic view -->
-								<div class="loading-content master" data-ng-if="onLoad"><div></div></div>
+								<div class="spinner master" data-ng-if="onLoad"><div></div></div>
 								<div class="view-content" data-ng-view data-ng-if="!onLoad"></div>
 							</div>
 						</div>

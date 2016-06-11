@@ -20,6 +20,7 @@ var app = angular.module("grappbox", [
   "ngTagsInput",
   "ngAside",
   "panhandler",
+  "base64",
   "naif.base64",
   "mwl.calendar",
   "ui.bootstrap",
