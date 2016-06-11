@@ -104,6 +104,9 @@
     <Compile Include="CustomControler\LeftMenu.xaml.cs">
       <DependentUpon>LeftMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControler\MeetingDashBoardPanel.xaml.cs">
+      <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControler\SlidingMenu\ActiveState.cs" />
     <Compile Include="CustomControler\CustomPivot.cs" />
     <Compile Include="CustomControler\SlidingMenu\MenuState.cs" />
@@ -130,6 +133,7 @@
     <Compile Include="Model\CustomShapes.cs" />
     <Compile Include="Model\DashBoardModel.cs" />
     <Compile Include="Model\DateModel.cs" />
+    <Compile Include="Model\MeetingDashBoard.cs" />
     <Compile Include="Model\Event.cs" />
     <Compile Include="Model\EventType.cs" />
     <Compile Include="Model\ICustomShape.cs" />
@@ -244,6 +248,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControler\LeftMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\MeetingDashBoardPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

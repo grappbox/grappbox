@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GrappBox.Model
 {
-    class DateModel
+    public class DateModel
     {
         public string date { get; set; }
         public int timezone_type { get; set; }

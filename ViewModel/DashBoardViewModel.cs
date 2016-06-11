@@ -28,7 +28,10 @@ namespace GrappBox.ViewModel
         {
             await dvm.getProjectList();
             await dvm.getTeam();
+            await dvm.getNextMeetings();
             dvm.NotifyPropertyChanged("ProjectList");
+            dvm.NotifyPropertyChanged("OccupationList");
+            dvm.NotifyPropertyChanged("MeetingList");
         }
 
         public async System.Threading.Tasks.Task getProjectList()
@@ -73,11 +76,36 @@ namespace GrappBox.ViewModel
             }
         }
 
+        public async System.Threading.Tasks.Task getNextMeetings()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
+            HttpResponseMessage res = await api.Get(token, "dashboard/getnextmeetings");
+            if (res.IsSuccessStatusCode)
+            {
+                Debug.WriteLine(await res.Content.ReadAsStringAsync());
+                MeetingList = api.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(await res.Content.ReadAsStringAsync());
+                foreach (MeetingDashBoard p in MeetingList)
+                {
+                    Debug.WriteLine(p.Title);
+                    Debug.WriteLine(p.Type);
+                    Debug.WriteLine(p.Description);
+                    Debug.WriteLine(p.BeginDate);
+                    Debug.WriteLine(p.EndDate);
+                }
+                NotifyPropertyChanged("MeetingList");
+            }
+            else
+            {
+                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            }
+        }
+
         private int _currentProjectId = 0;
         public int CurrentProjectId
         {
             get { return _currentProjectId; }
-            set { _currentProjectId = value; NotifyPropertyChanged("CurrentProjectId");}
+            set { _currentProjectId = value; NotifyPropertyChanged("ProjectIdChoosen");}
         }
 
         private ObservableCollection<ProjectListModel> _projectList;
@@ -91,6 +119,12 @@ namespace GrappBox.ViewModel
         {
             get { return _occupationList; }
             set { _occupationList = value; NotifyPropertyChanged("OccupationList"); }
+        }
+        private ObservableCollection<MeetingDashBoard> _meetingList;
+        public ObservableCollection<MeetingDashBoard> MeetingList
+        {
+            get { return _meetingList; }
+            set { _meetingList = value; NotifyPropertyChanged("MeetingList"); }
         }
     }
 }

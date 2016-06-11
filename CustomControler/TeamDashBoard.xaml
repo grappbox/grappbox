@@ -19,6 +19,7 @@
     IsSwipeEnabled="False"
     SelectionMode="Single"
     ItemsPanel="{StaticResource GridViewItemsPanel}"
+    Background="{StaticResource BackgroundGrayBrush}"
     ScrollViewer.HorizontalScrollMode="Disabled"
     ScrollViewer.VerticalScrollMode="Auto"
     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -26,7 +27,7 @@
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
-                        <Border Background="WhiteSmoke" CornerRadius="3" BorderThickness="1" Margin="8">
+                        <Border Background="White" CornerRadius="3" BorderThickness="1" Margin="8">
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{StaticResource GrayGrappBox}"/>
                             </Border.BorderBrush>
@@ -58,7 +59,7 @@
                                 <TextBlock x:Name="name_tb" Text="{Binding UserName }" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                                 <TextBlock x:Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                                 <TextBlock x:Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                                <Border x:Name="occupation_back" Background="{Binding Occupation, Converter={StaticResource OccupationColorConverter}}"  Grid.Row="3" Grid.Column="1">
+                                <Border x:Name="occupation_back" CornerRadius="3" Background="{Binding Occupation, Converter={StaticResource OccupationColorConverter}}"  Grid.Row="3" Grid.Column="1">
                                     <TextBlock x:Name="occupation_tb" Text="{Binding Occupation}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                                 </Border>
                             </Grid>

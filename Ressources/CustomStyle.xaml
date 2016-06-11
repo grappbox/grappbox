@@ -22,7 +22,7 @@
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style TargetType="PivotItem">
-        <Setter Property="Background" Value="White" />
+        <Setter Property="Background" Value="{StaticResource BackgroundGrayBrush}" />
         <Setter Property="Margin" Value="0"/>
     </Style>
     <Style x:Key="BlackTextBlockForeground"  TargetType="TextBlock">
@@ -36,7 +36,7 @@
             <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
 
             <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="Black" />
-            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="White"/>
+            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource BackgroundGray}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

@@ -142,8 +142,6 @@ namespace GrappBox.View
         {
             pivotItem = new PivotItem();
             pivotItem.Header = header;
-            pivotItem.Background = new SolidColorBrush(Colors.White);
-            pivotItem.Margin = new Thickness(0, 0, 0, 0);
         }
 
         public PivotItem CreateOccupationTab()
@@ -151,7 +149,7 @@ namespace GrappBox.View
             PivotItem pivotItem;
             initPivotItem("Occupation", out pivotItem);
             TeamDashBoard td = new TeamDashBoard();
-            td.HorizontalAlignment = HorizontalAlignment.Center;
+            td.HorizontalAlignment = HorizontalAlignment.Stretch;
             pivotItem.Content = td;
             this.dvm.NotifyPropertyChanged("OccupationList");
             return pivotItem;
@@ -168,6 +166,9 @@ namespace GrappBox.View
         {
             PivotItem pivotItem;
             initPivotItem("Meetings", out pivotItem);
+            MeetingDashBoardPanel mdp = new MeetingDashBoardPanel();
+            pivotItem.Content = mdp;
+            this.dvm.NotifyPropertyChanged("MeetingList");
             return pivotItem;
         }
 

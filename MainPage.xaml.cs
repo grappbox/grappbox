@@ -58,6 +58,7 @@ namespace GrappBox
                 api.DeserializeJson<User>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("login", loginBlock.Text);
                 SettingsManager.setOption("password", pwdBlock.Password);
+                Debug.WriteLine(User.GetUser().Token);
                 this.Frame.Navigate(typeof(View.DashBoardView));
             }
             else {
