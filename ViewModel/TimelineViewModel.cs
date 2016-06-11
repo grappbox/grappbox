@@ -17,14 +17,14 @@ namespace GrappBox.ViewModel
     class TimelineViewModel : ViewModelBase
     {
         static private TimelineViewModel instance = null;
-        private TimelineListModel _Customer;
-        private TimelineListModel _Team;
+        private TimelineListModel _Customer = new TimelineListModel();
+        private TimelineListModel _Team = new TimelineListModel();
         private ObservableCollection<TimelineModel> _CustomerMessages;
         private ObservableCollection<TimelineModel> _TeamMessages;
         private ObservableCollection<TimelineListModel> _Timelines;
         private ObservableCollection<TimelineModel> _Comments;
-        private TimelineModel _messageSelected;
-        private TimelineModel _commentSelected;
+        private TimelineModel _messageSelected = new TimelineModel();
+        private TimelineModel _commentSelected = new TimelineModel();
 
         static public TimelineViewModel GetViewModel()
         {
@@ -71,7 +71,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void getTimelines()
+        public async System.Threading.Tasks.Task getTimelines()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };

@@ -24,16 +24,20 @@
             <customControler:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Background="#FF0C0C0C" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="400" >
+            <Grid Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="400" >
+                <Grid.Background>
+                    <SolidColorBrush Color="{StaticResource RedGrappBox}"/>
+                </Grid.Background>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="9*"/>
                 </Grid.RowDefinitions>
+                <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" Margin="0,0,0,0" Text="Cloud" FontWeight="Bold" FontSize="25"/>
-                <ListBox Grid.Row="1" x:Name="FileListView" ItemsSource="{Binding ListFiles}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="listView_SelectionChanged">
+                <ListBox Grid.Row="1" x:Name="FileListView" ItemsSource="{Binding ListFiles}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="listView_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid Loaded="Grid_Loaded" Holding="Grid_Holding">
+                            <Grid Loaded="Grid_Loaded" Holding="Grid_Holding" RequestedTheme="Light">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="3*"/>
                                     <ColumnDefinition Width="7*"/>

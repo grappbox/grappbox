@@ -111,11 +111,17 @@ namespace GrappBox.View
         /// </summary>
         /// <param name="e">Provides data for navigation methods and event
         /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             this.navigationHelper.OnNavigatedTo(e);
             slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
-            vm.getLS();
+            await vm.getLS();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -124,16 +130,25 @@ namespace GrappBox.View
         }
         #endregion
 
-        private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.FileSelect = (sender as ListBox).SelectedItem as CloudModel;
             if (vm.FileSelect != null)
             {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
                 vm.FullPath.Add(vm.FileSelect.Filename);
                 if (vm.FileSelect.Type == "dir")
                 {
-                    vm.getLS();
+                    LoadingBar.IsEnabled = true;
+                    LoadingBar.Visibility = Visibility.Visible;
+
+                    await vm.getLS();
                     vm.FileSelect = null;
+
+                    LoadingBar.IsEnabled = false;
+                    LoadingBar.Visibility = Visibility.Collapsed;
                 }
                 else
                     (sender as ListBox).SelectedItem = null;
@@ -182,9 +197,15 @@ namespace GrappBox.View
             {
                 if (args.Files.Count == 0) return;
 
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
                 view.Activated -= viewActivated;
                 vm.FileData = await StorageFileToBase64(args.Files[0]);
-                vm.uploadFile(args.Files[0].Name);
+                await vm.uploadFile(args.Files[0].Name);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -205,11 +226,18 @@ namespace GrappBox.View
             return Base64String;
         }
 
-        private void CreateFolder_Click(object sender, RoutedEventArgs e)
+        private async void CreateFolder_Click(object sender, RoutedEventArgs e)
         {
             if (vm.FolderName != null && vm.FolderName != "")
             {
-                vm.createDir();
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.createDir();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+
                 AddFolderPopUp.Visibility = Visibility.Collapsed;
                 FolderSafe.Visibility = Visibility.Collapsed;
                 FolderSafePassword.Visibility = Visibility.Collapsed;
@@ -218,31 +246,55 @@ namespace GrappBox.View
             }
         }
 
-        private void MenuFlyoutItem_DownloadClick(object sender, RoutedEventArgs e)
+        private async void MenuFlyoutItem_DownloadClick(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             vm.FullPath.Add(vm.FileSelect.Filename);
-            vm.downloadFile();
+            await vm.downloadFile();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void MenuFlyoutItem_DeleteClick(object sender, RoutedEventArgs e)
+        private async void MenuFlyoutItem_DeleteClick(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             vm.FullPath.Add(vm.FileSelect.Filename);
-            vm.deleteFile();
+            await vm.deleteFile();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void PreviousFolder_Click(object sender, RoutedEventArgs e)
+        private async void PreviousFolder_Click(object sender, RoutedEventArgs e)
         {
             if (vm.FullPath.Count > 0)
             {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
                 vm.FullPath.RemoveAt(vm.FullPath.Count - 1);
-                vm.getLS();
+                await vm.getLS();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void Home_Click(object sender, RoutedEventArgs e)
+        private async void Home_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             vm.FullPath.Clear();
-            vm.getLS();
+            await vm.getLS();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void CancelCreateFolder_Click(object sender, RoutedEventArgs e)

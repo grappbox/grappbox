@@ -100,16 +100,22 @@ namespace GrappBox.View
         /// </summary>
         /// <param name="e">Provides data for navigation methods and event
         /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
             slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
 
-            vm.getOpenTickets();
-            vm.getClosedTickets();
-            vm.getStateList();
-            vm.getTagList();
-            vm.getUsers();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.getOpenTickets();
+            await vm.getClosedTickets();
+            await vm.getStateList();
+            await vm.getTagList();
+            await vm.getUsers();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -123,21 +129,33 @@ namespace GrappBox.View
             this.Frame.Navigate(typeof(BugView), null);
         }
 
-        private void CloseBug_Click(object sender, RoutedEventArgs e)
+        private async void CloseBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.OpenSelect != null)
             {
-                vm.closeTicket();
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.closeTicket();
                 CloseBug.Visibility = Visibility.Collapsed;
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
         
-        private void ReopenBug_Click(object sender, RoutedEventArgs e)
+        private async void ReopenBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.CloseSelect != null)
             {
-                vm.reopenTicket();
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.reopenTicket();
                 ReopenBug.Visibility = Visibility.Collapsed;
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -175,22 +193,34 @@ namespace GrappBox.View
             }
         }
 
-        private void EditOpenBug_Click(object sender, RoutedEventArgs e)
+        private async void EditOpenBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.OpenSelect != null)
             {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
                 vm.getTicket(vm.OpenSelect);
-                vm.getComments();
+                await vm.getComments();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
                 this.Frame.Navigate(typeof(BugView), vm.OpenSelect.Id);
             }
         }
 
-        private void EditCloseBug_Click(object sender, RoutedEventArgs e)
+        private async void EditCloseBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.CloseSelect != null)
             {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
                 vm.getTicket(vm.CloseSelect);
-                vm.getComments();
+                await vm.getComments();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
     }

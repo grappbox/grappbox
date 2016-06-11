@@ -43,7 +43,7 @@ namespace GrappBox.ViewModel
         }
 
         #region Get Api
-        public async void getOpenTickets()
+        public async System.Threading.Tasks.Task getOpenTickets()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -59,7 +59,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void getClosedTickets()
+        public async System.Threading.Tasks.Task getClosedTickets()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -80,7 +80,7 @@ namespace GrappBox.ViewModel
             _model = md;
         }
 
-        public async void getStateList()
+        public async System.Threading.Tasks.Task getStateList()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token };
@@ -96,7 +96,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void getTagList()
+        public async System.Threading.Tasks.Task getTagList()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -112,7 +112,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void getComments()
+        public async System.Threading.Tasks.Task getComments()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _model.Id };
@@ -128,7 +128,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void getUsers()
+        public async System.Threading.Tasks.Task getUsers()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -146,7 +146,7 @@ namespace GrappBox.ViewModel
         #endregion
 
         #region Put Api
-        public async void reopenTicket()
+        public async System.Threading.Tasks.Task reopenTicket()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -165,13 +165,14 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void editBug()
+        public async System.Threading.Tasks.Task editBug()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
             props.Add("bugId", _model.Id);
+            props.Add("clientOrigin", false);
             if (_model.Title != null && _model.Title != "")
                 props.Add("title", _model.Title);
             if (_model.Description != null && _model.Description != "")
@@ -183,21 +184,8 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Put(props, "bugtracker/editticket");
             if (res.IsSuccessStatusCode)
             {
-                _model = api.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
-                if (_model.Id == _openSelect.Id)
-                {
-                    int range = _openBugs.IndexOf(_openSelect);
-                    _openBugs.Remove(_openSelect);
-                    _openBugs.Insert(range, _model);
-                    NotifyPropertyChanged("OpenList");
-                }
-                else if (_model.Id == _closeSelect.Id)
-                {
-                    int range = _closeBugs.IndexOf(_openSelect);
-                    _closeBugs.Remove(_closeSelect);
-                    _closeBugs.Insert(range, _model);
-                    NotifyPropertyChanged("CloseList");
-                }
+                await getOpenTickets();
+                await getClosedTickets();
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
@@ -215,7 +203,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void editComment(BugtrackerModel comment)
+        public async System.Threading.Tasks.Task editComment(BugtrackerModel comment)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -253,7 +241,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void editTag()
+        public async System.Threading.Tasks.Task editTag()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -288,7 +276,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void assignTag(IdNameModel tag)
+        public async System.Threading.Tasks.Task assignTag(IdNameModel tag)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -317,7 +305,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void setParticipants()
+        public async System.Threading.Tasks.Task setParticipants()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -377,7 +365,7 @@ namespace GrappBox.ViewModel
         #endregion
 
         #region Post API
-        public async void addBug()
+        public async System.Threading.Tasks.Task addBug()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -404,7 +392,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void addComment(string title, string description)
+        public async System.Threading.Tasks.Task addComment(string title, string description)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -428,7 +416,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void addTag(string name)
+        public async System.Threading.Tasks.Task addTag(string name)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -453,7 +441,7 @@ namespace GrappBox.ViewModel
         #endregion
 
         #region Delete Api
-        public async void closeTicket()
+        public async System.Threading.Tasks.Task closeTicket()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, _openSelect.Id };
@@ -472,7 +460,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void deleteComment(BugtrackerModel comment)
+        public async System.Threading.Tasks.Task deleteComment(BugtrackerModel comment)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, comment.Id };
@@ -488,7 +476,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void deleteTag()
+        public async System.Threading.Tasks.Task deleteTag()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, _tagSelect.Id };
@@ -505,7 +493,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void removeAssignTag(IdNameModel tag)
+        public async System.Threading.Tasks.Task removeAssignTag(IdNameModel tag)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, _model.Id, tag.Id };

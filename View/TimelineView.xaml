@@ -22,10 +22,10 @@
         <slideMenu:SlideInMenuContentControl.LeftMenuContent>
             <customControler:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
-        <Pivot x:Name="Pivot" Title="Timeline" Background="#FF0C0C0C" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" SelectionChanged="Pivot_SelectionChanged">
+        <Pivot x:Name="Pivot" Title="Timeline" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem Header="{Binding TeamName}">
                 <Grid>
-                    <ListBox x:Name="TeamListView" ItemsSource="{Binding TeamList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="ListView_SelectionChanged">
+                    <ListBox x:Name="TeamListView" ItemsSource="{Binding TeamList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="ListView_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Loaded="StackPanel_Loaded">
@@ -64,7 +64,7 @@
             </PivotItem>
             <PivotItem Header="{Binding CustomerName}">
                 <Grid>
-                    <ListBox x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="ListView_SelectionChanged">
+                    <ListBox x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="ListView_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Loaded="StackPanel_Loaded">

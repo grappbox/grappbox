@@ -125,6 +125,9 @@ namespace GrappBox.View
                 Users.Visibility = Visibility.Collapsed;
             }
             slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
+            PostComPopUp.Visibility = Visibility.Collapsed;
+            Pivot.IsLocked = false;
+            CommentListView.IsEnabled = true;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -172,19 +175,25 @@ namespace GrappBox.View
         }
 
         #region Bug
-        private void SaveBug_Click(object sender, RoutedEventArgs e)
+        private async void SaveBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.State.Id != null && vm.State.Name != null && vm.Title != "" && vm.Description != "")
             {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
                 if (isAdd == true)
                 {
-                    vm.addBug();
+                    await vm.addBug();
                     Comments.Visibility = Visibility.Visible;
                     Tags.Visibility = Visibility.Visible;
                     Users.Visibility = Visibility.Visible;
                 }
                 else
-                    vm.editBug();
+                    await vm.editBug();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -214,10 +223,18 @@ namespace GrappBox.View
         #endregion
 
         #region Tag
-        private void AddTag_Click(object sender, RoutedEventArgs e)
+        private async void AddTag_Click(object sender, RoutedEventArgs e)
         {
             if (TagName.Text != "")
-                vm.addTag(TagName.Text);
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.addTag(TagName.Text);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void checkBox_Loaded(object sender, RoutedEventArgs e)
@@ -233,7 +250,6 @@ namespace GrappBox.View
                     {
                         content = (item as TextBox).Text;
                     }
-
                 }
                 foreach (var item in vm.Tags)
                 {
@@ -244,29 +260,63 @@ namespace GrappBox.View
                 }
             }
         }
-        private void checkBox_Checked(object sender, RoutedEventArgs e)
+        private async void checkBox_Checked(object sender, RoutedEventArgs e)
         {
             IdNameModel model = (sender as CheckBox).DataContext as IdNameModel;
 
-            vm.assignTag(model);
+            if (model != null)
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.assignTag(model);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
 
-        private void checkBox_Unchecked(object sender, RoutedEventArgs e)
+        private async void checkBox_Unchecked(object sender, RoutedEventArgs e)
         {
             IdNameModel model = (sender as CheckBox).DataContext as IdNameModel;
 
-            vm.removeAssignTag(model);
+            if (model != null)
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.removeAssignTag(model);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
 
-        private void UpdateTag_Click(object sender, RoutedEventArgs e)
+        private async void UpdateTag_Click(object sender, RoutedEventArgs e)
         {
             if (vm.TagSelect != null)
-                vm.editTag();
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.editTag();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
-        private void RemoveTag_Click(object sender, RoutedEventArgs e)
+        private async void RemoveTag_Click(object sender, RoutedEventArgs e)
         {
             if (vm.TagSelect != null)
-                vm.deleteTag();
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.deleteTag();
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void tagListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -280,8 +330,11 @@ namespace GrappBox.View
         {
             ProjectUserModel model = (sender as CheckBox).DataContext as ProjectUserModel;
 
-            vm.ToAdd.Add(model.Id);
-            vm.ToRemove.Remove(model.Id);
+            if (model != null)
+            {
+                vm.ToAdd.Add(model.Id);
+                vm.ToRemove.Remove(model.Id);
+            }
         }
 
         private void userCheckBox_Loaded(object sender, RoutedEventArgs e)
@@ -315,29 +368,60 @@ namespace GrappBox.View
         {
             ProjectUserModel model = (sender as CheckBox).DataContext as ProjectUserModel;
 
-            vm.ToAdd.Remove(model.Id);
-            vm.ToRemove.Add(model.Id);
+            if (model != null)
+            {
+                vm.ToAdd.Remove(model.Id);
+                vm.ToRemove.Add(model.Id);
+            }
         }
-        private void SaveUser_Click(object sender, RoutedEventArgs e)
+        private async void SaveUser_Click(object sender, RoutedEventArgs e)
         {
-            vm.setParticipants();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.setParticipants();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
         #endregion
 
         #region Comment
-        private void EditComment_Click(object sender, RoutedEventArgs e)
+        private async void EditComment_Click(object sender, RoutedEventArgs e)
         {
-            vm.editComment((sender as Button).DataContext as BugtrackerModel);
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            if ((sender as Button).DataContext as BugtrackerModel != null)
+                await vm.editComment((sender as Button).DataContext as BugtrackerModel);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void DeleteComment_Click(object sender, RoutedEventArgs e)
+        private async void DeleteComment_Click(object sender, RoutedEventArgs e)
         {
-            vm.deleteComment((sender as Button).DataContext as BugtrackerModel);
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            if ((sender as Button).DataContext as BugtrackerModel != null)
+                await vm.deleteComment((sender as Button).DataContext as BugtrackerModel);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void PostComment_Click(object sender, RoutedEventArgs e)
+        private async void PostComment_Click(object sender, RoutedEventArgs e)
         {
-            vm.addComment(CommentTitle.Text, CommentDescription.Text);
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            if ((sender as Button).DataContext as BugtrackerModel != null)
+                await vm.addComment(CommentTitle.Text, CommentDescription.Text);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
+
             PostComPopUp.Visibility = Visibility.Collapsed;
             Pivot.IsLocked = false;
             CommentListView.IsEnabled = true;
@@ -359,9 +443,10 @@ namespace GrappBox.View
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)
         {
             BugtrackerModel currentModel = (sender as StackPanel).DataContext as BugtrackerModel;
-
-            if (currentModel.Creator.Id != User.GetUser().Id)
-                ((sender as StackPanel).Parent as ListBoxItem).IsEnabled = false;
+            ListBoxItem listboxItem = (ListBoxItem)(CommentListView.ContainerFromItem(currentModel));
+            
+            if (currentModel.Creator.Id != User.GetUser().Id && listboxItem != null)
+                listboxItem.IsEnabled = false;
             foreach (var item in (sender as StackPanel).Children)
             {
                 if (item as TextBlock != null && (item as TextBlock).Name == "block")
@@ -375,22 +460,31 @@ namespace GrappBox.View
         }
         #endregion
 
-        private void checkBox_Click(object sender, RoutedEventArgs e)
+        private async void checkBox_Click(object sender, RoutedEventArgs e)
         {
             IdNameModel model = (sender as CheckBox).DataContext as IdNameModel;
             bool isInTags = false;
 
-            foreach (var item in vm.Tags)
+            if (model != null)
             {
-                if (model.Id == item.Id)
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                foreach (var item in vm.Tags)
                 {
-                    vm.removeAssignTag(model);
-                    isInTags = true;
-                    break;
+                    if (model.Id == item.Id)
+                    {
+                        await vm.removeAssignTag(model);
+                        isInTags = true;
+                        break;
+                    }
                 }
+                if (isInTags == false)
+                    await vm.assignTag(model);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
-            if (isInTags == false)
-                vm.assignTag(model);
         }
     }
 }

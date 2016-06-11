@@ -106,10 +106,16 @@ namespace GrappBox.View
         /// </summary>
         /// <param name="e">Provides data for navigation methods and event
         /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            Pivot.IsLocked = false;
+            PostTeamMesPopUp.Visibility = Visibility.Collapsed;
+            TeamListView.IsEnabled = true;
+            PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
+            CustomerListView.IsEnabled = true;
             slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
+            await vm.getTimelines();
             vm.getCustomerMessages();
             vm.getTeamMessages();
         }
@@ -233,9 +239,19 @@ namespace GrappBox.View
         private void StackPanel_Loaded(object sender, RoutedEventArgs e)
         {
             TimelineModel currentModel = (sender as StackPanel).DataContext as TimelineModel;
+            ListBoxItem listboxItem;
 
             if (currentModel.Creator.Id != User.GetUser().Id)
-                ((sender as StackPanel).Parent as ListBoxItem).IsEnabled = false;
+            {
+                if (Pivot.SelectedIndex == 1)
+                    listboxItem = (ListBoxItem)(TeamListView.ContainerFromItem(currentModel));
+                else
+                    listboxItem = (ListBoxItem)(CustomerListView.ContainerFromItem(currentModel));
+
+                if (listboxItem != null)
+                    listboxItem.IsEnabled = false;
+
+            }
             foreach (var item in (sender as StackPanel).Children)
             {
                 if (item as TextBlock != null && (item as TextBlock).Name == "block")

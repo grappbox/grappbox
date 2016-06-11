@@ -8,6 +8,14 @@
     <SolidColorBrush x:Key="GrayGrappBoxBrush" Color="{StaticResource GrayGrappBox}"></SolidColorBrush>
     <SolidColorBrush x:Key="RedGrappBoxBrush" Color="{StaticResource RedGrappBox}"></SolidColorBrush>
     <SolidColorBrush x:Key="BackgroundGrayBrush" Color="{StaticResource BackgroundGray}"></SolidColorBrush>
+
+    <Style TargetType="MenuFlyoutPresenter">
+        <Setter Property="Background" Value="#bdbdbd"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style TargetType="MenuFlyoutItem">
+        <Setter Property="Foreground" Value="Black"/>
+    </Style>
     <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
         <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
     </Style>
@@ -37,6 +45,7 @@
 
             <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="Black" />
             <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource BackgroundGray}"/>
+            <SolidColorBrush x:Key="FlyoutBorderThemeBrush" Color="Yellow"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

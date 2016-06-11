@@ -78,7 +78,7 @@ namespace GrappBox.ViewModel
 
         #region API
         #region GET
-        public async void getLS(string passwordSafe = "titi")
+        public async System.Threading.Tasks.Task getLS(string passwordSafe = "titi")
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             transformFullPathToPath();
@@ -104,7 +104,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void downloadFile(string passwordSafe = null)
+        public async System.Threading.Tasks.Task downloadFile(string passwordSafe = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             transformFullPathToPath();
@@ -164,7 +164,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void downloadFileSecure(string password, string passwordSafe = null)
+        public async System.Threading.Tasks.Task downloadFileSecure(string password, string passwordSafe = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             transformFullPathToPath();
@@ -190,7 +190,7 @@ namespace GrappBox.ViewModel
         #endregion GET
 
         #region POST
-        public async void createDir(string passwordSafe = null)
+        public async System.Threading.Tasks.Task createDir(string passwordSafe = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -205,7 +205,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Post(props, "cloud/createdir");
             if (res.IsSuccessStatusCode)
             {
-                getLS(passwordSafe);
+                await getLS(passwordSafe);
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -214,7 +214,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void uploadFile(string fileName, string password = null, string passwordSafe = null)
+        public async System.Threading.Tasks.Task uploadFile(string fileName, string password = null, string passwordSafe = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -241,7 +241,7 @@ namespace GrappBox.ViewModel
                 _chunkNumber = _fileData.Length / _chunkSize;
                 if (_fileData.Length != _chunkNumber * _chunkSize)
                     ++_chunkNumber;
-                upload();
+                await upload();
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -252,7 +252,7 @@ namespace GrappBox.ViewModel
         #endregion POST
 
         #region PUT
-        private async void upload()
+        private async System.Threading.Tasks.Task upload()
         {
             if (_currentChunk < _chunkNumber && _fileData!= null)
             {
@@ -289,7 +289,7 @@ namespace GrappBox.ViewModel
                     t.Cancel();
 
                     ++_currentChunk;
-                    upload();
+                    await upload();
                 }
                 else {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -308,13 +308,13 @@ namespace GrappBox.ViewModel
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
 
-                closeStream();
+                await closeStream();
             }
         }
         #endregion PUT
 
         #region DELETE
-        public async void closeStream()
+        public async System.Threading.Tasks.Task closeStream()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _streamId };
@@ -325,7 +325,7 @@ namespace GrappBox.ViewModel
                 _chunkNumber = 0;
                 _fileData = null;
                 _streamId = 0;
-                getLS();
+                await getLS();
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -333,7 +333,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void deleteFile(string password = null, string passwordSafe = null)
+        public async System.Threading.Tasks.Task deleteFile(string password = null, string passwordSafe = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             transformFullPathToPath();
@@ -358,7 +358,7 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 FullPath.Remove(FullPath.ElementAt(FullPath.Count() - 1));
-                getLS(passwordSafe);
+                await getLS(passwordSafe);
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
