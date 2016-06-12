@@ -74,3 +74,7 @@ textarea {
 .platform-android .action-sheet-has-icons .button {
     padding-left: 56px;
 }
+
+canvas {
+    border: solid black 1px;
+}

@@ -154,9 +154,9 @@ angular.module('GrappBox.controllers')
     canvas.height = height;
 
     canvas.isDrawingMode = false;
-    canvas.freeDrawingBrush.width = 6; //Size of the drawing brush
-    $scope.brushcolor = '#000000'; //Set brushcolor to black at the beginning
     $scope.brushSize = 2; //Set brush size to by default
+    canvas.freeDrawingBrush.width = $scope.brushSize; //Size of the drawing brush
+    $scope.brushcolor = '#000000'; //Set brushcolor to black at the beginning
 
     //Get "colorsPopup" html templateUrl in whiteboard.html
     $scope.popoverColors = $ionicPopover.fromTemplateUrl('colorsPopup.html', {
@@ -234,6 +234,12 @@ angular.module('GrappBox.controllers')
         { brushSize: "5" },
     ]
 
+    $scope.moveOn = function (moveOn) {
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+        $ionicScrollDelegate.freezeScroll(false);
+    }
+
     //Change brush color
     $scope.changeBrushColor = function (colorChosen) {
         canvas.freeDrawingBrush.color = colorChosen;
@@ -248,6 +254,18 @@ angular.module('GrappBox.controllers')
         canvas.isDrawingMode = true;
         $ionicScrollDelegate.freezeScroll(true);
         $scope.popoverDraw.hide();
+        //Send a handwriting to API
+        var drawingItems = [];
+        canvas.on('object:added', function (e) {
+            if (e.target.type == 'path') {
+                drawingItems.push(e.target);
+                console.log("object added =");
+                console.log(e.target);
+                $scope.PushOnWhiteboard("HANDWRITE", $scope.brushcolor, "", $scope.brushSize, "", "", "", drawingItems[0].canvas.freeDrawingBrush._points);
+                console.log("send to pushOn... :");
+                console.log(drawingItems[0]);
+            }
+        });
     }
 
     //Draw Rectangle shape
@@ -456,7 +474,8 @@ angular.module('GrappBox.controllers')
         canvas.on('mouse:move', function (option) {
             if (!started) return;
             mouse_pos = canvas.getPointer(option.e);
-            diamond.set({ 'x': mouse_pos.x - mouse_pos_init.x, 'y': mouse_pos.y - mouse_pos_init.y });
+            diamond.set({ width: mouse_pos.x - mouse_pos_init.x, height: mouse_pos.y - mouse_pos_init.y, angle: 45 });
+            //diamond.set({ 'x': mouse_pos.x - mouse_pos_init.x, 'y': mouse_pos.y - mouse_pos_init.y });
             canvas.renderAll();
         });
 
@@ -563,18 +582,16 @@ angular.module('GrappBox.controllers')
                         return $scope.textAdd.fontSize;
                     },
                     fill: $scope.brushcolor, //Use the current selected color
-                    selectable: true, //Make the text draggable
+                    selectable: false, //Make the text draggable
                     evented: false
                 }));
+                var positionStart = { "x": mouse_pos.x, "y": mouse_pos.y };
+                var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
+
+                $scope.PushOnWhiteboard("TEXT", $scope.brushcolor, "", "", positionStart, positionEnd, "", "", input, $scope.textAdd.fontSize, $scope.textAdd.fontStyle == "italic" ? true : false, false);
             });
             //$scope.popoverText.hide();
         });
-    }
-
-    $scope.moveOn = function (moveOn) {
-        canvas.off('mouse:down');
-        canvas.isDrawingMode = false;
-        $ionicScrollDelegate.freezeScroll(false);
     }
 
     /*
@@ -645,13 +662,38 @@ angular.module('GrappBox.controllers')
                 canvas.add(line);
             }
             else if (obj[i].object.type == "HANDWRITE") {
-
+                var handPoints = "";
+                handPoints += "M ";
+                handPoints += obj[i].object.points[0].x;
+                handPoints += " ";
+                handPoints += obj[i].object.points[0].y;
+                for (var j = 1; j < obj[i].object.points.length; j++) {
+                    handPoints += " L ";
+                    handPoints += obj[i].object.points[j].x;
+                    handPoints += " ";
+                    handPoints += obj[i].object.points[j].y;
+                }
+                var handwrite = new fabric.Path(handPoints, {
+                    fill: false,
+                    stroke: obj[i].object.color,
+                    strokeWidth: obj[i].object.lineWeight
+                });
+                canvas.add(handwrite);
             }
             else if (obj[i].object.type == "DIAMOND") {
 
             }
             else if (obj[i].object.type == "TEXT") {
-
+                canvas.add(new fabric.Text(obj[i].object.text, {
+                    top: obj[i].object.positionStart.y,
+                    left: obj[i].object.positionStart.x,
+                    fontFamily: 'Roboto',
+                    fontStyle: obj[i].object.isItalic == true ? "italic" : "normal",
+                    fontSize: obj[i].object.size,
+                    fill: obj[i].object.color,
+                    selectable: false,
+                    evented: false
+                }));
             }
         }
         canvas.renderAll();

@@ -27,11 +27,11 @@ angular.module('GrappBox.api', ['ngResource'])
     return {
         // Get Team Occupation
         TeamOccupation: function () {
-            return $resource($rootScope.API + 'dashboard/getteamoccupation/:token', { token: "@token" });
+            return $resource($rootScope.API + 'dashboard/getteamoccupation/:token/:id', { token: "@token", id: "@id" });
         },
         // Get Next Meetings
         NextMeetings: function () {
-            return $resource($rootScope.API + 'dashboard/getnextmeetings/:token', { token: "@token" });
+            return $resource($rootScope.API + 'dashboard/getnextmeetings/:token/:id', { token: "@token", id: "@id" });
         },
         // Get Projects Global Progress
         GlobalProgress: function () {
@@ -367,7 +367,6 @@ angular.module('GrappBox.api', ['ngResource'])
 /*
 ********************* WHITEBOARD *********************
 */
-// Get current and next tasks
 .factory('Whiteboard', function ($rootScope, $resource) {
     return {
         // Create a new whiteboard

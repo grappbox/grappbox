@@ -4,8 +4,8 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('DashboardCtrl', function ($scope, $rootScope, $state, Dashboard) {
-
+.controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Dashboard) {
+    
     $scope.doRefreshTeamOccupation = function () {
         $scope.GetTeamOccupation();
         console.log("View refreshed !");
@@ -21,11 +21,17 @@ angular.module('GrappBox.controllers')
         console.log("View refreshed !");
     }
 
+    //$scope.projectId = $stateParams.projectId;
+    $scope.projectId = 18;
+
     //Get Team Occupation
     $scope.teamOccupationTab = {};
     $scope.GetTeamOccupation = function () {
         $rootScope.showLoading();
-        Dashboard.TeamOccupation().get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.TeamOccupation().get({
+            token: $rootScope.userDatas.token,
+            id: $scope.projectId
+        }).$promise
             .then(function (data) {
                 console.log('Get team occupation list successful !');
                 console.log(data.data.array);
@@ -49,7 +55,10 @@ angular.module('GrappBox.controllers')
     $scope.nextMeetingsError = "";
     $scope.GetNextMeetings = function () {
         $rootScope.showLoading();
-        Dashboard.NextMeetings().get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.NextMeetings().get({
+            token: $rootScope.userDatas.token,
+            id: $scope.projectId
+        }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
                 console.log(data.data);
