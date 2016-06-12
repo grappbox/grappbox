@@ -62,6 +62,8 @@
 		'@AppBundle/Resources/public/js/custom/routing.js'
 		'@AppBundle/Resources/public/js/custom/bugtracker/bugtracker.js'
 		'@AppBundle/Resources/public/js/custom/bugtracker/bugtracker-list.js'
+		'@AppBundle/Resources/public/js/custom/tasks/task.js'
+		'@AppBundle/Resources/public/js/custom/tasks/task-list.js'
 		'@AppBundle/Resources/public/js/custom/calendar/calendar.js'
 		'@AppBundle/Resources/public/js/custom/cloud/cloud.js'
 		'@AppBundle/Resources/public/js/custom/cloud/cloud-list.js'
@@ -193,6 +195,12 @@
 							<a href="bugtracker" title="Go to the bugtracker section" class="btn {[{ routeList['/bugtracker'] ? 'active' : '' }]}">
 								<i class="material-icons">{[{ iconList['/bugtracker'] ? iconList['/bugtracker'] : 'clear' }]}</i>
 								Bugtracker
+							</a>
+						</li>
+						<li>
+							<a href="tasks" title="Go to the tasks and gantt section" class="btn {[{ routeList['/tasks'] ? 'active' : '' }]}">
+								<i class="material-icons">{[{ iconList['/tasks'] ? iconList['/tasks'] : 'clear' }]}</i>
+								Tasks
 							</a>
 						</li>
 						<li>

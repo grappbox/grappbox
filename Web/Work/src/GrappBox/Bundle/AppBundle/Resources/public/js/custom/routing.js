@@ -112,6 +112,20 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		caseInsensitiveMatch : true,
 		resolve: { factory: isBugtrackerAccessible }
 	})
+  // Task-related pages
+	.when("/tasks", {
+		title: "Tasks list",
+		templateUrl : "../resources/pages/task-list.html",
+		controller  : "taskListController",
+		caseInsensitiveMatch : true
+	})
+	.when("/tasks/:projectId/:id", {
+		title: "Task",
+		templateUrl : "../resources/pages/task.html",
+		controller  : "taskController",
+		caseInsensitiveMatch : true,
+		resolve: { factory: isTaskAccessible }
+	})
 	// Calendar-related pages
 	.when("/calendar", {
 		title: "Calendar",

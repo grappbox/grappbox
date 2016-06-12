@@ -85,9 +85,10 @@ app.controller("grappboxController", ["$scope", "$aside", "$location", function(
     "/profile": false,
     "/settings": false,
     "/timeline": false,
-    "/whiteboard": false
+    "/whiteboard": false,
+    "/tasks": false
   };
-  
+
   $scope.iconList = {
     "/": "dashboard",
     "/bugtracker": "computer",
@@ -98,6 +99,7 @@ app.controller("grappboxController", ["$scope", "$aside", "$location", function(
     "/settings": "folder",
     "/timeline": "vertical_align_center",
     "/whiteboard": "create",
+    "/tasks": "view_list",
     "/logout" : "exit_to_app"
   };
 
@@ -124,7 +126,7 @@ app.controller("grappboxController", ["$scope", "$aside", "$location", function(
   var isSubRouteOf = function(routeToTest, newRoute) {
     var isRouteKnown = false;
 
-    if (newRoute.indexOf(routeToTest) > -1) { 
+    if (newRoute.indexOf(routeToTest) > -1) {
       $scope.routeList["/" + routeToTest] = true;
       isRouteKnown = true;
     }
