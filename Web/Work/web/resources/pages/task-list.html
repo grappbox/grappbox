@@ -2,97 +2,73 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="view view-content" id="task-list-view" ng-controller="taskListController">
+<div data-ng-controller="taskListController">
 
-  <section class="app-section" id="task-help">
-    <div class="container app-container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : task information -->
-          <!-- <div class="section-heading">
-            <h2>Choose a project task</h2>
-            <p>Scroll down to see all your projects. On each, hold to navigate between all tasks.<br>For each task card, you'll find useful information such as creation date.</p>
-          </div> -->
+  <!-- grappbox.data : tasksList information -->
+  <!-- <div class="panel panel-default">
+    <div class="panel-heading">Choose a task</div>
+    <div class="panel-body">
+      <p>
+        This page shows you all the tasks of the selected project. Click on a tasks row to open the details about it.
+      </p>
+    </div>
+  </div> -->
+
+  <section id="tasksList">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="well">
+          <!-- grappbox.data : tasks list -->
+          <div data-ng-if="data.onLoad">
+            <div class="spinner section"><div></div></div>
+          </div>
+          <div data-ng-if="!data.onLoad">
+            <div data-ng-if="data.message == '_valid'">
+              <div class="row">
+                <div class="centered">
+                  <a href="{[{'tasks/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+                </div>
+              </div>
+              <div class="row">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="col-lg-4"><i class="fa fa-tasks"></i> Title</th>
+                      <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                      <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                      <th class="col-lg-2"><i class="fa fa-bell"></i> Due date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="task in data.tasks" ng-click="openTask(project_id, task.id)" title="Go the task page">
+                      <td>{[{ task.title }]}</td>
+                      <td>{[{ formatTagsinString(task.tags) }]}</td>
+                      <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
+                      <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_empty'">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_invalid'">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_denied'">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="app-section" id="task-list">
-    <div class="container">
-      <div class=" section section-heading">
-        <a href="" title="Tasks in list" class="btn-default btn-access" ng-click="displayTasks()">
-          <i class="fa fa-list fa-fw"></i>Tasks list</a>
-        <a href="" title="Tasks in Gantt chart" class="btn-default btn-access" ng_click="displayGantt()">
-          <i class="fa fa-list fa-fw"></i>Gantt</a>
-      </div>
-      <div class="row">
-        <div ng-show="data.onLoad">
-          <div class="loading-content section"><div></div></div>
-        </div>
-        <div ng-repeat="project in data.projects" class="each-object" ng-show="!data.onLoad">
-          <div class="col-lg-12">
-            <!-- grappbox.data : task list (per project) -->
-            <div class="section-heading">
-              <h3><i class="fa fa-folder-o"></i>"{[{ project.name }]}"</h3>
-            </div>
-            <div class="section-content">
-              <div id="all-task-data" class="col-lg-12">
-                <div ng-show="data.projectsTask_onLoad[project.name]">
-                  <div class="loading-content section"><div></div></div>
-                </div>
-                <div ng-show="!data.projectsTask_onLoad[project.name]">
-                  <div ng-if="data.projectsTask_message[project.name] == '_valid'">
-                    <div class="">
-                      <a href="tasks/{[{ project.project_id }]}/0" title="Create new task" class="btn-default btn-access">
-                        <i class="fa fa-plus fa-fw"></i>Create new task</a>
-                    </div>
-                    <div class="task-list">
-                      <table class="table table-hover">
-                        <thead>
-                          <tr>
-                            <th class="col-lg-4"><i class="fa fa-task"></i>Title</th>
-                            <th class="col-lg-3"><i class="fa fa-tags"></i>Tags</th>
-                            <th class="col-lg-3"><i class="fa fa-user"></i>Assigned user(s)</th>
-                            <th class="col-lg-2"><i class="fa fa-calendar"></i>Creation date</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr ng-repeat="task in data.projectsTask_content[project.name]" ng-click="openTask(project.project_id, task.id)">
-                            <td>{[{ task.title }]}</td>
-                            <td>{[{ formatTagsinString(task.tags) }]}</td>
-                            <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
-                            <td>{[{ formatObjectDate(task.createdAt.date) }]}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div ng-if="data.projectsTask_message[project.name] == '_empty'">
-                    <div class="error">
-                      <p><a href="tasks/{[{ project.project_id }]}/0" title="Create new task" class="btn-default btn-access"><i class="fa fa-plus fa-fw"></i>Create new task</a></p>
-                      <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
-                    </div>
-                  </div>
-                  <div ng-if="data.projectsTask_message[project.name] == '_denied'">
-                    <div class="error">
-                      <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
-                    </div>
-                  </div>
-                  <div ng-if="data.projectsTask_message[project.name] == '_invalid'">
-                    <div class="error">
-                      <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
-
-      </div><!-- row -->
-    </div><!-- container -->
-  </section><!-- task-list -->
 </div>

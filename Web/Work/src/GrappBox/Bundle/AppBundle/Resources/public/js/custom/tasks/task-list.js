@@ -14,62 +14,35 @@ app.controller('taskListController', ['$rootScope', '$scope', '$routeParams', '$
   var content = "";
 
   // Scope variables initialization
-  $scope.data = { onLoad: true, projects: { }, isValid: false };
+  $scope.projectId = 1;
+  $scope.data = { onLoad: true, tasks: { }, message: "_invalid" };
 
-  // Get all projects where the user is associate with
-  var getTasksContent = function() {
-    // Get current project task(s)
-    $scope.data.projectsTask_onLoad = {};
-    $scope.data.projectsTask_content = {};
-    $scope.data.projectsTask_message = {};
-
-    // Get all tasks for each project
-    context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
-    angular.forEach($scope.data.projects, function(project){
-      context.scope.data.projectsTask_onLoad[project.name] = true;
-
-      $http.get(context.rootScope.apiBaseURL + '/tasks/getprojecttasks/' + context.cookies.get('USERTOKEN') + '/' + project.project_id)
-        .then(function successCallback(response) {
-          context.scope.data.projectsTask_onLoad[project.name] = false;
-          context.scope.data.projectsTask_content[project.name] = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-          context.scope.data.projectsTask_message[project.name] = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
-        },
-        function errorCallback(response) {
-          context.scope.data.projectsTask_onLoad[project.name] = false;
-          context.scope.data.projectsTask_content[project.name] = null;
-          context.scope.data.projectsTask_message[project.name] = "_invalid";
-
-          if (response.data.info && response.data.info.return_code)
-            switch(response.data.info.return_code) {
-              case "12.9.3":
-              context.rootScope.onUserTokenError();
-              break;
-
-              case "12.9.9":
-              context.scope.data.projectsTask_message[project.name] = "_denied";
-              break;
-
-              default:
-              context.scope.data.projectsTask_message[project.name] = "_invalid";
-              break;
-            }
-        });
-    }, context);
-  };
-
-
-  $http.get($rootScope.apiBaseURL + '/dashboard/getprojectlist/' + $cookies.get('USERTOKEN'))
+  // Get all tasks of the project
+  $http.get($rootScope.apiBaseURL + '/tasks/getprojecttasks/' + $cookies.get('USERTOKEN') + '/' + $scope.projectId)
     .then(function projectsReceived(response) {
-      $scope.data.projects = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-      $scope.data.isValid = true;
+      $scope.data.tasks = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+      $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
       $scope.data.onLoad = false;
-
-      getTasksContent();
     },
     function projectsNotReceived(response) {
-      $scope.data.projects = null;
-      $scope.data.isValid = false;
+      $scope.data.tasks = null;
       $scope.data.onLoad = false;
+
+      if (response.data.info && response.data.info.return_code)
+        switch(response.data.info.return_code) {
+          case "12.14.3":
+          $rootScope.onUserTokenError();
+          break;
+
+          case "12.14.9":
+          $scope.data.message = "_denied";
+          break;
+
+          default:
+          $scope.data.message = "_invalid";
+          break;
+        }
+
     });
 
 
@@ -102,21 +75,10 @@ app.controller('taskListController', ['$rootScope', '$scope', '$routeParams', '$
     return usersInString;
   };
 
-  // $scope.getTasks = function() {
-  //   getTasksContent();
-  // };
-
-  $scope.displayTasks = function() {
-    getTasksContent();
-  };
-
-  $scope.displayGantt = function() {
-    getTasksContent();
-  };
-
+  // Open task detail page
   $scope.openTask = function(project, task){
     $location.path('/tasks/' + project + '/' + task);
-  }
+  };
 
 }]);
 
@@ -160,17 +122,17 @@ var isTaskAccessible = function($q, $http, $rootScope, $cookies, $route, $locati
     function errorCallback(response) {
       if (response.data.info.return_code) {
         switch(response.data.info.return_code) {
-          case "12.1.3":
+          case "12.3.3":
           deferred.reject();
           $rootScope.onUserTokenError();
           break;
 
-          case "12.1.4":
+          case "12.3.4":
           isTaskAccessible_commonBehavior(deferred, $location);
           Notification.warning({ message: "Task not found.", delay: 10000 });
           break;
 
-          case "12.1.9":
+          case "12.3.9":
           isTaskAccessible_commonBehavior(deferred, $location);
           Notification.warning({ message: "You don\'t have access to this task.", delay: 10000 });
           break;

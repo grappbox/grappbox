@@ -2,17 +2,87 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
+
+<div data-ng-controller="bugtrackerListController">
+
+  <section id="bugtrackerList">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="well">
+          <!-- grappbox.data : tickets list -->
+          <div data-ng-if="data.onLoad">
+            <div class="spinner section"><div></div></div>
+          </div>
+          <div data-ng-if="!data.onLoad">
+            <div data-ng-if="data.message == '_valid'">
+              <div class="row">
+                <div class="centered">
+                  <a href="" title="Open tickets" class="btn btn-default" ng-click="getOpenTickets()">
+                    <i class="fa fa-list fa-fw"></i> Open Tickets</a>
+                  <a href="" title="Closed tickets" class="btn btn-default" ng_click="getClosedTickets()">
+                    <i class="fa fa-list fa-fw"></i> Closed Tickets</a>
+                  <!-- <a href="" title="User tickets" class="btn btn-default" ng_click="getUserTickets()">
+                    <i class="fa fa-list fa-fw"></i> User Tickets</a> -->
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="centered">
+                  <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
+                </div>
+              </div>
+              <div class="row">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th class="col-lg-4"><i class="fa fa-ticket"></i> Title</th>
+                      <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                      <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                      <th class="col-lg-2"><i class="fa fa-calendar"></i> Creation date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="bugtracker in data.tickets" ng-click="openTicket(project_id, bugtracker.id)" title="Open the ticket details">
+                      <td>{[{ bugtracker.title }]}</td>
+                      <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
+                      <td>{[{ formatUsersinString(bugtracker.users) }]}</td>
+                      <td>{[{ formatObjectDate(bugtracker.createdAt.date) }]}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_empty'">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-frown-o"></i>There is no issue for this project.</p>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_invalid'">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_denied'">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!--
 <div class="view view-content" id="bugtracker-list-view" ng-controller="bugtrackerListController">
 
   <section class="app-section" id="bugtracker-help">
     <div class="container app-container">
       <div class="row">
         <div class="col-lg-12">
-          <!-- grappbox.data : bugtracker information -->
-          <!-- <div class="section-heading">
-            <h2>Choose a project bugtracker</h2>
-            <p>Scroll down to see all your projects. On each, hold to navigate between all bug tickets.<br>For each bug ticket card, you'll find useful information such as creation date.</p>
-          </div> -->
+
         </div>
       </div>
     </div>
@@ -32,7 +102,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
         <div ng-repeat="project in data.projects" class="each-object" ng-show="!data.onLoad">
           <div class="col-lg-12">
-            <!-- grappbox.data : bugtracker list (per project) -->
+
             <div class="section-heading">
               <h3><i class="fa fa-folder-o"></i>"{[{ project.name }]}"</h3>
             </div>
@@ -92,7 +162,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
         </div>
 
-      </div><!-- row -->
-    </div><!-- container -->
-  </section><!-- bugtracker-list -->
-</div>
+      </div>
+    </div>
+  </section>
+</div> -->

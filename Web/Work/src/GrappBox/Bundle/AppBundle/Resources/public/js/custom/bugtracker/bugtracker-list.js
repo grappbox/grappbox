@@ -14,104 +14,69 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
   var content = "";
 
   // Scope variables initialization
-  $scope.data = { onLoad: true, projects: { }, isValid: false };
+  $scope.projectId = 1;
+  $scope.data = { onLoad: true, tickets: { }, message: "_invalid" };
 
-  // Get all projects where the user is associate with
   var getOpenTicketsContent = function() {
-    // Get current project bugtracker(s)
-    $scope.data.projectsBugtracker_onLoad = {};
-    $scope.data.projectsBugtracker_content = {};
-    $scope.data.projectsBugtracker_message = {};
+    // Get all open tickets of the project
+    $http.get($rootScope.apiBaseURL + '/bugtracker/gettickets/' + $cookies.get('USERTOKEN') + '/' + $scope.projectId)
+      .then(function projectsReceived(response) {
+        $scope.data.tickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+        $scope.data.message = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
+        $scope.data.onLoad = false;
+      },
+      function projectsNotReceived(response) {
+        $scope.data.tickets = null;
+        $scope.data.onLoad = false;
 
-    // Get all tickets for each project
-    context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
-    angular.forEach($scope.data.projects, function(project){
-      context.scope.data.projectsBugtracker_onLoad[project.name] = true;
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "4.9.3":
+            $rootScope.onUserTokenError();
+            break;
 
-      $http.get(context.rootScope.apiBaseURL + '/bugtracker/gettickets/' + context.cookies.get('USERTOKEN') + '/' + project.project_id)
-        .then(function successCallback(response) {
-          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
-          context.scope.data.projectsBugtracker_content[project.name] = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-          context.scope.data.projectsBugtracker_message[project.name] = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
-        },
-        function errorCallback(response) {
-          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
-          context.scope.data.projectsBugtracker_content[project.name] = null;
-          context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
+            case "4.9.9":
+            $scope.data.message = "_denied";
+            break;
 
-          if (response.data.info && response.data.info.return_code)
-            switch(response.data.info.return_code) {
-              case "4.9.3":
-              context.rootScope.onUserTokenError();
-              break;
+            default:
+            $scope.data.message = "_invalid";
+            break;
+          }
 
-              case "4.9.9":
-              context.scope.data.projectsBugtracker_message[project.name] = "_denied";
-              break;
-
-              default:
-              context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
-              break;
-            }
-        });
-    }, context);
+      });
   };
+  getOpenTicketsContent();
 
   var getClosedTicketsContent = function() {
-    // Get current projet bugtracker(s)
-    $scope.data.projectsBugtracker_onLoad = {};
-    $scope.data.projectsBugtracker_content = {};
-    $scope.data.projectsBugtracker_message = {};
+    // Get all closed tickets of the project
+    $http.get($rootScope.apiBaseURL + '/bugtracker/getclosedtickets/' + $cookies.get('USERTOKEN') + '/' + $scope.projectId)
+      .then(function projectsReceived(response) {
+        $scope.data.tickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+        $scope.data.message = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
+        $scope.data.onLoad = false;
+      },
+      function projectsNotReceived(response) {
+        $scope.data.tickets = null;
+        $scope.data.onLoad = false;
 
-    // Get all  closed tickets for each project
-    context = {"scope": $scope, "rootScope": $rootScope, "cookies": $cookies};
-    angular.forEach($scope.data.projects, function(project){
-      context.scope.data.projectsBugtracker_onLoad[project.name] = true;
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "4.22.3":
+            $rootScope.onUserTokenError();
+            break;
 
-      $http.get(context.rootScope.apiBaseURL + '/bugtracker/getclosedtickets/' + context.cookies.get('USERTOKEN') + '/' + project.project_id)
-        .then(function successCallback(response) {
-          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
-          context.scope.data.projectsBugtracker_content[project.name] = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-          context.scope.data.projectsBugtracker_message[project.name] = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
-        },
-        function errorCallback(response) {
-          context.scope.data.projectsBugtracker_onLoad[project.name] = false;
-          context.scope.data.projectsBugtracker_content[project.name] = null;
-          context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
+            case "4.22.9":
+            $scope.data.message = "_denied";
+            break;
 
-          if (response.data.info && response.data.info.return_code)
-            switch(response.data.info.return_code) {
-              case "4.22.3":
-              context.rootScope.onUserTokenError();
-              break;
+            default:
+            $scope.data.message = "_invalid";
+            break;
+          }
 
-              case "4.22.9":
-              context.scope.data.projectsBugtracker_message[project.name] = "_denied";
-              break;
-
-              default:
-              context.scope.data.projectsBugtracker_message[project.name] = "_invalid";
-              break;
-            }
-        });
-    }, context);
+      });
   };
-
-
-  $http.get($rootScope.apiBaseURL + '/dashboard/getprojectlist/' + $cookies.get('USERTOKEN'))
-    .then(function projectsReceived(response) {
-      $scope.data.projects = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-      $scope.data.isValid = true;
-      $scope.data.onLoad = false;
-
-      getOpenTicketsContent();
-    },
-    function projectsNotReceived(response) {
-      $scope.data.projects = null;
-      $scope.data.isValid = false;
-      $scope.data.onLoad = false;
-    });
-
 
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {
