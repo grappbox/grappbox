@@ -20,6 +20,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -53,7 +54,10 @@
         <Image Grid.Row="7" Grid.Column="0" Source="ms-appx:///Assets/cloud.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
         <Button Style="{StaticResource LeftMenuButton}" Grid.Row="7" Grid.Column="1" MinHeight="33" Content="Cloud" Click="CloudButton_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
 
-        <Image Grid.Row="8" Grid.Column="0" Source="ms-appx:///Assets/logout.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-        <Button Style="{StaticResource LeftMenuButton}" Grid.Row="8" Grid.Column="1" MinHeight="33" Content="Logout" Click="Logoututton_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+        <Image Grid.Row="8" Grid.Column="0" Source="ms-appx:///Assets/calendar.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+        <Button Style="{StaticResource LeftMenuButton}" Grid.Row="8" Grid.Column="1" MinHeight="33" Content="Calendar" Click="CalendarButton_Click"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+
+        <Image Grid.Row="9" Grid.Column="0" Source="ms-appx:///Assets/logout.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+        <Button Style="{StaticResource LeftMenuButton}" Grid.Row="9" Grid.Column="1" MinHeight="33" Content="Logout" Click="Logoututton_Click" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
     </Grid>
 </UserControl>

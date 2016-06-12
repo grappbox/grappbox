@@ -14,6 +14,32 @@ namespace GrappBox.ViewModel
 {
     class CalendarViewModel : ViewModelBase
     {
+        private ObservableCollection<int> _days;
+        public ObservableCollection<int> Days
+        {
+            get { return _days; }
+            set { Days = value; }
+        }
+        public ObservableCollection<string> MonthList
+        {
+            get
+            {
+                var t = new ObservableCollection<string>();
+                t.Add("January");
+                t.Add("February");
+                t.Add("March");
+                t.Add("April");
+                t.Add("May");
+                t.Add("June");
+                t.Add("Jully");
+                t.Add("August");
+                t.Add("Septemner");
+                t.Add("October");
+                t.Add("November");
+                t.Add("December");
+                return t;
+            }
+        }
         private int _currentYear;
         public int CurrentYear
         {
@@ -35,47 +61,6 @@ namespace GrappBox.ViewModel
                 UpdateMonth();
             }
         }
-        private int _weekIndex;
-        public int WeekIndex
-        {
-            get { return _weekIndex; }
-            set
-            {
-                if (_weekIndex == 3 && value == 0)
-                    _monthIndex += 1;
-                if (_weekIndex == 0 && value == 3)
-                    _monthIndex -= 1;
-                _weekIndex = value;
-                NotifyPropertyChanged("WeekIndex");
-            }
-        }
-        private Visibility _dayView;
-        private Visibility _weekView;
-        private Visibility _monthView;
-        public Visibility DayView
-        {
-            get { return _dayView; }
-            set
-            {
-                _dayView = value; NotifyPropertyChanged("DayView");
-            }
-        }
-        public Visibility WeekView
-        {
-            get { return _weekView; }
-            set
-            {
-                _weekView = value; NotifyPropertyChanged("WeekView");
-            }
-        }
-        public Visibility MonthView
-        {
-            get { return _monthView; }
-            set
-            {
-                _monthView = value; NotifyPropertyChanged("MonthView");
-            }
-        }
         private ObservableCollection<Model.Task> _tasks;
         private ObservableCollection<Event> _events;
         public ObservableCollection<Event> Events
@@ -89,11 +74,6 @@ namespace GrappBox.ViewModel
             set { _tasks = value; NotifyPropertyChanged("Tasks"); }
         }
         private CalendarModel model;
-        public CalendarModel.ViewType CurrentViewType
-        {
-            get { return model.Currentype; }
-            set { model.Currentype = value; NotifyPropertyChanged("CurrentViewType"); }
-        }
         private DateTime currentDateTime;
 
         public CalendarViewModel()
@@ -101,9 +81,10 @@ namespace GrappBox.ViewModel
             currentDateTime = new DateTime(DateTime.Now.Ticks);
             _currentYear = currentDateTime.Year;
             _monthIndex = currentDateTime.Month - 1;
+            _days = new ObservableCollection<int>();
+            for (int i = 1; i < 32; ++i)
+                _days.Add(i);
             model = new CalendarModel();
-            WeekView = Visibility.Collapsed;
-            MonthView = Visibility.Visible;
             InitViewModel();
         }
         public async void InitViewModel()
@@ -125,27 +106,6 @@ namespace GrappBox.ViewModel
             Events = new ObservableCollection<Event>(plan.Events);
             Tasks = new ObservableCollection<Model.Task>(plan.Tasks);
         }
-        private ICommand _viewTappedCommand;
-        public ICommand ViewTappedCommand
-        {
-            get { return _viewTappedCommand ?? (_viewTappedCommand = new CommandHandler(ViewTappedAction)); }
-        }
-        public void ViewTappedAction()
-        {
-            if (CurrentViewType == CalendarModel.ViewType.MONTH)
-            {
-                CurrentViewType = CalendarModel.ViewType.WEEK;
-                WeekView = Visibility.Visible;
-                MonthView = Visibility.Collapsed;
-            }
-            else
-            {
-                CurrentViewType = CalendarModel.ViewType.MONTH;
-                WeekView = Visibility.Collapsed;
-                MonthView = Visibility.Visible;
-            }
-        }
-
         private ICommand _addEventCommand;
         public ICommand AddEventCommand
         {

@@ -18,45 +18,15 @@ namespace GrappBox.Model
             WEEK,
             MONTH
         }
-        #region PrivateMembers
-        private ViewType _currentViewType;
-        #endregion
+
         #region PublicAccessor
         public ObservableCollection<Event> Events
         { get; private set; }
         public ObservableCollection<Task> Tasks
         { get; private set; }
-        public ViewType Currentype
-        {
-            get { return _currentViewType; }
-            set { _currentViewType = value; }
-        }
-        #endregion
-        #region Constructor and Init
-        public CalendarModel()
-        {
-            _currentViewType = ViewType.MONTH;
-        }
+
         #endregion
         #region ApiGetters
-        public async Task<Planning> GetDayPlanning(DateTime day)
-        {
-            Debug.WriteLine("day {0}", day.ToString("yyyy-MM-dd"));
-            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
-            object[] token = { ApiCom.User.GetUser().Token, day.ToString("yyyy-MM-dd") };
-            HttpResponseMessage res = await api.Get(token, "planning/getday");
-            Debug.WriteLine(await res.Content.ReadAsStringAsync());
-            return api.DeserializeArrayJson<Planning>(await res.Content.ReadAsStringAsync());
-        }
-        public async Task<Planning> GetWeekPlanning(DateTime week)
-        {
-            Debug.WriteLine("date {0}", week.ToString("yyyy-MM-dd"));
-            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
-            object[] token = { ApiCom.User.GetUser().Token, week.ToString("yyyy-MM-dd") };
-            HttpResponseMessage res = await api.Get(token, "planning/getweek");
-            Debug.WriteLine(await res.Content.ReadAsStringAsync());
-            return api.DeserializeArrayJson<Planning>(await res.Content.ReadAsStringAsync());
-        }
         public async Task<Planning> GetMonthPlanning(DateTime month)
         {
             Debug.WriteLine("date {0}", month.ToString("yyyy-MM-dd"));

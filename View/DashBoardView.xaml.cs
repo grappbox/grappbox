@@ -1,23 +1,11 @@
 ﻿using GrappBox.Model;
 using GrappBox.Ressources;
 using GrappBox.ViewModel;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using GrappBox.CustomControler;
 
@@ -29,8 +17,6 @@ namespace GrappBox.View
     public sealed partial class DashBoardView : Page
     {
         PivotItem team;
-        PivotItem issues;
-        PivotItem tasks;
         PivotItem meetings;
         DashBoardViewModel dvm;
         public DashBoardView()
@@ -39,8 +25,6 @@ namespace GrappBox.View
             this.DataContext = DashBoardViewModel.GetViewModel();
             team_cb.IsChecked = SettingsManager.getOption<bool>("team_cb");
             meetings_cb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
-            issues_cb.IsChecked = SettingsManager.getOption<bool>("issues_cb");
-            tasks_cb.IsChecked = SettingsManager.getOption<bool>("tasks_cb");
         }
 
         /// <summary>
@@ -58,11 +42,13 @@ namespace GrappBox.View
             this.project_Combo.DisplayMemberPath = "Name";
             this.project_Combo.SelectedValue = SettingsManager.getOption<int>("ProjectIdChoosen");
             team = CreateOccupationTab();
-            issues = CreateIssuesTab();
-            tasks = CreateTasksTab();
             meetings = CreateMeetingsTab();
+            if (team_cb.IsChecked == true)
+                this.db_pivot.Items.Add(this.team);
+            if (meetings_cb.IsChecked == true)
+                this.db_pivot.Items.Add(this.meetings);
         }
-
+/*
         #region menuClicked
         private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
         {
@@ -91,7 +77,7 @@ namespace GrappBox.View
             this.Frame.Navigate(typeof(ProjectSettingsView));
         }
         #endregion menuClicked
-
+        */
         private void team_cb_Checked(object sender, RoutedEventArgs e)
         {
             SettingsManager.setOption("team_cb", team_cb.IsChecked);
@@ -108,24 +94,6 @@ namespace GrappBox.View
                 db_pivot.Items.Add(meetings);
             else
                 db_pivot.Items.Remove(meetings);
-        }
-
-        private void issues_cb_Checked(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.setOption("issues_cb", issues_cb.IsChecked);
-            if (issues_cb.IsChecked == true)
-                db_pivot.Items.Add(issues);
-            else
-                db_pivot.Items.Remove(issues);
-        }
-
-        private void tasks_cb_Checked(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.setOption("tasks_cb", tasks_cb.IsChecked);
-            if (tasks_cb.IsChecked == true)
-                db_pivot.Items.Add(tasks);
-            else
-                db_pivot.Items.Remove(tasks);
         }
 
         private async void project_Combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -155,13 +123,6 @@ namespace GrappBox.View
             return pivotItem;
         }
 
-        public PivotItem CreateIssuesTab()
-        {
-            PivotItem pivotItem;
-            initPivotItem("Issues", out pivotItem);
-            return pivotItem;
-        }
-
         public PivotItem CreateMeetingsTab()
         {
             PivotItem pivotItem;
@@ -169,13 +130,6 @@ namespace GrappBox.View
             MeetingDashBoardPanel mdp = new MeetingDashBoardPanel();
             pivotItem.Content = mdp;
             this.dvm.NotifyPropertyChanged("MeetingList");
-            return pivotItem;
-        }
-
-        public PivotItem CreateTasksTab()
-        {
-            PivotItem pivotItem;
-            initPivotItem("Tasks", out pivotItem);
             return pivotItem;
         }
     }

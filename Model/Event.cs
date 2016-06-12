@@ -11,12 +11,12 @@ namespace GrappBox.Model
     {
         [JsonProperty("id")]
         public int Id { get; set; }
-       /* [JsonProperty("projectId")]
-        public int ProjectId { get; set; }*/
+        [JsonProperty("projectId")]
+        public int? ProjectId { get; set; }
         [JsonProperty("creator")]
         public Creator Creator { get; set; }
         [JsonProperty("type")]
-        public string Type { get; set; }
+        public EventType Type { get; set; }
         [JsonProperty("title")]
         public string Title { get; set; }
         [JsonProperty("description")]

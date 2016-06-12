@@ -42,6 +42,8 @@
             <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource RedGrappBox}" />
             <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="White" />
             <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
+            <SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="White" />
+            <SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="{StaticResource RedGrappBox}" />
 
             <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="Black" />
             <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource BackgroundGray}"/>

@@ -9,7 +9,7 @@
     d:DesignHeight="380"
     d:DesignWidth="400">
 
-    <Grid Background="Black">
+    <Grid Background="DarkGray">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="3*"/>

@@ -60,14 +60,6 @@ namespace GrappBox.ViewModel
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 OccupationList = api.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
-                foreach (Occupations p in OccupationList)
-                {
-                    Debug.WriteLine(p.Name);
-                    Debug.WriteLine(p.User.FirstName);
-                    Debug.WriteLine(p.Occupation);
-                    Debug.WriteLine(p.Tasks_begun);
-                    Debug.WriteLine(p.Tasks_Ongoing);
-                }
                 NotifyPropertyChanged("OccupationList");
             }
             else
@@ -85,14 +77,6 @@ namespace GrappBox.ViewModel
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 MeetingList = api.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(await res.Content.ReadAsStringAsync());
-                foreach (MeetingDashBoard p in MeetingList)
-                {
-                    Debug.WriteLine(p.Title);
-                    Debug.WriteLine(p.Type);
-                    Debug.WriteLine(p.Description);
-                    Debug.WriteLine(p.BeginDate);
-                    Debug.WriteLine(p.EndDate);
-                }
                 NotifyPropertyChanged("MeetingList");
             }
             else
