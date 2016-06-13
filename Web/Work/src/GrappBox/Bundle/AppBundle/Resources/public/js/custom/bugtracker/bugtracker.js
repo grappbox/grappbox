@@ -20,27 +20,44 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   $scope.projectName = $routeParams.projectName;
   $scope.ticketID = $routeParams.id;
 
-  //Get bugtracker informations if not new
+  $scope.data = { onLoad: true, bugtracker_new: false, canEdit: true, ticket: { }, tags: [], users: [], message: "_invalid" };
+
+  //Get bugtracker informations set up data
   if ($scope.ticketID != 0) {
     $http.get($rootScope.apiBaseURL + '/bugtracker/getticket/' + $cookies.get('USERTOKEN') + '/' + $scope.ticketID)
       .then(function successCallback(response) {
-        $scope.bugtracker_error = false;
-        $scope.bugtracker_new = false;
-        $scope.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
-
+        $scope.data.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+        $scope.data.message = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
+        $scope.data.onLoad = false;
       },
       function errorCallback(response) {
-        $scope.bugtracker_error = true;
-        $scope.bugtracker_new = false;
-        $scope.ticket = null;
+        $scope.data.ticket = null;
+        $scope.data.onLoad = false;
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "4.1.3":
+            $rootScope.onUserTokenError();
+            break;
+
+            case "4.1.9":
+            $scope.data.message = "_denied";
+            break;
+
+            default:
+            $scope.data.message = "_invalid";
+            break;
+          }
       });
   }
   else {
-    $scope.bugtracker_error = false;
-    $scope.ticket = null;
-    $scope.bugtracker_new = true;
-    $scope.tags = [];
-    $scope.users = [];
+    $scope.data.ticket = null;
+    $scope.data.bugtracker_new = true;
+    $scope.data.onLoad = false;
+    //$scope.data.tags = [];
+    //$scope.data.users = [];
+    $scope.data.message = "_valid";
+    $scope.data.onLoad = false;
   }
 
   // Get ticket related comments
@@ -95,38 +112,38 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   // ------------------------------------------------------
   //                 TAGS ASSIGNATION
   // ------------------------------------------------------
-  $scope.tagToAdd = [];
-  $scope.tagToRemove = [];
+  $scope.data.tagToAdd = [];
+  $scope.data.tagToRemove = [];
 
   $scope.tagAdded = function(tag) {
     var index = -1;
-    for (var i = 0; i < $scope.tagToRemove.length && index < 0; i++) {
-      if ($scope.tagToRemove[i].id == tag.id)
+    for (var i = 0; i < $scope.data.tagToRemove.length && index < 0; i++) {
+      if ($scope.data.tagToRemove[i].id == tag.id)
         index = i;
     }
 
     if (index >= 0)
-      $scope.tagToRemove.splice(index, 1);
+      $scope.data.tagToRemove.splice(index, 1);
     else
-      $scope.tagToAdd.push(tag);
+      $scope.data.tagToAdd.push(tag);
   };
 
   $scope.tagRemoved = function(tag) {
     var index = -1;
-    for (var i = 0; i < $scope.tagToAdd.length && index < 0; i++) {
-      if ($scope.tagToAdd[i].id == tag.id)
+    for (var i = 0; i < $scope.data.tagToAdd.length && index < 0; i++) {
+      if ($scope.data.tagToAdd[i].id == tag.id)
         index = i;
     }
     if (index >= 0)
-      $scope.tagToAdd.splice(index, 1);
+      $scope.data.tagToAdd.splice(index, 1);
     else
-      $scope.tagToRemove.push(tag);
+      $scope.data.tagToRemove.push(tag);
   };
 
   var memorizeTags = function() {
     var context = {"rootScope": $rootScope, "http": $http, "Notification": Notification, "cookies": $cookies, "scope": $scope};
 
-    angular.forEach($scope.tagToAdd, function(tag) {
+    angular.forEach($scope.data.tagToAdd, function(tag) {
       if (!tag.id) {
         var data = {"data": {"token": context.cookies.get('USERTOKEN'), "projectId": context.scope.projectID, "name": tag.name}};
         context.http.post(context.rootScope.apiBaseURL + '/bugtracker/tagcreation', data)
@@ -148,7 +165,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         });
     }, context);
 
-    angular.forEach($scope.tagToRemove, function(tag) {
+    angular.forEach($scope.data.tagToRemove, function(tag) {
       context.http.delete(context.rootScope.apiBaseURL + '/bugtracker/removetag/' + context.cookies.get('USERTOKEN') + '/' + context.scope.ticketID + '/' + tag.id)
         .then(function successCallback(response) {
 
@@ -162,40 +179,40 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   // ------------------------------------------------------
   //                 USERS ASSIGNATION
   // ------------------------------------------------------
-  $scope.userToAdd = [];
-  $scope.userToRemove = [];
+  $scope.data.userToAdd = [];
+  $scope.data.userToRemove = [];
 
   $scope.userAdded = function(user) {
     var index = -1;
-    for (var i = 0; i < $scope.userToRemove.length && index < 0; i++) {
-      if ($scope.userToRemove[i].user_id == user.user_id || $scope.userToRemove[i].id == user.user_id)
+    for (var i = 0; i < $scope.data.userToRemove.length && index < 0; i++) {
+      if ($scope.data.userToRemove[i].user_id == user.user_id || $scope.data.userToRemove[i].id == user.user_id)
         index = i;
     }
     if (index >= 0)
-      $scope.userToRemove.splice(index, 1);
+      $scope.data.userToRemove.splice(index, 1);
     else
-      $scope.userToAdd.push(user);
+      $scope.data.userToAdd.push(user);
   };
 
   $scope.userRemoved = function(user) {
     var index = -1;
-    for (var i = 0; i < $scope.userToAdd.length && index < 0; i++) {
-      if ($scope.userToAdd[i].user_id == user.user_id || $scope.userToAdd[i].user_id == user.id)
+    for (var i = 0; i < $scope.data.userToAdd.length && index < 0; i++) {
+      if ($scope.data.userToAdd[i].user_id == user.user_id || $scope.data.userToAdd[i].user_id == user.id)
         index = i;
     }
     if (index >= 0)
-      $scope.userToAdd.splice(index, 1);
+      $scope.data.userToAdd.splice(index, 1);
     else
-      $scope.userToRemove.push(user);
+      $scope.data.userToRemove.push(user);
   };
 
   var memorizeUsers = function() {
     var toAdd = [];
-    angular.forEach($scope.userToAdd, function(user) {
+    angular.forEach($scope.data.userToAdd, function(user) {
       toAdd.push(user.user_id);
     }, toAdd);
     var toRemove = [];
-    angular.forEach($scope.userToRemove, function(user) {
+    angular.forEach($scope.data.userToRemove, function(user) {
       toRemove.push(user.id);
     }, toRemove);
 
@@ -215,17 +232,47 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   // ------------------------------------------------------
   //                EDITION SWITCH
   // ------------------------------------------------------
-  $scope.editMode = {};
-  $scope.editMode['ticket'] = false;
+  $scope.data.editMode = {};
+  $scope.data.editMode['ticket'] = false;
 
   $scope.bugtracker_switchEditMode = function(elem) {
-    $scope.editMode[elem] = ($scope.editMode[elem] ? false : true);
+    $scope.data.editMode[elem] = ($scope.data.editMode[elem] ? false : true);
   };
+
+  // TODO check edition rigths of the user
 
   // ------------------------------------------------------
   //                    TICKET
   // ------------------------------------------------------
-  $scope.bugtracker_save = function(ticket) {
+  $scope.createTicket = function(ticket) {
+    var elem = {"token": $cookies.get('USERTOKEN'),
+                "projectId": $scope.projectID,
+                "title": ticket.title,
+                "description": ticket.description,
+                "stateId": 1,
+                "stateName": ""
+                };
+    var data = {"data": elem};
+
+    Notification.info({ message: 'Posting ticket...', delay: 5000 });
+    $http.post($rootScope.apiBaseURL + '/bugtracker/postticket', data)
+      .then(function successCallback(response) {
+        // $scope.data.message = "_valid";
+        // $scope.data.bugtracker_new = false;
+        $scope.data.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+        $scope.ticketID = $scope.data.ticket.id;
+        memorizeTags();
+        memorizeUsers();
+        Notification.success({ message: 'Ticket posted', delay: 5000 });
+        $location.path('/bugtracker/' + $scope.projectID + '/' + $scope.ticketID);
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: 'Unable to post comment. Please try again.', delay: 5000 });
+      }, $scope);
+  };
+
+
+  $scope.editTicket = function(ticket) {
     var elem = {"token": $cookies.get('USERTOKEN'),
                 "bugId": ticket.id,
                 "title": ticket.title,
@@ -244,37 +291,12 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       function errorCallback(response) {
         Notification.warning({ message: 'Unable to save ticket. Please try again.', delay: 5000 });
       });
-      $scope.editMode['ticket'] = false;
+      $scope.data.editMode['ticket'] = false;
   };
 
-  $scope.bugtracker_post_ticket = function(new_ticket) {
-    var elem = {"token": $cookies.get('USERTOKEN'),
-                "projectId": $scope.projectID,
-                "title": new_ticket.title,
-                "description": new_ticket.description,
-                "stateId": 1,
-                "stateName": ""
-                };
-    var data = {"data": elem};
 
-    Notification.info({ message: 'Posting ticket...', delay: 5000 });
-    $http.post($rootScope.apiBaseURL + '/bugtracker/postticket', data)
-      .then(function successCallback(response) {
-        $scope.bugtracker_error = false;
-        $scope.bugtracker_new = false;
-        $scope.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
-        $scope.ticketID = $scope.ticket.id;
-        memorizeTags();
-        memorizeUsers();
-        Notification.success({ message: 'Ticket posted', delay: 5000 });
-        $location.path('/bugtracker/' + $scope.projectID + '/' + $scope.ticketID);
-      },
-      function errorCallback(response) {
-        Notification.warning({ message: 'Unable to post comment. Please try again.', delay: 5000 });
-      }, $scope);
-  };
 
-  $scope.bugtracker_close_ticket = function() {
+  $scope.closeTicket = function() {
     Notification.info({ message: 'Closing ticket ...', delay: 5000 });
     $http.delete($rootScope.apiBaseURL + '/bugtracker/closeticket/' + $cookies.get('USERTOKEN') + '/' + $scope.ticketID)
       .then(function successCallback(response) {
@@ -287,7 +309,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       });
   };
 
-  $scope.bugtracker_reopen_ticket = function() {
+  $scope.reopenTicket = function() {
     Notification.info({ message: 'Reopening ticket ...', delay: 5000 });
     $http.put($rootScope.apiBaseURL + '/bugtracker/reopenticket/' + $cookies.get('USERTOKEN') + '/' + $scope.ticketID)
       .then(function successCallback(response) {
@@ -303,7 +325,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   // ------------------------------------------------------
   //                    COMMENTS
   // ------------------------------------------------------
-  $scope.bugtracker_edit_comment = function(comment) {
+  $scope.editComment = function(comment) {
     var elem = {"token": $cookies.get('USERTOKEN'),
                 "projectId": $scope.projectID,
                 "commentId": comment.id,
@@ -316,18 +338,18 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
     $http.put($rootScope.apiBaseURL + '/bugtracker/editcomment', data)
       .then(function successCallback(response) {
         Notification.success({ message: 'Comment saved', delay: 5000 });
-        $scope.editMode[comment.id] = false;
+        $scope.data.editMode[comment.id] = false;
         getComments();
       },
       function errorCallback(response) {
         Notification.warning({ message: 'Unable to save comment. Please try again.', delay: 5000 });
-        $scope.editMode[comment.id] = false;
+        $scope.data.editMode[comment.id] = false;
         getComments();
       });
 
   };
 
-  $scope.bugtracker_post_comment = function(new_comment) {
+  $scope.createComment = function(new_comment) {
     var elem = {"token": $cookies.get('USERTOKEN'),
                 "projectId": $scope.projectID,
                 "parentId": $scope.ticketID,
@@ -349,7 +371,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       }, new_comment);
   };
 
-  $scope.bugtracker_delete_comment = function(comment_id) {
+  $scope.deleteComment = function(comment_id) {
     $http.delete($rootScope.apiBaseURL + '/bugtracker/closeticket/' + $cookies.get('USERTOKEN') + '/' + comment_id)
       .then(function successCallback(response) {
           Notification.success({ message: 'Comment deleted', delay: 5000 });

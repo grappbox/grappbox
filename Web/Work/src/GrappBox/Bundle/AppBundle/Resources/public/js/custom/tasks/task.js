@@ -20,14 +20,16 @@ app.controller('taskController', ['$rootScope', '$scope', '$routeParams', '$http
   $scope.projectName = $routeParams.projectName;
   $scope.taskID = $routeParams.id;
 
+  $scope.data = { onLoad: true, ticket: { }, message: "_invalid" };
+
   //Get task informations if not new
   if ($scope.taskID != 0) {
     $http.get($rootScope.apiBaseURL + '/tasks/taskinformations/' + $cookies.get('USERTOKEN') + '/' + $scope.taskID)
       .then(function successCallback(response) {
-        $scope.task_error = false;
         $scope.task_new = false;
-        $scope.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
-
+        $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+        $scope.data.message = (response.data.info && response.data.info.return_code == "1.??.1" ? "_valid" : "_empty");
+        $scope.data.onLoad = false;
       },
       function errorCallback(response) {
         $scope.task_error = true;
