@@ -654,6 +654,10 @@ v2_project_resetProjectColor:
     defaults:   { _controller: 'GrappboxBundle:Project:resetProjectColor', _format: json }
     methods: [DELETE]
 
+v2_project_getProjectLogo:
+    path:       projects/getprojectlogo/{token}/{projectId}
+    defaults:   { _controller: 'GrappboxBundle:Project:getProjectLogo', _format: json }
+    methods: [GET]
 
 
 
@@ -973,7 +977,15 @@ v2_user_getCurrentAndNextTasks:
     defaults:   { _controller: GrappboxBundle:User:getCurrentAndNextTasks, _format: json }
     methods: [GET]
 
+v2_user_getUserAvatar:
+    path:       user/getuseravatar/{token}/{userId}
+    defaults:   { _controller: GrappboxBundle:User:getUserAvatar, _format: json }
+    methods: [GET]
 
+v2_user_getAllProjectUserAvatar:
+    path:       user/getallprojectuseravatar/{token}/{projectId}
+    defaults:   { _controller: GrappboxBundle:User:getAllProjectUserAvatar, _format: json }
+    methods: [GET]
 
 
 

@@ -54,7 +54,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} firstname First name of the person
 	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
+	* @apiSuccess {Text} avatar Avatar of the person
 	* @apiSuccess {String} email Email of the person
 	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
@@ -851,5 +851,125 @@ class UserController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("7.9.3", "User", "getcurrentandnexttasks"));
 
 		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserCurrentAndNextTasksV2($user->getId(), "7", "User", "getcurrentandnexttasks");
+	}
+
+
+	/**
+	* @api {get} /V0.2/user/getuseravatar/:token/:userId Get user avatar
+	* @apiName getUserAvatar
+	* @apiGroup User
+	* @apiDescription Get the avatar of the given user
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} userId Id of the user
+	*
+	* @apiSuccess {Text} avatar avatar of the user
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getUserAvatar - Complete Success"
+	*		},
+	*		"data": {
+	*			"avatar": "10100011000011001"
+	*		},
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.3",
+	*			"return_message": "User - getUserAvatar - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.4",
+	*			"return_message": "User - getUserAvatar - Bad Parameter: userId"
+	*		}
+	*	}
+	*/
+	public function getUserAvatarAction(Request $request, $token, $userId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("7.9.3", "User", "getUserAvatar"));
+
+		$em = $this->getDoctrine()->getManager();
+		$requestedUser = $em->getRepository('GrappboxBundle:User')->find($userId);
+
+		if ($requestedUser === null)
+			return $this->setBadRequest("7.9.4", "User", "getUserAvatar", "Bad Parameter: userId");
+
+		return $this->setSuccess("1.7.1", "User", "getUserAvatar", "Complete Success", array("avatar" => $requestedUser->getAvatar()));
+	}
+
+	/**
+	* @api {get} /V0.2/user/getallprojectuseravatar/:token/:projectId Get all project user avatar
+	* @apiName getAllProjectUserAvatar
+	* @apiGroup User
+	* @apiDescription Get the avatar of all the users of the given project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the user
+	*
+	* @apiSuccess {Object[]} array users list
+	* @apiSuccess {int} array.userId user id
+	* @apiSuccess {text} array.avatar user avatar
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getAllProjectUserAvatar - Complete Success"
+	*		},
+	*		"data": {
+	*			"userId": 13,
+	*			"avatar": "10100011000011001"
+	*		},
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.3",
+	*			"return_message": "User - getAllProjectUserAvatar - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.4",
+	*			"return_message": "User - getAllProjectUserAvatar - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
+	public function getAllProjectUserAvatarAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("7.10.3", "User", "getAllProjectUserAvatar"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("7.10.4", "User", "getAllProjectUserAvatar", "Bad Parameter: projectId");
+
+			foreach ($project->getUsers() as $key => $user) {
+				$data[] = array("userId" => $user->getId(), "avatar" => $user->getAvatar());
+			}
+
+		return $this->setSuccess("1.7.1", "User", "getAllProjectUserAvatar", "Complete Success", array("array" => $data));
 	}
 }

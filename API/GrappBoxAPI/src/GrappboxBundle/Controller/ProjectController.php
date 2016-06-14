@@ -1529,7 +1529,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "6.13.3",
+	*			"return_code": "6.10.3",
 	*			"return_message": "Project - resetprojectcolor - Bad ID"
 	*		}
 	*	}
@@ -1537,7 +1537,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.13.4",
+	*			"return_code": "6.10.4",
 	*			"return_message": "Project - resetprojectcolor - Bad Parameter: projectId"
 	*		}
 	*	}
@@ -1545,7 +1545,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.13.4",
+	*			"return_code": "6.10.4",
 	*			"return_message": "Project - resetprojectcolor - Bad Parameter: No color for the user"
 	*		}
 	*	}
@@ -1572,5 +1572,62 @@ class ProjectController extends RolesAndTokenVerificationController
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - resetprojectcolor - Complete Success";
 		return new JsonResponse($response);
+	}
+
+
+	/**
+	* @api {get} /V0.2/projects/getprojectlogo/:token/:projectId Get project logo
+	* @apiName getProjectLogo
+	* @apiGroup Project
+	* @apiDescription Get the logo of the given project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Text} logo Logo of the project
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - getProjectLogo - Complete Success"
+	*		},
+	*		"data": {
+	*			"logo": "10100011000011001"
+	*		},
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.15.3",
+	*			"return_message": "Project - getProjectLogo - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.15.4",
+	*			"return_message": "Project - getProjectLogo - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
+	public function getProjectLogoAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("6.15.3", "Project", "getProjectLogo"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("6.15.4", "Project", "getProjectLogo", "Bad Parameter: projectId");
+
+		return $this->setSuccess("1.6.1", "Project", "getProjectLogo", "Complete Success", array("logo" => $project->getLogo()));
 	}
 }
