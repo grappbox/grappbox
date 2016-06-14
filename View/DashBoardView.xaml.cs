@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using GrappBox.CustomControler;
+using Windows.Graphics.Display;
 
 namespace GrappBox.View
 {
@@ -25,6 +26,8 @@ namespace GrappBox.View
             this.DataContext = DashBoardViewModel.GetViewModel();
             team_cb.IsChecked = SettingsManager.getOption<bool>("team_cb");
             meetings_cb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
+            team = new PivotItem();
+            meetings = new PivotItem();
         }
 
         /// <summary>
@@ -34,13 +37,9 @@ namespace GrappBox.View
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
             this.dvm = DashBoardViewModel.GetViewModel();
-            await ViewModel.DashBoardViewModel.InitialiseAsync(dvm);
-            this.dvm.ProjectList = new ObservableCollection<ProjectListModel>(this.dvm.ProjectList);
-            this.project_Combo.ItemsSource = this.dvm.ProjectList;
-            this.project_Combo.SelectedValuePath = "Id";
-            this.project_Combo.DisplayMemberPath = "Name";
-            this.project_Combo.SelectedValue = SettingsManager.getOption<int>("ProjectIdChoosen");
+            await this.dvm.InitialiseAsync();
             team = CreateOccupationTab();
             meetings = CreateMeetingsTab();
             if (team_cb.IsChecked == true)
@@ -48,62 +47,29 @@ namespace GrappBox.View
             if (meetings_cb.IsChecked == true)
                 this.db_pivot.Items.Add(this.meetings);
         }
-/*
-        #region menuClicked
-        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
 
-        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-        #endregion menuClicked
-        */
-        private void team_cb_Checked(object sender, RoutedEventArgs e)
+        private async void team_cb_Checked(object sender, RoutedEventArgs e)
         {
             SettingsManager.setOption("team_cb", team_cb.IsChecked);
             if (team_cb.IsChecked == true)
+            {
                 db_pivot.Items.Add(team);
+                await this.dvm.InitialiseAsync();
+            }
             else
                 db_pivot.Items.Remove(team);
         }
 
-        private void meetings_cb_Checked(object sender, RoutedEventArgs e)
+        private async void meetings_cb_Checked(object sender, RoutedEventArgs e)
         {
             SettingsManager.setOption("meetings_cb", meetings_cb.IsChecked);
             if (meetings_cb.IsChecked == true)
+            {
                 db_pivot.Items.Add(meetings);
+                await this.dvm.InitialiseAsync();
+            }
             else
                 db_pivot.Items.Remove(meetings);
-        }
-
-        private async void project_Combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            int p = (int)project_Combo.SelectedValue;
-            SettingsManager.setOption("ProjectIdChoosen", p);
-            SettingsManager.setOption("ProjectNameChoosen", this.dvm.ProjectList.First(item => item.Id == p).Name);
-            await DashBoardViewModel.InitialiseAsync(this.dvm);
-            Debug.WriteLine(SettingsManager.getOption<int>("ProjectIdChoosen"));
-            Debug.WriteLine(SettingsManager.getOption<string>("ProjectNameChoosen"));
         }
 
         private void initPivotItem(string header, out PivotItem pivotItem)

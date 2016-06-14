@@ -36,7 +36,7 @@
     <Style x:Key="BlackTextBlockForeground"  TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black"/>
     </Style>
-        <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light" >
             <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource RedGrappBox}" />
             <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource RedGrappBox}" />

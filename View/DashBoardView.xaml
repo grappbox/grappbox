@@ -9,25 +9,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    >
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left">
         <slideMenu:SlideInMenuContentControl.LeftMenuContent>
             <customControl:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Background="White" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" >
+            <Grid Background="White" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}">
                 <Pivot x:Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" >
                     <PivotItem Background="White" Margin="0,0,0,0" Header="Settings">
-                        <Grid>
-                            <StackPanel Margin="15,0,0,0">
-                                <TextBlock FontSize="24" Foreground="Black">Displayed Pans</TextBlock>
-                                <CheckBox x:Name="team_cb" Click="team_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Team</CheckBox>
-                                <CheckBox x:Name="meetings_cb" Click="meetings_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Meetings</CheckBox>
-                                <Border BorderBrush="{StaticResource GrayGrappBoxBrush}" BorderThickness="0,1,0,0" Margin="0,0,10.111,0" />
-                                <TextBlock FontSize="24" Margin="0,10,0,0">Choose Project:</TextBlock>
-                                <ComboBox Grid.Row="0" x:Name="project_Combo" SelectionChanged="project_Combo_SelectionChanged" PlaceholderText="Choose Project" HorizontalAlignment="Left" Width="376"/>
-                            </StackPanel>
-                        </Grid>
+                        <StackPanel Margin="15,0,0,0">
+                            <TextBlock FontSize="24" Foreground="Black">Displayed Pans</TextBlock>
+                            <CheckBox x:Name="team_cb" Click="team_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Team</CheckBox>
+                            <CheckBox x:Name="meetings_cb" Click="meetings_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Meetings</CheckBox>
+                        </StackPanel>
                     </PivotItem>
                 </Pivot>
             </Grid>

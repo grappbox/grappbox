@@ -24,37 +24,17 @@ namespace GrappBox.ViewModel
             instance = this;
         }
 
-        static public async System.Threading.Tasks.Task InitialiseAsync(DashBoardViewModel dvm)
+        public async System.Threading.Tasks.Task InitialiseAsync()
         {
-            await dvm.getProjectList();
-            await dvm.getTeam();
-            await dvm.getNextMeetings();
-            dvm.NotifyPropertyChanged("ProjectList");
-            dvm.NotifyPropertyChanged("OccupationList");
-            dvm.NotifyPropertyChanged("MeetingList");
-        }
-
-        public async System.Threading.Tasks.Task getProjectList()
-        {
-            ApiCommunication api = ApiCommunication.GetInstance();
-            object[] token = { User.GetUser().Token };
-            HttpResponseMessage res = await api.Get(token, "dashboard/getprojectlist");
-            if (res.IsSuccessStatusCode)
-            {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
-                ProjectList = api.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(await res.Content.ReadAsStringAsync());
-                foreach (ProjectListModel p in ProjectList)
-                    Debug.WriteLine(p.Name);
-            }
-            else {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-            }
+            await this.getTeam();
+            await this.getNextMeetings();
         }
 
         public async System.Threading.Tasks.Task getTeam()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
+            int id = SettingsManager.getOption<int>("ProjectIdChoosen");
+            object[] token = { User.GetUser().Token, id};
             HttpResponseMessage res = await api.Get(token, "dashboard/getteamoccupation");
             if (res.IsSuccessStatusCode)
             {
@@ -83,20 +63,6 @@ namespace GrappBox.ViewModel
             {
                 Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
             }
-        }
-
-        private int _currentProjectId = 0;
-        public int CurrentProjectId
-        {
-            get { return _currentProjectId; }
-            set { _currentProjectId = value; NotifyPropertyChanged("ProjectIdChoosen");}
-        }
-
-        private ObservableCollection<ProjectListModel> _projectList;
-        public ObservableCollection<ProjectListModel> ProjectList
-        {
-            get { return _projectList; }
-            set { _projectList = value; NotifyPropertyChanged("ProjectList"); }
         }
         private ObservableCollection<Occupations> _occupationList;
         public ObservableCollection<Occupations> OccupationList

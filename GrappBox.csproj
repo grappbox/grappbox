@@ -93,66 +93,68 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\BrushPan.xaml.cs">
+    <Compile Include="CustomControler\Dashboard\GenericDashboardPanel.xaml.cs">
+      <DependentUpon>GenericDashboardPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControler\Whiteboard\BrushPan.xaml.cs">
       <DependentUpon>BrushPan.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\Colorpan.xaml.cs">
+    <Compile Include="CustomControler\Whiteboard\Colorpan.xaml.cs">
       <DependentUpon>Colorpan.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\CustomCanvas.cs" />
-    <Compile Include="CustomControler\EventPlanPrompt.xaml.cs" />
-    <Compile Include="CustomControler\LeftMenu.xaml.cs">
+    <Compile Include="CustomControler\Whiteboard\CustomCanvas.cs" />
+    <Compile Include="CustomControler\Calendar\EventPlanPrompt.xaml.cs" />
+    <Compile Include="CustomControler\SlidingMenu\LeftMenu.xaml.cs">
       <DependentUpon>LeftMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\MeetingDashBoardPanel.xaml.cs">
+    <Compile Include="CustomControler\Dashboard\MeetingDashBoardPanel.xaml.cs">
       <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControler\SlidingMenu\ActiveState.cs" />
-    <Compile Include="CustomControler\CustomPivot.cs" />
     <Compile Include="CustomControler\SlidingMenu\MenuState.cs" />
     <Compile Include="CustomControler\SlidingMenu\SlideInMenuContentControl.cs" />
     <Compile Include="ApiCommunication\User.cs" />
-    <Compile Include="CustomControler\TeamDashBoard.xaml.cs">
+    <Compile Include="CustomControler\Dashboard\TeamDashBoard.xaml.cs">
       <DependentUpon>TeamDashBoard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\WBListViewElements.xaml.cs">
+    <Compile Include="CustomControler\Whiteboard\WBListViewElements.xaml.cs">
       <DependentUpon>WBListViewElements.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\WhiteBoardText.xaml.cs">
+    <Compile Include="CustomControler\Whiteboard\WhiteBoardText.xaml.cs">
       <DependentUpon>WhiteBoardText.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ApiCommunication\ApiCommunication.cs" />
-    <Compile Include="Model\BugtrackerModel.cs" />
-    <Compile Include="Model\CalendarModel.cs" />
-    <Compile Include="Model\CloudModel.cs" />
-    <Compile Include="Model\Creator.cs" />
-    <Compile Include="Model\CustomerAccessModel.cs" />
-    <Compile Include="Model\CustomShapes.cs" />
-    <Compile Include="Model\DashBoardModel.cs" />
-    <Compile Include="Model\DateModel.cs" />
-    <Compile Include="Model\MeetingDashBoard.cs" />
-    <Compile Include="Model\Event.cs" />
-    <Compile Include="Model\EventType.cs" />
-    <Compile Include="Model\ICustomShape.cs" />
-    <Compile Include="Model\IdNameModel.cs" />
-    <Compile Include="Model\Occupations.cs" />
-    <Compile Include="Model\Planning.cs" />
-    <Compile Include="Model\ProjectListModel.cs" />
-    <Compile Include="Model\ProjectRoleModel.cs" />
-    <Compile Include="Model\ProjectSettingsModel.cs" />
-    <Compile Include="Model\ProjectUserModel.cs" />
-    <Compile Include="Model\RoleUserModel.cs" />
-    <Compile Include="Model\ShapeControler.cs" />
-    <Compile Include="Model\Task.cs" />
-    <Compile Include="Model\TimelineListModel.cs" />
-    <Compile Include="Model\TimelineModel.cs" />
-    <Compile Include="Model\Users.cs" />
-    <Compile Include="Model\UserSettingsModel.cs" />
-    <Compile Include="Model\WhiteBoardListModel.cs" />
-    <Compile Include="Model\WhiteBoardModel.cs" />
+    <Compile Include="Model\Bugtracker\BugtrackerModel.cs" />
+    <Compile Include="Model\Calendar\CalendarModel.cs" />
+    <Compile Include="Model\Cloud\CloudModel.cs" />
+    <Compile Include="Model\Global\Creator.cs" />
+    <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
+    <Compile Include="Model\Whiteboard\CustomShapes.cs" />
+    <Compile Include="Model\Dashboard\DashBoardModel.cs" />
+    <Compile Include="Model\Global\DateModel.cs" />
+    <Compile Include="Model\Dashboard\MeetingDashBoard.cs" />
+    <Compile Include="Model\Calendar\Event.cs" />
+    <Compile Include="Model\Calendar\EventType.cs" />
+    <Compile Include="Model\Whiteboard\ICustomShape.cs" />
+    <Compile Include="Model\Global\IdNameModel.cs" />
+    <Compile Include="Model\Dashboard\Occupations.cs" />
+    <Compile Include="Model\Calendar\Planning.cs" />
+    <Compile Include="Model\Dashboard\ProjectListModel.cs" />
+    <Compile Include="Model\ProjectSettings\ProjectRoleModel.cs" />
+    <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
+    <Compile Include="Model\ProjectSettings\ProjectUserModel.cs" />
+    <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
+    <Compile Include="Model\Whiteboard\ShapeControler.cs" />
+    <Compile Include="Model\Calendar\Task.cs" />
+    <Compile Include="Model\Timeline\TimelineListModel.cs" />
+    <Compile Include="Model\Timeline\TimelineModel.cs" />
+    <Compile Include="Model\ProjectSettings\Users.cs" />
+    <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
+    <Compile Include="Model\Whiteboard\WhiteBoardListModel.cs" />
+    <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
     <Compile Include="Ressources\NavigationHelper.cs" />
     <Compile Include="Ressources\RelayCommand.cs" />
     <Compile Include="Ressources\SettingsManager.cs" />
@@ -160,6 +162,7 @@
     <Compile Include="ViewModel\BugtrackerViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\CloudViewModel.cs" />
+    <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
@@ -182,6 +185,9 @@
     </Compile>
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\GenericDahsboard.xaml.cs">
+      <DependentUpon>GenericDahsboard.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProjectSettingsView.xaml.cs">
       <DependentUpon>ProjectSettingsView.xaml</DependentUpon>
@@ -211,20 +217,28 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\bug.png" />
     <Content Include="Assets\bugtracker.png" />
     <Content Include="Assets\calendar.png" />
+    <Content Include="Assets\chat.png" />
     <Content Include="Assets\cloud.png" />
     <Content Include="Assets\colors.png" />
     <Content Include="Assets\dashboard.png" />
+    <Content Include="Assets\date_range.png" />
+    <Content Include="Assets\end_time.png" />
     <Content Include="Assets\file.png" />
     <Content Include="Assets\folder.png" />
-    <Content Include="Assets\grappbox-logo_gray.png" />
+    <Content Include="Assets\grappbox-logo.png" />
+    <Content Include="Assets\info.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\logout.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <Content Include="Assets\Square71x71Logo.scale-240.png" />
+    <Content Include="Assets\start_time.png" />
     <Content Include="Assets\StoreLogo.scale-240.png" />
+    <Content Include="Assets\task_begin.png" />
+    <Content Include="Assets\task_ongoing.png" />
     <Content Include="Assets\timeline.png" />
     <Content Include="Assets\user.png" />
     <Content Include="Assets\whiteboard.png" />
@@ -235,46 +249,45 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="CustomControler\BrushPan.xaml">
+    <Page Include="CustomControler\Dashboard\GenericDashboardPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControler\Colorpan.xaml">
+    <Page Include="CustomControler\Whiteboard\BrushPan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControler\EventPlanPrompt.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomControler\LeftMenu.xaml">
+    <Page Include="CustomControler\Whiteboard\Colorpan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControler\MeetingDashBoardPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControler\TeamDashBoard.xaml">
+    <Page Include="CustomControler\Calendar\EventPlanPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomControler\WBListViewElements.xaml">
+    <Page Include="CustomControler\SlidingMenu\LeftMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControler\WhiteBoardText.xaml">
+    <Page Include="CustomControler\Dashboard\MeetingDashBoardPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\Dashboard\TeamDashBoard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControler\Whiteboard\WBListViewElements.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\Whiteboard\WhiteBoardText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ressources\Converters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Ressources\CustomColors.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="CustomControler\SlidingMenu\Generic.xaml">
       <SubType>Designer</SubType>
@@ -307,6 +320,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\DashBoardView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\GenericDahsboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -348,6 +365,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>
