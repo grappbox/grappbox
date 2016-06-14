@@ -14,11 +14,11 @@ app.controller('taskListController', ['$rootScope', '$scope', '$routeParams', '$
   var content = "";
 
   // Scope variables initialization
-  $scope.projectId = 1;
+  $scope.projectID = $routeParams.project_id;
   $scope.data = { onLoad: true, tasks: { }, message: "_invalid" };
 
   // Get all tasks of the project
-  $http.get($rootScope.apiBaseURL + '/tasks/getprojecttasks/' + $cookies.get('USERTOKEN') + '/' + $scope.projectId)
+  $http.get($rootScope.apiBaseURL + '/tasks/getprojecttasks/' + $cookies.get('USERTOKEN') + '/' + $scope.projectID)
     .then(function projectsReceived(response) {
       $scope.data.tasks = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
       $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");

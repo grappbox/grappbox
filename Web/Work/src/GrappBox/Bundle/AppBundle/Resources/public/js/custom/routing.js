@@ -18,7 +18,7 @@
 var isProjectAccessible = function($q, $http, $rootScope, $cookies, $route, $location, Notification) {
   var deferred = $q.defer();
 
-  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
+  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.project_id)
     .then(function onGetSuccess(response) {
       deferred.resolve();
     },
@@ -81,49 +81,66 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		title: "Welcome to GrappBox",
 		templateUrl : "../resources/pages/dashboard-list.html",
 		controller  : "dashboardListController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		homepage: true
 	})
-	.when("/dashboard/:id", {
+	.when("/dashboard/", {
+		title: "Welcome to GrappBox",
+		templateUrl : "../resources/pages/dashboard-list.html",
+		controller  : "dashboardListController",
+		caseInsensitiveMatch : true,
+		homepage: true
+	})
+	.when("/dashboard/:project_id/", {
 		title: "Dashboard",
 		templateUrl : "../resources/pages/dashboard.html",
 		controller  : "dashboardController",
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: isProjectAccessible }
 	})
 	.when("/login", {
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: login_onSuccessRedirect }
 	})
 	.when("/logout", {
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: logout_onSuccessRedirect }
 	})
 	// Bugtracker-related pages
-	.when("/bugtracker", {
+	.when("/bugtracker/:project_id", {
 		title: "Bugtracker list",
 		templateUrl : "../resources/pages/bugtracker-list.html",
 		controller  : "bugtrackerListController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		homepage: false,
+		resolve: { factory: isProjectAccessible }		
 	})
-	.when("/bugtracker/:projectId/:id", {
+	.when("/bugtracker/:project_id/:id", {
 		title: "Bugtracker",
 		templateUrl : "../resources/pages/bugtracker.html",
 		controller  : "bugtrackerController",
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: isBugtrackerAccessible }
 	})
   // Task-related pages
-	.when("/tasks", {
+	.when("/tasks/:project_id", {
 		title: "Tasks list",
 		templateUrl : "../resources/pages/task-list.html",
 		controller  : "taskListController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		homepage: false,
+		resolve: { factory: isProjectAccessible }
 	})
-	.when("/tasks/:projectId/:id", {
+	.when("/tasks/:project_id/:id", {
 		title: "Task",
 		templateUrl : "../resources/pages/task.html",
 		controller  : "taskController",
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: isTaskAccessible }
 	})
 	// Calendar-related pages
@@ -131,20 +148,16 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		title: "Calendar",
 		templateUrl : "../resources/pages/calendar.html",
 		controller  : "calendarController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		homepage: false
 	})
 	// Cloud-related pages
-	.when("/cloud", {
-		title: "Cloud list",
-		templateUrl : "../resources/pages/cloud-list.html",
-		controller  : "cloudListController",
-		caseInsensitiveMatch : true
-	})
-	.when("/cloud/:id", {
+	.when("/cloud/:project_id", {
 		title: "Cloud",
 		templateUrl : "../resources/pages/cloud.html",
 		controller  : "cloudController",
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: isProjectAccessible }
 	})
 	// Notifications-related pages
@@ -152,53 +165,58 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		title: "Notifications",
 		templateUrl : "../resources/pages/notifications.html",
 		controller  : "notificationsController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		homepage: false
 	})
 	// User-related pages
 	.when("/profile", {
 		title: "Profile",
 		templateUrl : "../resources/pages/profile.html",
 		controller  : "profileController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		homepage: false
 	})
 	// Project settings page
-	.when("/settings/:id", {
+	.when("/settings/:project_id", {
 		title: "Project settings",
 		templateUrl : "../resources/pages/project-settings.html",
 		controller  : "projectSettingsController",
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: isProjectSettingsPageAccessible }
 	})
 	// Timeline-related pages
-	.when("/timeline", {
-		title: "Timeline list",
-		templateUrl : "../resources/pages/timeline-list.html",
-		controller  : "timelineListController",
-		caseInsensitiveMatch : true
-	})
-	.when("/timeline/:id", {
+	.when("/timeline/:project_id", {
 		title: "Timeline",
 		templateUrl : "../resources/pages/timeline.html",
 		controller  : "timelineController",
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: isProjectAccessible }
 	})
 	// Whiteboard-related pages
-	.when("/whiteboard", {
+	.when("/whiteboard/:project_id", {
 		title: "Whiteboard list",
 		templateUrl : "../resources/pages/whiteboard-list.html",
 		controller  : "whiteboardListController",
-		caseInsensitiveMatch : true
+		caseInsensitiveMatch : true,
+		homepage: false,
+		resolve: { factory: isProjectAccessible }
 	})
 	.when("/whiteboard/:project_id/:id", {
 		title: "Whiteboard",
 		templateUrl : "../resources/pages/whiteboard.html",
 		controller  : "whiteboardController",
 		caseInsensitiveMatch : true,
+		homepage: false,
 		resolve: { factory: isWhiteboardAccessible }
 	})
 	// Error page (default behavior)
-	.otherwise({ templateUrl : "../resources/pages/404.html" });
+	.otherwise({
+		title: "Error",
+		templateUrl : "../resources/pages/404.html",
+		homepage: false
+	});
 
 	$locationProvider.html5Mode(true);
 }]);

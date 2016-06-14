@@ -3,135 +3,39 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div data-ng-controller="taskController">
-
-  <!-- grappbox.data: task creation information -->
-  <div class="">
-    <p><a href="tasks" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a></p>
-  </div>
-  <div data-ng-if="task_new">
-    <div class="panel panel-default">
-      <div class="panel-heading">Create your task</div>
-      <div class="panel-body">
-        <p>
-          This page allows you to create a brand new task.<br>Use the <strong>"Create"</strong> button at the end of this page when you're done.
-        </p>
-        </div>
-    </div>
-  </div>
-  <!-- grappbox.data: task edition information -->
-  <div data-ng-if="!task_new && !task_error">
-    <div class="panel panel-default">
-      <div class="panel-heading">Edit your task</div>
-      <div class="panel-body">
-        <p>This page allows you to edit any part of your task.<br>Validate using buttons at the end of pages when you're done.</p>
+<!-- grappbox.data: task creation information -->
+<div class="">
+  <p><a href="tasks/{[{ projectID }]}" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a></p>
+</div>
+<div data-ng-if="task_new">
+  <div class="panel panel-default">
+    <div class="panel-heading">Create your task</div>
+    <div class="panel-body">
+      <p>
+        This page allows you to create a brand new task.<br>Use the <strong>"Create"</strong> button at the end of this page when you're done.
+      </p>
       </div>
+  </div>
+</div>
+<!-- grappbox.data: task edition information -->
+<div data-ng-if="!task_new && !task_error">
+  <div class="panel panel-default">
+    <div class="panel-heading">Edit your task</div>
+    <div class="panel-body">
+      <p>This page allows you to edit any part of your task.<br>Validate using buttons at the end of pages when you're done.</p>
     </div>
   </div>
+</div>
 
-  <!-- grappbox.data: task creation -->
-  <section id="task-creation" data-ng-if="task_new">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="well">
-          <div data-ng-if="data.onLoad">
-            <div class="spinner section"><div></div></div>
-          </div>
-          <div data-ng-if="!data.onLoad">
-            <form class="form-horizontal" novalidate>
-              <fieldset>
-                <div class="form-group">
-                  <label for="title" class="col-md-1 control-label">Title</label>
-                  <div class="col-md-11">
-                    <input type="text" class="form-control" data-ng-model="task.title" id="title" placeholder="Title">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="description" class="col-md-1 control-label">Description</label>
-                  <div class="col-md-11">
-                    <textarea class="form-control" rows="3" data-ng-model="task.description" id="description" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="due_date" class="col-md-1 control-label">Due Date</label>
-                  <div class="col-md-11">
-                    <input type="date" class="form-control" data-ng-model="task.due_date" id="due_date">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-md-11 col-md-offset-1">
-                    <div class="col-md-3">
-                      <label><input type="radio" name="task_type" value="regular" data-ng-model="task.task_type"> Is regular task</label>
-                    </div>
-                    <div class="col-md-3 col-md-offset-1">
-                      <label><input type="radio" name="task_type" value="milestone" data-ng-model="task.task_type"> Is milestone</label>
-                    </div>
-                    <div class="col-md-3 col-md-offset-1">
-                      <label><input type="radio" name="task_type" value="container" data-ng-model="task.task_type"> Is container</label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-group"  data-ng-if="task.task_type == 'container'">
-                  <label for="dependencies" class="col-md-1 control-label">Dependencies</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="tasks"
-                                display-property="name"
-                                placeholder="Add task in the container"
-                                replace-spaces-with-dashes="false"
-                                add-from-autocomplete-only="true"
-                                on-tag-added="taskAdded($tag)"
-                                on-tag-removed="tasksRemoved($tag)">
-                      <auto-complete source="tasksList"></auto-complete>
-                    </tags-input>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="users" class="col-md-1 control-label">Assigned User(s)</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="users"
-                                display-property="name"
-                                placeholder="Assign a user"
-                                replace-spaces-with-dashes="false"
-                                add-from-autocomplete-only="true"
-                                on-tag-added="userAdded($tag)"
-                                on-tag-removed="userRemoved($tag)">
-                      <auto-complete source="usersList"></auto-complete>
-                    </tags-input>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="tags" class="col-md-1 control-label">Tag(s)</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="tags"
-                                display-property="name"
-                                replace-spaces-with-dashes="false"
-                                on-tag-added="tagAdded($tag)"
-                                on-tag-removed="tagRemoved($tag)">
-                      <auto-complete source="tagsList"></auto-complete>
-                    </tags-input>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <div class="col-md-2 col-md-offset-10">
-                    <button type="submit" class="btn btn-default" data-ng-click="createTask(task)">Create</button>
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-          </div>
+<!-- grappbox.data: task creation -->
+<section id="task-creation" data-ng-if="task_new">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well">
+        <div data-ng-if="data.onLoad">
+          <div class="spinner section"><div></div></div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- grappbox.data: project edition -->
-  <section id="task-edition" data-ng-if="!task_new">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="well">
+        <div data-ng-if="!data.onLoad">
           <form class="form-horizontal" novalidate>
             <fieldset>
               <div class="form-group">
@@ -218,9 +122,101 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-</div>
+<!-- grappbox.data: project edition -->
+<section id="task-edition" data-ng-if="!task_new">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well">
+        <form class="form-horizontal" novalidate>
+          <fieldset>
+            <div class="form-group">
+              <label for="title" class="col-md-1 control-label">Title</label>
+              <div class="col-md-11">
+                <input type="text" class="form-control" data-ng-model="task.title" id="title" placeholder="Title">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="description" class="col-md-1 control-label">Description</label>
+              <div class="col-md-11">
+                <textarea class="form-control" rows="3" data-ng-model="task.description" id="description" placeholder="Description"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="due_date" class="col-md-1 control-label">Due Date</label>
+              <div class="col-md-11">
+                <input type="date" class="form-control" data-ng-model="task.due_date" id="due_date">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-11 col-md-offset-1">
+                <div class="col-md-3">
+                  <label><input type="radio" name="task_type" value="regular" data-ng-model="task.task_type"> Is regular task</label>
+                </div>
+                <div class="col-md-3 col-md-offset-1">
+                  <label><input type="radio" name="task_type" value="milestone" data-ng-model="task.task_type"> Is milestone</label>
+                </div>
+                <div class="col-md-3 col-md-offset-1">
+                  <label><input type="radio" name="task_type" value="container" data-ng-model="task.task_type"> Is container</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group"  data-ng-if="task.task_type == 'container'">
+              <label for="dependencies" class="col-md-1 control-label">Dependencies</label>
+              <div class="col-md-11">
+                <tags-input ng-model="tasks"
+                            display-property="name"
+                            placeholder="Add task in the container"
+                            replace-spaces-with-dashes="false"
+                            add-from-autocomplete-only="true"
+                            on-tag-added="taskAdded($tag)"
+                            on-tag-removed="tasksRemoved($tag)">
+                  <auto-complete source="tasksList"></auto-complete>
+                </tags-input>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="users" class="col-md-1 control-label">Assigned User(s)</label>
+              <div class="col-md-11">
+                <tags-input ng-model="users"
+                            display-property="name"
+                            placeholder="Assign a user"
+                            replace-spaces-with-dashes="false"
+                            add-from-autocomplete-only="true"
+                            on-tag-added="userAdded($tag)"
+                            on-tag-removed="userRemoved($tag)">
+                  <auto-complete source="usersList"></auto-complete>
+                </tags-input>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tags" class="col-md-1 control-label">Tag(s)</label>
+              <div class="col-md-11">
+                <tags-input ng-model="tags"
+                            display-property="name"
+                            replace-spaces-with-dashes="false"
+                            on-tag-added="tagAdded($tag)"
+                            on-tag-removed="tagRemoved($tag)">
+                  <auto-complete source="tagsList"></auto-complete>
+                </tags-input>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-md-2 col-md-offset-10">
+                <button type="submit" class="btn btn-default" data-ng-click="createTask(task)">Create</button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 

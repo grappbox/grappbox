@@ -14,7 +14,7 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
   /* ==================== INITIALIZATION ==================== */
 
   // Scope variables initialization
-  $scope.project    = { id: $routeParams.id };
+  $scope.project    = { id: $routeParams.project_id };
   $scope.button     = { parent: false, delete: false };
   $scope.data       = { onLoad: true, objects: "", isValid: false };
 

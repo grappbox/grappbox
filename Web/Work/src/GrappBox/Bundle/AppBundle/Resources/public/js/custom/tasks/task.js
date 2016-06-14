@@ -16,7 +16,7 @@ app.controller('taskController', ['$rootScope', '$scope', '$routeParams', '$http
   // ------------------------------------------------------
 
   //Scope variables initialization
-  $scope.projectID = $routeParams.projectId;
+  $scope.projectID = $routeParams.project_id;
   $scope.projectName = $routeParams.projectName;
   $scope.taskID = $routeParams.id;
 

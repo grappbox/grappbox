@@ -23,13 +23,15 @@ login_onSuccessRedirect['$inject'] = ['$q', '$location'];
 
 
 // Redirect user after successful logout
-var logout_onSuccessRedirect = function($q, $http, $rootScope, $cookies, $window) {
+var logout_onSuccessRedirect = function($q, $http, $rootScope, $cookies, localStorageService, $window) {
 	var deferred = $q.defer();
 
 	$http.get($rootScope.apiBaseURL + '/accountadministration/logout/' + $cookies.get('USERTOKEN')).success(function(data) {
 		$cookies.remove('LASTLOGINMESSAGE', { path: '/' });
 		$cookies.remove('USERTOKEN', { path: '/' });
 		$cookies.remove('CLOUDSAFE', { path: '/' });
+		localStorageService.clearAll();
+
 		$window.location.href = "/";
 		deferred.resolve(true);
 	});
@@ -37,4 +39,4 @@ var logout_onSuccessRedirect = function($q, $http, $rootScope, $cookies, $window
 	return deferred.promise;
 };
 
-logout_onSuccessRedirect['$inject'] = ['$q', '$http', '$rootScope', '$cookies', '$window'];
+logout_onSuccessRedirect['$inject'] = ['$q', '$http', '$rootScope', '$cookies', 'localStorageService', '$window'];

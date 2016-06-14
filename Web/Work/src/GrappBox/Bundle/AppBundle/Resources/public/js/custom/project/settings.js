@@ -21,12 +21,12 @@ var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $cookies, 
   var deferred = $q.defer();
 
   // Project creation page
-  if ($route.current.params.id == 0) {
+  if ($route.current.params.project_id == 0) {
     deferred.resolve();
     return deferred.promise;
   }
 
-  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.id)
+  $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $route.current.params.project_id)
     .then(function onGetSuccess(response) {
       deferred.resolve();
     },
@@ -506,7 +506,7 @@ app.controller('projectSettingsController', ['$rootScope', '$scope', '$routePara
 
   // Scope variables initialization
   $scope.data = { onLoad: true, customersLoad: true, usersLoad: true, project: { }, customers: { }, isValid: false, canEdit: true, editMode: false };
-  $scope.projectID = $routeParams.id;
+  $scope.projectID = $routeParams.project_id;
 
 
   //Get project informations if not new

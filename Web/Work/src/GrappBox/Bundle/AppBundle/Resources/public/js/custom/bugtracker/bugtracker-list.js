@@ -14,7 +14,7 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
   var content = "";
 
   // Scope variables initialization
-  $scope.projectId = 1;
+  $scope.projectId = $routeParams.project_id;
   $scope.data = { onLoad: true, tickets: { }, message: "_invalid" };
 
   var getOpenTicketsContent = function() {

@@ -2,50 +2,114 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div data-ng-controller="bugtrackerController">
-  <!-- grappbox.data: bug ticket creation information -->
-  <div class="">
-    <p><a href="bugtracker" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a></p>
+<!-- grappbox.data: bug ticket creation information -->
+<div class="">
+  <p><a href="bugtracker" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a></p>
+</div>
+<div data-ng-if="data.bugtracker_new">
+  <div class="panel panel-default">
+    <div class="panel-heading">Create your ticket</div>
+    <div class="panel-body">
+      <p>
+        This page allows you to create a brand new error ticket.<br>Use the <strong>"Create"</strong> button at the end of this page when you're done.
+      </p>
+      </div>
   </div>
-  <div data-ng-if="data.bugtracker_new">
-    <div class="panel panel-default">
-      <div class="panel-heading">Create your ticket</div>
-      <div class="panel-body">
-        <p>
-          This page allows you to create a brand new error ticket.<br>Use the <strong>"Create"</strong> button at the end of this page when you're done.
-        </p>
+</div>
+<!-- grappbox.data: ticket edition information -->
+<div data-ng-if="!data.bugtracker_new && data.editMode['ticket']">
+  <div class="panel panel-default">
+    <div class="panel-heading">Edit your ticket</div>
+    <div class="panel-body">
+      <p>This page allows you to edit any part of your ticket.<br>Validate using the <strong>"Update"</strong> button at the end of pages when you're done.</p>
+    </div>
+  </div>
+</div>
+<!-- grappbox.data: ticket visual information -->
+<div data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
+  <div class="panel panel-default">
+    <div class="panel-heading">See your ticket</div>
+    <div class="panel-body">
+      <p>This page shows you all informations about your ticket.<br>Edit using the <strong>"Edit"</strong> button at the end of the page.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- grappbox.data: bug creation -->
+<section id="bugtracker-creation" data-ng-if="data.bugtracker_new">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well">
+        <div data-ng-if="data.onLoad">
+          <div class="spinner section"><div></div></div>
         </div>
-    </div>
-  </div>
-  <!-- grappbox.data: ticket edition information -->
-  <div data-ng-if="!data.bugtracker_new && data.editMode['ticket']">
-    <div class="panel panel-default">
-      <div class="panel-heading">Edit your ticket</div>
-      <div class="panel-body">
-        <p>This page allows you to edit any part of your ticket.<br>Validate using the <strong>"Update"</strong> button at the end of pages when you're done.</p>
+        <div data-ng-if="!data.onLoad">
+          <form class="form-horizontal" novalidate>
+            <fieldset>
+              <div class="form-group">
+                <label for="title" class="col-md-1 control-label">Title</label>
+                <div class="col-md-11">
+                  <input type="text" class="form-control" data-ng-model="data.ticket.title" id="title" placeholder="Title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="description" class="col-md-1 control-label">Description</label>
+                <div class="col-md-11">
+                  <textarea class="form-control" rows="3" data-ng-model="data.ticket.description" id="description" placeholder="Description"></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="tags" class="col-md-1 control-label">Tag(s)</label>
+                <div class="col-md-11">
+                  <tags-input ng-model="tags"
+                              display-property="name"
+                              replace-spaces-with-dashes="false"
+                              on-tag-added="tagAdded($tag)"
+                              on-tag-removed="tagRemoved($tag)"
+                              class="form-control">
+                    <auto-complete source="tagsList"></auto-complete>
+                  </tags-input>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="tags" class="col-md-1 control-label">Assigned User(s)</label>
+                <div class="col-md-11">
+                  <tags-input ng-model="users"
+                              display-property="name"
+                              placeholder="Assign a user"
+                              replace-spaces-with-dashes="false"
+                              add-from-autocomplete-only="true"
+                              on-tag-added="userAdded($tag)"
+                              on-tag-removed="userRemoved($tag)"
+                              class="form-control">
+                    <auto-complete source="usersList"></auto-complete>
+                  </tags-input>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-2 col-md-offset-10">
+                  <button type="submit" class="btn btn-default" data-ng-click="createTicket(data.ticket)">Create</button>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-  <!-- grappbox.data: ticket visual information -->
-  <div data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
-    <div class="panel panel-default">
-      <div class="panel-heading">See your ticket</div>
-      <div class="panel-body">
-        <p>This page shows you all informations about your ticket.<br>Edit using the <strong>"Edit"</strong> button at the end of the page.</p>
-      </div>
-    </div>
-  </div>
+</section>
 
-
-  <!-- grappbox.data: bug creation -->
-  <section id="bugtracker-creation" data-ng-if="data.bugtracker_new">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="well">
-          <div data-ng-if="data.onLoad">
-            <div class="spinner section"><div></div></div>
-          </div>
-          <div data-ng-if="!data.onLoad">
+<!-- grappbox.data: bug edition -->
+<section id="bugtracker-edition" data-ng-if="!data.bugtracker_new && data.editMode['ticket']">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well">
+        <div data-ng-if="data.onLoad">
+          <div class="spinner section"><div></div></div>
+        </div>
+        <div data-ng-if="!data.onLoad">
+          <div data-ng-if="data.message == '_valid'">
             <form class="form-horizontal" novalidate>
               <fieldset>
                 <div class="form-group">
@@ -63,7 +127,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="form-group">
                   <label for="tags" class="col-md-1 control-label">Tag(s)</label>
                   <div class="col-md-11">
-                    <tags-input ng-model="tags"
+                    <tags-input ng-model="data.ticket.tags"
                                 display-property="name"
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
@@ -76,7 +140,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="form-group">
                   <label for="tags" class="col-md-1 control-label">Assigned User(s)</label>
                   <div class="col-md-11">
-                    <tags-input ng-model="users"
+                    <tags-input ng-model="data.ticket.users"
                                 display-property="name"
                                 placeholder="Assign a user"
                                 replace-spaces-with-dashes="false"
@@ -89,229 +153,132 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </div>
                 </div>
                 <div class="form-group">
-                  <div class="col-md-2 col-md-offset-10">
-                    <button type="submit" class="btn btn-default" data-ng-click="createTicket(data.ticket)">Create</button>
+                  <div class="col-md-4 col-md-offset-8">
+                    <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Cancel</button>
+                    <button type="submit" class="btn btn-default" data-ng-click="editTicket(data.ticket)">Update</button>
                   </div>
                 </div>
               </fieldset>
             </form>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- grappbox.data: bug edition -->
-  <section id="bugtracker-edition" data-ng-if="!data.bugtracker_new && data.editMode['ticket']">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="well">
-          <div data-ng-if="data.onLoad">
-            <div class="spinner section"><div></div></div>
+          <div data-ng-if="data.message == '_empty'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-frown-o"></i>This bug doesn't exist.</p>
+            </div>
           </div>
-          <div data-ng-if="!data.onLoad">
-            <div data-ng-if="data.message == '_valid'">
-              <form class="form-horizontal" novalidate>
-                <fieldset>
-                  <div class="form-group">
-                    <label for="title" class="col-md-1 control-label">Title</label>
-                    <div class="col-md-11">
-                      <input type="text" class="form-control" data-ng-model="data.ticket.title" id="title" placeholder="Title">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="description" class="col-md-1 control-label">Description</label>
-                    <div class="col-md-11">
-                      <textarea class="form-control" rows="3" data-ng-model="data.ticket.description" id="description" placeholder="Description"></textarea>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="tags" class="col-md-1 control-label">Tag(s)</label>
-                    <div class="col-md-11">
-                      <tags-input ng-model="data.ticket.tags"
-                                  display-property="name"
-                                  replace-spaces-with-dashes="false"
-                                  on-tag-added="tagAdded($tag)"
-                                  on-tag-removed="tagRemoved($tag)"
-                                  class="form-control">
-                        <auto-complete source="tagsList"></auto-complete>
-                      </tags-input>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="tags" class="col-md-1 control-label">Assigned User(s)</label>
-                    <div class="col-md-11">
-                      <tags-input ng-model="data.ticket.users"
-                                  display-property="name"
-                                  placeholder="Assign a user"
-                                  replace-spaces-with-dashes="false"
-                                  add-from-autocomplete-only="true"
-                                  on-tag-added="userAdded($tag)"
-                                  on-tag-removed="userRemoved($tag)"
-                                  class="form-control">
-                        <auto-complete source="usersList"></auto-complete>
-                      </tags-input>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="col-md-4 col-md-offset-8">
-                      <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Cancel</button>
-                      <button type="submit" class="btn btn-default" data-ng-click="editTicket(data.ticket)">Update</button>
-                    </div>
-                  </div>
-                </fieldset>
-              </form>
+          <div data-ng-if="data.message == '_invalid'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
             </div>
-            <div data-ng-if="data.message == '_empty'">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-frown-o"></i>This bug doesn't exist.</p>
-              </div>
-            </div>
-            <div data-ng-if="data.message == '_invalid'">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-              </div>
-            </div>
-            <div data-ng-if="data.message == '_denied'">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
-              </div>
+          </div>
+          <div data-ng-if="data.message == '_denied'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- grappbox.data: bug visual -->
-  <section id="bugtracker-visual" data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="well">
-          <div data-ng-if="data.onLoad">
-            <div class="spinner section"><div></div></div>
+<!-- grappbox.data: bug visual -->
+<section id="bugtracker-visual" data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well">
+        <div data-ng-if="data.onLoad">
+          <div class="spinner section"><div></div></div>
+        </div>
+        <div data-ng-if="!data.onLoad">
+          <div data-ng-if="data.message == '_valid'">
+            <fieldset>
+              <div class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
+                <h4>Author</h4>
+                <p>{[{data.ticket.creator.fullname}]}</p>
+              </div>
+              <div class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
+                <h4>Creation date</h4>
+                <p>{[{ formatObjectDate(data.ticket.createdAt.date) }]}</p>
+              </div>
+              <div ng-if="data.ticket.editedAt" class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
+                <h4>Last edition date</h4>
+                <p>{[{ formatObjectDate(data.ticket.editedAt.date) }]}</p>
+              </div>
+              <div ng-if="data.ticket.deletedAt" class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
+                <h4>Deletion date</h4>
+                <p>{[{ formatObjectDate(data.ticket.deletedAt.date) }]}</p>
+              </div>
+              <div class="col-md-12">
+                <h4>Description</h4>
+                <p>{[{ data.ticket.description}]}</p>
+              </div>
+              <div class="col-md-12">
+                <h4>Tag(s)</h4>
+                <div class="panel panel-default col-md-2" ng-repeat="tag in data.ticket.tags">
+                  <div class="panel-body">{[{tag.name}]}</div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <h4>Assigned user(s)</h4>
+                <div class="panel panel-default col-md-3" ng-repeat="user in data.ticket.users">
+                  <div class="panel-body">{[{user.name}]}</div>
+                </div>
+              </div>
+              <div class="col-md-4 col-md-offset-8" data-ng-if="!data.ticket.deletedAt">
+                <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Edit</button>
+                <button type="submit" class="btn btn-default" data-ng-click="deleteTicket(data.ticket)">Close</button>
+              </div>
+              <div class="col-md-4 col-md-offset-8" data-ng-if="data.ticket.deletedAt">
+                <button type="submit" class="btn btn-default" data-ng-click="reopenTicket(data.ticket)">Reopen</button>
+              </div>
+            </fieldset>
           </div>
-          <div data-ng-if="!data.onLoad">
-            <div data-ng-if="data.message == '_valid'">
-              <fieldset>
-                <div class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                  <h4>Author</h4>
-                  <p>{[{data.ticket.creator.fullname}]}</p>
-                </div>
-                <div class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                  <h4>Creation date</h4>
-                  <p>{[{ formatObjectDate(data.ticket.createdAt.date) }]}</p>
-                </div>
-                <div ng-if="data.ticket.editedAt" class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                  <h4>Last edition date</h4>
-                  <p>{[{ formatObjectDate(data.ticket.editedAt.date) }]}</p>
-                </div>
-                <div ng-if="data.ticket.deletedAt" class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                  <h4>Deletion date</h4>
-                  <p>{[{ formatObjectDate(data.ticket.deletedAt.date) }]}</p>
-                </div>
+          <div data-ng-if="data.message == '_empty'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-frown-o"></i>This bug doesn't exist.</p>
+            </div>
+          </div>
+          <div data-ng-if="data.message == '_invalid'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+            </div>
+          </div>
+          <div data-ng-if="data.message == '_denied'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- grappbox.data: comments -->
+<section id="bugtracker-comment" data-ng-if="!data.bugtracker_new">
+  <div class="row">
+    <div class="col-lg-12">
+      <div data-ng-if="!data.onLoad && data.message == '_valid'">
+        <div data-ng-repeat="comment in commentsList">
+          <div class="panel panel-default">
+            <div data-ng-if="!data.editMode[comment.id]">
+              <div class="panel-body">
                 <div class="col-md-12">
-                  <h4>Description</h4>
-                  <p>{[{ data.ticket.description}]}</p>
-                </div>
-                <div class="col-md-12">
-                  <h4>Tag(s)</h4>
-                  <div class="panel panel-default col-md-2" ng-repeat="tag in data.ticket.tags">
-                    <div class="panel-body">{[{tag.name}]}</div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <h4>Assigned user(s)</h4>
-                  <div class="panel panel-default col-md-3" ng-repeat="user in data.ticket.users">
-                    <div class="panel-body">{[{user.name}]}</div>
-                  </div>
+                  <h4>{[{comment.title}]}</h4>
+                  <p>{[{comment.description}]}</p>
                 </div>
                 <div class="col-md-4 col-md-offset-8" data-ng-if="!data.ticket.deletedAt">
-                  <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Edit</button>
-                  <button type="submit" class="btn btn-default" data-ng-click="deleteTicket(data.ticket)">Close</button>
-                </div>
-                <div class="col-md-4 col-md-offset-8" data-ng-if="data.ticket.deletedAt">
-                  <button type="submit" class="btn btn-default" data-ng-click="reopenTicket(data.ticket)">Reopen</button>
-                </div>
-              </fieldset>
-            </div>
-            <div data-ng-if="data.message == '_empty'">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-frown-o"></i>This bug doesn't exist.</p>
-              </div>
-            </div>
-            <div data-ng-if="data.message == '_invalid'">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-              </div>
-            </div>
-            <div data-ng-if="data.message == '_denied'">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- grappbox.data: comments -->
-  <section id="bugtracker-comment" data-ng-if="!data.bugtracker_new">
-    <div class="row">
-      <div class="col-lg-12">
-        <div data-ng-if="!data.onLoad && data.message == '_valid'">
-          <div data-ng-repeat="comment in commentsList">
-            <div class="panel panel-default">
-              <div data-ng-if="!data.editMode[comment.id]">
-                <div class="panel-body">
-                  <div class="col-md-12">
-                    <h4>{[{comment.title}]}</h4>
-                    <p>{[{comment.description}]}</p>
-                  </div>
-                  <div class="col-md-4 col-md-offset-8" data-ng-if="!data.ticket.deletedAt">
-                    <button class="btn btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)">Edit</button>
-                    <button class="btn btn-default btn-access" ng-click="deleteComment(comment.id)">Delete</button>
-                  </div>
-                </div>
-                <div class="panel-footer">
-                  {[{"Posted by " + comment.creator.fullname + " at " + formatObjectDate(comment.createdAt.date) + (comment.editedAt ? " - edited at " + formatObjectDate(comment.editedAt.date) : "")}]}
+                  <button class="btn btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)">Edit</button>
+                  <button class="btn btn-default btn-access" ng-click="deleteComment(comment.id)">Delete</button>
                 </div>
               </div>
-              <div data-ng-if="data.editMode[comment.id]">
-                <div class="panel-body">
-                  <form class="form-horizontal" novalidate>
-                    <fieldset>
-                      <div class="form-group">
-                        <label for="title" class="col-md-1 control-label">Title</label>
-                        <div class="col-md-11">
-                          <input type="text" class="form-control" data-ng-model="comment.title" id="title" placeholder="Title">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="description" class="col-md-1 control-label">Description</label>
-                        <div class="col-md-11">
-                          <textarea class="form-control" rows="3" data-ng-model="comment.description" id="description" placeholder="Description"></textarea>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-md-4 col-md-offset-8">
-                          <button class="btn btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)">Cancel</button>
-                          <button type="submit" class="btn btn-default" data-ng-click="editComment(comment)">Udpate</button>
-                        </div>
-                      </div>
-                    </fieldset>
-                  </form>
-                </div>
+              <div class="panel-footer">
+                {[{"Posted by " + comment.creator.fullname + " at " + formatObjectDate(comment.createdAt.date) + (comment.editedAt ? " - edited at " + formatObjectDate(comment.editedAt.date) : "")}]}
               </div>
             </div>
-          </div>
-          <div data-ng-if="!data.ticket.deletedAt">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                  Create new comment
-              </div>
+            <div data-ng-if="data.editMode[comment.id]">
               <div class="panel-body">
                 <form class="form-horizontal" novalidate>
                   <fieldset>
@@ -328,8 +295,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       </div>
                     </div>
                     <div class="form-group">
-                      <div class="col-md-2 col-md-offset-10">
-                        <button type="submit" class="btn btn-default" data-ng-click="createComment(comment)">Create</button>
+                      <div class="col-md-4 col-md-offset-8">
+                        <button class="btn btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)">Cancel</button>
+                        <button type="submit" class="btn btn-default" data-ng-click="editComment(comment)">Udpate</button>
                       </div>
                     </div>
                   </fieldset>
@@ -338,8 +306,37 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
           </div>
         </div>
+        <div data-ng-if="!data.ticket.deletedAt">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+                Create new comment
+            </div>
+            <div class="panel-body">
+              <form class="form-horizontal" novalidate>
+                <fieldset>
+                  <div class="form-group">
+                    <label for="title" class="col-md-1 control-label">Title</label>
+                    <div class="col-md-11">
+                      <input type="text" class="form-control" data-ng-model="comment.title" id="title" placeholder="Title">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="description" class="col-md-1 control-label">Description</label>
+                    <div class="col-md-11">
+                      <textarea class="form-control" rows="3" data-ng-model="comment.description" id="description" placeholder="Description"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-md-2 col-md-offset-10">
+                      <button type="submit" class="btn btn-default" data-ng-click="createComment(comment)">Create</button>
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
-
-</div>
+  </div>
+</section>

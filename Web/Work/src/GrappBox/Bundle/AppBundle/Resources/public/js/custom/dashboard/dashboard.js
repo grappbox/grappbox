@@ -9,16 +9,34 @@
 * APP dashboard
 *
 */
-app.controller('dashboardController', ['$rootScope', '$scope', '$route', '$http', '$cookies', function($rootScope, $scope, $route, $http, $cookies) {
+app.controller('dashboardController', ['$rootScope', '$scope', 'localStorageService', '$base64', '$route', '$http', '$cookies', function($rootScope, $scope, localStorageService, $base64, $route, $http, $cookies) {
 
 	// Scope variables initialization
 	$scope.occupation = { list: "", onLoad: true, valid: false, message: "" };
 	$scope.meetings = { list: "", onLoad: true, valid: false, message: "" };
 
 	$scope.content = { projectID: "" };
-	$scope.content.projectID = $route.current.params.id;
+	$scope.content.projectID = $route.current.params.project_id;
 
+  // Local storage initialization
+  if (!localStorageService.get("HAS_PROJECT")) {
+    $http.get($rootScope.apiBaseURL + '/projects/getinformations/' + $cookies.get('USERTOKEN') + '/' + $scope.content.projectID)
+    .then(function onGetSuccess(response) {
+      var data = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
 
+      localStorageService.set("HAS_PROJECT", true);
+      localStorageService.set("PROJECT_ID", $base64.encode($scope.content.projectID));
+      localStorageService.set("PROJECT_NAME", $base64.encode(data.name));
+
+      $rootScope.project.id = $scope.content.projectID;
+      $rootScope.project.name = data.name;
+      $rootScope.project.set = true;
+      $rootScope.menu.full = true;
+    },
+    function onGetFail(response) {
+      context.rootScope.onUserTokenError();
+    });
+  }
 
 	/* ==================== INITIALIZATION (TEAM OCCUPATION) ==================== */
 

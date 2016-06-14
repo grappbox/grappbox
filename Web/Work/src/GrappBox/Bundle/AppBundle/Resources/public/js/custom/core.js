@@ -4,9 +4,11 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/* ================================================== */
-/* ==================== GRAPPBOX ==================== */
-/* ================================================== */
+
+
+/* ==================================================== */
+/* ==================== DEFINITION ==================== */
+/* ==================================================== */
 
 /**
 * GRAPPBOX
@@ -18,21 +20,21 @@ var app = angular.module("grappbox", [
   "ngCookies",
   "ngAnimate",
   "ngTagsInput",
-  "ngAside",
   "panhandler",
   "base64",
   "naif.base64",
   "mwl.calendar",
   "ui.bootstrap",
   "ui-notification",
-  "ngHamburger",
   "LocalStorageModule",
   "angularBootstrapMaterial"
 ]);
 
 
 
+/* ======================================================= */
 /* ==================== CONFIGURATION ==================== */
+/* ======================================================= */
 
 // TWIG template conflict fix
 app.config(["$interpolateProvider", function($interpolateProvider) {
@@ -47,9 +49,9 @@ app.config(["$httpProvider", function($httpProvider) {
 }]);
 
 // Local storage settings
-app.config(function (localStorageServiceProvider) {
+app.config(function(localStorageServiceProvider) {
   localStorageServiceProvider
-    .setPrefix('grappbox')
+    .setPrefix('__GRAPPBOX_')
     .setStorageCookie(30, '/')
     .setStorageType('localStorage')
     .setNotify(true, true);
@@ -69,65 +71,60 @@ app.config(["NotificationProvider", function(NotificationProvider) {
 
 
 
+/* ======================================================== */
 /* ==================== INITIALIZATION ==================== */
+/* ======================================================== */
 
 // Controller definition
 // GrappBox (main)
-app.controller("grappboxController", ["$scope", "$aside", "$location", function($scope, $aside, $location) {
-  var modalInstance_asideMenu = "";
+app.controller("grappboxController", ["$rootScope", "$scope", "localStorageService", "$location", function($rootScope, $scope, localStorageService, $location) {
 
-  $scope.routeList = {
-    "/": false,
+  $scope.content = { routeList: "", iconList: "", homepage: false };
+  $scope.method = { switchProject: "" };
+
+  $scope.content.routeList = {
+    "/dashboard": false,
     "/bugtracker": false,
     "/calendar": false,
     "/cloud": false,
-    "/notifications": false,
     "/profile": false,
     "/settings": false,
     "/timeline": false,
     "/whiteboard": false,
-    "/tasks": false
+    "/tasks": false,
+    "/logout": false
   };
 
-  $scope.iconList = {
-    "/": "dashboard",
+  $scope.content.iconList = {
+    "/dashboard": "dashboard",
     "/bugtracker": "computer",
     "/calendar": "event",
     "/cloud": "cloud_upload",
-    "/notifications": "notifications",
     "/profile": "person",
-    "/settings": "folder",
+    "/settings": "settings",
     "/timeline": "vertical_align_center",
     "/whiteboard": "create",
     "/tasks": "view_list",
-    "/logout" : "exit_to_app"
+    "/logout": "exit_to_app"
   };
 
-  $scope.app_toggleAsideMenu = function() {
-    modalInstance_asideMenu = $aside.open({
-      placement: "left",
-      size: "sm",
-      backdrop: "true",
-      templateUrl: "app_asideMenu.html",
-      controller: "app_asideMenu",
-      resolve: {
-         routeList: function () {
-           return $scope.routeList;
-         },
-         iconList: function () {
-           return $scope.iconList;
-         }
-       }
-     });
+  $scope.method.switchProject = function() {
+    localStorageService.clearAll();
+    $rootScope.project.id = null;
+    $rootScope.project.name = null;
+    $rootScope.project.set = false;
+    $rootScope.menu.full = false;    
+
+    $location.path("/");
   };
 
   // Routine definition
   // Check if the request route is not a subsection of another one
-  var isSubRouteOf = function(routeToTest, newRoute) {
+  var isSubRouteOf = function(routeToTest, routeToLoad) {
     var isRouteKnown = false;
 
-    if (newRoute.indexOf(routeToTest) > -1) {
-      $scope.routeList["/" + routeToTest] = true;
+    if (routeToLoad.indexOf(routeToTest) > -1) {
+      $scope.content.routeList["/" + routeToTest] = true;
       isRouteKnown = true;
     }
     return isRouteKnown;
@@ -135,39 +132,75 @@ app.controller("grappboxController", ["$scope", "$aside", "$location", function(
 
   // On route change (start)
   $scope.$on("$routeChangeStart", function() {
-    var newRoute = $location.path();
-    var isRouteKnown = false;
+    var routeToLoad = $location.path();
 
-    angular.forEach($scope.routeList, function(isCurrentPathActive, currentPath) {
-      if (currentPath === newRoute) {
-        isRouteKnown = true;
-        $scope.routeList[currentPath] = true;
-      }
+    angular.forEach($scope.content.routeList, function(key, value) {
+      if (value === routeToLoad)
+        $scope.content.routeList[value] = true;
+      else if (isSubRouteOf(value, routeToLoad))
+        $scope.content.routeList[value] = true;
       else
-        $scope.routeList[currentPath] = false;
+        $scope.content.routeList[value] = false;
     });
-    if (!isRouteKnown)
-      isRouteKnown = (isSubRouteOf("bugtracker", newRoute) ? true : (isSubRouteOf("cloud", newRoute) ? true : (isSubRouteOf("whiteboard", newRoute) ? true : false)));
+
   });
 
 }]);
 
 
 
-/* ==================== ROOTSCOPE DEFINITION ==================== */
+/* ================================================= */
+/* ==================== SIDEBAR ==================== */
+/* ================================================= */
+
+// Directive definition
+// Sidebar
+app.directive('sidebarDirective', function() {
+  return {
+    link: function(scope, element, attr) {
+      scope.$watch(attr.sidebarDirective, function(value) {
+        if (value) {
+          element.addClass('open'); 
+          return ;
+        }
+        element.removeClass('open');
+      });
+    }
+  };
+});  
+
+
+
+/* =================================================== */
+/* ==================== ROOTSCOPE ==================== */
+/* =================================================== */
 
 /**
 * ROOTSCOPE definition
 * "layout, loading, apiVersion, apiBaseURL"
 *
 */
-app.run(["$rootScope", "$location", "$cookies", "$http", "$window", function($rootScope, $location, $cookies, $http, $window) {
+app.run(["$rootScope", "$location", "$cookies", "$http", "$window", "localStorageService", "$base64", function($rootScope, $location, $cookies, $http, $window, localStorageService, $base64) {
 
   // ROOTSCOPE variables
+  $rootScope.menu = { };
+  $rootScope.page = { };
+  $rootScope.project = { };
+  $rootScope.user = { };
+
   $rootScope.apiVersion = "V0.2"
   $rootScope.apiBaseURL = "http://api.grappbox.com/app_dev.php/" + $rootScope.apiVersion;
 
-  $rootScope.onLoad = false;
+  $rootScope.menu.state = true;
+  $rootScope.menu.full = false;
+  $rootScope.page.onLoad = false;
+  $rootScope.project.set = false;
+
+  // ROOTSCOPE routine definition
+  // Toggle menu state
+  $rootScope.menu.toggleState = function() {
+    $rootScope.menu.state = !$rootScope.menu.state;
+};
 
   // ROOTSCOPE routine definition
   // Clear cookies and redirect user to login (with error)
@@ -178,9 +211,10 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", function($ro
     $window.location.href = "/#login";
   };
 
+  // ROOTSCOPE handler definition
   // On route change (start)
   $rootScope.$on("$routeChangeStart", function() {
-    $rootScope.onLoad = true;
+    $rootScope.page.onLoad = true;
 
     if (!$cookies.get("LASTLOGINMESSAGE")) {
       if ($cookies.get("USERTOKEN"))
@@ -189,16 +223,62 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", function($ro
     }
   });
 
+  // ROOTSCOPE handler definition
   // On route change (success)
   $rootScope.$on("$routeChangeSuccess", function(event, current, previous) {
-    if (current.$$route)
-      $rootScope.title = current.$$route.title;
-    $rootScope.onLoad = false;
+    if (current.$$route) {
+      $rootScope.page.title = current.$$route.title;
+      $rootScope.page.home = current.$$route.homepage;
+    }
+
+    $http.get($rootScope.apiBaseURL + "/user/basicinformations/" + $cookies.get("USERTOKEN"))
+      .then(function onGetSuccess(response) {
+        var data = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
+
+        $rootScope.user.firstname = data.firstname;
+        $rootScope.user.lastname = data.lastname;
+        $rootScope.user.email = data.email;
+      },
+      function onGetFail(response) {
+        context.rootScope.onUserTokenError();
+      });
+
+    if (!$rootScope.project.set)
+      if (localStorageService.get("HAS_PROJECT")) {
+        $rootScope.project.id = $base64.decode(localStorageService.get("PROJECT_ID"));
+        $rootScope.project.name = $base64.decode(localStorageService.get("PROJECT_NAME"));
+        $rootScope.project.set = true;
+        $rootScope.menu.full = true;
+    }
+
+    $rootScope.page.onLoad = false;
   });
 
+  // ROOTSCOPE handler definition
   // On route change (error)
   $rootScope.$on("$routeChangeError", function() {
-    $rootScope.onLoad = false;
+    $rootScope.page.onLoad = false;
   });
 
 }]);
+
+
+
+/* =============================================== */
+/* ==================== OTHER ==================== */
+/* =============================================== */
+
+/**
+* GRAPPBOX
+* APP additional scripts definition
+*
+*/
+(function($) {
+
+  // Auto page height (depending on page content)
+  $(window).bind("load resize", function() {
+    newHeight = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height);
+    $("#app-wrapper").css("min-height", (newHeight < 1 ? 1 : newHeight) + "px");
+  });
+  
+})(jQuery);
