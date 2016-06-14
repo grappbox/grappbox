@@ -857,7 +857,7 @@ class UserController extends RolesAndTokenVerificationController
 	/**
 	* @api {get} /V0.2/user/getuseravatar/:token/:userId Get user avatar
 	* @apiName getUserAvatar
-	* @apiGroup User
+	* @apiGroup Users
 	* @apiDescription Get the avatar of the given user
 	* @apiVersion 0.2.0
 	*
@@ -913,7 +913,7 @@ class UserController extends RolesAndTokenVerificationController
 	/**
 	* @api {get} /V0.2/user/getallprojectuseravatar/:token/:projectId Get all project user avatar
 	* @apiName getAllProjectUserAvatar
-	* @apiGroup User
+	* @apiGroup Users
 	* @apiDescription Get the avatar of all the users of the given project
 	* @apiVersion 0.2.0
 	*
