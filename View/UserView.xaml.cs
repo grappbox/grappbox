@@ -105,11 +105,17 @@ namespace GrappBox.View
         /// </summary>
         /// <param name="e">Provides data for navigation methods and event
         /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             this.navigationHelper.OnNavigatedTo(e);
             slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
-            vm.getAPI();
+            await vm.getAPI();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -118,15 +124,21 @@ namespace GrappBox.View
         }
         #endregion
 
-        private void Update_Click(object sender, RoutedEventArgs e)
+        private async void Update_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             if (password != "")
             {
-                vm.updateAPI(password);
+                await vm.updateAPI(password);
                 password = "";
             }
             else
-                vm.updateAPI();
+                await vm.updateAPI();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void Password_Click(object sender, RoutedEventArgs e)

@@ -104,13 +104,15 @@ namespace GrappBox.View
         /// handlers that cannot cancel the navigation request.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             this.navigationHelper.OnNavigatedTo(e);
             slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
             if (e.Parameter != null)
             {
-                Btn.Content = "Update";
-                Btn.Click += Update_Click;
-                Btn.Click -= AddRole_Click;
+                Update.Visibility = Visibility.Visible;
+                Add.Visibility = Visibility.Collapsed;
                 vm.getRole();
                 //TeamTimeline
                 if (vm.TeamTimeline == 0)
@@ -186,10 +188,12 @@ namespace GrappBox.View
             }
             else
             {
-                Btn.Content = "Add";
-                Btn.Click += AddRole_Click;
-                Btn.Click -= Update_Click;
+                Update.Visibility = Visibility.Collapsed;
+                Add.Visibility = Visibility.Visible;
             }
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -243,16 +247,28 @@ namespace GrappBox.View
             }
         }
 
-        private void Remove_Click(object sender, RoutedEventArgs e)
+        private async void Remove_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             vm.UserAssignedSelected = (sender as Button).DataContext as ProjectUserModel;
-            vm.removeUserRole();
+            await vm.removeUserRole();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        private async void Add_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             vm.UserNonAssignedSelected = (sender as Button).DataContext as ProjectUserModel;
-            vm.assignUserRole();
+            await vm.assignUserRole();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void userAssign_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -265,28 +281,43 @@ namespace GrappBox.View
             vm.UserNonAssignedSelected = (sender as ListBox).SelectedItem as ProjectUserModel;
         }
 
-        private void Update_Click(object sender, RoutedEventArgs e)
+        private async void Update_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             if (RoleName.Text != "")
             {
                 RoleName.BorderBrush = new SolidColorBrush();
                 setValues();
-                vm.updateRole();
+                await vm.updateRole();
             }
             else
                 RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void AddRole_Click(object sender, RoutedEventArgs e)
+        private async void AddRole_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             if (RoleName.Text != "")
             {
                 RoleName.BorderBrush = new SolidColorBrush();
                 setValues();
-                vm.addRole();
+                await vm.addRole();
+
+                Update.Visibility = Visibility.Visible;
+                Add.Visibility = Visibility.Collapsed;
             }
             else
                 RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void setValues()
@@ -364,6 +395,20 @@ namespace GrappBox.View
                 vm.Cloud = 1;
             else
                 vm.Cloud = 2;
+        }
+
+        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int num = Pivot.SelectedIndex;
+
+            if (num == 0)
+            {
+                CB.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CB.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

@@ -109,7 +109,6 @@ namespace GrappBox.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -118,55 +117,51 @@ namespace GrappBox.View
         }
         #endregion
 
-        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        private async void EditMessage_Click(object sender, RoutedEventArgs e)
         {
-            TimelineModel currentModel = (sender as StackPanel).DataContext as TimelineModel;
-
-            if (currentModel == null)
-                currentModel = vm.MessageSelected;
-
-            if (currentModel.Creator.Id != User.GetUser().Id)
-                ((sender as StackPanel).Parent as ListBoxItem).IsEnabled = false;
-            foreach (var item in (sender as StackPanel).Children)
+            vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
+            if (vm.CommentSelected != null)
             {
-                if (item as TextBlock != null && (item as TextBlock).Name == "block")
-                {
-                    if (currentModel.EditedAt != null)
-                        (item as TextBlock).Text = "Edited By " + currentModel.Creator.Fullname + " at " + DateTime.Parse(currentModel.EditedAt.date);
-                    else
-                        (item as TextBlock).Text = "Created By " + currentModel.Creator.Fullname + " at " + DateTime.Parse(currentModel.CreatedAt.date);
-                }
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.updateMessage(vm.CommentSelected);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void CommentsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            vm.CommentSelected = (sender as ListBox).SelectedItem as TimelineModel;
-        }
-
-        private void EditMessage_Click(object sender, RoutedEventArgs e)
+        private async void DeleteMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.CommentSelected != null)
-                vm.updateMessage(vm.CommentSelected);
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.removeMessage(vm.CommentSelected);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
 
-        private void DeleteMessage_Click(object sender, RoutedEventArgs e)
-        {
-            vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
-            if (vm.CommentSelected != null)
-                vm.removeMessage(vm.CommentSelected);
-        }
-
-        private void PostComment_Click(object sender, RoutedEventArgs e)
+        private async void PostComment_Click(object sender, RoutedEventArgs e)
         {
             if (CommentTitle.Text != "" && CommentMessage.Text != "")
             {
-                vm.postMessage(vm.MessageSelected.TimelineId, CommentTitle.Text, CommentMessage.Text, vm.MessageSelected.Id);
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.postMessage(vm.MessageSelected.TimelineId, CommentTitle.Text, CommentMessage.Text, vm.MessageSelected.Id);
                 CommentTitle.Text = "";
                 CommentMessage.Text = "";
                 PostComPopUp.Visibility = Visibility.Collapsed;
                 CommentsListView.IsEnabled = true;
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 

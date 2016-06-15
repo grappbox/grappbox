@@ -234,15 +234,16 @@ namespace GrappBox.View
                 LoadingBar.Visibility = Visibility.Visible;
 
                 await vm.createDir();
-
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                vm.FolderName = "";
 
                 AddFolderPopUp.Visibility = Visibility.Collapsed;
                 FolderSafe.Visibility = Visibility.Collapsed;
                 FolderSafePassword.Visibility = Visibility.Collapsed;
                 FileListView.IsEnabled = true;
                 CB.IsEnabled = true;
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 

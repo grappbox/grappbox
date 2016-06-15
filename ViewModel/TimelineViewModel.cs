@@ -39,7 +39,7 @@ namespace GrappBox.ViewModel
         }
 
         #region API
-        public async void getTeamMessages()
+        public async System.Threading.Tasks.Task getTeamMessages()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, _Team.Id };
@@ -55,7 +55,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void getCustomerMessages()
+        public async System.Threading.Tasks.Task getCustomerMessages()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, _Customer.Id };
@@ -100,7 +100,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void getComments(int timelineId, int messageId)
+        public async System.Threading.Tasks.Task getComments(int timelineId, int messageId)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, timelineId, messageId };
@@ -118,7 +118,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void postMessage(int timelineId, string title, string message, int commentedId = 0)
+        public async System.Threading.Tasks.Task postMessage(int timelineId, string title, string message, int commentedId = 0)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -132,18 +132,18 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 if (commentedId != 0)
-                    getComments(timelineId, commentedId);
+                    await getComments(timelineId, commentedId);
                 else
                 {
                     if (timelineId == _Customer.Id)
                     {
                         _CustomerMessages.Clear();
-                        getCustomerMessages();
+                        await getCustomerMessages();
                     }
                     else if (timelineId == _Team.Id)
                     {
                         _TeamMessages.Clear();
-                        getTeamMessages();
+                        await getTeamMessages();
                     }
                 }
             }
@@ -154,7 +154,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void removeMessage(TimelineModel message)
+        public async System.Threading.Tasks.Task removeMessage(TimelineModel message)
         {
             if (_messageSelected != null)
             {
@@ -183,7 +183,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void updateMessage(TimelineModel message)
+        public async System.Threading.Tasks.Task updateMessage(TimelineModel message)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -199,11 +199,11 @@ namespace GrappBox.ViewModel
                 {
                     _CustomerMessages.Clear();
                     _TeamMessages.Clear();
-                    getCustomerMessages();
-                    getTeamMessages();
+                    await getCustomerMessages();
+                    await getTeamMessages();
                 }
                 else
-                    getComments(message.TimelineId, message.ParentId);
+                    await getComments(message.TimelineId, message.ParentId);
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
@@ -298,6 +298,10 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("Message");
                 }
             }
+        }
+        public string TextDate
+        {
+            get { if (_messageSelected == null) return ""; return _messageSelected.TextDate; }
         }
 
         public int ParentId

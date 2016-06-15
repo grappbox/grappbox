@@ -52,7 +52,7 @@
             <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
 
             <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource BlackGrappbox}" />
-            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource BackgroundGray}"/>
+            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource LightWhiteGrappBox}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

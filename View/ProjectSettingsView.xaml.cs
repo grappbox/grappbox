@@ -37,7 +37,6 @@ namespace GrappBox.View
         CoreApplicationView view;
         String ImagePath;
         ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
-        bool isMoreClicked = false;
         DateTime defaultDate = DateTime.MinValue;
 
         //Required for navigation
@@ -114,14 +113,30 @@ namespace GrappBox.View
         /// </summary>
         /// <param name="e">Provides data for navigation methods and event
         /// handlers that cannot cancel the navigation request.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             this.navigationHelper.OnNavigatedTo(e);
             slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
-            vm.getProjectSettings();
-            vm.getProjectUsers();
-            vm.getCustomerAccesses();
-            vm.getRoles();
+            await vm.getProjectSettings();
+            await vm.getProjectUsers();
+            await vm.getCustomerAccesses();
+            await vm.getRoles();
+
+            if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
+            {
+                DeleteDate.Visibility = Visibility.Visible;
+                DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
+            }
+            else
+            {
+                DeleteDate.Visibility = Visibility.Collapsed;
+            }
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -190,62 +205,64 @@ namespace GrappBox.View
         }
         #endregion imgClicked
 
-        private void ProjectSettingsUpdate_Click(object sender, RoutedEventArgs e)
+        private async void ProjectSettingsUpdate_Click(object sender, RoutedEventArgs e)
         {
-            vm.updateProjectSettings();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.updateProjectSettings();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void AddUser_Click(object sender, RoutedEventArgs e)
+        private async void AddUser_Click(object sender, RoutedEventArgs e)
         {
-            vm.addProjectUser(UserMail.Text);
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.addProjectUser(UserMail.Text);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void RemoveUserButton_Click(object sender, RoutedEventArgs e)
+        private async void RemoveUserButton_Click(object sender, RoutedEventArgs e)
         {
-            vm.removeProjectUser();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.removeProjectUser();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
+        private async void Delete_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
             {
                 //retreive
-                vm.retrieveProject();
-                vm.getProjectSettings();
+                await vm.retrieveProject();
+                await vm.getProjectSettings();
+                DeleteDate.Visibility = Visibility.Collapsed;
+                ProjectDelete.Label = "Delete Project";
             }
             else
             {
                 //delete
-                vm.deleteProject();
-                vm.getProjectSettings();
+                await vm.deleteProject();
+                await vm.getProjectSettings();
+                DeleteDate.Visibility = Visibility.Visible;
+                DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
+                ProjectDelete.Label = "Retreive Project";
             }
-        }
 
-        private void More_Click(object sender, RoutedEventArgs e)
-        {
-            if (isMoreClicked == false)
-            {
-                MoreStackPanel.Visibility = Visibility.Visible;
-                isMoreClicked = true;
-                MoreButton.Content = "Less";
-                if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
-                {
-                    DeleteDate.Visibility = Visibility.Visible;
-                    DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
-                    DeleteButton.Content = "Retreive Project";
-                }
-                else
-                {
-                    DeleteDate.Visibility = Visibility.Collapsed;
-                    DeleteButton.Content = "Delete Project";
-                }
-            }
-            else
-            {
-                MoreStackPanel.Visibility = Visibility.Collapsed;
-                MoreButton.Content = "More";
-                isMoreClicked = false;
-            }
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void userListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -256,10 +273,23 @@ namespace GrappBox.View
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
-
-            if (num == 1)
+            
+            if (num == 0)
             {
                 CB.Visibility = Visibility.Visible;
+                ProjectDelete.Visibility = Visibility.Visible;
+                UpdateSettings.Visibility = Visibility.Visible;
+                RemoveUser.Visibility = Visibility.Collapsed;
+                RemoveCU.Visibility = Visibility.Collapsed;
+                RegenerateCu.Visibility = Visibility.Collapsed;
+                RemoveRole.Visibility = Visibility.Collapsed;
+                ModifyRole.Visibility = Visibility.Collapsed;
+            }
+            else if (num == 1)
+            {
+                CB.Visibility = Visibility.Visible;
+                ProjectDelete.Visibility = Visibility.Collapsed;
+                UpdateSettings.Visibility = Visibility.Collapsed;
                 RemoveUser.Visibility = Visibility.Visible;
                 RemoveCU.Visibility = Visibility.Collapsed;
                 RegenerateCu.Visibility = Visibility.Collapsed;
@@ -269,6 +299,8 @@ namespace GrappBox.View
             else if (num == 2)
             {
                 CB.Visibility = Visibility.Visible;
+                ProjectDelete.Visibility = Visibility.Collapsed;
+                UpdateSettings.Visibility = Visibility.Collapsed;
                 RemoveUser.Visibility = Visibility.Collapsed;
                 RemoveCU.Visibility = Visibility.Visible;
                 RegenerateCu.Visibility = Visibility.Visible;
@@ -278,6 +310,8 @@ namespace GrappBox.View
             else if (num == 3)
             {
                 CB.Visibility = Visibility.Visible;
+                ProjectDelete.Visibility = Visibility.Collapsed;
+                UpdateSettings.Visibility = Visibility.Collapsed;
                 RemoveUser.Visibility = Visibility.Collapsed;
                 RemoveCU.Visibility = Visibility.Collapsed;
                 RegenerateCu.Visibility = Visibility.Collapsed;
@@ -290,18 +324,33 @@ namespace GrappBox.View
             }
         }
 
-        private void RegenerateCU_Click(object sender, RoutedEventArgs e)
+        private async void RegenerateCU_Click(object sender, RoutedEventArgs e)
         {
-            vm.regenerateCustomerAccess();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.regenerateCustomerAccess();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        private void RemoveCustomerButton_Click(object sender, RoutedEventArgs e)
+        private async void RemoveCustomerButton_Click(object sender, RoutedEventArgs e)
         {
-            vm.removeCustomerAccess();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.removeCustomerAccess();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void AddCU_Click(object sender, RoutedEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             ObservableCollection<CustomerAccessModel> cuList = vm.CustomerList;
             bool exist = false;
 
@@ -311,7 +360,7 @@ namespace GrappBox.View
                     exist = true;
             }
             if (CustomerName.Text != "" && CustomerName.Text != null && exist == false)
-                vm.addCustomerAccess(CustomerName.Text);
+                await vm.addCustomerAccess(CustomerName.Text);
             else
             {
                 if (CustomerName.Text == "" && CustomerName.Text == null)
@@ -325,6 +374,9 @@ namespace GrappBox.View
                     await msgbox.ShowAsync();
                 }
             }
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void customerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -332,9 +384,15 @@ namespace GrappBox.View
             vm.CustomerSelected = (sender as ListBox).SelectedItem as CustomerAccessModel;
         }
 
-        private void AddRole_Click(object sender, RoutedEventArgs e)
+        private async void AddRole_Click(object sender, RoutedEventArgs e)
         {
-            vm.getUsersAssigned(0);
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.getUsersAssigned(0);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
             this.Frame.Navigate(typeof(RoleView), null);
         }
 
@@ -343,15 +401,27 @@ namespace GrappBox.View
             vm.RoleSelected = (sender as ListBox).SelectedItem as ProjectRoleModel;
         }
 
-        private void ModifyRole_Click(object sender, RoutedEventArgs e)
+        private async void ModifyRole_Click(object sender, RoutedEventArgs e)
         {
-            vm.getUsersAssigned(vm.RoleSelected.Id);
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.getUsersAssigned(vm.RoleSelected.Id);
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
             this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.Id);
         }
 
-        private void RemoveRoleButton_Click(object sender, RoutedEventArgs e)
+        private async void RemoveRoleButton_Click(object sender, RoutedEventArgs e)
         {
-            vm.removeRole();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
+            await vm.removeRole();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
     }
 }

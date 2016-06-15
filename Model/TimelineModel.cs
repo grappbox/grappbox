@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using GrappBox.ApiCom;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,5 +36,21 @@ namespace GrappBox.Model
 
         [JsonProperty("editedAt")]
         public DateModel EditedAt { get; set; }
+
+        public bool IdCheck
+        {
+            get { if (Creator.Id != User.GetUser().Id) return false; return true; }
+        }
+
+        public string TextDate
+        {
+            get
+            {
+                if (EditedAt != null)
+                    return "Edited By " + Creator.Fullname + " at " + DateTime.Parse(EditedAt.date);
+                else
+                    return "Created By " + Creator.Fullname + " at " + DateTime.Parse(CreatedAt.date);
+            }
+        }
     }
 }

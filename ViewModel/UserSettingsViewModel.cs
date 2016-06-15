@@ -28,7 +28,7 @@ namespace GrappBox.ViewModel
             instance = this;
         }
 
-        public async void updateAPI(string password = null)
+        public async System.Threading.Tasks.Task updateAPI(string password = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -75,7 +75,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void getAPI()
+        public async System.Threading.Tasks.Task getAPI()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token };

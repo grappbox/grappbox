@@ -14,11 +14,17 @@
 
     <Page.BottomAppBar>
         <CommandBar Visibility="Collapsed" x:Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Visibility="Collapsed" Name="RemoveUser" Label="Remove" Click="RemoveUserButton_Click" Icon="Delete"/>
-            <AppBarButton Visibility="Collapsed" Name="RemoveCU" Label="Remove" Click="RemoveCustomerButton_Click" Icon="Delete"/>
-            <AppBarButton Visibility="Collapsed" Name="RegenerateCu" Label="Regenerate" Click="RegenerateCU_Click" Icon="Sync"/>
-            <AppBarButton Visibility="Collapsed" Name="RemoveRole" Label="Remove" Click="RemoveRoleButton_Click" Icon="Delete"/>
-            <AppBarButton Visibility="Collapsed" Name="ModifyRole" Label="Edit" Click="ModifyRole_Click" Icon="Edit"/>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Visibility="Collapsed" Name="UpdateSettings" Label="Update" Click="ProjectSettingsUpdate_Click" Icon="Save"/>
+                <AppBarButton Visibility="Collapsed" Name="RemoveUser" Label="Remove" Click="RemoveUserButton_Click" Icon="Delete"/>
+                <AppBarButton Visibility="Collapsed" Name="RemoveCU" Label="Remove" Click="RemoveCustomerButton_Click" Icon="Delete"/>
+                <AppBarButton Visibility="Collapsed" Name="RegenerateCu" Label="Regenerate" Click="RegenerateCU_Click" Icon="Sync"/>
+                <AppBarButton Visibility="Collapsed" Name="RemoveRole" Label="Remove" Click="RemoveRoleButton_Click" Icon="Delete"/>
+                <AppBarButton Visibility="Collapsed" Name="ModifyRole" Label="Edit" Click="ModifyRole_Click" Icon="Edit"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Name="ProjectDelete" Label="Delete Project" Icon="Delete" Click="Delete_Click"/>
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -27,115 +33,114 @@
             <customControler:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Pivot Name="Pivot" Title="Project Settings" Background="#FF0C0C0C" SelectionChanged="Pivot_SelectionChanged">
-                <PivotItem Header="Settings">
-                    <ScrollViewer>
-                        <StackPanel>
-                            <StackPanel.Resources>
-                                <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
-                            </StackPanel.Resources>
-                            <TextBlock Text="Name" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}"/>
+            <Grid>
+                <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+                <Pivot Name="Pivot" Title="Project Settings" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged">
+                    <PivotItem Header="Settings">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <StackPanel.Resources>
+                                    <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
+                                </StackPanel.Resources>
 
-                            <TextBlock Text="Description" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
 
-                            <TextBlock Text="Logo" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <Grid>
-                                <Image x:Name="img" Source="{Binding Logo, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
-                                <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
-                                <Border BorderBrush="White" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
-                            </Grid>
+                                <TextBlock Text="Name" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <TextBox PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Phone" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>
+                                <TextBlock Text="Description" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
-                            <TextBlock Text="Company" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}"/>
+                                <TextBlock Text="Logo" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <Grid>
+                                    <Image x:Name="img" Source="{Binding Logo, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
+                                    <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
+                                    <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
+                                </Grid>
 
-                            <TextBlock Text="Contact mail" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}"/>
+                                <TextBlock Text="Phone" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <TextBox PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Facebook" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}"/>
+                                <TextBlock Text="Company" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <TextBox PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Twitter" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
+                                <TextBlock Text="Contact mail" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <TextBox PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}"/>
 
-                            <StackPanel x:Name="MoreStackPanel" Visibility="Collapsed" Margin="5,0,5,0">
-                                <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <Button Name="DeleteButton" HorizontalAlignment="Center" Click="Delete_Click"/>
+                                <TextBlock Text="Facebook" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <TextBox PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}"/>
+
+                                <TextBlock Text="Twitter" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                <TextBox PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
                             </StackPanel>
-                            <Button Name="MoreButton" Content="More" HorizontalAlignment="Center" Click="More_Click"/>
-                            <Button Content="Update" Click="ProjectSettingsUpdate_Click" HorizontalAlignment="Center"/>
+                        </ScrollViewer>
+                    </PivotItem>
+                    <PivotItem Header="Users">
+                        <StackPanel>
+                            <ListBox x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userListView_SelectionChanged">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                            <TextBlock Text="{Binding Lastname}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="UserMail" Grid.Column="0" PlaceholderText="Email"/>
+                                <Button Content="Add" Click="AddUser_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
+                            </Grid>
                         </StackPanel>
-                    </ScrollViewer>
-                </PivotItem>
-                <PivotItem Header="Users">
-                    <StackPanel>
-                        <ListBox x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="userListView_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                        <TextBlock Text="{Binding Lastname}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="8*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="UserMail" Grid.Column="0" PlaceholderText="Email"/>
-                            <Button Content="Add" Click="AddUser_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
-                        </Grid>
-                    </StackPanel>
-                </PivotItem>
-                <PivotItem Header="Customer access">
-                    <StackPanel>
-                        <ListBox x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="customerListView_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
+                    </PivotItem>
+                    <PivotItem Header="Customer access">
+                        <StackPanel>
+                            <ListBox x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="customerListView_SelectionChanged">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                            <TextBlock Text="{Binding Token}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="CustomerName" Grid.Column="0" PlaceholderText="Customer name"/>
+                                <Button Content="Add" Click="AddCU_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
+                            </Grid>
+                        </StackPanel>
+                    </PivotItem>
+                    <PivotItem Header="Roles">
+                        <StackPanel>
+                            <ListBox x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="roleListView_SelectionChanged">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
                                         <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                        <TextBlock Text="{Binding Token}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="8*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="CustomerName" Grid.Column="0" PlaceholderText="Customer name"/>
-                            <Button Content="Add" Click="AddCU_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
-                        </Grid>
-                    </StackPanel>
-                </PivotItem>
-                <PivotItem Header="Roles">
-                    <StackPanel>
-                        <ListBox x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{x:Null}" Foreground="White" SelectionChanged="roleListView_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Content="Add" Click="AddRole_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
-                    </StackPanel>
-                </PivotItem>
-            </Pivot>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Button Content="Add" Click="AddRole_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
+                        </StackPanel>
+                    </PivotItem>
+                </Pivot>
+            </Grid>
         </slideMenu:SlideInMenuContentControl.Content>
     </slideMenu:SlideInMenuContentControl>
 </Page>

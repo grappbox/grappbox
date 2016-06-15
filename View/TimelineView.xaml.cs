@@ -108,16 +108,21 @@ namespace GrappBox.View
         /// handlers that cannot cancel the navigation request.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+
             this.navigationHelper.OnNavigatedTo(e);
             Pivot.IsLocked = false;
             PostTeamMesPopUp.Visibility = Visibility.Collapsed;
             TeamListView.IsEnabled = true;
             PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
             CustomerListView.IsEnabled = true;
-            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
             await vm.getTimelines();
-            vm.getCustomerMessages();
-            vm.getTeamMessages();
+            await vm.getCustomerMessages();
+            await vm.getTeamMessages();
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -127,11 +132,6 @@ namespace GrappBox.View
         #endregion
 
         #region Selection changed
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            vm.MessageSelected = (sender as ListBox).SelectedItem as TimelineModel;
-        }
-
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
@@ -150,61 +150,111 @@ namespace GrappBox.View
         #endregion
 
         #region Click
-        private void PostTeamMessage_Click(object sender, RoutedEventArgs e)
+        private async void PostTeamMessage_Click(object sender, RoutedEventArgs e)
         {
             if (MessageTitle.Text != "" && Message.Text != "")
             {
-                vm.postMessage(vm.TeamId, MessageTitle.Text, Message.Text);
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.postMessage(vm.TeamId, MessageTitle.Text, Message.Text);
                 Pivot.IsLocked = false;
                 PostTeamMesPopUp.Visibility = Visibility.Collapsed;
                 TeamListView.IsEnabled = true;
+
+                MessageTitle.Text = "";
+                Message.Text = "";
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void PostCustomerMessage_Click(object sender, RoutedEventArgs e)
+        private async void PostCustomerMessage_Click(object sender, RoutedEventArgs e)
         {
             if (CustomerTitle.Text != "" && CustomerMessage.Text != "")
             {
-                vm.postMessage(vm.CustomerId, CustomerTitle.Text, CustomerMessage.Text);
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.postMessage(vm.CustomerId, CustomerTitle.Text, CustomerMessage.Text);
                 Pivot.IsLocked = false;
                 PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
                 CustomerListView.IsEnabled = true;
+
+                CustomerTitle.Text = "";
+                CustomerMessage.Text = "";
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void EditMessage_Click(object sender, RoutedEventArgs e)
+        private async void EditMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.MessageSelected != null)
-                vm.updateMessage(vm.MessageSelected);
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.updateMessage(vm.MessageSelected);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
 
-        private void DeleteMessage_Click(object sender, RoutedEventArgs e)
+        private async void DeleteMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.MessageSelected != null)
-                vm.removeMessage(vm.MessageSelected);
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.removeMessage(vm.MessageSelected);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
         }
 
-        private void Comments_Click(object sender, RoutedEventArgs e)
+        private async void Comments_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
-            vm.getComments(vm.MessageSelected.TimelineId, vm.MessageSelected.Id);
-            this.Frame.Navigate(typeof(TimelineMessageView));
+            if (vm.MessageSelected != null)
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await vm.getComments(vm.MessageSelected.TimelineId, vm.MessageSelected.Id);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+                this.Frame.Navigate(typeof(TimelineMessageView));
+            }
         }
 
-        private void Bug_Click(object sender, RoutedEventArgs e)
+        private async void Bug_Click(object sender, RoutedEventArgs e)
         {
             BugtrackerViewModel bvm = BugtrackerViewModel.GetViewModel();
-            if (bvm == null)
-                bvm = new BugtrackerViewModel();
-            bvm.getStateList();
-            bvm.getTagList();
-            bvm.getUsers();
-            vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
-            bvm.Title = vm.MessageSelected.Title;
-            bvm.Description = vm.MessageSelected.Message;
-            this.Frame.Navigate(typeof(BugView));
+            if (bvm != null)
+            {
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+
+                await bvm.getStateList();
+                await bvm.getTagList();
+                await bvm.getUsers();
+                vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
+                bvm.Title = vm.MessageSelected.Title;
+                bvm.Description = vm.MessageSelected.Message;
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+                this.Frame.Navigate(typeof(BugView));
+            }
         }
 
         private void CancelTeam_Click(object sender, RoutedEventArgs e)
@@ -236,32 +286,14 @@ namespace GrappBox.View
         }
         #endregion
 
-        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        private void PostTeamMesPopUp_Loaded(object sender, RoutedEventArgs e)
         {
-            TimelineModel currentModel = (sender as StackPanel).DataContext as TimelineModel;
-            ListBoxItem listboxItem;
+            PostTeamMesPopUp.VerticalOffset = (slideInMenuContentControl.ActualHeight - (TeamStackPanel.ActualHeight * 1.5)) / 2;
+        }
 
-            if (currentModel.Creator.Id != User.GetUser().Id)
-            {
-                if (Pivot.SelectedIndex == 1)
-                    listboxItem = (ListBoxItem)(TeamListView.ContainerFromItem(currentModel));
-                else
-                    listboxItem = (ListBoxItem)(CustomerListView.ContainerFromItem(currentModel));
-
-                if (listboxItem != null)
-                    listboxItem.IsEnabled = false;
-
-            }
-            foreach (var item in (sender as StackPanel).Children)
-            {
-                if (item as TextBlock != null && (item as TextBlock).Name == "block")
-                {
-                    if (currentModel.EditedAt != null)
-                        (item as TextBlock).Text = "Edited By " + currentModel.Creator.Fullname + " at " + DateTime.Parse(currentModel.EditedAt.date);
-                    else
-                        (item as TextBlock).Text = "Created By " + currentModel.Creator.Fullname + " at " + DateTime.Parse(currentModel.CreatedAt.date);
-                }
-            }
+        private void PostCustomerMesPopUp_Loaded(object sender, RoutedEventArgs e)
+        {
+            PostCustomerMesPopUp.VerticalOffset = (slideInMenuContentControl.ActualHeight - (CustStackPanel.ActualHeight * 1.5)) / 2;
         }
     }
 }

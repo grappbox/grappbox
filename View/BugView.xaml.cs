@@ -231,6 +231,7 @@ namespace GrappBox.View
                 LoadingBar.Visibility = Visibility.Visible;
 
                 await vm.addTag(TagName.Text);
+                TagName.Text = "";
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
@@ -419,12 +420,12 @@ namespace GrappBox.View
             if ((sender as Button).DataContext as BugtrackerModel != null)
                 await vm.addComment(CommentTitle.Text, CommentDescription.Text);
 
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
-
             PostComPopUp.Visibility = Visibility.Collapsed;
             Pivot.IsLocked = false;
             CommentListView.IsEnabled = true;
+
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void CancelCom_Click(object sender, RoutedEventArgs e)

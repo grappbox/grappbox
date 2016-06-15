@@ -84,7 +84,7 @@ namespace GrappBox.View
         /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-            
+
         }
 
         /// <summary>
@@ -102,11 +102,11 @@ namespace GrappBox.View
         /// handlers that cannot cancel the navigation request.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.navigationHelper.OnNavigatedTo(e);
-            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
-
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
+
+            this.navigationHelper.OnNavigatedTo(e);
+            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
 
             await vm.getOpenTickets();
             await vm.getClosedTickets();
@@ -143,7 +143,7 @@ namespace GrappBox.View
                 LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
-        
+
         private async void ReopenBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.CloseSelect != null)

@@ -16,12 +16,21 @@
             <customControler:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Background="#FF0C0C0C" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="400" >
+            <Grid Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="400" >
+                <Grid.Background>
+                    <SolidColorBrush Color="{StaticResource LightWhiteGrappBox}"/>
+                </Grid.Background>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="9*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" VerticalAlignment="Center" Margin="0,0,0,0" Text="User Settings" FontWeight="Bold" FontSize="25"/>
+                <ProgressBar VerticalAlignment="Center" Grid.Row="1" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+                <Grid Grid.Row="0">
+                    <Grid.Background>
+                        <SolidColorBrush Color="{StaticResource RedGrappBox}"/>
+                    </Grid.Background>
+                    <TextBlock VerticalAlignment="Center" Text="User Settings" FontWeight="Bold" FontSize="25"/>
+                </Grid>
                 <ScrollViewer Grid.Row="1">
                     <StackPanel>
                         <StackPanel.Resources>
@@ -37,7 +46,7 @@
                         <Grid>
                             <Image x:Name="img" Source="{Binding Avatar, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
                             <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
-                            <Border BorderBrush="White" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
+                            <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
                         </Grid>
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Phone" FontFamily="Segoe WP" FontSize="15"/>
                         <TextBox x:Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>

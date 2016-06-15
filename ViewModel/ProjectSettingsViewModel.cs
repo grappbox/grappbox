@@ -47,7 +47,7 @@ namespace GrappBox.ViewModel
         }
 
         #region CustomerAccess
-        public async void addCustomerAccess(string name)
+        public async System.Threading.Tasks.Task addCustomerAccess(string name)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -59,7 +59,7 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _customerAccessModel.Clear();
-                getCustomerAccesses();
+                await getCustomerAccesses();
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -68,7 +68,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void regenerateCustomerAccess()
+        public async System.Threading.Tasks.Task regenerateCustomerAccess()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -80,7 +80,7 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _customerAccessModel.Clear();
-                getCustomerAccesses();
+                await getCustomerAccesses();
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -89,7 +89,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void getCustomerAccesses()
+        public async System.Threading.Tasks.Task getCustomerAccesses()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -105,7 +105,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void removeCustomerAccess()
+        public async System.Threading.Tasks.Task removeCustomerAccess()
         {
             if (_customerSelected != null)
             {
@@ -144,7 +144,7 @@ namespace GrappBox.ViewModel
         #endregion CustomerAccess
 
         #region ProjectRole
-        public async void addRole()
+        public async System.Threading.Tasks.Task addRole()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -165,7 +165,8 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _projectRoleModel.Clear();
-                getRoles();
+                await getRoles();
+                _role = _projectRoleModel.Last();
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -174,7 +175,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void updateRole()
+        public async System.Threading.Tasks.Task updateRole()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -195,7 +196,16 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _projectRoleModel.Clear();
-                getRoles();
+                await getRoles();
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -211,7 +221,7 @@ namespace GrappBox.ViewModel
             notifySimpleRole();
         }
 
-        public async void getUsersAssigned(int id)
+        public async System.Threading.Tasks.Task getUsersAssigned(int id)
         {
             if (id == 0)
             {
@@ -238,7 +248,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void assignUserRole()
+        public async System.Threading.Tasks.Task assignUserRole()
         {
             if (_userNonAssignSelected != null)
             {
@@ -265,7 +275,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void removeUserRole()
+        public async System.Threading.Tasks.Task removeUserRole()
         {
             if (_userAssignSelected != null)
             {
@@ -307,7 +317,7 @@ namespace GrappBox.ViewModel
             NotifyPropertyChanged("Cloud");
         }
 
-        public async void getRoles()
+        public async System.Threading.Tasks.Task getRoles()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -315,7 +325,7 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 _projectRoleModel = api.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
-                NotifyPropertyChanged("CustomerList");
+                NotifyPropertyChanged("RoleList");
             }
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
@@ -323,7 +333,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void removeRole()
+        public async System.Threading.Tasks.Task removeRole()
         {
             if (_roleSelected != null)
             {
@@ -527,7 +537,7 @@ namespace GrappBox.ViewModel
         #endregion ProjectRole
 
         #region ProjectSettings
-        public async void updateProjectSettings()
+        public async System.Threading.Tasks.Task updateProjectSettings()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -569,7 +579,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void getProjectSettings()
+        public async System.Threading.Tasks.Task getProjectSettings()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -585,7 +595,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void deleteProject()
+        public async System.Threading.Tasks.Task deleteProject()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -607,7 +617,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void retrieveProject()
+        public async System.Threading.Tasks.Task retrieveProject()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -818,7 +828,7 @@ namespace GrappBox.ViewModel
         #endregion ProjectSettings
 
         #region ProjectUser
-        public async void addProjectUser(string email)
+        public async System.Threading.Tasks.Task addProjectUser(string email)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -840,7 +850,7 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async void getProjectUsers()
+        public async System.Threading.Tasks.Task getProjectUsers()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
@@ -856,7 +866,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async void removeProjectUser()
+        public async System.Threading.Tasks.Task removeProjectUser()
         {
             if (_userSelected != null)
             {
