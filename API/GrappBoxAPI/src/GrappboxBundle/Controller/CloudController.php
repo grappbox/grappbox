@@ -219,7 +219,7 @@ class CloudController extends Controller
 			$project = null;
 			$passwordEncrypted = null;
 		}
-		if (($this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
+		if (($this->checkUserCloudAuthorization($userId, $idProject) < 2) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
 		{
 			$response["info"]["return_code"] = "3.1.9";
 			$response["info"]["return_message"] = "Cloud - openStreamAction - Insufficient Right";
@@ -488,7 +488,7 @@ class CloudController extends Controller
 			$project = null;
 			$passwordEncrypted = null;
 		}
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) < 1 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
 			$response["info"]["return_code"] = "3.4.9";
 			$response["info"]["return_message"] = "Cloud - getListAction - Insufficient Right";
@@ -581,7 +581,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if (!is_null($filePassword) || $userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if (!is_null($filePassword) || $userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) < 1 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
 			$response["info"]["return_code"] = "3.5.9";
 			$response["info"]["return_message"] = "Cloud - getFileAction - Insufficient Right";
@@ -652,7 +652,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordFileEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordFileEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) < 1 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
 			$response["info"]["return_code"] = "3.5.9";
 			$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Insufficient Right";
@@ -731,7 +731,7 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$idProject = (int)$json["data"]["project_id"];
 		$project = $this->getDoctrine()->getRepository("GrappboxBundle:Project")->findOneById($idProject);
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
+		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) < 2 || is_null($project))
 		{
 			$response["info"]["return_code"] = "3.6.9";
 			$response["info"]["return_message"] = "Cloud - setSafePassAction - Insufficient Success";
@@ -813,7 +813,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($path == "" || $path == "/" || !is_null($file) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($path == "" || $path == "/" || !is_null($file) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) < 2 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
 				$response["info"]["return_code"] = "3.7.9";
 				$response["info"]["return_message"] = "Cloud - delAction - Insufficient Right Access";
@@ -907,7 +907,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($path == "/" || $path == "" || is_null($file) || (!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($path == "/" || $path == "" || is_null($file) || (!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) < 2 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
 				$response["info"]["return_code"] = "3.9.9";
 				$response["info"]["return_message"] = "Cloud - delSafeAction - Insufficient Right Access";
@@ -995,7 +995,7 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) < 2 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
 			$response["info"]["return_code"] = "3.8.9";
 			$response["info"]["return_message"] = "Cloud - createDirAction - Insufficient Success";
