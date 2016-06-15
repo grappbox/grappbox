@@ -1,25 +1,15 @@
 ﻿using GrappBox.Model;
 using GrappBox.Ressources;
 using GrappBox.ViewModel;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using GrappBox.CustomControler;
+using Windows.Graphics.Display;
+using GrappBox.Resources;
 
 namespace GrappBox.View
 {
@@ -29,19 +19,67 @@ namespace GrappBox.View
     public sealed partial class DashBoardView : Page
     {
         PivotItem team;
-        PivotItem issues;
-        PivotItem tasks;
         PivotItem meetings;
         DashBoardViewModel dvm;
+        private NavigationHelper navigationHelper;
         public DashBoardView()
         {
             this.InitializeComponent();
             this.DataContext = DashBoardViewModel.GetViewModel();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+
+            this.navigationHelper = new NavigationHelper(this);
+            this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
+            this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
             team_cb.IsChecked = SettingsManager.getOption<bool>("team_cb");
             meetings_cb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
-            issues_cb.IsChecked = SettingsManager.getOption<bool>("issues_cb");
-            tasks_cb.IsChecked = SettingsManager.getOption<bool>("tasks_cb");
+            team = new PivotItem();
+            meetings = new PivotItem();
         }
+
+        #region NavigationHelper
+        /// <summary>
+        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
+        /// </summary>
+        public NavigationHelper NavigationHelper
+        {
+            get { return this.navigationHelper; }
+        }
+
+        /// <summary>
+        /// Populates the page with content passed during navigation. Any saved state is also
+        /// provided when recreating a page from a prior session.
+        /// </summary>
+        /// <param name="sender">
+        /// The source of the event; typically <see cref="NavigationHelper"/>.
+        /// </param>
+        /// <param name="e">Event data that provides both the navigation parameter passed to
+        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
+        /// a dictionary of state preserved by this page during an earlier
+        /// session. The state will be null the first time a page is visited.</param>
+        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Preserves state associated with this page in case the application is suspended or the
+        /// page is discarded from the navigation cache. Values must conform to the serialization
+        /// requirements of <see cref="SuspensionManager.SessionState"/>.
+        /// </summary>
+        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/>.</param>
+        /// <param name="e">Event data that provides an empty dictionary to be populated with
+        /// serializable state.</param>
+        private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
+        {
+
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            this.navigationHelper.OnNavigatedFrom(e);
+        }
+        #endregion
 
         /// <summary>
         /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
@@ -50,92 +88,52 @@ namespace GrappBox.View
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            this.navigationHelper.OnNavigatedTo(e);
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
             this.dvm = DashBoardViewModel.GetViewModel();
-            await ViewModel.DashBoardViewModel.InitialiseAsync(dvm);
-            this.dvm.ProjectList = new ObservableCollection<ProjectListModel>(this.dvm.ProjectList);
-            this.project_Combo.ItemsSource = this.dvm.ProjectList;
-            this.project_Combo.SelectedValuePath = "Id";
-            this.project_Combo.DisplayMemberPath = "Name";
-            this.project_Combo.SelectedValue = SettingsManager.getOption<int>("ProjectIdChoosen");
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+            await this.dvm.InitialiseAsync();
             team = CreateOccupationTab();
-            issues = CreateIssuesTab();
-            tasks = CreateTasksTab();
             meetings = CreateMeetingsTab();
+            if (team_cb.IsChecked == true)
+                this.db_pivot.Items.Add(this.team);
+            if (meetings_cb.IsChecked == true)
+                this.db_pivot.Items.Add(this.meetings);
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
-        #region menuClicked
-        private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(WhiteBoardView));
-        }
-
-        private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            UserSettingsViewModel usvm = new UserSettingsViewModel();
-            usvm.getAPI();
-            this.Frame.Navigate(typeof(UserView));
-        }
-
-        private void DashboardButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(DashBoardView));
-        }
-
-        private void ProjectSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProjectSettingsViewModel psvm = new ProjectSettingsViewModel();
-            psvm.getProjectSettings();
-            psvm.getProjectUsers();
-            psvm.getCustomerAccesses();
-            psvm.getRoles();
-            this.Frame.Navigate(typeof(ProjectSettingsView));
-        }
-        #endregion menuClicked
-
-        private void team_cb_Checked(object sender, RoutedEventArgs e)
+        private async void team_cb_Checked(object sender, RoutedEventArgs e)
         {
             SettingsManager.setOption("team_cb", team_cb.IsChecked);
             if (team_cb.IsChecked == true)
+            {
                 db_pivot.Items.Add(team);
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+                await this.dvm.InitialiseAsync();
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
             else
                 db_pivot.Items.Remove(team);
         }
 
-        private void meetings_cb_Checked(object sender, RoutedEventArgs e)
+        private async void meetings_cb_Checked(object sender, RoutedEventArgs e)
         {
             SettingsManager.setOption("meetings_cb", meetings_cb.IsChecked);
             if (meetings_cb.IsChecked == true)
+            {
                 db_pivot.Items.Add(meetings);
+                LoadingBar.IsEnabled = true;
+                LoadingBar.Visibility = Visibility.Visible;
+                await this.dvm.InitialiseAsync();
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+            }
             else
                 db_pivot.Items.Remove(meetings);
-        }
-
-        private void issues_cb_Checked(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.setOption("issues_cb", issues_cb.IsChecked);
-            if (issues_cb.IsChecked == true)
-                db_pivot.Items.Add(issues);
-            else
-                db_pivot.Items.Remove(issues);
-        }
-
-        private void tasks_cb_Checked(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.setOption("tasks_cb", tasks_cb.IsChecked);
-            if (tasks_cb.IsChecked == true)
-                db_pivot.Items.Add(tasks);
-            else
-                db_pivot.Items.Remove(tasks);
-        }
-
-        private async void project_Combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            int p = (int)project_Combo.SelectedValue;
-            SettingsManager.setOption("ProjectIdChoosen", p);
-            SettingsManager.setOption("ProjectNameChoosen", this.dvm.ProjectList.First(item => item.Id == p).Name);
-            await DashBoardViewModel.InitialiseAsync(this.dvm);
-            Debug.WriteLine(SettingsManager.getOption<int>("ProjectIdChoosen"));
-            Debug.WriteLine(SettingsManager.getOption<string>("ProjectNameChoosen"));
         }
 
         private void initPivotItem(string header, out PivotItem pivotItem)
@@ -155,13 +153,6 @@ namespace GrappBox.View
             return pivotItem;
         }
 
-        public PivotItem CreateIssuesTab()
-        {
-            PivotItem pivotItem;
-            initPivotItem("Issues", out pivotItem);
-            return pivotItem;
-        }
-
         public PivotItem CreateMeetingsTab()
         {
             PivotItem pivotItem;
@@ -169,13 +160,6 @@ namespace GrappBox.View
             MeetingDashBoardPanel mdp = new MeetingDashBoardPanel();
             pivotItem.Content = mdp;
             this.dvm.NotifyPropertyChanged("MeetingList");
-            return pivotItem;
-        }
-
-        public PivotItem CreateTasksTab()
-        {
-            PivotItem pivotItem;
-            initPivotItem("Tasks", out pivotItem);
             return pivotItem;
         }
     }

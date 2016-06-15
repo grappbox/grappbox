@@ -62,11 +62,11 @@ namespace GrappBox
                 api.DeserializeJson<User>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("login", loginBlock.Text);
                 SettingsManager.setOption("password", pwdBlock.Password);
-
+                Debug.WriteLine(User.GetUser().Token);
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
 
-                this.Frame.Navigate(typeof(View.DashBoardView));
+                this.Frame.Navigate(typeof(View.GenericDahsboard));
             }
             else {
                 LoadingBar.IsEnabled = false;

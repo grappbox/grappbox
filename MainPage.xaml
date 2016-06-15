@@ -6,8 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    Padding="15,0"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Grid Background="White">
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="6*"/>
             <RowDefinition Height="1*"/>
@@ -22,7 +23,7 @@
         <TextBlock Grid.Row="3" FontSize="24" Text="Password" Foreground="Black"></TextBlock>
         <PasswordBox x:Name="pwdBlock" Grid.Row="4" PlaceholderText="Password" Password="mougen_v"></PasswordBox>
         <Button x:Name="DashBoardButton" Content="Log In" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center" Click="DashBoardButton_Click"/>
-        <Image x:Name="image" Height="200" Width="200" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/grappbox-logo_gray.png"/>
+        <Image x:Name="image" Height="50" Width="200" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/grappbox-logo.png"/>
         <ProgressBar Grid.Row="3" VerticalAlignment="Top" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
     </Grid>
 </Page>

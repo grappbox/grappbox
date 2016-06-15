@@ -25,7 +25,7 @@
         <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
     </Style>
     <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
-        <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
+        <Setter Property="Background" Value="{StaticResource GrayGrappBoxBrush}"/>
     </Style>
     <Style TargetType="Button">
         <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
@@ -46,13 +46,17 @@
     </Style>
         <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light" >
-            <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource RedGrappBox}" />
-            <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource RedGrappBox}" />
-            <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="{StaticResource WhiteGrappBox}" />
+            <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource GrayGrappBox}" />
+            <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource GrayGrappBox}" />            
+            <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="{StaticResource BlackGrappbox}" />
             <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
 
+            <SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="White" />
+            <SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="{StaticResource RedGrappBox}" />
             <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource BlackGrappbox}" />
-            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource LightWhiteGrappBox}"/>
+            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource BackgroundGray}"/>
+            <SolidColorBrush x:Key="CheckBoxPressedBackgroundThemeBrush" Color="{StaticResource RedGrappBox}"/>
+            <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="{StaticResource RedGrappBox}"/>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>
