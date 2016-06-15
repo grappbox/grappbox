@@ -1,6 +1,9 @@
-﻿using GrappBox.ViewModel;
+﻿using GrappBox.Model;
+using GrappBox.Ressources;
+using GrappBox.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -23,6 +26,8 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class GenericDahsboard : Page
     {
+
+        Frame frame = Window.Current.Content as Frame;
         public GenericDahsboard()
         {
             this.InitializeComponent();
@@ -37,7 +42,20 @@ namespace GrappBox.View
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             GenericDashboardViewModel vmdl = this.DataContext as GenericDashboardViewModel;
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
             await vmdl.getProjectList();
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
+        }
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView lv = sender as ListView;
+            ProjectListModel plm = lv.SelectedItem as ProjectListModel;
+            Debug.WriteLine("ProjectName= {0}  ProjectId= {1}", plm.Name, plm.Id);
+            SettingsManager.setOption("ProjectIdChoosen", plm.Id);
+            SettingsManager.setOption("ProjectNameChoosen", plm.Name);
+            frame.Navigate(typeof(View.DashBoardView));
         }
     }
 }

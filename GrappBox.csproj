@@ -232,6 +232,7 @@
     <Content Include="Assets\info.png" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\logout.png" />
+    <Content Include="Assets\menu.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
     <Content Include="Assets\SplashScreen.scale-240.png" />
     <Content Include="Assets\Square71x71Logo.scale-240.png" />
