@@ -16,7 +16,7 @@
             <customControler:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="400" >
+            <Grid Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}">
                 <Grid.Background>
                     <SolidColorBrush Color="{StaticResource LightWhiteGrappBox}"/>
                 </Grid.Background>
