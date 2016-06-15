@@ -1300,6 +1300,7 @@ class RolesAndTokenVerificationController extends Controller
 	* @apiSuccess {Object[]} array.role Role informations
 	* @apiSuccess {Number} array.role.id Id of the role
 	* @apiSuccess {String} array.role.name Name of the role
+	* @apiSuccess {object} array.role.values values of each section of the role
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -1318,7 +1319,18 @@ class RolesAndTokenVerificationController extends Controller
 	*					},
 	*					"role": {
 	*						"id": 6,
-	*						"name": "Admin"
+	*						"name": "Admin",
+	*						"values": {
+  *							"teamTimeline": 2,
+  *							"customerTimeline": 2,
+  *							"gantt": 2,
+  *							"whiteboard": 2,
+  *							"bugtracker": 2,
+  *							"event": 2,
+  *							"task": 2,
+  *							"projectSettings": 2,
+  *							"cloud": 2
+  *							}
 	*					}
 	*				},
 	*				{
@@ -1329,7 +1341,18 @@ class RolesAndTokenVerificationController extends Controller
 	*					},
 	*					"role": {
 	*						"id": 6,
-	*						"name": "Graphists"
+	*						"name": "Graphists",
+	*						"values": {
+  *							"teamTimeline": 2,
+  *							"customerTimeline": 2,
+  *							"gantt": 1,
+  *							"whiteboard": 2,
+  *							"bugtracker": 1,
+  *							"event": 1,
+  *							"task": 1,
+  *							"projectSettings": 0,
+  *							"cloud": 2
+  *							}
 	*					}
 	*				}
 	*			]
@@ -1382,9 +1405,18 @@ class RolesAndTokenVerificationController extends Controller
 			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings") > 1)
 			{
 				$roleName = $role->getName();
+				$roleValues = array("teamTimeline" => $role->getTeamTimeline(),
+        										"customerTimeline" => $role->getCustomerTimeline(),
+										        "gantt" => $role->getGantt(),
+										        "whiteboard" => $role->getWhiteboard(),
+										        "bugtracker" => $role->getBugtracker(),
+										        "event" => $role->getEvent(),
+										        "task" => $role->getTask(),
+										        "projectSettings" => $role->getProjectSettings(),
+										        "cloud" => $role->getCloud());
 				$projectName = $project->getName();
 
-				$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+				$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName, "values" => $roleValues));
 			}
 		}
 
