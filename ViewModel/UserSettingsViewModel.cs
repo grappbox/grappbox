@@ -80,6 +80,7 @@ namespace GrappBox.ViewModel
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token };
             HttpResponseMessage res = await api.Get(token, "user/basicinformations");
+            Debug.WriteLine(await res.Content.ReadAsStringAsync());
             if (res.IsSuccessStatusCode)
             {
                 model = api.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
@@ -132,9 +133,9 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public DateTime Birthday
+        public DateTime? Birthday
         {
-            get { if (model == null) return DateTime.Today; DateTime name = model.Birthday; if (name != null) { return name; } else return DateTime.Today; }
+            get { if (model == null) return DateTime.Today; DateTime? name = model.Birthday; if (name != null) { return name; } else return DateTime.Today; }
             set
             {
                 if (value != model.Birthday)

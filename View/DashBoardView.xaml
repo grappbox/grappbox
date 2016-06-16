@@ -16,8 +16,8 @@
             <customControl:LeftMenu/>
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Background="White" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}">
-                <Pivot x:Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" >
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Pivot x:Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" Margin="0,27,0,0">
                     <PivotItem Background="{StaticResource BackgroundGrayBrush}" Margin="0,0,0,0" Header="Settings">
                         <StackPanel Margin="15,0,0,0">
                             <TextBlock FontSize="24" Foreground="Black">Displayed Pans</TextBlock>

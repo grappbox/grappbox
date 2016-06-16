@@ -24,24 +24,24 @@
                                 x:Name="ContentFrame">
                                 <Grid Background="White">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="40"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource RedGrappBoxBrush}">
                                         <Button x:Name="MenuButton">
                                             <Image Source="/Assets/menu.png" />
                                         </Button>
-                                        <TextBlock Margin="15,0,0,0" FontSize="24" FontWeight="ExtraBold" Text="{TemplateBinding PageTitle}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        <TextBlock Margin="15,0,0,0" FontSize="24" FontWeight="ExtraBold" Text="{TemplateBinding PageTitle}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                     </StackPanel>
-                                    <ContentControl
+                                    <ContentPresenter
                                         Grid.Row="1"
                                         Margin="-1,0,-4,0"
-                                        Content="{TemplateBinding Content}" />
+                                        Content="{TemplateBinding Content}"/>
                                     <Border
                                         Grid.Row="1"
                                         Visibility="Collapsed"
                                         x:Name="DisableContentOverlay"
-                                        Background="Transparent" />
+                                        Background="Gray" Opacity="0.5"/>
                                 </Grid>
                             </FlipViewItem>
                         </FlipView>

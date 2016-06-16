@@ -33,7 +33,7 @@
                     <RowDefinition Height="50*" />
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="{Binding CurrentYear}" FontWeight="Bold" FontSize="20" Foreground="White"/>
-                <Pivot Grid.Row="1" x:Name="MonthView" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}" Style="{StaticResource DefaultPivotStyle}" ItemsSource="{Binding MonthList}">
+                <Pivot x:Name="MonthView" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}" Style="{StaticResource DefaultPivotStyle}" ItemsSource="{Binding MonthList}" Margin="0,75,0,0" Grid.RowSpan="2">
                     <Pivot.ItemTemplate>
                         <DataTemplate>
                             <PivotItem ScrollViewer.VerticalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Auto">

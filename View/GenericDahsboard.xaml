@@ -14,7 +14,7 @@
             <customControl:LeftMenu />
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}">
+            <Grid>
                 <ListView
             Padding="15,0,15,0"
             ItemsSource="{Binding ProjectList}"

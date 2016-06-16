@@ -24,7 +24,7 @@
         </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <Grid>
             <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-            <Pivot x:Name="Pivot" Title="Timeline" Style="{StaticResource DefaultPivotStyle}" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}" SelectionChanged="Pivot_SelectionChanged">
+            <Pivot x:Name="Pivot" Title="Timeline" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,-18">
                 <PivotItem Header="{Binding TeamName}">
                     <Grid Name="Grid">
                         <ListView x:Name="TeamListView" ItemsSource="{Binding TeamList}" HorizontalAlignment="Center" VerticalAlignment="Stretch" SelectionMode="None">

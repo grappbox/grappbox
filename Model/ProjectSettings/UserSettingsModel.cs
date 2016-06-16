@@ -15,7 +15,7 @@ namespace GrappBox.Model
     {
         private string _firstname;
         private string _lastname;
-        private DateTime _birthday;
+        private DateTime? _birthday;
         private string _email;
         private string _phone;
         private string _country;
@@ -39,7 +39,7 @@ namespace GrappBox.Model
         }
 
         [JsonProperty("birthday")]
-        public DateTime Birthday
+        public DateTime? Birthday
         {
             get { return _birthday; }
             set { _birthday = value; }
@@ -112,6 +112,7 @@ namespace GrappBox.Model
             _linkedin = "";
             _viadeo = "";
             _twitter = "";
+            _birthday = new DateTime();
         }
     }
 }
