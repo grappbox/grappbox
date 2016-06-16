@@ -9,7 +9,7 @@
     xmlns:customControl="using:GrappBox.CustomControler"
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <slideMenu:SlideInMenuContentControl MenuState="Left" x:Name="slideInMenuContentControl" PageTitle="DashBoard">
+    <slideMenu:SlideInMenuContentControl  x:Name="slideInMenuContentControl" PageTitle="DashBoard">
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid>
                 <ListView

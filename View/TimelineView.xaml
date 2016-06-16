@@ -18,7 +18,7 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False" PageTitle="Grappbox - Timeline">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  IsDoubleTapEnabled="False" PageTitle="Grappbox - Timeline">
         <Grid>
             <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
             <Pivot x:Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">

@@ -17,7 +17,7 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False" PageTitle="Grappbox - Timeline Message">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  IsDoubleTapEnabled="False" PageTitle="Grappbox - Timeline Message">
         <Grid Margin="0,0,0,-2">
             <Grid.Background>
                 <SolidColorBrush Color="{StaticResource LightWhiteGrappBox}"/>

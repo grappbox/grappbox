@@ -17,7 +17,7 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False" PageTitle="Grappbox - Roles Management">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  IsDoubleTapEnabled="False" PageTitle="Grappbox - Roles Management">
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid>
                 <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>

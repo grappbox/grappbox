@@ -36,9 +36,6 @@ namespace GrappBox.CustomControler.SlidingMenu
         public static readonly DependencyProperty PageTitleProperty =
             DependencyProperty.Register("PageTitle", typeof(string), typeof(SlideInMenuContentControl), new PropertyMetadata(null));
 
-        //public static readonly DependencyProperty LeftMenuContentProperty =
-        //    DependencyProperty.Register("LeftMenuContent", typeof(object), typeof(SlideInMenuContentControl), new PropertyMetadata(null));
-
         public static readonly DependencyProperty LeftSideMenuWidthProperty =
             DependencyProperty.Register("LeftSideMenuWidth", typeof(double), typeof(SlideInMenuContentControl), new PropertyMetadata(250.0));
 
@@ -88,12 +85,6 @@ namespace GrappBox.CustomControler.SlidingMenu
             get { return (double)GetValue(LeftSideMenuWidthProperty); }
             set { SetValue(LeftSideMenuWidthProperty, value); }
         }
-
-        //public object LeftMenuContent
-        //{
-        //    get { return (object)GetValue(LeftMenuContentProperty); }
-        //    set { SetValue(LeftMenuContentProperty, value); }
-        //}
 
         protected override void OnApplyTemplate()
         {
