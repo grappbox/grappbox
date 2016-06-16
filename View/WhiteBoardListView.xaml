@@ -15,9 +15,6 @@
     DataContext="GrappBox.ViewModel.WhiteBoardListViewModel"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1" MenuState="Left" IsDoubleTapEnabled="False">
-        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <customControler:LeftMenu/>
-        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid Width="400" Height="640" Background="Black">
                 <Grid.RowDefinitions>

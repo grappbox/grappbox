@@ -10,9 +10,6 @@
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <slideMenu:SlideInMenuContentControl MenuState="Left" x:Name="slideInMenuContentControl" PageTitle="DashBoard">
-        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <customControl:LeftMenu />
-        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid>
                 <ListView

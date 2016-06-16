@@ -7,8 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
-    xmlns:customControler="using:GrappBox.CustomControler">
+    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu">
 
     <Page.BottomAppBar>
         <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
@@ -20,14 +19,11 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False">
-        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <customControler:LeftMenu/>
-        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False" PageTitle="Grappbox - Bugtracker">
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid>
                 <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-                <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" Title="Bugtracker" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,-18">
+                <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
                     <PivotItem Header="Open">
                         <ListBox x:Name="OpenListView" ItemsSource="{Binding OpenList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="openListView_SelectionChanged">
                             <ListBox.ItemTemplate>

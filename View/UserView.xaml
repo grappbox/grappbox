@@ -11,27 +11,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     xmlns:customControler="using:GrappBox.CustomControler">
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1" MenuState="Left" IsDoubleTapEnabled="False">
-        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <customControler:LeftMenu/>
-        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+    <Page.BottomAppBar>
+        <CommandBar ClosedDisplayMode="Compact">
+            <AppBarButton Name="UpdateSettings" Label="Update" Click="Update_Click" Icon="Save"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+    
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1" MenuState="Left" IsDoubleTapEnabled="False" PageTitle="Grappbox - User Settings">
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Margin="0,0,0,-2">
-                <Grid.Background>
-                    <SolidColorBrush Color="{StaticResource LightWhiteGrappBox}"/>
-                </Grid.Background>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="9*"/>
-                </Grid.RowDefinitions>
-                <ProgressBar VerticalAlignment="Center" Grid.Row="1" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-                <Grid Grid.Row="0">
-                    <Grid.Background>
-                        <SolidColorBrush Color="{StaticResource RedGrappBox}"/>
-                    </Grid.Background>
-                    <TextBlock VerticalAlignment="Center" Text="User Settings" FontWeight="Bold" FontSize="25"/>
-                </Grid>
-                <ScrollViewer Grid.Row="1">
+            <Grid Margin="0,0,0,-2">
+                <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+                <ScrollViewer>
                     <StackPanel>
                         <StackPanel.Resources>
                             <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
@@ -41,7 +31,7 @@
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Lastname" FontFamily="Segoe WP" FontSize="15"/>
                         <TextBox x:Name="Lastname" PlaceholderText="Lastname" Text="{Binding Lastname, Mode=TwoWay}"/>
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Birthday" FontFamily="Segoe WP" FontSize="15"/>
-                        <DatePicker Date="{Binding Birthday, Converter={StaticResource DateConverter}}"/>
+                        <DatePicker Date="{Binding Birthday, Converter={StaticResource DateConverter}}" Margin="5,0"/>
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Avatar" FontFamily="Segoe WP" FontSize="15"/>
                         <Grid>
                             <Image x:Name="img" Source="{Binding Avatar, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
@@ -67,7 +57,6 @@
                             <PasswordBox x:Name="retypePassword" BorderBrush="" VerticalAlignment="Stretch"/>
                         </StackPanel>
                         <Button Content="Change Password" HorizontalAlignment="Center" Click="Password_Click"/>
-                        <Button Content="Update" Click="Update_Click" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </ScrollViewer>
             </Grid>

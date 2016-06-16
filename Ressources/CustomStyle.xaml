@@ -25,10 +25,10 @@
         <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
     </Style>
     <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
-        <Setter Property="Background" Value="{StaticResource GrayGrappBoxBrush}"/>
+        <Setter Property="Background" Value="{StaticResource GrayGrappBox}"/>
     </Style>
     <Style TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource RedGrappBoxBrush}"/>
+        <Setter Property="Background" Value="{StaticResource RedGrappBox}"/>
         <Setter Property="Foreground" Value="{StaticResource WhiteGrappBox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
@@ -38,7 +38,7 @@
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style TargetType="PivotItem">
-        <Setter Property="Background" Value="{StaticResource BackgroundGrayBrush}" />
+        <Setter Property="Background" Value="{StaticResource LightWhiteGrappBox}" />
         <Setter Property="Margin" Value="0"/>
     </Style>
     <Style x:Key="BlackTextBlockForeground"  TargetType="TextBlock">
@@ -55,6 +55,8 @@
             <SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="{StaticResource RedGrappBox}" />
             <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource BlackGrappbox}" />
             <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource LightWhiteGrappBox}"/>
+            <SolidColorBrush x:Key="ListBoxItemSelectedBackgroundThemeBrush" Color="{StaticResource LightBlackGrappbox}"/>
+
             <SolidColorBrush x:Key="CheckBoxPressedBackgroundThemeBrush" Color="{StaticResource RedGrappBox}"/>
             <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="{StaticResource RedGrappBox}"/>
         </ResourceDictionary>

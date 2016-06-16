@@ -124,7 +124,6 @@ namespace GrappBox.View
                 Tags.Visibility = Visibility.Collapsed;
                 Users.Visibility = Visibility.Collapsed;
             }
-            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
             PostComPopUp.Visibility = Visibility.Collapsed;
             Pivot.IsLocked = false;
             CommentListView.IsEnabled = true;

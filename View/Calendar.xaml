@@ -15,17 +15,7 @@
             <AppBarButton Icon="Add" Command="{Binding AddEventCommand}">Add Event</AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False">
-        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-            </Grid>
-        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False" PageTitle="Grappbox - Calendar">
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid>
                 <Grid.RowDefinitions>

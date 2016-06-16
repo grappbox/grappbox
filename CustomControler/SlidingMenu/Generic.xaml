@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GrappBox.CustomControler.SlidingMenu">
+    xmlns:local="using:GrappBox.CustomControler.SlidingMenu"
+    xmlns:customControler="using:GrappBox.CustomControler">
     <Style
         TargetType="local:SlideInMenuContentControl">
         <Setter
@@ -17,8 +18,10 @@
                                 x:Name="ContentLeftSideMenu"
                                 HorizontalAlignment="Right"
                                 MaxWidth="{TemplateBinding LeftSideMenuWidth}">
-                                <ContentPresenter
-                                    Content="{TemplateBinding LeftMenuContent}" />
+                                <ContentPresenter>
+                                    <customControler:LeftMenu/>
+                                </ContentPresenter>
+                                    
                             </FlipViewItem>
                             <FlipViewItem
                                 x:Name="ContentFrame">

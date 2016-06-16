@@ -117,7 +117,6 @@ namespace GrappBox.View
             LoadingBar.Visibility = Visibility.Visible;
 
             this.navigationHelper.OnNavigatedTo(e);
-            slideInMenuContentControl.MenuState = CustomControler.SlidingMenu.MenuState.Both;
             await vm.getLS();
 
             LoadingBar.IsEnabled = false;

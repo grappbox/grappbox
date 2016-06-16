@@ -110,7 +110,7 @@ namespace GrappBox.View
         {
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
-
+            
             this.navigationHelper.OnNavigatedTo(e);
             Pivot.IsLocked = false;
             PostTeamMesPopUp.Visibility = Visibility.Collapsed;

@@ -12,9 +12,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     >
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" PageTitle="Grappbox - Dashboard">
-        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <customControl:LeftMenu/>
-        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
         <slideMenu:SlideInMenuContentControl.Content>
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Pivot x:Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" Margin="0,27,0,0">

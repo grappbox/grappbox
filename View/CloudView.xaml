@@ -19,22 +19,11 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False">
-        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
-            <customControler:LeftMenu/>
-        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False" PageTitle="Grappbox - Cloud">
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Margin="0,0,0,-2">
-                <Grid.Background>
-                    <SolidColorBrush Color="{StaticResource RedGrappBox}"/>
-                </Grid.Background>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="9*"/>
-                </Grid.RowDefinitions>
-                <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-                <TextBlock Grid.Row="0" VerticalAlignment="Center" Margin="0,0,0,0" Text="Cloud" FontWeight="Bold" FontSize="25"/>
-                <ListBox Grid.Row="1" x:Name="FileListView" ItemsSource="{Binding ListFiles}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="listView_SelectionChanged">
+            <Grid Margin="0,0,0,2">
+                <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+                <ListBox x:Name="FileListView" ItemsSource="{Binding ListFiles}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="listView_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Loaded="Grid_Loaded" Holding="Grid_Holding" RequestedTheme="Light">
