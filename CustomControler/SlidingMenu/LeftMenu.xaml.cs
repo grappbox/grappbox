@@ -36,7 +36,7 @@ namespace GrappBox.CustomControler
         #region menuClicked
         private void WhiteboardButton_Click(object sender, RoutedEventArgs e)
         {
-            frame.Navigate(typeof(WhiteBoardView));
+            frame.Navigate(typeof(WhiteBoardListView));
         }
         private void UserSettingsButton_Click(object sender, RoutedEventArgs e)
         {

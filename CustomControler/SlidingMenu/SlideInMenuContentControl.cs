@@ -1,9 +1,13 @@
-﻿using System;
+﻿using GrappBox.ApiCom;
+using GrappBox.View;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Xml.Linq;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -18,16 +22,22 @@ namespace GrappBox.CustomControler.SlidingMenu
     [TemplatePart(Name = ElementContentSelector, Type = typeof(Selector))]
     [TemplatePart(Name = ElementDisableContentOverlay, Type = typeof(Border))]
     [TemplatePart(Name = ElementMenuButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementDashboardButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementWhiteboardButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementUserSettingsButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementProjectSettingsButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementBugtrackerButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementTimelineButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementCloudButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementCalendarButton, Type = typeof(Button))]
     public sealed class SlideInMenuContentControl : ContentControl
     {
+        Frame frame = Window.Current.Content as Frame;
         public static readonly DependencyProperty PageTitleProperty =
             DependencyProperty.Register("PageTitle", typeof(string), typeof(SlideInMenuContentControl), new PropertyMetadata(null));
 
-        public static readonly DependencyProperty LeftMenuContentProperty =
-            DependencyProperty.Register("LeftMenuContent", typeof(object), typeof(SlideInMenuContentControl), new PropertyMetadata(null));
-
-        public static readonly DependencyProperty MenuStateProperty =
-            DependencyProperty.Register("MenuState", typeof(MenuState), typeof(SlideInMenuContentControl), new PropertyMetadata(MenuState.Both, OnMenuStateChanged));
+        //public static readonly DependencyProperty LeftMenuContentProperty =
+        //    DependencyProperty.Register("LeftMenuContent", typeof(object), typeof(SlideInMenuContentControl), new PropertyMetadata(null));
 
         public static readonly DependencyProperty LeftSideMenuWidthProperty =
             DependencyProperty.Register("LeftSideMenuWidth", typeof(double), typeof(SlideInMenuContentControl), new PropertyMetadata(250.0));
@@ -36,11 +46,31 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementContentSelector = "ContentSelector";
         private const string ElementDisableContentOverlay = "DisableContentOverlay";
         private const string ElementMenuButton = "MenuButton";
+        private const string ElementDashboardButton = "DashboardButton";
+        private const string ElementWhiteboardButton = "WhiteboardButton";
+        private const string ElementUserSettingsButton = "UserSettingsButton";
+        private const string ElementProjectSettingsButton = "ProjectSettingsButton";
+        private const string ElementBugtrackerButton = "BugtrackerButton";
+        private const string ElementTimelineButton = "TimelineButton";
+        private const string ElementCloudButton = "CloudButton";
+        private const string ElementCalendarButton = "CalendarButton";
+        private const string ElementLogoutButton = "LogoutButton";
 
         private FrameworkElement leftSideMenu;
         private Selector contentSelector;
         private Border disableContentOverlay;
         private Button menuButton;
+        private Button dashboardButton;
+        private Button whiteboardButton;
+        private Button userSettingsButton;
+        private Button projectSettingsButton;
+        private Button bugtrackerButton;
+        private Button timelineButton;
+        private Button cloudButton;
+        private Button calendarButton;
+        private Button logoutButton;
+
+
 
         public SlideInMenuContentControl()
         {
@@ -59,22 +89,11 @@ namespace GrappBox.CustomControler.SlidingMenu
             set { SetValue(LeftSideMenuWidthProperty, value); }
         }
 
-        public MenuState MenuState
-        {
-            get { return (MenuState)GetValue(MenuStateProperty); }
-            set { SetValue(MenuStateProperty, value); }
-        }
-
-        public object LeftMenuContent
-        {
-            get { return (object)GetValue(LeftMenuContentProperty); }
-            set { SetValue(LeftMenuContentProperty, value); }
-        }
-
-        public void GoToMenuState(ActiveState state)
-        {
-            contentSelector.SelectedIndex = 0;
-        }
+        //public object LeftMenuContent
+        //{
+        //    get { return (object)GetValue(LeftMenuContentProperty); }
+        //    set { SetValue(LeftMenuContentProperty, value); }
+        //}
 
         protected override void OnApplyTemplate()
         {
@@ -84,6 +103,15 @@ namespace GrappBox.CustomControler.SlidingMenu
             leftSideMenu = GetTemplateChild(ElementLeftSideMenu) as FrameworkElement;
             disableContentOverlay = GetTemplateChild(ElementDisableContentOverlay) as Border;
             menuButton = GetTemplateChild(ElementMenuButton) as Button;
+            dashboardButton = GetTemplateChild(ElementDashboardButton) as Button;
+            whiteboardButton = GetTemplateChild(ElementWhiteboardButton) as Button;
+            userSettingsButton = GetTemplateChild(ElementUserSettingsButton) as Button;
+            projectSettingsButton = GetTemplateChild(ElementProjectSettingsButton) as Button;
+            bugtrackerButton = GetTemplateChild(ElementBugtrackerButton) as Button;
+            timelineButton = GetTemplateChild(ElementTimelineButton) as Button;
+            cloudButton = GetTemplateChild(ElementCloudButton) as Button;
+            calendarButton = GetTemplateChild(ElementCalendarButton) as Button;
+            logoutButton = GetTemplateChild(ElementLogoutButton) as Button;
 
             var contentFrame = GetTemplateChild("ContentFrame") as FrameworkElement;
             contentFrame.Width = Window.Current.Bounds.Width;
@@ -91,6 +119,67 @@ namespace GrappBox.CustomControler.SlidingMenu
             contentSelector.SelectionChanged += ContentSelector_SelectionChanged;
             SetMenuVisibility();
             menuButton.Tapped += MenuButton_Tapped;
+            dashboardButton.Tapped += DashboardButton_Tapped;
+            whiteboardButton.Tapped += WhiteboardButton_Tapped;
+            userSettingsButton.Tapped += UserSettingsButton_Tapped;
+            projectSettingsButton.Tapped += ProjectSettingsButton_Tapped;
+            bugtrackerButton.Tapped += BugtrackerButton_Tapped;
+            timelineButton.Tapped += TimelineButton_Tapped;
+            cloudButton.Tapped += CloudButton_Tapped;
+            calendarButton.Tapped += CalendarButton_Tapped;
+            logoutButton.Tapped += LogoutButton_Tapped;
+        }
+
+        private void DashboardButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            frame.Navigate(typeof(GenericDahsboard));
+        }
+
+        private void WhiteboardButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            frame.Navigate(typeof(WhiteBoardListView));
+        }
+
+        private void UserSettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            frame.Navigate(typeof(UserView));
+        }
+
+        private void ProjectSettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            frame.Navigate(typeof(ProjectSettingsView));
+        }
+
+        private void BugtrackerButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            frame.Navigate(typeof(BugtrackerView));
+        }
+
+        private void TimelineButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            frame.Navigate(typeof(TimelineView));
+        }
+
+        private void CloudButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            frame.Navigate(typeof(CloudView));
+        }
+
+        private void CalendarButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            frame.Navigate(typeof(Calendar));
+        }
+
+        private void LogoutButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            logout();
         }
 
         private void MenuButton_Tapped(object sender, TappedRoutedEventArgs e)
@@ -113,12 +202,6 @@ namespace GrappBox.CustomControler.SlidingMenu
             contentSelector.SelectedIndex = 1;
         }
 
-        private static void OnMenuStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var control = d as SlideInMenuContentControl;
-            control.SetMenuVisibility();
-        }
-
         private void SetMenuVisibility()
         {
             if (leftSideMenu != null && contentSelector != null)
@@ -128,22 +211,31 @@ namespace GrappBox.CustomControler.SlidingMenu
             }
         }
 
+        private async void logout()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            object[] token = { User.GetUser().Token };
+            HttpResponseMessage res = await api.Get(token, "accountadministration/logout");
+            if (res.IsSuccessStatusCode)
+            {
+                frame.Navigate(typeof(MainPage));
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
         private void ContentSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (MenuState)
+            if (contentSelector.SelectedIndex == 0)
             {
-                case MenuState.Left:
-                    if (contentSelector.SelectedIndex == 0)
-                    {
-                        disableContentOverlay.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        disableContentOverlay.Visibility = Visibility.Collapsed;
-                    }
-                    break;
-                default:
-                    break;
+                disableContentOverlay.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                disableContentOverlay.Visibility = Visibility.Collapsed;
             }
         }
     }

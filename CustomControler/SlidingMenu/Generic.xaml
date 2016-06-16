@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GrappBox.CustomControler.SlidingMenu"
-    xmlns:customControler="using:GrappBox.CustomControler">
+    xmlns:local="using:GrappBox.CustomControler.SlidingMenu">
     <Style
         TargetType="local:SlideInMenuContentControl">
         <Setter
@@ -19,9 +18,58 @@
                                 HorizontalAlignment="Right"
                                 MaxWidth="{TemplateBinding LeftSideMenuWidth}">
                                 <ContentPresenter>
-                                    <customControler:LeftMenu/>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="2*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="1*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="8*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Ellipse Grid.Row="0" Grid.Column="0" Height="48" Stroke="#2979FF" VerticalAlignment="Center" Width="48">
+                                            <Ellipse.Fill>
+                                                <ImageBrush x:Name="img" Stretch="Uniform" ImageSource="/Assets/user.png"/>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+                                        <TextBlock Name="ProjectName" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
+
+                                        <Image Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/dashboard.png"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="DashboardButton" Grid.Row="1" Grid.Column="1" MinHeight="33" Content="Dashboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/whiteboard.png"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="WhiteboardButton" Grid.Row="2" Grid.Column="1" MinHeight="33" Content="Whiteboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="3" Grid.Column="0" Source="/Assets/user.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="UserSettingsButton" Grid.Row="3" Grid.Column="1" MinHeight="33" Content="User Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="4" Grid.Column="0" Source="/Assets/folder.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="ProjectSettingsButton" Grid.Row="4" Grid.Column="1" MinHeight="33" Content="Project Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="5" Grid.Column="0" Source="/Assets/bugtracker.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="BugtrackerButton" Grid.Row="5" Grid.Column="1" MinHeight="33" Content="Bugtracker" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="6" Grid.Column="0" Source="/Assets/timeline.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="TimelineButton" Grid.Row="6" Grid.Column="1" MinHeight="33" Content="Timeline" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="7" Grid.Column="0" Source="/Assets/cloud.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="CloudButton" Grid.Row="7" Grid.Column="1" MinHeight="33" Content="Cloud" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="8" Grid.Column="0" Source="/Assets/calendar.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="CalendarButton" Grid.Row="8" Grid.Column="1" MinHeight="33" Content="Calendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+
+                                        <Image Grid.Row="9" Grid.Column="0" Source="/Assets/logout.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="LogoutButton" Grid.Row="9" Grid.Column="1" MinHeight="33" Content="Logout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+                                     </Grid>
                                 </ContentPresenter>
-                                    
                             </FlipViewItem>
                             <FlipViewItem
                                 x:Name="ContentFrame">
