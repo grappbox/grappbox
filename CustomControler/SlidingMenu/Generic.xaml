@@ -75,11 +75,11 @@
                                 x:Name="ContentFrame">
                                 <Grid Background="White">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="40"/>
+                                        <RowDefinition Height="65"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource RedGrappBoxBrush}">
-                                        <Button x:Name="MenuButton" Width="24" Height="24" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource ButtonStyle1}">
+                                        <Button x:Name="MenuButton" Width="24" Height="24" MinHeight="48" MinWidth="48" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource ButtonStyle1}">
                                             <Image Source="/Assets/menu.png" />
                                         </Button>
                                         <TextBlock Margin="15,0,0,0" FontSize="24" FontWeight="ExtraBold" Text="{TemplateBinding PageTitle}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />

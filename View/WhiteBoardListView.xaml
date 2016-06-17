@@ -12,17 +12,17 @@
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    DataContext="GrappBox.ViewModel.WhiteBoardListViewModel"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1"  IsDoubleTapEnabled="False">
+    DataContext="GrappBox.ViewModel.WhiteBoardListViewModel">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" IsDoubleTapEnabled="False" PageTitle="Grappbox-Whiteboard">
         <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Width="400" Height="640" Background="Black">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="10*"/>
-                </Grid.RowDefinitions>
-                <ComboBox Grid.Row="0" ItemsSource="{Binding Projects}"></ComboBox>
-                <ListView Grid.Row="1" ItemsSource="{Binding WhiteBoards}" ItemClick="ListView_ItemClick"/>
+            <Grid>
+                <ListView>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
         </slideMenu:SlideInMenuContentControl.Content>
     </slideMenu:SlideInMenuContentControl>
