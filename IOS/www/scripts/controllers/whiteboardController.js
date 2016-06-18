@@ -144,6 +144,8 @@ angular.module('GrappBox.controllers')
 
     var canvas = new fabric.Canvas('canvasWhiteboard');
 
+    var isShape = false;
+
     canvas.selection = false;
     fabric.Object.prototype.selectable = false; //Prevent drawing objects to be draggable or clickable
 
@@ -236,6 +238,7 @@ angular.module('GrappBox.controllers')
 
     $scope.moveOn = function (moveOn) {
         canvas.off('mouse:down');
+        canvas.off('mouse:up');
         canvas.isDrawingMode = false;
         $ionicScrollDelegate.freezeScroll(false);
     }
@@ -259,11 +262,7 @@ angular.module('GrappBox.controllers')
         canvas.on('object:added', function (e) {
             if (e.target.type == 'path') {
                 drawingItems.push(e.target);
-                console.log("object added =");
-                console.log(e.target);
                 $scope.PushOnWhiteboard("HANDWRITE", $scope.brushcolor, "", $scope.brushSize, "", "", "", drawingItems[0].canvas.freeDrawingBrush._points);
-                console.log("send to pushOn... :");
-                console.log(drawingItems[0]);
             }
         });
     }
@@ -330,6 +329,7 @@ angular.module('GrappBox.controllers')
                 real_init.y = mouse_pos.y;
             var positionEnd = { "x": real_init.x, "y": real_init.y };
             $scope.PushOnWhiteboard("RECTANGLE", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
+            //canvas.remove(rect);
         });
         $scope.popoverShapes.hide();
     }
@@ -397,6 +397,7 @@ angular.module('GrappBox.controllers')
             var positionEnd = { "x": real_init.x, "y": real_init.y };
             var radius = { "x": Math.abs(real_init.x - mouse_pos_init.x) / 2, "y": Math.abs(real_init.y - mouse_pos_init.y) / 2 };
             $scope.PushOnWhiteboard("ELLIPSE", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd, radius);
+            canvas.remove(ellipse);
         });
         $scope.popoverShapes.hide();
     }
@@ -445,6 +446,9 @@ angular.module('GrappBox.controllers')
         var diamond;
         var mouse_pos_init;
         var mouse_pos;
+        var width;
+        var height;
+        var points;
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
@@ -453,34 +457,55 @@ angular.module('GrappBox.controllers')
         canvas.on('mouse:down', function (option) {
             started = true;
             mouse_pos_init = canvas.getPointer(option.e);
-            diamond = new fabric.Polygon(
-                [{ x: 25, y: 0 },
-                { x: 50, y: 50 },
-                { x: 25, y: 100 },
-                { x: 0, y: 50 }],
-                {
-                    top: mouse_pos_init.y,
-                    left: mouse_pos_init.x,
-                    fill: isTransparent ? 'transparent' : $scope.brushcolor,
-                    hasBorders: true,
-                    hasControls: false,
-                    hasRotatingPoint: false,
-                    lockMovementX: true,
-                    lockMovementY: true,
-                });
+            points = [
+                { x: 1, y: 0 },
+                { x: 2, y: 2 },
+                { x: 1, y: 4 },
+                { x: 0, y: 2 }];
+            diamond = new fabric.Polygon(points, {
+                top: mouse_pos_init.y,
+                left: mouse_pos_init.x,
+                fill: isTransparent ? 'transparent' : $scope.brushcolor,
+                hasBorders: true,
+                hasControls: false,
+                hasRotatingPoint: false,
+                lockMovementX: true,
+                lockMovementY: true,
+            });
             canvas.add(diamond);
         });
 
         canvas.on('mouse:move', function (option) {
             if (!started) return;
             mouse_pos = canvas.getPointer(option.e);
-            diamond.set({ width: mouse_pos.x - mouse_pos_init.x, height: mouse_pos.y - mouse_pos_init.y, angle: 45 });
-            //diamond.set({ 'x': mouse_pos.x - mouse_pos_init.x, 'y': mouse_pos.y - mouse_pos_init.y });
+            width = mouse_pos.x - mouse_pos_init.x;
+            height = mouse_pos.y - mouse_pos_init.y;
+            points = [
+                /*{ x: mouse_pos_init.x + width / 2, y: mouse_pos_init.y },
+                { x: mouse_pos.x, y: mouse_pos_init.y + height / 2 },
+                { x: mouse_pos_init.x + width / 2, y: mouse_pos.y },
+                { x: mouse_pos_init.x, y: mouse_pos_init.y + height / 2 }*/
+                
+                {x: width / 2, y: 0},
+                {x: mouse_pos.x - mouse_pos_init.x, y: height / 2},
+                {x: width / 2, y: mouse_pos.y - mouse_pos_init.y},
+                {x: 0, y: height / 2}
+            ];
+            console.log("diamond = ");
+            console.log(diamond);
+            console.log("points =");
+            console.log(points);
+            diamond.set({ points: points });
             canvas.renderAll();
         });
 
         canvas.on('mouse:up', function (option) {
             started = false;
+            var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
+            var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
+            $scope.PushOnWhiteboard("DIAMOND", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
+            canvas.remove(diamond);
+
         });
         $scope.popoverShapes.hide();
     }
@@ -523,16 +548,38 @@ angular.module('GrappBox.controllers')
             var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
             var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
             $scope.PushOnWhiteboard("LINE", $scope.brushcolor, "", $scope.brushSize, positionStart, positionEnd);
+            canvas.remove(line);
         });
         $scope.popoverShapes.hide();
     }
 
-    //Undo last object, drawing or text
+    //Erase an object
     $scope.undoLastObject = function () {
-        var canvas_objects = canvas._objects; //Get all objects
-        var last = canvas_objects[canvas_objects.length - 1]; //Select the last object
-        canvas.remove(last); //Remove the last object
-        canvas.renderAll();
+        var started = false;
+        var mouse_pos;
+
+        $ionicScrollDelegate.freezeScroll(true);
+        canvas.off('mouse:down');
+        canvas.isDrawingMode = false;
+
+        canvas.on('mouse:down', function (option) {
+            started = true;
+            mouse_pos = canvas.getPointer(option.e);
+        });
+
+        canvas.on('mouse:up', function (e) {
+            started = false;
+            console.log("mouse_pos.x" + mouse_pos.x);
+            console.log("mouse_pos.y" + mouse_pos.y);
+            $scope.DeleteObject(mouse_pos);
+            //$scope.PushOnWhiteboard("LINE", $scope.brushcolor, "", $scope.brushSize, positionStart, positionEnd);
+        });
+        $scope.popoverShapes.hide();
+
+        //var canvas_objects = canvas._objects; //Get all objects
+        //var last = canvas_objects[canvas_objects.length - 1]; //Select the last object
+        //canvas.remove(last); //Remove the last object
+        //canvas.renderAll();
     }
 
     $scope.addText = function () {
@@ -595,6 +642,36 @@ angular.module('GrappBox.controllers')
     }
 
     /*
+    ** Delete an object on whiteboard
+    ** Method: PUT
+    */
+    $scope.deleteObjectData = {};
+    $scope.DeleteObject = function (mouse_pos) {
+        $rootScope.showLoading();
+        Whiteboard.DeleteObject().update({
+            data: {
+                whiteboardId: $scope.whiteboardId,
+                token: $rootScope.userDatas.token,
+                center: { x: mouse_pos.x, y: mouse_pos.y },
+                radius: 10
+            }
+        }).$promise
+            .then(function (data) {
+                console.log('Delete object successful !');
+                console.log(data.data);
+                $scope.deleteObjectData = data.data.array;
+            })
+            .catch(function (error) {
+                console.error('Delete object failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
+    }
+
+    /*
     ** Open a whiteboard
     ** Method: GET
     */
@@ -635,6 +712,8 @@ angular.module('GrappBox.controllers')
                     height: obj[i].object.positionEnd.y - obj[i].object.positionStart.y,
                     fill: obj[i].object.background,
                     stroke: obj[i].object.color,
+                    selectable: false,
+                    evented: false
                 });
                 canvas.add(rect);
             }
@@ -645,7 +724,9 @@ angular.module('GrappBox.controllers')
                     fill: obj[i].object.background,
                     stroke: obj[i].object.color,
                     rx: obj[i].object.radius.x,
-                    ry: obj[i].object.radius.y
+                    ry: obj[i].object.radius.y,
+                    selectable: false,
+                    evented: false
                 });
                 canvas.add(ellipse);
             }
@@ -657,7 +738,9 @@ angular.module('GrappBox.controllers')
                     obj[i].object.positionEnd.y];
                 var line = new fabric.Line(points, {
                     stroke: obj[i].object.color,
-                    strokeWidth: obj[i].object.lineWeight
+                    strokeWidth: obj[i].object.lineWeight,
+                    selectable: false,
+                    evented: false
                 });
                 canvas.add(line);
             }
@@ -676,12 +759,35 @@ angular.module('GrappBox.controllers')
                 var handwrite = new fabric.Path(handPoints, {
                     fill: false,
                     stroke: obj[i].object.color,
-                    strokeWidth: obj[i].object.lineWeight
+                    strokeWidth: obj[i].object.lineWeight,
+                    selectable: false,
+                    evented: false
                 });
                 canvas.add(handwrite);
             }
             else if (obj[i].object.type == "DIAMOND") {
-
+                var width = obj[i].object.positionEnd.x - obj[i].object.positionStart.x;
+                var height = obj[i].object.positionEnd.y - obj[i].object.positionStart.y;
+                var points = [
+                    { x: width / 2, y: 0 },
+                    { x: obj[i].object.positionEnd.x - obj[i].object.positionStart.x, y: height / 2 },
+                    { x: width / 2, y: obj[i].object.positionEnd.y - obj[i].object.positionStart.y },
+                    { x: 0, y: height / 2 }
+                ]
+                var diamond = new fabric.Polygon(points, {
+                        top: obj[i].object.positionStart.y > obj[i].object.positionEnd.y ? obj[i].object.positionEnd.y : obj[i].object.positionStart.y,
+                        left: obj[i].object.positionStart.x > obj[i].object.positionEnd.x ? obj[i].object.positionEnd.x : obj[i].object.positionStart.x,
+                        fill: obj[i].object.background,
+                        stroke: obj[i].object.color,
+                        hasBorders: true,
+                        hasControls: false,
+                        hasRotatingPoint: false,
+                        lockMovementX: true,
+                        lockMovementY: true,
+                        selectable: false,
+                        evented: false
+                    });
+                canvas.add(diamond);
             }
             else if (obj[i].object.type == "TEXT") {
                 canvas.add(new fabric.Text(obj[i].object.text, {

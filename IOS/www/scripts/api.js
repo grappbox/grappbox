@@ -379,7 +379,7 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Delete an object on a whiteboard
         DeleteObject: function () {
-            return $resource($rootScope.API + 'whiteboard/deleteObject', null, {
+            return $resource($rootScope.API + 'whiteboard/deleteobject', null, {
                 'update': { method: 'PUT' }
             });
         },
