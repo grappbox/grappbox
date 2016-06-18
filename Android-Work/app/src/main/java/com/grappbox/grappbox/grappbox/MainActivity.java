@@ -40,6 +40,7 @@ import com.grappbox.grappbox.grappbox.BugTracker.BugTrackerFragment;
 import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
 import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
 import com.grappbox.grappbox.grappbox.Dashboard.DashboardFragment;
+import com.grappbox.grappbox.grappbox.Dashboard.DashboardProjectListFragment;
 import com.grappbox.grappbox.grappbox.Gantt.GanttFragment;
 import com.grappbox.grappbox.grappbox.Gantt.TaskFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             _fragmentManager = getSupportFragmentManager();
             _fragmentManager.addOnBackStackChangedListener(this);
-            _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardFragment(), DashboardFragment.TAG).commit();
+            _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardProjectListFragment(), DashboardFragment.TAG).commit();
         }
         SessionAdapter.getInstance().addEventSeeker(this);
         onSelectedProjectChange(SessionAdapter.getInstance().getCurrentSelectedProject());

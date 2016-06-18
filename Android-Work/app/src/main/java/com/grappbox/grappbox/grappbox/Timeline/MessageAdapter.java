@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.R;
@@ -36,9 +36,9 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
         public TextView timeline_edit_date;
         public TextView timeline_edit_hour;
         public TextView timeline_message_user;
-        public Button   timeline_message_edit;
-        public Button   timeline_message_delete;
-        public Button   timeline_message_comment;
+        public ImageButton   timeline_message_edit;
+        public ImageButton   timeline_message_delete;
+        public ImageButton   timeline_message_comment;
     }
 
     public MessageAdapter(Activity activity, ArrayList arrayList, Resources resLocal, TimelineListFragment context){
@@ -56,9 +56,9 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
     public View getView(int position, View convertView, ViewGroup parent){
         View v = convertView;
         ViewHolder holder;
-        Button editMessage;
-        Button deleteMessage;
-        Button commentMessage;
+        ImageButton editMessage;
+        ImageButton deleteMessage;
+        ImageButton commentMessage;
 
         if (convertView == null){
             v = _inflater.inflate(R.layout.item_timeline_message, null);
@@ -68,9 +68,9 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             holder.timeline_message_title = (TextView)v.findViewById(R.id.timelie_message_title);
             holder.timeline_message_description = (TextView)v.findViewById(R.id.timelie_message_description);
             holder.timeline_message_user = (TextView)v.findViewById(R.id.timeline_message_user);
-            editMessage = (Button) v.findViewById(R.id.timeline_button_edit);
-            commentMessage = (Button) v.findViewById(R.id.timeline_button_comment);
-            deleteMessage = (Button) v.findViewById(R.id.timeline_button_delete);
+            editMessage = (ImageButton) v.findViewById(R.id.timeline_button_edit);
+            commentMessage = (ImageButton) v.findViewById(R.id.timeline_button_comment);
+            deleteMessage = (ImageButton) v.findViewById(R.id.timeline_button_delete);
             holder.timeline_message_comment = commentMessage;
             holder.timeline_message_delete = deleteMessage;
             holder.timeline_message_edit = editMessage;
@@ -89,9 +89,9 @@ public class MessageAdapter extends BaseAdapter implements View.OnClickListener 
             holder.timeline_message_title.setText(tmpValue.getTitle());
             holder.timeline_message_description.setText(tmpValue.getDesc());
             holder.timeline_message_user.setText(tmpValue.getUser());
-            editMessage = (Button) v.findViewById(R.id.timeline_button_edit);
-            commentMessage = (Button) v.findViewById(R.id.timeline_button_comment);
-            deleteMessage = (Button) v.findViewById(R.id.timeline_button_delete);
+            editMessage = (ImageButton) v.findViewById(R.id.timeline_button_edit);
+            commentMessage = (ImageButton) v.findViewById(R.id.timeline_button_comment);
+            deleteMessage = (ImageButton) v.findViewById(R.id.timeline_button_delete);
             holder.timeline_message_comment = commentMessage;
             holder.timeline_message_delete = deleteMessage;
             holder.timeline_message_edit = editMessage;

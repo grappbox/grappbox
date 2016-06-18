@@ -4,32 +4,32 @@
     android:layout_height="match_parent" android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/pull_refresher"
+        >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Project List"
-            android:textSize="30sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:textColor="#c0392b"
-            android:textStyle="bold"/>
-
-        <ListView
-            android:id="@+id/list_team_occupation"
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:id="@+id/project_list" />
 
+        <android.support.design.widget.FloatingActionButton android:id="@+id/add_project_float_button"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"
+            android:src="@mipmap/ic_add_circle_white_24dp" />
 
-    </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.design.widget.FloatingActionButton android:id="@+id/add_project_float_button"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end" android:layout_margin="@dimen/fab_margin"
-        android:src="@mipmap/ic_add_circle_white_24dp" />
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loader"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>
