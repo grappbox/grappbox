@@ -121,6 +121,14 @@ angular.module('GrappBox.api', ['ngResource'])
         // Get current tasks
         CurrentTasks: function () {
             return $resource($rootScope.API + 'user/getalltasks/:token', { token: "@token" });
+        },
+        // Get specific user avatar
+        Avatar: function () {
+            return $resource($rootScope.API + 'user/getuseravatar/:token/:userId', { token: "@token", userId: "@userId" });
+        },
+        // Get users on a project avatar
+        Avatars: function () {
+            return $resource($rootScope.API + 'user/getallprojectuseravatar/:token/:projectId', { token: "@token", projectId: "@projectId" });
         }
     }
 })

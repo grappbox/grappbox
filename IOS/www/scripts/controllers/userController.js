@@ -9,6 +9,7 @@ angular.module('GrappBox.controllers')
     $scope.doRefresh = function () {
         $scope.GetUserInfo();
         $scope.GetMemberRoles();
+        $scope.GetAvatars();
         console.log("View refreshed !");
     }
 
@@ -64,4 +65,31 @@ angular.module('GrappBox.controllers')
             })
     }
     $scope.GetMemberRoles();
+
+    /*
+    ** Get user avatar
+    ** Method: GET
+    */
+    $scope.userAvatar = {};
+    $scope.GetUserAvatar = function () {
+        $rootScope.showLoading();
+        Users.Avatar().get({
+            token: $rootScope.userDatas.token,
+            userId: $stateParams.userId
+        }).$promise
+            .then(function (data) {
+                console.log('Get member avatar successful !');
+                $scope.userAvatar = data.data;
+                console.log(data);
+            })
+            .catch(function (error) {
+                console.error('Get member avatar failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
+    }
+    $scope.GetUserAvatar();
 })

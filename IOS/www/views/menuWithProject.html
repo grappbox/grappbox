@@ -1,0 +1,30 @@
+﻿<!--
+    Summary: This page is the content of the menu from all views but the projects.html
+-->
+
+<ion-content>
+    <ion-list>
+        <!-- Display user picture & name -->
+        <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
+            <!--<img src="{{ userDatas.avatar }}" />-->
+            <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
+            <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>
+        </ion-item>
+    </ion-list>
+    <div class="button-bar">
+        <a menu-close class="button icon button-icon ion-ios-settings" ui-sref="app.project({projectId: projectId})"></a>
+        <a class="button icon button-icon ion-card" ui-sref="app.profile"></a>
+        <a class="button icon button-icon ion-power" ng-click="logout()"></a>
+    </div>
+    <ion-list>
+        <!-- List of all links in menu if one is selected -->
+        <ion-item nav-clear menu-close ui-sref="app.projects">Projects</ion-item>
+        <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.dashboard({projectId: projectId})">Dashboard</ion-item>
+        <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.bugtracker({projectId: projectId})">BugTracker</ion-item>
+        <ion-item nav-clear menu-close ui-sref-active="active" style="background-color:grey">Calendar</ion-item>
+        <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.cloud({projectId: projectId})">Cloud</ion-item>
+        <ion-item nav-clear menu-close ui-sref-active="active" style="background-color:grey">Tasks</ion-item>
+        <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.timelines({projectId: projectId})">Timelines</ion-item>
+        <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.whiteboards({projectId: projectId})">Whiteboards</ion-item>
+    </ion-list>
+</ion-content>

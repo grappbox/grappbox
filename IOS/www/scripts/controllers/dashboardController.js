@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Dashboard) {
+.controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Dashboard, Users) {
     
     $scope.doRefreshTeamOccupation = function () {
         $scope.GetTeamOccupation();
@@ -21,8 +21,9 @@ angular.module('GrappBox.controllers')
         console.log("View refreshed !");
     }
 
-    //$scope.projectId = $stateParams.projectId;
-    $scope.projectId = 18;
+    console.log("PROJECTID = " + $stateParams.projectId);
+    $rootScope.projectId = $stateParams.projectId;
+    $scope.projectId = $stateParams.projectId;
 
     //Get Team Occupation
     $scope.teamOccupationTab = {};
@@ -36,8 +37,8 @@ angular.module('GrappBox.controllers')
                 console.log('Get team occupation list successful !');
                 console.log(data.data.array);
                 $scope.teamOccupationTab = data.data.array;
-                if (data.length == 0)
-                    $scope.noTeam = "You don't have team right now.";
+                if (data.data.array.length == 0)
+                    $scope.noTeam = "You don't have team.";
             })
             .catch(function (error) {
                 console.error('Get team occupation list failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -52,7 +53,6 @@ angular.module('GrappBox.controllers')
 
     //Get Next Meetings
     $scope.nextMeetingsTab = {};
-    $scope.nextMeetingsError = "";
     $scope.GetNextMeetings = function () {
         $rootScope.showLoading();
         Dashboard.NextMeetings().get({
@@ -63,8 +63,8 @@ angular.module('GrappBox.controllers')
                 console.log('Get next meetings list successful !');
                 console.log(data.data);
                 $scope.nextMeetingsTab = data.data.array;
-                if (Object.keys(data.toJSON()).length < 1)
-                    $scope.nextMeetingsError = "You don't have meeting.";
+                if (data.data.array.length < 1)
+                    $scope.noMeeting = "You don't have meeting.";
             })
             .catch(function (error) {
                 console.error('Get next meetings list failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -77,7 +77,7 @@ angular.module('GrappBox.controllers')
     $scope.GetNextMeetings();
 
     //Get Global Progress
-    $scope.globalProgressTab = {};
+    /*$scope.globalProgressTab = {};
     $scope.GetGlobalProgress = function () {
         $rootScope.showLoading();
         Dashboard.GlobalProgress().get({ token: $rootScope.userDatas.token }).$promise
@@ -96,5 +96,32 @@ angular.module('GrappBox.controllers')
                 $rootScope.hideLoading();
             })
     }
-    $scope.GetGlobalProgress();
+    $scope.GetGlobalProgress();*/
+
+    /*
+    ** Get users avatars
+    ** Method: GET
+    */
+    $scope.usersAvatars = {};
+    $scope.GetUsersAvatars = function () {
+        $rootScope.showLoading();
+        Users.Avatars().get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get members avatars successful !');
+                $scope.usersAvatars = data.data.array;
+                console.log(data);
+            })
+            .catch(function (error) {
+                console.error('Get members avatars failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                $rootScope.hideLoading();
+            })
+    }
+    $scope.GetUsersAvatars();
 })

@@ -8,8 +8,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <!--<meta http-equiv="Content-Security-Policy" />-->
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
-    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https//ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.gstatic.com https://*.googleapis.com; style-src 'self' 'unsafe-inline'; media-src *">-->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">-->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https//ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval': https://*.gstatic.com https://*.googleapis.com style-src 'self' 'unsafe-inline'; media-src *">-->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap:*; font-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' 'unsafe-eval' *; media-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src 'self' 'unsafe-inline' 'unsafe-eval' *;">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>GrappBox</title>
 
@@ -53,6 +54,7 @@
     <!-- Controllers -->
     <script src="scripts/controllers/mainController.js"></script><!-- We use a main controller to avoid issues -->
     <script src="scripts/controllers/authController.js"></script>
+    <script src="scripts/controllers/appController.js"></script>
     <script src="scripts/controllers/menuController.js"></script>
     <script src="scripts/controllers/projectController.js"></script>
     <script src="scripts/controllers/projectsController.js"></script>
@@ -65,6 +67,7 @@
     <script src="scripts/controllers/timelinesController.js"></script>
     <script src="scripts/controllers/createMessageController.js"></script>
     <script src="scripts/controllers/whiteboardController.js"></script>
+    <script src="scripts/controllers/whiteboardsController.js"></script>
     <script src="scripts/controllers/profileController.js"></script>
     <script src="scripts/controllers/editProfileController.js"></script>
     <script src="scripts/controllers/userController.js"></script>

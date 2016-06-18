@@ -2,7 +2,7 @@
     Summary: This page lists all projects and allows to add / remove any
 -->
 
-<ion-view cache-view="false">
+<ion-view>
     <ion-nav-title>Projects</ion-nav-title>
     <ion-content overflow-scroll="false">
 
@@ -16,7 +16,8 @@
         <ion-list>
             <ion-item class="item-icon-right"
                       ng-repeat="project in projectsTab"
-                      ui-sref="app.project({projectId: project.project_id})">
+                      ui-sref="app.dashboard({projectId: project.project_id})">
+                      <!--ui-sref="app.project({projectId: project.project_id})">-->
                 <h2>{{ project.name }}</h2>
             </ion-item>
         </ion-list>

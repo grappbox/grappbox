@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 // PROJECTS LIST
-.controller('ProjectsListCtrl', function ($scope, $rootScope, $state, Projects) {
+.controller('ProjectsListCtrl', function ($scope, $rootScope, $state, $stateParams, Projects) {
 
     $scope.doRefresh = function () {
         $scope.GetProjects();

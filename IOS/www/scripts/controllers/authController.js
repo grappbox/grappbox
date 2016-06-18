@@ -25,7 +25,7 @@ angular.module('GrappBox.controllers')
                 console.log('Connexion successful !');
                 console.log(data);
                 $rootScope.userDatas = data.data;
-                $state.go('app.dashboard');
+                $state.go('app.projects');
             })
             .catch(function (error) {
                 console.error('Connexion failed ! Reason: ' + error.status + ' ' + error.statusText);

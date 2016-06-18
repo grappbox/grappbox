@@ -1,142 +1,14 @@
 ﻿/*
-    Summary: WHITEBOARD LIST & WHITEBOARD Controllers
+    Summary: WHITEBOARD Controller
 */
 
 angular.module('GrappBox.controllers')
 
-// WHITEBOARD LIST
-.controller('WhiteboardsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, Whiteboard) {
-
-    // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
-    //$scope.projectId = $stateParams.projectId;
-    $scope.projectId = 18;
-
-    //Refresher
-    $scope.doRefresh = function () {
-        $scope.ListWhiteboards();
-        console.log("View refreshed !");
-    }
-
-    $scope.whiteboardName = {};
-
-    /*
-    ** List all whiteboards
-    ** Method: GET
-    */
-    $scope.whiteboardsInfo = {};
-    $scope.ListWhiteboards = function () {
-        $rootScope.showLoading();
-        Whiteboard.List().get({
-            token: $rootScope.userDatas.token,
-            projectId: $scope.projectId
-        }).$promise
-            .then(function (data) {
-                console.log('List whiteboards successful !');
-                console.log(data.data.array);
-                $scope.whiteboardsInfo = data.data.array;
-            })
-            .catch(function (error) {
-                console.error('List whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
-                console.error(error);
-            })
-            .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
-            })
-    }
-    $scope.ListWhiteboards();
-
-    /*
-    ** Create a new whiteboard
-    ** Method: POST
-    */
-    $scope.createWhiteboardData = {};
-    $scope.CreateWhiteboard = function () {
-        $rootScope.showLoading();
-        Whiteboard.Create().save({
-            data: {
-                token: $rootScope.userDatas.token,
-                projectId: $scope.projectId,
-                whiteboardName: $scope.whiteboardName.name
-            }
-        }).$promise
-            .then(function (data) {
-                console.log('Create whiteboard successful !');
-                console.log(data.data);
-                $scope.createWhiteboardData = data.data;
-            })
-            .catch(function (error) {
-                console.error('Create whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
-                console.error(error);
-            })
-            .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
-                $scope.ListWhiteboards();
-            })
-    }
-
-    // Enter whiteboard name popup
-    $scope.showNameWhiteboardPopup = function () {
-        var myPopup = $ionicPopup.show({
-            template: '<input type="text" placeholder="Name for whiteboard" ng-model="whiteboardName.name">',
-            title: 'Choose Name',
-            scope: $scope,
-            buttons: [
-              { text: 'Cancel' },
-              {
-                  text: '<b>Save</b>',
-                  type: 'button-positive',
-                  onTap: function (e) {
-                      if (!$scope.whiteboardName.name) {
-                          // Don't allow the user to close unless he enters file password
-                          e.preventDefault();
-                      } else {
-                          return $scope.whiteboardName;
-                      }
-                  }
-              }]
-        })
-        .then(function (res) {
-            if (res && res.name) {
-                if ($scope.whiteboardName.name != 'undefined')
-                    $scope.CreateWhiteboard();
-            }
-        });
-    };
-
-    /*
-    ** Delete a whiteboard
-    ** Method: DELETE
-    */
-    $scope.DeleteWhiteboard = function (whiteboard) {
-        $rootScope.showLoading();
-        Whiteboard.Delete().delete({
-            token: $rootScope.userDatas.token,
-            id: whiteboard.id
-        }).$promise
-            .then(function (data) {
-                console.log('Delete whiteboard successful !');
-                console.log(data.info);
-            })
-            .catch(function (error) {
-                console.error('Delete whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
-                console.error(error);
-            })
-            .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
-                $scope.ListWhiteboards();
-            })
-    }
-})
-
 // WHITEBOARD
-.controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, Whiteboard) {
+.controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, $interval, Whiteboard) {
 
     // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
-    //$scope.projectId = $stateParams.projectId;
-    $scope.projectId = 18;
+    $scope.projectId = $stateParams.projectId;
     $scope.whiteboardId = $stateParams.whiteboardId;
 
     var width = 3840; //3840;
@@ -144,16 +16,14 @@ angular.module('GrappBox.controllers')
 
     var canvas = new fabric.Canvas('canvasWhiteboard');
 
-    var isShape = false;
-
     canvas.selection = false;
     fabric.Object.prototype.selectable = false; //Prevent drawing objects to be draggable or clickable
 
     //Saving by both manners prevents from errors
     canvas.setHeight(height);
     canvas.setWidth(width);
-    canvas.width = width;
-    canvas.height = height;
+    //canvas.width = width;
+    //canvas.height = height;
 
     canvas.isDrawingMode = false;
     $scope.brushSize = 2; //Set brush size to by default
@@ -235,6 +105,16 @@ angular.module('GrappBox.controllers')
         { brushSize: "4" },
         { brushSize: "5" },
     ]
+
+    // Cancel interval when quitting view
+    /*$scope.$on('$destroy', function () {
+        // cancel the interval
+        $interval.cancel(myInterval);
+    });
+
+    var myInterval = $interval(function () {
+        $scope.OpenWhiteboard();
+    }, 3000);*/
 
     $scope.moveOn = function (moveOn) {
         canvas.off('mouse:down');
@@ -397,48 +277,9 @@ angular.module('GrappBox.controllers')
             var positionEnd = { "x": real_init.x, "y": real_init.y };
             var radius = { "x": Math.abs(real_init.x - mouse_pos_init.x) / 2, "y": Math.abs(real_init.y - mouse_pos_init.y) / 2 };
             $scope.PushOnWhiteboard("ELLIPSE", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd, radius);
-            canvas.remove(ellipse);
         });
         $scope.popoverShapes.hide();
     }
-
-    //Draw Triangle shape
-    /*$scope.drawTriangle = function (isTransparent) {
-        var started = false;
-        var triangle;
-        var mouse_pos_init;
-        var mouse_pos;
-
-        $ionicScrollDelegate.freezeScroll(true);
-        canvas.off('mouse:down');
-        canvas.isDrawingMode = false;
-
-        canvas.on('mouse:down', function (option) {
-            started = true;
-            mouse_pos_init = canvas.getPointer(option.e);
-            triangle = new fabric.Triangle({
-                top: mouse_pos_init.y,
-                left: mouse_pos_init.x,
-                width: 0.1,
-                height: 0.1,
-                fill: isTransparent ? 'transparent' : $scope.brushcolor,
-                stroke: $scope.brushcolor
-            });
-            canvas.add(triangle);
-        });
-
-        canvas.on('mouse:move', function (option) {
-            if (!started) return;
-            mouse_pos = canvas.getPointer(option.e);
-            triangle.set({ 'width': mouse_pos.x - mouse_pos_init.x, 'height': mouse_pos.y - mouse_pos_init.y });
-            canvas.renderAll();
-        });
-
-        canvas.on('mouse:up', function (option) {
-            started = false;
-        });
-        $scope.popoverShapes.hide();
-    }*/
 
     //Draw Diamond shape
     $scope.drawDiamond = function (isTransparent) {
@@ -504,7 +345,6 @@ angular.module('GrappBox.controllers')
             var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
             var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
             $scope.PushOnWhiteboard("DIAMOND", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
-            canvas.remove(diamond);
 
         });
         $scope.popoverShapes.hide();
@@ -548,7 +388,6 @@ angular.module('GrappBox.controllers')
             var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
             var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
             $scope.PushOnWhiteboard("LINE", $scope.brushcolor, "", $scope.brushSize, positionStart, positionEnd);
-            canvas.remove(line);
         });
         $scope.popoverShapes.hide();
     }
