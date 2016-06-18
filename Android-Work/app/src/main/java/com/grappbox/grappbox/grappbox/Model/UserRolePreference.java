@@ -29,7 +29,7 @@ public class UserRolePreference extends SwitchPreference {
     RoleModel _model;
     boolean _acquired;
     int _userId;
-    int _projectId;
+    String _projectId;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public UserRolePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -69,7 +69,7 @@ public class UserRolePreference extends SwitchPreference {
         return null;
     }
 
-    public void setRoleModel(RoleModel model, boolean acquired, int projectId, int userId) {
+    public void setRoleModel(RoleModel model, boolean acquired, String projectId, int userId) {
         _model = model;
         _acquired = acquired;
         _userId = userId;

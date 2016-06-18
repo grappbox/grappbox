@@ -25,9 +25,9 @@ public class SafePasswordPreference extends DialogPreference {
 
     private String txtNewPass;
     private String txtConfirmPass;
-    private int _projectId;
+    private String _projectId;
 
-    public void setProjectId(int projectId){ _projectId = projectId; }
+    public void setProjectId(String projectId){ _projectId = projectId; }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SafePasswordPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -77,9 +77,9 @@ public class SafePasswordPreference extends DialogPreference {
     {
         APIConnectAdapter _api;
         Context _context;
-        int      _projectId;
+        String _projectId;
 
-        UpdateSafePassword(Context context, int projectId)
+        UpdateSafePassword(Context context, String projectId)
         {
             _context = context;
             _projectId = projectId;

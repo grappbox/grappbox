@@ -63,7 +63,7 @@ import java.util.Objects;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
-    private static int _projectId;
+    private static String _projectId;
 
     public static final String EXTRA_PROJECT_ID = "ProjectSettingsActivity.extra.project_id";
     public static final String EXTRA_PROJECT_NAME = "ProjectSettingsActivity.extra.project_name";
@@ -274,7 +274,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
         assert (intent != null);
         _childrenParent = this;
-        _projectId = intent.getIntExtra(EXTRA_PROJECT_ID, 0);
+        _projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
         title = intent.getStringExtra(EXTRA_PROJECT_NAME);
 
         setTitle(title == null ? getString(R.string.str_project_settings_title) : title + getString(R.string.str_project_settings_footer));
@@ -436,9 +436,9 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
     {
         APIConnectAdapter _api;
         Activity _context;
-        int      _projectId;
+        String      _projectId;
 
-        UpdateKeyBasicInfoTask(Activity context, int projectId)
+        UpdateKeyBasicInfoTask(Activity context, String projectId)
         {
             _context = context;
             _projectId = projectId;
@@ -871,10 +871,10 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
     {
         Context _context;
         APIConnectAdapter _api;
-        int _projectId;
+        String _projectId;
         PreferenceCategory _category;
 
-        RetreiveTeamInfoTask(PreferenceCategory category, Context context, int projectId)
+        RetreiveTeamInfoTask(PreferenceCategory category, Context context, String projectId)
         {
             _context = context;
             _projectId = projectId;
@@ -971,7 +971,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
             try {
                 _api.setVersion("V0.2");
-                _api.startConnection("projects/getusertoproject/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(_projectId));
+                _api.startConnection("projects/getusertoproject/" + SessionAdapter.getInstance().getToken() + "/" + SessionAdapter.getInstance().getCurrentSelectedProject());
                 _api.setRequestConnection("GET");
                 return _api.getInputSream();
             } catch (IOException e) {
@@ -1000,10 +1000,10 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
     public static class RetreiveRolesIDUserProjectTask extends AsyncTask<String, Void, String> {
         APIConnectAdapter _api;
         Context _context;
-        int _projectId;
+        String _projectId;
         PreferenceFragment _frag;
 
-        RetreiveRolesIDUserProjectTask(Context context, int projectID, PreferenceFragment fragment) {
+        RetreiveRolesIDUserProjectTask(Context context, String projectID, PreferenceFragment fragment) {
             _context = context;
             _projectId = projectID;
             _frag = fragment;
@@ -1102,11 +1102,11 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
     public static class RetreiveProjectRoles extends AsyncTask<String, Void, String> {
         APIConnectAdapter _api;
         Context _context;
-        int _projectId;
+        String _projectId;
         ArrayList<Integer> _ids;
         PreferenceFragment _frag;
 
-        RetreiveProjectRoles(Context context, int projectID, ArrayList<Integer> ids, PreferenceFragment fragment) {
+        RetreiveProjectRoles(Context context, String projectID, ArrayList<Integer> ids, PreferenceFragment fragment) {
             _context = context;
             _projectId = projectID;
             _ids = ids;
@@ -1158,7 +1158,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
             _api.setVersion("V0.2");
             try {
-                _api.startConnection("roles/getprojectroles/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(_projectId));
+                _api.startConnection("roles/getprojectroles/" + SessionAdapter.getInstance().getToken() + "/" + SessionAdapter.getInstance().getCurrentSelectedProject());
                 _api.setRequestConnection("GET");
                 return _api.getInputSream();
             } catch (IOException e) {

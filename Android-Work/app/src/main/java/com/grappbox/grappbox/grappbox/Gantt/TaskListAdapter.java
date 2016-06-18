@@ -56,7 +56,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         taskProgression = (TextView) holder.mCardView.findViewById(R.id.task_progression);
         assignedPeople = (TextView) holder.mCardView.findViewById(R.id.task_assignee);
         dayLeft = (TextView) holder.mCardView.findViewById(R.id.task_time);
-        openAction = (Button) holder.mCardView.findViewById(R.id.btn_opentask);
+
         layTags = (LinearLayout) holder.mCardView.findViewById(R.id.layout_tags);
 
         taskTitle.setText(currentContent.getTitle());
@@ -76,9 +76,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         else
             dayLeft.setTextColor(ContextCompat.getColor(holder.mCardView.getContext(), R.color.Black));
 
-        Button noTag = new Button(layTags.getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(layTags.getWidth(), layTags.getHeight() / 5);
-        layTags.addView(noTag, params);
         for (TaskTag tag : currentContent.getTags())
         {
             //Draw here tag
@@ -89,32 +86,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             layTags.addView(newTag);
         }
 
-        /** THIS IS PLACEHOLDER **/
-        {
-            //Draw here tag
-            Button newTag = new Button(layTags.getContext());
-            newTag.setText("");
-            newTag.setBackgroundColor(Color.parseColor("#202020")); //Set color here
-            newTag.setPadding(0, 10, 0, 10);
-            newTag.setMaxWidth(layTags.getWidth());
-            layTags.addView(newTag);
-        }
-
-        {
-            //Draw here tag
-            Button newTag = new Button(layTags.getContext());
-            newTag.setText("");
-            newTag.setBackgroundColor(Color.parseColor("#AC4568")); //Set color here
-            newTag.setPadding(0, 10, 0, 10);
-            newTag.setMaxWidth(layTags.getWidth());
-            layTags.addView(newTag);
-        }
-        /** END PLACEHOLDER **/
-        openAction.setOnClickListener(new View.OnClickListener() {
+        holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if (interaction != null)
-                   interaction.onOpenClicked(currentContent.getId());
+                if (interaction != null)
+                    interaction.onOpenClicked(currentContent.getId());
             }
         });
     }

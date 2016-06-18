@@ -32,7 +32,7 @@ import java.io.IOException;
  */
 public class CustomerAccessPreference extends DialogPreference {
     CustomerAccessModel _customer;
-    int _projectId;
+    String _projectId;
     PreferenceCategory _customer_zone = null;
 
     public CustomerAccessPreference(Context context, AttributeSet attrs) {
@@ -63,7 +63,7 @@ public class CustomerAccessPreference extends DialogPreference {
 
     }
 
-    public void setProjectId(int id)
+    public void setProjectId(String id)
     {
         _projectId = id;
     }
@@ -143,10 +143,10 @@ public class CustomerAccessPreference extends DialogPreference {
     {
         Context _context;
         APIConnectAdapter _api;
-        int _projectId;
+        String _projectId;
         Preference _pref;
 
-        GenerateCustomerAccess(Preference pref, Context context, int projectId)
+        GenerateCustomerAccess(Preference pref, Context context, String projectId)
         {
             _context = context;
             _projectId = projectId;

@@ -1,27 +1,11 @@
 [
     {
-        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\normal_date_cell.xml",
-        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\normal_date_cell.xml"
-    },
-    {
         "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\square_date_cell.xml",
         "source": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\square_date_cell.xml"
     },
     {
-        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\weekday_textview.xml",
-        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\weekday_textview.xml"
-    },
-    {
         "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\normal_date_cell.xml",
         "source": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\normal_date_cell.xml"
-    },
-    {
-        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\calendar_view.xml",
-        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\calendar_view.xml"
-    },
-    {
-        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\date_grid_fragment.xml",
-        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\date_grid_fragment.xml"
     },
     {
         "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\calendar_view.xml",
@@ -30,10 +14,6 @@
     {
         "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\date_grid_fragment.xml",
         "source": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\date_grid_fragment.xml"
-    },
-    {
-        "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\square_date_cell.xml",
-        "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\layout\\square_date_cell.xml"
     },
     {
         "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\weekday_textview.xml",
