@@ -35,11 +35,15 @@
                                             <ColumnDefinition Width="2*"/>
                                             <ColumnDefinition Width="8*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Ellipse Grid.Row="0" Grid.Column="0" Height="48" Stroke="#2979FF" VerticalAlignment="Center" Width="48">
+                                        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="Gray" />
+                                        <Border Background="White" Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto">
+                                        <Ellipse Height="48" Stroke="Transparent" VerticalAlignment="Center" Width="48">
                                             <Ellipse.Fill>
-                                                <ImageBrush x:Name="img" Stretch="Uniform" ImageSource="/Assets/user.png"/>
+                                                <ImageBrush x:Name="img" Stretch="Uniform" ImageSource="/Assets/user.png">
+                                                </ImageBrush>
                                             </Ellipse.Fill>
                                         </Ellipse>
+                                        </Border>
                                         <TextBlock Name="ProjectName" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
 
                                         <Image Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/dashboard.png"/>
@@ -68,12 +72,12 @@
 
                                         <Image Grid.Row="9" Grid.Column="0" Source="/Assets/logout.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
                                         <Button Style="{StaticResource LeftMenuButton}" x:Name="LogoutButton" Grid.Row="9" Grid.Column="1" MinHeight="33" Content="Logout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
-                                     </Grid>
+                                    </Grid>
                                 </ContentPresenter>
                             </FlipViewItem>
                             <FlipViewItem
                                 x:Name="ContentFrame">
-                                <Grid Background="White">
+                                <Grid Background="{StaticResource BackgroundGrayBrush}">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="65"/>
                                         <RowDefinition Height="*"/>
@@ -82,7 +86,7 @@
                                         <Button x:Name="MenuButton" Width="24" Height="24" MinHeight="48" MinWidth="48" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource ButtonStyle1}">
                                             <Image Source="/Assets/menu.png" />
                                         </Button>
-                                        <TextBlock Margin="15,0,0,0" FontSize="24" FontWeight="ExtraBold" Text="{TemplateBinding PageTitle}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                        <TextBlock Margin="15,0,0,0" FontSize="24" Text="{TemplateBinding PageTitle}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
                                     </StackPanel>
                                     <ContentPresenter
                                         Grid.Row="1"

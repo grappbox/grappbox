@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,24 +9,19 @@ namespace GrappBox.Model
 {
     class WhiteBoardListModel
     {
-        private List<String> _projetcs;
-        public List<String> Projects
-        {
-            get { return _projetcs; }
-            set { _projetcs = value; }
-        }
-        private List<String> _whiteboards;
-        public List<String> WhiteBoards
-        {
-            get { return _whiteboards; }
-            set { _whiteboards = value; }
-        }
-        public WhiteBoardListModel()
-        {
-            Projects.Add("Projects_Manhattan");
-            Projects.Add("Projects_21");
-            Projects.Add("Projects_Moebius");
-            WhiteBoards.Add("WB_1");
-        }
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("userId")]
+        public int UserId { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("updatorId")]
+        public int UpdatorId { get; set; }
+        [JsonProperty("updatedAt")]
+        public DateModel UpdatedAt { get; set; }
+        [JsonProperty("createdAt")]
+        public DateModel CreatedAt { get; set; }
+        [JsonProperty("deledtedAt")]
+        public DateModel DeledtedAt { get; set; }
     }
 }

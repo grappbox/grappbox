@@ -12,26 +12,26 @@
     xmlns:customControler="using:GrappBox.CustomControler">
 
     <Page.BottomAppBar>
-        <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
+        <CommandBar Name="CB" ClosedDisplayMode="Compact">
             <AppBarButton Name="AddTeamMessage" Label="Add" Click="AddTeam_Click" Icon="Add"/>
             <AppBarButton Name="AddCustomerMessage" Visibility="Collapsed" Label="Add" Click="AddCustomer_Click" Icon="Add"/>
         </CommandBar>
     </Page.BottomAppBar>
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  IsDoubleTapEnabled="False" PageTitle="Grappbox - Timeline">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  PageTitle="Timeline">
         <Grid>
-            <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-            <Pivot x:Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
+            <ProgressBar VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+            <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
                 <PivotItem Header="{Binding TeamName}">
                     <Grid Name="Grid">
-                        <ListView x:Name="TeamListView" ItemsSource="{Binding TeamList}" HorizontalAlignment="Center" VerticalAlignment="Stretch" SelectionMode="None">
+                        <ListView Name="TeamListView" ItemsSource="{Binding TeamList}" HorizontalAlignment="Center" VerticalAlignment="Stretch" SelectionMode="None">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Background="White" Margin="0,10,0,0">
                                         <TextBlock  Text="Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
                                         <TextBox PlaceholderText="Title" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}"/>
                                         <TextBlock Text="Message" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
-                                        <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="{Binding IdCheck}"/>
+                                        <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}"/>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                             <Button Content="Update" Click="EditMessage_Click" HorizontalAlignment="Center" Width="90" Height="50" MinWidth="80" MinHeight="60" Margin="10" IsEnabled="{Binding IdCheck}"/>
                                             <Button Content="Delete" Click="DeleteMessage_Click" HorizontalAlignment="Center" Width="90" Height="50" MinWidth="80" MinHeight="60" Margin="10" IsEnabled="{Binding IdCheck}"/>
@@ -43,11 +43,11 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Popup x:Name="PostTeamMesPopUp" Visibility="Collapsed" IsOpen="True" Loaded="PostTeamMesPopUp_Loaded">
+                        <Popup Name="PostTeamMesPopUp" Visibility="Collapsed" IsOpen="True" Loaded="PostTeamMesPopUp_Loaded">
                             <StackPanel Name="TeamStackPanel" Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">
                                 <TextBlock Text="Post Message" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" Margin="15"/>
-                                <TextBox x:Name="MessageTitle" PlaceholderText="Title" Margin="15"/>
-                                <TextBox x:Name="Message" TextWrapping="Wrap" Height="100" AcceptsReturn="True" Margin="15" PlaceholderText="Message" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                                <TextBox Name="MessageTitle" PlaceholderText="Title" Margin="15"/>
+                                <TextBox Name="Message" TextWrapping="Wrap" Height="100" AcceptsReturn="True" Margin="15" PlaceholderText="Message" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -62,7 +62,7 @@
                 </PivotItem>
                 <PivotItem Header="{Binding CustomerName}">
                     <Grid>
-                        <ListView x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Center"  VerticalAlignment="Stretch" SelectionMode="None">
+                        <ListView Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Center"  VerticalAlignment="Stretch" SelectionMode="None">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Background="White" Margin="0,10,0,0">
@@ -81,11 +81,11 @@
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Popup x:Name="PostCustomerMesPopUp" Visibility="Collapsed" IsOpen="True" Loaded="PostCustomerMesPopUp_Loaded" >
+                        <Popup Name="PostCustomerMesPopUp" Visibility="Collapsed" IsOpen="True" Loaded="PostCustomerMesPopUp_Loaded" >
                             <StackPanel  Name="CustStackPanel" Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">
                                 <TextBlock Text="Post Message" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
-                                <TextBox x:Name="CustomerTitle" PlaceholderText="Title" Margin="15"/>
-                                <TextBox x:Name="CustomerMessage" TextWrapping="Wrap" Height="100" Margin="15" AcceptsReturn="True" PlaceholderText="Message" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                                <TextBox Name="CustomerTitle" PlaceholderText="Title" Margin="15"/>
+                                <TextBox Name="CustomerMessage" TextWrapping="Wrap" Height="100" Margin="15" AcceptsReturn="True" PlaceholderText="Message" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>

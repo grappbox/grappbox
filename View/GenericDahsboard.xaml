@@ -9,9 +9,8 @@
     xmlns:customControl="using:GrappBox.CustomControler"
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <slideMenu:SlideInMenuContentControl  x:Name="slideInMenuContentControl" PageTitle="DashBoard">
-        <slideMenu:SlideInMenuContentControl.Content>
-            <Grid>
+    <slideMenu:SlideInMenuContentControl  x:Name="slideInMenuContentControl" PageTitle="Dashboard">
+        <Grid>
                 <ListView
             Padding="15,0,15,0"
             ItemsSource="{Binding ProjectList}"
@@ -72,8 +71,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <ProgressBar Grid.Row="3" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
+                <ProgressBar Grid.Row="3" VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
             </Grid>
-        </slideMenu:SlideInMenuContentControl.Content>
     </slideMenu:SlideInMenuContentControl>
 </Page>

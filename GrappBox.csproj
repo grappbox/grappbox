@@ -93,9 +93,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\Dashboard\GenericDashboardPanel.xaml.cs">
-      <DependentUpon>GenericDashboardPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CustomControler\Whiteboard\BrushPan.xaml.cs">
       <DependentUpon>BrushPan.xaml</DependentUpon>
     </Compile>
@@ -104,14 +101,9 @@
     </Compile>
     <Compile Include="CustomControler\Whiteboard\CustomCanvas.cs" />
     <Compile Include="CustomControler\Calendar\EventPlanPrompt.xaml.cs" />
-    <Compile Include="CustomControler\SlidingMenu\LeftMenu.xaml.cs">
-      <DependentUpon>LeftMenu.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CustomControler\Dashboard\MeetingDashBoardPanel.xaml.cs">
       <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\SlidingMenu\ActiveState.cs" />
-    <Compile Include="CustomControler\SlidingMenu\MenuState.cs" />
     <Compile Include="CustomControler\SlidingMenu\SlideInMenuContentControl.cs" />
     <Compile Include="ApiCommunication\User.cs" />
     <Compile Include="CustomControler\Dashboard\TeamDashBoard.xaml.cs">
@@ -217,6 +209,8 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\alarm_add.png" />
+    <Content Include="Assets\alarm_on.png" />
     <Content Include="Assets\bug.png" />
     <Content Include="Assets\bugtracker.png" />
     <Content Include="Assets\calendar.png" />
@@ -250,10 +244,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="CustomControler\Dashboard\GenericDashboardPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CustomControler\Whiteboard\BrushPan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -265,10 +255,6 @@
     <Page Include="CustomControler\Calendar\EventPlanPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="CustomControler\SlidingMenu\LeftMenu.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControler\Dashboard\MeetingDashBoardPanel.xaml">
       <SubType>Designer</SubType>

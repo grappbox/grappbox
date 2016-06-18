@@ -1,29 +1,44 @@
 ﻿<Page
     x:Class="GrappBox.View.WhiteBoardListView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:viewModel="using:GrappBox.ViewModel"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:customControler="using:GrappBox.CustomControler"
-    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     xmlns:local="using:GrappBox.View"
-    xmlns:model="using:GrappBox.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
-    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    DataContext="GrappBox.ViewModel.WhiteBoardListViewModel">
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" IsDoubleTapEnabled="False" PageTitle="Grappbox-Whiteboard">
-        <slideMenu:SlideInMenuContentControl.Content>
-            <Grid>
-                <ListView>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-        </slideMenu:SlideInMenuContentControl.Content>
+    xmlns:customControl="using:GrappBox.CustomControler"
+    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <slideMenu:SlideInMenuContentControl PageTitle="Whiteboard">
+        <ListView ItemsSource="{Binding Whiteboards}" Background="{StaticResource BackgroundGrayBrush}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="10" Background="White">
+                    <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="14"/>
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="18"/>
+                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <Image Source="/Assets/alarm_add.png" />
+                            <TextBlock Margin="10,0,0,0" Text="{Binding CreatedAt, Converter={StaticResource DateModelToStringConverter}}" />
+                        </StackPanel>
+                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <Image Source="/Assets/alarm_on.png" />
+                            <TextBlock Margin="10,0,0,0" Text="{Binding UpdatedAt, Converter={StaticResource DateModelToStringConverter}}" />
+                        </StackPanel>
+                    </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="15"></Setter>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
     </slideMenu:SlideInMenuContentControl>
 </Page>

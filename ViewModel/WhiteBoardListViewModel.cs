@@ -1,7 +1,12 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.ApiCom;
+using GrappBox.Model;
+using GrappBox.Ressources;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -11,26 +16,14 @@ namespace GrappBox.ViewModel
 {
     class WhiteBoardListViewModel : ViewModelBase
     {
-        private Page _currentPage;
-        public Page CurrentPage
+        private ObservableCollection<WhiteBoardListModel> _whiteboards;
+        public ObservableCollection<WhiteBoardListModel> Whiteboards
         {
-            get { return _currentPage; }
-            set { _currentPage = value; NotifyPropertyChanged("CurrentPage"); }
+            get { return _whiteboards; }
+            set { _whiteboards = value;  NotifyPropertyChanged("Whiteboards"); }
         }
-        public List<String> WhiteBoards
-        {
-            get { return model.WhiteBoards; }
-            set { model.WhiteBoards = value; NotifyPropertyChanged("WhiteBoards"); }
-        }
-        public List<String> Projects
-        {
-            get { return model.Projects; }
-            set { model.Projects = value; NotifyPropertyChanged("Projects"); }
-        }
-        private WhiteBoardListModel model;
         public WhiteBoardListViewModel()
         {
-            model = new WhiteBoardListModel();
         }
         private ICommand _tapList;
         public ICommand TapList
@@ -39,5 +32,22 @@ namespace GrappBox.ViewModel
         }
         private void TapListAction()
         {}
+        public async System.Threading.Tasks.Task GetWhiteboards()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            int id = SettingsManager.getOption<int>("ProjectIdChoosen");
+            object[] token = { User.GetUser().Token, id };
+            HttpResponseMessage res = await api.Get(token, "whiteboard/list");
+            if (res.IsSuccessStatusCode)
+            {
+                Debug.WriteLine(await res.Content.ReadAsStringAsync());
+                Whiteboards = api.DeserializeArrayJson<ObservableCollection<WhiteBoardListModel>>(await res.Content.ReadAsStringAsync());
+                NotifyPropertyChanged("Whiteboards");
+            }
+            else
+            {
+                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            }
+        }
     }
 }

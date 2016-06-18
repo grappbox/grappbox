@@ -19,12 +19,12 @@
                 <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="1" FontSize="24" Text="Login" Foreground="Black"></TextBlock>
-            <TextBox x:Name="loginBlock" Grid.Row="2" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu"></TextBox>
+            <TextBox Name="loginBlock" Grid.Row="2" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu"></TextBox>
             <TextBlock Grid.Row="3" FontSize="24" Text="Password" Foreground="Black"></TextBlock>
-            <PasswordBox x:Name="pwdBlock" Grid.Row="4" PlaceholderText="Password" Password="feytou_p"></PasswordBox>
-            <Button x:Name="DashBoardButton" Content="Log In" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center" Click="DashBoardButton_Click"/>
-            <Image x:Name="image" Height="50" Width="200" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/grappbox-logo.png"/>
-            <ProgressBar Grid.Row="3" VerticalAlignment="Top" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
+            <PasswordBox Name="pwdBlock" Grid.Row="4" PlaceholderText="Password" Password="feytou_p"></PasswordBox>
+            <Button Name="DashBoardButton" Content="Log In" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center" Click="DashBoardButton_Click"/>
+            <Image Name="image" Height="50" Width="200" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/grappbox-logo.png"/>
+            <ProgressBar Grid.Row="3" VerticalAlignment="Top" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
         </Grid>
     </Border>
 </Page>

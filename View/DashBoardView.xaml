@@ -11,20 +11,18 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     >
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  PageTitle="Grappbox - Dashboard">
-        <slideMenu:SlideInMenuContentControl.Content>
-            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Pivot x:Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" Margin="0,27,0,0">
-                    <PivotItem Background="{StaticResource BackgroundGrayBrush}" Margin="0,0,0,0" Header="Settings">
-                        <StackPanel Margin="15,0,0,0">
-                            <TextBlock FontSize="24" Foreground="Black">Displayed Pans</TextBlock>
-                            <CheckBox x:Name="team_cb" Click="team_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Team</CheckBox>
-                            <CheckBox x:Name="meetings_cb" Click="meetings_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Meetings</CheckBox>
-                        </StackPanel>
-                    </PivotItem>
-                </Pivot>
-                <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
-            </Grid>
-        </slideMenu:SlideInMenuContentControl.Content>
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  PageTitle="Dashboard">
+        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Pivot Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" Margin="0,27,0,0">
+                <PivotItem Background="{StaticResource BackgroundGrayBrush}" Margin="0,0,0,0" Header="Settings">
+                    <StackPanel Margin="15,0,0,0">
+                        <TextBlock FontSize="24" Foreground="Black">Displayed Pans</TextBlock>
+                        <CheckBox Name="team_cb" Click="team_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Team</CheckBox>
+                        <CheckBox Name="meetings_cb" Click="meetings_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Meetings</CheckBox>
+                    </StackPanel>
+                </PivotItem>
+            </Pivot>
+            <ProgressBar VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
+        </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>

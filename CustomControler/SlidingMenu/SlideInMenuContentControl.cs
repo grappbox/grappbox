@@ -1,4 +1,5 @@
 ﻿using GrappBox.ApiCom;
+using GrappBox.Ressources;
 using GrappBox.View;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace GrappBox.CustomControler.SlidingMenu
     [TemplatePart(Name = ElementTimelineButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementCloudButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementCalendarButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementProjectName, Type = typeof(TextBlock))]
     public sealed class SlideInMenuContentControl : ContentControl
     {
         Frame frame = Window.Current.Content as Frame;
@@ -52,6 +54,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementCloudButton = "CloudButton";
         private const string ElementCalendarButton = "CalendarButton";
         private const string ElementLogoutButton = "LogoutButton";
+        private const string ElementProjectName = "ProjectName";
 
         private FrameworkElement leftSideMenu;
         private Selector contentSelector;
@@ -66,6 +69,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private Button cloudButton;
         private Button calendarButton;
         private Button logoutButton;
+        private TextBlock projectName;
 
 
 
@@ -103,9 +107,12 @@ namespace GrappBox.CustomControler.SlidingMenu
             cloudButton = GetTemplateChild(ElementCloudButton) as Button;
             calendarButton = GetTemplateChild(ElementCalendarButton) as Button;
             logoutButton = GetTemplateChild(ElementLogoutButton) as Button;
+            projectName = GetTemplateChild(ElementProjectName) as TextBlock;
 
             var contentFrame = GetTemplateChild("ContentFrame") as FrameworkElement;
             contentFrame.Width = Window.Current.Bounds.Width;
+
+            projectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen") ?? "";
 
             contentSelector.SelectionChanged += ContentSelector_SelectionChanged;
             SetMenuVisibility();

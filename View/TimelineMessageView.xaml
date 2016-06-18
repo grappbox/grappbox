@@ -16,8 +16,7 @@
             <AppBarButton Name="AddCom" Label="Add" Click="Add_Click" Icon="Add"/>
         </CommandBar>
     </Page.BottomAppBar>
-
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  IsDoubleTapEnabled="False" PageTitle="Grappbox - Timeline Message">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"   PageTitle="Timeline message">
         <Grid Margin="0,0,0,-2">
             <Grid.Background>
                 <SolidColorBrush Color="{StaticResource LightWhiteGrappBox}"/>
@@ -26,7 +25,7 @@
                 <RowDefinition Height="4*"/>
                 <RowDefinition Height="6*"/>
             </Grid.RowDefinitions>
-            <ProgressBar VerticalAlignment="Top" Grid.Row="1" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+            <ProgressBar VerticalAlignment="Top" Grid.Row="1" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
             <Grid Background="White" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>

@@ -11,7 +11,7 @@
     d:DesignWidth="400"
     >
     <ListView
-        x:Name="MeetingList"
+        Name="MeetingList"
         ItemsSource="{Binding MeetingList}"
         Background="{StaticResource BackgroundGrayBrush}"
         ScrollViewer.HorizontalScrollMode="Disabled"

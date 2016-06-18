@@ -11,7 +11,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <ListView x:Name="TeamGridView" ItemsSource="{Binding OccupationList}"
+    <ListView Name="TeamGridView" ItemsSource="{Binding OccupationList}"
     HorizontalAlignment="Center"
     HorizontalContentAlignment="Center"
     Background="{StaticResource BackgroundGrayBrush}"
@@ -36,7 +36,7 @@
                             </Ellipse.Fill>
                         </Ellipse>
 
-                        <TextBlock Margin="0,10,0,0" Grid.Row="1" x:Name="name_tb" Text="{Binding UserName }" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"></TextBlock>
+                        <TextBlock Margin="0,10,0,0" Grid.Row="1" Name="name_tb" Text="{Binding UserName }" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"></TextBlock>
 
                         <StackPanel Margin="0,10,0,0" Grid.Row="2" Orientation="Horizontal">
                             <StackPanel.Resources>
@@ -45,7 +45,7 @@
                                 </Style>
                             </StackPanel.Resources>
                             <Image VerticalAlignment="Center" Source="/Assets/task_begin.png"/>
-                            <TextBlock x:Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
+                            <TextBlock Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
                             <TextBlock Text="started tasks" VerticalAlignment="Center" FontSize="16"></TextBlock>
                         </StackPanel>
 
@@ -56,12 +56,12 @@
                                 </Style>
                             </StackPanel.Resources>
                             <Image VerticalAlignment="Center" Source="/Assets/task_ongoing.png"/>
-                            <TextBlock x:Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
+                            <TextBlock Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
                             <TextBlock Text="remaining tasks" VerticalAlignment="Center" FontSize="16"></TextBlock>
                         </StackPanel>
 
-                        <Border Grid.Row="4" Height="25" x:Name="occupation_back" Background="{Binding Occupation, Converter={StaticResource OccupationColorConverter}}" Margin="-15,0,-15,-15">
-                            <TextBlock  x:Name="occupation_tb" Text="{Binding Occupation}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Foreground="White" FontWeight="Bold"></TextBlock>
+                        <Border Grid.Row="4" Height="25" Name="occupation_back" Background="{Binding Occupation, Converter={StaticResource OccupationColorConverter}}" Margin="-15,0,-15,-15">
+                            <TextBlock  Name="occupation_tb" Text="{Binding Occupation}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Foreground="White" FontWeight="Bold"></TextBlock>
                         </Border>
                     </Grid>
                 </Border>

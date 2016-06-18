@@ -19,39 +19,37 @@
         </CommandBar>
     </Page.BottomAppBar>
 
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" IsDoubleTapEnabled="False" PageTitle="Grappbox - Bugtracker">
-        <slideMenu:SlideInMenuContentControl.Content>
-            <Grid>
-                <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-                <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
-                    <PivotItem Header="Open">
-                        <ListBox x:Name="OpenListView" ItemsSource="{Binding OpenList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="openListView_SelectionChanged">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  PageTitle="Bugtracker">
+        <Grid>
+            <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+            <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
+                <PivotItem Header="Open">
+                    <ListBox x:Name="OpenListView" ItemsSource="{Binding OpenList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="openListView_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </PivotItem>
+                <PivotItem Header="Closed">
+                    <StackPanel Grid.Row="0">
+                        <ListBox x:Name="CloseListView" ItemsSource="{Binding CloseList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="closeListView_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
                                         <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                    </PivotItem>
-                    <PivotItem Header="Closed">
-                        <StackPanel Grid.Row="0">
-                            <ListBox x:Name="CloseListView" ItemsSource="{Binding CloseList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="closeListView_SelectionChanged">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Grid.Column="0">
-                                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                        </StackPanel>
-                    </PivotItem>
-                </Pivot>
-            </Grid>
-        </slideMenu:SlideInMenuContentControl.Content>
+                    </StackPanel>
+                </PivotItem>
+            </Pivot>
+        </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>

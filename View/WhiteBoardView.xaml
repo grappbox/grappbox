@@ -75,52 +75,50 @@
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
-    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1"  IsDoubleTapEnabled="False">
-        <slideMenu:SlideInMenuContentControl.Content>
-            <Grid Background="#FF292929" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="9*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10*"/>
-                    <ColumnDefinition Width="5*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Text="Project_1 - Whiteboard" FontWeight="Bold" FontSize="21.333"/>
-                <ScrollViewer  Grid.Row="1" Grid.ColumnSpan="2" ZoomMode="Enabled" MinZoomFactor="0.25" MaxZoomFactor="10.0" IsZoomInertiaEnabled="False" HorizontalScrollMode="Enabled" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
-                    <customControler:CustomCanvas x:Name="drawingCanvas" Background="White" CurrDraw="{Binding CurrentDraw}" IsRightTapEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Visible">
-                        <i:Interaction.Behaviors>
-                            <core:EventTriggerBehavior EventName="Tapped">
-                                <core:InvokeCommandAction Command="{Binding CanvasTappedCommand}" InputConverter="{StaticResource TappedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
-                            </core:EventTriggerBehavior>
-                            <core:EventTriggerBehavior EventName="ManipulationStarted">
-                                <core:InvokeCommandAction Command="{Binding CanvasManipStartedCommand}" InputConverter="{StaticResource ManipStartedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
-                            </core:EventTriggerBehavior>
-                            <core:EventTriggerBehavior EventName="ManipulationDelta">
-                                <core:InvokeCommandAction Command="{Binding CanvasManipDeltaCommand}" InputConverter="{StaticResource ManipDeltaPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
-                            </core:EventTriggerBehavior>
-                            <core:EventTriggerBehavior EventName="ManipulationCompleted">
-                                <core:InvokeCommandAction Command="{Binding CanvasManipCompletedCommand}" InputConverter="{StaticResource ManipCompletedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
-                            </core:EventTriggerBehavior>
-                        </i:Interaction.Behaviors>
-                    </customControler:CustomCanvas>
-                </ScrollViewer>
-                <Popup x:Name="ColorPopUp" Grid.Row="1" Grid.Column="1" Visibility="{Binding ColorPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Offset}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=ColorPopupGrid, Mode=OneTime}">
-                    <Grid x:Name="ColorPopupGrid" Height="150" Width="135" Background="#FFB3B3B3">
-                        <customControler:Colorpan x:Name="ColorPan" SelectedColor="{Binding StrokeColor, Mode=TwoWay}" SelectedFillColor="{Binding FillColor, Mode=TwoWay}" Mod="{Binding SelectedColorMod , Mode=TwoWay}" Visibility="{Binding ElementName=ColorPopUp, Path=Visibility, Mode=TwoWay}"/>
-                    </Grid>
-                </Popup>
-                <Popup x:Name="BrushPopup" Grid.Row="1" Grid.Column="1" Visibility="{Binding BrushPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Offset}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=BrushPopupGrid, Mode=OneTime}">
-                    <Grid x:Name="BrushPopupGrid" Height="150" Width="100" Background="#FFB3B3B3">
-                        <customControler:BrushPan x:Name="BrushPan" SelectedThickness="{Binding StrokeThickness, Mode=TwoWay}" Visibility="{Binding ElementName=BrushPopup, Path=Visibility, Mode=TwoWay}"/>
-                    </Grid>
-                </Popup>
-                <Popup x:Name="TextPopup" IsOpen="{Binding TextPanOpened , Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Grid x:Name="TextPopupGrid" Background="#FFB3B3B3">
-                        <customControler:WhiteBoardText x:Name="TextPan" IsTextConfirmed="{Binding PopUpTextConfirmed, Mode=TwoWay}" IsOpened="{Binding TextPanOpened, Mode=TwoWay}" TextEntered="{Binding PopUpTextEntered, Mode=TwoWay}" IsBold="{Binding IsBold, Mode=TwoWay}" IsItalic="{Binding IsItalic, Mode=TwoWay}"/>
-                    </Grid>
-                </Popup>
-            </Grid>
-        </slideMenu:SlideInMenuContentControl.Content>
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Whiteboard">
+        <Grid Background="#FF292929" Height="{Binding ActualHeight, ElementName=slideInMenuContentControl, Mode=OneWay}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Text="Project_1 - Whiteboard" FontWeight="Bold" FontSize="21.333"/>
+            <ScrollViewer  Grid.Row="1" Grid.ColumnSpan="2" ZoomMode="Enabled" MinZoomFactor="0.25" MaxZoomFactor="10.0" IsZoomInertiaEnabled="False" HorizontalScrollMode="Enabled" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
+                <customControler:CustomCanvas x:Name="drawingCanvas" Background="White" CurrDraw="{Binding CurrentDraw}" IsRightTapEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Visible">
+                    <i:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Tapped">
+                            <core:InvokeCommandAction Command="{Binding CanvasTappedCommand}" InputConverter="{StaticResource TappedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
+                        </core:EventTriggerBehavior>
+                        <core:EventTriggerBehavior EventName="ManipulationStarted">
+                            <core:InvokeCommandAction Command="{Binding CanvasManipStartedCommand}" InputConverter="{StaticResource ManipStartedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
+                        </core:EventTriggerBehavior>
+                        <core:EventTriggerBehavior EventName="ManipulationDelta">
+                            <core:InvokeCommandAction Command="{Binding CanvasManipDeltaCommand}" InputConverter="{StaticResource ManipDeltaPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
+                        </core:EventTriggerBehavior>
+                        <core:EventTriggerBehavior EventName="ManipulationCompleted">
+                            <core:InvokeCommandAction Command="{Binding CanvasManipCompletedCommand}" InputConverter="{StaticResource ManipCompletedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
+                        </core:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                </customControler:CustomCanvas>
+            </ScrollViewer>
+            <Popup x:Name="ColorPopUp" Grid.Row="1" Grid.Column="1" Visibility="{Binding ColorPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Offset}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=ColorPopupGrid, Mode=OneTime}">
+                <Grid x:Name="ColorPopupGrid" Height="150" Width="135" Background="#FFB3B3B3">
+                    <customControler:Colorpan x:Name="ColorPan" SelectedColor="{Binding StrokeColor, Mode=TwoWay}" SelectedFillColor="{Binding FillColor, Mode=TwoWay}" Mod="{Binding SelectedColorMod , Mode=TwoWay}" Visibility="{Binding ElementName=ColorPopUp, Path=Visibility, Mode=TwoWay}"/>
+                </Grid>
+            </Popup>
+            <Popup x:Name="BrushPopup" Grid.Row="1" Grid.Column="1" Visibility="{Binding BrushPanVisible, Mode=TwoWay}" IsOpen="True" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalOffset="{Binding Offset}" VerticalOffset="{Binding Height, Converter={StaticResource NumberInverter}, ElementName=BrushPopupGrid, Mode=OneTime}">
+                <Grid x:Name="BrushPopupGrid" Height="150" Width="100" Background="#FFB3B3B3">
+                    <customControler:BrushPan x:Name="BrushPan" SelectedThickness="{Binding StrokeThickness, Mode=TwoWay}" Visibility="{Binding ElementName=BrushPopup, Path=Visibility, Mode=TwoWay}"/>
+                </Grid>
+            </Popup>
+            <Popup x:Name="TextPopup" IsOpen="{Binding TextPanOpened , Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid x:Name="TextPopupGrid" Background="#FFB3B3B3">
+                    <customControler:WhiteBoardText x:Name="TextPan" IsTextConfirmed="{Binding PopUpTextConfirmed, Mode=TwoWay}" IsOpened="{Binding TextPanOpened, Mode=TwoWay}" TextEntered="{Binding PopUpTextEntered, Mode=TwoWay}" IsBold="{Binding IsBold, Mode=TwoWay}" IsItalic="{Binding IsItalic, Mode=TwoWay}"/>
+                </Grid>
+            </Popup>
+        </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>
