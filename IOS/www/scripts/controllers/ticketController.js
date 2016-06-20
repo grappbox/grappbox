@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('TicketCtrl', function ($scope, $rootScope, $state, $stateParams, Bugtracker) {
+.controller('TicketCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Bugtracker) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -24,7 +24,7 @@ angular.module('GrappBox.controllers')
     $scope.ticket = {};
     $scope.creatorId = {};
     $scope.GetTicketInfo = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.GetTicketInfo().get({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token
@@ -39,7 +39,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetTicketInfo();
@@ -50,7 +50,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.comments = {};
     $scope.GetCommentsOnTicket = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.GetCommentsOnTicket().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
@@ -65,7 +65,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetCommentsOnTicket();
@@ -77,7 +77,7 @@ angular.module('GrappBox.controllers')
     $scope.comment = {};
     $scope.postCommentData = {};
     $scope.PostComment = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.PostComment().save({
             data: {
                 projectId: $scope.projectId,
@@ -89,16 +89,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Post comment successful !');
+                Toast.show("Comment added");
                 $scope.postCommentData = data.data;
                 $scope.GetCommentsOnTicket();
             })
             .catch(function (error) {
                 console.error('Post comment failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Comment addition error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
                 $scope.comment = {};
             })
     }
@@ -109,22 +111,24 @@ angular.module('GrappBox.controllers')
     */
     $scope.reopenTicketData = {};
     $scope.ReopenTicket = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.ReopenTicket().update({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token
         }).$promise
             .then(function (data) {
                 console.log('Reopen ticket successful !');
+                Toast.show("Ticket reopen");
                 $scope.reopenTicketData = data.data;
             })
             .catch(function (error) {
                 console.error('Reopen ticket failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Ticket reopening error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -134,22 +138,24 @@ angular.module('GrappBox.controllers')
     */
     $scope.closeTicketData = {};
     $scope.CloseTicket = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.CloseTicketOrComment().delete({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token
         }).$promise
         .then(function (data) {
             console.log('Close ticket successful !');
+            Toast.show("Ticket closed");
             $scope.closeTicketData = data;
             $scope.GetTicketInfo();
         })
         .catch(function (error) {
             console.error('Close ticket failed ! Reason: ' + error.status + ' ' + error.statusText);
+            Toast.show("Ticket closing error");
             console.error(error);
         })
         .finally(function () {
-            $rootScope.hideLoading();
+            //$rootScope.hideLoading();
         })
     }
 
@@ -159,22 +165,24 @@ angular.module('GrappBox.controllers')
     */
     $scope.closedCommentData = {};
     $scope.CloseComment = function (com) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.CloseTicketOrComment().delete({
             id: com.id,
             token: $rootScope.userDatas.token
         }).$promise
         .then(function (data) {
             console.log('Close comment successful !');
+            Toast.show("Comment closed");
             $scope.closeCommentData = data;
             $scope.GetCommentsOnTicket();
         })
         .catch(function (error) {
             console.error('Close comment failed ! Reason: ' + error.status + ' ' + error.statusText);
+            Toast.show("Comment closing error");
             console.error(error);
         })
         .finally(function () {
-            $rootScope.hideLoading();
+            //$rootScope.hideLoading();
         })
     }
 
@@ -184,7 +192,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.editCommentData = {};
     $scope.EditCommentOnTicket = function (com) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.EditCommentOnTicket().update({
             data: {
                 token: $rootScope.userDatas.token,
@@ -196,16 +204,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Edit comment successful !');
+                Toast.show("Comment edited");
                 $scope.editCommentData = data.data;
                 $scope.GetCommentsOnTicket();
             })
             .catch(function (error) {
                 console.error('Edit comment failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Comment edition error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 

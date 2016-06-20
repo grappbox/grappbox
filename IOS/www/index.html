@@ -9,8 +9,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <!--<meta http-equiv="Content-Security-Policy" />-->
     <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">-->
-    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https//ssl.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval': https://*.gstatic.com https://*.googleapis.com style-src 'self' 'unsafe-inline'; media-src *">-->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap:*; font-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' 'unsafe-eval' *; media-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src 'self' 'unsafe-inline' 'unsafe-eval' *;">
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval': https://*.gstatic.com https://*.googleapis.com style-src 'self' 'unsafe-inline'; media-src *">-->
+    <meta http-equiv="Content-Security-Policy" content="default-src *; font-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' 'unsafe-eval' *; media-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src 'self' 'unsafe-inline' 'unsafe-eval' *;">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>GrappBox</title>
 
@@ -51,6 +51,9 @@
     <!-- Directives -->
     <script src="scripts/directives/directives.js"></script>
 
+    <!-- Factories -->
+    <script src="scripts/factories/factories.js"></script>
+
     <!-- Controllers -->
     <script src="scripts/controllers/mainController.js"></script><!-- We use a main controller to avoid issues -->
     <script src="scripts/controllers/authController.js"></script>
@@ -76,8 +79,9 @@
     <script src="scripts/controllers/editTicketController.js"></script>
     <script src="scripts/controllers/tagsController.js"></script>
     <script src="scripts/controllers/editTagController.js"></script>
-    <script src="scripts/controllers/ganttController.js"></script>
     <script src="scripts/controllers/cloudController.js"></script>
+    <script src="scripts/controllers/tasksController.js"></script>
+    <script src="scripts/controllers/calendarController.js"></script>
 </head>
 <body ng-app="GrappBox" class="fullscreen"> <!-- class="fullscreen" is used to prevent header height for iOS6 (iPhone 5) -->
 

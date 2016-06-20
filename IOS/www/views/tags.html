@@ -14,7 +14,9 @@
         <!-- Tags list -->
         <div class="item item-divider">Tags available</div>
         <ion-list>
-            <ion-item ng-repeat="tag in tagsOnProject"
+            <ion-item ng-show="noTag">{{noTag}}</ion-item>
+            <ion-item ng-show="!noTag"
+                      ng-repeat="tag in tagsOnProject"
                       ng-click="showTagActionSheet(tag.id)">{{ tag.name }}
             </ion-item>
         </ion-list>

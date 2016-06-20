@@ -3,7 +3,7 @@
 */
 
 angular.module('GrappBox.controllers')
-.controller('TimelinesCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, Timeline) {
+.controller('TimelinesCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, Toast, Timeline) {
 
     $scope.offsetMax = 25;
     $scope.limitMax = 25;
@@ -49,7 +49,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.timelineIds = [];
     $scope.GetTimelines = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.List().get({
             token: $rootScope.userDatas.token,
             id: $scope.projectId
@@ -69,7 +69,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetTimelines();
@@ -79,7 +79,7 @@ angular.module('GrappBox.controllers')
     ** Method: GET
     */
     $scope.GetLastMessagesTeam = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.LastMessages().get({
             id: $scope.timelineIds[0],
             token: $rootScope.userDatas.token,
@@ -89,12 +89,15 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get last messages team info successful !');
                 if (data.data.array[0] != null) {
+                    $scope.noMessageTeam = false;
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastMessagesTeam.push(data.data.array[i]);
                     }
                     $scope.offsetTeam += $scope.offsetMax;
                     $scope.limitTeam += $scope.limitMax;
                 }
+                else
+                    $scope.noMessageTeam = "There is no message in team timeline."
                 console.log(data.data.array);
             })
             .catch(function (error) {
@@ -103,7 +106,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -112,7 +115,7 @@ angular.module('GrappBox.controllers')
     ** Method: GET
     */
     $scope.GetLastMessagesCustomer = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.LastMessages().get({
             id: $scope.timelineIds[1],
             token: $rootScope.userDatas.token,
@@ -122,12 +125,15 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get last messages customer info successful !');
                 if (data.data.array[0] != null) {
+                    $scope.noMessageCustomer = false;
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastMessagesCustomer.push(data.data.array[i]);
                     }
                     $scope.offsetCustomer += $scope.offsetMax;
                     $scope.limitCustomer += $scope.limitMax;
                 }
+                else
+                    $scope.noMessageCustomer = "There is no message in customer timeline."
             })
             .catch(function (error) {
                 console.error('Get last messages customer info failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -135,7 +141,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -145,7 +151,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.editMessageData = {};
     $scope.EditMessage = function (mess) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.EditMessageOrComment().update({
             data: {
                 id: mess.timelineId,
@@ -157,15 +163,17 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Edit message successful !');
+                Toast.show("Message edited");
                 $scope.editTicketData = data.data;
             })
             .catch(function (error) {
                 console.error('Edit message failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Message edition error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -175,7 +183,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.editCommentData = {};
     $scope.EditCommentOnTimeline = function (com) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.EditMessageOrComment().update({
             data: {
                 id: com.timelineId,
@@ -187,15 +195,17 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Edit comment on timeline successful !');
+                Toast.show("Comment edited");
                 $scope.editCommentData = data.data;
             })
             .catch(function (error) {
                 console.error('Edit comment on timeline failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Comment edition error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -221,7 +231,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.archiveMessageData = {};
     $scope.ArchiveMessage = function (message) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.ArchiveMessageOrComment().delete({
             id: message.timelineId,
             token: $rootScope.userDatas.token,
@@ -229,16 +239,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Archive message successful !');
+                Toast.show("Message archived");
                 $scope.archiveMessageData = data.data;
-                $state.go($state.current, {}, { reload: true });
+                $state.go($state.currentState, {}, { reload: true });
             })
             .catch(function (error) {
                 console.error('Archive message failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Message archive error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -248,7 +260,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.archiveCommentData = {};
     $scope.ArchiveComment = function (com, mess) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.ArchiveMessageOrComment().delete({
             id: com.timelineId,
             token: $rootScope.userDatas.token,
@@ -256,16 +268,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Archive comment successful !');
+                Toast.show("Comment archived");
                 $scope.archiveMessageData = data.data;
                 $scope.GetCommentsOnTimeline(mess);
             })
             .catch(function (error) {
                 console.error('Archive comment failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Comment archive error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -275,7 +289,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.comments = {};
     $scope.GetCommentsOnTimeline = function (message) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Timeline.Comments().get({
             id: message.timelineId,
             token: $rootScope.userDatas.token,
@@ -291,7 +305,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -313,10 +327,12 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Post comment successful !');
+                Toast.show("Comment posted");
                 $scope.GetCommentsOnTimeline(mess);
             })
             .catch(function (error) {
                 console.error('Post message failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Comment post error");
                 console.error(error);
             })
             .finally(function () {

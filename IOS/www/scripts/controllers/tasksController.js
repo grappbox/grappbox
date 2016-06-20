@@ -1,11 +1,11 @@
 ﻿/*
-    Summary: GANTT Controller
+    Summary: Task Controller
 */
 
 angular.module('GrappBox.controllers')
 
-.controller('GanttCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Gantt) {
-    $scope.data = [{
+.controller('TasksCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Tasks) {
+    /*$scope.data = [{
         name: 'Milestones', height: '3em', sortable: false, classes: 'gantt-row-milestone', color: '#45607D', tasks: [
            // Dates can be specified as string, timestamp or javascript date object. The data attribute can be used to attach a custom object
            { name: 'Kickoff', color: '#93C47D', from: '2013-10-07T09:00:00', to: '2013-10-07T10:00:00', data: 'Can contain any custom data or object' },
@@ -121,5 +121,5 @@ angular.module('GrappBox.controllers')
             { name: 'Technical/User documentation', color: '#F1C232', from: new Date(2013, 10, 26, 8, 0, 0), to: new Date(2013, 10, 28, 18, 0, 0) }
          ]
      }
-    ];
+    ];*/
 })

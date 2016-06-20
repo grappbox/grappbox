@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('AuthCtrl', function ($scope, $rootScope, $state, $ionicHistory, Auth) {
+.controller('AuthCtrl', function ($scope, $rootScope, $state, $ionicHistory, Toast, Auth) {
     $scope.user = {};
 
     $scope.$on('$ionicView.enter', function () {
@@ -23,12 +23,14 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
+                Toast.show("Connected");
                 console.log(data);
                 $rootScope.userDatas = data.data;
                 $state.go('app.projects');
             })
             .catch(function (error) {
-                console.error('Connexion failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error('Connection failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Connection failed");
                 console.error(error);
             })
             .finally(function () {

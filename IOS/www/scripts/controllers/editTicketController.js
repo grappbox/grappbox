@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditTicketCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, Bugtracker, Projects) {
+.controller('EditTicketCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, Bugtracker, Toast, Projects) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -31,7 +31,7 @@ angular.module('GrappBox.controllers')
     $scope.ticket = {};
     $scope.userList = {};
     $scope.GetTicketInfo = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.GetTicketInfo().get({
             id: $scope.ticketId,
             token: $rootScope.userDatas.token,
@@ -79,7 +79,7 @@ angular.module('GrappBox.controllers')
                 .catch(function (error) {
                     console.error('Get project members failed ! Reason: ' + error.status + ' ' + error.statusText);
                     $scope.$broadcast('scroll.refreshComplete');
-                    $rootScope.hideLoading();
+                    //$rootScope.hideLoading();
                 })
             })
             .catch(function (error) {
@@ -87,7 +87,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetTicketInfo();
@@ -98,7 +98,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.editTicketData = {};
     $scope.EditTicket = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.EditTicket().update({
             data: {
                 token: $rootScope.userDatas.token,
@@ -111,15 +111,17 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Edit ticket successful !');
+                Toast.show("Ticket edited");
                 $scope.editTicketData = data.data;
             })
             .catch(function (error) {
                 console.error('Edit ticket failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Ticket error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -129,7 +131,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.tagsOnProject = {};
     $scope.GetTagsOnProject = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.GetTagsOnProject().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
@@ -137,6 +139,10 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get tags on project successful !');
                 $scope.tagsOnProject = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noTag = "There is no tag linked to project.";
+                else
+                    $scope.noTag = false;
                 console.log($scope.tagsOnProject);
             })
             .catch(function (error) {
@@ -144,7 +150,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetTagsOnProject();
@@ -158,7 +164,7 @@ angular.module('GrappBox.controllers')
     $scope.createTag = {};
     $scope.createTagData = {};
     $scope.CreateTag = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.CreateTag().save({
             data: {
                 token: $rootScope.userDatas.token,
@@ -168,16 +174,19 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Create tag successful !');
+                Toast.show("Tag created");
+                $scope.noTag = false;
                 $scope.project = data.data;
                 $scope.GetTagsOnProject();
             })
             .catch(function (error) {
                 console.error('Create tag failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Tag error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -187,7 +196,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.assignTagData = {};
     $scope.AssignTag = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.AssignTag().update({
             data: {
                 token: $rootScope.userDatas.token,
@@ -197,16 +206,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Assign tag successful !');
+                Toast.show("Tag assigned");
                 $scope.assignTagData = data.data;
                 $scope.GetTicketInfo();
             })
             .catch(function (error) {
                 console.error('Assign tag failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Tag assign error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -232,7 +243,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.removeTagFromTicketData = {};
     $scope.RemoveTagFromTicket = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.RemoveTagFromTicket().delete({
             token: $rootScope.userDatas.token,
             bugId: $scope.ticketId,
@@ -240,16 +251,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Remove tag from ticket successful !');
+                Toast.show("Tag removed from ticket");
                 $scope.deleteTagData = data.data;
                 $scope.GetTicketInfo();
             })
             .catch(function (error) {
                 console.error('Remove tag from ticket failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Tag remove error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -295,7 +308,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.setParticipantsData = {};
     $scope.SetUsersToTicket = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.SetUsersToTicket().update({
             data: {
                 token: $rootScope.userDatas.token,
@@ -306,6 +319,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('(Un)Assign users to ticket successful !');
+                Toast.show("User (un)assigned");
                 $scope.setParticipantsData = data.data;
                 $scope.usersOnTicket = [];
                 $scope.usersToAdd = [];
@@ -314,11 +328,12 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('(Un)Assign users to ticket failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("User (un)assign error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 })

@@ -48,7 +48,7 @@ angular.module('GrappBox.controllers')
     ** Method: GET
     */
     $scope.GetLastOpenTickets = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.GetLastOpenTickets().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
@@ -61,16 +61,19 @@ angular.module('GrappBox.controllers')
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastOpenTickets.push(data.data.array[i]);
                     }
+                    $scope.noOpenTicket = false;
                     $scope.offsetOpen += $scope.offsetMax;
                     $scope.limitOpen += $scope.limitMax;
                 }
+                else
+                    $scope.noOpenTicket = "There are no ticket.";
             })
             .catch(function (error) {
                 console.error('Get last open tickets info failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetLastOpenTickets();
@@ -80,7 +83,7 @@ angular.module('GrappBox.controllers')
     ** Method: GET
     */
     $scope.GetLastClosedTickets = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.GetLastClosedTickets().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
@@ -93,16 +96,19 @@ angular.module('GrappBox.controllers')
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastClosedTickets.push(data.data.array[i]);
                     }
+                    $scope.noClosedTicket = false;
                     $scope.offsetClosed += $scope.offsetMax;
                     $scope.limitClosed += $scope.limitMax;
                 }
+                else
+                    $scope.noClosedTicket = "There are no ticket.";
             })
             .catch(function (error) {
                 console.error('Get last closed tickets info failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetLastClosedTickets();

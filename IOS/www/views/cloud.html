@@ -35,6 +35,7 @@
         <!-- FOLDERS -->
         <div class="item item-divider"> Folders</div>
         <ion-list can-swipe="true">
+            <ion-item ng-show="noFileOrDir">{{noFileOrDir}}</ion-item>
             <ion-item ng-repeat="dir in cloudData"
                       ng-show="dir.type == 'dir'"
                       ng-click="checkSafe(dir.is_secured, dir.filename)">
@@ -48,6 +49,7 @@
         <!-- FILES -->
         <div class="item item-divider"> Files</div>
         <ion-list can-swipe="true">
+            <ion-item ng-show="noFileOrDir">{{noFileOrDir}}</ion-item>
             <ion-item ng-repeat="file in cloudData"
                       ng-show="file.type == 'file'"
                       ng-click="checkFileProtected(file.is_secured, file.filename)">

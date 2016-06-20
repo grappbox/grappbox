@@ -21,7 +21,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.profileInfo = {};
     $scope.GetProfileInfo = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Users.ProfileInfo().get({
             token: $rootScope.userDatas.token
         }).$promise
@@ -34,7 +34,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetProfileInfo();
@@ -45,18 +45,22 @@ angular.module('GrappBox.controllers')
     */
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Projects.List().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
                 $scope.projectsTab = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noProject = "You don't have any project.";
+                else
+                    $scope.noProject = false;
             })
             .catch(function (error) {
                 console.error('Get projects list failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetProjects();
@@ -68,21 +72,28 @@ angular.module('GrappBox.controllers')
     $scope.nextMeetingsTab = {};
     $scope.nextMeetingsError = "";
     $scope.GetNextMeetings = function () {
-        $rootScope.showLoading();
-        Dashboard.NextMeetings().get({ token: $rootScope.userDatas.token }).$promise
+        //$rootScope.showLoading();
+        Users.NextMeetings().get({
+            token: $rootScope.userDatas.token
+        }).$promise
             .then(function (data) {
                 console.log('Get next meetings list successful !');
                 console.log(data);
                 $scope.nextMeetingsTab = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noMeeting = "You don't have any meeting.";
+                else
+                    $scope.noMeeting = false;
                 /*if (Object.keys(data.toJSON()).length < 1)
                     $scope.nextMeetingsError = "You don't have meeting.";*/
             })
             .catch(function (error) {
                 console.error('Get next meetings list failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetNextMeetings();
@@ -94,12 +105,16 @@ angular.module('GrappBox.controllers')
     $scope.currentTasksTab = {};
     $scope.currentTasksError = "";
     $scope.GetCurrentTasks = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Users.CurrentTasks().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get current tasks list successful !');
                 console.log(data);
                 $scope.currentTasksTab = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noCurrentTask = "You don't have any task.";
+                else
+                    $scope.noCurrentTask = false;
                 /*if (Object.keys(data.toJSON()).length < 1)
                     $scope.currentTasksError = "You don't have task.";*/
             })
@@ -108,7 +123,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetCurrentTasks();
@@ -120,12 +135,16 @@ angular.module('GrappBox.controllers')
     $scope.userConnectedRoles = {};
     $scope.userConnectedRolesError = "";
     $scope.GetUserConnectedRoles = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Roles.UserConnectedRoles().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get user connected roles successful !');
                 console.log(data);
                 $scope.userConnectedRoles = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noRole = "You don't have any role.";
+                else
+                    $scope.noRole = false;
                 /*if (Object.keys(data.toJSON()).length < 1)
                     $scope.userConnectedRolesError = "You don't have role.";*/
             })
@@ -135,7 +154,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetUserConnectedRoles();

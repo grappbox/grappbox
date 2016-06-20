@@ -25,8 +25,9 @@
                         <ion-item ng-show="noTeam">{{noTeam}}</ion-item>
                         <a ng-show="!noTeam" class="item item-avatar"
                            ng-repeat="teamOccupation in teamOccupationTab"
-                           ui-sref="app.user({userId: teamOccupation.user.id})">
-                            <!--<img data-ng-src="data:image/png;base64, {{teamOccupation.user.id }}" />-->
+                           ui-sref="app.tasks({projectId: projectId})">
+                            <!--ui-sref="app.user({userId: teamOccupation.user.id})"-->
+                            <img data-ng-src="data:image/png;base64, {{teamOccupation.user.id }}" />
                             <h2>{{ teamOccupation.user.firstname }} {{ teamOccupation.user.lastname }}</h2>
                             <h3>{{ teamOccupation.occupation }}</h3>
                             <h3>Tasks begun: {{ teamOccupation.number_of_tasks_begun }}</h3>
@@ -51,7 +52,7 @@
                         <ion-item ng-show="!noMeeting" class="item-body">
                             <a class="item item-thumbnail-left"
                                ng-repeat="nextMeeting in nextMeetingsTab"
-                               ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
+                               ui-sref="app.calendar({projectId: projectId})">
                                 <img data-ng-src="data:image/png;base64, {{nextMeeting.projects.logo}}" />
                                 <h2>{{ nextMeeting.type }}: {{ nextMeeting.title }}</h2>
                                 <p><strong>Project: </strong> {{ nextMeeting.projects.name }}</p>
@@ -69,8 +70,8 @@
         <!--<ion-tab title="Progress">
             <ion-pane>
                 <ion-content overflow-scroll="false">-->
-                    <!-- Refresher -->
-                    <!--<ion-refresher pulling-text="Pull to refresh..."
+        <!-- Refresher -->
+        <!--<ion-refresher pulling-text="Pull to refresh..."
                                    on-refresh="doRefreshGlobalProgress()">
                     </ion-refresher>
                     <div class="item item-divider">

@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Roles) {
+.controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Toast, Roles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -57,11 +57,13 @@ angular.module('GrappBox.controllers')
         }).$promise
         .then(function (data) {
             console.log('Delete role successful !');
+            Toast.show("Role deleted");
             $scope.deleteRoleData = data;
             $state.go('app.roles', { projectId: $scope.projectId });
         })
         .catch(function (error) {
             console.error('Delete role failed ! Reason: ' + error.status + ' ' + error.statusText);
+            Toast.show("Role delete error");
         })
         .finally(function () {
             $rootScope.hideLoading();
@@ -82,6 +84,14 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get users for role successful !');
                 $scope.usersForRole = data.data;
+                if (data.data.users_assigned.length == 0)
+                    $scope.userAssignedOnRole = "There are no user assigned on this role."
+                else
+                    $scope.userAssignedOnRole = false;
+                if (data.data.users_non_assigned.length == 0)
+                    $scope.userNonAssignedOnRole = "All users of the project are assigned to this role."
+                else
+                    $scope.userNonAssignedOnRole = false;
                 console.log(data);
             })
             .catch(function (error) {
@@ -113,12 +123,15 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Assign user on role successful !');
+                Toast.show("User assigned on role");
+                $scope.userAssignedOnRole = false;
                 $scope.userAssignedData = data.data;
                 $scope.GetUsersForRole();
                 console.log(data);
             })
             .catch(function (error) {
                 console.error('Assign user on role failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("User assignation on role error");
                 console.error(error);
             })
             .finally(function () {
@@ -178,11 +191,13 @@ angular.module('GrappBox.controllers')
         }).$promise
         .then(function (data) {
             console.log('Remove user from project successful !');
+            Toast.show("Member removed");
             $scope.userRemoveRoleData = data.data;
             $scope.GetUsersForRole();
         })
         .catch(function (error) {
             console.error('Remove user from role failed ! Reason: ' + error.status + ' ' + error.statusText);
+            Toast.show("Member removing error");
             console.error(error);
         })
         .finally(function () {
@@ -217,11 +232,13 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Update project role successful !');
+                Toast.show("Project role updated");
                 $scope.updatedRoleData = data.data;
                 console.log(data);
             })
             .catch(function (error) {
                 console.error('Update project role failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Project role update error");
                 console.error(error);
             })
             .finally(function () {

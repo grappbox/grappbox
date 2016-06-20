@@ -37,7 +37,8 @@
         <!-- Tags information -->
         <div class="item item-divider">Tags</div>
         <!-- Tags on project -->
-        <p>
+        <p ng-show="noTag">{{noTag}}</p>
+        <p ng-show="!noTag">
             <span ng-repeat="tag in ticket.tags" style="color: blue"
                   ng-click="showRemoveTagActionSheet(tag.id)">{{ tag.name }}&nbsp;
             </span>

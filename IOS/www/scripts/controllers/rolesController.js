@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('RolesCtrl', function ($scope, $rootScope, $state, $stateParams, Roles) {
+.controller('RolesCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Roles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -21,7 +21,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.projectRoles = {};
     $scope.GetProjectRoles = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Roles.List().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
@@ -29,13 +29,17 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get project roles successful !');
                 $scope.projectRoles = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noRole = "There is no role on project.";
+                else
+                    $scope.noRole = false;
             })
             .catch(function (error) {
                 console.error('Get project roles failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $scope.hideLoading();
+                //$scope.hideLoading();
             })
     }
     $scope.GetProjectRoles();
@@ -46,7 +50,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.roleType = {};
     $scope.AddNewRole = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         console.log($scope.roleType.teamTimeline);
         Roles.Add().save({
             data: {
@@ -66,16 +70,19 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Add new role successful !');
+                Toast.show("Role added");
+                $scope.noRole = false;
                 $scope.roleAddedData = data.data;
                 $scope.GetProjectRoles();
             })
             .catch(function (error) {
                 console.error('Add new role failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Role error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $scope.hideLoading();
+                //$scope.hideLoading();
             })
     }
 })

@@ -5,7 +5,7 @@
 angular.module('GrappBox.controllers')
 
 // WHITEBOARD LIST
-.controller('WhiteboardsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, Whiteboard) {
+.controller('WhiteboardsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, Toast, Whiteboard) {
 
     // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
     $scope.projectId = $stateParams.projectId;
@@ -22,7 +22,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.whiteboardsTab = {};
     $scope.ListWhiteboards = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Whiteboard.List().get({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId
@@ -30,6 +30,10 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('List whiteboards successful !');
                 console.log(data.data.array);
+                if (data.data.array.length == 0)
+                    $scope.noWhiteboard = "There is no whiteboard.";
+                else
+                    $scope.noWhiteboard = false;
                 $scope.whiteboardsTab = data.data.array;
             })
             .catch(function (error) {
@@ -38,7 +42,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.ListWhiteboards();
@@ -49,7 +53,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.createWhiteboardData = {};
     $scope.CreateWhiteboard = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Whiteboard.Create().save({
             data: {
                 token: $rootScope.userDatas.token,
@@ -59,16 +63,19 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Create whiteboard successful !');
+                Toast.show("Whiteboard created");
+                $scope.noWhiteboard = false;
                 console.log(data.data);
                 $scope.createWhiteboardData = data.data;
             })
             .catch(function (error) {
                 console.error('Create whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Whiteboard creation error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
                 $scope.ListWhiteboards();
             })
     }
@@ -108,22 +115,24 @@ angular.module('GrappBox.controllers')
     ** Method: DELETE
     */
     $scope.DeleteWhiteboard = function (whiteboard) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Whiteboard.Delete().delete({
             token: $rootScope.userDatas.token,
             id: whiteboard.id
         }).$promise
             .then(function (data) {
                 console.log('Delete whiteboard successful !');
+                Toast.show("Whiteboard deleted");
                 console.log(data.info);
             })
             .catch(function (error) {
                 console.error('Delete whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Whiteboard deletion error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
                 $scope.ListWhiteboards();
             })
     }

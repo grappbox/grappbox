@@ -19,7 +19,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.userInfo = {};
     $scope.GetUserInfo = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         console.log("userId: " + $stateParams.userId);
         Users.UserInfo().get({
             token: $rootScope.userDatas.token,
@@ -34,7 +34,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetUserInfo();
@@ -45,7 +45,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.memberRoles = {};
     $scope.GetMemberRoles = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Roles.MemberRoles().get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
@@ -53,6 +53,10 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get member roles successful !');
                 $scope.memberRoles = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noRole = "This user hasn't any role.";
+                else
+                    $scope.noRole = false;
                 console.log(data);
             })
             .catch(function (error) {
@@ -61,7 +65,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetMemberRoles();
@@ -72,7 +76,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.userAvatar = {};
     $scope.GetUserAvatar = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Users.Avatar().get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
@@ -88,7 +92,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetUserAvatar();

@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CreateTicketCtrl', function ($scope, $rootScope, $state, $stateParams, Bugtracker) {
+.controller('CreateTicketCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Bugtracker) {
     $scope.ticket = {};
     $scope.message = $stateParams.message;
     if ($scope.message != null) {
@@ -17,7 +17,7 @@ angular.module('GrappBox.controllers')
     ** Method: POST
     */
     $scope.CreateTicket = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.CreateTicket().save({
             data: {
                 token: $rootScope.userDatas.token,
@@ -30,13 +30,17 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Create ticket successful !');
-                $state.go('app.bugtracker', { projectId: $stateParams.projectId }, { reload: true });
+                Toast.show("Ticket created");
+                $ionicHistory.clearCache().then(function () {
+                    $state.go('app.bugtracker', { projectId: $stateParams.projectId });
+                });
             })
             .catch(function (error) {
+                Toast.show("Ticket error");
                 console.error('Create ticket failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
             .finally(function () {
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 })

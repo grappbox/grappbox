@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditProfileCtrl', function ($scope, $rootScope, $state, Users) {
+.controller('EditProfileCtrl', function ($scope, $rootScope, $state, Toast, Users) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -18,7 +18,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.profileInfo = {};
     $scope.GetProfileInfo = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Users.ProfileInfo().get({
             token: $rootScope.userDatas.token
         }).$promise
@@ -33,14 +33,14 @@ angular.module('GrappBox.controllers')
                 console.error('Get profile info failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
             .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
+                //$scope.$broadcast('scroll.refreshComplete');
                 $rootScope.hideLoading();
             })
     }
     $scope.GetProfileInfo();
 
     $scope.EditProfile = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Users.EditProfile().update({
             data: {
                 firstname: $scope.profileInfo.first_name,
@@ -58,14 +58,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Edit profile successful !');
-                $state.go('app.profile');
+                Toast.show("Profile edited");
+                $ionicHistory.clearCache().then(function () {
+                    $state.go('app.profile');
+                });
             })
             .catch(function (error) {
+                Toast.show("Profile error");
                 console.error('Edit profile failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
             })
             .finally(function () {
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 })

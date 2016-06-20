@@ -19,18 +19,22 @@ angular.module('GrappBox.controllers')
     */
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Projects.List().get({ token: $rootScope.userDatas.token }).$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
                 $scope.projectsTab = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noProject = "You don't have any project.";
+                else
+                    $scope.noProject = false;
             })
             .catch(function (error) {
                 console.error('Get projects list failed ! Reason: ' + error.status + ' ' + error.statusText);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetProjects();

@@ -3,7 +3,8 @@
 */
 
 angular.module('GrappBox.controllers')
-.controller('CloudCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicModal, $cordovaFile, $cordovaFileTransfer, $timeout, Cloud) {
+
+.controller('CloudCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicModal, $cordovaFile, $cordovaFileTransfer, $timeout, Toast, Cloud) {
 
     $scope.projectId = $stateParams.projectId;
     $scope.userConnectedId = $rootScope.userDatas.id;
@@ -54,7 +55,7 @@ angular.module('GrappBox.controllers')
             $scope.pushDirToPath(dirName);
         else if (isBack)
             $scope.path = $scope.path;
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Cloud.List().get({
             token: $rootScope.userDatas.token,
             idProject: $scope.projectId,
@@ -70,6 +71,10 @@ angular.module('GrappBox.controllers')
                 }
                 else
                     $scope.cloudData = data.data.array;
+                if (data.data.array.length == 0)
+                    $scope.noFileOrDir = "There is no content.";
+                else
+                    $scope.noFileOrDir = false;
             })
             .catch(function (error) {
                 console.error('Cloud LS failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -78,7 +83,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     };
     $scope.CloudLS();
@@ -90,7 +95,7 @@ angular.module('GrappBox.controllers')
     $scope.dir = {};
     $scope.createDirData = {};
     $scope.CloudCreateDir = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         console.log("token = '" + $rootScope.userDatas.token + "' , project_id = '" + $scope.projectId + "' , path = '" + $scope.path + "' , dir_name = '" + $scope.dir.dirName + "'");
         Cloud.CreateDir().save({
             data: {
@@ -105,6 +110,8 @@ angular.module('GrappBox.controllers')
                 console.log('Cloud create dir successful !');
                 console.log(data);
                 $scope.createDirData = data.data;
+                Toast.show("Folder created");
+                $scope.noFileOrDir = false;
                 $scope.CloudLS(true);
                 $scope.dirModal.hide();
             })
@@ -114,7 +121,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     };
 
@@ -160,10 +167,12 @@ angular.module('GrappBox.controllers')
                   console.log('Cloud download file successful !');
                   console.log(data);
                   $scope.filePassword = {};
+                  Toast.show("File downloaded");
               }, function (error) {
                   console.error('Cloud download file failed !');
                   console.error(error);
                   $scope.filePassword = {};
+                  Toast.show("Download error");
               }, function (progress) {
                   $timeout(function () {
                       $scope.downloadProgress = (progress.loaded / progress.total) * 100;
@@ -184,7 +193,7 @@ angular.module('GrappBox.controllers')
     $scope.uploadProgress = 0;
 
     $scope.UploadFile = function (fileUpload) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         // We open stream
         Cloud.OpenStream().save({
             data: {
@@ -206,7 +215,7 @@ angular.module('GrappBox.controllers')
                 $scope.openStreamData = data.data;
                 $scope.streamId = data.data.stream_id;
                 $scope.fileChunks = fileUpload.base64.match(/.{1,1048576}/g);
-                console.log(fileUpload);
+                Toast.show("Uploading...");
                 console.log("$scope.fileChunks.length = " + $scope.fileChunks.length);
                 // We loop to send all file chunks
                 for (var i = 0; i < $scope.fileChunks.length; ++i) {
@@ -232,12 +241,15 @@ angular.module('GrappBox.controllers')
                                 .then(function (data) {
                                     // We close stream
                                     console.log('Cloud close stream successful !');
+                                    Toast.show("File uploaded");
+                                    $scope.noFileOrDir = false;
                                     $scope.closeStreamData = data.data;
                                     resetUploadFileField();
                                     $scope.CloudLS(true);
                                 })
                                 .catch(function (error) {
                                     console.error('Cloud close stream failed ! Reason: ' + error.status + ' ' + error.statusText);
+                                    Toast.show("Upload error");
                                     console.log(error);
                                     resetUploadFileField();
                                     $scope.$broadcast('scroll.refreshComplete');
@@ -251,17 +263,19 @@ angular.module('GrappBox.controllers')
                         })
                         .catch(function (error) {
                             console.error('Cloud send chunk failed ! Reason: ' + error.status + ' ' + error.statusText);
+                            Toast.show("Upload error");
                             resetUploadFileField();
                             $scope.$broadcast('scroll.refreshComplete');
-                            $rootScope.hideLoading();
+                            //$rootScope.hideLoading();
                         })
                 }
             })
             .catch(function (error) {
                 console.error('Cloud open stream failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Upload error");
                 console.error(error);
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
                 resetUploadFileField();
             })
     };
@@ -273,7 +287,7 @@ angular.module('GrappBox.controllers')
     $scope.deleteFileOrDirData = {};
     $scope.deleteFileOrFolder = function (fileName) {
         console.log("DEL ! path = " + $scope.path.replace(/\//g, ",") + fileName + " | safePassword = " + ($scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""));
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Cloud.DelFileOrDir().delete({
             token: $rootScope.userDatas.token,
             project_id: $scope.projectId,
@@ -282,6 +296,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Cloud delete file or dir successful !');
+                Toast.show("Deleted");
                 console.log(data);
                 $scope.deleteFileOrDirData = data;
                 if (data.info && data.info.return_code == "3.7.9") {
@@ -291,11 +306,12 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Cloud delete file or dir failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Delete error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
                 $scope.fileDeletePassword = {};
             })
     };
@@ -307,7 +323,7 @@ angular.module('GrappBox.controllers')
     $scope.deleteSecuredFileData = {};
     $scope.deleteSecuredFile = function (fileName) {
         console.log("DEL SECURED ! path = " + $scope.path.replace(/\//g, ",") + fileName + " | fileDeletePassword = " + $scope.fileDeletePassword.pass + " | safePassword = " + ($scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""));
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Cloud.DelSecuredFile().delete({
             token: $rootScope.userDatas.token,
             project_id: $scope.projectId,
@@ -317,6 +333,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Cloud delete file secured successful !');
+                Toast.show("Secure file deleted");
                 console.log(data);
                 $scope.deleteSecuredFileOrDirData = data;
                 if (data.info && data.info.return_code == "3.9.9") {
@@ -326,11 +343,12 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Cloud delete file or dir secured failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Delete error");
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
                 $scope.fileDeletePassword = {};
             })
     };
@@ -369,6 +387,7 @@ angular.module('GrappBox.controllers')
         // else if it is a secured file in Safe folder then ask for password popup
         console.log(fileName);
         if (is_secured && fileName == "Safe" && ($scope.path == "," || $scope.path == "/")) {
+            Toast.show("Can't delete 'Safe' folder");
             console.log("You can't delete the 'Safe' folder !");
         }
         else if (is_secured) {

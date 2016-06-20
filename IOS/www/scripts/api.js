@@ -129,7 +129,11 @@ angular.module('GrappBox.api', ['ngResource'])
         // Get users on a project avatar
         Avatars: function () {
             return $resource($rootScope.API + 'user/getallprojectuseravatar/:token/:projectId', { token: "@token", projectId: "@projectId" });
-        }
+        },
+        // Get Next Meetings
+        NextMeetings: function () {
+            return $resource($rootScope.API + 'user/getnextmeetings/:token', { token: "@token" });
+        },
     }
 })
 
@@ -413,10 +417,10 @@ angular.module('GrappBox.api', ['ngResource'])
 })
 
 /*
-********************* GANTT *********************
+********************* TASKS *********************
 */
 // Get current and next tasks
-.factory('Gantt', function ($rootScope, $resource) {
+.factory('Tasks', function ($rootScope, $resource) {
     return {
         CurrentAndNextTasks: function () {
             return $resource($rootScope.API + 'user/getcurrentandnexttasks/:token', { token: "@token" });

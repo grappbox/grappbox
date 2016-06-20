@@ -3,7 +3,7 @@
     Every pages mentionned here are stocked in Templates folder
 */
 
-angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives'])
+angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
 
 // on starting
 .run(function ($ionicPlatform, $rootScope, $ionicLoading) {
@@ -24,7 +24,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
 
     $rootScope.showLoading = function () {
         $ionicLoading.show({
-            template: '<p>Loading...</p><ion-spinner></ion-spinner>'
+            template: '<p>Loading...</p><ion-spinner></ion-spinner>', noBackdrop: true
         });
     };
 
@@ -77,7 +77,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
                     templateUrl: "views/projects.html",
                     controller: 'ProjectsListCtrl'
                 },
-            }
+            },
+            cache: false
         })
 
 
@@ -92,7 +93,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
                     templateUrl: "views/dashboard.html",
                     controller: 'DashboardCtrl',
                 }
-            }
+            },
+            cache: false
         })
 
         /*
@@ -106,7 +108,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
                     templateUrl: "views/project.html",
                     controller: 'ProjectCtrl'
                 }
-            }
+            },
+            cache: false
         })
 
         // create project view
@@ -158,20 +161,6 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         })
 
         /*
-        ** NEXT MEETING
-        */
-        // next meeting view
-        .state('app.nextMeeting', {
-            url: "/projects/:nextMeetingId",
-            views: {
-                'menuList': {
-                    templateUrl: "views/nextMeeting.html",
-                    controller: 'NextMeetingCtrl'
-                }
-            }
-        })
-
-        /*
         ** WHITEBOARD
         */
 
@@ -193,6 +182,12 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
                 'menuList': {
                     templateUrl: "views/whiteboard.html",
                     controller: 'WhiteboardCtrl'
+                }
+            },
+            params: {
+                whiteboardName: {
+                    value: 'Whiteboard',
+                    hiddenParam: 'YES'
                 }
             }
         })
@@ -306,21 +301,6 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         })
 
         /*
-        ** GANTT
-        */
-
-        // Gantt view
-        .state('app.gantt', {
-            url: "/projects/:projectId/gantt/",
-            views: {
-                'menuList': {
-                    templateUrl: "views/gantt.html",
-                    controller: 'GanttCtrl'
-                }
-            }
-        })
-
-        /*
         ** TIMELINE
         */
         // timeline view
@@ -355,6 +335,36 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
                 'menuList': {
                     templateUrl: "views/cloud.html",
                     controller: 'CloudCtrl'
+                }
+            }
+        })
+
+        /*
+        ** CALENDAR
+        */
+
+        // Tasks view
+        .state('app.calendar', {
+            url: "/projects/:projectId/calendar/",
+            views: {
+                'menuList': {
+                    templateUrl: "views/calendar.html",
+                    controller: 'CalendarCtrl'
+                }
+            }
+        })
+
+        /*
+        ** TASKS
+        */
+
+        // Tasks view
+        .state('app.tasks', {
+            url: "/projects/:projectId/tasks/",
+            views: {
+                'menuList': {
+                    templateUrl: "views/tasks.html",
+                    controller: 'TasksCtrl'
                 }
             }
         })

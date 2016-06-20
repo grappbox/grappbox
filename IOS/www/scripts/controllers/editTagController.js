@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditTagCtrl', function ($scope, $rootScope, $state, $stateParams, Bugtracker) {
+.controller('EditTagCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Bugtracker) {
 
     $scope.doRefresh = function () {
         $scope.GetTagInfo();
@@ -26,10 +26,12 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Get tag info successful !');
+                Toast.show("Tag edited");
                 $scope.tagInfo = data.data;
             })
             .catch(function (error) {
                 console.error('Get tag info failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Tag error");
                 console.error(error);
             })
             .finally(function () {
@@ -40,12 +42,12 @@ angular.module('GrappBox.controllers')
     $scope.GetTagInfo();
 
     /*
-    ** Edit ticket
+    ** Update Tag
     ** Method: PUT
     */
     $scope.updateTagData = {};
     $scope.UpdateTag = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Bugtracker.UpdateTag().update({
             data: {
                 token: $rootScope.userDatas.token,
@@ -54,17 +56,19 @@ angular.module('GrappBox.controllers')
             }
         }).$promise
             .then(function (data) {
-                console.log('Edit ticket successful !');
+                console.log('Update tag successful !');
                 $scope.project = data.data;
-                $state.go('app.tags', { projectId: $stateParams.projectId });
+                $ionicHistory.clearCache().then(function () {
+                    $state.go('app.tags', { projectId: $stateParams.projectId });
+                });
             })
             .catch(function (error) {
-                console.error('Edit ticket failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error('Update tag failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 

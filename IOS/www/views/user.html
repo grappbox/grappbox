@@ -17,21 +17,22 @@
         <ion-list class="card">
             <ion-item class="item-body">
                 <img class="full-image" ng-src="#" />
-                <p><strong>First Name: </strong> {{ userInfo.firstname }}</p>
-                <p><strong>Last Name: </strong> {{ userInfo.lastname }}</p>
-                <p><strong>birthday: </strong> {{ userInfo.birthday.date }}</p>
-                <p><strong>Phone: </strong> {{ userInfo.phone }}</p>
-                <p><strong>Email: </strong> {{ userInfo.email }}</p>
-                <p><strong>Country: </strong> {{ userInfo.country }}</p>
-                <p><strong>LinkedIn: </strong> {{ userInfo.linkedin }}</p>
-                <p><strong>Twitter: </strong> {{ userInfo.twitter }}</p>
-                <p><strong>Viadeo: </strong> {{ userInfo.viadeo }}</p>
+                <p ng-show="userInfo.firstname"><strong>First Name: </strong> {{ userInfo.firstname }}</p>
+                <p ng-show="userInfo.lastname"><strong>Last Name: </strong> {{ userInfo.lastname }}</p>
+                <p ng-show="userInfo.birthday.date"><strong>birthday: </strong> {{ userInfo.birthday.date }}</p>
+                <p ng-show="userInfo.phone"><strong>Phone: </strong> {{ userInfo.phone }}</p>
+                <p ng-show="userInfo.email"><strong>Email: </strong> {{ userInfo.email }}</p>
+                <p ng-show="userInfo.country"><strong>Country: </strong> {{ userInfo.country }}</p>
+                <p ng-show="userInfo.linkedin"><strong>LinkedIn: </strong> {{ userInfo.linkedin }}</p>
+                <p ng-show="userInfo.twitter"><strong>Twitter: </strong> {{ userInfo.twitter }}</p>
+                <p ng-show="userInfo.viadeo"><strong>Viadeo: </strong> {{ userInfo.viadeo }}</p>
             </ion-item>
         </ion-list>
 
         <div class="item item-divider">Roles</div>
         <ion-list>
-            <ion-item ng-repeat="role in memberRoles">
+            <ion-item ng-show="noRole">{{noRole}}</ion-item>
+            <ion-item ng-show="!noRole" ng-repeat="role in memberRoles">
                 {{ role.role.name }} on {{ role.project.name }}
             </ion-item>
         </ion-list>

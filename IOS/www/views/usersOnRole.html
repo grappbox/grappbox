@@ -13,7 +13,9 @@
         <!-- Users on role -->
         <div class="item item-divider">Members</div>
         <ion-list>
-            <ion-item ng-repeat="userAssigned in usersForRole.users_assigned"
+            <ion-item ng-show="userAssignedOnRole">{{userAssignedOnRole}}</ion-item>
+            <ion-item ng-show="!userAssignedOnRole"
+                      ng-repeat="userAssigned in usersForRole.users_assigned"
                       ng-click="showMemberActionSheet(userAssigned.id)">
                 <h2>{{ userAssigned.firstname }} {{ userAssigned.lastname }}</h2>
             </ion-item>
@@ -21,7 +23,8 @@
 
         <!-- Users on project but not assigned to this role -->
         <ion-list>
-            <label class="item item-input item-select">
+            <ion-item ng-show="userNonAssignedOnRole">{{userNonAssignedOnRole}}</ion-item>
+            <label ng-show="!userNonAssignedOnRole" class="item item-input item-select">
                 <div class="input-label">
                     Member unassigned
                 </div>
@@ -35,7 +38,8 @@
         </ion-list>
 
         <!-- Assign role -->
-        <button class="button button-block button-positive"
+        <button ng-show="!userNonAssignedOnRole"
+                class="button button-block button-positive"
                 ng-click="AssignToRole()">
             Assign
         </button>

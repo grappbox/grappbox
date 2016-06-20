@@ -8,6 +8,7 @@ angular.module('GrappBox.controllers')
 .controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, $interval, Whiteboard) {
 
     $scope.projectId = $stateParams.projectId;
+    $scope.whiteboardName = $stateParams.whiteboardName;
     $scope.whiteboardId = $stateParams.whiteboardId;
     console.log("PROJECTID = " + $scope.projectId);
     console.log("WHITEBOARDID = " + $scope.whiteboardId);
@@ -16,7 +17,6 @@ angular.module('GrappBox.controllers')
     var height = 2160; //2160;
 
     var canvas = new fabric.Canvas('canvasWhiteboard');
-    console.log('canvasWhiteboard-' + $scope.whiteboardId);
 
     canvas.selection = false;
     fabric.Object.prototype.selectable = false; //Prevent drawing objects to be draggable or clickable
@@ -104,12 +104,8 @@ angular.module('GrappBox.controllers')
         $ionicScrollDelegate.freezeScroll(true);
         $scope.popoverDraw.hide();
         //Send a handwriting to API
-        var drawingItems = [];
-        canvas.on('object:added', function (e) {
-            if (e.target.type == 'path') {
-                drawingItems.push(e.target);
-                $scope.PushOnWhiteboard("HANDWRITE", $scope.brushcolor, "", $scope.brushSize, "", "", "", drawingItems[0].canvas.freeDrawingBrush._points);
-            }
+        canvas.on('path:created', function (e) {
+            $scope.PushOnWhiteboard("HANDWRITE", $scope.brushcolor, "", $scope.brushSize, "", "", "", e.path.canvas.freeDrawingBrush._points);
         });
     }
 
@@ -295,16 +291,12 @@ angular.module('GrappBox.controllers')
                 { x: mouse_pos.x, y: mouse_pos_init.y + height / 2 },
                 { x: mouse_pos_init.x + width / 2, y: mouse_pos.y },
                 { x: mouse_pos_init.x, y: mouse_pos_init.y + height / 2 }*/
-                
-                {x: width / 2, y: 0},
-                {x: mouse_pos.x - mouse_pos_init.x, y: height / 2},
-                {x: width / 2, y: mouse_pos.y - mouse_pos_init.y},
-                {x: 0, y: height / 2}
+
+                { x: width / 2, y: 0 },
+                { x: mouse_pos.x - mouse_pos_init.x, y: height / 2 },
+                { x: width / 2, y: mouse_pos.y - mouse_pos_init.y },
+                { x: 0, y: height / 2 }
             ];
-            console.log("diamond = ");
-            console.log(diamond);
-            console.log("points =");
-            console.log(points);
             diamond.set({ points: points });
             canvas.renderAll();
         });
@@ -459,7 +451,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.deleteObjectData = {};
     $scope.DeleteObject = function (mouse_pos) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Whiteboard.DeleteObject().update({
             data: {
                 whiteboardId: $scope.whiteboardId,
@@ -479,7 +471,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -514,7 +506,7 @@ angular.module('GrappBox.controllers')
     }
 
     $scope.addOnWhiteboard = function (obj) {
-        //canvas.clear();
+        canvas.clear();
         for (var i = 0; i < obj.length; i++) {
             if (obj[i].object.type == "RECTANGLE") {
                 var rect = new fabric.Rect({
@@ -587,18 +579,18 @@ angular.module('GrappBox.controllers')
                     { x: 0, y: height / 2 }
                 ]
                 var diamond = new fabric.Polygon(points, {
-                        top: obj[i].object.positionStart.y > obj[i].object.positionEnd.y ? obj[i].object.positionEnd.y : obj[i].object.positionStart.y,
-                        left: obj[i].object.positionStart.x > obj[i].object.positionEnd.x ? obj[i].object.positionEnd.x : obj[i].object.positionStart.x,
-                        fill: obj[i].object.background,
-                        stroke: obj[i].object.color,
-                        hasBorders: true,
-                        hasControls: false,
-                        hasRotatingPoint: false,
-                        lockMovementX: true,
-                        lockMovementY: true,
-                        selectable: false,
-                        evented: false
-                    });
+                    top: obj[i].object.positionStart.y > obj[i].object.positionEnd.y ? obj[i].object.positionEnd.y : obj[i].object.positionStart.y,
+                    left: obj[i].object.positionStart.x > obj[i].object.positionEnd.x ? obj[i].object.positionEnd.x : obj[i].object.positionStart.x,
+                    fill: obj[i].object.background,
+                    stroke: obj[i].object.color,
+                    hasBorders: true,
+                    hasControls: false,
+                    hasRotatingPoint: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                    evented: false
+                });
                 canvas.add(diamond);
             }
             else if (obj[i].object.type == "TEXT") {
@@ -625,7 +617,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.pushOnWhiteboardData = {};
     $scope.PushOnWhiteboard = function (type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold) {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Whiteboard.Push().update({
             id: $scope.whiteboardId,
             data: {
@@ -659,7 +651,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 
@@ -669,7 +661,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.pullFromWhiteboardData = {};
     $scope.pullFromWhiteboard = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Whiteboard.Pull().save({
             data: {
                 id: $scope.whiteboardId,
@@ -688,7 +680,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 

@@ -9,8 +9,10 @@
                        on-refresh="doRefresh()">
         </ion-refresher>
         <ion-list can-swipe="true">
-            <ion-item ng-repeat="whiteboardInfo in whiteboardsTab"
-                      ui-sref="app.whiteboard({whiteboardId: whiteboardInfo.id, projectId: projectId})">
+            <ion-item ng-show="noWhiteboard">{{noWhiteboard}}</ion-item>
+            <ion-item ng-show="!noWhiteboard"
+                      ng-repeat="whiteboardInfo in whiteboardsTab"
+                      ui-sref="app.whiteboard({whiteboardId: whiteboardInfo.id, projectId: projectId, whiteboardName: whiteboardInfo.name})">
                 {{whiteboardInfo.name}}
                 <ion-option-button class="button-assertive"
                                    ng-click="DeleteWhiteboard(whiteboardInfo)">

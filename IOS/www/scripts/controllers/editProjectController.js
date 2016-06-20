@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams, Projects) {
+.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Projects) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -18,7 +18,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.project = {};
     $scope.GetProjectInfo = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Projects.Info().get({
             token: $rootScope.userDatas.token,
             projectId: $stateParams.projectId
@@ -36,13 +36,13 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
     $scope.GetProjectInfo();
 
     $scope.EditProject = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Projects.Edit().update({
             data: {
                 token: $rootScope.userDatas.token,
@@ -61,14 +61,18 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Edit project successful !');
-                $state.go('app.project', { projectId: $stateParams.projectId });
+                Toast.show("Project edited");
+                $ionicHistory.clearCache().then(function () {
+                    $state.go('app.project', { projectId: $stateParams.projectId });
+                });
             })
             .catch(function (error) {
                 console.error('Edit project failed ! Reason: ' + error.status + ' ' + error.statusText);
+                Toast.show("Project error");
                 console.error(error);
             })
             .finally(function () {
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 })

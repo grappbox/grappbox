@@ -29,7 +29,8 @@
 
                     <!-- Open ticket list -->
                     <ion-list>
-                        <ion-item ng-repeat="ticket in lastOpenTickets"
+                        <ion-item ng-show="noOpenTicket">{{noOpenTicket}}</ion-item>
+                        <ion-item ng-show="!noOpenTicket" ng-repeat="ticket in lastOpenTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
                                   ng-if="ticket.deletedAt === null">
                             {{ticket.title}}<br />
@@ -59,7 +60,8 @@
 
                     <!-- Closed ticket list -->
                     <ion-list>
-                        <ion-item ng-repeat="ticket in lastClosedTickets"
+                        <ion-item ng-show="noClosedTicket">{{noClosedTicket}}</ion-item>
+                        <ion-item ng-show="!noClosedTicket" ng-repeat="ticket in lastClosedTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})">
                             {{ticket.title}}<br />
                             By {{ticket.creator.fullname}}
@@ -86,7 +88,8 @@
 
                     <!-- User connected tickets and open tickets list -->
                     <ion-list>
-                        <ion-item ng-repeat="ticket in lastOpenTickets"
+                        <ion-item ng-show="noOpenTicket">{{noOpenTicket}}</ion-item>
+                        <ion-item ng-show="!noOpenTicket" ng-repeat="ticket in lastOpenTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
                                   ng-if="ticket.creator.id == userDatas.id">
                             {{ticket.title}}<br />

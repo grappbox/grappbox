@@ -20,10 +20,10 @@
                             ui-sref="app.createMessage({projectId: projectId, timelineId: timelineIds[0]})">
                         New message
                     </button>
-
+                    <ion-item ng-show="noMessageTeam">{{noMessageTeam}}</ion-item>
                     <div class="list card"
                          ng-repeat="message in lastMessagesTeam"
-                         ng-if="lastMessagesTeam != null">
+                         ng-show="!noMessageTeam">
                         <div class="item item-avatar">
                             <img src="mcfly.jpg">
                             <h2>{{ message.creator.fullname }}</h2>
@@ -120,9 +120,10 @@
                         New message
                     </button>
 
+                    <ion-item ng-show="noMessageCustomer">{{noMessageCustomer}}</ion-item>
                     <div class="list card"
                          ng-repeat="message in lastMessagesCustomer"
-                         ng-if="lastMessagesCustomer != null">
+                         ng-show="!noMessageCustomer">
                         <div class="item item-avatar">
                             <img src="mcfly.jpg">
                             <h2>{{ message.creator.fullname }}</h2>
