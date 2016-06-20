@@ -7,14 +7,16 @@ angular.module('GrappBox.controllers')
 // WHITEBOARD
 .controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, $interval, Whiteboard) {
 
-    // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
     $scope.projectId = $stateParams.projectId;
     $scope.whiteboardId = $stateParams.whiteboardId;
+    console.log("PROJECTID = " + $scope.projectId);
+    console.log("WHITEBOARDID = " + $scope.whiteboardId);
 
     var width = 3840; //3840;
     var height = 2160; //2160;
 
     var canvas = new fabric.Canvas('canvasWhiteboard');
+    console.log('canvasWhiteboard-' + $scope.whiteboardId);
 
     canvas.selection = false;
     fabric.Object.prototype.selectable = false; //Prevent drawing objects to be draggable or clickable
@@ -22,49 +24,13 @@ angular.module('GrappBox.controllers')
     //Saving by both manners prevents from errors
     canvas.setHeight(height);
     canvas.setWidth(width);
-    //canvas.width = width;
-    //canvas.height = height;
+    canvas.width = width;
+    canvas.height = height;
 
     canvas.isDrawingMode = false;
     $scope.brushSize = 2; //Set brush size to by default
     canvas.freeDrawingBrush.width = $scope.brushSize; //Size of the drawing brush
     $scope.brushcolor = '#000000'; //Set brushcolor to black at the beginning
-
-    //Get "colorsPopup" html templateUrl in whiteboard.html
-    $scope.popoverColors = $ionicPopover.fromTemplateUrl('colorsPopup.html', {
-        scope: $scope
-    }).then(function (popoverColors) {
-        $scope.popoverColors = popoverColors;
-    });
-
-    //Get "shapesPopup" html templateUrl in whiteboard.html
-    $scope.popoverShapes = $ionicPopover.fromTemplateUrl("shapesPopup.html", {
-        scope: $scope
-    }).then(function (popoverShapes) {
-        $scope.popoverShapes = popoverShapes;
-    });
-
-    //Get "drawPopup" html templateUrl in whiteboard.html
-    $scope.popoverDraw = $ionicPopover.fromTemplateUrl("drawPopup.html", {
-        scope: $scope
-    }).then(function (popoverDraw) {
-        $scope.popoverDraw = popoverDraw;
-    });
-
-    //Show colors popover
-    $scope.openColorsPopover = function ($event) {
-        $scope.popoverColors.show($event);
-    };
-
-    //Show shapes popover
-    $scope.openShapesPopover = function ($event) {
-        $scope.popoverShapes.show($event);
-    };
-
-    //Show draw popover
-    $scope.openDrawPopover = function ($event) {
-        $scope.popoverDraw.show($event);
-    };
 
     //List of colors
     $scope.colorTab = [
@@ -107,15 +73,15 @@ angular.module('GrappBox.controllers')
     ]
 
     // Cancel interval when quitting view
-    /*$scope.$on('$destroy', function () {
-        // cancel the interval
+    $scope.$on("$ionicView.leave", function () {
         $interval.cancel(myInterval);
     });
 
     var myInterval = $interval(function () {
         $scope.OpenWhiteboard();
-    }, 3000);*/
+    }, 3000);
 
+    // Button move
     $scope.moveOn = function (moveOn) {
         canvas.off('mouse:down');
         canvas.off('mouse:up');
@@ -147,6 +113,9 @@ angular.module('GrappBox.controllers')
         });
     }
 
+    /*
+    ** SHAPES
+    */
     //Draw Rectangle shape
     $scope.drawRect = function (isTransparent) {
         var started = false;
@@ -411,7 +380,6 @@ angular.module('GrappBox.controllers')
             console.log("mouse_pos.x" + mouse_pos.x);
             console.log("mouse_pos.y" + mouse_pos.y);
             $scope.DeleteObject(mouse_pos);
-            //$scope.PushOnWhiteboard("LINE", $scope.brushcolor, "", $scope.brushSize, positionStart, positionEnd);
         });
         $scope.popoverShapes.hide();
 
@@ -421,6 +389,7 @@ angular.module('GrappBox.controllers')
         //canvas.renderAll();
     }
 
+    // Add a text
     $scope.addText = function () {
         //Prevent user from being in drawing mode while adding text
         canvas.isDrawingMode = false;
@@ -481,6 +450,10 @@ angular.module('GrappBox.controllers')
     }
 
     /*
+    ** API REQUESTS
+    */
+
+    /*
     ** Delete an object on whiteboard
     ** Method: PUT
     */
@@ -517,7 +490,8 @@ angular.module('GrappBox.controllers')
     $scope.openWhiteboardData = {};
     $scope.objects = {};
     $scope.OpenWhiteboard = function () {
-        $rootScope.showLoading();
+        console.log("OPENWHITEBOARD | WHITEBOARDID = " + $scope.whiteboardId);
+        //$rootScope.showLoading();
         Whiteboard.Open().get({
             id: $scope.whiteboardId,
             token: $rootScope.userDatas.token,
@@ -526,22 +500,21 @@ angular.module('GrappBox.controllers')
                 console.log('Open whiteboard successful !');
                 console.log(data.data);
                 $scope.openWhiteboardData = data.data;
-                var objects = data.data.content;
-                console.log(objects);
-                $scope.addOnWhiteboard(objects);
+                $scope.objects = data.data.content;
+                $scope.addOnWhiteboard($scope.objects);
             })
             .catch(function (error) {
                 console.error('Open whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
             })
             .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
             })
     }
-    $scope.OpenWhiteboard();
 
     $scope.addOnWhiteboard = function (obj) {
+        //canvas.clear();
         for (var i = 0; i < obj.length; i++) {
             if (obj[i].object.type == "RECTANGLE") {
                 var rect = new fabric.Rect({
@@ -644,6 +617,8 @@ angular.module('GrappBox.controllers')
         canvas.renderAll();
     }
 
+    $scope.OpenWhiteboard();
+
     /*
     ** Push a modification on whiteboard
     ** Method: PUT
@@ -716,4 +691,44 @@ angular.module('GrappBox.controllers')
                 $rootScope.hideLoading();
             })
     }
+
+    /*
+    ** POPOVERS
+    */
+    //Get "colorsPopup" html templateUrl in whiteboard.html
+    $scope.popoverColors = $ionicPopover.fromTemplateUrl('colorsPopup.html', {
+        scope: $scope
+    }).then(function (popoverColors) {
+        $scope.popoverColors = popoverColors;
+    });
+
+    //Get "shapesPopup" html templateUrl in whiteboard.html
+    $scope.popoverShapes = $ionicPopover.fromTemplateUrl("shapesPopup.html", {
+        scope: $scope
+    }).then(function (popoverShapes) {
+        $scope.popoverShapes = popoverShapes;
+    });
+
+    //Get "drawPopup" html templateUrl in whiteboard.html
+    $scope.popoverDraw = $ionicPopover.fromTemplateUrl("drawPopup.html", {
+        scope: $scope
+    }).then(function (popoverDraw) {
+        $scope.popoverDraw = popoverDraw;
+    });
+
+    //Show colors popover
+    $scope.openColorsPopover = function ($event) {
+        $scope.popoverColors.show($event);
+    };
+
+    //Show shapes popover
+    $scope.openShapesPopover = function ($event) {
+        $scope.popoverShapes.show($event);
+    };
+
+    //Show draw popover
+    $scope.openDrawPopover = function ($event) {
+        $scope.popoverDraw.show($event);
+    };
+
 })

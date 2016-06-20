@@ -20,6 +20,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
     $rootScope.API_VERSION = '0.2'; //actual API's version
     $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
 
+    $rootScope.hasProject = false;
+
     $rootScope.showLoading = function () {
         $ionicLoading.show({
             template: '<p>Loading...</p><ion-spinner></ion-spinner>'
@@ -59,9 +61,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         // entering application
         .state('app', {
             url: "/app",
-            abstract: true, //'abstract' means this state will be an abstract, so will never render, but pages can inherit of it
+            abstract: true, //'abstract' means will never render, but pages will inherit of it
             templateUrl: "views/app.html",
-            controller: 'AppCtrl'
+            controller: 'MenuCtrl'
         })
 
         /*
@@ -71,14 +73,10 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.projects', {
             url: "/projects",
             views: { //here we define the views inheritance
-                'appContent': { //inherites from 'appContent' in app.html (<ion-nav-view name="appContent" [...]</ion-nav-view>)
+                'menuList': { //inherites from 'menuList' in app.html (<ion-nav-view name="menuList" [...]</ion-nav-view>)
                     templateUrl: "views/projects.html",
                     controller: 'ProjectsListCtrl'
                 },
-                'menuList': {
-                    templateUrl: "views/menuWithoutProject.html", // Is in "app.html"
-                    controller: 'MenuCtrl'
-                }
             }
         })
 
@@ -86,17 +84,13 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         /*
         ** DASHBOARD
         */
-        // dashboard with Team Occupation, Next Meetings and Global Progress
+        // dashboard with Team Occupation, Next Meetings
         .state('app.dashboard', {
             url: "/projects/:projectId/dashboard",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/dashboard.html",
                     controller: 'DashboardCtrl',
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -108,13 +102,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.project', {
             url: "/projects/:projectId",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/project.html",
                     controller: 'ProjectCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -123,13 +113,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.createProject', {
             url: "/projects/createProject",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/createProject.html",
                     controller: 'CreateProjectCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -138,13 +124,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.editProject', {
             url: "/projects/:projectId/edit",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/editProject.html",
                     controller: 'EditProjectCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -156,13 +138,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.roles', {
             url: "/projects/:projectId/roles",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/roles.html",
                     controller: 'RolesCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -172,13 +150,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
             url: "/projects/:projectId/roles/:roleId",
             params: { role: null },
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/usersOnRole.html",
                     controller: 'UsersOnRoleCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -190,13 +164,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.nextMeeting', {
             url: "/projects/:nextMeetingId",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/nextMeeting.html",
                     controller: 'NextMeetingCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -209,13 +179,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.whiteboards', {
             url: "/projects/:projectId/whiteboards",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/whiteboards.html",
                     controller: 'WhiteboardsCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -224,13 +190,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.whiteboard', {
             url: "/projects/:projectId/whiteboards/:whiteboardId",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/whiteboard.html",
                     controller: 'WhiteboardCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -243,13 +205,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.profile', {
             url: "/profile",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/profile.html",
                     controller: 'ProfileCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -258,13 +216,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.editProfile', {
             url: "/profile/edit",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/editProfile.html",
                     controller: 'EditProfileCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -273,13 +227,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.user', {
             url: "/user/:userId",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/user.html",
                     controller: 'UserCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -292,13 +242,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.bugtracker', {
             url: "/projects/:projectId/bugtracker",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/bugtracker.html",
                     controller: 'BugtrackerCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -308,13 +254,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
             url: "/projects/:projectId/bugtracker/createTicket",
             params: { message: null },
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/createTicket.html",
                     controller: 'CreateTicketCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -323,13 +265,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.ticket', {
             url: "/projects/:projectId/bugtracker/ticket/:ticketId",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/ticket.html",
                     controller: 'TicketCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -338,13 +276,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.editTicket', {
             url: "/projects/:projectId/bugtracker/ticket/:ticketId/edit",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/editTicket.html",
                     controller: 'EditTicketCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -353,13 +287,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.tags', {
             url: "/projects/:projectId/bugtracker/tags",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/tags.html",
                     controller: 'TagsCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -368,13 +298,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.editTag', {
             url: "/projects/:projectId/bugtracker/tags/:tagId/edit",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/editTag.html",
                     controller: 'EditTagCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -387,13 +313,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.gantt', {
             url: "/projects/:projectId/gantt/",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/gantt.html",
                     controller: 'GanttCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -405,13 +327,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.timelines', {
             url: "/projects/:projectId/timelines",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/timelines.html",
                     controller: 'TimelinesCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -420,13 +338,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.createMessage', {
             url: "/projects/:projectId/timelines/:timelineId/createMessage",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/createMessage.html",
                     controller: 'CreateMessageCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })
@@ -438,13 +352,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         .state('app.cloud', {
             url: "/projects/:projectId/cloud",
             views: {
-                'appContent': {
+                'menuList': {
                     templateUrl: "views/cloud.html",
                     controller: 'CloudCtrl'
-                },
-                'menuList': {
-                    templateUrl: "views/menuWithProject.html",
-                    controller: 'MenuCtrl'
                 }
             }
         })

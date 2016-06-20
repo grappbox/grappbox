@@ -3,11 +3,12 @@
 -->
 
 <ion-view>
-    <ion-nav-title>Whiteboard</ion-nav-title>
+    <ion-nav-title>Whiteboard #{{whiteboardId}}</ion-nav-title>
    
         <ion-scroll overflow-scroll="false" zooming="true" direction="xy" locking="false" style="width: 100%; height: 100%">
             <canvas id="canvasWhiteboard"></canvas>
         </ion-scroll>
+
         <ion-footer-bar class="bar-stable">
             <div class="title">
                 <button class="button button-icon ion-arrow-move" ng-click="moveOn()"></button>

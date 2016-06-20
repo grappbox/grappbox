@@ -16,10 +16,12 @@ angular.module('GrappBox.controllers')
         console.log("View refreshed !");
     }
 
-    $scope.doRefreshGlobalProgress = function () {
+    /*$scope.doRefreshGlobalProgress = function () {
         $scope.GetGlobalProgress();
         console.log("View refreshed !");
-    }
+    }*/
+
+    $rootScope.hasProject = true;
 
     console.log("PROJECTID = " + $stateParams.projectId);
     $rootScope.projectId = $stateParams.projectId;

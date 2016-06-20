@@ -11,6 +11,8 @@ angular.module('GrappBox.controllers')
         console.log("View refreshed !");
     }
 
+    $rootScope.hasProject = false;
+
     /*
     ** Get Projects
     ** Method: GET
