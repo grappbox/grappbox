@@ -24,10 +24,12 @@ namespace GrappBox.Model
             get { return type; }
         }
         private ICustomShape customShape;
+
         public UIElement UiElem
         {
             get { return customShape.GetElement(); }
         }
+
         private Point _posOrigin;
         public Point PosOrigin
         {

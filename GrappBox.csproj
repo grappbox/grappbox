@@ -18,6 +18,8 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -109,9 +111,6 @@
     <Compile Include="CustomControler\Dashboard\TeamDashBoard.xaml.cs">
       <DependentUpon>TeamDashBoard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\Whiteboard\WBListViewElements.xaml.cs">
-      <DependentUpon>WBListViewElements.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CustomControler\Whiteboard\WhiteBoardText.xaml.cs">
       <DependentUpon>WhiteBoardText.xaml</DependentUpon>
     </Compile>
@@ -150,7 +149,6 @@
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteBoardListModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
-    <Compile Include="Model\Whiteboard\WhiteboardObject.cs" />
     <Compile Include="Ressources\NavigationHelper.cs" />
     <Compile Include="Ressources\RelayCommand.cs" />
     <Compile Include="Ressources\SettingsManager.cs" />
@@ -167,6 +165,9 @@
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
+    <Compile Include="View\AssignTask.xaml.cs">
+      <DependentUpon>AssignTask.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BugtrackerView.xaml.cs">
       <DependentUpon>BugtrackerView.xaml</DependentUpon>
     </Compile>
@@ -226,6 +227,7 @@
     <Content Include="Assets\end_time.png" />
     <Content Include="Assets\file.png" />
     <Content Include="Assets\folder.png" />
+    <Content Include="Assets\forum.png" />
     <Content Include="Assets\grappbox-logo.png" />
     <Content Include="Assets\info.png" />
     <Content Include="Assets\Logo.scale-240.png" />
@@ -268,10 +270,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomControler\Whiteboard\WBListViewElements.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="CustomControler\Whiteboard\WhiteBoardText.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -293,6 +291,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="View\AssignTask.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\BugtrackerView.xaml">
       <SubType>Designer</SubType>
