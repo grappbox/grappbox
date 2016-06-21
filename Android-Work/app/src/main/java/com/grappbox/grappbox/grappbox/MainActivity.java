@@ -413,8 +413,12 @@ public class MainActivity extends AppCompatActivity
         switch (id){
 
             case R.id.nav_dashboard:
-                
-                fragment = new DashboardFragment();
+                Log.v("Dashboard", SessionAdapter.getInstance().getCurrentSelectedProject());
+                if (SessionAdapter.getInstance().getCurrentSelectedProject().equals("-1")) {
+                    fragment = new DashboardProjectListFragment();
+                } else {
+                    fragment = new DashboardFragment();
+                }
                 break;
 
             case R.id.nav_whiteboard:
@@ -432,16 +436,20 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_Cloud:
                 fragment = new CloudExplorerFragment();
                 break;
+
             case R.id.nav_Bugtracker:
                 fragment = new BugTrackerFragment();
                 break;
+
             case R.id.nav_Gantt:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 fragment = new GanttFragment();
                 break;
+
             case R.id.nav_tasks:
                 fragment = new TaskFragment();
                 break;
+
             default:
                 break;
         }

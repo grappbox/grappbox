@@ -34,11 +34,11 @@ class APIRequestTeamOccupation extends AsyncTask<String, Void, String> {
                 List<ContentValues> list = new Vector<ContentValues>();
                 for (int i = 0; i < arrayJSON.length(); ++i) {
                     JSONObject obj = arrayJSON.getJSONObject(i);
+                    JSONObject user = obj.getJSONObject("user");
                     ContentValues values = new ContentValues();
-                    values.put("name", obj.getString("name"));
-                    values.put("user_id", obj.getJSONObject("users").getString("id"));
-                    values.put("first_name", obj.getJSONObject("users").getString("firstname"));
-                    values.put("last_name", obj.getJSONObject("users").getString("lastname"));
+                    values.put("user_id", user.getString("id"));
+                    values.put("first_name", user.getString("firstname"));
+                    values.put("last_name", user.getString("lastname"));
                     values.put("occupation", obj.getString("occupation"));
                     values.put("number_of_tasks_begun", obj.getString("number_of_tasks_begun"));
                     values.put("number_of_ongoing_tasks", obj.getString("number_of_ongoing_tasks"));
@@ -58,7 +58,8 @@ class APIRequestTeamOccupation extends AsyncTask<String, Void, String> {
         Integer APIResponse;
 
         try {
-            APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
+            APIConnectAdapter.getInstance().startConnection("dashboard/getteamoccupation/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN) + "/"
+            + SessionAdapter.getInstance().getCurrentSelectedProject());
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
             APIResponse = APIConnectAdapter.getInstance().getResponseCode();

@@ -3,12 +3,14 @@ package com.grappbox.grappbox.grappbox.Dashboard;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
@@ -16,11 +18,14 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class GlobalProgressFragment extends Fragment {
+public class GlobalProgressFragment extends LoadingFragment {
 
+    private GlobalProgressFragment _context = this;
     private View _view;
     private ListView _projectList;
     private List<ContentValues> _value = null;
+    private SwipeRefreshLayout _swiper;
+    public SwipeRefreshLayout.OnRefreshListener _refresher;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle)
@@ -32,13 +37,23 @@ public class GlobalProgressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_global_progress, container, false);
+        _swiper = (SwipeRefreshLayout) _view.findViewById(R.id.pull_refresher);
         if (_value == null) {
             _projectList = (ListView)_view.findViewById(R.id.list_global_progress);
-            APIRequestGlobalProgress api = new APIRequestGlobalProgress(this);
+            APIRequestGlobalProgress api = new APIRequestGlobalProgress(_context);
             api.execute();
+            startLoading(_view, R.id.loader, _swiper);
         } else {
             createContentView(_value);
         }
+        _refresher = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                APIRequestGlobalProgress api = new APIRequestGlobalProgress(_context);
+                api.SetRefreshSwiper(_swiper);
+                api.execute();
+            }
+        };
         return _view;
     }
 
@@ -74,6 +89,8 @@ public class GlobalProgressFragment extends Fragment {
                 new String[] {"project_image", "project_name", "project_description", "client_telephone_contact", "client_company", "client_contact_mail", "client_contact_facebook", "client_contact_twitter"},
                 new int[] {R.id.project_image, R.id.project_name, R.id.project_description, R.id.client_telephone_contact, R.id.client_company, R.id.client_contact_mail, R.id.client_contact_facebook, R.id.client_contact_twitter});
         _projectList.setAdapter(teamAdapter);
+
+        endLoading();
     }
 
 

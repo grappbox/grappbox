@@ -38,7 +38,8 @@ public class APIRequestNextMeeting extends AsyncTask<String, Void, List<ContentV
         List<ContentValues> listResult = null;
 
         try {
-            APIConnectAdapter.getInstance().startConnection(_PATH + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
+            APIConnectAdapter.getInstance().startConnection(_PATH + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN) + "/"
+            + SessionAdapter.getInstance().getCurrentSelectedProject());
             APIConnectAdapter.getInstance().setRequestConnection("GET");
             resultAPI = APIConnectAdapter.getInstance().getInputSream();
             APIResponse = APIConnectAdapter.getInstance().getResponseCode();

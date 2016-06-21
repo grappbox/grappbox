@@ -2,6 +2,7 @@ package com.grappbox.grappbox.grappbox.Dashboard;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
@@ -15,6 +16,7 @@ import java.util.List;
 public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<ContentValues>> {
 
     private final static String _PATH = "dashboard/getprojectsglobalprogress/";
+    private SwipeRefreshLayout _swiper;
     private GlobalProgressFragment _context;
 
     APIRequestGlobalProgress(GlobalProgressFragment context)
@@ -28,6 +30,11 @@ public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<Conte
         if (result != null) {
             _context.createContentView(result);
         }
+    }
+
+    public void SetRefreshSwiper(SwipeRefreshLayout swiper)
+    {
+        _swiper = swiper;
     }
 
     @Override
