@@ -11,8 +11,14 @@
                     TargetType="local:SlideInMenuContentControl">
                     <Grid>
                         <FlipView
+                            ManipulationMode="None"
                             x:Name="ContentSelector"
-                            SelectedIndex="1">
+                            SelectedIndex="0">
+                            <FlipView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" AreScrollSnapPointsRegular="True" />
+                                </ItemsPanelTemplate>
+                            </FlipView.ItemsPanel>
                             <FlipViewItem
                                 x:Name="ContentLeftSideMenu"
                                 HorizontalAlignment="Right"
@@ -20,58 +26,69 @@
                                 <ContentPresenter>
                                     <Grid>
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="2*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
-                                            <RowDefinition Height="1*"/>
+                                            <RowDefinition Height="68"/>
+                                            <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2*"/>
-                                            <ColumnDefinition Width="8*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="Gray" />
-                                        <Border Background="White" Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto">
-                                        <Ellipse Height="48" Stroke="Transparent" VerticalAlignment="Center" Width="48">
-                                            <Ellipse.Fill>
-                                                <ImageBrush x:Name="img" Stretch="Uniform" ImageSource="/Assets/user.png">
-                                                </ImageBrush>
-                                            </Ellipse.Fill>
-                                        </Ellipse>
-                                        </Border>
-                                        <TextBlock Name="ProjectName" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
+                                        <StackPanel Orientation="Horizontal" Background="{StaticResource GrayGrappBoxBrush}">
+                                            <Ellipse Height="48" Stroke="Transparent" VerticalAlignment="Center" Width="48">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush x:Name="img" Stretch="Uniform" ImageSource="/Assets/user.png">
+                                                    </ImageBrush>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                            <TextBlock Name="ProjectName" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Margin" Value="10"/>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/dashboard.png"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="DashboardButton" MinHeight="33" Content="Dashboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
 
-                                        <Image Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/dashboard.png"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="DashboardButton" Grid.Row="1" Grid.Column="1" MinHeight="33" Content="Dashboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="/Assets/calendar.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="CalendarButton" MinHeight="33" Content="Calendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
 
-                                        <Image Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/whiteboard.png"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="WhiteboardButton" Grid.Row="2" Grid.Column="1" MinHeight="33" Content="Whiteboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            <StackPanel x:Name="CloudPanel" Orientation="Horizontal">
+                                                <Image Source="/Assets/cloud.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="CloudButton" MinHeight="33" Content="Cloud" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
 
-                                        <Image Grid.Row="3" Grid.Column="0" Source="/Assets/user.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="UserSettingsButton" Grid.Row="3" Grid.Column="1" MinHeight="33" Content="User Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            <StackPanel x:Name="TimelinePanel" Orientation="Horizontal">
+                                                <Image Grid.Row="5" Grid.Column="0" Source="/Assets/timeline.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="TimelineButton" MinHeight="33" Content="Timeline" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
 
-                                        <Image Grid.Row="4" Grid.Column="0" Source="/Assets/folder.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="ProjectSettingsButton" Grid.Row="4" Grid.Column="1" MinHeight="33" Content="Project Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            <StackPanel x:Name="BugtrackerPanel" Orientation="Horizontal">
+                                                <Image Source="/Assets/bugtracker.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="BugtrackerButton" MinHeight="33" Content="Bugtracker" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
 
-                                        <Image Grid.Row="5" Grid.Column="0" Source="/Assets/bugtracker.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="BugtrackerButton" Grid.Row="5" Grid.Column="1" MinHeight="33" Content="Bugtracker" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            <StackPanel x:Name="WhiteboardPanel" Orientation="Horizontal">
+                                                <Image HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/whiteboard.png"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="WhiteboardButton" MinHeight="33" Content="Whiteboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
 
-                                        <Image Grid.Row="6" Grid.Column="0" Source="/Assets/timeline.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="TimelineButton" Grid.Row="6" Grid.Column="1" MinHeight="33" Content="Timeline" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+                                            <StackPanel x:Name="ProjectSettingsPanel" Orientation="Horizontal">
+                                                <Image Source="/Assets/folder.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="ProjectSettingsButton" MinHeight="33" Content="Project Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="/Assets/user.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="UserSettingsButton" MinHeight="33" Content="User Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
 
-                                        <Image Grid.Row="7" Grid.Column="0" Source="/Assets/cloud.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="CloudButton" Grid.Row="7" Grid.Column="1" MinHeight="33" Content="Cloud" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
-
-                                        <Image Grid.Row="8" Grid.Column="0" Source="/Assets/calendar.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="CalendarButton" Grid.Row="8" Grid.Column="1" MinHeight="33" Content="Calendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
-
-                                        <Image Grid.Row="9" Grid.Column="0" Source="/Assets/logout.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                                        <Button Style="{StaticResource LeftMenuButton}" x:Name="LogoutButton" Grid.Row="9" Grid.Column="1" MinHeight="33" Content="Logout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Source="/Assets/logout.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                                <Button Style="{StaticResource LeftMenuButton}" x:Name="LogoutButton" MinHeight="33" Content="Logout" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
+                                            </StackPanel>
+                                        </StackPanel>
                                     </Grid>
                                 </ContentPresenter>
                             </FlipViewItem>

@@ -34,6 +34,8 @@ namespace GrappBox.CustomControler.SlidingMenu
     [TemplatePart(Name = ElementProjectName, Type = typeof(TextBlock))]
     public sealed class SlideInMenuContentControl : ContentControl
     {
+        private List<StackPanel> buttons;
+
         Frame frame = Window.Current.Content as Frame;
         public static readonly DependencyProperty PageTitleProperty =
             DependencyProperty.Register("PageTitle", typeof(string), typeof(SlideInMenuContentControl), new PropertyMetadata(null));
@@ -44,7 +46,9 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementLeftSideMenu = "ContentLeftSideMenu";
         private const string ElementContentSelector = "ContentSelector";
         private const string ElementDisableContentOverlay = "DisableContentOverlay";
+
         private const string ElementMenuButton = "MenuButton";
+
         private const string ElementDashboardButton = "DashboardButton";
         private const string ElementWhiteboardButton = "WhiteboardButton";
         private const string ElementUserSettingsButton = "UserSettingsButton";
@@ -55,6 +59,12 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementCalendarButton = "CalendarButton";
         private const string ElementLogoutButton = "LogoutButton";
         private const string ElementProjectName = "ProjectName";
+
+        private const string ElementCloudPanel = "CloudPanel";
+        private const string ElementTimelinePanel = "TimelinePanel";
+        private const string ElementBugtrackerPanel = "BugtrackerPanel";
+        private const string ElementWhiteboardPanel = "WhiteboardPanel";
+        private const string ElementProjectSettingsPanel = "ProjectSettingsPanel";
 
         private FrameworkElement leftSideMenu;
         private Selector contentSelector;
@@ -70,8 +80,6 @@ namespace GrappBox.CustomControler.SlidingMenu
         private Button calendarButton;
         private Button logoutButton;
         private TextBlock projectName;
-
-
 
         public SlideInMenuContentControl()
         {
@@ -114,6 +122,13 @@ namespace GrappBox.CustomControler.SlidingMenu
 
             projectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen") ?? "";
 
+            buttons = new List<StackPanel>();
+            buttons.Add(GetTemplateChild(ElementBugtrackerPanel) as StackPanel);
+            buttons.Add(GetTemplateChild(ElementCloudPanel) as StackPanel);
+            buttons.Add(GetTemplateChild(ElementTimelinePanel) as StackPanel);
+            buttons.Add(GetTemplateChild(ElementProjectSettingsPanel) as StackPanel);
+            buttons.Add(GetTemplateChild(ElementWhiteboardPanel) as StackPanel);
+
             contentSelector.SelectionChanged += ContentSelector_SelectionChanged;
             SetMenuVisibility();
             menuButton.Tapped += MenuButton_Tapped;
@@ -126,6 +141,14 @@ namespace GrappBox.CustomControler.SlidingMenu
             cloudButton.Tapped += CloudButton_Tapped;
             calendarButton.Tapped += CalendarButton_Tapped;
             logoutButton.Tapped += LogoutButton_Tapped;
+            UpdateMenu();
+        }
+
+        void UpdateMenu()
+        {
+            int id = SettingsManager.getOption<int>("ProjectIdChoosen");
+            foreach (StackPanel b in buttons)
+                b.Visibility = id == 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void DashboardButton_Tapped(object sender, TappedRoutedEventArgs e)
@@ -182,21 +205,24 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         private void MenuButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            Debug.WriteLine("MenuButton_Start_{0}", contentSelector.SelectedIndex);
             if (contentSelector.SelectedIndex == 0)
-                DisplayContent();
-            else
-                DisplayMenu();
+                DisplayContent();             
+            else                              
+                DisplayMenu();                
+            Debug.WriteLine("MenuButton_End___{0}", contentSelector.SelectedIndex);
         }
 
         public void DisplayMenu()
         {
+            UpdateMenu();
             contentSelector.SelectedIndex = -1;
             contentSelector.SelectedIndex = 0;
         }
 
         public void DisplayContent()
         {
-            contentSelector.SelectedIndex = -1;
+            contentSelector.SelectedIndex = 0;
             contentSelector.SelectedIndex = 1;
         }
 
@@ -227,6 +253,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         private void ContentSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            Debug.WriteLine(contentSelector.SelectedIndex);/*
             if (contentSelector.SelectedIndex == 0)
             {
                 disableContentOverlay.Visibility = Visibility.Visible;
@@ -234,7 +261,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             else
             {
                 disableContentOverlay.Visibility = Visibility.Collapsed;
-            }
+            }*/
         }
     }
 }
