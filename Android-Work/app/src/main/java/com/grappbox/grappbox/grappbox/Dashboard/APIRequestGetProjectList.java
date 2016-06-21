@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class APIRequestGetProjectList extends AsyncTask<String, Void, String> {
 
-    private final static String _PATH = "user/getprojects/";
+    private final static String _PATH = "dashboard/getprojectsglobalprogress/";
     private DashboardProjectListFragment _context;
     private SwipeRefreshLayout _swiper;
     private DashboardRVAdapter _adapter;

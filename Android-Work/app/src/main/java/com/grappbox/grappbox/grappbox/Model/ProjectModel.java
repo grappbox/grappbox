@@ -29,6 +29,9 @@ public class ProjectModel implements Serializable {
     private String facebookURL;
     private String twitterURL;
     private String deletedAt;
+    private String bugs;
+    private String tasks;
+    private String messages;
 
     public ProjectModel()
     {
@@ -36,17 +39,20 @@ public class ProjectModel implements Serializable {
     }
 
     public ProjectModel(JSONObject data) throws JSONException {
-        byte[] blob = Base64.decode(data.getString("logo"), Base64.DEFAULT);
+        byte[] blob = Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
 
-        id = data.getString("id");
-        name = data.getString("name");
-        description = data.getString("description");
-        phone = data.getString("phone");
-        company = data.getString("company");
-        logo = Base64.decode(data.getString("company"), Base64.DEFAULT);
+        id = data.getString("project_id");
+        name = data.getString("project_name");
+        description = data.getString("project_description");
+        phone = data.getString("project_phone");
+        company = data.getString("project_company");
+        logo = Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
         contact_mail = data.getString("contact_mail");
         facebookURL = data.getString("facebook");
         twitterURL = data.getString("twitter");
+        bugs = data.getString("number_bugs");
+        tasks = data.getString("number_tasks");
+        messages = data.getString("number_messages");
         JSONObject date = data.isNull("delete_at") ? null : data.getJSONObject("deleted_at");
         if (date != null)
             Log.e("WATCH", date.toString());
@@ -109,6 +115,12 @@ public class ProjectModel implements Serializable {
         return twitterURL;
     }
 
+    public String getBugs() { return bugs; }
+
+    public String getTasks() { return tasks; }
+
+    public String getMessages() { return messages; }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -140,4 +152,10 @@ public class ProjectModel implements Serializable {
     public void setTwitterURL(String twitterURL) {
         this.twitterURL = twitterURL;
     }
+
+    public void setBugs(String bugs){ this.bugs = bugs; }
+
+    public void setTasks(String tasks){ this.tasks = tasks; }
+
+    public void setMessages(String messages){ this.messages = messages; }
 }

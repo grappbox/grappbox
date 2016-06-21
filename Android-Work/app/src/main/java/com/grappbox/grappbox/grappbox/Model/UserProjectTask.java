@@ -82,7 +82,7 @@ public class UserProjectTask extends AsyncTask<String, Void, String> {
 
         try {
             _api.setVersion("V0.2");
-            _api.startConnection("user/getprojects/" + SessionAdapter.getInstance().getToken());
+            _api.startConnection("dashboard/getprojectsglobalprogress/" + SessionAdapter.getInstance().getToken());
             _api.setRequestConnection("GET");
             String result = _api.getInputSream();
             Log.v("Task", result);

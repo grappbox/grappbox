@@ -3,15 +3,15 @@ package com.grappbox.grappbox.grappbox.Dashboard;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +39,9 @@ public class DashboardRVAdapter extends RecyclerView.Adapter<DashboardRVAdapter.
         TextView _projectDesc;
         TextView _projectCompany;
         TextView _projectMail;
+        TextView _projectBug;
+        TextView _projectTask;
+        TextView _projectMessage;
 
         ProjectViewHolder(View itemView){
             super(itemView);
@@ -47,6 +50,9 @@ public class DashboardRVAdapter extends RecyclerView.Adapter<DashboardRVAdapter.
             _projectDesc = (TextView)itemView.findViewById(R.id.dashboard_project_desc);
             _projectCompany = (TextView)itemView.findViewById(R.id.dashboard_project_company);
             _projectMail = (TextView)itemView.findViewById(R.id.dashboard_project_mail);
+            _projectBug = (TextView)itemView.findViewById(R.id.dashboard_project_bug);
+            _projectTask = (TextView)itemView.findViewById(R.id.dashboard_project_task);
+            _projectMessage = (TextView)itemView.findViewById(R.id.dashboard_project_message);
         }
 
         public void bind(final ProjectModel model, final ProjectListListenner listener)
@@ -95,7 +101,9 @@ public class DashboardRVAdapter extends RecyclerView.Adapter<DashboardRVAdapter.
         projectViewHolder._projectCompany.setText(_projects.get(i).getCompany());
         projectViewHolder._projectDesc.setText(_projects.get(i).getDescription());
         projectViewHolder._projectMail.setText(_projects.get(i).getContact_mail());
-
+        projectViewHolder._projectBug.setText(_projects.get(i).getBugs());
+        projectViewHolder._projectTask.setText(_projects.get(i).getTasks());
+        projectViewHolder._projectMessage.setText(_projects.get(i).getMessages());
     }
 
     @Override

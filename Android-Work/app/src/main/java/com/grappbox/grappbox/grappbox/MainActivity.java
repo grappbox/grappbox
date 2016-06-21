@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity
         _toolbarTitleHandler = new HashMap<>();
 
         _toolbarTitleHandler.put(DashboardFragment.class.getName(), () -> changeToolbarTitle("Dashboard"));
+        _toolbarTitleHandler.put(DashboardProjectListFragment.class.getName(), () -> changeToolbarTitle("Dashboard"));
         _toolbarTitleHandler.put(WhiteboardListFragment.class.getName(), () -> changeToolbarTitle("Whiteboard"));
         _toolbarTitleHandler.put(AgendaFragment.class.getName(), () -> changeToolbarTitle("Calendar"));
         _toolbarTitleHandler.put(TimelineFragment.class.getName(), () -> changeToolbarTitle("Timeline"));
@@ -339,6 +340,7 @@ public class MainActivity extends AppCompatActivity
         switch (id){
 
             case R.id.nav_dashboard:
+                
                 fragment = new DashboardFragment();
                 break;
 
