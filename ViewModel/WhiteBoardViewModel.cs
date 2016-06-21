@@ -18,22 +18,98 @@ using GrappBox.CustomControler;
 using Windows.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using GrappBox.Model.Whiteboard;
+using GrappBox.ApiCom;
+using GrappBox.Ressources;
+using System.Net.Http;
+using Windows.UI.Popups;
 
 namespace GrappBox.ViewModel
 {
     class WhiteBoardViewModel : ViewModelBase
     {
         private WhiteBoardModel model;
+        private PullModel _pullModel;
+        private ObjectModel _objectModel;
         private ObservableCollection<WhiteboardObject> _objectsList;
         private ObservableCollection<ShapeControler> _shapeList;
         private Dictionary<WhiteboardObject, ShapeControler> _map;
+        private int _id;
+        private DateTime _lastUpdate;
         public WhiteBoardViewModel()
         {
             model = new WhiteBoardModel();
         }
 
         #region API
+        public async System.Threading.Tasks.Task pullDraw()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
 
+            props.Add("token", User.GetUser().Token);
+            props.Add("lastUpdate", _lastUpdate);
+            HttpResponseMessage res = await api.Post(props, "whiteboard/pulldraw/" + _id);
+            if (res.IsSuccessStatusCode)
+            {
+                _pullModel = api.DeserializeJson<PullModel>(await res.Content.ReadAsStringAsync());
+                foreach (WhiteboardObject item in _pullModel.addObjects)
+                {
+                    //ajouter les objets au whiteboard
+                }
+                foreach (WhiteboardObject item in _pullModel.delObjects)
+                {
+                    //remove les objets au whiteboard
+                }
+                _lastUpdate = new DateTime();
+            }
+            else {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+
+        public async System.Threading.Tasks.Task pushDraw()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("token", User.GetUser().Token);
+            props.Add("modification", "add");
+            props.Add("object", _objectModel);
+            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + _id);
+            if (res.IsSuccessStatusCode)
+            {
+                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
+                _objectsList.Add(tmp);
+                //ajouter à la map?
+            }
+            else {
+                //remove l'objet du whiteboard car fail
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task deleteObject()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("token", User.GetUser().Token);
+            props.Add("whiteboardId", _id);
+            //props.Add("center", ); centre du pinceau
+            //props.Add("radius", ); radius du pinceau
+            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + _id);
+            if (res.IsSuccessStatusCode)
+            {
+                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
+                _objectsList.Remove(tmp);
+                //retirer à la map? + delete objet sur canvas
+            }
+            else {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
         #endregion API
 
         #region ColorPansLogic

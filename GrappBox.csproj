@@ -141,6 +141,7 @@
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\Whiteboard\ObjectModel.cs" />
     <Compile Include="Model\Global\Position.cs" />
+    <Compile Include="Model\Whiteboard\PullModel.cs" />
     <Compile Include="Model\Whiteboard\ShapeControler.cs" />
     <Compile Include="Model\Calendar\Task.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
