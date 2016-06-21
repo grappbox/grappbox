@@ -73,7 +73,8 @@
             android:layout_gravity="bottom"
             android:gravity="bottom"
             android:elevation="0dp"
-            android:foregroundGravity="bottom">
+            android:foregroundGravity="bottom"
+            android:fillViewport="false">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -91,13 +92,14 @@
                 android:padding="0dp"
                 android:paddingBottom="0dp"
                 android:paddingEnd="0dp"
-                android:paddingLeft="1dp"
-                android:paddingRight="1dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
                 android:paddingStart="0dp"
                 android:paddingTop="0dp"
                 android:isScrollContainer="true"
                 android:layout_gravity="bottom"
-                android:dividerPadding="2dp" />
+                android:dividerPadding="0dp"
+                android:foregroundGravity="left|bottom" />
         </HorizontalScrollView>
     </LinearLayout>
 </android.support.v7.widget.CardView>

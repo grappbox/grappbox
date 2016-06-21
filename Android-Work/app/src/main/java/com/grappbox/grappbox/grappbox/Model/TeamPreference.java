@@ -37,7 +37,7 @@ public class TeamPreference extends DialogPreference {
     UserModel _user;
     ProjectSettingsActivity _activity;
     PreferenceCategory _parent;
-    int _projectId;
+    String _projectId;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public TeamPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -62,7 +62,7 @@ public class TeamPreference extends DialogPreference {
         _parent = parent;
     }
 
-    public void setUserModel(int projectId, ProjectSettingsActivity activity, UserModel model)
+    public void setUserModel(String projectId, ProjectSettingsActivity activity, UserModel model)
     {
         _activity = activity;
         _projectId = projectId;
@@ -149,10 +149,10 @@ public class TeamPreference extends DialogPreference {
     {
         Context _context;
         APIConnectAdapter _api;
-        int _projectId;
+        String _projectId;
         Preference _pref;
 
-        DeleteUserToProjectTask(Preference pref, Context context, int projectId)
+        DeleteUserToProjectTask(Preference pref, Context context, String projectId)
         {
             _context = context;
             _projectId = projectId;
@@ -247,10 +247,10 @@ public class TeamPreference extends DialogPreference {
     {
         Context _context;
         APIConnectAdapter _api;
-        int _projectId;
+        String _projectId;
         TeamPreference _pref;
 
-        AddUserToProjectTask(TeamPreference pref, Context context, int projectId)
+        AddUserToProjectTask(TeamPreference pref, Context context, String projectId)
         {
             _pref = pref;
             _context = context;

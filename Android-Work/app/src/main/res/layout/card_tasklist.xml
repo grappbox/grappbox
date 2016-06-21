@@ -12,62 +12,60 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
-
-        <TextView
-            android:id="@+id/task_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Task Title"
-            android:textSize="12pt"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp" />
-        <TextView
-            android:id="@+id/task_progression"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Task progression : 10%"
-            android:textSize="10pt"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:layout_marginTop="30dp"/>
-        <TextView
-            android:id="@+id/task_assignee"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="3 Assigned people"
-            android:textSize="10pt"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:layout_marginTop="60dp"/>
-
-        <TextView
-            android:id="@+id/task_time"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="1 day left"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="10pt"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
-            android:layout_marginTop="100dp"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:text="Open task"
-            android:background="@android:color/transparent"
-            android:id="@+id/btn_opentask"
-            android:layout_gravity="bottom" />
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:minWidth="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/layout_tags">
+            android:orientation="vertical">
+                <TextView
+                    android:id="@+id/task_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Task Title"
+                    android:textSize="12pt"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp" />
+                <TextView
+                    android:id="@+id/task_progression"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Task progression : 10%"
+                    android:textSize="10pt"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp" />
+                <TextView
+                    android:id="@+id/task_assignee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="3 Assigned people"
+                    android:textSize="10pt"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp" />
 
+                <TextView
+                    android:id="@+id/task_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1 day left"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="10pt"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="10dp">
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:id="@+id/layout_tags"
+                            android:gravity="left|bottom">
+
+                        </LinearLayout>
+                </HorizontalScrollView>
         </LinearLayout>
 </android.support.v7.widget.CardView>

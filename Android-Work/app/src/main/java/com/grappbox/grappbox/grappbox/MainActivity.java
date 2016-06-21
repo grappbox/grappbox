@@ -36,6 +36,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableMap;
 import com.grappbox.grappbox.grappbox.BugTracker.BugTrackerFragment;
 import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
 import com.grappbox.grappbox.grappbox.Cloud.CloudExplorerFragment;
@@ -44,6 +45,8 @@ import com.grappbox.grappbox.grappbox.Dashboard.DashboardProjectListFragment;
 import com.grappbox.grappbox.grappbox.Gantt.GanttFragment;
 import com.grappbox.grappbox.grappbox.Gantt.TaskFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
+import com.grappbox.grappbox.grappbox.Model.AccessModel;
+import com.grappbox.grappbox.grappbox.Model.GetAccessesTask;
 import com.grappbox.grappbox.grappbox.Model.ProjectMenuAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
@@ -54,11 +57,15 @@ import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
 import com.grappbox.grappbox.grappbox.Timeline.TimelineFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.RunnableFuture;
@@ -69,6 +76,13 @@ public class MainActivity extends AppCompatActivity
 
     public static final int PICK_DOCUMENT_FROM_SYSTEM = 1;
     public static final int PICK_DOCUMENT_SECURED_FROM_SYSTEM = 2;
+    static final Map<Integer, String> MENU_MAPING_AUTH = ImmutableMap.<Integer, String>builder()
+            .put(R.id.nav_whiteboard, "whiteboard")
+            .put(R.id.nav_Bugtracker, "bugtracker")
+            .put(R.id.nav_Cloud, "cloud")
+            .put(R.id.nav_Gantt, "gantt")
+            .put(R.id.nav_tasks, "task").build();
+
     private static final String TAG = MainActivity.class.getSimpleName();
     private final MainActivity _currentActivity = this;
     private Toolbar _toolbar;
@@ -91,6 +105,8 @@ public class MainActivity extends AppCompatActivity
         assert arrow_down != null && arrow_up != null;
         if (_bMenuClosed)
         {
+            if (navView == null)
+                return;
             Menu menu = navView.getMenu();
 
             menu.clear();
@@ -102,7 +118,8 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         _bMenuClosed = !_bMenuClosed;
-                        txt_projectSelected.setText(item.getTitle());
+                        if (txt_projectSelected != null && item != null)
+                            txt_projectSelected.setText(item.getTitle());
                         SessionAdapter session = SessionAdapter.getInstance();
                         session.setCurrentSelectedProject(model.getId());
                         session.setCurrentSelectedProjectName(model.getName());
@@ -244,12 +261,68 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSelectedProjectChange(String projectID) {
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
-
+        if (nv == null)
+            return;
         nv.getMenu().clear();
         nv.inflateMenu(projectID.isEmpty() ? R.menu.activity_main_drawer_no_project : R.menu.activity_main_drawer);
+        GetAccessesTask task = new GetAccessesTask(new GetAccessesTask.TaskListener() {
+            @Override
+            public void onTaskFetched(boolean success, JSONObject data) {
+                if (!success || data == null)
+                    return;
+                try {
+                    SynchroniseMenu(parseAuthorizations(data, projectID));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, this);
+        task.execute();
     }
     //SessionAdapter.SessionListener END
+    private AccessModel parseAuthorizations(JSONObject data, String projectID) throws JSONException {
+        AccessModel authorizations = new AccessModel();
+        JSONArray array = data.getJSONArray("array");
+        for (int i = 0; i < array.length(); ++i)
+        {
+            JSONObject current = array.getJSONObject(i);
+            JSONObject curProject = current.getJSONObject("project");
+            if (curProject.getString("id").equals(projectID))
+            {
+                JSONObject curRoles = current.getJSONObject("role");
+                JSONObject values = curRoles.getJSONObject("values");
+                Iterator<String> it = values.keys();
+                do {
+                    String key = it.next();
+                    int value = values.getInt(key);
+                    authorizations.setAuthorization(key, AccessModel.AccessRights.valueOf(value));
+                } while(it.hasNext());
+            }
+        }
+        return authorizations;
+    }
 
+    private void SynchroniseMenu(AccessModel auths)
+    {
+        NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
+        SessionAdapter.getInstance().setAuthorizations(auths);
+        if (nv == null)
+            return;
+        Menu menu = nv.getMenu();
+        if (menu == null)
+            return;
+        for (int i = 0; i < menu.size(); ++i)
+        {
+            MenuItem item = menu.getItem(i);
+            if (item.getItemId() == R.id.nav_Timeline)
+            {
+                boolean enabled = auths.getAuthorization("teamTimeline").AuthorizationLevel() > 0 || auths.getAuthorization("customerTimeline").AuthorizationLevel() > 0;
+                item.setEnabled(enabled);
+            }
+            else if (MENU_MAPING_AUTH.containsKey(item.getItemId()) && MENU_MAPING_AUTH.get(item.getItemId()) != null)
+                item.setEnabled(auths.getAuthorization(MENU_MAPING_AUTH.get(item.getItemId())).AuthorizationLevel() > AccessModel.AccessRights.NONE.ordinal());
+        }
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -408,7 +481,10 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = _fragmentManager.findFragmentById(R.id.content_frame);
         if (fragment == null)
             return;
-        _toolbarTitleHandler.get(fragment.getClass().getName()).run();
+        if (_toolbarTitleHandler.containsKey(fragment.getClass().getName()))
+            _toolbarTitleHandler.get(fragment.getClass().getName()).run();
+        else
+            changeToolbarTitle(getString(R.string.app_name));
     }
 
     public class APIRequestLogout extends AsyncTask<String, Void, Void> {

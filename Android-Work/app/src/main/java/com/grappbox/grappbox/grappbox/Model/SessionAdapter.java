@@ -20,6 +20,7 @@ public class SessionAdapter {
     private ArrayList<SessionListener> _listeners;
     private String    _currentSelectedProject;
     private String    _currentSelectedProjectName;
+    private AccessModel _currentAuths;
 
     private int PRIVATE_MODE = 0;
     private static final String PREF_NAME = "GrappboxSessionPref";
@@ -47,6 +48,13 @@ public class SessionAdapter {
 
         _editor = _pref.edit();
     }
+
+    public void setAuthorizations(AccessModel model)
+    {
+        _currentAuths = model;
+    }
+
+    public AccessModel getAuthorizations() { return _currentAuths; }
 
     public void setCurrentSelectedProjectName(String name)
     {
@@ -161,4 +169,5 @@ public class SessionAdapter {
             listener.onSelectedProjectChange(_currentSelectedProject);
         }
     }
+
 }

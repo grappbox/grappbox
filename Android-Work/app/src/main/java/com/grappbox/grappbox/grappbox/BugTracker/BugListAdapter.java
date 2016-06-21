@@ -9,7 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.R;
@@ -131,10 +134,24 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tagLayout.removeAllViews();
             for (TagEntity tag : tags)
             {
+                RelativeLayout newTagLayout = new RelativeLayout(title.getContext());
                 ImageView img = new ImageView(title.getContext());
                 img.setImageDrawable(ContextCompat.getDrawable(title.getContext(), R.drawable.draw_tag));
                 img.setColorFilter(Color.parseColor(tag.GetColor()));
-                tagLayout.addView(img);
+                img.setBaselineAlignBottom(true);
+                TextView tagName = new TextView(title.getContext());
+                tagName.setEllipsize(TextUtils.TruncateAt.END);
+                tagName.setText(tag.GetName());
+                tagName.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tagName.setTextColor(ContextCompat.getColor(title.getContext(), R.color.White));
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                params.setMargins(0,0,0,0);
+                newTagLayout.addView(img, params);
+                tagName.setGravity(Gravity.CENTER);
+                newTagLayout.addView(tagName, params);
+                LinearLayout.LayoutParams tagLayoutParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                tagLayoutParam.setMargins(0,0,0,0);
+                tagLayout.addView(newTagLayout, tagLayoutParam);
             }
         }
     }

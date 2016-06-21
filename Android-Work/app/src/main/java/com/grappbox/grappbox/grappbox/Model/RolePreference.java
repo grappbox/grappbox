@@ -38,7 +38,7 @@ public class RolePreference extends DialogPreference {
 
     PreferenceCategory _parent;
     RoleModel _model;
-    int _projectId;
+    String _projectId;
     ProjectSettingsActivity _activity;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -59,7 +59,7 @@ public class RolePreference extends DialogPreference {
         super(context);
     }
 
-    public void initalize(PreferenceCategory parent, RoleModel model, int projectId, ProjectSettingsActivity activity)
+    public void initalize(PreferenceCategory parent, RoleModel model, String projectId, ProjectSettingsActivity activity)
     {
         _parent = parent;
         _model = model;
@@ -150,9 +150,9 @@ public class RolePreference extends DialogPreference {
         Context _context;
         PreferenceCategory _parent;
         Preference _role;
-        int _projectId;
+        String _projectId;
 
-        DeleteProjectRoles(Context context, PreferenceCategory parent, Preference role, int projectId) {
+        DeleteProjectRoles(Context context, PreferenceCategory parent, Preference role, String projectId) {
             _context = context;
             _parent = parent;
             _role = role;
@@ -243,9 +243,9 @@ public class RolePreference extends DialogPreference {
         Context _context;
         PreferenceCategory _parent;
         Preference _role;
-        int _projectId;
+        String _projectId;
 
-        CreateRoleInProject(Context context, PreferenceCategory parent, Preference role, int projectId) {
+        CreateRoleInProject(Context context, PreferenceCategory parent, Preference role, String projectId) {
             _context = context;
             _parent = parent;
             _role = role;
