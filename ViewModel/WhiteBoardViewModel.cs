@@ -16,16 +16,25 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Shapes;
 using GrappBox.CustomControler;
 using Windows.UI.Xaml.Controls;
+using System.Collections.ObjectModel;
+using GrappBox.Model.Whiteboard;
 
 namespace GrappBox.ViewModel
 {
     class WhiteBoardViewModel : ViewModelBase
     {
         private WhiteBoardModel model;
+        private ObservableCollection<WhiteboardObject> _objectsList;
+        private ObservableCollection<ShapeControler> _shapeList;
+        private Dictionary<WhiteboardObject, ShapeControler> _map;
         public WhiteBoardViewModel()
         {
             model = new WhiteBoardModel();
         }
+
+        #region API
+
+        #endregion API
 
         #region ColorPansLogic
         private ColorMod _selectedColormod;
@@ -312,5 +321,11 @@ namespace GrappBox.ViewModel
         #endregion ToolBoxActions
 
         #endregion Actions
+
+        public ObservableCollection<WhiteboardObject> ObjectsList
+        {
+            get { return _objectsList; }
+            set { if (value != null) _objectsList = value; }
+        }
     }
 }

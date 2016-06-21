@@ -106,6 +106,10 @@ namespace GrappBox.View
             LoadingBar.Visibility = Visibility.Visible;
 
             this.navigationHelper.OnNavigatedTo(e);
+            vm.OpenSelect = null;
+            OpenListView.SelectedItem = null;
+            CloseListView.SelectedItem = null;
+            vm.CloseSelect = null;
 
             await vm.getOpenTickets();
             await vm.getClosedTickets();
@@ -165,6 +169,8 @@ namespace GrappBox.View
                 vm.OpenSelect = (sender as ListBox).SelectedItem as BugtrackerModel;
                 CloseBug.Visibility = Visibility.Visible;
             }
+            else
+                CloseBug.Visibility = Visibility.Collapsed;
         }
 
         private void closeListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -174,11 +180,17 @@ namespace GrappBox.View
                 vm.CloseSelect = (sender as ListBox).SelectedItem as BugtrackerModel;
                 ReopenBug.Visibility = Visibility.Visible;
             }
+            else
+                ReopenBug.Visibility = Visibility.Collapsed;
         }
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
+            vm.OpenSelect = null;
+            OpenListView.SelectedItem = null;
+            CloseListView.SelectedItem = null;
+            vm.CloseSelect = null;
 
             if (num == 1)
             {

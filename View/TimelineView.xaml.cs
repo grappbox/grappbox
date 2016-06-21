@@ -117,6 +117,7 @@ namespace GrappBox.View
             TeamListView.IsEnabled = true;
             PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
             CustomerListView.IsEnabled = true;
+            vm.MessageSelected = null;
             await vm.getTimelines();
             await vm.getCustomerMessages();
             await vm.getTeamMessages();
@@ -135,6 +136,7 @@ namespace GrappBox.View
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
+            vm.MessageSelected = null;
 
             if (num == 0)
             {
