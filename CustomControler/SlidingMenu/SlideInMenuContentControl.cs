@@ -215,14 +215,16 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         public void DisplayMenu()
         {
+            Debug.WriteLine("DisplayMenu_{0}", contentSelector.SelectedIndex);
             UpdateMenu();
-            contentSelector.SelectedIndex = -1;
+            contentSelector.SelectedItem = null;
             contentSelector.SelectedIndex = 0;
         }
 
         public void DisplayContent()
         {
-            contentSelector.SelectedIndex = 0;
+            Debug.WriteLine("DisplayContent_{0}", contentSelector.SelectedIndex);
+            contentSelector.SelectedItem = null;
             contentSelector.SelectedIndex = 1;
         }
 
@@ -253,7 +255,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         private void ContentSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Debug.WriteLine(contentSelector.SelectedIndex);/*
+            Debug.WriteLine("ContentSelector {0}", contentSelector.SelectedIndex);/*
             if (contentSelector.SelectedIndex == 0)
             {
                 disableContentOverlay.Visibility = Visibility.Visible;

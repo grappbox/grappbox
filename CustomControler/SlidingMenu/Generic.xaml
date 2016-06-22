@@ -11,7 +11,7 @@
                     TargetType="local:SlideInMenuContentControl">
                     <Grid>
                         <FlipView
-                            ManipulationMode="None"
+                            ManipulationMode="TranslateInertia"
                             x:Name="ContentSelector"
                             SelectedIndex="0">
                             <FlipView.ItemsPanel>

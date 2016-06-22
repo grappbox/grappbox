@@ -122,6 +122,7 @@
     <Compile Include="Model\Calendar\CalendarModel.cs" />
     <Compile Include="Model\Cloud\CloudModel.cs" />
     <Compile Include="Model\Global\Creator.cs" />
+    <Compile Include="Model\Global\Position.cs" />
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
     <Compile Include="Model\Whiteboard\CustomShapes.cs" />
     <Compile Include="Model\Dashboard\DashBoardModel.cs" />
@@ -139,8 +140,6 @@
     <Compile Include="Model\ProjectSettings\ProjectUserModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\Whiteboard\ObjectModel.cs" />
-    <Compile Include="Model\Global\Position.cs" />
-    <Compile Include="Model\Whiteboard\PullModel.cs" />
     <Compile Include="Model\Whiteboard\ShapeControler.cs" />
     <Compile Include="Model\Calendar\Task.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
@@ -149,6 +148,7 @@
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteBoardListModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
+    <Compile Include="Model\Whiteboard\WhiteboardObject.cs" />
     <Compile Include="Ressources\NavigationHelper.cs" />
     <Compile Include="Ressources\RelayCommand.cs" />
     <Compile Include="Ressources\SettingsManager.cs" />
