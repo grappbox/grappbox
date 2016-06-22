@@ -42,6 +42,12 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="15"></Setter>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
                         </ListView>
                         <Popup Name="PostTeamMesPopUp" Visibility="Collapsed" IsOpen="True" Loaded="PostTeamMesPopUp_Loaded">
                             <StackPanel Name="TeamStackPanel" Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">
