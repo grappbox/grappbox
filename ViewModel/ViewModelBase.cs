@@ -93,6 +93,7 @@ namespace GrappBox.ViewModel
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
                 return DateTimeOffset.MinValue;
             }
         }

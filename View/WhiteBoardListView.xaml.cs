@@ -68,5 +68,10 @@ namespace GrappBox.View
             this.navigationHelper.OnNavigatedFrom(e);
         }
         #endregion
+
+        private void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+        }
     }
 }

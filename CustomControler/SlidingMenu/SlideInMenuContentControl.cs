@@ -131,7 +131,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 
             contentSelector.SelectionChanged += ContentSelector_SelectionChanged;
             SetMenuVisibility();
-            menuButton.Tapped += MenuButton_Tapped;
+            menuButton.Click += MenuButton_Click; ;
             dashboardButton.Tapped += DashboardButton_Tapped;
             whiteboardButton.Tapped += WhiteboardButton_Tapped;
             userSettingsButton.Tapped += UserSettingsButton_Tapped;
@@ -142,6 +142,16 @@ namespace GrappBox.CustomControler.SlidingMenu
             calendarButton.Tapped += CalendarButton_Tapped;
             logoutButton.Tapped += LogoutButton_Tapped;
             UpdateMenu();
+        }
+
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("MenuButton_Start_{0}", contentSelector.SelectedIndex);
+            if (contentSelector.SelectedIndex == 0)
+                DisplayContent();
+            else
+                DisplayMenu();
+            Debug.WriteLine("MenuButton_End___{0}", contentSelector.SelectedIndex);
         }
 
         void UpdateMenu()
@@ -201,16 +211,6 @@ namespace GrappBox.CustomControler.SlidingMenu
         private void LogoutButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             logout();
-        }
-
-        private void MenuButton_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            Debug.WriteLine("MenuButton_Start_{0}", contentSelector.SelectedIndex);
-            if (contentSelector.SelectedIndex == 0)
-                DisplayContent();             
-            else                              
-                DisplayMenu();                
-            Debug.WriteLine("MenuButton_End___{0}", contentSelector.SelectedIndex);
         }
 
         public void DisplayMenu()

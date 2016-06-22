@@ -49,5 +49,25 @@ namespace GrappBox.ViewModel
                 Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
             }
         }
+        public async System.Threading.Tasks.Task CreateWhiteboard(string name)
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            int id = SettingsManager.getOption<int>("ProjectIdChoosen");
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("token", User.GetUser().Token);
+            props.Add("projectId", User.GetUser().Token);
+            props.Add("whiteboardName", User.GetUser().Token);
+            HttpResponseMessage res = await api.Post(props, "whiteboard/new");
+            if (res.IsSuccessStatusCode)
+            {
+                Debug.WriteLine(await res.Content.ReadAsStringAsync());
+                WhiteBoardListModel wlm = api.DeserializeJson<WhiteBoardListModel>(await res.Content.ReadAsStringAsync());
+                Whiteboards.Add(wlm);
+            }
+            else
+            {
+                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            }
+        }
     }
 }

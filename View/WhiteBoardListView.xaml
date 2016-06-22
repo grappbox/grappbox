@@ -9,6 +9,11 @@
     xmlns:customControl="using:GrappBox.CustomControler"
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Icon="Add" Tapped="AppBarButton_Tapped">Add whiteboard</AppBarButton>
+        </CommandBar>
+    </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl PageTitle="Whiteboard">
         <ListView ItemsSource="{Binding Whiteboards}" Background="{StaticResource BackgroundGrayBrush}">
             <ListView.ItemTemplate>

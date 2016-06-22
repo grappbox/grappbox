@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:GrappBox.CustomControler.SlidingMenu">
+    xmlns:local="using:GrappBox.CustomControler.SlidingMenu"
+    xmlns:local2="using:GrappBox.CustomControler">
     <Style
         TargetType="local:SlideInMenuContentControl">
         <Setter
@@ -122,5 +123,18 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
+    <Style TargetType="local2:TextInputPopUp" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local2:TextInputPopUp">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

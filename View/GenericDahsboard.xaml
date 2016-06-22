@@ -9,9 +9,9 @@
     xmlns:customControl="using:GrappBox.CustomControler"
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <slideMenu:SlideInMenuContentControl  x:Name="slideInMenuContentControl" PageTitle="Dashboard">
+    <slideMenu:SlideInMenuContentControl  x:Name="slideInMenuContentControl" PageTitle="Dashboard" IsDoubleTapEnabled="False">
         <Grid>
-                <ListView
+            <ListView
             Padding="15,0,15,0"
             ItemsSource="{Binding ProjectList}"
             Background="{StaticResource BackgroundGrayBrush}"
@@ -22,56 +22,56 @@
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Center">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="15" Margin="0,15,0,15" Background="White">
-                                <StackPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="15" Margin="0,15,0,15" Background="White">
+                            <StackPanel>
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="16"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <TextBlock Name="hidden" Text="{Binding Id, Converter={StaticResource IntegerToStringConverter}}" Visibility="Collapsed"/>
+                                <Image HorizontalAlignment="Center" Source="/Assets/grappbox-logo.png" />
+                                <TextBlock Name="projectName" HorizontalAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}"/>
+                                <StackPanel Orientation="Horizontal">
                                     <StackPanel.Resources>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="FontSize" Value="16"/>
+                                            <Setter Property="Margin" Value="10,0,0,0"/>
                                         </Style>
                                     </StackPanel.Resources>
-                                    <TextBlock Name="hidden" Text="{Binding Id, Converter={StaticResource IntegerToStringConverter}}" Visibility="Collapsed"/>
-                                    <Image HorizontalAlignment="Center" Source="/Assets/grappbox-logo.png" />
-                                    <TextBlock Name="projectName" HorizontalAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <StackPanel.Resources>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Margin" Value="10,0,0,0"/>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <Image Source="/Assets/bug.png"/>
-                                        <TextBlock Text="{Binding Bugs}"/>
-                                        <TextBlock Text="bugs"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <StackPanel.Resources>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Margin" Value="10,0,0,0"/>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <Image Source="/Assets/chat.png"/>
-                                        <TextBlock Text="{Binding Messages}"/>
-                                        <TextBlock Text="messages"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <StackPanel.Resources>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Margin" Value="10,0,0,0"/>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <Image Source="/Assets/task_ongoing.png"/>
-                                        <TextBlock Text="{Binding OngoingTasks}"/>
-                                        <TextBlock Text="/" Margin="0"/>
-                                        <TextBlock Text="{Binding TotalTasks}" Margin="0"/>
-                                        <TextBlock Text="finished tasks"/>
-                                    </StackPanel>
+                                    <Image Source="/Assets/bug.png"/>
+                                    <TextBlock Text="{Binding Bugs}"/>
+                                    <TextBlock Text="bugs"/>
                                 </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-                <ProgressBar Grid.Row="3" VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
-            </Grid>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0,0,0"/>
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    <Image Source="/Assets/chat.png"/>
+                                    <TextBlock Text="{Binding Messages}"/>
+                                    <TextBlock Text="messages"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Margin" Value="10,0,0,0"/>
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    <Image Source="/Assets/task_ongoing.png"/>
+                                    <TextBlock Text="{Binding OngoingTasks}"/>
+                                    <TextBlock Text="/" Margin="0"/>
+                                    <TextBlock Text="{Binding TotalTasks}" Margin="0"/>
+                                    <TextBlock Text="finished tasks"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
+        </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>
