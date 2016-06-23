@@ -1,11 +1,11 @@
 [
     {
-        "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\red_border.xml",
-        "source": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\red_border.xml"
-    },
-    {
         "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\disable_cell.xml",
         "source": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\disable_cell.xml"
+    },
+    {
+        "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\red_border.xml",
+        "source": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable\\red_border.xml"
     },
     {
         "merged": "D:\\Users\\wieser_m\\AndroidStudioProjects\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\right_arrow.xml",
