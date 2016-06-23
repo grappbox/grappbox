@@ -1,6 +1,6 @@
 <?php
 
-namespace GrappBox\App\AppBundle\Controller;
+namespace GrappBox\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 

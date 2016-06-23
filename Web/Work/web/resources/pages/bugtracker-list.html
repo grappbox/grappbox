@@ -39,7 +39,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="bugtracker in data.tickets" ng-click="openTicket(projectId, bugtracker.id)" title="Open the ticket details">
+                  <tr ng-repeat="bugtracker in data.tickets" data-ng-dblclick="openTicket(projectId, bugtracker.id)" title="Open the ticket details">
                     <td>{[{ bugtracker.title }]}</td>
                     <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
                     <td>{[{ formatUsersinString(bugtracker.users) }]}</td>

@@ -15,27 +15,48 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class AppController extends Controller
 {
-	public function setAngularRouteManagementAction(Request $request)
-	{
-		$pathData = $request->getpathInfo();
 
-		if (($token = strpos($pathData, "/app/")) !== false)
-			return $this->redirect(substr_replace($pathData, "/app/#/", $token, strlen("/app/")), 301);
-	}
+  // Routine definition
+  // Beautify angularJS URLs (remove "/#/") 
+  public function angularRouteManagementAction(Request $request)
+  {
+    $path = $request->getpathInfo();
 
-	public function indexAction()
-	{
-		$requestData = $this->get("request");
-		$cookieData = $requestData->cookies;
+    if (($token = strpos($path, "/app/")) !== false)
+      return $this->redirect(substr_replace($path, "/app/#/", $token, strlen("/app/")), 301);
+  }
 
-		if ($cookieData->has("USERTOKEN") && $cookieData->get("USERTOKEN"))
-			return $this->render("AppBundle:App:index.html.twig");
 
-		$redirectResponse = new RedirectResponse("/#login");
-		$redirectResponse->headers->setCookie(new Cookie("LASTLOGINMESSAGE", hash("sha512", "_DENIED"), 0, "/", null, false, false));
-		$redirectResponse->headers->setCookie(new Cookie("USERTOKEN", null, 0, "/", null, false, false));
-		$redirectResponse->headers->setCookie(new Cookie("CLOUDSAFE", null, 0, "/", null, false, false));
+  // Start point
+  // Load APP homepage (connected)
+  public function indexAction()
+  {
+    $cookies = array(
+      "time" => time() + 2592000,
+      "base" => "/",
+      "domain" => null,
+      "secure" => false,
+      "httponly" => false
+      );
 
-		return $redirectResponse;
-	}
+    $request = $this->get("request");
+    $cookieData = $request->cookies;
+
+    if ($cookieData->has("_TOKEN") && $cookieData->get("_TOKEN"))
+      return $this->render("AppBundle:App:index.html.twig");
+
+    $redirect = new RedirectResponse("/login");
+
+    $redirect->headers->setCookie(new Cookie("_LOGIN", base64_encode("_denied"),
+      $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+
+    $redirect->headers->setCookie(new Cookie("_TOKEN", null,
+      $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+
+    $redirect->headers->setCookie(new Cookie("_ID", null,
+      $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+
+    return $redirect;
+  }
+
 }

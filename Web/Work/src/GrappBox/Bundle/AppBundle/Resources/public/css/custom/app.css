@@ -32,6 +32,10 @@ label { display: inline; margin: 0; font-weight: 400; }
 p { font-weight: 400; }
 table { font-weight: 400; }
 
+a,
+a:hover,
+a:focus { color: #c0392b; }
+
 b,
 strong { font-weight: 900; }
 section:last-child { margin: 30px 0 60px 0; }
@@ -52,7 +56,10 @@ section:last-child { margin: 30px 0 60px 0; }
 .input-group-btn .btn.btn-raised.btn-danger,
 .input-group-btn .btn.btn-fab.btn-danger { background-color: #c0392b; }
 
+.btn-default { color: #c0392b!important; }
 .btn-fixed { position: fixed!important; right: 46px; bottom: 46px; z-index: 998; }
+
+.form-group input[type=file] { opacity: initial; position: initial; }
 
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
 .bold { font-weight: 900; }
@@ -66,6 +73,11 @@ section:last-child { margin: 30px 0 60px 0; }
 .ui-notification { color: #fafafa; }
 .ui-notification.info { background: #29B6F6; }
 .ui-notification.success { background: #7CB342; }
+
+.well-soft { background: #fafafa!important; }
+.well-ext { min-height: 260px; }
+.no-shadow { box-shadow: none!important; }
+.border { border: 1px solid #bdbdbd!important; }
 
 
 
@@ -124,7 +136,7 @@ section:last-child { margin: 30px 0 60px 0; }
 .sidebar .sidebar-content ul a { width: 100%; margin: 5px 0; padding: 15px 30px; text-align: left; text-transform: none; }
 .sidebar .sidebar-content ul a.active { background: rgba(153, 153, 153, 0.2); }
 .sidebar .sidebar-content ul a > i { margin: 0 45px 0 0; }
-.sidebar .sidebar-content ul .divider { height: 0; border-bottom: 1px solid #bdbdbd; }
+.sidebar .sidebar-content ul .divider { height: 0; border-bottom: 1px solid #eee; }
 
 .navbar .navbar-toggle { float: left; padding: 15px 5px 15px 15px; display: block; }
 .navbar .navbar-brand { float: left; font-weight: 400; padding: 15px; }
@@ -144,8 +156,11 @@ section:last-child { margin: 30px 0 60px 0; }
 
 .well .nav.nav-tabs { background: #bdbdbd; margin: -20px -19px 30px -19px; border: 0; }
 .well .nav.nav-tabs > li.active > a { padding: 18px; border: 0!important; border-top: solid 4px #c0392b!important; color: #c0392b!important; background: #fff!important; border-radius: 0; }
+.well .nav.nav-tabs > li.active > a.soft { background: #fafafa!important; }
 .well .nav.nav-tabs > li > a { padding: 22px 18px 18px 18px; text-align: center; font-weight: 400; }
+.well .nav.nav-tabs > li > a > i { margin: 0 15px 0 0; }
 .well .nav.nav-tabs > li { margin: 0; }
+.well .tab-content > .active { display: table; width: 100%; }
 
 
 
@@ -155,7 +170,6 @@ section:last-child { margin: 30px 0 60px 0; }
 
 .each-data .well { padding: 19px 19px 5px 19px!important; }
 .each-data a { float: right; }
-.each-data .btn-default { color: #c0392b!important; }
 .each-data ul { list-style: none; font-weight: 400; padding: 0; }
 .each-data ul li { padding: 5px 0; }
 .each-data ul li i { vertical-align: middle!important; margin: 0 10px 0 0; }
@@ -177,36 +191,48 @@ section:last-child { margin: 30px 0 60px 0; }
 
 
 /* ========================================================== */
-/* ==================== SECTION: PROFILE ==================== */
-/* ========================================================== */
-
-#profile .well { min-height: 260px; }
-#profile .form-group input[type=file] { opacity: initial; position: initial; }
-#profile .form-group .btn-default { color: #c0392b; }
-
-
-
-/* ========================================================== */
 /* ==================== SECTION: PROJECT ==================== */
 /* ========================================================== */
 
-#project-creation .well,
-#project-edition .well { min-height: 260px; }
-
-#project-creation .form-group input[type=file],
-#project-edition .form-group input[type=file] { opacity: initial; position: initial; }
-
-#project-creation .btn-default,
-#project-edition .btn-default { color: #c0392b; }
-
-#project-edition .tab-content > .active { display: table; width: 100%; }
-#project-edition .btn-default { color: #c0392b; }
 #project-edition table .form-group { margin: 5px 1px; }
 #project-edition table th { font-weight: 500; }
 #project-edition table th,
 #project-edition table td { vertical-align: middle; text-align: center; }
 #project-edition h4 { font-weight: 400; margin: 30px 0 15px 0; }
 
+
+
+/* ========================================================== */
+/* ==================== SECTION: BUGTRACKER ================= */
+/* ========================================================== */
+
+#bugtracker-list .title { background: #009688; margin: 0 0 15px 0; }
+#bugtracker-list .data-content .btn-default { margin: 28px 0 0 0; }
+#bugtracker-list .create-btn { min-width: 240px; padding-left: 10px; }
+#bugtracker-list .ticket-list { margin-top: 10px; }
+
+#bugtracker-content .app-actions-list li { display: inline; }
+#bugtracker-content .app-actions-list ul { padding: 0; margin: 0; }
+
+
+
+/* =========================================================== */
+/* ==================== SECTION: TIMELINE ==================== */
+/* =========================================================== */
+
+.each-timeline { float: none; display: block; }
+
+
+
+
+
+
+/* ============================================================ */
+/* ==================== IN CONSTRUCTION ======================= */
+/* ============================================================ */
+/* ============================================================ */
+/* ============================================================ */
+/* ============================================================ */
 
 
 /* ==================== GENERAL LAYOUT (DIALOGS) ==================== */
@@ -357,29 +383,6 @@ section { margin: 30px 0; }
 #cloud-content .each-object-data { border-bottom: 1px solid #e0e0e0; padding: 5px 10px; margin: 0; }
 #cloud-content .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
 #cloud-content .each-object-data .object-type { margin: 0 -10px 0 10px; }
-
-
-
-/* ==================== SECTION: BUGTRACKER ==================== */
-
-#bugtracker-list .title { background: #009688; margin: 0 0 15px 0; }
-#bugtracker-list .data-content .btn-default { margin: 28px 0 0 0; }
-#bugtracker-list .create-btn { min-width: 240px; padding-left: 10px; }
-#bugtracker-list .ticket-list { margin-top: 10px; }
-
-#bugtracker-content .app-actions-list li { display: inline; }
-#bugtracker-content .app-actions-list ul { padding: 0; margin: 0; }
-
-
-/*#bugtracker-content #existing-ticket {}
-#bugtracker-content #existing-ticket #editable-data-list {}
-#bugtracker-content #editable-data-list .data-wrapper {}
-#bugtracker-content #editable-data-list .data-wrapper label {}
-#bugtracker-content #editable-data-list .data-wrapper input {}
-#bugtracker-content #existing-ticket #static-data-list {}
-#bugtracker-content #static-data-list .data-wrapper {}
-#bugtracker-content #static-data-list .data-wrapper .label {}
-#bugtracker-content #static-data-list .data-wrapper .data {}*/
 
 
 

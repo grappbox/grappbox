@@ -1,13 +1,28 @@
 app_home:
-    path:     /
+    path: /
+    defaults: { _controller: AppBundle:Home:index }
+
+app_login:
+    path: /login
+    defaults: { _controller: AppBundle:User:login }
+
+app_index:
+    path: /app/
     defaults: { _controller: AppBundle:App:index }
 
 app_routing:
-    path: /{url}
-    defaults: { _controller: AppBundle:App:setAngularRouteManagement }
+    path: /app/{url}
+    defaults: { _controller: AppBundle:App:angularRouteManagement }
 
 app_routing_advanced:
-    path: /{url}/{parameters}
-    defaults: { _controller: AppBundle:App:setAngularRouteManagement }
+    path: /app/{url}/{parameters}
+    defaults: { _controller: AppBundle:App:angularRouteManagement }
     requirements:
       parameters: ".+"
+
+app_resource:
+    path: /{url}
+    defaults: { _controller: AppBundle:Home:tailingSlash }
+    requirements:
+        url: .*/$
+    methods: [GET]

@@ -1,11 +1,13 @@
-{# This file is subject to the terms and conditions defined in
+{#
+# This file is subject to the terms and conditions defined in
 # file "LICENSE.txt", which is part of the GRAPPBOX source code package.
-# COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. #}
+# COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
+#}
 
 {% spaceless %}
 
 <!DOCTYPE html>
-<html lang="en" ng-app="grappbox">
+<html lang="en" data-ng-app="grappbox">
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 		<meta http-equiv="content-language" content="en-us" />
@@ -14,16 +16,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta charset="UTF-8" />
 		<base href="/app/">
-		<title>GrappBox</title>
+		<title>Welcome to GrappBox</title>
 		<!-- Google Fonts -->
 		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" />
 
 		{% stylesheets
-		'@HomeBundle/Resources/public/css/vendor/bootstrap.css'
+		'@AppBundle/Resources/public/css/vendor/bootstrap.css'
 		'@AppBundle/Resources/public/css/vendor/bootstrap-material-design.css'
 		'@AppBundle/Resources/public/css/vendor/ripples.css'
 		'@AppBundle/Resources/public/css/vendor/material-icons.css'
-		'@HomeBundle/Resources/public/css/vendor/font-awesome.css'
 		'@AppBundle/Resources/public/css/vendor/angular-bootstrap-calendar-tpls.css'
 		'@AppBundle/Resources/public/css/vendor/angular-tags-input.css'
 		'@AppBundle/Resources/public/css/vendor/angular-tags-input.bootstrap.css'
@@ -34,9 +35,8 @@
 		{% endstylesheets %}
 
 		{% javascripts
-		'@HomeBundle/Resources/public/js/vendor/jquery.js'
-		'@HomeBundle/Resources/public/js/vendor/sha512.js'
-		'@HomeBundle/Resources/public/js/vendor/smooth-scroll.js'
+		'@AppBundle/Resources/public/js/vendor/jquery.js'
+		'@AppBundle/Resources/public/js/vendor/smooth-scroll.js'
 		'@AppBundle/Resources/public/js/vendor/moment.js'
 		'@AppBundle/Resources/public/js/vendor/angular.js'
 		'@AppBundle/Resources/public/js/vendor/angular-animate.js'
@@ -52,25 +52,25 @@
 		'@AppBundle/Resources/public/js/vendor/angular-tags-input.js'
 		'@AppBundle/Resources/public/js/vendor/angular-ui-bootstrap-tpls.js'
 		'@AppBundle/Resources/public/js/vendor/angular-ui-notification.js'
-		'@AppBundle/Resources/public/js/custom/core.js'
-		'@AppBundle/Resources/public/js/custom/login.js'
-		'@AppBundle/Resources/public/js/custom/routing.js'
-		'@AppBundle/Resources/public/js/custom/bugtracker/bugtracker.js'
-		'@AppBundle/Resources/public/js/custom/bugtracker/bugtracker-list.js'
-		'@AppBundle/Resources/public/js/custom/tasks/task.js'
-		'@AppBundle/Resources/public/js/custom/tasks/task-list.js'
-		'@AppBundle/Resources/public/js/custom/calendar/calendar.js'
-		'@AppBundle/Resources/public/js/custom/cloud/cloud.js'
-		'@AppBundle/Resources/public/js/custom/cloud/cloud-list.js'
-		'@AppBundle/Resources/public/js/custom/dashboard/dashboard.js'
-		'@AppBundle/Resources/public/js/custom/dashboard/dashboard-list.js'
-		'@AppBundle/Resources/public/js/custom/notifications/notifications.js'
-		'@AppBundle/Resources/public/js/custom/profile/profile.js'
-		'@AppBundle/Resources/public/js/custom/project/settings.js'
-		'@AppBundle/Resources/public/js/custom/timeline/timeline.js'
-		'@AppBundle/Resources/public/js/custom/timeline/timeline-list.js'
-		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard.js'
-		'@AppBundle/Resources/public/js/custom/whiteboard/whiteboard-list.js'
+		'@AppBundle/Resources/public/js/custom/app/core.js'
+		'@AppBundle/Resources/public/js/custom/app/root.js'
+		'@AppBundle/Resources/public/js/custom/app/login.js'
+		'@AppBundle/Resources/public/js/custom/app/routing.js'
+		'@AppBundle/Resources/public/js/custom/app/bugtracker/bugtracker.js'
+		'@AppBundle/Resources/public/js/custom/app/bugtracker/bugtracker-list.js'
+		'@AppBundle/Resources/public/js/custom/app/tasks/task.js'
+		'@AppBundle/Resources/public/js/custom/app/tasks/task-list.js'
+		'@AppBundle/Resources/public/js/custom/app/calendar/calendar.js'
+		'@AppBundle/Resources/public/js/custom/app/cloud/cloud.js'
+		'@AppBundle/Resources/public/js/custom/app/cloud/cloud-list.js'
+		'@AppBundle/Resources/public/js/custom/app/dashboard/dashboard.js'
+		'@AppBundle/Resources/public/js/custom/app/dashboard/dashboard-list.js'
+		'@AppBundle/Resources/public/js/custom/app/notifications/notifications.js'
+		'@AppBundle/Resources/public/js/custom/app/profile/profile.js'
+		'@AppBundle/Resources/public/js/custom/app/project/settings.js'
+		'@AppBundle/Resources/public/js/custom/app/timeline/timeline.js'
+		'@AppBundle/Resources/public/js/custom/app/whiteboard/whiteboard.js'
+		'@AppBundle/Resources/public/js/custom/app/whiteboard/whiteboard-list.js'
 		filter='?uglifyjs2' output='resources/js/app.min.js' %}
 		<script type="text/javascript" src="{{ asset_url }}"></script>
 		{% endjavascripts %}
@@ -93,12 +93,12 @@
 					<div class="navbar navbar-default">
 						<div class="container-fluid">
 							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" data-ng-click="menu.toggleState()">
+								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" data-ng-click="page.toggleMenuState()">
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a href="" class="navbar-brand" data-ng-click="menu.toggleState()">GrappBox</a>
+								<a href="" class="navbar-brand" data-ng-click="page.toggleMenuState()">GrappBox</a>
 							</div>
 							<div class="navbar-collapse collapse navbar-responsive-collapse">
 								<ul class="nav navbar-nav navbar-right">
@@ -111,14 +111,14 @@
 					</div>
 
 					<!-- Navigation drawer -->
-					<aside class="sidebar" role="navigation" sidebar-directive="menu.state">
+					<aside class="sidebar" role="navigation" sidebar-directive="page.menuState">
 						<div class="sidebar-header">
-							<div class="sidebar-toggle"><a href="" data-ng-click="menu.toggleState()"><i class="material-icons">arrow_back</i></a></div>
+							<div class="sidebar-toggle"><a href="" data-ng-click="page.toggleMenuState()"><i class="material-icons">arrow_back</i></a></div>
 							<div class="sidebar-image"><img src="../resources/images/default-avatar.min.png"></div>
 							<div class="sidebar-brand">
 								<p class="ellipsis">{[{ user.firstname }]} {[{ user.lastname }]}<br>{[{ user.email }]}</p>
-								<p class="ellipsis" data-ng-if="project.set">Project: <strong>{[{ project.name }]}</strong></p>
-								<p class="ellipsis" data-ng-if="!project.set">No project selected</p>
+								<p class="ellipsis" data-ng-if="project.set">Project: <a href="settings/{[{ project.id }]}" title="Edit this project"><strong>{[{ project.name }]}</strong></a></p>
+								<p class="ellipsis" data-ng-if="!project.set"><a href="./" title="Choose a project">No project selected</a></p>
 								<a href="" data-ng-if="project.set" data-ng-click="method.switchProject()" class="btn btn-raised btn-default">Change</a>
 							</div>
 							<div class="clearfix"></div>
@@ -137,42 +137,43 @@
 										Calendar
 									</a>
 								</li>
-								<li data-ng-if="menu.full">
+								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ content.routeList['/cloud'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ content.iconList['/cloud'] ? content.iconList['/cloud'] : 'clear' }]}</i>
 										Cloud
 									</a>
 								</li>
-								<li data-ng-if="menu.full">
+								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ content.routeList['/timeline'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ content.iconList['/timeline'] ? content.iconList['/timeline'] : 'clear' }]}</i>
 										Timeline
 									</a>
 								</li>
-								<li data-ng-if="menu.full">
+								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ content.routeList['/bugtracker'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ content.iconList['/bugtracker'] ? content.iconList['/bugtracker'] : 'clear' }]}</i>
 										Bugtracker
 									</a>
 								</li>
-								<li data-ng-if="menu.full">
+								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks and gantt section" class="btn {[{ content.routeList['/tasks'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ content.iconList['/tasks'] ? content.iconList['/tasks'] : 'clear' }]}</i>
 										Tasks
 									</a>
 								</li>
-								<li data-ng-if="menu.full">
+								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ content.routeList['/whiteboard'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ content.iconList['/whiteboard'] ? content.iconList['/whiteboard'] : 'clear' }]}</i>
 										Whiteboard
 									</a>
 								</li>
-								<li data-ng-if="menu.full">
+								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ content.routeList['/settings'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ content.iconList['/settings'] ? content.iconList['/settings'] : 'clear' }]}</i>
 										Project settings
 									</a>
-								</li>								
+								</li>
+								<li class="divider"></li>
 								<li>
 									<a href="profile" title="View and edit your profile" class="btn {[{ content.routeList['/profile'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ content.iconList['/profile'] ? content.iconList['/profile'] : 'clear' }]}</i>
@@ -189,7 +190,7 @@
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="container-title" data-ng-cloak>
-										<h1 class="{[{ !page.onLoad ? (page.home ? 'centered' : '') : '' }]}">{[{ page.onLoad ? 'Loading...' : (page.title ? page.title : 'Error') }]}</h1>
+										<h1 class="{[{ !page.onLoad ? (page.home ? 'centered' : '') : '' }]}">{[{ page.onLoad ? 'Loading...' : page.title }]}</h1>
 									</div>
 									<!-- Dynamic view -->
 									<div data-ng-if="page.onLoad" class="spinner master"><div></div></div>

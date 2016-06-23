@@ -2,10 +2,76 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- grappbox.data : timeline information -->
-<div class="panel panel-warning">
-  <div class="panel-heading">Warning</div>
+<!-- timeline: information -->
+<div class="panel panel-default">
+  <div class="panel-heading">Read, post and comment your team's messages.</div>
   <div class="panel-body">
-    <p>This section is under construction.</p>
+    <p>%DESCRIPTION%</p>
   </div>
 </div>
+
+<!-- timeline: tabs -->
+<section id="timeline">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well well-ext well-soft">
+        <!-- timeline: all tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li id="team-title" role="presentation" class="col-md-6 col-xs-12 {[{ timeline.team.active ? 'active' : '' }]}">
+            <a href="" class="soft" role="tab" data-toggle="tab" data-ng-click="method.switchTab('team')">
+              <i class="material-icons">lock_outline</i>Team members
+            </a>
+          </li>
+          <li id="customer-title" role="presentation" class="col-md-6 col-xs-12 {[{ timeline.customer.active ? 'active' : '' }]}">
+            <a href="" class="soft" role="tab" data-toggle="tab" data-ng-click="method.switchTab('customer')">
+              <i class="material-icons">lock_open</i>Customers
+            </a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <!-- timeline: team tab -->
+<!--           <div role="tabpanel" class="tab-pane {[{ timeline.team.active ? 'active' : '' }]}" id="team-content">
+            <div data-ng-if="timeline.team.onLoad">
+              <div class="spinner data"><div></div></div>
+            </div>
+            <div data-ng-if="!timeline.team.onLoad && timeline.team.valid">
+              <div class="each-data each-timeline col-md-6" data-ng-repeat="message in timeline.team.messages">
+                <div class="well no-shadow border">
+                  <ul>
+                    <li class="ellipsis">Posted by <strong>{[{ message.creator.fullname }]}</strong>, {[{ method.formatObjectDate(message.createdAt.date) }]}</li>
+                    <li class="ellipsis">Title: {[{ message.title }]}<br>Message: {[{ message.message }]}</li>
+                  </ul>
+                  <a href="" title="Open {[{ message.creator.fullname }]}'s message" class="btn">Open</a>
+                  <a href="" title="Edit this message" class="btn" data-ng-if="">Edit</a>
+                  <a href="" title="Delete this message" class="btn btn-default" data-ng-if="">Delete</a>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div data-ng-if="!timeline.team.onLoad && !timeline.team.valid">
+              <div class="centered">
+                <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+              </div>
+            </div>
+          </div> -->
+
+          <!-- timeline: customer tab -->
+<!--           <div role="tabpanel" class="tab-pane {[{ timeline.customer.active ? 'active' : '' }]}" id="customer-content">
+            <div data-ng-if="content.onLoad">
+              <div class="spinner data"><div></div></div>
+            </div>
+            <div data-ng-if="!content.onLoad && content.valid">
+              <p>%CUSTOMER%</p>
+            </div>
+            <div data-ng-if="!content.onLoad && !content.valid">
+              <div class="centered">
+                <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+              </div>
+            </div>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
