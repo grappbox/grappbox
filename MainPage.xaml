@@ -10,12 +10,13 @@
     <Border Padding="15,0">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="2*"/>
                 <RowDefinition Height="4*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="1" FontSize="24" Text="Login" Foreground="Black"></TextBlock>
             <TextBox Name="loginBlock" Grid.Row="2" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu"></TextBox>
