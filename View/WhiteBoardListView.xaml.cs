@@ -69,9 +69,13 @@ namespace GrappBox.View
         }
         #endregion
 
-        private void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-
+            //WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
+            //if (WhiteboardNameInput.ShowDialog() == true)
+            //{
+            //    await wblm.CreateWhiteboard(WhiteboardNameInput.ResultText);
+            //}
         }
     }
 }

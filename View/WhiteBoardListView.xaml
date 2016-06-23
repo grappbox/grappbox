@@ -15,11 +15,12 @@
         </CommandBar>
     </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl PageTitle="Whiteboard">
+        <Grid>
         <ListView ItemsSource="{Binding Whiteboards}" Background="{StaticResource BackgroundGrayBrush}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border Padding="10" Background="White">
-                    <StackPanel>
+                        <StackPanel>
                             <StackPanel.Resources>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontSize" Value="14"/>
@@ -27,14 +28,14 @@
                             </StackPanel.Resources>
                             <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="18"/>
                             <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                            <Image Source="/Assets/alarm_add.png" />
-                            <TextBlock Margin="10,0,0,0" Text="{Binding CreatedAt, Converter={StaticResource DateModelToStringConverter}}" />
-                        </StackPanel>
+                                <Image Source="/Assets/alarm_add.png" />
+                                <TextBlock Margin="10,0,0,0" Text="{Binding CreatedAt, Converter={StaticResource DateModelToStringConverter}}" />
+                            </StackPanel>
                             <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                            <Image Source="/Assets/alarm_on.png" />
-                            <TextBlock Margin="10,0,0,0" Text="{Binding UpdatedAt, Converter={StaticResource DateModelToStringConverter}}" />
+                                <Image Source="/Assets/alarm_on.png" />
+                                <TextBlock Margin="10,0,0,0" Text="{Binding UpdatedAt, Converter={StaticResource DateModelToStringConverter}}" />
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -44,6 +45,10 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ListView.ItemContainerStyle>
-        </ListView>
+        </ListView><!--
+            <Popup IsOpen="{Binding ElementName=WhiteboardNameInput, Path=IsOpen, Mode=TwoWay}">
+                <customControl:TextInputPopUp x:Name="WhiteboardNameInput" />
+            </Popup>-->
+        </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>

@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Media;
 namespace GrappBox.CustomControler.SlidingMenu
 {
     [TemplatePart(Name = ElementLeftSideMenu, Type = typeof(FrameworkElement))]
-    [TemplatePart(Name = ElementContentSelector, Type = typeof(Selector))]
+    [TemplatePart(Name = ElementContentSelector, Type = typeof(Grid))]
     [TemplatePart(Name = ElementDisableContentOverlay, Type = typeof(Border))]
     [TemplatePart(Name = ElementMenuButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementDashboardButton, Type = typeof(Button))]
@@ -34,6 +34,12 @@ namespace GrappBox.CustomControler.SlidingMenu
     [TemplatePart(Name = ElementProjectName, Type = typeof(TextBlock))]
     public sealed class SlideInMenuContentControl : ContentControl
     {
+        enum MenuState
+        {
+            Menu = 0,
+            Content
+        };
+
         private List<StackPanel> buttons;
 
         Frame frame = Window.Current.Content as Frame;
@@ -67,7 +73,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementProjectSettingsPanel = "ProjectSettingsPanel";
 
         private FrameworkElement leftSideMenu;
-        private Selector contentSelector;
+        private Grid contentSelector;
         private Border disableContentOverlay;
         private Button menuButton;
         private Button dashboardButton;
@@ -102,7 +108,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         {
             base.OnApplyTemplate();
 
-            contentSelector = GetTemplateChild(ElementContentSelector) as Selector;
+            contentSelector = GetTemplateChild(ElementContentSelector) as Grid;
             leftSideMenu = GetTemplateChild(ElementLeftSideMenu) as FrameworkElement;
             disableContentOverlay = GetTemplateChild(ElementDisableContentOverlay) as Border;
             menuButton = GetTemplateChild(ElementMenuButton) as Button;
@@ -128,9 +134,10 @@ namespace GrappBox.CustomControler.SlidingMenu
             buttons.Add(GetTemplateChild(ElementTimelinePanel) as StackPanel);
             buttons.Add(GetTemplateChild(ElementProjectSettingsPanel) as StackPanel);
             buttons.Add(GetTemplateChild(ElementWhiteboardPanel) as StackPanel);
+            
+            contentSelector.ManipulationDelta += ContentSelector_ManipulationDelta;
+            contentSelector.ManipulationCompleted += ContentSelector_ManipulationCompleted;
 
-            contentSelector.SelectionChanged += ContentSelector_SelectionChanged;
-            SetMenuVisibility();
             menuButton.Click += MenuButton_Click; ;
             dashboardButton.Tapped += DashboardButton_Tapped;
             whiteboardButton.Tapped += WhiteboardButton_Tapped;
@@ -144,14 +151,56 @@ namespace GrappBox.CustomControler.SlidingMenu
             UpdateMenu();
         }
 
+        private MenuState menuState = MenuState.Content;
+
+        private void ContentSelector_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        {
+            if (menuState == MenuState.Content)
+                if (leftSideMenu.ActualWidth > LeftSideMenuWidth / 2)
+                {
+                    leftSideMenu.Width = LeftSideMenuWidth;
+                    menuState = MenuState.Menu;
+                }
+                else
+                {
+                    leftSideMenu.Width = 0;
+                    menuState = MenuState.Content;
+                }
+            else
+            {
+                if (leftSideMenu.ActualWidth < LeftSideMenuWidth / 2)
+                {
+                    leftSideMenu.Width = 0;
+                    menuState = MenuState.Content;
+                }
+                else
+                {
+                    leftSideMenu.Width = LeftSideMenuWidth;
+                    menuState = MenuState.Menu;
+                }
+            }
+        }
+
+        private void ContentSelector_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            if (menuState == MenuState.Content)
+            {
+                if (leftSideMenu.ActualWidth < LeftSideMenuWidth)
+                    leftSideMenu.Width += (leftSideMenu.Width + e.Delta.Translation.X) < 0 ? 0 : e.Delta.Translation.X;
+            }
+            else
+            {
+                if (leftSideMenu.ActualWidth > 0)
+                    leftSideMenu.Width += (leftSideMenu.Width + e.Delta.Translation.X) < 0 ? 0 : e.Delta.Translation.X;
+            }
+        }
+
         private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("MenuButton_Start_{0}", contentSelector.SelectedIndex);
-            if (contentSelector.SelectedIndex == 0)
+            if (menuState == MenuState.Menu)
                 DisplayContent();
             else
                 DisplayMenu();
-            Debug.WriteLine("MenuButton_End___{0}", contentSelector.SelectedIndex);
         }
 
         void UpdateMenu()
@@ -215,26 +264,15 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         public void DisplayMenu()
         {
-            Debug.WriteLine("DisplayMenu_{0}", contentSelector.SelectedIndex);
             UpdateMenu();
-            contentSelector.SelectedItem = null;
-            contentSelector.SelectedIndex = 0;
+            leftSideMenu.Width = LeftSideMenuWidth;
+            menuState = MenuState.Menu;
         }
 
         public void DisplayContent()
         {
-            Debug.WriteLine("DisplayContent_{0}", contentSelector.SelectedIndex);
-            contentSelector.SelectedItem = null;
-            contentSelector.SelectedIndex = 1;
-        }
-
-        private void SetMenuVisibility()
-        {
-            if (leftSideMenu != null && contentSelector != null)
-            {
-                leftSideMenu.Visibility = Visibility.Visible;
-                contentSelector.SelectedIndex = 1;
-            }
+            leftSideMenu.Width = 0;
+            menuState = MenuState.Content;
         }
 
         private async void logout()
@@ -251,19 +289,6 @@ namespace GrappBox.CustomControler.SlidingMenu
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
-        }
-
-        private void ContentSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Debug.WriteLine("ContentSelector {0}", contentSelector.SelectedIndex);/*
-            if (contentSelector.SelectedIndex == 0)
-            {
-                disableContentOverlay.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                disableContentOverlay.Visibility = Visibility.Collapsed;
-            }*/
         }
     }
 }
