@@ -12,6 +12,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -67,7 +68,7 @@ namespace GrappBox
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
 
-                this.Frame.Navigate(typeof(View.GenericDahsboard));
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));
             }
             else {
                 LoadingBar.IsEnabled = false;

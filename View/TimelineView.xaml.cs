@@ -11,6 +11,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -234,7 +235,7 @@ namespace GrappBox.View
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
-                this.Frame.Navigate(typeof(TimelineMessageView));
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(TimelineMessageView)));
             }
         }
 
@@ -255,7 +256,7 @@ namespace GrappBox.View
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
-                this.Frame.Navigate(typeof(BugView));
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView)));
             }
         }
 

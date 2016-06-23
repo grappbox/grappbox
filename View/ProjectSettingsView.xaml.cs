@@ -24,6 +24,7 @@ using GrappBox.Model;
 using System.Collections.ObjectModel;
 using Windows.UI.Popups;
 using GrappBox.Resources;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -392,7 +393,7 @@ namespace GrappBox.View
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
-            this.Frame.Navigate(typeof(RoleView), null);
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), null));
         }
 
         private void roleListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -409,7 +410,7 @@ namespace GrappBox.View
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
-            this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.Id);
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.Id));
         }
 
         private async void RemoveRoleButton_Click(object sender, RoutedEventArgs e)

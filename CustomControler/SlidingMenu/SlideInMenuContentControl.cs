@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Xml.Linq;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -210,51 +211,59 @@ namespace GrappBox.CustomControler.SlidingMenu
                 b.Visibility = id == 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
-        private void DashboardButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void DashboardButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
-            frame.Navigate(typeof(GenericDahsboard));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(GenericDahsboard)));
         }
 
-        private void WhiteboardButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void WhiteboardButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
-            frame.Navigate(typeof(WhiteBoardListView));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(WhiteBoardListView)));
         }
 
-        private void UserSettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void UserSettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
-            frame.Navigate(typeof(UserView));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(UserView)));
         }
 
-        private void ProjectSettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void ProjectSettingsButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
-            frame.Navigate(typeof(ProjectSettingsView));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(ProjectSettingsView)));
         }
 
-        private void BugtrackerButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void BugtrackerButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
-            frame.Navigate(typeof(BugtrackerView));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(BugtrackerView)));
         }
 
-        private void TimelineButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void TimelineButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
-            frame.Navigate(typeof(TimelineView));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(TimelineView)));
         }
 
-        private void CloudButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void CloudButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
-            frame.Navigate(typeof(CloudView));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(CloudView)));
         }
 
-        private void CalendarButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void CalendarButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            frame.Navigate(typeof(Calendar));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(Calendar)));
         }
 
         private void LogoutButton_Tapped(object sender, TappedRoutedEventArgs e)
@@ -282,7 +291,8 @@ namespace GrappBox.CustomControler.SlidingMenu
             HttpResponseMessage res = await api.Get(token, "accountadministration/logout");
             if (res.IsSuccessStatusCode)
             {
-                frame.Navigate(typeof(MainPage));
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    frame.Navigate(typeof(MainPage)));
             }
             else
             {

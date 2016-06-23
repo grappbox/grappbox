@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -48,14 +49,14 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
         }
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListView lv = sender as ListView;
             ProjectListModel plm = lv.SelectedItem as ProjectListModel;
             Debug.WriteLine("ProjectName= {0}  ProjectId= {1}", plm.Name, plm.Id);
             SettingsManager.setOption("ProjectIdChoosen", plm.Id);
             SettingsManager.setOption("ProjectNameChoosen", plm.Name);
-            frame.Navigate(typeof(View.DashBoardView));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
         }
     }
 }

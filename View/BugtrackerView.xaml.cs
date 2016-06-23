@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using GrappBox.Resources;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -127,9 +128,9 @@ namespace GrappBox.View
         }
         #endregion
 
-        private void AddBug_Click(object sender, RoutedEventArgs e)
+        private async void AddBug_Click(object sender, RoutedEventArgs e)
         {
-            this.Frame.Navigate(typeof(BugView), null);
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView), null));
         }
 
         private async void CloseBug_Click(object sender, RoutedEventArgs e)
@@ -216,7 +217,7 @@ namespace GrappBox.View
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
-                this.Frame.Navigate(typeof(BugView), vm.OpenSelect.Id);
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView), vm.OpenSelect.Id));
             }
         }
 
