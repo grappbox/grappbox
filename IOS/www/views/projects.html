@@ -14,12 +14,12 @@
 
         <!-- Projects list -->
         <div class="item item-divider">My projects list</div>
-        <ion-list class="card">
-            <ion-item ng-show="noProject">{{noProject}}</ion-item>
-            <ion-item ng-show="!noProject"
-                      class="item item-thumbnail-left"
+        <ion-item ng-show="noProject">{{noProject}}</ion-item>
+        <ion-list ng-show="!noProject" class="card">
+            <ion-item class="item item-thumbnail-left"
                       ng-repeat="project in projectsTab">
-                <img data-ng-src="data:image/png;base64, {{project.logo }}" />
+                <img ng-src="{{ project.avatar ? project.avatar : './images/noproject.png' }}" />
+                <!--<img data-ng-src="data:image/png;base64, {{project.logo }}" />-->
                 <h2>{{ project.name }}</h2><br />
                 <div class="button-bar">
                     <!-- Edit project button -->

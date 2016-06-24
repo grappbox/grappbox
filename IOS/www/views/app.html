@@ -33,6 +33,7 @@
             <ion-list>
                 <!-- Display user picture & name -->
                 <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
+                    <img ng-src="{{ userDatas.avatar ? userDatas.avatar : './images/noavatar.png' }}" />
                     <!--<img src="{{ userDatas.avatar }}" />-->
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>
@@ -63,6 +64,7 @@
             <ion-list>
                 <!-- Display user picture & name -->
                 <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
+                    <img ng-src="{{ userDatas.avatar ? userDatas.avatar : './images/noavatar.png' }}" />
                     <!--<img src="{{ userDatas.avatar }}" />-->
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>
@@ -93,7 +95,7 @@
         <!-- Make the possibility to swipe -->
         <ion-nav-bar class="bar-dark nav-title-slide-ios7">
             <ion-nav-back-button class="button-clear"></ion-nav-back-button><!-- Configuration of back-button in app.js -->
-            <ion-nav-buttons side="primary">
+            <ion-nav-buttons side="left">
                 <!-- Menu button on top left -->
                 <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
             </ion-nav-buttons>

@@ -25,9 +25,10 @@
                          ng-repeat="message in lastMessagesTeam"
                          ng-show="!noMessageTeam">
                         <div class="item item-avatar">
-                            <img src="mcfly.jpg">
+                            <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" />
                             <h2>{{ message.creator.fullname }}</h2>
-                            <p>{{ message.createdAt.date }}</p>
+                            <p>Created: {{ message.createdAt.date }}<br>
+                            <span ng-show="message.editedAt">Edited: {{ message.editedAt.date }}</span></p>
                         </div>
                         <div class="item item-body">
                             <!--- Message -->
@@ -42,21 +43,21 @@
                                       ng-model="message.message"></textarea>
                             <div class="button-bar" ng-show="message.creator.id == userConnectedId">
                                 <!-- Delete button if message is by user connected only -->
-                                <a class="button button-block icon ion-ios-trash button-assertive"
+                                <a class="button button-block icon ion-ios-trash button-small button-assertive"
                                    ng-click="PopupDeleteMessage(message)">
                                 </a>
                                 <!-- Edit button if message is by user connected only -->
-                                <a class="button button-block icon ion-edit button-positive"
+                                <a class="button button-block icon ion-edit button-small button-positive"
                                    ng-click="EditMessage(message)">
                                 </a>
                                 <!-- Transform message into bug -->
-                                <a class="button button-block icon ion-bug button-positive"
+                                <a class="button button-block icon ion-bug button-small button-positive"
                                    ui-sref="app.createTicket({projectId: projectId, message: message})">
                                 </a>
                             </div>
                             <!-- Comments -->
                             <p class="subdued">
-                                <a ng-click="GetCommentsOnTimeline(message); showLeaveComment = !showLeaveComment">{{ message.nbComment }} Comments</a>
+                                <a ng-click="GetCommentsOnTimeline(message); showLeaveComment = !showLeaveComment">{{ message.nbComment }} Comment(s)</a>
                             </p>
                             <!-- Show comments -->
                             <ion-item ng-show="comments[0] != null && showLeaveComment"
@@ -64,17 +65,17 @@
                                 <textarea rows="5"
                                           ng-readonly="com.creator.id != userConnectedId"
                                           ng-model="com.message"></textarea>
-                                <p>By {{ com.creator.fullname }}</p>
+                                <p>By {{ com.creator.fullname }}<br>
+                                Created: {{ com.createdAt.date }}<br>
+                                <span ng-show="com.editedAt">Edited: {{ com.editedAt.date }}</span></p>
                                 <div class="button-bar" ng-show="com.creator.id == userConnectedId">
                                     <!-- Delete button if comment is by user connected only -->
-                                    <a class="button button-block button-assertive"
+                                    <a class="button button-block icon ion-ios-trash button-small button-assertive"
                                        ng-click="ArchiveComment(com, message)">
-                                        Delete
                                     </a>
                                     <!-- Edit button if comment is by user connected only -->
-                                    <a class="button button-block button-positive"
+                                    <a class="button button-block icon ion-edit button-small button-positive"
                                        ng-click="EditCommentOnTimeline(com)">
-                                        Edit
                                     </a>
                                 </div>
                             </ion-item>
@@ -91,8 +92,11 @@
                                    ng-click="PostComment(message)">
                                     Comment
                                 </a>
+                                <!-- Show an arrow up to hide comments -->
+                                <p ng-click="showLeaveComment = !showLeaveComment" align="center"><i class="icon ion-ios-arrow-up"></i></p>
                             </div>
                         </div>
+                        <div class="item-divider"></div>
                     </div>
                     <!-- Button "More" messages -->
                     <button ng-hide="lastMessagesTeam[0] == null"
@@ -127,7 +131,8 @@
                         <div class="item item-avatar">
                             <img src="mcfly.jpg">
                             <h2>{{ message.creator.fullname }}</h2>
-                            <p>{{ message.createdAt.date }}</p>
+                            <p>Created: {{ message.createdAt.date }}<br>
+                            <span ng-show="message.editedAt">Edited: {{ message.editedAt.date }}</span></p>
                         </div>
                         <div class="item item-body">
                             <!--- Message -->
@@ -142,40 +147,43 @@
                                       ng-model="message.message"></textarea>
                             <div class="button-bar" ng-show="message.creator.id == userConnectedId">
                                 <!-- Delete button if message is by user connected only -->
-                                <a class="button button-block icon ion-ios-trash button-assertive"
+                                <a class="button button-block icon ion-ios-trash button-small button-assertive"
                                    ng-click="PopupDeleteMessage(message)">
                                 </a>
                                 <!-- Edit button if message is by user connected only -->
-                                <a class="button button-block icon ion-edit button-positive"
+                                <a class="button button-block icon ion-edit button-small button-positive"
                                    ng-click="EditMessage(message)">
                                 </a>
                                 <!-- Transform message into bug -->
-                                <a class="button button-block icon ion-bug button-positive"
+                                <a class="button button-block icon ion-bug button-small button-positive"
                                    ui-sref="app.createTicket({projectId: projectId, message: message})">
                                 </a>
                             </div>
                             <!-- Comments -->
                             <p class="subdued">
-                                <a ng-click="GetCommentsOnTimeline(message)">{{ message.nbComment }} Comments</a>
+                                <a ng-click="GetCommentsOnTimeline(message); showLeaveCommentCustomer = !showLeaveCommentCustomer">{{ message.nbComment }} Comment(s)</a>
                             </p>
-                            <ion-item ng-show="comments[0] != null"
+                            <ion-item ng-show="comments[0] != null && showLeaveCommentCustomer"
                                       ng-repeat="com in comments">
                                 <textarea rows="5"
                                           ng-readonly="com.creator.id != userConnectedId"
                                           ng-model="com.message"></textarea>
-                                <p>By {{ com.creator.fullname }}</p>
+                                <p>By {{ com.creator.fullname }}<br>
+                                Created: {{ com.createdAt.date }}<br>
+                                <span ng-show="com.editedAt">Edited: {{ com.editedAt.date }}</span></p>
                                 <div class="button-bar" ng-show="com.creator.id == userConnectedId">
                                     <!-- Delete button if comment is by user connected only -->
-                                    <a class="button button-block button-assertive"
+                                    <a class="button button-block icon ion-ios-trash button-small button-assertive"
                                        ng-click="ArchiveComment(com, message)">
-                                        Delete
                                     </a>
                                     <!-- Edit button if comment is by user connected only -->
-                                    <a class="button button-block button-positive"
+                                    <a class="button button-block icon ion-edit button-small button-positive"
                                        ng-click="EditCommentOnTimeline(com)">
-                                        Edit
                                     </a>
                                 </div>
+                            </ion-item>
+                            <!-- Show leave a comment if user clicked on Get comments -->
+                            <div ng-show="showLeaveCommentCustomer">
                                 <!-- Leave a comment -->
                                 <ion-item>
                                     <textarea rows="5"
@@ -187,8 +195,11 @@
                                    ng-click="PostComment(message)">
                                     Comment
                                 </a>
-                            </ion-item>
+                                <!-- Show an arrow up to hide comments -->
+                                <p ng-click="showLeaveCommentCustomer = !showLeaveCommentCustomer" align="center"><i class="icon ion-ios-arrow-up"></i></p>
+                            </div>
                         </div>
+                        <div class="item-divider"></div>
                     </div>
                     <!-- Button "More" messages -->
                     <button ng-hide="lastMessagesCustomer[0] == null"

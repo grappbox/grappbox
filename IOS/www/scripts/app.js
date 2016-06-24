@@ -13,9 +13,9 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
         /*if (window.cordova && window.cordova.plugins.Keyboard) {
             cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
         }*/
-        if (window.StatusBar) {
+        /*if (window.StatusBar) {
             StatusBar.styleDefault();
-        }
+        }*/
     });
     $rootScope.API_VERSION = '0.2'; //actual API's version
     $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
@@ -45,329 +45,340 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
 
     $stateProvider
 
-        /*
-        ** AUTHENTIFICATION
-        */
-        // authentification view
-        .state('auth', {
-            url: "/auth", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
-            templateUrl: "views/auth.html", //'templateUrl' is where app will search for the "physical" page
-            controller: 'AuthCtrl' //link to controller
-        })
+    /*
+    ** AUTHENTIFICATION
+    */
+    // authentification view
+    .state('auth', {
+        url: "/auth", //'url' means the rooting of the app as it would be on a web page in URL, we define hand-written
+        templateUrl: "views/auth.html", //'templateUrl' is where app will search for the "physical" page
+        controller: 'AuthCtrl' //link to controller
+    })
 
-        /*
-        ** ABSTRACT
-        */
-        // entering application
-        .state('app', {
-            url: "/app",
-            abstract: true, //'abstract' means will never render, but pages will inherit of it
-            templateUrl: "views/app.html",
-            controller: 'MenuCtrl'
-        })
+    /*
+    ** ABSTRACT
+    */
+    // entering application
+    .state('app', {
+        url: "/app",
+        abstract: true, //'abstract' means will never render, but pages will inherit of it
+        templateUrl: "views/app.html",
+        controller: 'MenuCtrl'
+    })
 
-        /*
-        ** PROJECTS LIST
-        */
-        // projects list view
-        .state('app.projects', {
-            url: "/projects",
-            views: { //here we define the views inheritance
-                'menuList': { //inherites from 'menuList' in app.html (<ion-nav-view name="menuList" [...]</ion-nav-view>)
-                    templateUrl: "views/projects.html",
-                    controller: 'ProjectsListCtrl'
-                },
+    /*
+    ** PROJECTS LIST
+    */
+    // projects list view
+    .state('app.projects', {
+        url: "/projects",
+        views: { //here we define the views inheritance
+            'menuList': { //inherites from 'menuList' in app.html (<ion-nav-view name="menuList" [...]</ion-nav-view>)
+                templateUrl: "views/projects.html",
+                controller: 'ProjectsListCtrl'
             },
-            cache: false
-        })
+        },
+        cache: false
+    })
 
 
-        /*
-        ** DASHBOARD
-        */
-        // dashboard with Team Occupation, Next Meetings
-        .state('app.dashboard', {
-            url: "/projects/:projectId/dashboard",
-            views: {
-                'menuList': {
-                    templateUrl: "views/dashboard.html",
-                    controller: 'DashboardCtrl',
-                }
-            },
-            cache: false
-        })
-
-        /*
-        ** PROJECT
-        */
-        // single project view
-        .state('app.project', {
-            url: "/projects/:projectId",
-            views: {
-                'menuList': {
-                    templateUrl: "views/project.html",
-                    controller: 'ProjectCtrl'
-                }
-            },
-            cache: false
-        })
-
-        // create project view
-        .state('app.createProject', {
-            url: "/projects/createProject",
-            views: {
-                'menuList': {
-                    templateUrl: "views/createProject.html",
-                    controller: 'CreateProjectCtrl'
-                }
+    /*
+    ** DASHBOARD
+    */
+    // dashboard with Team Occupation, Next Meetings
+    .state('app.dashboard', {
+        url: "/projects/:projectId/dashboard",
+        views: {
+            'menuList': {
+                templateUrl: "views/dashboard.html",
+                controller: 'DashboardCtrl',
             }
-        })
+        },
+        cache: false
+    })
 
-        // edit project view
-        .state('app.editProject', {
-            url: "/projects/:projectId/edit",
-            views: {
-                'menuList': {
-                    templateUrl: "views/editProject.html",
-                    controller: 'EditProjectCtrl'
-                }
+    /*
+    ** PROJECT
+    */
+    // single project view
+    .state('app.project', {
+        url: "/projects/:projectId",
+        views: {
+            'menuList': {
+                templateUrl: "views/project.html",
+                controller: 'ProjectCtrl'
             }
-        })
+        },
+        cache: false
+    })
 
-        /*
-        ** PROJECTS ROLES
-        */
-        // roles view
-        .state('app.roles', {
-            url: "/projects/:projectId/roles",
-            views: {
-                'menuList': {
-                    templateUrl: "views/roles.html",
-                    controller: 'RolesCtrl'
-                }
+    // create project view
+    .state('app.createProject', {
+        url: "/projects/createProject",
+        views: {
+            'menuList': {
+                templateUrl: "views/createProject.html",
+                controller: 'CreateProjectCtrl'
             }
-        })
+        }
+    })
 
-        // users on role view
-        .state('app.usersOnRole', {
-            url: "/projects/:projectId/roles/:roleId",
-            params: { role: null },
-            views: {
-                'menuList': {
-                    templateUrl: "views/usersOnRole.html",
-                    controller: 'UsersOnRoleCtrl'
-                }
+    // edit project view
+    .state('app.editProject', {
+        url: "/projects/:projectId/edit",
+        views: {
+            'menuList': {
+                templateUrl: "views/editProject.html",
+                controller: 'EditProjectCtrl'
             }
-        })
+        }
+    })
 
-        /*
-        ** WHITEBOARD
-        */
-
-        // whiteboards list view
-        .state('app.whiteboards', {
-            url: "/projects/:projectId/whiteboards",
-            views: {
-                'menuList': {
-                    templateUrl: "views/whiteboards.html",
-                    controller: 'WhiteboardsCtrl'
-                }
+    /*
+    ** PROJECTS ROLES
+    */
+    // roles view
+    .state('app.roles', {
+        url: "/projects/:projectId/roles",
+        views: {
+            'menuList': {
+                templateUrl: "views/roles.html",
+                controller: 'RolesCtrl'
             }
-        })
+        }
+    })
 
-        // single whiteboard view
-        .state('app.whiteboard', {
-            url: "/projects/:projectId/whiteboards/:whiteboardId",
-            views: {
-                'menuList': {
-                    templateUrl: "views/whiteboard.html",
-                    controller: 'WhiteboardCtrl'
-                }
-            },
-            params: {
-                whiteboardName: {
-                    value: 'Whiteboard',
-                    hiddenParam: 'YES'
-                }
+    // users on role view
+    .state('app.usersOnRole', {
+        url: "/projects/:projectId/roles/:roleId",
+        params: { role: null },
+        views: {
+            'menuList': {
+                templateUrl: "views/usersOnRole.html",
+                controller: 'UsersOnRoleCtrl'
             }
-        })
+        }
+    })
 
-        /*
-        ** USER
-        */
+    /*
+    ** WHITEBOARD
+    */
 
-        // profile view
-        .state('app.profile', {
-            url: "/profile",
-            views: {
-                'menuList': {
-                    templateUrl: "views/profile.html",
-                    controller: 'ProfileCtrl'
-                }
+    // whiteboards list view
+    .state('app.whiteboards', {
+        url: "/projects/:projectId/whiteboards",
+        views: {
+            'menuList': {
+                templateUrl: "views/whiteboards.html",
+                controller: 'WhiteboardsCtrl'
             }
-        })
+        }
+    })
 
-        // edit profile view
-        .state('app.editProfile', {
-            url: "/profile/edit",
-            views: {
-                'menuList': {
-                    templateUrl: "views/editProfile.html",
-                    controller: 'EditProfileCtrl'
-                }
+    // single whiteboard view
+    .state('app.whiteboard', {
+        url: "/projects/:projectId/whiteboards/:whiteboardId",
+        views: {
+            'menuList': {
+                templateUrl: "views/whiteboard.html",
+                controller: 'WhiteboardCtrl'
             }
-        })
-
-        // user view
-        .state('app.user', {
-            url: "/user/:userId",
-            views: {
-                'menuList': {
-                    templateUrl: "views/user.html",
-                    controller: 'UserCtrl'
-                }
+        },
+        params: {
+            whiteboardName: {
+                value: 'Whiteboard',
+                hiddenParam: 'YES'
             }
-        })
+        }
+    })
 
-        /*
-        ** BUGTRACKER
-        */
+    /*
+    ** USER
+    */
 
-        // bugtracker view
-        .state('app.bugtracker', {
-            url: "/projects/:projectId/bugtracker",
-            views: {
-                'menuList': {
-                    templateUrl: "views/bugtracker.html",
-                    controller: 'BugtrackerCtrl'
-                }
+    // profile view
+    .state('app.profile', {
+        url: "/profile",
+        views: {
+            'menuList': {
+                templateUrl: "views/profile.html",
+                controller: 'ProfileCtrl'
             }
-        })
+        }
+    })
 
-        // create ticket view
-        .state('app.createTicket', {
-            url: "/projects/:projectId/bugtracker/createTicket",
-            params: { message: null },
-            views: {
-                'menuList': {
-                    templateUrl: "views/createTicket.html",
-                    controller: 'CreateTicketCtrl'
-                }
+    // edit profile view
+    .state('app.editProfile', {
+        url: "/profile/edit",
+        views: {
+            'menuList': {
+                templateUrl: "views/editProfile.html",
+                controller: 'EditProfileCtrl'
             }
-        })
+        }
+    })
 
-        // ticket view
-        .state('app.ticket', {
-            url: "/projects/:projectId/bugtracker/ticket/:ticketId",
-            views: {
-                'menuList': {
-                    templateUrl: "views/ticket.html",
-                    controller: 'TicketCtrl'
-                }
+    // user view
+    .state('app.user', {
+        url: "/user/:userId",
+        views: {
+            'menuList': {
+                templateUrl: "views/user.html",
+                controller: 'UserCtrl'
             }
-        })
+        }
+    })
 
-        // edit ticket view
-        .state('app.editTicket', {
-            url: "/projects/:projectId/bugtracker/ticket/:ticketId/edit",
-            views: {
-                'menuList': {
-                    templateUrl: "views/editTicket.html",
-                    controller: 'EditTicketCtrl'
-                }
+    /*
+    ** BUGTRACKER
+    */
+
+    // bugtracker view
+    .state('app.bugtracker', {
+        url: "/projects/:projectId/bugtracker",
+        views: {
+            'menuList': {
+                templateUrl: "views/bugtracker.html",
+                controller: 'BugtrackerCtrl'
             }
-        })
+        }
+    })
 
-        // tag view
-        .state('app.tags', {
-            url: "/projects/:projectId/bugtracker/tags",
-            views: {
-                'menuList': {
-                    templateUrl: "views/tags.html",
-                    controller: 'TagsCtrl'
-                }
+    // create ticket view
+    .state('app.createTicket', {
+        url: "/projects/:projectId/bugtracker/createTicket",
+        params: { message: null },
+        views: {
+            'menuList': {
+                templateUrl: "views/createTicket.html",
+                controller: 'CreateTicketCtrl'
             }
-        })
+        }
+    })
 
-        // edit tag view
-        .state('app.editTag', {
-            url: "/projects/:projectId/bugtracker/tags/:tagId/edit",
-            views: {
-                'menuList': {
-                    templateUrl: "views/editTag.html",
-                    controller: 'EditTagCtrl'
-                }
+    // ticket view
+    .state('app.ticket', {
+        url: "/projects/:projectId/bugtracker/ticket/:ticketId",
+        views: {
+            'menuList': {
+                templateUrl: "views/ticket.html",
+                controller: 'TicketCtrl'
             }
-        })
+        }
+    })
 
-        /*
-        ** TIMELINE
-        */
-        // timeline view
-        .state('app.timelines', {
-            url: "/projects/:projectId/timelines",
-            views: {
-                'menuList': {
-                    templateUrl: "views/timelines.html",
-                    controller: 'TimelinesCtrl'
-                }
+    // edit ticket view
+    .state('app.editTicket', {
+        url: "/projects/:projectId/bugtracker/ticket/:ticketId/edit",
+        views: {
+            'menuList': {
+                templateUrl: "views/editTicket.html",
+                controller: 'EditTicketCtrl'
             }
-        })
+        }
+    })
 
-        // create message view
-        .state('app.createMessage', {
-            url: "/projects/:projectId/timelines/:timelineId/createMessage",
-            views: {
-                'menuList': {
-                    templateUrl: "views/createMessage.html",
-                    controller: 'CreateMessageCtrl'
-                }
+    // tag view
+    .state('app.tags', {
+        url: "/projects/:projectId/bugtracker/tags",
+        views: {
+            'menuList': {
+                templateUrl: "views/tags.html",
+                controller: 'TagsCtrl'
             }
-        })
+        }
+    })
 
-        /*
-        ** CLOUD
-        */
-        // cloud view
-        .state('app.cloud', {
-            url: "/projects/:projectId/cloud",
-            views: {
-                'menuList': {
-                    templateUrl: "views/cloud.html",
-                    controller: 'CloudCtrl'
-                }
+    // edit tag view
+    .state('app.editTag', {
+        url: "/projects/:projectId/bugtracker/tags/:tagId/edit",
+        views: {
+            'menuList': {
+                templateUrl: "views/editTag.html",
+                controller: 'EditTagCtrl'
             }
-        })
+        }
+    })
 
-        /*
-        ** CALENDAR
-        */
-
-        // Tasks view
-        .state('app.calendar', {
-            url: "/projects/:projectId/calendar/",
-            views: {
-                'menuList': {
-                    templateUrl: "views/calendar.html",
-                    controller: 'CalendarCtrl'
-                }
+    /*
+    ** TIMELINE
+    */
+    // timeline view
+    .state('app.timelines', {
+        url: "/projects/:projectId/timelines",
+        views: {
+            'menuList': {
+                templateUrl: "views/timelines.html",
+                controller: 'TimelinesCtrl'
             }
-        })
+        }
+    })
 
-        /*
-        ** TASKS
-        */
-
-        // Tasks view
-        .state('app.tasks', {
-            url: "/projects/:projectId/tasks/",
-            views: {
-                'menuList': {
-                    templateUrl: "views/tasks.html",
-                    controller: 'TasksCtrl'
-                }
+    // create message view
+    .state('app.createMessage', {
+        url: "/projects/:projectId/timelines/:timelineId/createMessage",
+        views: {
+            'menuList': {
+                templateUrl: "views/createMessage.html",
+                controller: 'CreateMessageCtrl'
             }
-        })
+        }
+    })
+
+    /*
+    ** CLOUD
+    */
+    // cloud view
+    .state('app.cloud', {
+        url: "/projects/:projectId/cloud",
+        views: {
+            'menuList': {
+                templateUrl: "views/cloud.html",
+                controller: 'CloudCtrl'
+            }
+        }
+    })
+
+    /*
+    ** CALENDAR
+    */
+
+    // Tasks view
+    .state('app.calendar', {
+        url: "/projects/:projectId/calendar/",
+        views: {
+            'menuList': {
+                templateUrl: "views/calendar.html",
+                controller: 'CalendarCtrl'
+            }
+        }
+    })
+
+    /*
+    ** TASKS
+    */
+
+    // Tasks view
+    .state('app.tasks', {
+        url: "/projects/:projectId/tasks/",
+        views: {
+            'menuList': {
+                templateUrl: "views/tasks.html",
+                controller: 'TasksCtrl'
+            }
+        }
+    })
+
+        // TESTTTT
+    .state('app.test', {
+        url: "/projects/:projectId/tasks/test",
+        views: {
+            'menuList': {
+                templateUrl: "views/test.html",
+                controller: 'TestCtrl'
+            }
+        }
+    })
 
     // if no state are found, here is the fallback url - It's also the default page when starting application
     $urlRouterProvider.otherwise('/auth');

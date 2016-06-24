@@ -38,11 +38,10 @@
         <div class="item item-divider">Tags</div>
         <!-- Tags on project -->
         <p ng-show="noTag">{{noTag}}</p>
-        <p ng-show="!noTag">
-            <span ng-repeat="tag in ticket.tags" style="color: blue"
-                  ng-click="showRemoveTagActionSheet(tag.id)">{{ tag.name }}&nbsp;
-            </span>
-        </p>
+        <button ng-repeat="tag in ticket.tags"
+                class="button button-small button-balanced"
+                ng-click="showRemoveTagActionSheet(tag.id)">{{ tag.name }}
+        </button><br />
         <p>Choose your tag(s)</p>
         <div ng-show="tagsOnProject[0] != null">
             <ion-list>
@@ -78,7 +77,7 @@
                 <!-- Create Tag -->
                 <button class="button button-block button-positive"
                         ng-click="CreateTag()">
-                    Create
+                    Create tag
                 </button>
             </form>
         </div>

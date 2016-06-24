@@ -5,6 +5,7 @@
 angular.module('GrappBox.controllers')
 
 .controller('TasksCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Tasks) {
+    $scope.projectId = $stateParams.projectId;
     /*$scope.data = [{
         name: 'Milestones', height: '3em', sortable: false, classes: 'gantt-row-milestone', color: '#45607D', tasks: [
            // Dates can be specified as string, timestamp or javascript date object. The data attribute can be used to attach a custom object

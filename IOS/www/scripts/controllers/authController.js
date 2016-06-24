@@ -23,6 +23,7 @@ angular.module('GrappBox.controllers')
         }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
+                $rootScope.hideLoading();
                 Toast.show("Connected");
                 console.log(data);
                 $rootScope.userDatas = data.data;
@@ -30,11 +31,12 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Connection failed ! Reason: ' + error.status + ' ' + error.statusText);
+                $rootScope.hideLoading();
                 Toast.show("Connection failed");
                 console.error(error);
             })
             .finally(function () {
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
     }
 })

@@ -18,7 +18,7 @@
                     <!-- Create & Tags buttons -->
                     <div class="button-bar">
                         <a class="button button-block button-positive"
-                            ui-sref="app.createTicket({projectId: projectId})">
+                           ui-sref="app.createTicket({projectId: projectId})">
                             Create
                         </a>
                         <a class="button button-block button-positive"
@@ -33,10 +33,15 @@
                         <ion-item ng-show="!noOpenTicket" ng-repeat="ticket in lastOpenTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
                                   ng-if="ticket.deletedAt === null">
-                            {{ticket.title}}<br />
-                            By {{ticket.creator.fullname}}<br />
+                            <h2 style="text-align:center">{{ticket.title}}</h2>
+                            <p>
+                                By {{ticket.creator.fullname}}<br />
+                                Created: {{ticket.createdAt.date}}<br />
+                                <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt.date}}</span>
+                            </p>
                             <!-- Show tags if they are there -->
-                            <span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>
+                            <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
+                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced">{{ tag.name }}</button>
                         </ion-item>
                     </ion-list>
                     <!-- Button "More" open tickets -->
@@ -64,7 +69,11 @@
                         <ion-item ng-show="!noClosedTicket" ng-repeat="ticket in lastClosedTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})">
                             {{ticket.title}}<br />
-                            By {{ticket.creator.fullname}}
+                            <p>
+                                By {{ticket.creator.fullname}}<br />
+                                Created: {{ticket.createdAt.date}}<br />
+                                <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt.date}}</span>
+                            </p>
                         </ion-item>
                     </ion-list>
 
@@ -93,7 +102,11 @@
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
                                   ng-if="ticket.creator.id == userDatas.id">
                             {{ticket.title}}<br />
-                            By {{ticket.creator.fullname}}
+                            <p>
+                                By {{ticket.creator.fullname}}<br />
+                                Created: {{ticket.createdAt.date}}<br />
+                                <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt.date}}</span>
+                            </p>
                         </ion-item>
                     </ion-list>
 

@@ -73,17 +73,31 @@
             <ion-input class="item item-input">
                 <ion-label>Old Safe Password</ion-label>
                 <input type="password"
-                       placeholder="My Project's old safe password'"
+                       placeholder="My Project's old safe password"
                        name="project_oldPassword"
                        ng-model="project.oldPassword" />
             </ion-input>
             <ion-input class="item item-input">
-                <ion-label>Safe Password</ion-label>
+                <ion-label>New Safe Password</ion-label>
                 <input type="password"
-                       placeholder="My Project's safe password'"
-                       name="project_password"
-                       ng-model="project.password" />
+                       placeholder="My Project's new safe password"
+                       name="project_newPassword"
+                       ng-model="project.newPassword" />
             </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Confirm Safe Password</ion-label>
+                <input type="password"
+                       placeholder="My Project's safe password again"
+                       name="project_confirmPassword"
+                       ng-model="project.confirmPassword" />
+            </ion-input>
+            <span ng-show="project.newPassword != project.confirmPassword">Passwords do not match.</span>
+            <!--<span ng-show="profile_form.profile_confirmPassword.$dirty && profile_form.profile_confirmPassword.$error.passwordVerify">Passwords do not match.</span>-->
+            <a class="button button-block button-positive" ng-disabled="(project.newPassword != project.confirmPassword) || (project.newPassword && !project.oldPassword) || (!project.newPassword && project.oldPassword))" ng-click="EditProject()">
+                <!--profile_form.$invalid-->
+                Save
+            </a>
+
             <a class="button button-block button-positive" ng-click="EditProject()">
                 Save
             </a>

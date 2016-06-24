@@ -3,15 +3,11 @@ body {
     cursor: url('http://ionicframework.com/img/finger.png'), auto;
 }
 
-/* Bigger font size on titles on tickets */
-.ticket_title {
-    font-size: 16px;
-}
-
 /* Text areas auto adapting screen */
 textarea {
     width: 100%;
     height: auto;
+    border: 1px solid #EEEEEE;
 }
 
 /* icons in item dividers */
@@ -73,6 +69,15 @@ textarea {
 
 .platform-android .action-sheet-has-icons .button {
     padding-left: 56px;
+}
+
+input[disabled],
+select[disabled],
+textarea[disabled],
+input[readonly]:not(.cloned-text-input),
+textarea[readonly]:not(.cloned-text-input),
+select[readonly] {
+    background-color: white;
 }
 
 canvas {

@@ -10,7 +10,7 @@
                        on-refresh="doRefresh()">
         </ion-refresher>
 
-        <!-- Project information -->
+        <!-- Profile information -->
         <div class="item item-divider"></div>
         <p>Type your personal informations</p>
         <form name="profile_form">
@@ -71,23 +71,28 @@
                        ng-model="profileInfo.twitter" />
             </ion-input>
             <ion-input class="item item-input">
-                <ion-label>Password</ion-label>
+                <ion-label>Old Password</ion-label>
                 <input type="password"
-                       placeholder="My password'"
-                       name="profile_password"
-                       ng-model="profileInfo.password" />
+                       placeholder="My old password'"
+                       name="profile_oldPassword"
+                       ng-model="profileInfo.oldPassword" />
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>New Password</ion-label>
+                <input type="password"
+                       placeholder="My new password'"
+                       name="profile_newPassword"
+                       ng-model="profileInfo.newPassword" />
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Confirm password</ion-label>
                 <input type="password"
-                       placeholder="Confirm password'"
+                       placeholder="Confirm new password'"
                        name="profile_confirmPassword"
-                       ng-model="profileInfo.confirmPassword"
-                        /><!-- password-verify="profileInfo.password" -->
+                       ng-model="profileInfo.confirmPassword"/>
             </ion-input>
-            <span ng-show="profileInfo.password != profileInfo.confirmPassword">Passwords do not match.</span>
-            <!--<span ng-show="profile_form.profile_confirmPassword.$dirty && profile_form.profile_confirmPassword.$error.passwordVerify">Passwords do not match.</span>-->
-            <a class="button button-block button-positive" ng-disabled="profileInfo.password != profileInfo.confirmPassword" ng-click="EditProfile()"><!--profile_form.$invalid-->
+            <span ng-show="profileInfo.newPassword != profileInfo.confirmPassword">Passwords do not match.</span>
+            <a class="button button-block button-positive" ng-disabled="(profileInfo.newPassword != profileInfo.confirmPassword) || (profileInfo.newPassword && !profileInfo.oldPassword) || (!profileInfo.newPassword && profileInfo.oldPassword)" ng-click="EditProfile()"><!--profile_form.$invalid-->
                 Save
             </a>
         </form>

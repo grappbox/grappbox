@@ -5,7 +5,7 @@
 <ion-view>
     <ion-nav-title>Tags</ion-nav-title>
     <ion-content overflow-scroll="false">
-        
+
         <!-- Refresher -->
         <ion-refresher pulling-text="Pull to refresh..."
                        on-refresh="doRefresh()">
@@ -17,7 +17,12 @@
             <ion-item ng-show="noTag">{{noTag}}</ion-item>
             <ion-item ng-show="!noTag"
                       ng-repeat="tag in tagsOnProject"
-                      ng-click="showTagActionSheet(tag.id)">{{ tag.name }}
+                      ui-sref="app.editTag({tagId: tag.id, projectId: projectId})">
+                {{ tag.name }}
+                <ion-option-button class="button-assertive"
+                                   ng-click="DeleteTagFromProject(tag.id);">
+                    Delete
+                </ion-option-button>
             </ion-item>
         </ion-list>
 

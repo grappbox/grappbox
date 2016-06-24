@@ -45,46 +45,22 @@ angular.module('GrappBox.controllers')
     }
     $scope.GetTagsOnProject();
 
-    $scope.tagToDelete = {};
-    $scope.tagClickedId = {};
-    // Delete tag action sheet
-    $scope.showTagActionSheet = function (tag_id) {
-        $scope.tagToDelete.id = tag_id;
-        $scope.tagClickedId = tag_id;
-        // Show the action sheet
-        $ionicActionSheet.show({
-            buttons: [{ text: 'Edit tag' }],
-            destructiveText: 'Delete tag',
-            titleText: 'Tag action',
-            cancelText: 'Cancel',
-            buttonClicked: function (index) {
-                $state.go('app.editTag', { tagId: $scope.tagClickedId, projectId: $scope.projectId });
-                return true;
-            },
-            destructiveButtonClicked: function () {
-                $scope.DeleteTagFromProject();
-                return true;
-            }
-        });
-    }
-
     /*
     ** Delete tag from project
     ** Method: DELETE
     */
     $scope.deleteTagFromProjectData = {};
-    $scope.DeleteTagFromProject = function () {
+    $scope.DeleteTagFromProject = function (tagId) {
         //$rootScope.showLoading();
-        console.log($scope.tagToDelete.id);
         Bugtracker.DeleteTagFromProject().delete({
             token: $rootScope.userDatas.token,
-            tagId: $scope.tagToDelete.id
+            tagId: tagId
         }).$promise
             .then(function (data) {
                 console.log('Delete tag from project successful !');
                 $scope.deleteTagData = data.data;
                 Toast.show("Tag deleted");
-                $scope.GetTicketInfo();
+                $scope.GetTagsOnProject();
             })
             .catch(function (error) {
                 console.error('Delete tag from project failed ! Reason: ' + error.status + ' ' + error.statusText);

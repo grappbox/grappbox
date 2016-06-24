@@ -73,13 +73,13 @@ angular.module('GrappBox.controllers')
     ]
 
     // Cancel interval when quitting view
-    $scope.$on("$ionicView.leave", function () {
+    /*$scope.$on("$ionicView.leave", function () {
         $interval.cancel(myInterval);
     });
 
     var myInterval = $interval(function () {
         $scope.OpenWhiteboard();
-    }, 3000);
+    }, 3000);*/
 
     // Button move
     $scope.moveOn = function (moveOn) {
@@ -228,7 +228,6 @@ angular.module('GrappBox.controllers')
                 'rx': Math.abs(width / 2),
                 'ry': Math.abs(height / 2)
             });
-
             canvas.renderAll();
         });
 
@@ -287,11 +286,6 @@ angular.module('GrappBox.controllers')
             width = mouse_pos.x - mouse_pos_init.x;
             height = mouse_pos.y - mouse_pos_init.y;
             points = [
-                /*{ x: mouse_pos_init.x + width / 2, y: mouse_pos_init.y },
-                { x: mouse_pos.x, y: mouse_pos_init.y + height / 2 },
-                { x: mouse_pos_init.x + width / 2, y: mouse_pos.y },
-                { x: mouse_pos_init.x, y: mouse_pos_init.y + height / 2 }*/
-
                 { x: width / 2, y: 0 },
                 { x: mouse_pos.x - mouse_pos_init.x, y: height / 2 },
                 { x: width / 2, y: mouse_pos.y - mouse_pos_init.y },
@@ -388,6 +382,9 @@ angular.module('GrappBox.controllers')
         $ionicScrollDelegate.freezeScroll(true);
 
         $scope.textAdd = {};
+        $scope.textAdd.fontWeight = 'normal';
+        $scope.textAdd.fontStyle = 'normal';
+        $scope.textAdd.fontSize = 30;
 
         //Ionic popup used to prompt user to enter text
         var myPopup = $ionicPopup.show({
@@ -415,27 +412,19 @@ angular.module('GrappBox.controllers')
             canvas.observe('mouse:down', function (e) {
                 mouse_pos = canvas.getPointer(e.e);
                 canvas.add(new fabric.Text(input, {
-                    top: mouse_pos.y - 15,
-                    left: mouse_pos.x - 15,
+                    top: mouse_pos.y,
+                    left: mouse_pos.x,
                     fontFamily: 'Roboto',
-                    fontStyle: function () {
-                        if (!$scope.textAdd.fontStyle)
-                            return 'normal'; //Default style
-                        return $scope.textAdd.fontStyle;
-                    },
-                    fontSize: function () {
-                        if (!$scope.textAdd.fontSize)
-                            return 30; //Default size
-                        return $scope.textAdd.fontSize;
-                    },
+                    fontWeight: $scope.textAdd.fontWeight,
+                    fontStyle: $scope.textAdd.fontStyle,
+                    fontSize: $scope.textAdd.fontSize,
                     fill: $scope.brushcolor, //Use the current selected color
                     selectable: false, //Make the text draggable
                     evented: false
                 }));
                 var positionStart = { "x": mouse_pos.x, "y": mouse_pos.y };
                 var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
-
-                $scope.PushOnWhiteboard("TEXT", $scope.brushcolor, "", "", positionStart, positionEnd, "", "", input, $scope.textAdd.fontSize, $scope.textAdd.fontStyle == "italic" ? true : false, false);
+                $scope.PushOnWhiteboard("TEXT", $scope.brushcolor, "", "", positionStart, positionEnd, "", "", input, $scope.textAdd.fontSize, $scope.textAdd.fontStyle == "italic" ? true : false, $scope.textAdd.fontWeight == "bold" ? true : false);
             });
             //$scope.popoverText.hide();
         });
@@ -482,7 +471,6 @@ angular.module('GrappBox.controllers')
     $scope.openWhiteboardData = {};
     $scope.objects = {};
     $scope.OpenWhiteboard = function () {
-        console.log("OPENWHITEBOARD | WHITEBOARDID = " + $scope.whiteboardId);
         //$rootScope.showLoading();
         Whiteboard.Open().get({
             id: $scope.whiteboardId,
@@ -599,6 +587,7 @@ angular.module('GrappBox.controllers')
                     left: obj[i].object.positionStart.x,
                     fontFamily: 'Roboto',
                     fontStyle: obj[i].object.isItalic == true ? "italic" : "normal",
+                    fontWeight: obj[i].object.isBold == true ? "bold" : "normal",
                     fontSize: obj[i].object.size,
                     fill: obj[i].object.color,
                     selectable: false,
@@ -618,6 +607,7 @@ angular.module('GrappBox.controllers')
     $scope.pushOnWhiteboardData = {};
     $scope.PushOnWhiteboard = function (type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold) {
         //$rootScope.showLoading();
+        canvas.off('mouse:up');
         Whiteboard.Push().update({
             id: $scope.whiteboardId,
             data: {

@@ -63,7 +63,7 @@ angular.module('GrappBox.controllers')
                 //$rootScope.hideLoading();
             })
     }
-    $scope.GetProjects();
+    //$scope.GetProjects();
 
     /*
     ** Get Next Meetings
@@ -96,7 +96,7 @@ angular.module('GrappBox.controllers')
                 //$rootScope.hideLoading();
             })
     }
-    $scope.GetNextMeetings();
+    //$scope.GetNextMeetings();
 
     /*
     ** Get current tasks
@@ -126,7 +126,7 @@ angular.module('GrappBox.controllers')
                 //$rootScope.hideLoading();
             })
     }
-    $scope.GetCurrentTasks();
+    //$scope.GetCurrentTasks();
 
     /*
     ** Get user connected roles
@@ -157,5 +157,5 @@ angular.module('GrappBox.controllers')
                 //$rootScope.hideLoading();
             })
     }
-    $scope.GetUserConnectedRoles();
+    //$scope.GetUserConnectedRoles();
 })

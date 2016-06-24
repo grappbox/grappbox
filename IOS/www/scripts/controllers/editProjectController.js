@@ -55,8 +55,8 @@ angular.module('GrappBox.controllers')
                 email: $scope.project.email ? $scope.project.email : "",
                 facebook: $scope.project.facebook ? $scope.project.facebook : "",
                 twitter: $scope.project.twitter ? $scope.project.twitter : "",
-                password: $scope.project.password ? $scope.project.password : "",
-                oldPassword: $scope.project.oldPassword ? $scope.project.oldPassword : ""
+                password: $scope.project.password ? $scope.project.password && $scope.project.oldPassword : "",
+                oldPassword: $scope.project.oldPassword ? $scope.project.oldPassword && $scope.project.password : ""
             }
         }).$promise
             .then(function (data) {

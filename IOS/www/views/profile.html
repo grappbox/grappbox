@@ -14,7 +14,8 @@
         <div class="item item-divider">Personal information</div>
         <ion-list>
             <ion-item class="item-body">
-                <img class="full-image" ng-src="#" />
+                <!--<img class="full-image" ng-src="#" />-->
+                <img ng-src="{{ profileInfo.avatar ? profileInfo.avatar : './images/noavatar.png' }}" />
                 <p ng-show="profileInfo.firstname"><strong>First Name: </strong> {{ profileInfo.firstname }}</p>
                 <p ng-show="profileInfo.lastname"><strong>Last Name: </strong> {{ profileInfo.lastname }}</p>
                 <p ng-show="profileInfo.birthday.date"><strong>birthday: </strong> {{ profileInfo.birthday.date }}</p>
@@ -32,7 +33,7 @@
         </ion-list>
 
         <!-- Projects list -->
-        <div class="item item-divider">My projects list</div>
+        <!--<div class="item item-divider">My projects list</div>
         <ion-list>
             <ion-item ng-show="noProject">{{noProject}}</ion-item>
             <ion-item ng-show="!noProject"
@@ -41,10 +42,10 @@
                       ui-sref="app.project({projectId: project.project_id})">
                 <h2>{{ project.name }}</h2>
             </ion-item>
-        </ion-list>
+        </ion-list>-->
 
         <!-- Next meetings -->
-        <div class="item item-divider">Next Meetings</div>
+        <!--<div class="item item-divider">Next Meetings</div>
         <ion-list>
             <ion-item ng-show="noMeeting"></ion-item>
             <ion-item ng-show="!noMeeting" class="item-body">
@@ -59,10 +60,10 @@
                     <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.end_date.date }}</p>
                 </a>
             </ion-item>
-        </ion-list>
+        </ion-list>-->
 
         <!-- Current and next tasks -->
-        <div class="item item-divider">Current task</div>
+        <!--<div class="item item-divider">Current task</div>
         <ion-list>
             <ion-item class="item-body">
                 <ion-item ng-show="noCurrentTask">{{noCurrentTask}}</ion-item>
@@ -75,10 +76,10 @@
                     <p><strong>Due: </strong> {{ currentTask.due_date.date }}</p>
                 </ion-item>
             </ion-item>
-        </ion-list>
+        </ion-list>-->
 
         <!-- Roles of the user currently connected on different projects -->
-        <div class="item item-divider">My roles</div>
+        <!--<div class="item item-divider">My roles</div>
         <ion-list>
             <ion-item ng-show="noRole">{{noRole}}</ion-item>
             <ion-item ng-show="!noRole"
@@ -86,6 +87,6 @@
                       ui-sref="app.project({projectId: role.project.id})">
                 {{ role.role.name }} on {{ role.project.name }}
             </ion-item>
-        </ion-list>
+        </ion-list>-->
     </ion-content>
 </ion-view>
