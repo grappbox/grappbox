@@ -73,13 +73,13 @@ angular.module('GrappBox.controllers')
     ]
 
     // Cancel interval when quitting view
-    /*$scope.$on("$ionicView.leave", function () {
+    $scope.$on("$ionicView.leave", function () {
         $interval.cancel(myInterval);
     });
 
     var myInterval = $interval(function () {
         $scope.OpenWhiteboard();
-    }, 3000);*/
+    }, 3000);
 
     // Button move
     $scope.moveOn = function (moveOn) {
