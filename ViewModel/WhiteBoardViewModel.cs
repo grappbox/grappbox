@@ -25,6 +25,12 @@ using Windows.UI.Popups;
 
 namespace GrappBox.ViewModel
 {
+    #region Enum
+    public enum WhiteboardTool
+    {
+        EXPLORE = 0, ERAZER, TEXT, RECTANGLE, ELLIPSE, LOZENGE, LINE, HANDWRITING
+    }
+    #endregion Enum
     class WhiteBoardViewModel : ViewModelBase
     {
         private WhiteBoardModel model;
@@ -33,84 +39,26 @@ namespace GrappBox.ViewModel
         private ObservableCollection<WhiteboardObject> _objectsList;
         private ObservableCollection<ShapeControler> _shapeList;
         private Dictionary<WhiteboardObject, ShapeControler> _map;
-        private int _id;
         private DateTime _lastUpdate;
+
+        #region BindedPropertiesDeclaration
+        private ShapeControler _currentDraw;
+        private WhiteboardTool _currentTool;
+        private SolidColorBrush _strokeColor;
+        private SolidColorBrush _fillColor;
+        private double _strokeThickness;
+        #endregion BindedPropertiesDeclaration
+
         public WhiteBoardViewModel()
         {
-            model = new WhiteBoardModel();
+            _currentDraw = null;
+            _currentTool = WhiteboardTool.EXPLORE;
+            _strokeThickness = 1;
+            _strokeColor = new SolidColorBrush();
+            _strokeColor.Color = Colors.Black;
+            _fillColor = new SolidColorBrush();
+            _fillColor.Color = Colors.Transparent;
         }
-
-        #region API
-        public async System.Threading.Tasks.Task pullDraw()
-        {
-            ApiCommunication api = ApiCommunication.GetInstance();
-            Dictionary<string, object> props = new Dictionary<string, object>();
-
-            props.Add("token", User.GetUser().Token);
-            props.Add("lastUpdate", _lastUpdate);
-            HttpResponseMessage res = await api.Post(props, "whiteboard/pulldraw/" + _id);
-            if (res.IsSuccessStatusCode)
-            {
-                _pullModel = api.DeserializeJson<PullModel>(await res.Content.ReadAsStringAsync());
-                foreach (WhiteboardObject item in _pullModel.addObjects)
-                {
-                    //ajouter les objets au whiteboard
-                }
-                foreach (WhiteboardObject item in _pullModel.delObjects)
-                {
-                    //remove les objets au whiteboard
-                }
-                _lastUpdate = new DateTime();
-            }
-            else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
-            }
-            props.Clear();
-        }
-
-        public async System.Threading.Tasks.Task pushDraw()
-        {
-            ApiCommunication api = ApiCommunication.GetInstance();
-            Dictionary<string, object> props = new Dictionary<string, object>();
-            props.Add("token", User.GetUser().Token);
-            props.Add("modification", "add");
-            props.Add("object", _objectModel);
-            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + _id);
-            if (res.IsSuccessStatusCode)
-            {
-                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
-                _objectsList.Add(tmp);
-                //ajouter à la map?
-            }
-            else {
-                //remove l'objet du whiteboard car fail
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
-            }
-        }
-
-        public async System.Threading.Tasks.Task deleteObject()
-        {
-            ApiCommunication api = ApiCommunication.GetInstance();
-            Dictionary<string, object> props = new Dictionary<string, object>();
-            props.Add("token", User.GetUser().Token);
-            props.Add("whiteboardId", _id);
-            //props.Add("center", ); centre du pinceau
-            //props.Add("radius", ); radius du pinceau
-            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + _id);
-            if (res.IsSuccessStatusCode)
-            {
-                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
-                _objectsList.Remove(tmp);
-                //retirer à la map? + delete objet sur canvas
-            }
-            else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
-            }
-        }
-        #endregion API
 
         #region ColorPansLogic
         private ColorMod _selectedColormod;
@@ -266,33 +214,34 @@ namespace GrappBox.ViewModel
         }
         #endregion TextPanLogic
 
-        #region ModelBindedPropertiesNotifiers
+        #region BindedPropertiesNotifiers
         public WhiteboardTool CurrentTool
         {
-            get { return model.CurrentTool; }
-            set { model.CurrentTool = value; NotifyPropertyChanged("CurrentTool"); }
+            get { return _currentTool; }
+            set { _currentTool = value; NotifyPropertyChanged("CurrentTool"); }
         }
         public ShapeControler CurrentDraw
         {
-            get { return model.CurrentDraw; }
-            set { model.CurrentDraw = value; NotifyPropertyChanged("CurrentDraw"); }
+            get { return _currentDraw; }
+            set { _currentDraw = value; NotifyPropertyChanged("CurrentDraw"); }
         }
+
         public SolidColorBrush StrokeColor
         {
-            get { return model.StrokeColor; }
-            set { model.StrokeColor = value; NotifyPropertyChanged("StrokeColor"); }
+            get { return _strokeColor; }
+            set { _strokeColor = value; NotifyPropertyChanged("StrokeColor"); }
         }
         public SolidColorBrush FillColor
         {
-            get { return model.FillColor; }
-            set { model.FillColor = value; NotifyPropertyChanged("FillColor"); }
+            get { return _fillColor; }
+            set { _fillColor = value; NotifyPropertyChanged("FillColor"); }
         }
         public double StrokeThickness
         {
-            get { return model.StrokeThickness; }
-            set { model.StrokeThickness = value; NotifyPropertyChanged("StrokeThickness"); }
+            get { return _strokeThickness; }
+            set { _strokeThickness = value; NotifyPropertyChanged("StrokeThickness"); }
         }
-        #endregion ModelBindedPropertiesNotifiers
+        #endregion
 
         #region Commands
         #region toolsCommand
@@ -351,7 +300,6 @@ namespace GrappBox.ViewModel
             }
             if (CurrentTool == WhiteboardTool.ERAZER)
             {
-                model.ErazeShape(p);
             }
         }
 
@@ -403,5 +351,96 @@ namespace GrappBox.ViewModel
             get { return _objectsList; }
             set { if (value != null) _objectsList = value; }
         }
+
+        #region API
+        public async System.Threading.Tasks.Task OpenWhiteboard(int whiteboardId)
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            object[] token = { User.GetUser().Token, whiteboardId };
+            HttpResponseMessage res = await api.Get(token, "whiteboard/open");
+            if (res.IsSuccessStatusCode)
+            {
+                Debug.WriteLine(await res.Content.ReadAsStringAsync());
+                model = api.DeserializeJson<WhiteBoardModel>(await res.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            }
+        }
+
+        public async System.Threading.Tasks.Task pullDraw()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            props.Add("token", User.GetUser().Token);
+            props.Add("lastUpdate", _lastUpdate);
+            HttpResponseMessage res = await api.Post(props, "whiteboard/pulldraw/" + model.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                _pullModel = api.DeserializeJson<PullModel>(await res.Content.ReadAsStringAsync());
+                foreach (WhiteboardObject item in _pullModel.addObjects)
+                {
+                    //ajouter les objets au whiteboard
+                }
+                foreach (WhiteboardObject item in _pullModel.delObjects)
+                {
+                    //remove les objets au whiteboard
+                }
+                _lastUpdate = new DateTime();
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+
+        public async System.Threading.Tasks.Task pushDraw()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("token", User.GetUser().Token);
+            props.Add("modification", "add");
+            props.Add("object", _objectModel);
+            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
+                _objectsList.Add(tmp);
+                //ajouter à la map?
+            }
+            else
+            {
+                //remove l'objet du whiteboard car fail
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task deleteObject()
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("token", User.GetUser().Token);
+            props.Add("whiteboardId", model.Id);
+            //props.Add("center", ); centre du pinceau
+            //props.Add("radius", ); radius du pinceau
+            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
+                _objectsList.Remove(tmp);
+                //retirer à la map? + delete objet sur canvas
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+        #endregion API
     }
 }

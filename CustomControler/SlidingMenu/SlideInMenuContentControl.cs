@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Media;
 namespace GrappBox.CustomControler.SlidingMenu
 {
     [TemplatePart(Name = ElementLeftSideMenu, Type = typeof(FrameworkElement))]
-    [TemplatePart(Name = ElementContentSelector, Type = typeof(Grid))]
+    [TemplatePart(Name = ElementMenuBar, Type = typeof(Grid))]
     [TemplatePart(Name = ElementDisableContentOverlay, Type = typeof(Border))]
     [TemplatePart(Name = ElementMenuButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementDashboardButton, Type = typeof(Button))]
@@ -51,7 +51,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             DependencyProperty.Register("LeftSideMenuWidth", typeof(double), typeof(SlideInMenuContentControl), new PropertyMetadata(250.0));
 
         private const string ElementLeftSideMenu = "ContentLeftSideMenu";
-        private const string ElementContentSelector = "ContentSelector";
+        private const string ElementMenuBar = "Menubar";
         private const string ElementDisableContentOverlay = "DisableContentOverlay";
 
         private const string ElementMenuButton = "MenuButton";
@@ -74,7 +74,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementProjectSettingsPanel = "ProjectSettingsPanel";
 
         private FrameworkElement leftSideMenu;
-        private Grid contentSelector;
+        private StackPanel menuBar;
         private Border disableContentOverlay;
         private Button menuButton;
         private Button dashboardButton;
@@ -109,7 +109,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         {
             base.OnApplyTemplate();
 
-            contentSelector = GetTemplateChild(ElementContentSelector) as Grid;
+            menuBar = GetTemplateChild(ElementMenuBar) as StackPanel;
             leftSideMenu = GetTemplateChild(ElementLeftSideMenu) as FrameworkElement;
             disableContentOverlay = GetTemplateChild(ElementDisableContentOverlay) as Border;
             menuButton = GetTemplateChild(ElementMenuButton) as Button;
@@ -136,8 +136,8 @@ namespace GrappBox.CustomControler.SlidingMenu
             buttons.Add(GetTemplateChild(ElementProjectSettingsPanel) as StackPanel);
             buttons.Add(GetTemplateChild(ElementWhiteboardPanel) as StackPanel);
             
-            contentSelector.ManipulationDelta += ContentSelector_ManipulationDelta;
-            contentSelector.ManipulationCompleted += ContentSelector_ManipulationCompleted;
+            menuBar.ManipulationDelta += ContentSelector_ManipulationDelta;
+            menuBar.ManipulationCompleted += ContentSelector_ManipulationCompleted;
 
             menuButton.Click += MenuButton_Click; ;
             dashboardButton.Tapped += DashboardButton_Tapped;

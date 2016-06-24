@@ -11,11 +11,13 @@ namespace GrappBox.Model.Whiteboard
     {
         [JsonProperty("id")]
         public int Id { get; set; }
-
         [JsonProperty("whiteboardId")]
         public int WhiteboardId { get; set; }
-
+        [JsonProperty("createdAt")]
+        public DateModel CreatedAt { get; set; }
+        [JsonProperty("deledtedAt")]
+        public DateModel DeledtedAt { get; set; }
         [JsonProperty("object")]
-        public ObjectModel Object { get; set; }
+        public List<ObjectModel> Object { get; set; }
     }
 }

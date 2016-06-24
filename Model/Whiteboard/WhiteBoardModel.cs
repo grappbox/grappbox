@@ -1,4 +1,6 @@
 ﻿using GrappBox.ApiCom;
+using GrappBox.Model.Whiteboard;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,67 +15,26 @@ using Windows.UI.Xaml.Media;
 
 namespace GrappBox.Model
 {
-    #region Enum
-    enum WhiteboardTool
-    {
-        EXPLORE = 0, ERAZER, TEXT, RECTANGLE, ELLIPSE, LOZENGE, LINE, HANDWRITING
-    }
-    #endregion Enum
+
     class WhiteBoardModel
     {
-        private int id;
-        #region BindedPropertiesDeclaration
-        private ShapeControler _currentDraw;
-        private WhiteboardTool _currentTool;
-        #endregion BindedPropertiesDeclaration
-        public WhiteboardTool CurrentTool
-        {
-            get { return _currentTool; }
-            set { _currentTool = value;}
-        }
-        public ShapeControler CurrentDraw
-        {
-            get { return _currentDraw; }
-            set { _currentDraw = value;}
-        }
-        private SolidColorBrush _strokeColor;
-        private SolidColorBrush _fillColor;
-        private double _strokeThickness;
-        public SolidColorBrush StrokeColor
-        {
-            get { return _strokeColor; }
-            set { _strokeColor = value; }
-        }
-        public SolidColorBrush FillColor
-        {
-            get { return _fillColor; }
-            set { _fillColor = value; }
-        }
-        public double StrokeThickness
-        {
-            get { return _strokeThickness; }
-            set { _strokeThickness = value; }
-        }
-        public WhiteBoardModel()
-        {
-            _currentDraw = null;
-            _currentTool = WhiteboardTool.EXPLORE;
-            _strokeThickness = 1;
-            _strokeColor = new SolidColorBrush();
-            _strokeColor.Color = Colors.Black;
-            _fillColor = new SolidColorBrush();
-            _fillColor.Color = Colors.Transparent;
-        }
-
-        internal void ErazeShape(Point p)
-        {
-            ApiCommunication com = ApiCommunication.GetInstance();
-            JObject post =
-                new JObject(
-                    new JProperty("id", id),
-                    new JProperty("_token", "token"),
-                    new JProperty("modification", "del"),
-                    new JProperty("object_id", "OID"));
-        }
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("projectId")]
+        public int ProjectId { get; set; }
+        [JsonProperty("userId")]
+        public int UserId { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("updatorId")]
+        public int UpdatorId { get; set; }
+        [JsonProperty("updatedAt")]
+        public DateModel UpdatedAt { get; set; }
+        [JsonProperty("createdAt")]
+        public DateModel CreatedAt { get; set; }
+        [JsonProperty("deledtedAt")]
+        public DateModel DeledtedAt { get; set; }
+        [JsonProperty("content")]
+        public List<ObjectModel> Object { get; set; }
     }
 }

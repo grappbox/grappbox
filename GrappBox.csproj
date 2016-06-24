@@ -95,7 +95,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\TextInputPopUp.cs" />
+    <Compile Include="CustomControler\InputPopUp.xaml.cs">
+      <DependentUpon>InputPopUp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControler\Whiteboard\BrushPan.xaml.cs">
       <DependentUpon>BrushPan.xaml</DependentUpon>
     </Compile>
@@ -252,6 +254,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomControler\InputPopUp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControler\Whiteboard\BrushPan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -290,6 +296,11 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Ressources\CustomStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Ressources\StringResources_EN.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

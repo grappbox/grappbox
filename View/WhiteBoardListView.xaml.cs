@@ -1,12 +1,15 @@
-﻿using GrappBox.Resources;
+﻿using GrappBox.Model;
+using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -69,13 +72,23 @@ namespace GrappBox.View
         }
         #endregion
 
-        private async void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
+
+        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            //WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
-            //if (WhiteboardNameInput.ShowDialog() == true)
-            //{
-            //    await wblm.CreateWhiteboard(WhiteboardNameInput.ResultText);
-            //}
+            Popup.IsOpen = true;
+            WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
+            if (WhiteboardNameInput.ShowDialog() == true)
+            {
+                await wblm.CreateWhiteboard(WhiteboardNameInput.ResultText);
+            }
+        }
+
+        private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView lv = sender as ListView;
+            WhiteBoardListModel wblm = lv.SelectedItem as WhiteBoardListModel;
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                Frame.Navigate(typeof(WhiteBoardView), wblm.Id));
         }
     }
 }

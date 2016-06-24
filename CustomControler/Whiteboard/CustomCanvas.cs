@@ -1,4 +1,5 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.ViewModel;
+using GrappBox.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

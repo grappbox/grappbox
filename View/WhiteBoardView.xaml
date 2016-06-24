@@ -6,20 +6,18 @@
     xmlns:customControler="using:GrappBox.CustomControler"
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     xmlns:local="using:GrappBox.View"
-    xmlns:model="using:GrappBox.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="GrappBox.ViewModel.WhiteBoardViewModel">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.BottomAppBar>
         <CommandBar x:Name="WhiteBoardCommandBar" ClosedDisplayMode="Compact">
             <CommandBar.Content>toto</CommandBar.Content>
             <AppBarButton Label="Explore"  Command="{Binding ToolCommand}" Icon="TouchPointer">
                 <AppBarButton.CommandParameter>
-                    <model:WhiteboardTool>EXPLORE</model:WhiteboardTool>
+                    <viewModel:WhiteboardTool>EXPLORE</viewModel:WhiteboardTool>
                 </AppBarButton.CommandParameter>
             </AppBarButton>
             <AppBarToggleButton x:Name="ColorBtn" Label="Color" IsChecked="{Binding ColorPanOpened, Mode=TwoWay}" Command="{Binding ColorButtonTapped}">
@@ -39,37 +37,37 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton Label="Erase"  Command="{Binding ToolCommand}" Icon="TouchPointer">
                     <AppBarButton.CommandParameter>
-                        <model:WhiteboardTool>ERAZER</model:WhiteboardTool>
+                        <viewModel:WhiteboardTool>ERAZER</viewModel:WhiteboardTool>
                     </AppBarButton.CommandParameter>
                 </AppBarButton>
                 <AppBarButton Label="Rectangle"  Command="{Binding ToolCommand}">
                     <AppBarButton.CommandParameter>
-                        <model:WhiteboardTool>RECTANGLE</model:WhiteboardTool>
+                        <viewModel:WhiteboardTool>RECTANGLE</viewModel:WhiteboardTool>
                     </AppBarButton.CommandParameter>
                 </AppBarButton>
                 <AppBarButton Label="Ellipse" Command="{Binding ToolCommand}">
                     <AppBarButton.CommandParameter>
-                        <model:WhiteboardTool>ELLIPSE</model:WhiteboardTool>
+                        <viewModel:WhiteboardTool>ELLIPSE</viewModel:WhiteboardTool>
                     </AppBarButton.CommandParameter>
                 </AppBarButton>
                 <AppBarButton Label="Lozenge" Command="{Binding ToolCommand}">
                     <AppBarButton.CommandParameter>
-                        <model:WhiteboardTool>LOZENGE</model:WhiteboardTool>
+                        <viewModel:WhiteboardTool>LOZENGE</viewModel:WhiteboardTool>
                     </AppBarButton.CommandParameter>
                 </AppBarButton>
                 <AppBarButton Label="Line" Command="{Binding ToolCommand}">
                     <AppBarButton.CommandParameter>
-                        <model:WhiteboardTool>LINE</model:WhiteboardTool>
+                        <viewModel:WhiteboardTool>LINE</viewModel:WhiteboardTool>
                     </AppBarButton.CommandParameter>
                 </AppBarButton>
                 <AppBarButton Label="Text" Command="{Binding ToolCommand}">
                     <AppBarButton.CommandParameter>
-                        <model:WhiteboardTool>TEXT</model:WhiteboardTool>
+                        <viewModel:WhiteboardTool>TEXT</viewModel:WhiteboardTool>
                     </AppBarButton.CommandParameter>
                 </AppBarButton>
                 <AppBarButton Label="HandWriting" Command="{Binding ToolCommand}">
                     <AppBarButton.CommandParameter>
-                        <model:WhiteboardTool>HANDWRITING</model:WhiteboardTool>
+                        <viewModel:WhiteboardTool>HANDWRITING</viewModel:WhiteboardTool>
                     </AppBarButton.CommandParameter>
                 </AppBarButton>
             </CommandBar.SecondaryCommands>
