@@ -22,6 +22,19 @@ void LoginController::login(QString name, QString password)
     END_REQUEST;
 }
 
+void LoginController::logout()
+{
+    BEGIN_REQUEST_ADV(this, "OnLoginSuccess", "OnLoginFail");
+    {
+        ADD_URL_FIELD(USER_TOKEN);
+        GET(API::DP_USER_DATA, API::GR_LOGOUT);
+    }
+    END_REQUEST;
+    _IsLoged = false;
+    emit isLogedChanged();
+    emit logoutSuccess();
+}
+
 void LoginController::OnLoginSuccess(int id, QByteArray response)
 {
     QJsonDocument doc;
@@ -78,6 +91,16 @@ void LoginController::OnUserInfoDone(int id, QByteArray response)
 }
 
 void LoginController::OnUserInfoFail(int id, QByteArray response)
+{
+
+}
+
+void LoginController::OnLogoutSuccess(int id, QByteArray response)
+{
+
+}
+
+void LoginController::OnLogoutFail(int id, QByteArray response)
 {
 
 }

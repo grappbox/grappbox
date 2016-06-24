@@ -13,6 +13,8 @@
 #include "DashboardModel.h"
 #include "EventData.h"
 #include "UserModel.h"
+#include "TimelineModel.h"
+#include "BugTrackerModel.h"
 #include "API/SDataManager.h"
 
 #define GRAPPBOX_URL "GrappBoxController"
@@ -48,6 +50,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<EventData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "EventData");
     qmlRegisterType<DashboardModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "DashboardModel");
     qmlRegisterType<UserModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "UserModel");
+    qmlRegisterType<TimelineMessageData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "TimelineMessageData");
+    qmlRegisterType<TimelineModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "TimelineModel");
+    qmlRegisterType<BugTrackerModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "BugTrackerModel");
+    qmlRegisterType<BugTrackerTicketData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "BugTrackerTicketData");
+    qmlRegisterType<BugTrackerTags>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "BugTrackerTags");
     qmlRegisterSingletonType<API::SDataManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SDataManager", qobject_datamanager_provider);
 
     QQmlApplicationEngine engine;

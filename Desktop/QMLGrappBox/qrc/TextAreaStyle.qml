@@ -59,5 +59,5 @@ Controls.TextFieldStyle {
                 ColorAnimation { duration: 200 }
             }
         }
+    }
 }
-

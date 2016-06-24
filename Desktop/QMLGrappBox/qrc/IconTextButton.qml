@@ -25,6 +25,8 @@ View {
     signal doubleClicked()
     signal pressAndHold()
 
+    width: row.implicitWidth
+
     Ink {
         id: ink
         acceptedButtons: Qt.LeftButton | Qt.RightButton

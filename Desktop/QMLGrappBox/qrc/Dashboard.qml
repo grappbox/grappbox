@@ -15,6 +15,8 @@ Item {
     function finishedLoad()
     {
         dashboardModel.loadProjectList()
+        if (SDataManager.hasProject)
+            dashboardModel.selectProject(SDataManager.project)
     }
 
     DashboardModel {
@@ -582,7 +584,7 @@ Item {
     }
 
 
-    ActionButton {
+    /*ActionButton {
         anchors {
             right: parent.right
             bottom: parent.bottom
@@ -594,7 +596,7 @@ Item {
         onClicked: {
             taskFormDialog.show()
         }
-    }
+    }*/
 
     Scrollbar {
         flickableItem: dashboardFlick

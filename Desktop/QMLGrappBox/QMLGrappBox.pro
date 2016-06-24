@@ -15,7 +15,9 @@ SOURCES += main.cpp \
     UserData.cpp \
     GanttModel.cpp \
     DashboardModel.cpp \
-    UserModel.cpp
+    UserModel.cpp \
+    TimelineModel.cpp \
+    BugTrackerModel.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
@@ -48,6 +50,8 @@ HEADERS += \
     ProjectData.h \
     DashboardModel.h \
     EventData.h \
-    UserModel.h
+    UserModel.h \
+    TimelineModel.h \
+    BugTrackerModel.h
 
 RCC_DIR = qrc

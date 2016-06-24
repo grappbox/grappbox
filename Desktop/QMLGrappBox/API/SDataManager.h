@@ -21,6 +21,7 @@
 #define PROJECT API::SDataManager::GetDataManager()->GetCurrentProject()
 
 #define BEGIN_REQUEST {QMap<QString, QVariant> __data; int __currentIndex = 0
+#define BEGIN_REQUEST_ADV(obj, onDone, onFail) BEGIN_REQUEST; SET_CALL_OBJECT(obj); SET_ON_DONE(onDone); SET_ON_FAIL(onFail)
 #define SET_ON_DONE(value) const char *__onDone = value
 #define SET_ON_FAIL(value) const char *__onFail = value
 #define SET_CALL_OBJECT(object) QObject *__callObj = object
@@ -84,6 +85,11 @@ namespace API
             END_REQUEST;
         }
 
+        Q_INVOKABLE void          changeProject()
+        {
+            setProject(nullptr);
+        }
+
         static void                Destroy();
 
 		static QJsonObject ParseMapDebug(QMap<QString, QVariant> &data);
@@ -128,9 +134,17 @@ namespace API
 
         void setProject(ProjectData *project)
         {
-            m_project = project;
-            _CurrentProject = project->id();
-            emit hasProjectChanged(hasProject());
+            if (project != nullptr)
+            {
+                m_project = project;
+                _CurrentProject = project->id();
+            }
+            else
+            {
+                m_project = new ProjectData();
+                _CurrentProject = -1;
+            }
+            SetCurrentProjectId(_CurrentProject);
             emit projectChanged(project);
         }
 
@@ -173,10 +187,11 @@ namespace API
             QVariantList list;
             for (QJsonValueRef ref : obj["array"].toArray())
             {
+                QJsonObject item = ref.toObject()["user"].toObject();
                 UserData *data = new UserData();
-                data->setId(ref.toObject()["id"].toInt());
-                data->setFirstName(ref.toObject()["firstname"].toString());
-                data->setLastName(ref.toObject()["lastname"].toString());
+                data->setId(item["id"].toInt());
+                data->setFirstName(item["firstname"].toString());
+                data->setLastName(item["lastname"].toString());
                 list.push_back(qVariantFromValue(data));
             }
             m_project->setUsers(list);

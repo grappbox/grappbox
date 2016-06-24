@@ -42,6 +42,10 @@ Window {
             controller.login(loginName.text, loginPassword.text)
             loginPage.isLoading = true
         }
+
+        onLogoutSuccess: {
+            loginPage.show()
+        }
     }
 
     View {
@@ -211,7 +215,7 @@ Window {
 ApplicationWindow {
     id: demo
 
-    title: "GrappBox"
+    title: SDataManager.hasProject ? "GrappBox - " + SDataManager.project.name : "GrappBox"
     visible: !loginPage.visible && controller.isLoged
 
     theme {
@@ -221,16 +225,16 @@ ApplicationWindow {
         tabHighlightColor: "white"
     }
 
-    property var sectionTitles: [ "Dashboard", "Calendar", "Whiteboard", "Timeline", "BugTracker", "Cloud", "Gantt" ]
+    property var sectionTitles: [ "Dashboard", "Calendar", "Whiteboard", "Timeline", "Bug Tracker", "Cloud", "Gantt" ]
 
     property string previousSelectedComponent: ""
-    property string selectedComponent: ""//sectionTitles[5]
+    property string selectedComponent: ""
 
     initialPage:
     TabbedPage {
         id: page
 
-        title: "GrappBox"
+        title: demo.selectedComponent
 
         enabled: !loginPage.visible
 
@@ -264,15 +268,37 @@ ApplicationWindow {
                     demo.previousSelectedComponent = demo.selectedComponent
                     demo.selectedComponent = "UserSettings"
                 }
+            },
+
+            Action {
+                iconName: "action/work"
+                name: "Change project"
+
+                onTriggered: {
+                    SDataManager.changeProject()
+                    demo.selectedComponent = "Dashboard"
+                }
+            },
+
+            Action {
+                iconName: "action/power_settings_new"
+                name: "Logout"
+
+                onTriggered: {
+                    controller.logout();
+                }
             }
+
         ]
 
         backAction: navDrawer.action
 
         NavigationDrawer {
             id: navDrawer
-
-            enabled: page.width < Units.dp(1000)
+            anchors.topMargin: Units.dp(48)
+            showing: false
+            overlayColor: "transparent"
+            dismissOnTap: demo.width < Units.dp(1100)
 
             Flickable {
                 anchors.fill: parent
@@ -283,8 +309,94 @@ ApplicationWindow {
                     id: content
                     anchors.fill: parent
 
-                    ListItem.Subheader {
-                       text: "Menu"
+                    Rectangle {
+
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        height: infoMenuColumn.implicitHeight
+
+                        color: "#bdbdbd"
+
+                        IconButton {
+                            iconName: "hardware/keyboard_backspace"
+                            onClicked: {
+                                navDrawer.close()
+                            }
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: Units.dp(20)
+                        }
+
+                        Column {
+
+                            id: infoMenuColumn
+
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.leftMargin: Units.dp(20)
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(20)
+                            }
+
+                            Image {
+                                source: Qt.resolvedUrl("qrc:/Material/icons/action/account_circle.svg")
+                                height: Units.dp(90)
+                                width: height
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(20)
+                            }
+
+                            Label {
+                                text: SDataManager.user.lastName + " " + SDataManager.user.firstName
+                                style: "body1"
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+
+                            Label {
+                                text: SDataManager.user.mail
+                                style: "body1"
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+
+                            Label {
+                                text: SDataManager.hasProject ? SDataManager.project.name : "No project selected"
+                                style: "body2"
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+
+                            Button {
+                                text: "Change"
+                                visible: SDataManager.hasProject
+                                elevation: 1
+                                onClicked: {
+                                    SDataManager.changeProject()
+                                    demo.selectedComponent = "Dashboard"
+                                }
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+                        }
                     }
 
                     Repeater {
@@ -326,35 +438,14 @@ ApplicationWindow {
 
         Item {
 
-            Sidebar {
-                id: sidebar
-
-                expanded: !navDrawer.enabled
-
-                Column {
-                    width: parent.width
-
-                    Repeater {
-                        model: demo.sectionTitles
-                        delegate: ListItem.Standard {
-                            text: modelData
-                            selected: modelData == demo.selectedComponent
-                            enabled: SDataManager.hasProject || index <= 1
-                            onClicked: {
-                                demo.previousSelectedComponent = demo.selectedComponent
-                                demo.selectedComponent = modelData
-                            }
-                        }
-                    }
-                }
-            }
             Flickable {
                 id: flickable
                 anchors {
-                    left: sidebar.right
+                    left: parent.left
                     right: parent.right
                     top: parent.top
                     bottom: parent.bottom
+                    //leftMargin: demo.width < Units.dp(1100) ? Units.dp(0) : navDrawer.width - navDrawer.leftMargin
                 }
                 clip: true
                 contentHeight: Math.max(example.implicitHeight + 40, height)

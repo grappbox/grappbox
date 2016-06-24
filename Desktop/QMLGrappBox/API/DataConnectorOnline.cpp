@@ -38,7 +38,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_COMMENT_TIMELINE] = "timeline/getcomments";
     _GetMap[GR_USER_DATA] = "user/getuserbasicinformations";
 	_GetMap[GR_WHITEBOARD] = "";
-	_GetMap[GR_LOGOUT] = "";
+    _GetMap[GR_LOGOUT] = "accountadministration/logout";
 	_GetMap[GR_USER_SETTINGS] = "";
 	_GetMap[GR_PROJECTS_USER] = "";
 	_GetMap[GR_PROJECT_ROLE] = "";
@@ -55,7 +55,9 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_GETBUGS_STATUS] = "bugtracker/getstates";
 	_GetMap[GR_PROJECTBUGTAG_ALL] = "bugtracker/getprojecttags";
 	_GetMap[GR_PROJECT_USERS_ALL] = "projects/getusertoproject";
-	_GetMap[GR_BUG] = "bugtracker/getticket";
+    _GetMap[GR_BUG_OPEN] = "bugtracker/gettickets";
+    _GetMap[GR_BUG_CLOSED] = "bugtracker/getclosedtickets";
+    _GetMap[GR_BUG_YOURS] = "bugtracker/getticketsbyuser";
     _GetMap[GR_EVENT] = "event/getevent";
     _GetMap[GR_TYPE_EVENT] = "event/gettypes";
     _GetMap[GR_LIST_CLOUD] = "cloud/list";
@@ -69,7 +71,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "";
 	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
 	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";
-	_PostMap[PR_CREATETAG] = "bugtracker/tagcreation";
+    _PostMap[PR_CREATE_BUG_TAG] = "bugtracker/tagcreation";
     _PostMap[PR_MESSAGE_TIMELINE] = "timeline/postmessage";
     _PostMap[PR_POST_EVENT] = "event/postevent";
 	_PostMap[PR_NEW_WHITEBOARD] = "";
@@ -123,7 +125,7 @@ void DataConnectorOnline::OnResponseAPI()
 	{
 		return;
     }
-	QByteArray req = request->readAll();
+    QByteArray req = request->readAll();
     qDebug() << req;
     //FINISH_REQUEST(_Request[request], request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString(), request->errorString(), req);
 	if (request->error())
@@ -149,7 +151,6 @@ void DataConnectorOnline::OnResponseAPI()
         if (request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString() == "302")
         {
             req = QByteArray::fromStdString(request->header(QNetworkRequest::LocationHeader).toString().toStdString());
-            qDebug() << req;
         }
         if (_CallBack[request]._Request != nullptr)
             QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotSuccess, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));
@@ -184,9 +185,6 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 		break;
 	case PR_DELETEUSER_BUG:
 		reply = DeleteUserToTicket(data);
-		break;
-	case PR_CREATETAG:
-		reply = CreateTag(data);
 		break;
 	case PR_POST_EVENT:
 		reply = PostEvent(data);
@@ -304,9 +302,9 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 	case GR_PROJECT_USERS_ALL:
 		reply = GetActionDeprecated("projects/getusertoproject", data);
 		break;
-	case GR_BUG:
+/*	case GR_BUG:
 		reply = GetActionDeprecatedOld("bugtracker/getticket", data);
-		break;
+        break;*/
 	case GR_CALENDAR:
 		reply = GetActionDeprecated("planning/getmonth", data);
 		break;

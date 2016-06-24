@@ -16,6 +16,7 @@ public:
     }
 
     Q_INVOKABLE void login(QString name, QString password);
+    Q_INVOKABLE void logout();
 
     bool isLoged();
 
@@ -23,12 +24,15 @@ signals:
     void loginSuccess();
     void loginFailed();
     void isLogedChanged();
+    void logoutSuccess();
 
 public slots:
     void OnLoginSuccess(int id, QByteArray response);
     void OnLoginFailure(int id, QByteArray response);
     void OnUserInfoDone(int id, QByteArray response);
     void OnUserInfoFail(int id, QByteArray response);
+    void OnLogoutSuccess(int id, QByteArray response);
+    void OnLogoutFail(int id, QByteArray response);
 
 private:
     bool _IsLoged;

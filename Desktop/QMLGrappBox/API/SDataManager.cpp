@@ -97,6 +97,16 @@ void                       SDataManager::SetCurrentProjectId(int id)
     _CurrentProject = id;
     if (_CurrentProject < 0)
         _CurrentProject = -1;
+    else
+    {
+        BEGIN_REQUEST_ADV(this, "UpdateProjectUserDone", "UpdateProjectUserFail");
+        {
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(id);
+            GET(API::DP_PROJECT, API::GR_TEAM_OCCUPATION);
+        }
+        END_REQUEST;
+    }
     emit hasProjectChanged(hasProject());
 }
 

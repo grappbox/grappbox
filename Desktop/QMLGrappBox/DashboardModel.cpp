@@ -30,6 +30,7 @@ void DashboardModel::loadUserProjectList()
         SET_ON_DONE("OnLoadUserListDone");
         SET_ON_FAIL("OnLoadUserListFail");
         ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(PROJECT);
         GET(API::DP_PROJECT, API::GR_TEAM_OCCUPATION);
     }
     END_REQUEST;
@@ -45,6 +46,7 @@ void DashboardModel::loadNewEventList()
         SET_ON_DONE("OnLoadEventListDone");
         SET_ON_FAIL("OnLoadEventListFail");
         ADD_URL_FIELD(USER_TOKEN);
+        ADD_URL_FIELD(PROJECT);
         GET(API::DP_PROJECT, API::GR_NEXT_MEETING);
     }
     END_REQUEST;
@@ -55,6 +57,8 @@ void DashboardModel::loadNewEventList()
 void DashboardModel::selectProject(ProjectData *project)
 {
     API::SDataManager::GetDataManager()->setProject(project);
+    m_userProjectList.clear();
+    m_newEventList.clear();
     qDebug() << "Project called";
     loadUserProjectList();
     loadNewEventList();
@@ -127,7 +131,7 @@ void DashboardModel::OnLoadUserListDone(int id, QByteArray data)
     }
     for (QJsonValueRef ref : obj["array"].toArray())
     {
-        QJsonObject user = ref.toObject()["users"].toObject();
+        QJsonObject user = ref.toObject()["user"].toObject();
         UserData *data;
         bool add = true;
         for (UserData *tmp : m_userProjectList)

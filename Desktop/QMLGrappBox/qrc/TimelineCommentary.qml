@@ -8,15 +8,15 @@ import GrappBoxController 1.0
 
 Item {
 
-    property alias avatarSource: userAvatar.source
-    property alias user: userName.text
-    property alias title: titleMessage.text
-    property alias text: message.text
+    property TimelineMessageData messageData: TimelineMessageData {}
     property bool isLoading: true
 
-    property bool onEditMessage: false
+    property bool isEditingMessage: false
 
     signal close()
+    signal editMessages(int parentId, int id, string title, string message)
+    signal deleteMessage(int id, int parentId)
+    signal addComment(string message)
 
     Rectangle {
         id: background
@@ -87,6 +87,7 @@ Item {
                         id: userAvatar
                         width: 48
                         height: 48
+                        source: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
                         anchors.left: parent.left
                     }
 
@@ -95,12 +96,13 @@ Item {
                         anchors.left: userAvatar.right
                         anchors.leftMargin: Units.dp(8)
                         anchors.verticalCenter: userAvatar.verticalCenter
+                        text: messageData.associatedUser ? messageData.associatedUser.firstName : ""
                     }
 
                     Label {
                         id: date
                         anchors.right: parent.right
-                        text: "03 Feb 2016 - 08:43AM"
+                        text: Qt.formatDateTime(messageData.lastEdit, "dddd, MMMM dd - hh:mm AP")
                         anchors.verticalCenter: userAvatar.verticalCenter
                     }
                 }
@@ -113,7 +115,7 @@ Item {
                 TextField {
                     id: editTitleMessage
 
-                    visible: onEditMessage
+                    visible: isEditingMessage
                     placeholderText: "Title"
                     anchors.left: parent.left
                     anchors.right: parent.right
@@ -128,11 +130,13 @@ Item {
                 Label {
                     id: titleMessage
 
-                    visible: !onEditMessage
+                    visible: !isEditingMessage
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.leftMargin: Units.dp(16)
                     anchors.rightMargin: Units.dp(16)
+
+                    text: messageData.title
 
                     style: "title"
                 }
@@ -145,12 +149,12 @@ Item {
                 TextArea {
                     id: editMessage
 
-                    visible: onEditMessage
+                    visible: isEditingMessage
                     anchors.left: parent.left
                     anchors.leftMargin: Units.dp(16)
                     anchors.rightMargin: Units.dp(16)
                     width: parent.width - Units.dp(32)
-                    height: message.height
+                    height: Math.max(message.height, Units.dp(86))
 
                     text: message.text
 
@@ -159,11 +163,13 @@ Item {
                 Label {
                     id: message
 
-                    visible: !onEditMessage
+                    visible: !isEditingMessage
                     anchors.left: parent.left
                     anchors.leftMargin: Units.dp(16)
                     anchors.rightMargin: Units.dp(16)
                     width: parent.width - Units.dp(32)
+
+                    text: messageData.message
 
                     style: "body2"
 
@@ -184,34 +190,39 @@ Item {
                     Layout.alignment: Qt.AlignRight
 
                     IconButton {
-                        visible: !onEditMessage
+                        visible: !isEditingMessage && (messageData.associatedUser && messageData.associatedUser.id === SDataManager.user.id)
                         id: editMessageButton
                         iconName: "image/edit"
 
-                        onClicked: onEditMessage = true
+                        onClicked: isEditingMessage = true
                     }
 
                     IconButton {
-                        visible: !onEditMessage
+                        visible: !isEditingMessage && (messageData.associatedUser && messageData.associatedUser.id === SDataManager.user.id)
                         id: deleteMessageButton
                         iconName: "action/delete"
+
+                        onClicked: {
+                            deleteMessage(messageData.id, -1)
+                            close()
+                        }
                     }
 
                     IconButton {
-                        visible: !onEditMessage
+                        visible: !isEditingMessage && (messageData.associatedUser && messageData.associatedUser.id === SDataManager.user.id)
                         id: convertIntoBugButton
                         iconName: "action/bug_report"
                     }
 
                     Button {
-                        visible: onEditMessage
+                        visible: isEditingMessage
                         id: saveButton
                         text: "Save"
                         elevation: 1
 
                         onClicked: {
-                            console.log("Save !")
-                            onEditMessage = false
+                            editMessages(-1, messageData.id, editTitleMessage.text, editMessage.text)
+                            isEditingMessage = false
                         }
                     }
                 }
@@ -246,10 +257,6 @@ Item {
                     anchors.rightMargin: Units.dp(16)
                     height: newCommentary.height + Units.dp(8) + (postCommentary.visible ? postCommentary.height : 0)
 
-                    onHeightChanged: {
-                        console.log("Height equal to ", height);
-                    }
-
                     TextArea {
                         id: newCommentary
                         anchors.left: parent.left
@@ -279,6 +286,11 @@ Item {
                         anchors.top: newCommentary.bottom
                         anchors.topMargin: Units.dp(8)
                         height: Units.dp(24)
+
+                        onClicked: {
+                            addComment(newCommentary.text)
+                            newCommentary.text = ""
+                        }
                     }
                 }
 
@@ -288,7 +300,7 @@ Item {
                 }
 
                 Repeater {
-                    model: ["Comment 1", "Comment 2", "Comment 3"]
+                    model: messageData.comments
                     delegate: Item {
                         id: comment
                         anchors.left: parent.left
@@ -321,7 +333,7 @@ Item {
                                 id: nameUserCommentary
                                 anchors.left: parent.left
                                 anchors.right: parent.right
-                                text: modelData
+                                text: modelData.associatedUser.firstName
                             }
 
                             Item {
@@ -330,10 +342,11 @@ Item {
                             }
 
                             TextArea {
+                                id: editMessageComment
                                 visible: comment.onEditComment
                                 anchors.left: parent.left
                                 anchors.right: parent.right
-                                height: messageCommentary.height
+                                height: Math.max(messageCommentary.height, Units.dp(86))
                                 text: messageCommentary.text
                             }
 
@@ -342,7 +355,7 @@ Item {
                                 id: messageCommentary
                                 anchors.left: parent.left
                                 anchors.right: parent.right
-                                text: "Lorem ipsum dolor sit amet, ius novum zril oblique ut, ut consequat complectitur pro. At dicant feugait eam, ius meliore indoctum concludaturque eu, alii euripidis quaerendum pro te."
+                                text: modelData.message
                                 wrapMode: Text.Wrap
                             }
                         }
@@ -355,7 +368,7 @@ Item {
                             Layout.alignment: Qt.AlignRight
 
                             IconButton {
-                                visible: !comment.onEditComment
+                                visible: !comment.onEditComment && (modelData.associatedUser && modelData.associatedUser.id === SDataManager.user.id)
                                 id: editComment
                                 iconName: "image/edit"
 
@@ -363,9 +376,12 @@ Item {
                             }
 
                             IconButton {
-                                visible: !comment.onEditComment
+                                visible: !comment.onEditComment && (modelData.associatedUser && modelData.associatedUser.id === SDataManager.user.id)
                                 id: deleteComment
                                 iconName: "action/delete"
+                                onClicked: {
+                                    deleteMessage(modelData.id, messageData.id)
+                                }
                             }
 
                             Button {
@@ -375,7 +391,7 @@ Item {
                                 elevation: 1
 
                                 onClicked: {
-                                    console.log("Save !")
+                                    editMessages(messageData.id, modelData.id, modelData.title, editMessageComment.text)
                                     comment.onEditComment = false
                                 }
                             }

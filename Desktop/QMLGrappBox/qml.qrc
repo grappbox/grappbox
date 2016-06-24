@@ -14,6 +14,10 @@
         <file>qrc/TextArea.qml</file>
         <file>qrc/TextAreaStyle.qml</file>
         <file>qrc/InvertedMouseArea.qml</file>
+        <file>qrc/BugTracker.qml</file>
+        <file>qrc/BugTrackerTabView.qml</file>
+        <file>qrc/BugTrackerTicketView.qml</file>
+        <file>qrc/BugTrackerAddTicketView.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

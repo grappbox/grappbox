@@ -10,6 +10,8 @@ import QtQuick.Controls.Styles 1.3 as Styles
 
 Item {
 
+    id: timelineItem
+
     property var mouseCursor
     property bool openedCommentary: false
 
@@ -20,6 +22,24 @@ Item {
         // in order to have the correct position of the cursor.
         tab.selectedIndex = 1
         tab.selectedIndex = 0
+        modelTimeline.loadTimelines()
+    }
+
+    TimelineModel {
+        id: modelTimeline
+
+        onCloseCommentIfId: {
+            if (openedCommentary && commentary.messageData && commentary.messageData.id === id)
+                openedCommentary = false
+        }
+
+        onEditSuccess: {
+            timelineItem.parent.info("Message correctly modified.")
+        }
+
+        onDeleteSuccess: {
+            timelineItem.parent.info("Message correctly deleted.")
+        }
     }
 
     Dialog {
@@ -43,17 +63,19 @@ Item {
         }
 
         onAccepted: {
-            console.log("add a message")
-        }
-
-        onShowingChanged: {
+            modelTimeline.addMessageTimeline(tab.selectedIndex == 0, newMessageTitle.text, newMessageText.text)
             newMessageText.text = ""
             newMessageTitle.text = ""
         }
     }
 
+    ProgressCircle {
+        anchors.centerIn: parent
+        visible: modelTimeline.isLoadingTimeline
+    }
+
     Flickable {
-        visible: tab.selectedIndex == 0
+        visible: tab.selectedIndex == 0 && !modelTimeline.isLoadingTimeline
         id: flickmainClient
 
         anchors.left: parent.left
@@ -92,7 +114,7 @@ Item {
             width: Units.dp(4)
         }
 
-        ColumnLayout {
+        Column {
             id: columnClient
             anchors.left: parent.left
             anchors.right: parent.right
@@ -101,16 +123,16 @@ Item {
             spacing: Units.dp(16)
 
             Item {
-                Layout.fillWidth: true
-                Layout.preferredHeight: Units.dp(8)
+                height: Units.dp(16)
+                width: parent.width
             }
 
             Repeater {
-                model: ["First C", "Seconde C", "Third C", "Fourth C"]
+                model: modelTimeline.timelineClient
                 delegate: TimelineBlock {
-                    title: modelData
-                    description: "Lorem ipsum dolor sit amet, ius novum zril oblique ut, ut consequat complectitur pro. At dicant feugait eam, ius meliore indoctum concludaturque eu, alii euripidis quaerendum pro te. Ea est numquam pericula, et ipsum vocibus mediocritatem his, sea doming doctus ne. His ex conceptam appellantur, pri te enim timeam antiopam. Has ne verear perpetua pertinacia, vidisse deserunt incorrupte eum ei."
-                    information: "By Leo Nadeau - 07 Feb 2016"
+                    title: modelData.title
+                    description: modelData.message
+                    information: "By " + modelData.associatedUser.firstName + " - " + Qt.formatDateTime(modelData.lastEdit, "dddd, MMMM dd - hh:mm AP")
                     iconSource: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
                     onRight: index % 2 == 0
                     large: parent.width >= 1170
@@ -120,6 +142,8 @@ Item {
                     anchors.margins: Units.dp(16)
 
                     onReadMore: {
+                        commentary.messageData = modelData
+                        modelTimeline.loadComments(true, modelData.id)
                         openedCommentary = true
                     }
                 }
@@ -128,7 +152,7 @@ Item {
     }
 
     Flickable {
-        visible: tab.selectedIndex == 1
+        visible: tab.selectedIndex == 1 && !modelTimeline.isLoadingTimeline
 
         id: flickmainTeam
 
@@ -169,7 +193,7 @@ Item {
             width: Units.dp(4)
         }
 
-        ColumnLayout {
+        Column {
             id: columnTeam
             anchors.left: parent.left
             anchors.right: parent.right
@@ -178,16 +202,16 @@ Item {
             spacing: Units.dp(16)
 
             Item {
-                Layout.fillWidth: true
-                Layout.preferredHeight: Units.dp(8)
+                height: Units.dp(16)
+                width: parent.width
             }
 
             Repeater {
-                model: ["First", "Seconde", "Third", "Fourth", "Fifth"]
+                model: modelTimeline.timelineTeam
                 delegate: TimelineBlock {
-                    title: modelData
-                    description: "Lorem ipsum dolor sit amet, ius novum zril oblique ut, ut consequat complectitur pro. At dicant feugait eam, ius meliore indoctum concludaturque eu, alii euripidis quaerendum pro te. Ea est numquam pericula, et ipsum vocibus mediocritatem his, sea doming doctus ne. His ex conceptam appellantur, pri te enim timeam antiopam. Has ne verear perpetua pertinacia, vidisse deserunt incorrupte eum ei."
-                    information: "By Leo Nadeau - 07 Feb 2016"
+                    title: modelData.title
+                    description: modelData.message
+                    information: "By " + modelData.associatedUser.firstName + " - " + Qt.formatDateTime(modelData.lastEdit, "dddd, MMMM dd - hh:mm AP")
                     iconSource: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
                     onRight: index % 2 == 0
                     large: parent.width >= 1170
@@ -197,6 +221,8 @@ Item {
                     anchors.margins: Units.dp(16)
 
                     onReadMore: {
+                        commentary.messageData = modelData
+                        modelTimeline.loadComments(false, modelData.id)
                         openedCommentary = true
                     }
                 }
@@ -246,16 +272,28 @@ Item {
     }
 
     TimelineCommentary {
+        id: commentary
         visible: openedCommentary
         anchors.fill: parent
-        avatarSource: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
-        user: "Leo Nadeau"
-        title: "New timeline message"
-        text: "Lorem ipsum dolor sit amet, ius novum zril oblique ut, ut consequat complectitur pro. At dicant feugait eam, ius meliore indoctum concludaturque eu, alii euripidis quaerendum pro te. Ea est numquam pericula, et ipsum vocibus mediocritatem his, sea doming doctus ne."
-        isLoading: false
+
+        isLoading: modelTimeline.isLoadingComment
 
         onClose: {
             openedCommentary = false
+        }
+
+        onEditMessages: {
+            modelTimeline.editMessageTimeline(parentId, id, title, message)
+        }
+
+        onDeleteMessage: {
+            alertDelete.id = id
+            alertDelete.parentId = parentId
+            alertDelete.show()
+        }
+
+        onAddComment: {
+            modelTimeline.addMessageTimeline(messageData.id, message)
         }
     }
 
@@ -271,6 +309,24 @@ Item {
         onClicked: {
             newMessageDialog.show()
         }
+    }
+
+    Dialog {
+        id: alertDelete
+        width: Units.dp(300)
+        text: "Are you sure you want to delete this message ?"
+        hasActions: true
+
+        property int id: -1
+        property int parentId: -1
+
+        positiveButtonText: "Yes"
+        negativeButtonText: "No"
+
+        onAccepted: {
+            modelTimeline.deleteMessageTimeline(id, parentId)
+        }
+
     }
 }
 
