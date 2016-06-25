@@ -1,4 +1,5 @@
-﻿using GrappBox.Resources;
+﻿using GrappBox.Model.Whiteboard;
+using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
 using System.Diagnostics;
@@ -22,7 +23,7 @@ namespace GrappBox.View
             {
                 this.InitializeComponent();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
@@ -52,9 +53,13 @@ namespace GrappBox.View
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-            int id =  (int)e.Parameter;
+            int id = (int)e.Parameter;
             WhiteBoardViewModel wbvm = this.DataContext as WhiteBoardViewModel;
             await wbvm.OpenWhiteboard(id);
+            foreach (WhiteboardObject wo in wbvm.ObjectsList)
+            {
+                this.drawingCanvas.AddNewElement(wo);
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

@@ -35,6 +35,6 @@ namespace GrappBox.Model
         [JsonProperty("deledtedAt")]
         public DateModel DeledtedAt { get; set; }
         [JsonProperty("content")]
-        public List<ObjectModel> Object { get; set; }
+        public List<WhiteboardObject> Object { get; set; }
     }
 }

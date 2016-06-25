@@ -16,8 +16,10 @@ using Windows.UI.Xaml.Shapes;
 namespace GrappBox.Model
 {
 
-    class ShapeControler
+    public class ShapeControler
     {
+        public int Id { get; set; }
+        public int Index { get; set; }
         private WhiteboardTool type;
         public WhiteboardTool Type
         {

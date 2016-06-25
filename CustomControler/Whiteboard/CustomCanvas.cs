@@ -11,11 +11,14 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Shapes;
+using System.Collections.ObjectModel;
+using GrappBox.Model.Whiteboard;
 
 namespace GrappBox.CustomControler
 {
     class CustomCanvas : Canvas
     {
+        private int index = 0;
         private readonly ManipulationModes DefaultManipModes = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.System;
         public CustomCanvas() : base()
         {
@@ -32,6 +35,9 @@ namespace GrappBox.CustomControler
             else
                 this.ManipulationMode = ManipulationModes.None;
         }
+        private static readonly DependencyProperty ObjectListProperty =
+            DependencyProperty.Register("ObjectList", typeof(ObservableCollection<ShapeControler>), typeof(CustomCanvas), null);
+
         public static readonly DependencyProperty CurrentDrawDependency =
             DependencyProperty.Register("CurrDraw", typeof(ShapeControler), typeof(CustomCanvas), new PropertyMetadata(null, OnValueChanged));
 
@@ -41,8 +47,10 @@ namespace GrappBox.CustomControler
             ShapeControler val = e.NewValue as ShapeControler;
             if (val == null)
                 return;
-            Debug.WriteLine("Canvas on value changed");
+            val.Index = source.index;
+            source.ObjectList.Add(val);
             source.Children.Add(val.UiElem);
+            ++source.index;
             if (val.Type == WhiteboardTool.HANDWRITING || val.Type == WhiteboardTool.LINE)
             {
                 Canvas.SetLeft(val.UiElem, 0);
@@ -53,6 +61,26 @@ namespace GrappBox.CustomControler
                 Canvas.SetLeft(val.UiElem, val.PosOrigin.X);
                 Canvas.SetTop(val.UiElem, val.PosOrigin.Y);
             }
+        }
+
+        public void AddNewElement(WhiteboardObject wo)
+        {
+            ShapeControler sc = ShapeModelConverter.ModelToShape(wo.Object, wo.Id);
+            sc.Index = index;
+            ObjectList.Add(sc);
+            Children.Add(sc.UiElem);
+            ++index;
+        }
+
+        public void DeleteElement(int id)
+        {
+
+        }
+
+        public ObservableCollection<ShapeControler> ObjectList
+        {
+            get { return (ObservableCollection<ShapeControler>)GetValue(ObjectListProperty); }
+            set { SetValue(ObjectListProperty, value); }
         }
 
         public ShapeControler CurrDraw

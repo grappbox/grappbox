@@ -35,10 +35,7 @@ namespace GrappBox.ViewModel
     {
         private WhiteBoardModel model;
         private PullModel _pullModel;
-        private ObjectModel _objectModel;
         private ObservableCollection<WhiteboardObject> _objectsList;
-        private ObservableCollection<ShapeControler> _shapeList;
-        private Dictionary<WhiteboardObject, ShapeControler> _map;
         private DateTime _lastUpdate;
 
         #region BindedPropertiesDeclaration
@@ -400,24 +397,24 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task pushDraw()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
-            Dictionary<string, object> props = new Dictionary<string, object>();
-            props.Add("token", User.GetUser().Token);
-            props.Add("modification", "add");
-            props.Add("object", _objectModel);
-            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
-            if (res.IsSuccessStatusCode)
-            {
-                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
-                _objectsList.Add(tmp);
-                //ajouter à la map?
-            }
-            else
-            {
-                //remove l'objet du whiteboard car fail
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
-            }
+            //ApiCommunication api = ApiCommunication.GetInstance();
+            //Dictionary<string, object> props = new Dictionary<string, object>();
+            //props.Add("token", User.GetUser().Token);
+            //props.Add("modification", "add");
+            //props.Add("object", _objectModel);
+            //HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
+            //if (res.IsSuccessStatusCode)
+            //{
+            //    WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
+            //    _objectsList.Add(tmp);
+            //    //ajouter à la map?
+            //}
+            //else
+            //{
+            //    //remove l'objet du whiteboard car fail
+            //    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            //    await msgbox.ShowAsync();
+            //}
         }
 
         public async System.Threading.Tasks.Task deleteObject()

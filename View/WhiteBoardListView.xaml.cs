@@ -75,12 +75,12 @@ namespace GrappBox.View
 
         private async void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            Popup.IsOpen = true;
-            WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
-            if (WhiteboardNameInput.ShowDialog() == true)
-            {
-                await wblm.CreateWhiteboard(WhiteboardNameInput.ResultText);
-            }
+            //Popup.IsOpen = true;
+            //WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
+            //if (WhiteboardNameInput.ShowDialog() == true)
+            //{
+            //    await wblm.CreateWhiteboard(WhiteboardNameInput.ResultText);
+            //}
         }
 
         private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

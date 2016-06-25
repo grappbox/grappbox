@@ -46,9 +46,9 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
-            <Popup x:Name="Popup" IsOpen="{Binding ElementName=WhiteboardNameInput, Path=IsOpen, Mode=TwoWay}" >
+            <!--<Popup x:Name="Popup" IsOpen="{Binding ElementName=WhiteboardNameInput, Path=IsOpen, Mode=TwoWay}" >
                 <customControl:InputPopUp x:Name="WhiteboardNameInput" />
-            </Popup>
+            </Popup>-->
         </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>
