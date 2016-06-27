@@ -86,6 +86,8 @@ namespace GrappBox.View
         private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListView lv = sender as ListView;
+            if (lv.SelectedIndex == -1)
+                return;
             WhiteBoardListModel wblm = lv.SelectedItem as WhiteBoardListModel;
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 Frame.Navigate(typeof(WhiteBoardView), wblm.Id));

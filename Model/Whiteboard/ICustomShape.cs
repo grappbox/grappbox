@@ -8,6 +8,7 @@ namespace GrappBox.Model
     {
         void Initialize(Point pos, SolidColorBrush stroke, SolidColorBrush fill, double thickness);
         void Initialize(string txt, bool bold, bool italic, SolidColorBrush stroke, int size);
+        void Initialize(PointCollection pos, SolidColorBrush border, SolidColorBrush fill, double thickness);
         void Update(Point p);
         UIElement GetElement();
     }

@@ -10,8 +10,8 @@ namespace GrappBox.Model
     class Position
     {
         [JsonProperty("x")]
-        public int X { get; set; }
+        public double X { get; set; }
         [JsonProperty("y")]
-        public int Y { get; set; }
+        public double Y { get; set; }
     }
 }

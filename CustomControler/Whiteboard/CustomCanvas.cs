@@ -27,6 +27,7 @@ namespace GrappBox.CustomControler
             this.VerticalAlignment = VerticalAlignment.Top;
             this.HorizontalAlignment = HorizontalAlignment.Left;
             this.ManipulationMode = DefaultManipModes;
+            this.ObjectList = new ObservableCollection<ShapeControler>();
         }
         public void ChangeManipMode()
         {
@@ -69,6 +70,16 @@ namespace GrappBox.CustomControler
             sc.Index = index;
             ObjectList.Add(sc);
             Children.Add(sc.UiElem);
+            if (sc.Type == WhiteboardTool.HANDWRITING || sc.Type == WhiteboardTool.LINE)
+            {
+                Canvas.SetLeft(sc.UiElem, 0);
+                Canvas.SetTop(sc.UiElem, 0);
+            }
+            else
+            {
+                Canvas.SetLeft(sc.UiElem, sc.PosOrigin.X);
+                Canvas.SetTop(sc.UiElem, sc.PosOrigin.Y);
+            }
             ++index;
         }
 

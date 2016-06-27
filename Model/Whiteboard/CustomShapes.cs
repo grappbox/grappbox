@@ -26,7 +26,7 @@ namespace GrappBox.Model
         }
         public void Initialize(string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
         {
-            throw new NotImplementedException();
+            return;
         }
         public void Initialize(Point pos, SolidColorBrush stroke, SolidColorBrush fill, double thickness)
         {
@@ -42,6 +42,11 @@ namespace GrappBox.Model
         {
             elem.X2 = p.X;
             elem.Y2 = p.Y;
+        }
+
+        public void Initialize(PointCollection pos, SolidColorBrush border, SolidColorBrush fill, double thickness)
+        {
+            return;
         }
     }
     class CustomRectangle : ICustomShape
@@ -59,7 +64,11 @@ namespace GrappBox.Model
         }
         public void Initialize(string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
         {
-            throw new NotImplementedException();
+            return;
+        }
+        public void Initialize(PointCollection pos, SolidColorBrush border, SolidColorBrush fill, double thickness)
+        {
+            return;
         }
         public void Initialize(Point pos, SolidColorBrush stroke, SolidColorBrush fill, double thickness)
         {
@@ -95,9 +104,13 @@ namespace GrappBox.Model
         {
             return elem;
         }
+        public void Initialize(PointCollection pos, SolidColorBrush border, SolidColorBrush fill, double thickness)
+        {
+            return;
+        }
         public void Initialize(string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
         {
-            throw new NotImplementedException();
+            return;
         }
         public void Initialize(Point pos, SolidColorBrush stroke, SolidColorBrush fill, double thickness)
         {
@@ -144,8 +157,20 @@ namespace GrappBox.Model
             pc.Add(origin);
             elem.Points = pc;
         }
+        public void Initialize(PointCollection pos, SolidColorBrush border, SolidColorBrush fill, double thickness)
+        {
+            elem.Stroke = border;
+            elem.StrokeThickness = thickness;
+            origin.X = pos[0].X;
+            origin.Y = pos[0].Y;
+            foreach (Point p in pos)
+               pc.Add(p);
+            elem.Points = pc;
+        }
         public void Update(Point p)
         {
+            if (p == null)
+                return;
             if (ShapeControler.AbsoluteDiff(p.X, origin.X) < 4.0 && ShapeControler.AbsoluteDiff(p.Y, origin.Y) < 4.0)
                 return;
             pc.Add(p);
@@ -192,6 +217,10 @@ namespace GrappBox.Model
             elem = new Polygon();
         }
         public void Initialize(string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
+        {
+            return;
+        }
+        public void Initialize(PointCollection pos, SolidColorBrush border, SolidColorBrush fill, double thickness)
         {
             return;
         }
@@ -245,6 +274,10 @@ namespace GrappBox.Model
         public UIElement GetElement()
         {
             return txtBlock;
+        }
+        public void Initialize(PointCollection pos, SolidColorBrush border, SolidColorBrush fill, double thickness)
+        {
+            return;
         }
         public void Initialize(string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
         {

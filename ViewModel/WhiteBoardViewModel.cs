@@ -324,11 +324,13 @@ namespace GrappBox.ViewModel
             if (CurrentTool >= WhiteboardTool.RECTANGLE)
                 CurrentDraw.Update(p);
         }
-        private void CanvasManipCompletedAction(Point p)
+        private async void CanvasManipCompletedAction(Point p)
         {
             if (CurrentDraw == null)
                 return;
             CurrentDraw.Update(p);
+            WhiteboardObject wo = await pushDraw(ShapeModelConverter.ShapeToModel(CurrentDraw));
+            CurrentDraw.Id = wo.Id;
             CurrentDraw = null;
         }
         #endregion RoutedEventsActions
@@ -359,6 +361,7 @@ namespace GrappBox.ViewModel
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 model = api.DeserializeJson<WhiteBoardModel>(await res.Content.ReadAsStringAsync());
+                ObjectsList = model.Object;
             }
             else
             {
@@ -395,26 +398,27 @@ namespace GrappBox.ViewModel
             props.Clear();
         }
 
-        public async System.Threading.Tasks.Task pushDraw()
+        public async Task<WhiteboardObject> pushDraw(ObjectModel om)
         {
-            //ApiCommunication api = ApiCommunication.GetInstance();
-            //Dictionary<string, object> props = new Dictionary<string, object>();
-            //props.Add("token", User.GetUser().Token);
-            //props.Add("modification", "add");
-            //props.Add("object", _objectModel);
-            //HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
-            //if (res.IsSuccessStatusCode)
-            //{
-            //    WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
-            //    _objectsList.Add(tmp);
-            //    //ajouter à la map?
-            //}
-            //else
-            //{
-            //    //remove l'objet du whiteboard car fail
-            //    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-            //    await msgbox.ShowAsync();
-            //}
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
+            props.Add("token", User.GetUser().Token);
+            props.Add("modification", "add");
+            props.Add("object", om);
+            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                Debug.WriteLine(await res.Content.ReadAsStringAsync());
+                WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
+                _objectsList.Add(tmp);
+                return tmp;
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            return null;
         }
 
         public async System.Threading.Tasks.Task deleteObject()

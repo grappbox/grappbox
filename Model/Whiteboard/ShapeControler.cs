@@ -38,15 +38,29 @@ namespace GrappBox.Model
             get { return _posOrigin; }
             set { _posOrigin = value; }
         }
+
+        public Color StrokeColor { get; set; }
+
+        public Color FillColor { get; set; }
+
+        public Point PosEnd { get; set; }
+
+        public double Lineweight { get; set; }
+
         public ShapeControler(Point pos, string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
         {
+            StrokeColor = stroke.Color;
             customShape = new CustomText();
             customShape.Initialize(txt, bold, italic, stroke, size);
             this.type = WhiteboardTool.TEXT;
             PosOrigin = pos;
         }
+
         public ShapeControler(WhiteboardTool type, Point pos, SolidColorBrush stroke, SolidColorBrush fill, double thickness)
         {
+            Lineweight = thickness;
+            FillColor = fill.Color;
+            StrokeColor = stroke.Color;
             PosOrigin = pos;
             this.type = type;
             switch (type)
@@ -69,8 +83,16 @@ namespace GrappBox.Model
             }
             customShape.Initialize(pos, stroke, fill, thickness);
         }
+        public ShapeControler(WhiteboardTool type, PointCollection pos, SolidColorBrush stroke, SolidColorBrush fill, double thickness)
+        {
+            PosOrigin = pos[0];
+            this.type = type;
+            customShape = new Pen();
+            customShape.Initialize(pos, stroke, fill, thickness);
+        }
         public void Update(Point p)
         {
+            PosEnd = p;
             customShape.Update(p);
         }
         public static double AbsoluteDiff(double d1, double d2)

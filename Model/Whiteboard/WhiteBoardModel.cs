@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -32,9 +33,9 @@ namespace GrappBox.Model
         public DateModel UpdatedAt { get; set; }
         [JsonProperty("createdAt")]
         public DateModel CreatedAt { get; set; }
-        [JsonProperty("deledtedAt")]
-        public DateModel DeledtedAt { get; set; }
+        [JsonProperty("deletedAt")]
+        public DateModel DeletedAt { get; set; }
         [JsonProperty("content")]
-        public List<WhiteboardObject> Object { get; set; }
+        public ObservableCollection<WhiteboardObject> Object { get; set; }
     }
 }

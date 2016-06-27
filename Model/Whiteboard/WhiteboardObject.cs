@@ -17,7 +17,7 @@ namespace GrappBox.Model.Whiteboard
         public ObjectModel Object { get; set; }
         [JsonProperty("createdAt")]
         public DateModel CreatedAt { get; set; }
-        [JsonProperty("deledtedAt")]
-        public DateModel DeledtedAt { get; set; }
+        [JsonProperty("deletedAt")]
+        public DateModel DeletedAt { get; set; }
     }
 }
