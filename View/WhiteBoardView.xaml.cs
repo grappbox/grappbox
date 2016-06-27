@@ -3,6 +3,7 @@ using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
@@ -16,6 +17,8 @@ namespace GrappBox.View
     {
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
+        private Timer pullTimer;
+        private WhiteBoardViewModel wbvm;
 
         public WhiteBoardView()
         {
@@ -48,18 +51,19 @@ namespace GrappBox.View
         }
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-
+            pullTimer.Dispose();
         }
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
             int id = (int)e.Parameter;
-            WhiteBoardViewModel wbvm = this.DataContext as WhiteBoardViewModel;
+            wbvm = this.DataContext as WhiteBoardViewModel;
             await wbvm.OpenWhiteboard(id);
             foreach (WhiteboardObject wo in wbvm.ObjectsList)
             {
                 this.drawingCanvas.AddNewElement(wo);
             }
+            pullTimer = new Timer(runPull, "pull", TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -67,5 +71,10 @@ namespace GrappBox.View
             this.navigationHelper.OnNavigatedFrom(e);
         }
         #endregion
+
+        public async void runPull(object source)
+        {
+            await wbvm.pullDraw();
+        }
     }
 }

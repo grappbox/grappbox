@@ -20,7 +20,7 @@
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" Grid.Row="1"   PageTitle="User settings">
         <Grid Margin="0,0,0,-2">
             <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-            <ScrollViewer>
+            <ScrollViewer Padding="10,0">
                 <StackPanel>
                     <StackPanel.Resources>
                         <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>

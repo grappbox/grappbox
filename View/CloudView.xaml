@@ -44,11 +44,11 @@
             </ListBox>
             <Popup x:Name="AddFolderPopUp" Grid.Row="1" Visibility="Collapsed" IsOpen="True">
                 <StackPanel Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b" Margin="0,120,0,0">
-                    <TextBlock Margin="15,0" Text="Folder" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
-                    <TextBlock Margin="15,0" Text="Name" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
-                    <TextBox Margin="15,0" x:Name="FolderName" PlaceholderText="Name" Text="{Binding FolderName, Mode=TwoWay}"/>
-                    <TextBlock Margin="15,0" Name="FolderSafe" Visibility="Collapsed" Text="Safe Password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
-                    <PasswordBox Margin="15,0" x:Name="FolderSafePassword" Visibility="Collapsed" PlaceholderText="Safe Password"/>
+                    <TextBlock Margin="15" Text="Folder" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" Padding="15,0" FontSize="20"/>
+                    <TextBlock Margin="15" Text="Name" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                    <TextBox Margin="15" x:Name="FolderName" PlaceholderText="Name" Text="{Binding FolderName, Mode=TwoWay}"/>
+                    <TextBlock Margin="15" Name="FolderSafe" Visibility="Collapsed" Text="Safe Password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                    <PasswordBox Margin="15" x:Name="FolderSafePassword" Visibility="Collapsed" PlaceholderText="Safe Password"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
