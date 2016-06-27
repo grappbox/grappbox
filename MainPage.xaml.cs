@@ -37,7 +37,6 @@ namespace GrappBox
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
-            SettingsManager.setOption("ProjectIdChoosen", 0);
         }
 
 
