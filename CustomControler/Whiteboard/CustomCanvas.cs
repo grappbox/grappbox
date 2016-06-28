@@ -85,7 +85,14 @@ namespace GrappBox.CustomControler
 
         public void DeleteElement(int id)
         {
+            ShapeControler toDel = this.ObjectList.First(item => item.Id == id);
+            this.Children.RemoveAt(toDel.Index);
+            this.ObjectList.Remove(toDel);
+        }
 
+        public void Clear()
+        {
+            Children.Clear();
         }
 
         public ObservableCollection<ShapeControler> ObjectList

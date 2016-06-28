@@ -9,6 +9,9 @@ using GrappBox.Model.Whiteboard;
 using Windows.UI.Xaml.Media;
 using Windows.UI;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Text;
+using Windows.UI.Xaml.Shapes;
 
 namespace GrappBox.Model.Whiteboard
 {
@@ -217,6 +220,16 @@ namespace GrappBox.Model.Whiteboard
             om.PositionEnd = new Position();
             om.PositionEnd.X = sc.PosEnd.X;
             om.PositionEnd.Y = sc.PosEnd.Y;
+            Polyline poly = sc.UiElem as Polyline;
+            List<Position> lp = new List<Position>();
+            foreach (Point p in poly.Points)
+            {
+                Position pos = new Position();
+                pos.X = p.X;
+                pos.Y = p.Y;
+                lp.Add(pos);
+            }
+            om.Points = lp;
             om.Color = ColorToHexa(sc.StrokeColor);
             om.Background = ColorToHexa(sc.FillColor);
             om.LineWeight = (int)sc.Lineweight;
@@ -232,6 +245,10 @@ namespace GrappBox.Model.Whiteboard
             om.PositionEnd = new Position();
             om.PositionEnd.X = sc.PosEnd.X;
             om.PositionEnd.Y = sc.PosEnd.Y;
+            TextBlock tb = sc.UiElem as TextBlock;
+            om.Text = tb.Text;
+            om.IsBold = false;
+            om.IsItalic = tb.FontStyle == FontStyle.Italic ? true : false;
             om.Color = ColorToHexa(sc.StrokeColor);
             om.Background = ColorToHexa(sc.FillColor);
             om.LineWeight = (int)sc.Lineweight;
