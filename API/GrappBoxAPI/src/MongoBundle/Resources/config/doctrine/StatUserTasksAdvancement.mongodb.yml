@@ -1,0 +1,25 @@
+MongoBundle\Document\StatUserTasksAdvancement:
+    type: document
+    db: symfony_database
+    collection: null
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        user:
+            type: string
+            length: 255
+        tasksToDo:
+            type: int
+        tasksDoing:
+            type: int
+        tasksDone:
+            type: int
+        tasksLate:
+            type: int
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: statUserTasksAdvancement
+    lifecycleCallbacks: {  }

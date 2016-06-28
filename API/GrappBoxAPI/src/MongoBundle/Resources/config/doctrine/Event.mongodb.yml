@@ -14,6 +14,9 @@ MongoBundle\Document\Event:
         description:
             type: string
             nullable: TRUE
+        icon:
+            type: text
+            nullalbe: TRUE
         beginDate:
             type: date
             name: begin_date

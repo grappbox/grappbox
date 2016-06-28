@@ -7,9 +7,6 @@ MongoBundle\Document\TimelineMessage:
             type: id
             id: true
             strategy: AUTO
-        userId:
-            type: int
-            name: user_id
         timelineId:
             type: int
             name: timeline_id
@@ -37,4 +34,7 @@ MongoBundle\Document\TimelineMessage:
         timelines:
           targetDocument: Timeline
           inversedBy: timelineMessages
+        creator:
+          targetDocument: User
+          inversedBy: message_creator
     lifecycleCallbacks: {  }

@@ -61,12 +61,11 @@ MongoBundle\Document\User:
         events:
           targetDocument: Event
           mappedBy: users
-        tasks:
-          targetDocument: Task
-          mappedBy: users
-    oneToMany:
         bug_creator:
           targetDocument: Bug
+          mappedBy: creator
+        message_creator:
+          targetDocument: TimelineMessage
           mappedBy: creator
         event_creator:
           targetDocument: Event
@@ -91,4 +90,11 @@ MongoBundle\Document\User:
         task_creator:
           targetDocument: Task
           mappedBy: creator_user
+        colors:
+          targetDocument: Color
+          mappedBy: user
+          cascade: [remove]
+        ressources:
+          targetEntity: Ressources
+          mappedBy: user
     lifecycleCallbacks: {  }

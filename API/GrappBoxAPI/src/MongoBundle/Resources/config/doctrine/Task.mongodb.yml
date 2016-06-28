@@ -14,6 +14,10 @@ MongoBundle\Document\Task:
         description:
             type: string
             nullable: TRUE
+        color:
+          type: string
+          length: 255
+          nullable: TRUE
         dueDate:
             type: date
             name: due_date
@@ -32,6 +36,15 @@ MongoBundle\Document\Task:
             type: date
             name: deleted_at
             nullable: TRUE
+        isMilestone:
+          type: boolean
+          name: is_milestone
+        isContainer:
+          type: boolean
+          name: is_container
+        advance:
+          type: int
+          nullable: FALSE
     referenceOne:
         projects:
           targetDocument: Project
@@ -39,11 +52,26 @@ MongoBundle\Document\Task:
         creator_user:
           targetDocument: User
           inveredBy: task_creator
+        container:
+          targetDocument: Task
+          inversedBy: tasks_container
     referenceMany:
-        users:
-          targetDocument: User
-          inversedBy: tasks
         tags:
           targetDocument: Tag
           inversedBy: tasks
+        ressources:
+          targetDocument: Ressources
+          mappedBy: task
+          cascade: [remove]
+        dependence:
+          targetDocument: Dependencies
+          mappedBy: task
+          cascade: [remove, refresh ]
+        task_depended:
+          targetDocument: Dependencies
+          mappedBy: dependence_task
+          cascade: [remove, refresh ]
+        tasks_container:
+          targetDocument: Task
+          mappedBy: container
     lifecycleCallbacks: {  }

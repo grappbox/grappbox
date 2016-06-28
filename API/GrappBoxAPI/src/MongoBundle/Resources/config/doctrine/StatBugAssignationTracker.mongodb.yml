@@ -1,0 +1,18 @@
+MongoBundle\Document\StatBugAssignationTracker:
+    type: document
+    db: symfony_database
+    collection: null
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        assignedBugs:
+            type: int
+        unassignedBugs:
+            type: int
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: statBugAssignationTracker
+    lifecycleCallbacks: {  }

@@ -8,9 +8,6 @@ GrappboxBundle\Entity\TimelineMessage:
             generator:
                 strategy: AUTO
     fields:
-        # userId:
-        #     type: integer
-        #     column: user_id
         timelineId:
             type: integer
             column: timeline_id

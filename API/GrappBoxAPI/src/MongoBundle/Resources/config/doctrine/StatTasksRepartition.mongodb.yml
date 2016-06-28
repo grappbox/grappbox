@@ -1,0 +1,24 @@
+MongoBundle\Document\StatTasksRepartition:
+    type: document
+    db: symfony_database
+    collection: null
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        user:
+            type: string
+            length: 255
+        role:
+            type: string
+            length: 255
+        value:
+            type: int
+        percentage:
+            type: int
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: statTasksRepartition
+    lifecycleCallbacks: {  }

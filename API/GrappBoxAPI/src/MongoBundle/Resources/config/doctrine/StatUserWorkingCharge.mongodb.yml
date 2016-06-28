@@ -1,24 +1,19 @@
-MongoBundle\Document\Tag:
+MongoBundle\Document\StatUserWorkingCharge:
     type: document
     db: symfony_database
-    collection: tags
+    collection: null
     fields:
         id:
             type: id
             id: true
             strategy: AUTO
-        name:
+        user:
             type: string
             length: 255
-    referenceMany:
-        tasks:
-          targetDocument: Task
-          mappedBy: tags
-        bugs:
-          targetDocument: Bug
-          mappedBy: tags
+        charge:
+            type: int
     referenceOne:
-        project:
+        projects:
           targetDocument: Project
-          inversedBy: tags
+          inversedBy: statUserWorkingCharge
     lifecycleCallbacks: {  }

@@ -47,6 +47,9 @@ MongoBundle\Document\Project:
             type: string
             name: safe_password
             nullable: TRUE
+        color:
+            type: string
+            length: 255
     referenceOne:
         creator_user:
           targetDocument: User
@@ -89,6 +92,50 @@ MongoBundle\Document\Project:
           cascade: [remove]
         tags:
           targetDocument: Tag
+          mappedBy: project
+          cascade: [remove]
+        colors:
+          targetDocument: Color
+          mappedBy: project
+          cascade: [remove]
+        statProjectAdvancement:
+          targetDocument: StatProjectAdvancement
+          mappedBy: project
+          cascade: [remove]
+        statLateTasks:
+          targetDocument: StatLateTasks
+          mappedBy: project
+          cascade: [remove]
+        statBugsEvolution:
+          targetDocument: StatBugsEvolution
+          mappedBy: project
+          cascade: [remove]
+        statBugsTagsRepartition:
+          targetDocument: StatBugsTagsRepartition
+          mappedBy: project
+          cascade: [remove]
+        statBugAssignationTracker:
+          targetDocument: StatBugAssignationTracker
+          mappedBy: project
+          cascade: [remove]
+        statBugsUsersRepartition:
+          targetDocument: StatBugsUsersRepartition
+          mappedBy: project
+          cascade: [remove]
+        statTasksRepartition:
+          targetDocument: StatTasksRepartition
+          mappedBy: project
+          cascade: [remove]
+        statUserWorkingCharge:
+          targetDocument: StatUserWorkingCharge
+          mappedBy: project
+          cascade: [remove]
+        statUserTasksAdvancement:
+          targetDocument: StatUserTasksAdvancement
+          mappedBy: project
+          cascade: [remove]
+        statStorageSize:
+          targetDocument: StatStorageSize
           mappedBy: project
           cascade: [remove]
     lifecycleCallbacks: {  }

@@ -1,0 +1,19 @@
+MongoBundle\Document\Ressources:
+    type: document
+    db: symfony_database
+    collection: null
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        resource:
+            type: int
+    referenceOne:
+        task:
+          targetDocument: Task
+          inversedBy: ressources
+        user:
+          targetDocument: User
+          inversedBy: ressources
+    lifecycleCallbacks: {  }

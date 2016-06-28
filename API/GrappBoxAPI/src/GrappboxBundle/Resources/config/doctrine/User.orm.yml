@@ -48,8 +48,6 @@ GrappboxBundle\Entity\User:
             type: string
             length: 255
             nullable: TRUE
-        #isActive:
-        #  type: boolean
         token:
           type: string
           length: 255

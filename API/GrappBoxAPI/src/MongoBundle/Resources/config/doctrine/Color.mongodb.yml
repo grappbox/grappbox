@@ -1,24 +1,20 @@
-MongoBundle\Document\Tag:
+MongoBundle\Document\Color:
     type: document
     db: symfony_database
-    collection: tags
+    collection: colors
     fields:
         id:
             type: id
             id: true
             strategy: AUTO
-        name:
+        color:
             type: string
             length: 255
-    referenceMany:
-        tasks:
-          targetDocument: Task
-          mappedBy: tags
-        bugs:
-          targetDocument: Bug
-          mappedBy: tags
     referenceOne:
+        user:
+          targetDocument: User
+          inversedBy: colors
         project:
           targetDocument: Project
-          inversedBy: tags
+          inversedBy: colors
     lifecycleCallbacks: {  }

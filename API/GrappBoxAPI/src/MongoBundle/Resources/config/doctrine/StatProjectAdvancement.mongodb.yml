@@ -1,0 +1,24 @@
+MongoBundle\Document\StatProjectAdvancement:
+    type: document
+    db: symfony_database
+    collection: null
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        percentage:
+            type: int
+        progress:
+            type: int
+        totalTasks:
+            type: int
+        finishedTasks:
+            type: int
+        date:
+            type: date
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: statProjectAdvancement
+    lifecycleCallbacks: {  }

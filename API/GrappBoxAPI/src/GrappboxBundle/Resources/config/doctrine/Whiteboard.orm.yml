@@ -8,9 +8,6 @@ GrappboxBundle\Entity\Whiteboard:
             generator:
                 strategy: AUTO
     fields:
-        # projectId:
-        #     type: integer
-        #     column: project_id
         userId:
            type: integer
            column: user_id

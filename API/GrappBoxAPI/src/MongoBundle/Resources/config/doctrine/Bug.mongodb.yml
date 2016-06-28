@@ -32,6 +32,9 @@ MongoBundle\Document\Bug:
             type: date
             name: deleted_at
             nullable: TRUE
+        clientOrigin:
+            type: boolean
+            name: client_origin
     referenceOne:
         projects:
           targetDocument: Project
