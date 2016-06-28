@@ -1,48 +1,48 @@
 <?php
 
-namespace GrappboxBundle\Entity;
+namespace MongoBundle\Document;
 
-use Doctrine\ORM\Mapping as ORM;
+
 
 /**
- * StatLateTasks
+ * MongoBundle\Document\StatLateTasks
  */
 class StatLateTasks
 {
     /**
-     * @var integer
+     * @var id
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var \DateTime
+     * @var date
      */
-    protected $date;
-
-    /**
-     * @var string
-     */
-    protected $user;
+    private $date;
 
     /**
      * @var string
      */
-    protected $role;
+    private $user;
 
     /**
-     * @var integer
+     * @var string
      */
-    protected $lateTasks;
+    private $role;
 
     /**
-     * @var integer
+     * @var int
      */
-    protected $ontimeTasks;
+    private $lateTasks;
 
     /**
-     * @var \GrappboxBundle\Entity\Project
+     * @var int
      */
-    protected $project;
+    private $ontimeTasks;
+
+    /**
+     * @var MongoBundle\Document\Project
+     */
+    private $project;
 
     public function objectToArray()
     {
@@ -58,7 +58,7 @@ class StatLateTasks
     /**
      * Get id
      *
-     * @return integer
+     * @return id
      */
     public function getId()
     {
@@ -68,8 +68,8 @@ class StatLateTasks
     /**
      * Set date
      *
-     * @param \DateTime $date
-     * @return StatLateTasks
+     * @param date $date
+     * @return self
      */
     public function setDate($date)
     {
@@ -81,7 +81,7 @@ class StatLateTasks
     /**
      * Get date
      *
-     * @return \DateTime
+     * @return date
      */
     public function getDate()
     {
@@ -92,7 +92,7 @@ class StatLateTasks
      * Set user
      *
      * @param string $user
-     * @return StatLateTasks
+     * @return self
      */
     public function setUser($user)
     {
@@ -115,7 +115,7 @@ class StatLateTasks
      * Set role
      *
      * @param string $role
-     * @return StatLateTasks
+     * @return self
      */
     public function setRole($role)
     {
@@ -137,8 +137,8 @@ class StatLateTasks
     /**
      * Set lateTasks
      *
-     * @param integer $lateTasks
-     * @return StatLateTasks
+     * @param int $lateTasks
+     * @return self
      */
     public function setLateTasks($lateTasks)
     {
@@ -150,7 +150,7 @@ class StatLateTasks
     /**
      * Get lateTasks
      *
-     * @return integer
+     * @return int
      */
     public function getLateTasks()
     {
@@ -160,8 +160,8 @@ class StatLateTasks
     /**
      * Set ontimeTasks
      *
-     * @param integer $ontimeTasks
-     * @return StatLateTasks
+     * @param int $ontimeTasks
+     * @return self
      */
     public function setOntimeTasks($ontimeTasks)
     {
@@ -173,7 +173,7 @@ class StatLateTasks
     /**
      * Get ontimeTasks
      *
-     * @return integer
+     * @return int
      */
     public function getOntimeTasks()
     {
@@ -183,10 +183,10 @@ class StatLateTasks
     /**
      * Set project
      *
-     * @param \GrappboxBundle\Entity\Project $project
+     * @param \MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject(\GrappboxBundle\Entity\Project $project = null)
+    public function setProject(MongoBundle\Document\Project $project = null)
     {
         $this->project = $project;
 
@@ -196,7 +196,7 @@ class StatLateTasks
     /**
      * Get project
      *
-     * @return \GrappboxBundle\Entity\Project
+     * @return MongoBundle\Document\Project
      */
     public function getProject()
     {

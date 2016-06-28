@@ -39,7 +39,6 @@ class CustomerAccess
      */
     protected $projects;
 
-
     /**
      * Get id
      *

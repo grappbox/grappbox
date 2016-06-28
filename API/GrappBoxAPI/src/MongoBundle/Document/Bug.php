@@ -50,6 +50,11 @@ class Bug
     protected $deletedAt;
 
     /**
+     * @var boolean $clientOrigin
+     */
+    protected $clientOrigin;
+
+    /**
      * @var MongoBundle\Document\Project
      */
     protected $projects;
@@ -91,11 +96,12 @@ class Bug
         "parentId" => $this->parentId,
         "createdAt" => $this->createdAt,
         "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt
+        "deletedAt" => $this->deletedAt,
+        "clientOrigin" => $this->clientOrigin
       );
     }
-    
-    
+
+
     /**
      * Get id
      *
@@ -258,6 +264,28 @@ class Bug
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * Set clientOrigin
+     *
+     * @param boolean $clientOrigin
+     * @return self
+     */
+    public function setClientOrigin($clientOrigin)
+    {
+        $this->clientOrigin = $clientOrigin;
+        return $this;
+    }
+
+    /**
+     * Get clientOrigin
+     *
+     * @return date $clientOrigin
+     */
+    public function getClientOrigin()
+    {
+        return $this->clientOrigin;
     }
 
     /**

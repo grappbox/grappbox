@@ -114,6 +114,11 @@ class User implements UserInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $task_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $notifications;
 
     /**
@@ -125,12 +130,17 @@ class User implements UserInterface
      * @var \Doctrine\Common\Collections\Collection
      */
     private $events;
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $ressources;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $colors;
+    
     /**
      * Constructor
      */
@@ -164,6 +174,7 @@ class User implements UserInterface
     public function eraseCredentials()
     {
     }
+
     public function objectToArray()
     {
       return array(
@@ -819,10 +830,6 @@ class User implements UserInterface
     {
         return $this->devices;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $task_creator;
 
 
     /**
@@ -857,12 +864,8 @@ class User implements UserInterface
     {
         return $this->task_creator;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $colors;
 
-
+-----------------------------------------------------------------------------------------------
     /**
      * Add colors
      *
@@ -923,7 +926,7 @@ class User implements UserInterface
     /**
      * Get ressources
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRessources()
     {

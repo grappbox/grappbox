@@ -132,6 +132,11 @@ class Project
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $tags;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $statProjectAdvancement;
 
     /**
@@ -192,6 +197,8 @@ class Project
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->gantts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->colors = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statProjectAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statBugsEvolution = new \Doctrine\Common\Collections\ArrayCollection();
@@ -786,11 +793,6 @@ class Project
     {
         return $this->customers_access;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $tags;
-
 
     /**
      * Add tags

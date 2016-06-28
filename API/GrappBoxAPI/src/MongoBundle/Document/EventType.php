@@ -30,14 +30,6 @@ class EventType
     }
 
 
-    public function objectToArray()
-    {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name
-        );
-    }
-    
     /**
      * Get id
      *
@@ -98,5 +90,13 @@ class EventType
     public function getEvents()
     {
         return $this->events;
+    }
+
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name
+        );
     }
 }

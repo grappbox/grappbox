@@ -52,6 +52,61 @@ class TaskRepository extends DocumentRepository
 		return $arr;
 	}
 
+	public function findUserAllTasksV2($id, $code, $part, $function)
+	{
+		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
+
+		$tasks = $qb->getQuery()->execute();
+
+		$resp = new JsonResponse();
+		$ret = array();
+		$arr = array();
+
+		if ($tasks === null || count($tasks) == 0)
+		{
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
+			$resp->setData($ret);
+
+			return $resp;
+		}
+
+		foreach ($tasks as $task) {
+			$project = $task->getProjects();
+
+			$projectId = $project->getId();
+			$projectName = $project->getName();
+			$taskId = $task->getId();
+			$taskTitle = $task->getTitle();
+			$description = $task->getDescription();
+			$dueDate = $task->getDueDate();
+			$startedAt = $task->getStartedAt();
+			$finishedAt = $task->getFinishedAt();
+			$createdAt = $task->getCreatedAt();
+
+			$arr[] = array("id" => $taskId, "title" => $taskTitle, "description" => $description, "project" => array("id" => $projectId, "name" => $projectName),
+				"due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt);
+		}
+
+		if (count($arr) == 0)
+		{
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
+			$resp->setData($ret);
+
+			return $resp;
+		}
+
+		$ret["info"] = array("return_code" => "1.".$code.".1", "return_message" => $part." - ".$function." - Complete success");
+		$ret["data"] = array("array" => $arr);
+		$resp->setStatusCode(JsonResponse::HTTP_OK);
+		$resp->setData($ret);
+
+		return ($resp);
+	}
+
 	public function findUserCurrentAndNextTasks($id)
 	{
 		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
@@ -94,5 +149,64 @@ class TaskRepository extends DocumentRepository
 		}
 
 		return $arr;
+	}
+
+	public function findUserCurrentAndNextTasksV2($id, $code, $part, $function)
+	{
+		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
+
+		$tasks = $qb->getQuery()->execute();
+
+		$resp = new JsonResponse();
+		$ret = array();
+		$arr = array();
+		$defaultDate = date_create("0000-00-00 00:00:00");
+
+		if (count($tasks) == 0 || $tasks === null)
+		{
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
+			$resp->setData($ret);
+
+			return $resp;
+		}
+
+		foreach ($tasks as $task) {
+			$finishedAt = $task->getFinishedAt();
+
+			if ($finishedAt == $defaultDate || $finishedAt == null)
+			{
+				$project = $task->getProjects();
+				$projectId = $project->getId();
+				$projectName = $project->getName();
+				$taskId = $task->getId();
+				$taskTitle = $task->getTitle();
+				$description = $task->getDescription();
+				$dueDate = $task->getDueDate();
+				$startedAt = $task->getStartedAt();
+				$createdAt = $task->getCreatedAt();
+
+				$arr[] = array("id" => $taskId, "title" => $taskTitle, "description" => $description, "project" => array("id" => $projectId, "name" => $projectName),
+					"due_date" => $dueDate, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt);
+			}
+		}
+
+		if (count($arr) == 0)
+		{
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
+			$ret["data"] = array("array" => []);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
+			$resp->setData($ret);
+
+			return $resp;
+		}
+
+		$ret["info"] = array("return_code" => "1.".$code.".1", "return_message" => $part." - ".$function." - Complete success");
+		$ret["data"] = array("array" => $arr);
+		$resp->setStatusCode(JsonResponse::HTTP_OK);
+		$resp->setData($ret);
+
+		return ($resp);
 	}
 }

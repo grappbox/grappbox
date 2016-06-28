@@ -1,8 +1,8 @@
 <?php
 
-namespace GrappboxBundle\Entity;
+namespace MongoBundle\Document;
 
-use Doctrine\ORM\Mapping as ORM;
+
 
 /**
  * MongoBundle\Document\StatBugAssignationTracker
@@ -12,22 +12,22 @@ class StatBugAssignationTracker
     /**
      * @var id
      */
-    protected $id;
+    private $id;
 
     /**
      * @var int
      */
-    protected $assignedBugs;
+    private $assignedBugs;
 
     /**
      * @var int
      */
-    protected $unassignedBugs;
+    private $unassignedBugs;
 
     /**
      * @var MongoBundle\Document\Project
      */
-    protected $project;
+    private $project;
 
 
     /**
@@ -92,7 +92,7 @@ class StatBugAssignationTracker
      * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject(\MongoBundle\Document\Project $project = null)
+    public function setProject(MongoBundle\Document\Project $project = null)
     {
         $this->project = $project;
 

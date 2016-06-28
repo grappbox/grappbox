@@ -86,7 +86,10 @@ class EventRepository extends EntityRepository
 		$defaultDate = new \DateTime;
 		$date_end = new \DateTime($defaultDate->format('Y-m-d'));
 		$date_end->add(new \DateInterval('P7D'));
-		$qb = $this->createQueryBuilder('e')->where('e.projects = :projectId AND e.beginDate < :end_day AND e.endDate > :begin_day')->setParameter('projectId', $projectId)->setParameter('begin_day', $defaultDate)->setParameter('end_day', $date_end)->andWhere('e.deletedAt IS NULL')->orderBy('e.beginDate', 'ASC');
+		$qb = $this->createQueryBuilder('e')
+					->where('e.projects = :projectId AND e.beginDate < :end_day AND e.endDate > :begin_day')
+					->setParameter('projectId', $projectId)->setParameter('begin_day', $defaultDate)->setParameter('end_day', $date_end)
+					->andWhere('e.deletedAt IS NULL')->orderBy('e.beginDate', 'ASC');
 		$meetings = $qb->getQuery()->getResult();
 
 		$resp = new JsonResponse();

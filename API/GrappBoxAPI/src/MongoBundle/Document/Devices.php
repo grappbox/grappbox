@@ -35,18 +35,6 @@ class Devices
     protected $user;
 
 
-    public function objectToArray()
-    {
-      return array(
-        "id" => $this->id,
-        "user" => array("id" => $this->user->getId(), "firstname" => $this->user->getFirstname(), "lastname" => $this->user->getLastName()),
-        "name" => $this->name,
-        "token" => $this->token,
-        "type" => $this->type
-      );
-    }
-
-
     /**
      * Get id
      *
@@ -144,4 +132,16 @@ class Devices
     {
         return $this->user;
     }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "user" => array("id" => $this->user->getId(), "firstname" => $this->user->getFirstname(), "lastname" => $this->user->getLastName()),
+        "name" => $this->name,
+        "token" => $this->token,
+        "type" => $this->type
+      );
+    }
+
 }

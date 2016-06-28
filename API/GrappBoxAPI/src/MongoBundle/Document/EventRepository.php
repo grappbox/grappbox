@@ -79,10 +79,15 @@ class EventRepository extends DocumentRepository
 		return ($arr);
 	}
 
-	public function findNextMeetingsV2($id)
+	public function findNextMeetingsV2($id, $projectId, $code, $part, $function)
 	{
 		$defaultDate = new \DateTime;
-		$qb = $this->createQueryBuilder('e')->where('e.endDate > :defaultDate')->setParameter('defaultDate', $defaultDate);
+		$date_end = new \DateTime($defaultDate->format('Y-m-d'));
+		$date_end->add(new \DateInterval('P7D'));
+		$qb = $this->createQueryBuilder('e')
+					->where('e.projects = :projectId AND e.beginDate < :end_day AND e.endDate > :begin_day')
+					->setParameter('projectId', $projectId)->setParameter('begin_day', $defaultDate)->setParameter('end_day', $date_end)
+					->andWhere('e.deletedAt IS NULL')->orderBy('e.beginDate', 'ASC');
 		$meetings = $qb->getQuery()->execute();
 
 		$resp = new JsonResponse();
@@ -91,9 +96,9 @@ class EventRepository extends DocumentRepository
 
 		if ($meetings === null || count($meetings) == 0)
 		{
-			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getnextmeetings - Success but no data");
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
 			$ret["data"] = array("array" => []);
-			$resp->setStatusCode(JsonResponse::HTTP_OK);
+			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
 			$resp->setData($ret);
 
 			return $resp;
@@ -105,22 +110,14 @@ class EventRepository extends DocumentRepository
 
 			if ($creatorId == $id)
 			{
-				$project = $meeting->getProjects();
 				$eventType = $meeting->getEventtypes();
-				$projectName = null;
-				$projectLogo = null;
 
 			 	$typeName = $eventType->getName();
-			 	if ($project)
-			 	{
-					$projectName = $project->getName();
-					$projectLogo = $project->getLogo();
-				}
 				$eventTitle = $meeting->getTitle();
 				$eventDescription = $meeting->getDescription();
 				$beginDate = $meeting->getBeginDate();
 
-				$arr[] = array("projects" => array("name" => $projectName, "logo" => $projectLogo), "type" => $typeName, "title" => $eventTitle,
+				$arr[] = array("id" => $meeting->getId(), "type" => $typeName, "title" => $eventTitle,
 					"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 			}
 			else
@@ -132,22 +129,14 @@ class EventRepository extends DocumentRepository
 
 					if ($userId == $id)
 					{
-						$project = $meeting->getProjects();
 						$eventType = $meeting->getEventtypes();
-						$projectName = null;
-						$projectLogo = null;
 
 					 	$typeName = $eventType->getName();
-					 	if ($project)
-					 	{
-							$projectName = $project->getName();
-							$projectLogo = $project->getLogo();
-						}
-						$eventTitle = $meeting->getTitle();
+					 	$eventTitle = $meeting->getTitle();
 						$eventDescription = $meeting->getDescription();
 						$beginDate = $meeting->getBeginDate();
 
-						$arr[] = array("projects" => array("name" => $projectName, "logo" => $projectLogo), "type" => $typeName, "title" => $eventTitle,
+						$arr[] = array("id" => $meeting->getId(), "type" => $typeName, "title" => $eventTitle,
 							"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 					}
 				}
@@ -156,7 +145,7 @@ class EventRepository extends DocumentRepository
 
 		if (count($arr) == 0)
 		{
-			$ret["info"] = array("return_code" => "1.2.3", "return_message" => "Dashboard - getnextmeetings - Success but no data");
+			$ret["info"] = array("return_code" => "1.".$code.".3", "return_message" => $part." - ".$function." - No Data Success");
 			$ret["data"] = array("array" => []);
 			$resp->setStatusCode(JsonResponse::HTTP_PARTIAL_CONTENT);
 			$resp->setData($ret);
@@ -164,7 +153,7 @@ class EventRepository extends DocumentRepository
 			return $resp;
 		}
 
-		$ret["info"] = array("return_code" => "1.2.1", "return_message" => "Dashboard - getnextmeetings - Complete success");
+		$ret["info"] = array("return_code" => "1.".$code.".1", "return_message" => $part." - ".$function." - Complete success");
 		$ret["data"] = array("array" => $arr);
 		$resp->setStatusCode(JsonResponse::HTTP_OK);
 		$resp->setData($ret);

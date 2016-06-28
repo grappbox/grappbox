@@ -45,23 +45,6 @@ class Notification
     protected $user;
 
 
-    public function objectToArray()
-    {
-      // $projectId = null;
-      // if ($this->projects)
-      //   $projectId = $this->projects->getId();
-        return array(
-            'id' => $this->id,
-            // TODO user ??
-            "type" => $this->type,
-            "targetId" => $this->targetId,
-            "message" => $this->message,
-            'createdAt' => $this->createdAt,
-            'isRead' => $this->isRead
-        );
-    }
-
-
     /**
      * Get id
      *
@@ -202,5 +185,21 @@ class Notification
     public function getUser()
     {
         return $this->user;
+    }
+
+    public function objectToArray()
+    {
+      // $projectId = null;
+      // if ($this->projects)
+      //   $projectId = $this->projects->getId();
+        return array(
+            'id' => $this->id,
+            // TODO user ??
+            "type" => $this->type,
+            "targetId" => $this->targetId,
+            "message" => $this->message,
+            'createdAt' => $this->createdAt,
+            'isRead' => $this->isRead
+        );
     }
 }

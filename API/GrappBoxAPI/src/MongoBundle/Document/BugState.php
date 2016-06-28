@@ -19,21 +19,6 @@ class BugState
      */
     protected $name;
 
-
-    /**
-     * Get object content into array
-     *
-     * @return array
-     */
-    public function objectToArray()
-    {
-      return array(
-        "id" => $this->id,
-        "name" => $this->name,
-      );
-    }
-
-
     /**
      * Get id
      *
@@ -65,4 +50,18 @@ class BugState
     {
         return $this->name;
     }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name,
+      );
+    }
+
 }

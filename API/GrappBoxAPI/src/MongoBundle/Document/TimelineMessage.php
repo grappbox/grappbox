@@ -59,6 +59,10 @@ class TimelineMessage
      */
     protected $timelines;
 
+    /**
+     * @var MongoBundle\Document\User
+     */
+    protected $creator;
 
     /**
      * Get object content into array
@@ -69,7 +73,8 @@ class TimelineMessage
     {
       return array(
         "id" => $this->id,
-        "userId" => $this->userId,
+        //"userId" => $this->userId,
+        "creator"=> array("id" => $this->creator->getId(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastname()),
         "timelineId" => $this->timelineId,
         "title" => $this->title,
         "message" => $this->message,
@@ -287,5 +292,28 @@ class TimelineMessage
     public function getTimelines()
     {
         return $this->timelines;
+    }
+
+    /**
+     * Set creator
+     *
+     * @param \MongoBundle\Document\User $creator
+     * @return Bug
+     */
+    public function setCreator(\MongoBundle\Document\User $creator)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \MongoBundle\Document\User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
     }
 }

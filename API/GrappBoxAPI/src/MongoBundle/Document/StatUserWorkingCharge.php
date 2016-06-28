@@ -1,13 +1,13 @@
 <?php
 
-namespace GrappboxBundle\Entity;
+namespace MongoBundle\Document;
 
-use Doctrine\ORM\Mapping as ORM;
+
 
 /**
- * MongoBundle\Document\StatBugAssignationTracker
+ * MongoBundle\Document\StatuserWorkingCharge
  */
-class StatBugAssignationTracker
+class StatUserWorkingCharge
 {
     /**
      * @var id
@@ -15,20 +15,27 @@ class StatBugAssignationTracker
     protected $id;
 
     /**
-     * @var int
+     * @var string
      */
-    protected $assignedBugs;
+    protected $user;
 
     /**
      * @var int
      */
-    protected $unassignedBugs;
+    protected $charge;
 
     /**
      * @var MongoBundle\Document\Project
      */
     protected $project;
 
+    public function objectToArray()
+    {
+      return array(
+        "user" => $this->user,
+        "charge" => $this->charge
+      );
+    }
 
     /**
      * Get id
@@ -41,49 +48,49 @@ class StatBugAssignationTracker
     }
 
     /**
-     * Set assignedBugs
+     * Set user
      *
-     * @param int $assignedBugs
+     * @param string $user
      * @return self
      */
-    public function setAssignedBugs($assignedBugs)
+    public function setUser($user)
     {
-        $this->assignedBugs = $assignedBugs;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get assignedBugs
+     * Get user
      *
-     * @return int
+     * @return string
      */
-    public function getAssignedBugs()
+    public function getUser()
     {
-        return $this->assignedBugs;
+        return $this->user;
     }
 
     /**
-     * Set unassignedBugs
+     * Set charge
      *
-     * @param int $unassignedBugs
+     * @param int $charge
      * @return self
      */
-    public function setUnassignedBugs($unassignedBugs)
+    public function setCharge($charge)
     {
-        $this->unassignedBugs = $unassignedBugs;
+        $this->charge = $charge;
 
         return $this;
     }
 
     /**
-     * Get unassignedBugs
+     * Get charge
      *
      * @return int
      */
-    public function getUnassignedBugs()
+    public function getCharge()
     {
-        return $this->unassignedBugs;
+        return $this->charge;
     }
 
     /**
@@ -92,7 +99,7 @@ class StatBugAssignationTracker
      * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject(\MongoBundle\Document\Project $project = null)
+    public function setProject(MongoBundle\Document\Project $project = null)
     {
         $this->project = $project;
 

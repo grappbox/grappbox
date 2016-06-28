@@ -25,6 +25,12 @@ class Event
     protected $description;
 
     /**
+     * @var string $icon
+     */
+    protected $icon;
+
+
+    /**
      * @var date $beginDate
      */
     protected $beginDate;
@@ -82,11 +88,17 @@ class Event
         return array(
             'id' => $this->id,
             'projectId' => $projectId,
-            'creatorId' => $this->creator_user->getId(),
-            'eventTypeId' => $this->eventtypes->getId(),
-            'eventType' => $this->eventtypes->getName(),
+            'creator' => array(
+                'id' => $this->creator_user->getId(),
+                'fullname' => $this->creator_user->getFirstName()." ".$this->creator_user->getLastName()
+            ),
+            'type' => array(
+              'id' => $this->eventtypes->getId(),
+              'name' => $this->eventtypes->getName()
+            ),
             'title' => $this->title,
             'description' => $this->description,
+            'icon' => $this->icon,
             'beginDate' => $this->beginDate,
             'endDate' => $this->endDate,
             'createdAt' => $this->createdAt,
@@ -94,7 +106,7 @@ class Event
             'deletedAt' => $this->deletedAt
         );
     }
-    
+
     /**
      * Get id
      *
@@ -353,5 +365,28 @@ class Event
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Set icon
+     *
+     * @param string $icon
+     * @return self
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * Get icon
+     *
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
     }
 }

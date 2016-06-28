@@ -40,17 +40,6 @@ class Tag
         $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-
-
-    public function objectToArray()
-    {
-      return array(
-        "id" => $this->id,
-        "name" => $this->name,
-        "projectId" => $this->project->getId()
-      );
-    }
-    
     /**
      * Get id
      *
@@ -163,5 +152,14 @@ class Tag
     public function getBugs()
     {
         return $this->bugs;
+    }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name,
+        "projectId" => $this->project->getId()
+      );
     }
 }

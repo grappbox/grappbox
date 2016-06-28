@@ -9,6 +9,21 @@ namespace MongoBundle\Document;
  */
 class Task
 {
+  public function objectToArray()
+  {
+    return array(
+      'id' => $this->id,
+      'creatorId' => $this->creatorId ,
+      'title' => $this->title ,
+      'description' => $this->description ,
+      'color' => $this->color,
+      'dueDate' => $this->dueDate ,
+      'startedAt' => $this->startedAt ,
+      'finishedAt' => $this->finishedAt ,
+      'projectId' => $this->projects->getId(),
+    );
+  }
+
     /**
      * @var $id
      */
@@ -23,6 +38,11 @@ class Task
      * @var string $description
      */
     protected $description;
+
+    /**
+     * @var string
+     */
+    private $color;
 
     /**
      * @var date $dueDate
@@ -50,6 +70,46 @@ class Task
     protected $deletedAt;
 
     /**
+     * @var boolean
+     */
+    protected $isMilestone;
+
+    /**
+     * @var boolean
+     */
+    protected $isContainer;
+
+    /**
+     * @var integer
+     */
+    protected $advance;
+
+    /**
+     * @var MongoBundle\Document\Ressources
+     */
+    protected $ressources;
+
+    /**
+     * @var \MongoBundle\Document\Dependencies
+     */
+    protected $dependence;
+
+    /**
+     * @var MongoBundle\Document\Dependencies
+     */
+    protected $task_depended;
+
+    /**
+     * @var MongoBundle\Document\Task
+     */
+    protected $tasks_container;
+
+    /**
+     * @var MongoBundle\Document\Task
+     */
+    protected $container;
+
+    /**
      * @var MongoBundle\Document\Project
      */
     protected $projects;
@@ -60,37 +120,19 @@ class Task
     protected $creator_user;
 
     /**
-     * @var MongoBundle\Document\User
-     */
-    protected $users = array();
-
-    /**
      * @var MongoBundle\Document\Tag
      */
     protected $tags = array();
 
     public function __construct()
     {
-        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->dependence = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->task_depended = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks_container = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-
-    public function objectToArray()
-    {
-      return array(
-        'id' => $this->id,
-        'creatorId' => $this->creatorId ,
-        'title' => $this->title ,
-        'description' => $this->description ,
-        'dueDate' => $this->dueDate ,
-        'startedAt' => $this->startedAt ,
-        'finishedAt' => $this->finishedAt ,
-        'projectId' => $this->projects->id ,
-      );
-    }
-
-    
     /**
      * Get id
      *
@@ -143,6 +185,29 @@ class Task
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set color
+     *
+     * @param string $color
+     * @return self
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * Get color
+     *
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
     }
 
     /**
@@ -256,6 +321,195 @@ class Task
     }
 
     /**
+     * Set isMilestone
+     *
+     * @param boolean $isMilestone
+     * @return self
+     */
+    public function setIsMilestone($isMilestone)
+    {
+        $this->isMilestone = $isMilestone;
+
+        return $this;
+    }
+
+    /**
+     * Get isMilestone
+     *
+     * @return boolean
+     */
+    public function getIsMilestone()
+    {
+        return $this->isMilestone;
+    }
+
+    /**
+     * Set isContainer
+     *
+     * @param boolean $isContainer
+     * @return self
+     */
+    public function setIsContainer($isContainer)
+    {
+        $this->isContainer = $isContainer;
+
+        return $this;
+    }
+
+    /**
+     * Get isContainer
+     *
+     * @return boolean
+     */
+    public function getIsContainer()
+    {
+        return $this->isContainer;
+    }
+
+    /**
+     * Set advance
+     *
+     * @param int $advance
+     * @return self
+     */
+    public function setAdvance($advance)
+    {
+        $this->advance = $advance;
+
+        return $this;
+    }
+
+    /**
+     * Get advance
+     *
+     * @return int
+     */
+    public function getAdvance()
+    {
+        return $this->advance;
+    }
+
+    /**
+     * Add ressources
+     *
+     * @param \GrappboxBundle\Entity\Ressources $ressources
+     */
+    public function addRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources[] = $ressources;
+    }
+
+    /**
+     * Remove ressources
+     *
+     * @param \GrappboxBundle\Entity\Ressources $ressources
+     */
+    public function removeRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources->removeElement($ressources);
+    }
+
+    /**
+     * Get ressources
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRessources()
+    {
+        return $this->ressources;
+    }
+
+    /**
+     * Add dependence
+     *
+     * @param MongoBundle\Document\Dependencies $dependence
+     */
+    public function addDependence(\MongoBundle\Document\Dependencies $dependence)
+    {
+        $this->dependence[] = $dependence;
+    }
+
+    /**
+     * Remove dependence
+     *
+     * @param \MongoBundle\Document\Dependencies $dependence
+     */
+    public function removeDependence(\MongoBundle\Document\Dependencies $dependence)
+    {
+        $this->dependence->removeElement($dependence);
+    }
+
+    /**
+     * Get dependence
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDependence()
+    {
+        return $this->dependence;
+    }
+
+    /**
+     * Add task_depended
+     *
+     * @param \MongoBundle\Document\Dependencies $taskDepended
+     */
+    public function addTaskDepended(\MongoBundle\Document\Dependencies $taskDepended)
+    {
+        $this->task_depended[] = $taskDepended;
+    }
+
+    /**
+     * Remove task_depended
+     *
+     * @param \MongoBundle\Document\Dependencies $taskDepended
+     */
+    public function removeTaskDepended(\MongoBundle\Document\Dependencies $taskDepended)
+    {
+        $this->task_depended->removeElement($taskDepended);
+    }
+
+    /**
+     * Get task_depended
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTaskDepended()
+    {
+        return $this->task_depended;
+    }
+
+    /**
+     * Add tasks_container
+     *
+     * @param \MongoBundle\Document\Task $tasksContainer
+     */
+    public function addTasksContainer(\MongoBundle\Document\Task $tasksContainer)
+    {
+        $this->tasks_container[] = $tasksContainer;
+    }
+
+    /**
+     * Remove tasks_container
+     *
+     * @param \MongoBundle\Document\Task $tasksContainer
+     */
+    public function removeTasksContainer(\MongoBundle\Document\Task $tasksContainer)
+    {
+        $this->tasks_container->removeElement($tasksContainer);
+    }
+
+    /**
+     * Get tasks_container
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTasksContainer()
+    {
+        return $this->tasks_container;
+    }
+
+    /**
      * Set projects
      *
      * @param MongoBundle\Document\Project $projects
@@ -300,36 +554,6 @@ class Task
     }
 
     /**
-     * Add user
-     *
-     * @param MongoBundle\Document\User $user
-     */
-    public function addUser(\MongoBundle\Document\User $user)
-    {
-        $this->users[] = $user;
-    }
-
-    /**
-     * Remove user
-     *
-     * @param MongoBundle\Document\User $user
-     */
-    public function removeUser(\MongoBundle\Document\User $user)
-    {
-        $this->users->removeElement($user);
-    }
-
-    /**
-     * Get users
-     *
-     * @return \Doctrine\Common\Collections\Collection $users
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
-
-    /**
      * Add tag
      *
      * @param MongoBundle\Document\Tag $tag
@@ -357,5 +581,28 @@ class Task
     public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * Set container
+     *
+     * @param \MongoBundle\Document\Task $container
+     * @return self
+     */
+    public function setContainer(\MongoBundle\Document\Task $container = null)
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * Get container
+     *
+     * @return \MongoBundle\Document\Task
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 }

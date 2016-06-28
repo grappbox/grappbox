@@ -70,14 +70,9 @@ class Project
     protected $safePassword;
 
     /**
-     * @var MongoBundle\Document\User
+     * @var string $color
      */
-    protected $creator_user;
-
-    /**
-     * @var MongoBundle\Document\User
-     */
-    protected $users = array();
+    protected $color;
 
     /**
      * @var MongoBundle\Document\Task
@@ -115,14 +110,80 @@ class Project
     protected $gantts = array();
 
     /**
+     * @var MongoBundle\Document\User
+     */
+    protected $creator_user;
+
+    /**
+     * @var MongoBundle\Document\User
+     */
+    protected $users = array();
+
+    /**
      * @var MongoBundle\Document\CustomerAccess
      */
     protected $customers_access = array();
 
     /**
+     * @var MongoBundle\Document\Color
+     */
+    protected $colors = array();
+
+    /**
      * @var MongoBundle\Document\Tag
      */
     protected $tags = array();
+
+    /**
+     * @var MongoBundle\Document\StatProjectAdvancement
+     */
+    protected $statProjectAdvancement;
+
+    /**
+     * @var MongoBundle\Document\StatLateTasks
+     */
+    protected $statLateTasks;
+
+    /**
+     * @var MongoBundle\Document\StatBugsEvolution
+     */
+    protected $statBugsEvolution;
+
+    /**
+     * @var MongoBundle\Document\StatBugsTagsRepartition
+     */
+    protected $statBugsTagsRepartition;
+
+    /**
+     * @var MongoBundle\Document\StatBugAssignationTracker
+     */
+    protected $statBugAssignationTracker;
+
+    /**
+     * @var MongoBundle\Document\StatBugsUsersRepartition
+     */
+    protected $statBugsUsersRepartition;
+
+    /**
+     * @var MongoBundle\Document\StatTasksRepartition
+     */
+    protected $statTasksRepartition;
+
+    /**
+     * @var MongoBundle\Document\StatUserWorkingCharge
+     */
+    protected $statUserWorkingCharge;
+
+    /**
+     * @var MongoBundle\Document\StatUserTasksAdvancement
+     */
+    protected $statUserTasksAdvancement;
+
+    /**
+     * @var MongoBundle\Document\StatStorageSize
+     */
+    protected $statStorageSize;
+
 
     public function __construct()
     {
@@ -136,8 +197,19 @@ class Project
         $this->gantts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->customers_access = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->colors = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statProjectAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statBugsEvolution = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statBugsTagsRepartition = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statBugAssignationTracker = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statBugsUsersRepartition = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statTasksRepartition = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statUserWorkingCharge = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statUserTasksAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->statStorageSize = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Get id
      *
@@ -391,58 +463,6 @@ class Project
     }
 
     /**
-     * Set creatorUser
-     *
-     * @param MongoBundle\Document\User $creatorUser
-     * @return self
-     */
-    public function setCreatorUser(\MongoBundle\Document\User $creatorUser)
-    {
-        $this->creator_user = $creatorUser;
-        return $this;
-    }
-
-    /**
-     * Get creatorUser
-     *
-     * @return MongoBundle\Document\User $creatorUser
-     */
-    public function getCreatorUser()
-    {
-        return $this->creator_user;
-    }
-
-    /**
-     * Add user
-     *
-     * @param MongoBundle\Document\User $user
-     */
-    public function addUser(\MongoBundle\Document\User $user)
-    {
-        $this->users[] = $user;
-    }
-
-    /**
-     * Remove user
-     *
-     * @param MongoBundle\Document\User $user
-     */
-    public function removeUser(\MongoBundle\Document\User $user)
-    {
-        $this->users->removeElement($user);
-    }
-
-    /**
-     * Get users
-     *
-     * @return \Doctrine\Common\Collections\Collection $users
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
-
-    /**
      * Add task
      *
      * @param MongoBundle\Document\Task $task
@@ -653,6 +673,58 @@ class Project
     }
 
     /**
+     * Set creatorUser
+     *
+     * @param MongoBundle\Document\User $creatorUser
+     * @return self
+     */
+    public function setCreatorUser(\MongoBundle\Document\User $creatorUser)
+    {
+        $this->creator_user = $creatorUser;
+        return $this;
+    }
+
+    /**
+     * Get creatorUser
+     *
+     * @return MongoBundle\Document\User $creatorUser
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
+    }
+
+    /**
+     * Add user
+     *
+     * @param MongoBundle\Document\User $user
+     */
+    public function addUser(\MongoBundle\Document\User $user)
+    {
+        $this->users[] = $user;
+    }
+
+    /**
+     * Remove user
+     *
+     * @param MongoBundle\Document\User $user
+     */
+    public function removeUser(\MongoBundle\Document\User $user)
+    {
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection $users
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
      * Add customersAccess
      *
      * @param MongoBundle\Document\CustomerAccess $customersAccess
@@ -710,5 +782,380 @@ class Project
     public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * Set color
+     *
+     * @param string $color
+     * @return self
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * Get color
+     *
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * Add colors
+     *
+     * @param MongoBundle\Document\Color $colors
+     */
+    public function addColor( MongoBundle\Document\Color $colors)
+    {
+        $this->colors[] = $colors;
+
+        return $this;
+    }
+
+    /**
+     * Remove colors
+     *
+     * @param  MongoBundle\Document\Color $colors
+     */
+    public function removeColor( MongoBundle\Document\Color $colors)
+    {
+        $this->colors->removeElement($colors);
+    }
+
+    /**
+     * Get colors
+     *
+     * @return \Doctrine\Common\Collections\Collection $colors
+     */
+    public function getColors()
+    {
+        return $this->colors;
+    }
+
+    /**
+     * Add statProjectAdvancement
+     *
+     * @param MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement
+     */
+    public function addStatProjectAdvancement(MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
+    {
+        $this->statProjectAdvancement[] = $statProjectAdvancement;
+
+        return $this;
+    }
+
+    /**
+     * Remove statProjectAdvancement
+     *
+     * @param MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement
+     */
+    public function removeStatProjectAdvancement(MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
+    {
+        $this->statProjectAdvancement->removeElement($statProjectAdvancement);
+    }
+
+    /**
+     * Get statProjectAdvancement
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatProjectAdvancement()
+    {
+        return $this->StatProjectAdvancement;
+    }
+
+    /**
+     * Add statLateTasks
+     *
+     * @param MongoBundle\Document\StatLateTasks $statLateTasks
+     */
+    public function addStatLateTasks(MongoBundle\Document\StatLateTasks $statLateTasks)
+    {
+        $this->statLateTasks[] = $statLateTasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove statLateTasks
+     *
+     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     */
+    public function removeStatLateTasks(MongoBundle\Document\StatLateTasks $statLateTasks)
+    {
+        $this->statLateTasks->removeElement($statLateTasks);
+    }
+
+    /**
+     * Get statLateTasks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatLateTasks()
+    {
+        return $this->StatLateTasks;
+    }
+
+    /**
+     * Add statBugsEvolution
+     *
+     * @param MongoBundle\Document\StatBugsEvolution $statBugsEvolution
+     */
+    public function addStatBugsEvolution(MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
+    {
+        $this->statBugsEvolution[] = $statBugsEvolution;
+
+        return $this;
+    }
+
+    /**
+     * Remove statBugsEvolution
+     *
+     * @param MongoBundle\Document\StatBugsEvolution $statBugsEvolution
+     */
+    public function removeStatBugsEvolution(MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
+    {
+        $this->statBugsEvolution->removeElement($statBugsEvolution);
+    }
+
+    /**
+     * Get statBugsEvolution
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatBugsEvolution()
+    {
+        return $this->statBugsEvolution;
+    }
+
+    /**
+     * Add statBugsTagsRepartition
+     *
+     * @param MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition
+     */
+    public function addStatBugsTagsRepartition(MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
+    {
+        $this->statBugsTagsRepartition[] = $statBugsTagsRepartition;
+
+        return $this;
+    }
+
+    /**
+     * Remove statBugsTagsRepartition
+     *
+     * @param MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition
+     */
+    public function removeStatBugsTagsRepartition(MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
+    {
+        $this->statBugsTagsRepartition->removeElement($statBugsTagsRepartition);
+    }
+
+    /**
+     * Get statBugsTagsRepartition
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatBugsTagsRepartition()
+    {
+        return $this->statBugsTagsRepartition;
+    }
+
+    /**
+     * Add statBugAssignationTracker
+     *
+     * @param MongoBundle\Document\tatBugAssignationTracker $statBugAssignationTracker
+     */
+    public function addStatBugAssignationTracker(MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
+    {
+        $this->statBugAssignationTracker[] = $statBugAssignationTracker;
+
+        return $this;
+    }
+
+    /**
+     * Remove statBugAssignationTracker
+     *
+     * @param MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker
+     */
+    public function removeStatBugAssignationTracker(MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
+    {
+        $this->statBugAssignationTracker->removeElement($statBugAssignationTracker);
+    }
+
+    /**
+     * Get statBugAssignationTracker
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatBugAssignationTracker()
+    {
+        return $this->statBugAssignationTracker;
+    }
+
+    /**
+     * Add statBugsUsersRepartition
+     *
+     * @param MongoBundle\Document\tatBugsUsersRepartition $statBugsUsersRepartition
+     */
+    public function addStatBugsUsersRepartition(MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
+    {
+        $this->statBugsUsersRepartition[] = $statBugsUsersRepartition;
+
+        return $this;
+    }
+
+    /**
+     * Remove statBugsUsersRepartition
+     *
+     * @param MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition
+     */
+    public function removeStatBugsUsersRepartition(MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
+    {
+        $this->statBugsUsersRepartition->removeElement($statBugsUsersRepartition);
+    }
+
+    /**
+     * Get statBugsUsersRepartition
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatBugsUsersRepartition()
+    {
+        return $this->statBugsUsersRepartition;
+    }
+
+    /**
+     * Add statTasksRepartition
+     *
+     * @param MongoBundle\Document\StatTasksRepartition $statTasksRepartition
+     */
+    public function addStatTasksRepartition(MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
+    {
+        $this->statTasksRepartition[] = $statTasksRepartition;
+
+        return $this;
+    }
+
+    /**
+     * Remove statTasksRepartition
+     *
+     * @param MongoBundle\Document\StatTasksRepartition $statTasksRepartition
+     */
+    public function removeStatTasksRepartition(MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
+    {
+        $this->statTasksRepartition->removeElement($statTasksRepartition);
+    }
+
+    /**
+     * Get statTasksRepartition
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatTasksRepartition()
+    {
+        return $this->statTasksRepartition;
+    }
+
+    /**
+     * Add statUserWorkingCharge
+     *
+     * @param MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge
+     */
+    public function addStatUserWorkingCharge(MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
+    {
+        $this->statUserWorkingCharge[] = $statUserWorkingCharge;
+
+        return $this;
+    }
+
+    /**
+     * Remove statUserWorkingCharge
+     *
+     * @param MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge
+     */
+    public function removeStatUserWorkingCharge(MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
+    {
+        $this->statUserWorkingCharge->removeElement($statUserWorkingCharge);
+    }
+
+    /**
+     * Get statUserWorkingCharge
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatUserWorkingCharge()
+    {
+        return $this->statUserWorkingCharge;
+    }
+
+    /**
+     * Add statUserTasksAdvancement
+     *
+     * @param MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement
+     */
+    public function addStatUserTasksAdvancement(MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
+    {
+        $this->statUserTasksAdvancement[] = $statUserTasksAdvancement;
+
+        return $this;
+    }
+
+    /**
+     * Remove statUserTasksAdvancement
+     *
+     * @param MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement
+     */
+    public function removeStatUserTasksAdvancement(MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
+    {
+        $this->statUserTasksAdvancement->removeElement($statUserTasksAdvancement);
+    }
+
+    /**
+     * Get statUserTasksAdvancement
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatUserTasksAdvancement()
+    {
+        return $this->statUserTasksAdvancement;
+    }
+
+    /**
+     * Add statStorageSize
+     *
+     * @param MongoBundle\Document\StatStorageSize $statStorageSize
+     */
+    public function addStatStorageSize(MongoBundle\Document\StatStorageSize $statStorageSize)
+    {
+        $this->statStorageSize[] = $statStorageSize;
+
+        return $this;
+    }
+
+    /**
+     * Remove statStorageSize
+     *
+     * @param MongoBundle\Document\StatStorageSize $statStorageSize
+     */
+    public function removeStatStorageSize(MongoBundle\Document\StatStorageSize $statStorageSize)
+    {
+        $this->statStorageSize->removeElement($statStorageSize);
+    }
+
+    /**
+     * Get statStorageSize
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStatStorageSize()
+    {
+        return $this->statStorageSize;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace MongoBundle\Document;
 
+
+
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -80,6 +82,46 @@ class User implements UserInterface
     protected $tokenValidity;
 
     /**
+     * @var MongoBundle\Document\Bug
+     */
+    protected $bug_creator = array();
+
+    /**
+     * @var MongoBundle\Document\TimelineMessage
+     */
+    protected $message_creator = array();
+
+    /**
+     * @var MongoBundle\Document\Event
+     */
+    protected $event_creator = array();
+
+    /**
+     * @var MongoBundle\Document\Project
+     */
+    protected $project_creator = array();
+
+    /**
+     * @var MongoBundle\Document\Gantt
+     */
+    protected $gantt_creator = array();
+
+    /**
+     * @var MongoBundle\Document\Gantt
+     */
+    protected $gantt_updator = array();
+
+    /**
+     * @var MongoBundle\Document\Task
+     */
+    protected $task_creator;
+
+    /**
+     * @var MongoBundle\Document\Notification
+     */
+    protected $notifications = array();
+
+    /**
      * @var MongoBundle\Document\Project
      */
     protected $projects = array();
@@ -90,17 +132,31 @@ class User implements UserInterface
     protected $events = array();
 
     /**
-     * @var MongoBundle\Document\Task
+     * @var MongoBundle\Document\Ressources
      */
-    protected $tasks = array();
+    protected $ressources = array();
 
+    /**
+     * @var MongoBundle\Document\Color
+     */
+    protected $colors;
+
+    /**
+     * Constructor
+    */
     public function __construct()
     {
-        $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->events = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->bug_creator = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->message_creator = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->project_creator = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->gantt_creator = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->gantt_updator = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->events = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
 
 
     public function getUsername()
@@ -118,7 +174,7 @@ class User implements UserInterface
     public function eraseCredentials()
     {
     }
-    
+
     public function objectToArray()
     {
       return array(
@@ -131,7 +187,7 @@ class User implements UserInterface
       );
     }
 
-    
+
     /**
      * Get id
      *
@@ -429,6 +485,216 @@ class User implements UserInterface
     }
 
     /**
+     * Add event_creator
+     *
+     * @param \MongoBundle\Document\Event $eventCreator
+     */
+    public function addEventCreator(\MongoBundle\Document\Event $eventCreator)
+    {
+        $this->event_creator[] = $eventCreator;
+    }
+
+    /**
+     * Remove event_creator
+     *
+     * @param \MongoBundle\Document\Event $eventCreator
+     */
+    public function removeEventCreator(\MongoBundle\Document\Event $eventCreator)
+    {
+        $this->event_creator->removeElement($eventCreator);
+    }
+
+    /**
+     * Get event_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEventCreator()
+    {
+        return $this->event_creator;
+    }
+
+    /**
+     * Add bug_creator
+     *
+     * @param \MongoBundle\Document\Bug $bugCreator
+     */
+    public function addBugCreator(\MongoBundle\Document\Bug $bugCreator)
+    {
+        $this->bug_creator[] = $bugCreator;
+    }
+
+    /**
+     * Remove bug_creator
+     *
+     * @param \MongoBundle\Document\Bug $bugCreator
+     */
+    public function removeBugCreator(\MongoBundle\Document\Bug $bugCreator)
+    {
+        $this->bug_creator->removeElement($bugCreator);
+    }
+
+    /**
+     * Get bug_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugCreator()
+    {
+        return $this->bug_creator;
+    }
+
+
+    /**
+     * Add message_creator
+     *
+     * @param \MongoBundle\Document\TimelineMessage $messageCreator
+     */
+    public function addMessageCreator(\MongoBundle\Document\TimelineMessage $messageCreator)
+    {
+        $this->message_creator[] = $messageCreator;
+    }
+
+    /**
+     * Remove message_creator
+     * @param \MongoBundle\Document\TimelineMessage $messageCreator
+     */
+    public function removeMessageCreator(\MongoBundle\Document\TimelineMessage $messageCreator)
+    {
+        $this->message_creator->removeElement($messageCreator);
+    }
+
+    /**
+     * Get message_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMessageCreator()
+    {
+        return $this->message_creator;
+    }
+
+    /**
+     * Add project_creator
+     *
+     * @param \MongoBundle\Document\Project $projectCreator
+     */
+    public function addProjectCreator(\MongoBundle\Document\Project $projectCreator)
+    {
+        $this->project_creator[] = $projectCreator;
+    }
+
+    /**
+     * Remove project_creator
+     *
+     * @param \MongoBundle\Document\Project $projectCreator
+     */
+    public function removeProjectCreator(\MongoBundle\Document\Project $projectCreator)
+    {
+        $this->project_creator->removeElement($projectCreator);
+    }
+
+    /**
+     * Get project_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProjectCreator()
+    {
+        return $this->project_creator;
+    }
+
+    /**
+     * Add gantt_creator
+     *
+     * @param \MongoBundle\Document\Gantt $ganttCreator
+     */
+    public function addGanttCreator(\MongoBundle\Document\Gantt $ganttCreator)
+    {
+        $this->gantt_creator[] = $ganttCreator;
+    }
+
+    /**
+     * Remove gantt_creator
+     *
+     * @param \MongoBundle\Document\Gantt $ganttCreator
+     */
+    public function removeGanttCreator(\MongoBundle\Document\Gantt $ganttCreator)
+    {
+        $this->gantt_creator->removeElement($ganttCreator);
+    }
+
+    /**
+     * Get gantt_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGanttCreator()
+    {
+        return $this->gantt_creator;
+    }
+
+    /**
+     * Add gantt_updator
+     *
+     * @param \MongoBundle\Document\Gantt $ganttUpdator
+     */
+    public function addGanttUpdator(\MongoBundle\Document\Gantt $ganttUpdator)
+    {
+        $this->gantt_updator[] = $ganttUpdator;
+    }
+
+    /**
+     * Remove gantt_updator
+     *
+     * @param \MongoBundle\Document\Gantt $ganttUpdator
+     */
+    public function removeGanttUpdator(\MongoBundle\Document\Gantt $ganttUpdator)
+    {
+        $this->gantt_updator->removeElement($ganttUpdator);
+    }
+
+    /**
+     * Get gantt_updator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGanttUpdator()
+    {
+        return $this->gantt_updator;
+    }
+
+    /**
+     * Add notifications
+     *
+     * @param \MongoBundle\Document\Notification $notifications
+     */
+    public function addNotification(\MongoBundle\Document\Notification $notifications)
+    {
+        $this->notifications[] = $notifications;
+    }
+
+    /**
+     * Remove notifications
+     *
+     * @param \MongoBundle\Document\Notification $notifications
+     */
+    public function removeNotification(\MongoBundle\Document\Notification $notifications)
+    {
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    /**
      * Add project
      *
      * @param MongoBundle\Document\Project $project
@@ -489,32 +755,92 @@ class User implements UserInterface
     }
 
     /**
-     * Add task
+     * Add devices
      *
-     * @param MongoBundle\Document\Task $task
+     * @param \MongoBundle\Document\Devices $devices
      */
-    public function addTask(\MongoBundle\Document\Task $task)
+    public function addDevice(\MongoBundle\Document\Devices $devices)
     {
-        $this->tasks[] = $task;
+        $this->devices[] = $devices;
     }
 
     /**
-     * Remove task
+     * Remove devices
      *
-     * @param MongoBundle\Document\Task $task
+     * @param \MongoBundle\Document\Devices $devices
      */
-    public function removeTask(\MongoBundle\Document\Task $task)
+    public function removeDevice(\MongoBundle\Document\Devices $devices)
     {
-        $this->tasks->removeElement($task);
+        $this->devices->removeElement($devices);
     }
 
     /**
-     * Get tasks
+     * Get devices
      *
-     * @return \Doctrine\Common\Collections\Collection $tasks
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getTasks()
+    public function getDevices()
     {
-        return $this->tasks;
+        return $this->devices;
+    }
+
+    /**
+     * Add colors
+     *
+     * @param \MongoBundle\Document\Color $colors
+     */
+    public function addColor(\MongoBundle\Document\Color $colors)
+    {
+        $this->colors[] = $colors;
+    }
+
+    /**
+     * Remove colors
+     *
+     * @param \MongoBundle\Document\Color $colors
+     */
+    public function removeColor(\MongoBundle\Document\Color $colors)
+    {
+        $this->colors->removeElement($colors);
+    }
+
+    /**
+     * Get colors
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getColors()
+    {
+        return $this->colors;
+    }
+
+    /**
+     * Add ressources
+     *
+     * @param \MongoBundle\Document\Ressources $ressources
+     */
+    public function addRessource(\MongoBundle\Document\Ressources $ressources)
+    {
+        $this->ressources[] = $ressources;
+    }
+
+    /**
+     * Remove ressources
+     *
+     * @param \GrappboxBundle\Entity\Ressources $ressources
+     */
+    public function removeRessource(\MongoBundle\Document\Ressources $ressources)
+    {
+        $this->ressources->removeElement($ressources);
+    }
+
+    /**
+     * Get ressources
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRessources()
+    {
+        return $this->ressources;
     }
 }
