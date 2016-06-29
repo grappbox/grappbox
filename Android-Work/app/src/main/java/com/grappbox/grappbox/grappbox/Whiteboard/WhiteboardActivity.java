@@ -10,10 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -36,21 +34,21 @@ import java.util.TimeZone;
  */
 public class WhiteboardActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int _SizeSpinnerSelected = 0;
-    private int _timeRefresh = 15000;
+    private int             _SizeSpinnerSelected = 0;
+    private int             _timeRefresh = 15000;
 
-    private DrawingView _DrawView;
-    private String      _idWhiteboard;
-    private String      _dateWithboard;
-    private ImageButton _ColorBorderBtn;
-    private ImageButton _ColorBtn;
-    private ImageButton _DrawBtn;
-    private ImageButton _EraseButton;
-    private ImageButton _MoveButton;
+    private DrawingView     _DrawView;
+    private String          _idWhiteboard;
+    private String          _dateWithboard;
+    private ImageButton     _ColorBorderBtn;
+    private ImageButton     _ColorBtn;
+    private ImageButton     _DrawBtn;
+    private ImageButton     _EraseButton;
+    private ImageButton     _MoveButton;
 
-    private MyReceiver _receiver;
-    private Activity    _context;
-    private PendingIntent _pendingIntent;
+    private MyReceiver      _receiver;
+    private Activity        _context;
+    private PendingIntent   _pendingIntent;
     private String          _lastUpadte;
 
     private float t = 0;
