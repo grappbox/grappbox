@@ -1,6 +1,6 @@
 package com.grappbox.grappbox.grappbox.Whiteboard;
 
-
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
@@ -9,13 +9,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Debug;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,30 +23,32 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.grappbox.grappbox.grappbox.R;
-import com.grappbox.grappbox.grappbox.Whiteboard.DrawingView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-public class WhiteboardFragment extends Fragment implements View.OnClickListener {
+/**
+ * Created by tan_f on 29/06/2016.
+ */
+public class WhiteboardActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int _SizeSpinnerSelected = 0;
-    private int _timeRefresh = 15000;
+    private int             _SizeSpinnerSelected = 0;
+    private int             _timeRefresh = 15000;
 
-    private DrawingView _DrawView;
-    private String      _idWhiteboard;
-    private String      _dateWithboard;
-    private ImageButton _ColorBorderBtn;
-    private ImageButton _ColorBtn;
-    private ImageButton _DrawBtn;
-    private ImageButton _EraseButton;
-    private ImageButton _MoveButton;
+    private DrawingView     _DrawView;
+    private String          _idWhiteboard;
+    private String          _dateWithboard;
+    private ImageButton     _ColorBorderBtn;
+    private ImageButton     _ColorBtn;
+    private ImageButton     _DrawBtn;
+    private ImageButton     _EraseButton;
+    private ImageButton     _MoveButton;
 
-    private MyReceiver _receiver;
-    private FragmentActivity _fragment;
-    private PendingIntent _pendingIntent;
+    private MyReceiver      _receiver;
+    private Activity        _context;
+    private PendingIntent   _pendingIntent;
     private String          _lastUpadte;
 
     private float t = 0;
@@ -69,38 +67,36 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_whiteboard, container, false);
-
-        _idWhiteboard = getArguments().getString("idWhiteboard");
-        _dateWithboard = getArguments().getString("createdAt");
-        _DrawView = (DrawingView)view.findViewById(R.id.drawing);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        _context = this;
+        setContentView(R.layout.fragment_whiteboard);
+        _idWhiteboard = getIntent().getStringExtra("idWhiteboard");
+        _dateWithboard = getIntent().getStringExtra("createdAt");
+        _DrawView = (DrawingView)findViewById(R.id.drawing);
         _DrawView.setIdWhiteboard(_idWhiteboard);
-        _DrawBtn = (ImageButton)view.findViewById(R.id.draw_btn);
+        _DrawBtn = (ImageButton)findViewById(R.id.draw_btn);
         _DrawBtn.setOnClickListener(this);
-        _ColorBtn = (ImageButton)view.findViewById(R.id.color_btn);
+        _ColorBtn = (ImageButton)findViewById(R.id.color_btn);
         _ColorBtn.setOnClickListener(this);
-        _ColorBorderBtn = (ImageButton)view.findViewById(R.id.color_border_btn);
+        _ColorBorderBtn = (ImageButton)findViewById(R.id.color_border_btn);
         _ColorBorderBtn.setOnClickListener(this);
-        _EraseButton = (ImageButton)view.findViewById(R.id.erase_btn);
+        _EraseButton = (ImageButton)findViewById(R.id.erase_btn);
         _EraseButton.setOnClickListener(this);
-        _MoveButton = (ImageButton)view.findViewById(R.id.move_btn);
+        _MoveButton = (ImageButton)findViewById(R.id.move_btn);
         _MoveButton.setOnClickListener(this);
 
         _lastUpadte = _dateWithboard;
 
-        _fragment = getActivity();
+        _context = this;
 
         _receiver = new MyReceiver();
-        Intent msgIntent = new Intent(_fragment, WhiteboardPullIntentService.class);
-        _pendingIntent = PendingIntent.getService(_fragment, 0, msgIntent, 0);
-        AlarmManager alarmManager = (AlarmManager)_fragment.getSystemService(Context.ALARM_SERVICE);
+        Intent msgIntent = new Intent(_context, WhiteboardPullIntentService.class);
+        _pendingIntent = PendingIntent.getService(_context, 0, msgIntent, 0);
+        AlarmManager alarmManager = (AlarmManager)_context.getSystemService(Context.ALARM_SERVICE);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), _timeRefresh, _pendingIntent);
-        _fragment.startService(msgIntent);
-        return view;
+        _context.startService(msgIntent);
     }
 
     public void pullWhiteboard()
@@ -134,17 +130,17 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         super.onResume();
         IntentFilter filter = new IntentFilter(MyReceiver.ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
-        AlarmManager alarmManager = (AlarmManager)_fragment.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager)_context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 5000, _pendingIntent);
-        _fragment.registerReceiver(_receiver, filter);
+        _context.registerReceiver(_receiver, filter);
     }
 
     @Override
     public void onPause()
     {
         super.onPause();
-        _fragment.unregisterReceiver(_receiver);
-        AlarmManager alarmManager = (AlarmManager)_fragment.getSystemService(Context.ALARM_SERVICE);
+        _context.unregisterReceiver(_receiver);
+        AlarmManager alarmManager = (AlarmManager)_context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(_pendingIntent);
     }
 
@@ -152,12 +148,12 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
     public void onClick(View view)
     {
         if (view.getId() == R.id.color_border_btn) {
-            final Dialog colorBorderDialog = new Dialog(getActivity());
+            final Dialog colorBorderDialog = new Dialog(_context);
             colorBorderDialog.setTitle("Set Border Color : ");
             _DrawView.onMove(false);
             colorBorderDialog.setContentView(R.layout.color_selection_grid);
             GridView colorGrid = (GridView)colorBorderDialog.findViewById(R.id.gridviewcolor);
-            colorGrid.setAdapter(new ImageAdapter(getActivity()));
+            colorGrid.setAdapter(new ImageAdapter(_context));
             colorGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
@@ -174,12 +170,12 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         }
 
         if (view.getId() == R.id.color_btn) {
-            final Dialog colorDialog = new Dialog(getActivity());
+            final Dialog colorDialog = new Dialog(_context);
             colorDialog.setTitle("Set Color : ");
             _DrawView.onMove(false);
             colorDialog.setContentView(R.layout.color_selection_grid);
             GridView colorGrid = (GridView)colorDialog.findViewById(R.id.gridviewcolor);
-            colorGrid.setAdapter(new ImageAdapter(getActivity()));
+            colorGrid.setAdapter(new ImageAdapter(_context));
             colorGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
@@ -191,13 +187,13 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         }
 
         if (view.getId() == R.id.draw_btn){
-            final Dialog formDialog = new Dialog(getActivity());
+            final Dialog formDialog = new Dialog(_context);
             formDialog.setTitle("Set form : ");
             formDialog.setContentView(R.layout.form_selection);
 
             _DrawView.onMove(false);
             final Spinner sizeBrush = (Spinner)formDialog.findViewById(R.id.brush_size_spinner);
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.size_brush, android.R.layout.simple_spinner_item);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(_context, R.array.size_brush, android.R.layout.simple_spinner_item);
             sizeBrush.setAdapter(adapter);
             sizeBrush.setSelection(_SizeSpinnerSelected);
             ImageButton rectButton = (ImageButton)formDialog.findViewById(R.id.rect_shape);
@@ -308,4 +304,5 @@ public class WhiteboardFragment extends Fragment implements View.OnClickListener
         }
 
     }
+
 }

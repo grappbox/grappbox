@@ -33,7 +33,7 @@ public class WhiteboardPullIntentService extends IntentService {
     protected void onHandleIntent(Intent intent)
     {
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(WhiteboardFragment.MyReceiver.ACTION_RESP);
+        broadcastIntent.setAction(WhiteboardActivity.MyReceiver.ACTION_RESP);
         broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(broadcastIntent);
     }
