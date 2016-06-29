@@ -162,11 +162,14 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   $scope.view_onNewMessage = function() {
     var modalInstance_newMessage = "";
 
-    modalInstance_newMessage = $uibModal.open({ animation: true, size: "lg", templateUrl: "view_createNewMessage.html", controller: "view_createNewMessage" });
+    $scope.message.title = "";
+    $scope.message.content = "";
+
+    modalInstance_newMessage = $uibModal.open({ animation: true, size: "lg", scope: $scope, templateUrl: "view_createNewMessage.html", controller: "view_createNewMessage" });
     modalInstance_newMessage.result.then(
-      function onModalConfirm(data) {
+      function onModalConfirm() {
         $http.post($rootScope.api.url + "/timeline/postmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
-        { data: { token: $rootScope.user.token, title: data.title, message: data.content }}).then(
+        { data: { token: $rootScope.user.token, title: $scope.message.title, message: $scope.message.content }}).then(
           function onPostSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.warning({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -184,6 +187,51 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
                 break;
 
                 case "11.2.9":
+                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                break;
+
+                default:
+                break;
+              }
+            }
+          ),
+        function onModalDismiss() { }
+      });
+    };
+
+
+
+  /* ==================== EDIT OBJECT (EDIT MESSAGE) ==================== */
+
+  // "Add message" button handler
+  $scope.view_onMessageEdit = function(message_id, message_title, message_content) {
+    var modalInstance_editMessage = "";
+
+    $scope.message.title = message_title;
+    $scope.message.content = message_content;
+
+    modalInstance_editMessage = $uibModal.open({ animation: true, size: "lg", scope: $scope, templateUrl: "view_editMessage.html", controller: "view_editMessage" });
+    modalInstance_editMessage.result.then(
+      function onModalConfirm(data) {
+        $http.put($rootScope.api.url + "/timeline/editmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        { data: { token: $rootScope.user.token, messageId: message_id, title: data.title, message: data.content }}).then(
+          function onPutSuccess(response) {
+            if (response.data.info && response.data.info.return_code !== "1.11.1")
+              Notification.warning({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.success({ title: "Timeline", message: "Message updated.", delay: 2000 });
+            if ($scope.timeline.team.active)
+              $scope.timeline.team.messages = getTimelineMessages($scope.timeline.team);
+            else
+              $scope.timeline.customer.messages = getTimelineMessages($scope.timeline.customer);       
+          },
+          function onPutFail(response) {
+            if (response.data.info)
+              switch(response.data.info.return_code) {
+                case "11.3.3":
+                $rootScope.onUserTokenError();
+                break;
+
+                case "11.3.9":
                 Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
                 break;
 
@@ -252,7 +300,6 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 */
 app.controller("view_createNewMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
 
-  $scope.message = { title: "", content: "" };
   $scope.error = { title: false, content: false };
 
   $scope.view_confirmMessageCreation = function() {
@@ -260,9 +307,30 @@ app.controller("view_createNewMessage", ["$scope", "modalInputService", "$uibMod
     $scope.error.content = ($scope.message.content && $scope.message.content.length ? false : true);
 
     if (!$scope.error.title && !$scope.error.content)
-      $uibModalInstance.close($scope.message);
+      $uibModalInstance.close();
   };
   $scope.view_cancelMessageCreation = function() { $uibModalInstance.dismiss(); };
+}]);
+
+
+
+/**
+* Controller definition (from view)
+* MESSAGE EDITION => edit message form.
+*
+*/
+app.controller("view_editMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+
+  $scope.error = { title: false, content: false };
+
+  $scope.view_confirmMessageEdition = function() {
+    $scope.error.title = ($scope.message.title && $scope.message.title.length ? false : true);
+    $scope.error.content = ($scope.message.content && $scope.message.content.length ? false : true);
+
+    if (!$scope.error.title && !$scope.error.content)
+      $uibModalInstance.close($scope.message);
+  };
+  $scope.view_cancelMessageEdition = function() { $uibModalInstance.dismiss(); };
 }]);
 
 

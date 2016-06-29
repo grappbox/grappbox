@@ -44,7 +44,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <li><strong>Title:</strong> {[{ message.title }]}<br><strong>Message:</strong> {[{ message.message }]}</li>
                   </ul>
                   <a href="" title="Open {[{ message.creator.fullname }]}'s message" class="btn btn-raised btn-info">Open</a>
-                  <a href="" title="Edit this message" class="btn" data-ng-if="user.id == message.creator.id">Edit</a>
+                  <a href="" title="Edit this message" class="btn" data-ng-click="view_onMessageEdit(message.id, message.title, message.message)" data-ng-if="user.id == message.creator.id">Edit</a>
                   <a href="" title="Delete this message" class="btn btn-default" data-ng-click="view_onMessageDelete(message.id)" data-ng-if="user.id == message.creator.id">Delete</a>
                   <div class="clearfix"></div>
                 </div>
@@ -70,7 +70,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <li><strong>Title:</strong> {[{ message.title }]}<br><strong>Message:</strong> {[{ message.message }]}</li>
                   </ul>
                   <a href="" title="Open {[{ message.creator.fullname }]}'s message" class="btn btn-raised btn-info">Open</a>
-                  <a href="" title="Edit this message" class="btn" data-ng-if="user.id == message.creator.id">Edit</a>
+                  <a href="" title="Edit this message" class="btn" data-ng-click="view_onMessageEdit(message.id, message.title, message.message)" data-ng-if="user.id == message.creator.id">Edit</a>
                   <a href="" title="Delete this message" class="btn btn-default" data-ng-click="view_onMessageDelete(message.id)" data-ng-if="user.id == message.creator.id">Delete</a>
                   <div class="clearfix"></div>
                 </div>
@@ -94,6 +94,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <a href="" class="btn btn-danger btn-fab btn-fixed" title="Create a new message" data-ng-click="view_onNewMessage()"><i class="material-icons">add</i></a>
 </section>
 
+<!-- timeline: message creation modal -->
 <div>
   <script type="text/ng-template" id="view_createNewMessage.html">
     <div class="modal-header">
@@ -125,6 +126,39 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </script>
 </div>
 
+<!-- timeline: message edition modal -->
+<div>
+  <script type="text/ng-template" id="view_editMessage.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" data-ng-click="view_cancelMessageEdition()">×</button>
+      <h4 class="modal-title">Message edition</h4>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
+            <label for="message-edited-title" class="col-md-1 control-label">Title</label>
+            <div class="col-md-11">
+              <input type="text" class="form-control" id="message-edited-title" data-ng-model="message.title" placeholder="Title">
+            </div>
+          </div>
+          <div class="form-group {[{ error.content ? 'has-error' : '' }]}">
+            <label for="message-edited-content" class="col-md-1 control-label">Message</label>
+            <div class="col-md-11">
+              <textarea class="form-control" rows="3" id="message-edited-content" data-ng-model="message.content" placeholder="Message"></textarea>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn" data-ng-click="view_cancelMessageEdition()">Cancel</button>
+      <button type="button" class="btn btn-default" data-ng-click="view_confirmMessageEdition()">Update</button>
+    </div>
+  </script>
+</div>
+
+<!-- timeline: message deletion modal -->
 <div>
   <script type="text/ng-template" id="view_deleteMessage.html">
     <div class="modal-header">
