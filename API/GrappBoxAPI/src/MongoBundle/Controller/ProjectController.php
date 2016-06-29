@@ -16,6 +16,7 @@ use MongoBundle\Document\Role;
 use MongoBundle\Document\ProjectUserRole;
 use MongoBundle\Document\Tag;
 use MongoBundle\Document\Timeline;
+use GrappboxBundle\Entity\Color;
 
 /**
 *  @IgnoreAnnotation("apiName")
@@ -34,33 +35,11 @@ class ProjectController extends RolesAndTokenVerificationController
 {
 	/**
 	* @api {post} /mongo/projects/projectcreation Create a project for the user connected
+	* @apiName projectCreation
+	* @apiGroup Project
+	* @apiDescription Create a project for the user connected
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} name Name of the project
-	* @apiParam {String} [description] Description of the project
-	* @apiParam {String} [logo] Logo of the project
-	* @apiParam {String} [phone] Phone for the project
-	* @apiParam {String} [company] Company of the project
-	* @apiParam {String} [email] Email for the project
-	* @apiParam {String} [facebook] Facebook of the project
-	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
-	*
-	* @apiParamExample {json} Request-Full-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"name": "Grappbox",
-	*			"description": "grappbox est un projet de gestion de projets",
-	*			"logo": "10001111001100110010101010",
-	*			"phone": "+335 65 23 45 94",
-	*			"company": "L'oie oppressée",
-	*			"email": "contact@oieoppresee.com",
-	*			"facebook": "www.facebook.com/OieOpp",
-	*			"twitter": "www.twitter.com/OieOpp",
-	*			"password": "yolo42"
-	*		}
-	*	}
 	*/
 	public function projectCreationAction(Request $request)
 	{
@@ -68,7 +47,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('name', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('password', $content))
 			return $this->setBadRequest("6.1.6", "Project", "projectcreation", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -81,6 +60,8 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->setName($content->name);
 		$project->setCreatedAt(new \DateTime);
 		$project->setCreatorUser($user);
+		$project->setColor(dechex(rand(0x000000, 0xFFFFFF)));
+		$project->setSafePassword($content->password);
 		if (array_key_exists('description', $content))
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
@@ -95,12 +76,6 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setFacebook($content->facebook);
 		if (array_key_exists('twitter', $content))
 			$project->setTwitter($content->twitter);
-		if (array_key_exists('password', $content))
-		{
-			$encoder = $this->container->get('security.password_encoder');
-			$encoded = $encoder->encodePassword($user, $content->password);
-			$project->setSafePassword($encoded);
-		}
 
 		$em->persist($project);
 
@@ -108,15 +83,15 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$role = new Role();
 		$role->setName("Admin");
-		$role->setTeamTimeline(1);
-		$role->setCustomerTimeline(1);
-		$role->setGantt(1);
-		$role->setWhiteboard(1);
-		$role->setBugtracker(1);
-		$role->setEvent(1);
-		$role->setTask(1);
-		$role->setProjectSettings(1);
-		$role->setCloud(1);
+		$role->setTeamTimeline(2);
+		$role->setCustomerTimeline(2);
+		$role->setGantt(2);
+		$role->setWhiteboard(2);
+		$role->setBugtracker(2);
+		$role->setEvent(2);
+		$role->setTask(2);
+		$role->setProjectSettings(2);
+		$role->setCloud(2);
 		$role->setProjects($project);
 
 		$em->persist($role);
@@ -146,6 +121,9 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->flush();
 		$id = $project->getId();
 
+		$cloudClass = new CloudController();
+		$cloudClass->createCloudAction($request, $id);
+
 		$teamTimeline = new Timeline();
 		$teamTimeline->setTypeId(2);
 		$teamTimeline->setProjects($project);
@@ -161,42 +139,23 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->persist($customerTimeline);
 		$em->flush();
 
+		//$this->get('service_stat')->initiateStatistics($project);
+
 		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id));
+	}
+
+	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
+	{
+		return $str; //TODO : code the Grappbox sha-1 algorithm when assigned people ready
 	}
 
 	/**
 	* @api {put} /mongo/projects/updateinformations Update a project informations
+	* @apiName updateInformations
+	* @apiGroup Project
+	* @apiDescription Update the given project informations
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} [creatorId] Id of the new creator
-	* @apiParam {String} [name] name of the project
-	* @apiParam {String} [description] Description of the project
-	* @apiParam {Text} [logo] Logo of the project
-	* @apiParam {String} [phone] Phone for the project
-	* @apiParam {String} [company] Company of the project
-	* @apiParam {String} [email] Email for the project
-	* @apiParam {String} [facebook] Facebook of the project
-	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] Safe password for the project
-	*
-	* @apiParamExample {json} Request-Full-Example:
-	*	{
-	*		"data": {
-	*			"token": "13135",
-	*			"projectId": 2,
-	*			"creatorId": 18,
-	*			"name": "Grappbox",
-	*			"description": "grappbox est un projet de gestion de projets",
-	*			"logo": "10001111001100110010101010",
-	*			"phone": "+335 65 23 45 94",
-	*			"company": "L'oie oppressée",
-	*			"email": "contact@oieoppresee.com",
-	*			"facebook": "www.facebook.com/OieOpp",
-	*			"twitter": "www.twitter.com/OieOpp",
-	*			"password": "yolo42"
-	*		}
-	*	}
 	*/
 	public function updateInformationsAction(Request $request)
 	{
@@ -211,7 +170,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.2.3", "Project", "updateinformations"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -271,10 +230,14 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setTwitter($content->twitter);
 		if (array_key_exists('password', $content))
 		{
-			$encoder = $this->container->get('security.password_encoder');
-			$encoded = $encoder->encodePassword($user, $content->password);
-			$project->setSafePassword($encoded);
+			if (!array_key_exists('oldPassword', $content))
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
+			$passwordEncrypted = ($content->oldPassword ? $this->grappSha1($content->oldPassword) : NULL);
+			if ($passwordEncrypted != $project->getSafePassword())
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
+			$project->setSafePassword($content->password);
 		}
+
 
 		$em->flush();
 
@@ -283,24 +246,17 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/getinformations/:token/:projectId Get a project basic informations
+	* @apiName getInformations
+	* @apiGroup Project
+	* @apiDescription Get the given project basic informations
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
 	*/
 	public function getInformationsAction(Request $request, $token, $projectId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return $this->setBadTokenError("6.3.3", "Project", "getinformations");
-
-			$roles = $this->checkRoles($user, $projectId, "projectSettings");
-
-			return new JsonResponse($roles);
-			//return new JsonResponse($roles->getProjectSettings());
-
-
-		// if (!$this->checkRoles($user, $projectId, "projectSettings"))
-		// 	return ($this->setNoRightsError("6.3.9", "Project", "getinformations"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
@@ -316,41 +272,33 @@ class ProjectController extends RolesAndTokenVerificationController
 		$contactMail = $project->getContactEmail();
 		$facebook = $project->getFacebook();
 		$twitter = $project->getTwitter();
+		$color = $em->getRepository('GrappboxBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		if ($color === null)
+			$color = $project->getColor();
+		else
+			$color = $color->getColor();
 		$creation = $project->getCreatedAt();
 		$deletedAt = $project->getDeletedAt();
 
 		return $this->setSuccess("1.6.1", "Project", "getinformations", "Complete Success", array("name" => $name, "description" => $description, "logo" => $logo, "phone" => $phone,
-			"company" => $company , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "creation_date" => $creation, "deleted_at" => $deletedAt));
+			"company" => $company , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "color" => $color, "creation_date" => $creation, "deleted_at" => $deletedAt));
 	}
 
 	/**
-	* @api {delete} /mongo/projects/delproject Delete a project 7 days after the call
+	* @api {delete} /mongo/projects/delproject/:token/:projectId Delete a project 7 days after the call
+	* @apiName delProject
+	* @apiGroup Project
+	* @apiDescription Set the deleted at of the given project to 7 days after the call of the function
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1
-	*		}
-	*	}
 	*/
-	public function delProjectAction(Request $request)
+	public function delProjectAction(Request $request, $token, $projectId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content))
-			return $this->setBadRequest("6.4.6", "Project", "delproject", "Missing Parameter");
-
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("6.4.3", "Project", "delproject"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -365,14 +313,18 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "delproject", "Complete Success", array("deletion_date" => $project->getDeletedAt()));
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - delproject - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
 	* @api {get} /mongo/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
+	* @apiName retrieveProject
+	* @apiGroup Project
+	* @apiDescription Retreive a project set to be deleted, but have to be called before the 7 days are passed
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
 	*/
 	public function retrieveProjectAction(Request $request, $token, $projectId)
 	{
@@ -380,7 +332,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.5.3", "Project", "retrieveproject"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.5.9", "Project", "retrieveproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -397,19 +349,11 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {post} /mongo/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
+	* @apiName generateCustomerAccess
+	* @apiGroup Project
+	* @apiDescription Generate or regenerate a customer access for the given project
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} projectId Id of the project
-	* @apiParam {String} name Name of the customer access
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "13cqs43c54vqd3",
-	*			"projectId": 2,
-	*			"name": "access for Toyota"
-	*		}
-	*	}
 	*/
 	public function generateCustomerAccessAction(Request $request)
 	{
@@ -424,7 +368,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.6.3", "Project", "generatecustomeraccess"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.6.9", "Project", "generatecustomeraccess"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -466,9 +410,11 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
+	* @apiName getCustomerAccessById
+	* @apiGroup Project
+	* @apiDescription Get a customer access by it's id
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} id Id of the customer access
 	*/
 	public function getCustomerAccessByIdAction(Request $request, $token, $id)
 	{
@@ -482,9 +428,6 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.7.4", "Project", "getcustomeraccessbyid", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $customerAccess->getProjects()->getId(), "projectSettings"))
-			return ($this->setNoRightsError("6.7.9", "Project", "getcustomeraccessbyid"));
-
 		$name = $customerAccess->getName();
 		$hash = $customerAccess->getHash();
 		$createdAt = $customerAccess->getCreatedAt();
@@ -495,9 +438,11 @@ class ProjectController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
+	* @apiName getCustomerAccessByProject
+	* @apiGroup Project
+	* @apiDescription Get a customer access by it's poject id
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
 	*/
 	public function getCustomerAccessByProjectAction(Request $request, $token, $projectId)
 	{
@@ -505,12 +450,8 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.8.3", "Project", "getcustomeraccessbyproject"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
-			return ($this->setNoRightsError("6.8.9", "Project", "getcustomeraccessbyproject"));
-
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByprojects($projectId);
-
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.8.4", "Project", "getcustomeraccessbyproject", "Bad Parameter: projectId");
 
@@ -532,35 +473,20 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /mongo/projects/delcustomeraccess Delete a customer access
+	* @api {delete} /mongo/projects/delcustomeraccess/:token/:projectId/:customerAccessId Delete a customer access
+	* @apiName delCustomerAccess
+	* @apiGroup Project
+	* @apiDescription Delete the given customer access
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} customerAccessId Id of the customer access
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1,
-	*			"customerAccessId": 3
-	*		}
-	*	}
 	*/
-	public function delCustomerAccessAction(Request $request)
+	public function delCustomerAccessAction(Request $request, $token, $projectId, $customerAccessId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('customerAccessId', $content))
-			return $this->setBadRequest("6.9.6", "Project", "delcustomeraccess", "Missing Parameter");
-
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("6.9.3", "Project", "delcustomeraccess"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.9.9", "Project", "delcustomeraccess"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -572,24 +498,18 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->remove($customerAccess);
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "delcustomeraccess", "Complete Success", array("id" => $content->customerAccessId));
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - delcustomeraccess - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
 	* @api {post} /mongo/projects/addusertoproject Add a user to a project
+	* @apiName addUserToProject
+	* @apiGroup Project
+	* @apiDescription Add a given user to the project wanted
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} id Id of the project
-	* @apiParam {String} email Email of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "nfeq34efbfkqf54",
-	*			"id": 2,
-	*			"email": "toto@titi.com"
-	*		}
-	*	}
 	*/
 	public function addUserToProjectAction(Request $request)
 	{
@@ -604,7 +524,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.10.3", "Project", "addusertoproject"));
 
-		if (!$this->checkRoles($user, $content->id, "projectSettings"))
+		if (!$this->checkRoles($user, $content->id, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -646,35 +566,20 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /mongo/projects/removeusertoproject Remove a user from the project
+	* @api {delete} /mongo/projects/removeusertoproject/:token/:projectId/:userId Remove a user from the project
+	* @apiName removeUserToProject
+	* @apiGroup Project
+	* @apiDescription Remove a given user to the project wanted
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} userId Id of the user
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1,
-	*			"userId": 3
-	*		}
-	*	}
 	*/
-	public function removeUserToProjectAction(Request $request)
+	public function removeUserToProjectAction(Request $request, $token, $projectId, $userId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('userId', $content))
-			return $this->setBadRequest("6.11.6", "Project", "removeusertoproject", "Missing Parameter");
-
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("6.11.3", "Project", "removeusertoproject"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -716,23 +621,24 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setSuccess("1.6.1", "Project", "removeusertoproject", "Complete Success", array("id" => $userToRemove->getId()));
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - removeusertoproject - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
 	* @api {get} /mongo/projects/getusertoproject/:token/:projectId Get all the users on a project
+	* @apiName getUserToProject
+	* @apiGroup Project
+	* @apiDescription Get all the users on the given project
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
 	*/
 	public function getUserToProjectAction(Request $request, $token, $projectId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.12.3", "Project", "getusertoproject"));
-
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
-			return ($this->setNoRightsError("6.12.9", "Project", "getusertoproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
@@ -756,5 +662,104 @@ class ProjectController extends RolesAndTokenVerificationController
 		}
 
 		return $this->setSuccess("1.6.1", "Project", "getusertoproject", "Complete Success", array("array" => $arr));
+	}
+
+	/**
+	* @api {put} /mongo/projects/changeprojectcolor Change the color of a project
+	* @apiName changeProjectColor
+	* @apiGroup Project
+	* @apiDescription Change the color of a project
+	* @apiVersion 0.2.0
+	*
+	*/
+	public function changeProjectColorAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('color', $content))
+			return $this->setBadRequest("6.13.6", "Project", "changeprojectcolor", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("6.13.3", "Project", "changeprojectcolor"));
+
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("6.13.4", "Project", "changeprojectcolor", "Bad Parameter: projectId");
+
+		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		if ($color === null)
+		{
+			$color = new Color();
+			$color->setUser($user);
+			$color->setProject($project);
+			$em->persist($color);
+		}
+
+		$color->setColor($content->color);
+		$em->flush();
+
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - changeprojectcolor - Complete Success";
+		return new JsonResponse($response);
+	}
+
+	/**
+	* @api {delete} /mongo/projects/resetprojectcolor/:token/:projectId Reset the color of the project
+	* @apiName resetProjectColor
+	* @apiGroup Project
+	* @apiDescription Reset the color of the given project to the default one
+	* @apiVersion 0.2.0
+	*
+	*/
+	public function resetProjectColorAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("6.10.3", "Project", "resetprojectcolor"));
+
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: projectId");
+
+		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		if ($color === null)
+			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: No color for the user");
+
+		$em->remove($color);
+		$em->flush();
+
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - resetprojectcolor - Complete Success";
+		return new JsonResponse($response);
+	}
+
+	/**
+	* @api {get} /mongo/projects/getprojectlogo/:token/:projectId Get project logo
+	* @apiName getProjectLogo
+	* @apiGroup Project
+	* @apiDescription Get the logo of the given project
+	* @apiVersion 0.2.0
+	*
+	*/
+	public function getProjectLogoAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("6.15.3", "Project", "getProjectLogo"));
+
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("6.15.4", "Project", "getProjectLogo", "Bad Parameter: projectId");
+
+		return $this->setSuccess("1.6.1", "Project", "getProjectLogo", "Complete Success", array("logo" => $project->getLogo()));
 	}
 }

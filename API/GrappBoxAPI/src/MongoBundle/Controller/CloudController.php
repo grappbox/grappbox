@@ -14,6 +14,7 @@ use MongoBundle\Document\CloudSecuredFileMetadata;
 use Sabre\DAV\Client;
 use League\Flysystem\WebDAV\WebDAVAdapter;
 use League\Flysystem\Filesystem;
+use League\Flysystem\FileNotFoundException;
 
 class CurlRequest {
 	protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
@@ -133,101 +134,33 @@ class CloudController extends Controller
 	{
 		$db = $this->get('doctrine_mongodb')->getManager();
 		$role = $db->getRepository("MongoBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
-		if (is_null($role))
-			return (-1);
-		$roleTable = $db->getRepository("MongoBundle:Role")->findOneById($role->getRoleId());
-		return (is_null($roleTable) ? -1 : $roleTable->getCloud());
+		foreach($roles as $role)
+		{
+			if (is_null($role))
+				continue;
+			$roleTable = $db->getRepository("MongoBundle:Role")->findOneById($role->getRoleId());
+			if (!is_null($roleTable) && $roleTable->getCloud() > 0)
+				return $roleTable->getCloud();
+		}
+		return (-1);
+	}
+
+	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
+	{
+		return $str; //TODO : code the Grappbox sha-1 algorithm when assigned people ready
+		// TODO : copy code in the corresponding function in ProjectController (before updateInformation method)
 	}
 
 	/**
 	*
-	* @api {post} /mongo/cloud/stream Open a new stream in order to upload file
-	* @apiVersion 0.11.0
-	* @apiDescription This method is here to create an upload process between API and Cloud.
-	* @apiGroup Cloud
-	* @apiName Stream opening
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {string} [session_infos.safe_password] The password of the project safe. Use it only if the future file will be in the safe.
-	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
-	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
-	* @apiParam {string} stream_infos.filename The filename of the future file with extension
-	* @apiParam {string} stream_infos.path The path where the future file will be uploaded
-	* @apiParam {string} [stream_infos.password] The password to protect the file. Use it only if password protected required.
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d",
-	*			"safe_password" : "satan"
-	*		},
-	*		"stream_infos": {
-	*			"project_id": 42,
-	*			"path" : "/LabEIP/Golum",
-	*			"password" : "My Precious!"
-	*			"filename" : "The ring.worldDomination"
-	*		}
-	* 	}
-	* @apiSuccess (200) {string} stream_id The id of the stream newly created.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"stream_id" : 1
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
-	* @api {post} /V0.2/cloud/stream/:token/:project_id/[:safe_password] Open a new stream in order to upload file
+	* @api {post} /mongo/cloud/stream/:token/:project_id/[:safe_password] Open a new stream in order to upload file
 	* @apiVersion 0.2.0
 	* @apiDescription This method is here to create an upload process between API and Cloud.
 	* @apiGroup Cloud
 	* @apiName Stream opening
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
-	* @apiParam {string} [session_infos.safe_password] The password of the project safe. Use it only if the future file will be in the safe.
-	* @apiParam {Object[]} data All informations about the core request have to be here
-	* @apiParam {string} data.filename The filename of the future file with extension
-	* @apiParam {string} data.path The path where the future file will be uploaded
-	* @apiParam {string} [data.password] The password to protect the file. Use it only if password protected required.
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"data": {
-	*			"path" : "/LabEIP/Golum",
-	*			"password" : "My Precious!"
-	*			"filename" : "The ring.worldDomination"
-	*		}
-	* }
-	* @apiSuccess (200) {Object} infos Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
-	* @apiSuccess (200) {Object} data All informations about response will be here.
-	* @apiSuccess (200) {Number} data.stream_id The id of the stream newly created.
 	*
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : {
-	*				"return_code" : "1.3.1",
-	*				"return_message" : "Cloud - openStreamAction - Complete success"
-	*		},
-	*		"data" : {
-	*			"stream_id" : 1
-	*		}
-	*	}
-	* @apiError (206) {Object} infos Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	* HTTP/1.1 206 Partial Content
-	* {
-	*		"infos" : {
-	*				"return_code" : "3.1.9",
-	*				"return_message" : "Cloud - openStreamAction - Insufficient Right"
-	*		}
-	* }
 	*/
-	private function openStreamAction($token, $idProject, $safePassword, Request $request){
+	public function openStreamAction($token, $idProject, $safePassword, Request $request){
 		$dbManager = $this->get('doctrine_mongodb')->getManager();
 		$json = json_decode($request->getContent(), true);
 		$receivedData = $json["data"];
@@ -237,39 +170,43 @@ class CloudController extends Controller
 		if ($isSafe)
 		{
 			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
-			$passwordEncrypted = ($safe_password ? $this->grappSha1($json["session_infos"]["safe_password"]) : NULL);
+			$passwordEncrypted = ($safePassword ? $this->grappSha1($safePassword) : NULL);
 		}
 		else {
 			$project = null;
 			$passwordEncrypted = null;
 		}
-		if (($this->checkUserCloudAuthorization($userId, $idProject) <= 0) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
+		if (($this->checkUserCloudAuthorization($userId, $idProject) < 2) || ($isSafe && $passwordEncrypted != $project->getSafePassword()))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.1.9";
 			$response["info"]["return_message"] = "Cloud - openStreamAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 		$receivedData["filename"] = str_replace(" ", "|", $receivedData["filename"]);
 		$receivedData["path"] = str_replace(" ", "|", $receivedData["path"]);
 
 		if ($receivedData["path"][0] != "/")
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.1.4";
 			$response["info"]["return_message"] = "Cloud - openStreamAction - Bad Parameter";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$stream = new CloudTransfer();
+		$receivedData["filename"] = str_replace(',', '', $receivedData["filename"]);
+		if (substr($receivedData["path"], -1) == '/')
+			$receivedData["path"] = substr($receivedData["path"], 0, -1);
 		$stream->setCreatorId($userId)
-					 ->setFilename($receivedData["filename"])
+					 ->setFilename(str_replace(',', '', $receivedData["filename"]))
 					 ->setPath('/GrappBox|Projects/'.(string)$idProject.$receivedData["path"])
-					 ->setPassword(isset($receivedData["password"]) ? $receivedData["password"] : null)
-					 ->setCreationDate(new DateTime("now"))
-					 ->setDeletionDate(null);
+					 ->setPassword(isset($receivedData["password"]) && !empty($receivedData["password"]) ? $receivedData["password"] : null)
+ 					 ->setCreationDate(new DateTime("now"))
+ 					 ->setDeletionDate(null);
 		$em->persist($stream);
 		$em->flush();
+
+		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - openStreamAction - Complete Success";
 		$response["data"]["stream_id"] = $stream->getId();
@@ -278,74 +215,12 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /mongo/cloud/stream Close a stream in order to complete an upload
-	* @apiVersion 0.11.0
-	* @apiDescription This method is here to finalize an upload and make the file downloadable.
-	* @apiGroup Cloud
-	* @apiName Stream closing
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {string} [session_infos.safe_password] The password of the project safe. Use it only if the future file will be in the safe.
-	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
-	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
-	* @apiParam {Number} stream_infos.stream_id The id of the stream to close.
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d",
-	*			"safe_password" : "satan"
-	*		},
-	*		"stream_infos": {
-	*			"project_id": 42,
-	*			"stream_id" : 1
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos. This will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
-	* @api {delete} /V0.2/cloud/stream/:token/:projectId/:streamId Close a stream in order to complete an upload
+	* @api {delete} /mongo/cloud/stream/:token/:projectId/:streamId Close a stream in order to complete an upload
 	* @apiVersion 0.2.0
 	* @apiDescription This method is here to finalize an upload and make the file downloadable.
 	* @apiGroup Cloud
 	* @apiName Stream closing
-	* @apiParam {string} token The token of authenticated user.
-	* @apiParam {Number} project_id The project id to execute the command.
-	* @apiParam {Number} stream_id The id of the stream to close.
-	* @apiParamExample {curl} Request Example:
-	*	curl -X DELETE http://api.grappbox.com/api_dev.php/V0.2/cloud/stream/myToken/42/1
 	*
-	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : {
-	*			"return_code" : 1.2.1,
-	*			"return_message" : "Cloud - closeStreamAction - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"infos" : {
-	*			"return_code" : 3.2.9,
-	*			"return_message" : "Cloud - closeStreamAction - Insufficient Right"
-	*		}
-	*	}
 	*/
 	private function closeStreamAction($token, $projectId, $streamId, Request $request){
 		$dbManager = $this->get('doctrine_mongodb')->getManager();
@@ -355,10 +230,9 @@ class CloudController extends Controller
 		$user_id = $this->getUserId($token);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.2.9";
 			$response["info"]["return_message"] = "Cloud - closeStreamAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Here the user have the authorization to close this stream
@@ -381,6 +255,7 @@ class CloudController extends Controller
 			"publicUpload" => (bool)false,
 			"permissions" => (int)1
 		));
+		$shareRequest->createCurl("http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares");
 		$em->persist($stream);
 		$em->flush();
 		$response["info"]["return_code"] = "1.3.1";
@@ -390,112 +265,32 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {put} /mongo/cloud/sendfile send a file chunk.
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
-	* @apiGroup Cloud
-	* @apiName Send file
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} stream_infos All informations about the core request have to be here
-	* @apiParam {Number} stream_infos.project_id The project id to execute the command.
-	* @apiParam {Number} stream_infos.stream_id The stream id which contains the uploaded file metadata (use POST stream action route to open one)
-	* @apiParam {Number} stream_infos.chunk_numbers The numbers of chunk you will upload for this file.
-	* @apiParam {Number} stream_infos.current_chunk The index of current chunk. This start to 0 and end to (chunk_numbers - 1)
-	* @apiParam {string} stream_infos.file_chunk The file chunk encoded in base64
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"stream_infos": {
-	*			"stream_id" : 21,
-	*			"project_id": 42,
-	*			"chunk_numbers" : 2,
-	*			"current_chunk" : 1,
-	*			"file_chunk" : "Here put your chunk encoded in base 64"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
-	* @api {put} /V0.2/cloud/file send a file chunk.
+	* @api {put} /mongo/cloud/file send a file chunk.
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
 	* @apiGroup Cloud
 	* @apiName Send file
-	* @apiParam {Object[]} data All informations about the core request have to be here
-	* @apiParam {string} data.token The token of authenticated user.
-	* @apiParam {Number} data.project_id The project id to execute the command.
-	* @apiParam {Number} data.stream_id The stream id which contains the uploaded file metadata (use POST stream action route to open one)
-	* @apiParam {Number} data.chunk_numbers The numbers of chunk you will upload for this file.
-	* @apiParam {Number} data.current_chunk The index of current chunk. This start to 0 and end to (chunk_numbers - 1)
-	* @apiParam {string} data.file_chunk The file chunk encoded in base64
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"data": {
-	*			"token": "48q98d"
-	*			"stream_id" : 21,
-	*			"project_id": 42,
-	*			"chunk_numbers" : 2,
-	*			"current_chunk" : 1,
-	*			"file_chunk" : "Here put your chunk encoded in base 64"
-	*		}
-	*	}
 	*
-	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : {
-	*			"return_code" : 1.3.1,
-	*			"return_message" : "Cloud - closeStreamAction - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"infos" : {
-	*			"return_code" : 3.3.9,
-	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
-	*		}
-	*	}
 	*/
 	public function sendFileAction(Request $request){
 		$cloudTransferRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudTransfer");
 		$json = json_decode($request->getContent(), true);
-		$token = $json["session_infos"]["token"];
-		$receivedData = $json["stream_infos"];
+		$token = $json["data"]["token"];
+		$receivedData = $json["data"];
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.3.9";
 			$response["info"]["return_message"] = "Cloud - sendFileAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Here the user have the right authorization, so upload the file's chunk
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
-		$flysystem->put('/GrappBox|Projects/'.(string)$receivedData["project_id"]."/".$stream->getFilename().'-chunking-'.(string)$receivedData["stream_id"].'-'.$receivedData["chunk_numbers"].'-'.$receivedData["current_chunk"], (string)base64_decode($receivedData["file_chunk"]));
+		$flysystem->put($stream->getPath() ."/".$stream->getFilename().'-chunking-'.(string)$receivedData["stream_id"].'-'.$receivedData["chunk_numbers"].'-'.$receivedData["current_chunk"], (string)base64_decode($receivedData["file_chunk"]));
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - sendFileAction - Complete Success";
 		return new JsonResponse($response);
@@ -504,87 +299,12 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /mongo/cloud/getlist/:token/:idProject/:path/[:passwordSafe] Cloud LS
-	* @apiVersion 0.11.0
-	* @apiDescription Get the list of a given directory.
-	* @apiGroup Cloud
-	* @apiName List directory
-	* @apiParam {string} token The token of authenticated user.
-	* @apiParam {Number} idProject The project id to execute the command.
-	* @apiParam {string} path The path to the file with coma instead of slash. This have to start with a coma
-	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the user want the safe content
-	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V0.6/cloud/getlist/minus5percent/1/,Sauron/satan
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
-	* @api {get} /V0.2/cloud/list/:token/:idProject/:path/[:passwordSafe] Cloud LS
+	* @api {get} /mongo/cloud/list/:token/:idProject/:path/[:passwordSafe] Cloud LS
 	* @apiVersion 0.2.0
 	* @apiDescription Get the list of a given directory.
 	* @apiGroup Cloud
 	* @apiName List directory
-	* @apiParam {string} token The token of authenticated user.
-	* @apiParam {Number} idProject The project id to execute the command.
-	* @apiParam {string} path The path to the file with coma instead of slash. This have to start with a coma
-	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the user want the safe content
-	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V0.2/cloud/list/minus5percent/1/,Sauron/satan
 	*
-	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
-	* @apiSuccess (200) {Object} data All informations about response will be here.
-	* @apiSuccess (200) {Object[]} data.array List of all Document found by owncloud
-	*	@apiSuccess (200) {string} data.array.type The Document's type
-	* @apiSuccess (200) {string} data.array.filename The Document's name in owncloud
-	* @apiSuccess (200) {boolean} data.array.is_secured True if the Document is a password protected file.
-	* @apiSuccess (200) {string} [data.array.size] (Only on files) The size of the Document in bytes
-	* @apiSuccess (200) {string} [data.array.mimetype] (Only on files) The mimetype of the file.
-	* @apiSuccess (200) {Number} [data.array.timestamp] (Only on files) The timestamp of the last modification.
-	*
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : {
-	*			"return_code" : 1.4.1,
-	*			"return_message" : "Cloud - closeStreamAction - Complete Success"
-	*		},
-	*		"data" : {
-	*			"array" : [{
-	*				"type" : "file",
-	*				"filename" : "Doulan.txt",
-	*				"is_secured" : false,
-	*				"size" : "18",
-	*				"mimetype" : "text/plain",
-	*				"timestamp" : 1452833750
-	*			},
-	*			{
-	*				"type" : "dir",
-	*				"filename" : "Safe",
-	*				is_secured : false,
-	*			}]
-	*		}
-	*	}
-	*
-	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"infos" : {
-	*			"return_code" : 3.4.9,
-	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
-	*		}
-	*	}
 	*/
 	public function getListAction($token, $idProject, $path, $password, Request $request)
 	{
@@ -598,12 +318,11 @@ class CloudController extends Controller
 			$project = null;
 			$passwordEncrypted = null;
 		}
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) < 1 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.4.9";
 			$response["info"]["return_message"] = "Cloud - getListAction - Insufficient Right";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		$client = new Client(self::$settingsDAV);
@@ -614,14 +333,25 @@ class CloudController extends Controller
 		$securedFileRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata");
 
 		$content = str_replace("|", " ", $adapter->listContents($rpath));
+		if (substr($rpath, -1) == '/')
+			$rpath = substr($rpath, 0, -1);
 		foreach ($content as $i => $row)
 		{
 			$content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
 			$filename = split('/', $content[$i]["path"]);
 			$filename = $filename[count($filename) - 1];
+			$filename = urldecode($filename);
+			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
+			$filename = str_replace('|', ' ', $filename);
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
-			$content[$i]["is_secured"] = !($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null);
+			if ($content[$i]["type"] == "file")
+			{
+					$content[$i]["last_modified"] = new DateTime();
+					$content[$i]["last_modified"]->setTimestamp($content[$i]["timestamp"]);
+					unset($content[$i]["timestamp"]);
+			}
+
 		}
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - getListAction - Complete Success";
@@ -631,36 +361,69 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.2/cloud/file/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a file
+	* @api {get} /mongo/cloud/file/:cloudPath/:token/:idProject/[:passwordSafe] Download a file
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
 	* @apiName Download file
-	* @apiParam {string} CloudPath The path to the file with coma instead of slash. This have to start with a coma
-	* @apiParam {string} token The token of authenticated user.
-	* @apiParam {Number} idProject The project id to execute the command.
-	* @apiParam {string} [password] The password hashed in a clear way. Use only if file is password protected.
-	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the file is in the safe
-	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V0.6/cloud/getfile/,Sauron/minus5percent/1/mustache/satan
-	* @apiSuccess (203) {string} Header HTTP/1.1 203 Redirect (You will be redirected on the file URL in GET method (for download))
 	*
-	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"infos" : {
-	*			"return_code" : 3.5.9,
-	*			"return_message" : "Cloud - sendFileAction - Insufficient Right"
-	*		}
-	*	}
 	*/
-	public function getFileAction($cloudPath, $token, $idProject, $password = null, $passwordSafe = null, Request $request){
+	public function getFileAction($cloudPath, $token, $idProject, $passwordSafe, Request $request){
 		$userId = $this->getUserId($token);
-		$passwordEncrypted = $password; //TODO : sha-1 512 hashing Here in password
+		$cloudPath = str_replace(",", "/", $cloudPath);
+		$cloudPath = str_replace(" ", "|", $cloudPath);
+		$cloudPathArray = explode(',', $cloudPath);
+		$filename = $cloudPathArray[count($cloudPathArray) - 1];
+		unset($cloudPathArray[count($cloudPathArray) - 1]);
+		$cloudBasePath = implode('/', $cloudPathArray);
+		if ($cloudBasePath == "" || $cloudBasePath[0] != "/")
+			$cloudBasePath = "/" + $cloudBasePath;
+		if ($cloudBasePath === 0)
+		   $cloudBasePath = "/";
+		$filePassword = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+		$isSafe = preg_match("/Safe/", $cloudPath);
+		if ($isSafe)
+		{
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$passwordEncrypted = $this->grappSha1($passwordSafe);
+		}
+		else {
+			$project = NULL;
+			$passwordEncrypted = NULL;
+		}
+		if (!is_null($filePassword) || $userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) < 1 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		{
+			$response["info"]["return_code"] = "3.5.9";
+			$response["info"]["return_message"] = "Cloud - getFileAction - Insufficient Right";
+			return new JsonResponse($response, 206);
+		}
+
+		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
+		$path = "http://cloud.grappbox.com/ocs/v1.php/apps/files_sharing/api/v1/shares?path=".urlencode("/GrappBox|Projects/".(string)($idProject).$cloudPath);
+		$searchRequest = new CurlRequest();
+		$searchResult = simplexml_load_string($searchRequest->createCurl($path));
+		if ($searchResult->meta->statuscode != 100 ||
+			$searchResult->data->element->share_type != "3")
+			{
+				$response["info"]["return_code"] = "3.5.10";
+				$response["info"]["return_message"] = "Cloud - getFileAction - Target file not found";
+				return new JsonResponse($response, 206);
+			}
+		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+	}
+
+	/**
+	*
+	* @api {get} /mongo/cloud/filesecured/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a secured file
+	* @apiVersion 0.2.0
+	* @apiDescription This method is there to start a download.
+	* @apiGroup Cloud
+	* @apiName Download secured file
+	*
+	*/
+	public function getFileSecuredAction($cloudPath, $token, $idProject, $password, $passwordSafe = null, Request $request){
+		$userId = $this->getUserId($token);
+		$passwordFileEncrypted = $this->grappSha1($password);
 		$cloudPathArray = explode(',', $cloudPath);
 		$filename = $cloudPathArray[count($cloudPathArray) - 1];
 		unset($cloudPathArray[count($cloudPathArray) - 1]);
@@ -673,18 +436,17 @@ class CloudController extends Controller
 		if ($isSafe)
 		{
 			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
-			$passwordEncrypted = $this->grappSha1($password);
+			$passwordEncrypted = $this->grappSha1($passwordSafe);
 		}
 		else {
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($userId < 0 || (!is_null($filePassword) && $filePassword->getPassword() != $passwordFileEncrypted) || $this->checkUserCloudAuthorization($userId, $idProject) < 1 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.5.9";
-			$response["info"]["return_message"] = "Cloud - openStreamAction - Insufficient Right";
-			return new JsonResponse($response);
+			$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Insufficient Right";
+			return new JsonResponse($response, 206);
 		}
 
 		//Here we have authorization to get the encrypted file, Client have to decrypt it after reception, if it's a secured file
@@ -695,90 +457,21 @@ class CloudController extends Controller
 		if ($searchResult->meta->statuscode != 100 ||
 			$searchResult->data->element->share_type != "3")
 			{
-				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.5.10";
-				$response["info"]["return_message"] = "Cloud - getFileAction - Target file not found";
-				return new JsonResponse($response);
+				$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Target file not found";
+				return new JsonResponse($response, 206);
 			}
 		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
 	}
 
 	/**
 	*
-	* @api {post} /mongo/cloud/setsafepass Set the safe password
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to change the safe password for a given project.
-	* @apiGroup Cloud
-	* @apiName Set Safe Password
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} safe_infos All informations about the core request have to be here
-	* @apiParam {Number} safe_infos.project_id The project id to execute the command.
-	* @apiParam {string} safe_infos.password The password hashed in SHA-1 512
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"safe_infos": {
-	*			"project_id": 42,
-	*			"password": "6q8d4zq68d"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role problem or a token problem.
-	*/
-	/**
-	*
-	* @api {put} /v0.2/cloud/safepass Set the safe password
+	* @api {put} /mongo/cloud/safepass Set the safe password
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to change the safe password for a given project.
 	* @apiGroup Cloud
 	* @apiName Set Safe Password
-	* @apiParam {Object[]} data All informations about the core request have to be here
-	* @apiParam {string} data.token The token of authenticated user.
-	* @apiParam {Number} data.project_id The project id to execute the command.
-	* @apiParam {string} data.password The password hashed in SHA-1 512
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"data": {
-	*			"token": "48q98d"
-	*			"project_id": 42,
-	*			"password": "6q8d4zq68d"
-	*		}
-	*	}
 	*
-	* @apiSuccess (200) {Object} info Informations about the request
-	* @apiSuccess (200) {string} infos.return_code Request end state code
-	* @apiSuccess (200) {string} infos.return_message Request end state message (text formated return_code)
-	* @apiSuccess (200) {Object} data All informations about response will be here.
-	*
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : {
-	*			"return_code" : 1.4.1,
-	*			"return_message" : "Cloud - setSafePassAction - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"infos" : {
-	*			"return_code" : 3.6.9,
-	*			"return_message" : "Cloud - setSafePassAction - Insufficient Right"
-	*		}
-	*	}
 	*/
 	public function setSafePassAction(Request $request)
 	{
@@ -788,12 +481,19 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$idProject = (int)$json["data"]["project_id"];
 		$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || is_null($project))
+		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) < 2 || is_null($project))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.6.9";
 			$response["info"]["return_message"] = "Cloud - setSafePassAction - Insufficient Success";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
+		}
+
+		$passwordEncrypted = ($json["data"]["oldPassword"] ? $this->grappSha1($json["data"]["oldPassword"]) : NULL);
+		if ($passwordEncrypted != $project->getSafePassword())
+		{
+			$response["info"]["return_code"] = "3.6.9";
+			$response["info"]["return_message"] = "Cloud - setSafePassAction - Insufficient Right";
+			return new JsonResponse($response, 206);
 		}
 
 		$project->setSafePassword($json["data"]["password"]);
@@ -806,76 +506,26 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /mongo/cloud/del Delete a file or a directory
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to delete something in the cloud
-	* @apiGroup Cloud
-	* @apiName Delete
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} deletion_infos All informations about the core request have to be here
-	* @apiParam {Number} deletion_infos.project_id The project id to execute the command.
-	* @apiParam {string} deletion_infos.path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
-	* @apiParam {string} [deletion_infos.password] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
-	* @apiParamExample {json} Request Example:
-	*	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"deletion_infos": {
-	*			"project_id": 42,
-	*			"path": "/Gandalf le gris"
-	*			"password" : "Ajax"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-	*/
-	/**
-	*
-	* @api {delete} /V0.2/cloud/file/:token/:project_id/:path/:password Delete a file or a directory
+	* @api {delete} /mongo/cloud/file/:token/:project_id/:path/:password Delete a file or a directory
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
 	* @apiName Delete
-	* @apiParam {string} token The token of authenticated user.
-	* @apiParam {Number} project_id The project id to execute the command.
-	* @apiParam {string} path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
-	* @apiParam {string} [password] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
-	* @apiParamExample {curl} Request Example:
-	* curl -X DELETE http://api.grappbox.com/app_dev.php/V0.2/cloud/del/MyToken/1/,Doulan.txt/satan
 	*
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : {
-	*			"return_code" : 1.4.1,
-	*			"return_message" : "Cloud - delAction - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"infos" : {
-	*			"return_code" : 3.7.9,
-	*			"return_message" : "Cloud - delAction - Insufficient Right"
-	*		}
-	*	}
 	*/
 	public function delAction($token, $projectId, $path, $password, Request $request)
 	{
 		$path = str_replace(',', '/', $path);
 		$userId = $this->getUserId($token);
+		$apath = explode('/', $path);
+		$filename = $apath[count($apath) - 1];
+		$apath = array_splice($apath, count($apath) - 1);
+		$apath = join('/', $apath);
+		if (count($apath) < 2)
+			$apath = "/";
+		$apath = "/GrappBox|Projects/" . $projectId . $apath;
+
+		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
@@ -886,20 +536,90 @@ class CloudController extends Controller
 			$project = NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($path == "" || $path == "/" || !is_null($file) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) < 2 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 			{
-				header("HTTP/1.1 206 Partial Content", True, 206);
 				$response["info"]["return_code"] = "3.7.9";
-				$response["info"]["return_message"] = "Cloud - delAction - Insufficient Success";
+				$response["info"]["return_message"] = "Cloud - delAction - Insufficient Right Access";
+				return new JsonResponse($response, 206);
+			}
+
+			//Now we can delete the file or the directory
+			$path = "/GrappBox|Projects/".(string)($projectId).str_replace(' ', '|', $path);
+			$client = new Client(self::$settingsDAV);
+			$adapter = new WebDAVAdapter($client);
+			$flysystem = new Filesystem($adapter);
+			try{
+					$flysystem->delete($path);
+			} catch (FileNotFoundException $e)
+			{
+				$response["info"]["return_code"] = "3.7.10";
+				$response["info"]["return_message"] = "Cloud - delAction - File not found";
 				return new JsonResponse($response);
 			}
 
+			//$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+
+			$response["info"]["return_code"] = "1.3.1";
+			$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
+			return new JsonResponse($response);
+	}
+
+	/**
+	*
+	* @api {delete} /mongo/cloud/filesecured/:token/:project_id/:path/:password/:safe_password Delete a secured file or directory
+	* @apiVersion 0.2.0
+	* @apiDescription This method is there to delete something in the cloud
+	* @apiGroup Cloud
+	* @apiName Delete secured
+	*
+	*/
+	public function delSecuredAction($token, $projectId, $path, $password, $safe_password, Request $request)
+	{
+		$path = str_replace(',', '/', $path);
+		$path = str_replace(' ', '|', $path);
+		$userId = $this->getUserId($token);
+		$apath = explode('/', $path);
+		$filename = $apath[count($apath) - 1];
+		unset($apath[count($apath) - 1]);
+		$apath = join('/', $apath);
+
+		if (isset($apath[0]) && $apath[0] != "/")
+			$apath = "/" + $apath;
+		else if (!isset($apath[0])) {
+			$apath = "/";
+		}
+
+		$apath = "/GrappBox|Projects/" . $projectId . $apath;
+
+		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
+		$isSafe = preg_match("/Safe/", $path);
+		if ($isSafe)
+		{
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($projectId);
+			$passwordEncrypted = $this->grappSha1($safe_password);
+		}
+		else {
+			$project = NULL;
+			$passwordEncrypted = NULL;
+		}
+		if ($path == "/" || $path == "" || is_null($file) || (!is_null($file) && $this->grappSha1($password) != $file->getPassword()) || $userId < 0 || $this->checkUserCloudAuthorization($userId, $projectId) < 2 || preg_match("/Safe$/", $path) || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+			{
+				$response["info"]["return_code"] = "3.9.9";
+				$response["info"]["return_message"] = "Cloud - delSafeAction - Insufficient Right Access";
+				return new JsonResponse($response, 206);
+			}
+
 		//Now we can delete the file or the directory
-		$path = "/GrappBox|Projects/".(string)($idProject).str_replace(' ', '|', $path);
+		$path = "/GrappBox|Projects/".(string)($projectId).str_replace(' ', '|', $path);
 		$client = new Client(self::$settingsDAV);
 		$adapter = new WebDAVAdapter($client);
 		$flysystem = new Filesystem($adapter);
 		$flysystem->delete($path);
+		$this->get('doctrine_mongodb')->getManager()->remove($file);
+		$this->get('doctrine_mongodb')->getManager()->flush();
+
+		//$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
 		return new JsonResponse($response);
@@ -908,87 +628,21 @@ class CloudController extends Controller
 	/**
 	*
 	* @api {post} /mongo/cloud/createdir create a directory
-	* @apiVersion 0.11.0
-	* @apiDescription This method is there to create a directory in the cloud
-	* @apiGroup Cloud
-	* @apiName Create Directory
-	* @apiParam {Object[]} session_infos All informations about the session have to be here
-	* @apiParam {string} session_infos.token The token of authenticated user.
-	* @apiParam {Object[]} creation_infos All informations about the core request have to be here
-	* @apiParam {Number} creation_infos.project_id The project id to execute the command.
-	* @apiParam {string} creation_infos.path The path of the directory in the cloud where the new directory have to be created (absolute path from the root of the project's cloud)
-	* @apiParam {string} creation_infos.dir_name The new directory's name.
-	* @apiParam {string} [creation_infos.password] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
-	* @apiParamExample {json} Request Example:
-	* 	{
-	*		"session_infos": {
-	*			"token": "48q98d"
-	*		},
-	*		"creation_infos": {
-	*			"project_id": 42,
-	*			"path": "/Gandalf le gris"
-	*			"dir_name" : "Beard"
-	*		}
-	*	}
-	* @apiSuccess (200) {string} infos The state of the request, will always be OK. Check the HTTP status code instead.
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : "OK"
-	*	}
-	* @apiError (403) AccessDenied You don't have the permission to access the request. That can be a role, password or token problem.
-	*/
-	/**
-	*
-	* @api {post} /V0.2/cloud/createdir create a directory
 	* @apiVersion 0.2.0
 	* @apiDescription This method is there to create a directory in the cloud
 	* @apiGroup Cloud
 	* @apiName Create Directory
-	* @apiParam {Object[]} data All informations about the core request have to be here
-	* @apiParam {string} data.token The token of authenticated user.
-	* @apiParam {Number} data.project_id The project id to execute the command.
-	* @apiParam {string} data.path The path of the directory in the cloud where the new directory have to be created (absolute path from the root of the project's cloud)
-	* @apiParam {string} data.dir_name The new directory's name.
-	* @apiParam {string} [data.password] The project's safe password, in order to create the directory into the safe. Use only if directory have to be into the safe.
-	* @apiParamExample {json} Request Example:
-	* 	{
-	*		"data": {
-	*			"token": "48q98d"
-	*			"project_id": 42,
-	*			"path": "/Gandalf le gris"
-	*			"dir_name" : "Beard"
-	*		}
-	*	}
 	*
-	* @apiSuccessExample {json} Success Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"infos" : {
-	*			"return_code" : 1.4.1,
-	*			"return_message" : "Cloud - createDirAction - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiError (206) {Object} info Informations about the request
-	* @apiError (206) {string} infos.return_code Request end state code
-	* @apiError (206) {string} infos.return_message Request end state message (text formated return_code)
-	*
-	* @apiErrorExample {json} Error Response:
-	*	HTTP/1.1 206 Partial Content
-	*	{
-	*		"infos" : {
-	*			"return_code" : 3.8.9,
-	*			"return_message" : "Cloud - createDirAction - Insufficient Right"
-	*		}
-	*	}
 	*/
 	public function createDirAction(Request $request)
 	{
 		$json = json_decode($request->getContent(), true);
+		if (!isset($json["data"]["password"]) && isset($json["data"]["passwordSafe"]))
+			$json["data"]["password"] = $json["data"]["passwordSafe"];
 		$token = $json["data"]["token"];
 		$userId = $this->getUserId($token);
 		$idProject = $json["data"]["project_id"];
+		$json["data"]["path"] = str_replace(" ", "|", urldecode($json["data"]["path"]));
 
 		$isSafe = preg_match("/Safe/", $json["data"]["path"]);
 		if ($isSafe)
@@ -1000,12 +654,11 @@ class CloudController extends Controller
 			$project == NULL;
 			$passwordEncrypted = NULL;
 		}
-		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) <= 0 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
+		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) < 2 || ($isSafe && (is_null($project) || is_null($passwordEncrypted) || $passwordEncrypted != $project->getSafePassword())))
 		{
-			header("HTTP/1.1 206 Partial Content", True, 206);
 			$response["info"]["return_code"] = "3.8.9";
 			$response["info"]["return_message"] = "Cloud - createDirAction - Insufficient Success";
-			return new JsonResponse($response);
+			return new JsonResponse($response, 206);
 		}
 
 		//Now we can create the directory at the proper place
@@ -1018,6 +671,9 @@ class CloudController extends Controller
 		$rpath = "/GrappBox|Projects/".(string)($idProject).(string)($path)."/".$dirName;
 		//HERE Create the dir in the cloud
 		$flysystem->createDir($rpath);
+
+		//$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - createDirAction - Complete Success";
 		return new JsonResponse($response);

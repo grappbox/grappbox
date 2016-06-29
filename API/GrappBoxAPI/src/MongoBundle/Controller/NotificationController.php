@@ -46,55 +46,39 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiDescription Register user mobile device for mobile notification send process
 	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token user authentication token
-	* @apiParam {String} device_type device_type: "iOS" | "WP" | "Android"
-	* @apiParam {String} device_token device token : uri, token or reg_id
-	* @apiParam {String} device_name device name
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"device_type": "iOS",
-	*			"device_token": "az5fds4zerv*8aze8ff8z9z8yh8f9d8g9yuy9ee214rtaze",
-	*			"device_name": "John Doe's iPhone"
-	*		}
-	*	}
-	*
-	*
 	*/
 	public function registerDeviceAction(Request $request)
 	{
-	$content = $request->getContent();
-	$content = json_decode($content);
-	$content = $content->data;
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 
-	$user = $this->checkToken($content->token);
-	if (!$user)
-		return ($this->setBadTokenError("15.1.3", "Notification", "registerDevice"));
-	if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
-		return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("15.1.3", "Notification", "registerDevice"));
+		if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
+			return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
-	$em = $this->get('doctrine_mongodb')->getManager();
-	$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
 
-	if ($device instanceof Devices)
-	{
-		$device->setName($content->name);
-		$em->flush();
-	}
-	else {
-		$device = new Devices();
-		$device->setName($content->device_name);
-		$device->setType($content->device_type);
-		$device->setToken($content->device_token);
-		$device->setUser($user);
+		if ($device instanceof Devices)
+		{
+			$device->setName($content->name);
+			$em->flush();
+		}
+		else {
+			$device = new Devices();
+			$device->setName($content->device_name);
+			$device->setType($content->device_type);
+			$device->setToken($content->device_token);
+			$device->setUser($user);
 
-		$em->persist($device);
-		$em->flush();
-	}
+			$em->persist($device);
+			$em->flush();
+		}
 
-	return $this->setCreated("1.15.3", "Notification", "registerDevice", "Complete Success", (Object)array());
+		return $this->setCreated("1.15.3", "Notification", "registerDevice", "Complete Success", (Object)array());
 	}
 
 	/**
@@ -103,17 +87,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiGroup Notification
 	* @apiDescription Unregister user mobile device to mobile notification send process
 	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token user authentication token
-	* @apiParam {String} id device id in DB
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"id": 15
-	*		}
-	*	}
 	*
 	*/
 	public function unregisterDeviceAction(Request $request, $token, $id)
@@ -138,9 +111,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiGroup Notification
 	* @apiDescription Get user registered devices informations
 	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token user authentication token
-	*
 	*
 	*/
 	public function getUserDevicesAction(Request $request, $token)
@@ -168,12 +138,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiGroup Notification
 	* @apiDescription Get user notifications
 	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token user authentication token
-	* @apiParam {String} read "true" || "false" to get read or unread notifications
-	* @apiParam {int} offset offset from where to get notifications (start to 0)
-	* @apiParam {int} limit number max of notifications to get
-	*
 	*
 	*/
 	public function getNotificationsAction(Request $request, $token, $read, $offset, $limit)

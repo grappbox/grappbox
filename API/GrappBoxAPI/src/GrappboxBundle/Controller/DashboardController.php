@@ -551,8 +551,8 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$arr = array();
 
-    	if (count($tasks) == 0)
-    		return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectTasks");
+  	if (count($tasks) == 0)
+  		return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectTasks");
 
 		foreach ($tasks as $task) {
 			$creatorId = $task->getCreatorId();
@@ -638,7 +638,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		$avatar = $user->getAvatar();
 		$mail = $user->getEmail();
 		$phone = $user->getPhone();
-		print(gettype($phone));
+		//print(gettype($phone));
 		$country = $user->getCountry();
 		$linkedin = $user->getLinkedin();
 		$viadeo = $user->getViadeo();
@@ -904,7 +904,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$arr = array();
 
-    	if (count($projects) == 0)
+    if (count($projects) == 0)
 			return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectList");
 
 		foreach ($projects as $project) {
@@ -981,7 +981,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$arr = array();
 
-	    if (count($tasks) == 0)
+	  if (count($tasks) == 0)
 			return $this->setNoDataSuccess("1.2.3", "Dashboard", "getProjectTasksStatus");
 
 		foreach ($tasks as $task) {

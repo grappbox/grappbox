@@ -69,7 +69,7 @@ class RolesAndTokenVerificationController extends Controller
 		$result = $em->getRepository("MongoBundle:Role")->find($qb->getRoleId());
 
 		$res = $result->objectToArray();
-		 return $res[$role];
+		return $res[$role];
 	}
 
 	protected function setBadTokenError($code, $part, $function)
@@ -131,37 +131,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {post} /mongo/roles/addprojectroles Add a project role
+	* @apiName addProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Add a project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} name Name of the role
-	* @apiParam {Number} teamTimeline Access rights on the project's team timeline
-	* @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-	* @apiParam {Number} gantt Access rights on the project's gantt
-	* @apiParam {Number} whiteboard Access rights on the project's whiteboard
-	* @apiParam {Number} bugtracker Access rights on the project's bugracker
-	* @apiParam {Number} event Access rights on the project's meetings
-	* @apiParam {Number} task Access rights on the project's tasks
-	* @apiParam {Number} projectSettings Access rights on the project's settings
-	* @apiParam {Number} cloud Access rights on the project's cloud
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1,
-	*			"name": "Admin",
-	*			"teamTimeline": 1,
-	*			"customerTimeline": 1,
-	*			"gantt": 1,
-	*			"whiteboard": 1,
-	*			"bugtracker": 1,
-	*			"event": 1,
-	*			"task": 1,
-	*			"projectSettings": 1,
-	*			"cloud": 1
-	*		}
-	*	}
 	*/
 	public function addProjectRolesAction(Request $request)
 	{
@@ -210,28 +184,15 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {delete} /mongo/roles/delprojectroles Delete a project role
+	* @api {delete} /mongo/roles/delprojectroles/:token/:id Delete a project role
+	* @apiName delProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Delete the given role of the project wanted
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} id Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"id": 1
-	*		}
-	*	}
 	*/
-	public function delProjectRolesAction(Request $request)
+	public function delProjectRolesAction(Request $request, $token, $id)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!array_key_exists('id', $content) || !array_key_exists('token', $content))
-			return $this->setBadRequest("13.2.6", "Role", "delprojectroles", "Missing Parameter");
-
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("13.2.3", "Role", "delprojectroles"));
@@ -242,7 +203,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.2.9", "Role", "delprojectroles");
 
 		if ($role->getName() == "Admin")
@@ -251,42 +212,18 @@ class RolesAndTokenVerificationController extends Controller
 		$em->remove($role);
 		$em->flush();
 
-		return $this->setSuccess("1.13.1", "Role", "delprojectroles", "Complete Success", array("id" => $content->id));
+		$response["info"]["return_code"] = "1.13.1";
+		$response["info"]["return_message"] = "Role - delprojectroles - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
 	* @api {put} /mongo/roles/putprojectroles Update a project role
+	* @apiName updateProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Update a given project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} roleId Id of the role
-	* @apiParam {String} [name] Name of the role
-	* @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-	* @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-	* @apiParam {Number} [gantt] Access rights on the project's gantt
-	* @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-	* @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-	* @apiParam {Number} [event] Access rights on the project's meetings
-	* @apiParam {Number} [task] Access rights on the project's tasks
-	* @apiParam {Number} [projectSettings] Access rights on the project's settings
-	* @apiParam {Number} [cloud] Access rights on the project's cloud
-	*
-	* @apiParamExample {json} Request-Full-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2,
-	*			"name": "Graphists",
-	*			"teamTimeline": 1,
-	*			"customerTimeline": 0,
-	*			"gantt": 0,
-	*			"whiteboard": 1,
-	*			"bugtracker": 0,
-	*			"event": 1,
-	*			"task": 1,
-	*			"projectSettings": 0,
-	*			"cloud": 0
-	*		}
-	*	}
 	*/
 	public function updateProjectRolesAction(Request $request)
 	{
@@ -307,7 +244,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: roleId");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.3.9", "Role", "putprojectroles");
 
 		if ($role->getName() == "Admin")
@@ -341,9 +278,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getprojectroles/:token/:projectId Get all project roles
+	* @apiName GetProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Get all the roles for the wanted project
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
 	*/
 	public function getProjectRolesAction(Request $request, $token, $projectId)
 	{
@@ -351,7 +290,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.4.3", "Role", "getprojectroles"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -387,19 +326,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {post} /mongo/roles/assignpersontorole Assign a person to a role
+	* @apiName assignPersonToRole
+	* @apiGroup Roles
+	* @apiDescription Assign the given user to the role wanted
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} userId Id of the user
-	* @apiParam {Number} roleId Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"userId": 6,
-	*			"roleId": 2
-	*		}
-	*	}
 	*/
 	public function assignPersonToRoleAction(Request $request)
 	{
@@ -424,7 +355,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
 		$projectId = $role->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "assignpersontorole");
 
 		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
@@ -449,23 +380,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {put} /mongo/roles/putpersonrole Update a person role
+	* @apiName updatePersonRole
+	* @apiGroup Roles
+	* @apiDescription Update a person role
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project for searching
-	* @apiParam {Number} userId Id of the user for searching
-	* @apiParam {Number} old_roleId Old id of the role for searching
-	* @apiParam {Number} roleId new role id
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1,
-	*			"userId": 1,
-	*			"old_roleId": 2,
-	*			"roleId": 3
-	*		}
-	*	}
 	*/
 	public function updatePersonRoleAction(Request $request)
 	{
@@ -481,7 +400,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.6.3", "Role", "putpersonrole"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "putpersonrole");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -507,8 +426,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getuserroles/:token Get the roles of the user connected
+	* @apiName updatePersonRole
+	* @apiGroup Roles
+	* @apiDescription Get the all the roles of all the projects of the user connected
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
 	*/
 	public function getUserRolesAction(Request $request, $token)
 	{
@@ -536,37 +458,20 @@ class RolesAndTokenVerificationController extends Controller
 	}
 
 	/**
-	* @api {delete} /mongo/roles/delpersonrole Delete a person role
+	* @api {delete} /mongo/roles/delpersonrole/:token/:projectId/:userId/:roleId Delete a person role
+	* @apiName delPersonRole
+	* @apiGroup Roles
+	* @apiDescription Delete a person role
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {Number} userd Id of the user
-	* @apiParam {Number} roleId Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 5,
-	*			"userId": 1,
-	*			"roleId": 3
-	*		}
-	*	}
 	*/
-	public function delPersonRoleAction(Request $request)
+	public function delPersonRoleAction(Request $request, $token, $projectId, $userId, $roleId)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if (!$content->projectId && !$content->userId && !$content->roleId)
-			return $this->setBadRequest("13.8.6", "Role", "delpersonrole", "Missing Parameter");
-
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("13.8.3", "Role", "delpersonrole"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -594,15 +499,18 @@ class RolesAndTokenVerificationController extends Controller
 		$em->remove($pur);
 		$em->flush();
 
-		return $this->setSuccess("1.13.1", "Role", "delpersonrole", "Complete Success", array("id" => $purId));
+		$response["info"]["return_code"] = "1.13.1";
+		$response["info"]["return_message"] = "Role - delpersonrole - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
 	* @api {get} /mongo/roles/getrolebyprojectanduser/:token/:projectId/:userId Get the roles id for a given user on a given project
+	* @apiName getRoleByProjectAndUser
+	* @apiGroup Roles
+	* @apiDescription Get the roles id for a given user on a given project
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam [Number] userId Id of the user
 	*/
 	public function getRoleByProjectAndUserAction(Request $request, $token, $projectId, $userId)
 	{
@@ -610,7 +518,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.9.3", "Role", "getrolebyprojectanduser"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings"))
+		if (!$this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return $this->setNoRightsError("13.9.9", "Role", "getrolebyprojectanduser");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -636,9 +544,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
+	* @apiName getUsersForRole
+	* @apiGroup Roles
+	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} roleId Id of the role
 	*/
 	public function getUsersForRoleAction(Request $request, $token, $roleId)
 	{
@@ -651,7 +561,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.10.4", "Role", "getusersforrole", "Bad Parameter: roleId");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings"))
+		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 1)
 			return $this->setNoRightsError("13.10.9", "Role", "getusersforrole");
 
 		$purRepository = $em->getRepository('MongoBundle:ProjectUserRole');
@@ -683,8 +593,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getuserrolesinformations/:token Get the roles informations of the user connected
+	* @apiName getUserConnectedRolesInformations
+	* @apiGroup Roles
+	* @apiDescription Get the roles informations for the user connected
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
 	*/
 	public function getUserConnectedRolesInfosAction(Request $request, $token)
 	{
@@ -709,12 +622,21 @@ class RolesAndTokenVerificationController extends Controller
 			$roleId = $role->getRoleId();
 			$role = $em->getRepository('MongoBundle:Role')->find($roleId);
 
-			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings"))
+			if (($project != null && $role != null) && $this->checkRoles($user, $project->getId(), "projectSettings") < 1)
 			{
 				$roleName = $role->getName();
+				$roleValues = array("teamTimeline" => $role->getTeamTimeline(),
+        										"customerTimeline" => $role->getCustomerTimeline(),
+										        "gantt" => $role->getGantt(),
+										        "whiteboard" => $role->getWhiteboard(),
+										        "bugtracker" => $role->getBugtracker(),
+										        "event" => $role->getEvent(),
+										        "task" => $role->getTask(),
+										        "projectSettings" => $role->getProjectSettings(),
+										        "cloud" => $role->getCloud());
 				$projectName = $project->getName();
 
-				$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+				$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName, "values" => $roleValues));
 			}
 		}
 
@@ -726,9 +648,11 @@ class RolesAndTokenVerificationController extends Controller
 
 	/**
 	* @api {get} /mongo/roles/getuserrolesinformations/:token/:id Get the roles informations of the given user
+	* @apiName getUserRolesInformations
+	* @apiGroup Roles
+	* @apiDescription Get the roles informations for the given user
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} userId Id of the user you want the roles
 	*/
 	public function getUserRolesInfosAction(Request $request, $token, $userId)
 	{
@@ -744,7 +668,7 @@ class RolesAndTokenVerificationController extends Controller
 		$arr = array();
 
 		foreach ($userConnectedProjects as $p) {
-			if ($this->checkRoles($user, $p->getId(), "projectSettings"))
+			if ($this->checkRoles($user, $p->getId(), "projectSettings") < 1)
 			{
 				$pId = $p->getId();
 				$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $pId)->setParameter('userId', $userId)->getQuery();
@@ -763,8 +687,17 @@ class RolesAndTokenVerificationController extends Controller
 					{
 						$projectName = $project->getName();
 						$roleName = $role->getName();
+						$roleValues = array("teamTimeline" => $role->getTeamTimeline(),
+																"customerTimeline" => $role->getCustomerTimeline(),
+																"gantt" => $role->getGantt(),
+																"whiteboard" => $role->getWhiteboard(),
+																"bugtracker" => $role->getBugtracker(),
+																"event" => $role->getEvent(),
+																"task" => $role->getTask(),
+																"projectSettings" => $role->getProjectSettings(),
+																"cloud" => $role->getCloud());
 
-						$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName));
+						$arr[] = array("id" => $purId, "project" => array("id" => $projectId, "name" => $projectName), "role" => array("id" => $roleId, "name" => $roleName, "values" => $roleValues));
 					}
 				}
 			}
@@ -775,4 +708,33 @@ class RolesAndTokenVerificationController extends Controller
 
 		return $this->setSuccess("1.13.1", "Role", "getuserrolesinformations", "Complete Success", array("array" => $arr));
 	}
+
+	/**
+	* @api {get} /mongo/roles/getuserroleforpart/:token/:userId/:projectId/:part Get user's rights for a specific part
+	* @apiName getUserRoleForPArt
+	* @apiGroup Roles
+	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)
+	* @apiVersion 0.2.0
+	*
+	*/
+	public function getUserRoleForPartAction(Request $request, $token, $userId, $projectId, $part)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("13.13.3", "Role", "getUserRoleForPart"));
+
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$roleId = $em->getRepository('MongoBundle:ProjectUserRole')->findOneBy(array("userId" => $userId, "projectId" => $projectId));
+		if (!($roleId instanceof ProjectUserRole))
+			return $this->setBadRequest("13.13.4", "Role", "getUserRoleForPart", "Bad Parameter: userId or projectId");
+
+		$role = $em->getRepository('MongoBundle:Role')->find($roleId->getRoleId());
+
+		if ($role->getPart($part) == -1)
+			return $this->setBadRequest("13.13.4", "Role", "getUserRoleForPart", "Bad Parameter: part");
+
+		return $this->setSuccess("1.13.1", "Role", "getUserRoleForPart", "Complete Success", array("user_id" => $userId, "name" => $part, "value" => $role->getPart($part)));
+
+	}
+	
 }

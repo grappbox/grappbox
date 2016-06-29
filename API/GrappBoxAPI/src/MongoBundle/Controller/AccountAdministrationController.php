@@ -29,40 +29,13 @@ use DateInterval;
  */
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
-	// TODO is it used ? can it be deleted ?
 
 	/**
 	* @-api {get} mongo/accountadministration/login/:token Request login with client access
 	* @apiName client login
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {token} client token access
-	*
-	* @apiSuccess {Object} user user's information
-	* @apiSuccess {int} user.id whiteboard id
-	* @apiSuccess {string} user.firstname user's firstname
-	* @apiSuccess {string} user.lastname user's lastname
-	* @apiSuccess {string} user.email user's email
-	* @apiSuccess {string} user.token user's authentication token
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"user": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF...."
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	* 		"Bad Authentication Token"
-	* 	}
+	* @apiVersion 0.2.0
 	*
 	*/
 	public function clientLoginAction(Request $request, $token)
@@ -83,17 +56,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
  	* @apiVersion 0.2.0
- 	*
- 	* @apiParam {string} login login (user's email)
- 	* @apiParam {string} password password
- 	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	*		"data": {
-	*   		"login": "john.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
-	*		}
-	*   }
 	*
  	*/
 	public function loginAction(Request $request)
@@ -110,16 +72,25 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
 				return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
+			$now = new DateTime('now');
+			if ($user->getToken() && $user->getTokenValidity() > $now)
+			{
+				$user->setTokenValidity($now->add(new DateInterval("P1D")));
+
+				$em->persist($user);
+	      $em->flush();
+
+				return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
+			}
+
 			$secureUtils = $this->get('security.secure_random');
 			$tmpToken = $secureUtils->nextBytes(25);
 			$token = md5($tmpToken);
 			$user->setToken($token);
-
-			$now = new DateTime('now');
 			$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
 			$em->persist($user);
-      $em->flush();
+			$em->flush();
 
       $this->checkProjectsDeletedTime($user);
 
@@ -149,6 +120,11 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 				{
 					if ($project->getDeletedAt() < $defDate)
 					{
+						$purs = $em->getRepository('MongoBundle:ProjectUserRole')->findByprojectId($project->getId());
+
+						foreach ($purs as $pur) {
+							$em->remove($pur);
+						}
 						$em->remove($project);
 					}
 				}
@@ -166,6 +142,11 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 						{
 							if ($project->getDeletedAt() < $defDate)
 							{
+								$purs = $em->getRepository('MongoBundle:projectUserRole')->findByprojectId($project->getId());
+
+								foreach ($purs as $pur) {
+									$em->remove($pur);
+								}
 								$em->remove($project);
 							}
 						}
@@ -183,21 +164,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  * @apiGroup AccountAdministration
  * @apiDescription unvalid user's token
  * @apiVersion 0.2.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} message	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	{
- *			"info": {
- *				"return_code": "1.14.1",
- *				"return_message": "AccountAdministration - login - Complete Success"
- *			},
- *			"data": {
- *				"message": "Successfully logout"
- *			}
- * 	}
  *
  *
  */
@@ -222,56 +188,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him
 	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} firstname user's firstname
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
-	* @apiParam {string} lastname user's lastname
-	* @apiParam {Date} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
-	*
-	* @apiParamExample {json} Request-Example Minimum:
-	*   {
-	*   	"data": {
-	*   		"firstname": "Janne",
-	*   		"lastname": "Doe",
-	*   		"email": "janne.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
-	*   	}
-	*   }
-	* @apiParamExample {json} Request-Example Partial:
-	*   {
-	*   	"data": {
-	*   		"firstname": "Janne",
-	*   		"lastname": "Doe",
-	*   		"email": "janne.doe@gmail.com",
-	*   		"password": "ThisisAPassword",
-	*   		"avatar": "100100111010011110100100.......",
-	*   		"phone": "010-1658-9520",
-	*   		"country": "New Caledonia"
-	*   	}
-	*   }
-	* @apiParamExample {json} Request-Example Full:
-	*   {
-	*   	"data": {
-	*   		"firstname": "Janne",
-	*   		"lastname": "Doe",
-	*   		"email": "janne.doe@gmail.com",
-	*   		"password": "ThisisAPassword",
-	*   		"birthday": "1980-12-04",
-	*   		"avatar": "100100111010011110100100.......",
-	*   		"phone": "010-1658-9520",
-	*   		"country": "New Caledonia",
-	*   		"linkedin": "linkedin.com/janne.doe"
-	*   		"viadeo": "viadeo.com/janne.doe",
-	*   		"twitter": "twitter.com/janne.doe"
-	*   	}
-	*   }
 	*
 	*
 	*/
@@ -312,10 +228,13 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (array_key_exists('twitter', $content))
       $user->setTwitter($content->twitter);
 
+		$now = new DateTime('now');
+
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
 		$token = md5($tmpToken);
 		$user->setToken($token);
+		$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
     $em->persist($user);
     $em->flush();

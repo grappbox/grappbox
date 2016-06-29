@@ -32,53 +32,54 @@ class EventController extends RolesAndTokenVerificationController
 	* @api {get} /mongo/event/getTypes/:token Get event types
 	* @apiName getTypes
 	* @apiGroup Event
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user authentication token
-	*
+	* @apiDescription Get all event types
+	* @apiVersion 0.2.0
 	*
 	*/
 	public function getTypesAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("5.1.3", "Calendar", "getTypes"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$types = $em->getRepository("MongoBundle:EventType")->findAll();
+
+		if (count($types) <= 0)
+			return $this->setNoDataSuccess("1.5.3", "Calendar", "getTypes");
 
 		$types_array = array();
 		foreach ($types as $key => $value) {
 			$types_array[] = $value->objectToArray();
 		}
 
-		return new JsonResponse(array($types_array));
+		return $this->setSuccess("1.5.1", "Calendar", "getTypes", "Complete Success", array("array" => $types_array));
 	}
 
 	/**
 	* @api {get} /mongo/event/getevent/:token/:id get event
 	* @apiName getEvent
 	* @apiGroup Event
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id event id
-	* @apiParam {string} token user authentication token
-	*
+	* @apiDescription Get an event informations
+	* @apiVersion 0.2.0
 	*
 	*/
 	public function getEventAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("5.2.3", "Calendar", "getEvent"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
+		if (!($event instanceof Event))
+			return $this->setBadRequest("5.2.4", "Calendar", "getEvent", "Bad Parameter: id");
+
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();
-				if (!$this->checkRoles($user, $project->getId(), "event"))
-					return ($this->setNoRightsError());
+				if ($this->checkRoles($user, $project->getId(), "event") < 1)
+					return ($this->setNoRightsError("5.2.9", "Calendar", "getEvent"));
 			}
 		else
 			{
@@ -88,7 +89,7 @@ class EventController extends RolesAndTokenVerificationController
 					 		$check = true;
 				}
 				if (!$check)
-					return ($this->setNoRightsError());
+					return ($this->setNoRightsError("5.2.9", "Calendar", "getEvent"));
 			}
 
 		$participants = array();
@@ -100,38 +101,42 @@ class EventController extends RolesAndTokenVerificationController
 				"avatar" => $value->getAvatar()
 			);
 		}
+		$object = $event->objectToArray();
+		$object["users"] = $participants;
 
-		return new JsonResponse(array("event" => $event->objectToArray(), "users" => $participants));
+		return $this->setSuccess("1.5.1", "Calendar", "getEvent", "Complete Success", $object);
 	}
 
 	/**
-	* @api {post} /mongo/event/setparticipants/:id Add/remove users to the event
+	* @api {put} /mongo/event/setparticipants Set participants
 	* @apiName setParticipants
 	* @apiGroup Event
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id event id
-	* @apiParam {string} token user authentication token
-	* @apiParam {string[]} toAdd list of users' email to add
-	* @apiParam {int[]} toRemove list of users' id to remove
-	*
+	* @apiDescription Add/remove users to the event
+	* @apiVersion 0.2.0
 	*
 	*/
-	public function setParticipantsAction(Request $request, $id)
+	public function setParticipantsAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!array_key_exists("token", $content) || !array_key_exists("eventId", $content) || !array_key_exists("toAdd", $content) || !array_key_exists("toRemove", $content))
+			return $this->setBadRequest("5.3.6", "Calendar", "setParticipants", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("5.3.3", "Calendar", "setParticipants"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
+		if (!($event instanceof Event))
+			return $this->setBadRequest("5.3.4", "Calendar", "setParticipants", "Bad Parameter: eventId");
+
 		if ($event->getProjects() instanceof Project)
 		{
-			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $event->getProjects()->getId(), "event") < 2)
+				return ($this->setNoRightsError("5.3.9", "Calendar", "setParticipants"));
 		}
 		else {
 			$check = false;
@@ -140,13 +145,7 @@ class EventController extends RolesAndTokenVerificationController
 						$check = true;
 			}
 			if (!$check)
-				return ($this->setNoRightsError());
-		}
-		if (array_key_exists("projectId", $content))
-		{
-			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
-			if (!$this->checkRoles($user, $content->projectId, "event"))
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("5.3.9", "Calendar", "setParticipants"));
 		}
 
 		$class = new NotificationController();
@@ -164,7 +163,7 @@ class EventController extends RolesAndTokenVerificationController
 			{
 				foreach ($event->getUsers() as $key => $value) {
 					if ($user->getId() == $toAddUser->getId())
-						return $this->setBadRequest("User already in the list");
+						return $this->setBadRequest("5.3.4", "Calendar", "setParticipants", "Already in Database");
 				}
 
 				$event->addUser($toAddUser);
@@ -185,8 +184,8 @@ class EventController extends RolesAndTokenVerificationController
 			$toRemoveUser = $em->getRepository("MongoBundle:User")->find($value);
 			if ($toRemoveUser instanceof User)
 			{
-				if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
-					return $this->setBadRequest("Try to remove creator");
+				// if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
+				// 	return $this->setBadRequest("5.3.7", "Calendar", "setParticipants", "Bad Parameter: toRemove-id");
 
 				$event->removeUser($toRemoveUser);
 
@@ -207,41 +206,40 @@ class EventController extends RolesAndTokenVerificationController
 				"avatar" => $value->getAvatar()
 			);
 		}
+		$object = $event->objectToArray();
+		$object["users"] = $participants;
 
-		return new JsonResponse(array("event" => $event->objectToArray(), "users" => $participants));
+		return $this->setSuccess("1.5.1", "Calendar", "setParticipants", "Complete Success", $object);
 	}
 
 	/**
-	* @api {post} /mongo/event/postevent/:id Post an event/meeting
+	* @api {post} /mongo/event/postevent/:id Post event
 	* @apiName postEvent
 	* @apiGroup Event
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {string} token user authentication token
-	* @apiParam {int}	[projectId] project's id (if related to a project)
-	*	@apiParam {string} title event title
-	*	@apiParam {string} description event description
-	*	@apiParam {int} typeId event type id
-	*	@apiParam {DateTime} begin beginning date & hour of the event
-	*	@apiParam {DateTime} end ending date & hour of the event
-	*
+	* @apiDescription Post an event/meeting
+	* @apiVersion 0.2.0
 	*
 	*/
 	public function postEventAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content) || !array_key_exists("icon", $content)
+			|| !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
+			return $this->setBadRequest("5.4.6", "Calendar", "postEvent", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("5.4.3", "Calendar", "postEvent"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		if (array_key_exists("projectId", $content))
 		{
 			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
-			if (!$this->checkRoles($user, $content->projectId, "event"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $content->projectId, "event") < 2)
+				return ($this->setNoRightsError("5.3.9", "Calendar", "postEvent"));
 		}
 
 		$event = new Event();
@@ -252,6 +250,7 @@ class EventController extends RolesAndTokenVerificationController
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
+		$event->setIcon($content->icon);
 		$event->setBeginDate(new DateTime($content->begin));
 		$event->setEndDate(new DateTime($content->end));
 		$event->setCreatedAt(new DateTime('now'));
@@ -271,41 +270,43 @@ class EventController extends RolesAndTokenVerificationController
 				"avatar" => $value->getAvatar()
 			);
 		}
+		$object = $event->objectToArray();
+		$object["users"] = $participants;
 
-		return new JsonResponse(array("event" => $event->objectToArray(), "users" => $participants));
+		return $this->setSuccess("1.5.1", "Calendar", "postEvent", "Complete Success", $object);
 	}
 
 	/**
-	* @api {post} /mongo/event/editevent/:id Edit an event/meeting
+	* @api {put} /mongo/event/editevent/:id Edit event
 	* @apiName editEvent
 	* @apiGroup Event
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id event id
-	* @apiParam {string} token user authentication token
-	* @apiParam {int}	[projectId] project's id (if related to a project)
-	*	@apiParam {string} title event title
-	*	@apiParam {string} description event description
-	*	@apiParam {int} typeId event type id
-	*	@apiParam {DateTime} begin beginning date & hour of the event
-	*	@apiParam {DateTime} end ending date & hour of the event
+	* @apiDescription Edit an event/meeting
+	* @apiVersion 0.2.0
 	*
 	*/
 	public function editEventAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
+		$content = $content->data;
+
+		if (!array_key_exists("token", $content) || !array_key_exists("eventId", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content)
+			|| !array_key_exists("icon", $content) || !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
+			return $this->setBadRequest("5.5.6", "Calendar", "editEvent", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("5.5.3", "Calendar", "editEvent"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
+		if (!($event instanceof Event))
+			return $this->setBadRequest("5.5.9", "Calendar", "editEvent", "Bad Parameter: eventId");
+
 		if ($event->getProjects() instanceof Project)
 		{
-			if (!$this->checkRoles($user, $event->getProjects()->getId(), "event"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $event->getProjects()->getId(), "event") < 2)
+				return ($this->setNoRightsError("5.5.9", "Calendar", "editEvent"));
 		}
 		else {
 			$check = false;
@@ -314,13 +315,13 @@ class EventController extends RolesAndTokenVerificationController
 						$check = true;
 			}
 			if (!$check)
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("5.5.9", "Calendar", "editEvent"));
 		}
 		if (array_key_exists("projectId", $content))
 		{
 			$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
-			if (!$this->checkRoles($user, $content->projectId, "event"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $content->projectId, "event") < 2)
+				return ($this->setNoRightsError("5.5.9", "Calendar", "editEvent"));
 		}
 
 		if (array_key_exists("projectId", $content))
@@ -329,6 +330,7 @@ class EventController extends RolesAndTokenVerificationController
 		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
+		$event->setIcon($content->icon);
 		$event->setBeginDate(new DateTime($content->begin));
 		$event->setEndDate(new DateTime($content->end));
 		$event->setEditedAt(new DateTime('now'));
@@ -363,43 +365,48 @@ class EventController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return new JsonResponse(array("event" => $event->objectToArray(), "users" => $participants));
+		$object = $event->objectToArray();
+		$object["users"] = $participants;
+
+		return $this->setSuccess("1.5.1", "Calendar", "editEvent", "Complete Success", $object);
 	}
 
 	/**
-	* @api {delete} /mongo/event/delevent/:token/:id Delete an event/meeting
+	* @api {delete} /mongo/event/delevent/:token/:id Delete event
 	* @apiName delEvent
 	* @apiGroup Event
-	* @apiVersion 0.11.0
-	*
-	* @apiParam {int} id event id
-	* @apiParam {string} token user authentication token
-	*
+	* @apiDescription Delete an event/meeting
+	* @apiVersion 0.2.0
 	*
 	*/
 	public function delEventAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("5.6.3", "Calendar", "delEvent"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$event = $em->getRepository("MongoBundle:Event")->find($id);
+		if (!($event instanceof Event))
+			return $this->setBadRequest("5.6.4", "Calendar", "delEvent", "Bad Parameter: id");
+
 		if ($event->getProjects() instanceof Project)
 			{
 				$project = $event->getProjects();
-				if (!$this->checkRoles($user, $project->getId(), "event"))
-					return ($this->setNoRightsError());
+				if ($this->checkRoles($user, $project->getId(), "event") < 2)
+					return ($this->setNoRightsError("5.6.9", "Calendar", "delEvent"));
 			}
 		else if ($user->getId() != $event->getCreatorUser()->getId())
 			{
-				return ($this->setNoRightsError());
+				return ($this->setNoRightsError("5.6.9", "Calendar", "delEvent"));
 			}
 
 		$event->setDeletedAt(new DateTime('now'));
 
 		$em->flush();
 
-		return new JsonResponse('Success');
+		$response["info"]["return_code"] = "1.5.1";
+		$response["info"]["return_message"] = "Calendar - delEvent - Complete Success";
+		return new JsonResponse($response);
 	}
 }

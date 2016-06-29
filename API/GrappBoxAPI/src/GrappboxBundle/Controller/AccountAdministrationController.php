@@ -423,10 +423,13 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (array_key_exists('twitter', $content))
 			$user->setTwitter($content->twitter);
 
+		$now = new DateTime('now');
+
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
 		$token = md5($tmpToken);
 		$user->setToken($token);
+		$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
 		$em->persist($user);
 		$em->flush();

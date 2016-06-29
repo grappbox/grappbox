@@ -1574,7 +1574,6 @@ class ProjectController extends RolesAndTokenVerificationController
 		return new JsonResponse($response);
 	}
 
-
 	/**
 	* @api {get} /V0.2/projects/getprojectlogo/:token/:projectId Get project logo
 	* @apiName getProjectLogo
