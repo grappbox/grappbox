@@ -9,15 +9,16 @@
 * APP timeline
 *
 */
-app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http", "$q", function($rootScope, $scope, $route, $http, $q) {
+app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http", "$q", "$uibModal", "Notification", function($rootScope, $scope, $route, $http, $q, $uibModal, Notification) {
 
 	/* ==================== INITIALIZATION ==================== */
 
 	// Scope variables initialization
 	$scope.content = { onLoad: true, valid: false, message: "" };
 	$scope.method = { switchTab: "", formatObjectDate: "" };
-  $scope.timeline = { project_id: $route.current.params.project_id, team: {}, customer: {} };
 
+  $scope.timeline = { project_id: $route.current.params.project_id, team: {}, customer: {} };
+  $scope.message = { title: "", content: "" };
 
 
 	/* ==================== ROUTINES ==================== */
@@ -80,6 +81,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   // Routine definition
   // Get selected timeline messages
   var getTimelineMessages = function(timeline) {
+    timeline.valid = false;
+    timeline.onLoad = true;
+
   	$http.get($rootScope.api.url + "/timeline/getmessages/" + $rootScope.user.token + "/" + timeline.id).then(
   		function onGetSuccess(response) {
   			if (response.data.info) {
@@ -150,4 +154,126 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   	}
   );
 
+
+
+  /* ==================== CREATE OBJECT (CREATE MESSAGE) ==================== */
+
+  // "Add message" button handler
+  $scope.view_onNewMessage = function() {
+    var modalInstance_newMessage = "";
+
+    modalInstance_newMessage = $uibModal.open({ animation: true, size: "lg", templateUrl: "view_createNewMessage.html", controller: "view_createNewMessage" });
+    modalInstance_newMessage.result.then(
+      function onModalConfirm(data) {
+        $http.post($rootScope.api.url + "/timeline/postmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        { data: { token: $rootScope.user.token, title: data.title, message: data.content }}).then(
+          function onPostSuccess(response) {
+            if (response.data.info && response.data.info.return_code !== "1.11.1")
+              Notification.warning({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.success({ title: "Timeline", message: "Message successfully posted.", delay: 2000 });
+            if ($scope.timeline.team.active)
+              $scope.timeline.team.messages = getTimelineMessages($scope.timeline.team);
+            else
+              $scope.timeline.customer.messages = getTimelineMessages($scope.timeline.customer);       
+          },
+          function onPostFail(response) {
+            if (response.data.info)
+              switch(response.data.info.return_code) {
+                case "11.2.3":
+                $rootScope.onUserTokenError();
+                break;
+
+                case "11.2.9":
+                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                break;
+
+                default:
+                break;
+              }
+            }
+          ),
+        function onModalDismiss() { }
+      });
+    };
+
+
+
+  /* ==================== DELETE OBJECT (DELETE MESSAGE) ==================== */
+
+  // "Delete message" button handler
+  $scope.view_onMessageDelete = function(message_id) {
+    var modalInstance_deleteMessage = "";
+
+    modalInstance_deleteMessage = $uibModal.open({ animation: true, size: "lg", templateUrl: "view_deleteMessage.html", controller: "view_deleteMessage" });
+    modalInstance_deleteMessage.result.then(
+      function onModalConfirm(data) {
+        $http.delete($rootScope.api.url + "/timeline/archivemessage/" + $rootScope.user.token + "/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message_id).then(
+          function onDeleteSuccess(response) {
+            if (response.data.info && response.data.info.return_code !== "1.11.1")
+              Notification.warning({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.success({ title: "Timeline", message: "Message successfully deleted.", delay: 2000 });
+            if ($scope.timeline.team.active)
+              $scope.timeline.team.messages = getTimelineMessages($scope.timeline.team);
+            else
+              $scope.timeline.customer.messages = getTimelineMessages($scope.timeline.customer);       
+          },
+          function onDeleteFail(response) {
+            if (response.data.info)
+              switch(response.data.info.return_code) {
+                case "11.6.3":
+                $rootScope.onUserTokenError();
+                break;
+
+                case "11.6.9":
+                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                break;
+
+                case "11.6.4":
+                Notification.error({ title: "Timeline", message: "This message does not exist.", delay: 3000 });
+                break;
+
+                default:
+                break;
+              }
+            }
+          ),
+        function onModalDismiss() { }
+      });
+    };
+
+}]);
+
+
+
+/**
+* Controller definition (from view)
+* MESSAGE CREATION => new message form.
+*
+*/
+app.controller("view_createNewMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+
+  $scope.message = { title: "", content: "" };
+  $scope.error = { title: false, content: false };
+
+  $scope.view_confirmMessageCreation = function() {
+    $scope.error.title = ($scope.message.title && $scope.message.title.length ? false : true);
+    $scope.error.content = ($scope.message.content && $scope.message.content.length ? false : true);
+
+    if (!$scope.error.title && !$scope.error.content)
+      $uibModalInstance.close($scope.message);
+  };
+  $scope.view_cancelMessageCreation = function() { $uibModalInstance.dismiss(); };
+}]);
+
+
+
+/**
+* Controller definition (from view)
+* MESSAGE DELETION => confirmation prompt.
+*
+*/
+app.controller("view_deleteMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+
+  $scope.view_confirmMessageDeletion = function() { $uibModalInstance.close(); };
+  $scope.view_cancelMessageDeletion = function() { $uibModalInstance.dismiss(); };
 }]);

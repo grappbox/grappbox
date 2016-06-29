@@ -45,7 +45,8 @@ section:last-child { margin: 30px 0 60px 0; }
 .form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: normal; }
 .form-group.no-margin { margin: 0!important; }
 
-.panel { font-weight: 400; }
+.panel { font-weight: 400; border-radius: 0; }
+.panel > .panel-heading { border-radius: 0; }
 .panel > .panel-heading, .panel.panel-default > .panel-heading { background-color: #BDBDBD; }
 .panel.panel-warning > .panel-heading { background-color: #FF9800; }
 
@@ -69,10 +70,15 @@ section:last-child { margin: 30px 0 60px 0; }
 .row-header > h4 { font-weight: 400; margin: 30px 0 15px 0; }
 .row-header > p { margin: 0 0 20px 0; }
 
+.modal-content { border-radius: 0; }
+.modal-title { font-weight: 400; }
+.modal-content .modal-body + .modal-footer { padding: 20px; }
+
 .ui-notification > .message { overflow: hidden!important; text-overflow: ellipsis; }
-.ui-notification { color: #fafafa; }
+.ui-notification > h3 { font-weight: 400; }
 .ui-notification.info { background: #29B6F6; }
-.ui-notification.success { background: #7CB342; }
+.ui-notification.success { background: #4caf50; }
+.ui-notification.warning { background: #FF9800; }
 
 .well-soft { background: #fafafa!important; }
 .well-ext { min-height: 260px; }
@@ -160,7 +166,7 @@ section:last-child { margin: 30px 0 60px 0; }
 .well .nav.nav-tabs > li > a { padding: 22px 18px 18px 18px; text-align: center; font-weight: 400; }
 .well .nav.nav-tabs > li > a > i { margin: 0 15px 0 0; }
 .well .nav.nav-tabs > li { margin: 0; }
-.well .tab-content > .active { display: table; width: 100%; }
+.well .tab-content > .active { display: table; width: 100%; position: relative; }
 
 
 
@@ -220,10 +226,11 @@ section:last-child { margin: 30px 0 60px 0; }
 /* ==================== SECTION: TIMELINE ==================== */
 /* =========================================================== */
 
+#timeline .tab-pane.active .line::before { content: ''; position: absolute; top: 0; left: 18px; height: 100%; width: 2px; background: #c0392b; }
 .each-timeline { float: none; display: block; }
 
-
-
+@media (min-width: 992px) { #timeline .tab-pane.active .line::before { left: 50%; margin: 0 10px 0 0; } }
+@media (max-width: 992px) { .each-timeline { margin-left: 25px; } }
 
 
 
@@ -233,23 +240,6 @@ section:last-child { margin: 30px 0 60px 0; }
 /* ============================================================ */
 /* ============================================================ */
 /* ============================================================ */
-
-
-/* ==================== GENERAL LAYOUT (DIALOGS) ==================== */
-
-.modal-dialog { margin: 100px auto; }
-.modal-content { border-radius: 0; }
-.modal-content .modal-title { margin: 0 10px; padding: 5px 0; font-size: 18px; font-weight: 700; text-transform: uppercase; }
-.modal-content .modal-body .form-group { margin: 0; padding: 10px 15px; }
-.modal-content .modal-body input,
-.modal-content .modal-body textarea,
-.modal-content .modal-body select { display: block; width: 100%; padding: 2px 5px; margin: 2px 0 0 0; }
-.modal-content .modal-body .input-error { border: 2px solid #e05e52; }
-.modal-content .modal-body p,
-.modal-content .modal-footer { text-align: center; }
-.modal-content .modal-footer { padding: 0 15px 15px 15px; border: none; }
-.modal-content .modal-footer button { width: 30%; }
-
 
 
 /* ==================== GENERAL LAYOUT (SECTIONS) ==================== */
