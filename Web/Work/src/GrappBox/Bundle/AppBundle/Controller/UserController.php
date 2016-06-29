@@ -53,24 +53,24 @@ class UserController extends Controller
     if ($response["info"]["return_code"]) {
       switch ($response["info"]["return_code"]) {
         case "1.14.1":
-        $redirect->headers->setCookie(new Cookie("_LOGIN", base64_encode("_success"),
+        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_success"),
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("_TOKEN", base64_encode($response["data"]["token"]),
+        $redirect->headers->setCookie(new Cookie("TOKEN", base64_encode($response["data"]["token"]),
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("_ID", base64_encode($response["data"]["id"]),
+        $redirect->headers->setCookie(new Cookie("ID", base64_encode($response["data"]["id"]),
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
         break;
 
         case "14.1.4":
-        $redirect->headers->setCookie(new Cookie("_LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
+        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("_TOKEN", null,
+        $redirect->headers->setCookie(new Cookie("TOKEN", null,
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("_ID", null,
+        $redirect->headers->setCookie(new Cookie("ID", null,
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
         break;
 
@@ -113,13 +113,13 @@ class UserController extends Controller
         break;
 
         case "7.1.3":
-        $redirect->headers->setCookie(new Cookie("_LOGIN", base64_encode("_denied"),
+        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_denied"),
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("_TOKEN", null,
+        $redirect->headers->setCookie(new Cookie("TOKEN", null,
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("_ID", null,
+        $redirect->headers->setCookie(new Cookie("ID", null,
           $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
         break;
 
@@ -140,8 +140,8 @@ class UserController extends Controller
     $request = $this->get("request");
     $cookieData = $request->cookies;
 
-    if ($cookieData->has("_TOKEN") && $cookieData->get("_TOKEN"))
-      return $this->checkLoginData(base64_decode($cookieData->get("_TOKEN")));
+    if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))
+      return $this->checkLoginData(base64_decode($cookieData->get("TOKEN")));
 
     $form_options = array();
     $form = $this->createFormBuilder($form_options)

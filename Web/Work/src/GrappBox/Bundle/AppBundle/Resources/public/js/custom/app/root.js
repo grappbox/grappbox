@@ -28,8 +28,8 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", "localStorag
   $rootScope.page.onLoad = false;
   $rootScope.project.set = false;
 
-  $rootScope.user.id = $base64.decode($cookies.get("_ID"));
-  $rootScope.user.token = $base64.decode($cookies.get("_TOKEN"));
+  $rootScope.user.id = $base64.decode($cookies.get("ID"));
+  $rootScope.user.token = $base64.decode($cookies.get("TOKEN"));
 
 
   // ROOTSCOPE routine definition
@@ -42,9 +42,9 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", "localStorag
   // ROOTSCOPE routine definition
   // Clear cookies and redirect user to login (with error)
   $rootScope.onUserTokenError = function() {
-    $cookies.put("_LOGIN", $base64.encode("_denied"), { path: "/" });
-    $cookies.remove("_TOKEN", { path: "/" });
-    $cookies.remove("_ID", { path: "/" });
+    $cookies.put("LOGIN", $base64.encode("_denied"), { path: "/" });
+    $cookies.remove("TOKEN", { path: "/" });
+    $cookies.remove("ID", { path: "/" });
     $window.location.href = "/login";
   };
 
@@ -54,8 +54,8 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", "localStorag
   $rootScope.$on("$routeChangeStart", function() {
     $rootScope.page.onLoad = true;
 
-    if (!$cookies.get("_LOGIN") || !$cookies.get("_ID")) {
-      if ($cookies.get("_TOKEN"))
+    if (!$cookies.get("LOGIN") || !$cookies.get("ID")) {
+      if ($cookies.get("TOKEN"))
         $http.get($rootScope.api.url + "/accountadministration/logout/" + $rootScope.user.token);
       $rootScope.onUserTokenError();
     }
@@ -83,9 +83,9 @@ app.run(["$rootScope", "$location", "$cookies", "$http", "$window", "localStorag
       });
 
     if (!$rootScope.project.set)
-      if (localStorageService.get("_HAS_PROJECT")) {
-        $rootScope.project.id = $base64.decode(localStorageService.get("_PROJECT_ID"));
-        $rootScope.project.name = $base64.decode(localStorageService.get("_PROJECT_NAME"));
+      if (localStorageService.get("HAS_PROJECT")) {
+        $rootScope.project.id = $base64.decode(localStorageService.get("PROJECT_ID"));
+        $rootScope.project.name = $base64.decode(localStorageService.get("PROJECT_NAME"));
         $rootScope.project.set = true;
     }
     $rootScope.page.onLoad = false;

@@ -19,14 +19,14 @@ app.controller("dashboardController", ["$rootScope", "$scope", "localStorageServ
 	$scope.content.projectID = $route.current.params.project_id;
 
   // Local storage initialization
-  if (!localStorageService.get("_HAS_PROJECT")) {
+  if (!localStorageService.get("HAS_PROJECT")) {
     $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.content.projectID)
     .then(function onGetSuccess(response) {
       var data = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
 
-      localStorageService.set("_HAS_PROJECT", true);
-      localStorageService.set("_PROJECT_ID", $base64.encode($scope.content.projectID));
-      localStorageService.set("_PROJECT_NAME", $base64.encode(data.name));
+      localStorageService.set("HAS_PROJECT", true);
+      localStorageService.set("PROJECT_ID", $base64.encode($scope.content.projectID));
+      localStorageService.set("PROJECT_NAME", $base64.encode(data.name));
 
       $rootScope.project.id = $scope.content.projectID;
       $rootScope.project.name = data.name;

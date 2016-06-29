@@ -25,9 +25,9 @@ var logout_onSuccessRedirect = function($q, $http, $rootScope, $cookies, localSt
 	var deferred = $q.defer();
 
 	$http.get($rootScope.api.url + "/accountadministration/logout/" + $rootScope.user.token).success(function(data) {
-    $cookies.remove("_LOGIN", { path: "/" });
-    $cookies.remove("_TOKEN", { path: "/" });
-    $cookies.remove("_ID", { path: "/" });
+    $cookies.remove("LOGIN", { path: "/" });
+    $cookies.remove("TOKEN", { path: "/" });
+    $cookies.remove("ID", { path: "/" });
 		localStorageService.clearAll();
 
 		$window.location.href = "/";

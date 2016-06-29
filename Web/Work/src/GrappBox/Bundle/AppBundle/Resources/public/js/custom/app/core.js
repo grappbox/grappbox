@@ -45,9 +45,9 @@ app.config(["$httpProvider", function($httpProvider) {
 // Local storage settings
 app.config(function(localStorageServiceProvider) {
   localStorageServiceProvider
-    .setPrefix('__GRAPPBOX_')
-    .setStorageCookie(30, '/')
-    .setStorageType('localStorage')
+    .setPrefix("GRAPPBOX_")
+    .setStorageCookie(30, "/")
+    .setStorageType("localStorage")
     .setNotify(true, true);
 });
 
@@ -151,15 +151,15 @@ app.controller("grappboxController", ["$rootScope", "$scope", "localStorageServi
 
 // Directive definition
 // Sidebar
-app.directive('sidebarDirective', function() {
+app.directive("sidebarDirective", function() {
   return {
     link: function(scope, element, attr) {
       scope.$watch(attr.sidebarDirective, function(value) {
         if (value) {
-          element.addClass('open'); 
+          element.addClass("open"); 
           return ;
         }
-        element.removeClass('open');
+        element.removeClass("open");
       });
     }
   };

@@ -27,7 +27,7 @@ $(document).ready(function() {
   // Routine definition
   // Set login behavior depending on cookies
   function getLoginState() {
-    var loginState = Cookies.get("_LOGIN");
+    var loginState = Cookies.get("LOGIN");
 
     $("#form-message").removeClass("show");
     if (loginState != undefined && window.atob(loginState) != "_success") {
@@ -47,9 +47,9 @@ $(document).ready(function() {
         default:
         break;
       }
-      Cookies.remove("_LOGIN", { path: "/" });
-      Cookies.remove("_TOKEN", { path: "/" });
-      Cookies.remove("_ID", { path: "/" });
+      Cookies.remove("LOGIN", { path: "/" });
+      Cookies.remove("TOKEN", { path: "/" });
+      Cookies.remove("ID", { path: "/" });
 
       $("#form-message").addClass("show");
     }
