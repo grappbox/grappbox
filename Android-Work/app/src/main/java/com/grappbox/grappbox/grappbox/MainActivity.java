@@ -68,6 +68,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeoutException;
 
@@ -136,27 +137,27 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     _bMenuClosed = !_bMenuClosed;
-                    AlertDialog.Builder builder = new AlertDialog.Builder(_currentActivity);
-                    ListAdapter adapter = new ProjectMenuAdapter(_currentActivity, R.layout.dialog_project_settings, _projectMenuList);
+                    SessionAdapter session = SessionAdapter.getInstance();
+                    Intent intent = new Intent(getBaseContext(), ProjectSettingsActivity.class);
 
-                    builder.setTitle(R.string.str_modif_project_settings);
-                    builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getBaseContext(), ProjectSettingsActivity.class);
-
-                            intent.putExtra(ProjectSettingsActivity.EXTRA_PROJECT_ID, ((ProjectModel) adapter.getItem(which)).getId());
-                            intent.putExtra(ProjectSettingsActivity.EXTRA_NO_HEADERS, true);
-                            intent.putExtra(ProjectSettingsActivity.EXTRA_PROJECT_NAME, ((ProjectModel) adapter.getItem(which)).getName());
-                            intent.putExtra(ProjectSettingsActivity.EXTRA_PROJECT_MODEL, (ProjectModel)adapter.getItem(which));
-                            intent.putExtra(ProjectSettingsActivity.EXTRA_SHOW_FRAGMENT, "com.grappbox.grappbox.grappbox.ProjectSettingsActivity$GeneralPreferenceFragment");
-                            startActivity(intent);
+                    intent.putExtra(ProjectSettingsActivity.EXTRA_PROJECT_ID, (session.getCurrentSelectedProject()));
+                    intent.putExtra(ProjectSettingsActivity.EXTRA_NO_HEADERS, true);
+                    intent.putExtra(ProjectSettingsActivity.EXTRA_PROJECT_NAME, session.getCurrentSelectedProjectName());
+                    for (int i = 0; i < _projectMenuList.size(); ++i)
+                    {
+                        ProjectModel model = _projectMenuList.get(i);
+                        if (Objects.equals(model.getId(), session.getCurrentSelectedProject()))
+                        {
+                            intent.putExtra(ProjectSettingsActivity.EXTRA_PROJECT_MODEL, model);
+                            break;
                         }
-                    });
-                    builder.show();
+                    }
+                    intent.putExtra(ProjectSettingsActivity.EXTRA_SHOW_FRAGMENT, "com.grappbox.grappbox.grappbox.ProjectSettingsActivity$GeneralPreferenceFragment");
+                    startActivity(intent);
                     return false;
                 }
             });
+            item_settings.setEnabled(SessionAdapter.getInstance().getCurrentSelectedProject() != null && !SessionAdapter.getInstance().getCurrentSelectedProject().isEmpty());
             MenuItem create_project = menu.add(R.string.str_project_create).setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_settings, getTheme()));
             create_project.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
                 public boolean onMenuItemClick(MenuItem item)

@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog.Builder;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -27,11 +28,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.MainActivity;
 import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
 import org.json.JSONArray;
@@ -259,7 +262,12 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_cloud_explorer, container, false);
+
+        View view = null;
+        if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("cloud").ordinal() <= 1)
+            view = inflater.inflate(R.layout.fragment_cloud_explorer_read_only, container, false);
+        else
+            view = inflater.inflate(R.layout.fragment_cloud_explorer, container, false);
         _root = view;
         ListView list = (ListView) view.findViewById(R.id.cloudexplorer_itemlist);
         CloudExplorerFragment me = this;
@@ -268,9 +276,11 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
         startLoading(view, R.id.loader, _refresher);
 
         final CloudFileAdapter adapter = new CloudFileAdapter(getContext(), R.id.cloudexplorer_item_filename);
+        LinearLayout layButtons = (LinearLayout) view.findViewById(R.id.lay_toolbar_buttons);
         ImageButton btnCreateDir = (ImageButton) view.findViewById(R.id.btn_createDir);
         ImageButton btnUpload = (ImageButton) view.findViewById(R.id.btn_import);
         ImageButton btnUploadSecure = (ImageButton) view.findViewById(R.id.btn_import_secure);
+
 
         _adapter = adapter;
         _adapter.setListener(new CloudFileAdapter.CloudAdapterListener() {

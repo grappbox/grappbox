@@ -428,7 +428,8 @@ public class CustomerAccessPreference extends DialogPreference {
 
         @Override
         protected void onPostExecute(String s) {
-            assert s != null;
+            if (s == null)
+                return;
             JSONObject json, info;
 
             try {
