@@ -5,11 +5,10 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +17,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
-import com.grappbox.grappbox.grappbox.MainActivity;
-import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
-import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,14 +118,10 @@ public class WhiteboardListFragment extends Fragment {
 
     private void openWhiteboard(String id, String date)
     {
-        Fragment whiteboard = new WhiteboardFragment();
-        Bundle args = new Bundle();
-        args.putString("idWhiteboard", id);
-        args.putString("createdAt", date);
-        whiteboard.setArguments(args);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, whiteboard);
-        transaction.commit();
+        Intent intent = new Intent(this.getActivity(), WhiteboardActivity.class);
+        intent.putExtra("idWhiteboard", id);
+        intent.putExtra("createdAt", date);
+        startActivity(intent);
     }
 
     private void deleteWhiteboard(String id)

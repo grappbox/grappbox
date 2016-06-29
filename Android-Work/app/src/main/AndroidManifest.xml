@@ -82,6 +82,7 @@
         </activity>
         <activity android:name=".Gantt.GanttActivity"></activity>
         <activity android:name=".Timeline.TimelineCommentActivity"></activity>
+        <activity android:name=".Whiteboard.WhiteboardActivity"></activity>
     </application>
 
 </manifest>

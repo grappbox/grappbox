@@ -23,9 +23,9 @@ public class APIRequestOpenWhiteboard extends AsyncTask<String, Void, String> {
 
     private final static String _PATH = "whiteboard/pulldraw/";
     private Integer _APIResponse;
-    private WhiteboardFragment _context;
+    private WhiteboardActivity _context;
 
-    APIRequestOpenWhiteboard(WhiteboardFragment context)
+    APIRequestOpenWhiteboard(WhiteboardActivity context)
     {
         _context = context;
     }
