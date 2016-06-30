@@ -89,5 +89,9 @@ canvas {
 /* Fit the height of the popover with content */
 ion-popover-view {
   height: auto;
-  width: auto;
+}
+
+/* GrappBox colors */
+.gb-nav-bar {
+    background-color: #c0392b !important;
 }

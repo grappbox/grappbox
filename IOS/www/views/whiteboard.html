@@ -11,12 +11,12 @@
 
     <ion-footer-bar class="bar-stable">
         <div class="title">
-            <button class="button button-icon ion-arrow-move" ng-click="moveOn()"></button>
-            <button class="button button-icon ion-android-color-palette" style="color: {{brushcolor}}" ng-click="openColorsPopover($event)"></button>
-            <button class="button button-icon ion-paintbrush" style="color: {{brushcolor}}" ng-click="openDrawPopover($event)"></button>
-            <button class="button button-icon" style="color: {{brushcolor}}" ng-click="addText()">Aa</button>
-            <button class="button button-icon ion-android-radio-button-off" style="color: {{brushcolor}}" ng-click="openShapesPopover($event)"></button>
-            <button class="button button-icon ion-ios-trash" ng-click="undoLastObject()"></button>
+            <button class="button button-icon ion-arrow-move" style="color: #000000" ng-click="moveOn()"></button>
+            <button class="button button-icon ion-android-color-palette" style="color: #000000" ng-click="openColorsPopover($event)"></button>
+            <button class="button button-icon ion-paintbrush" style="color: #000000" ng-click="openDrawPopover($event)"></button>
+            <button class="button button-icon" style="color: #000000; font-size: 25px" ng-click="addText()">Aa</button>
+            <button class="button button-icon ion-android-radio-button-off" style="color: #000000" ng-click="openShapesPopover($event)"></button>
+            <button class="button button-icon ion-ios-trash" style="color: #000000" ng-click="undoLastObject()"></button>
         </div>
     </ion-footer-bar>
 
@@ -43,9 +43,9 @@
 <script id="colorsPopup.html" type="text/ng-template">
     <ion-popover-view>
         <!-- style="height: 250px; width: 265px" -->
-        <ion-header-bar>
+        <!--<ion-header-bar>
             <h1 class="title">Fill colors</h1>
-        </ion-header-bar>
+        </ion-header-bar>-->
         <ion-content scroll="false">
             <!-- "ion-record" is the round ionic font for colors -->
             <!-- "ng-repeat" goes in controller and picks in colorsTab list the good color to display -->
@@ -55,6 +55,9 @@
                     ng-repeat="colorDisplayed in colorTab"
                     style="color: {{colorDisplayed.colorHex}}; font-size: 36.5px"
                     ng-click="changeBrushColor(colorDisplayed.colorHex)"></button>
+            <button class="button button-icon ion-android-cancel"
+                    style="font-size: 36.5px"
+                    ng-click="changeBrushColor('transparent')"></button>
         </ion-content>
     </ion-popover-view>
 </script>

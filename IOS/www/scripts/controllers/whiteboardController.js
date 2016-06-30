@@ -96,7 +96,10 @@ angular.module('GrappBox.controllers')
 
     //Change brush color
     $scope.changeBrushColor = function (colorChosen) {
-        canvas.freeDrawingBrush.color = colorChosen;
+        if (colorChosen == 'transparent')
+            canvas.freeDrawingBrush.color = colorChosen;
+        else
+            canvas.freeDrawingBrush.color = "#000000";
         $scope.brushcolor = colorChosen; //Set brush color to the new color chosen
         $scope.popoverColors.hide();
     }
