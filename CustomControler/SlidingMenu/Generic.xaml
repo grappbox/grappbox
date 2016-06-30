@@ -17,14 +17,13 @@
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0" x:Name="ContentLeftSideMenu" MaxWidth="{TemplateBinding LeftSideMenuWidth}" Visibility="Visible" Width="0">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="68"/>
+                                <RowDefinition Height="65"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Horizontal" Background="{StaticResource GrayGrappBoxBrush}">
                                 <Ellipse Height="48" Stroke="Transparent" VerticalAlignment="Center" Width="48">
                                     <Ellipse.Fill>
-                                        <ImageBrush x:Name="img" Stretch="Uniform" ImageSource="/Assets/user.png">
-                                        </ImageBrush>
+                                        <ImageBrush x:Name="Avatar" Stretch="Uniform"/>
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock Name="ProjectName" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>

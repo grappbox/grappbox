@@ -406,11 +406,20 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
-            await vm.getUsersAssigned(vm.RoleSelected.Id);
+            if (vm.RoleSelected != null)
+            {
+                await vm.getUsersAssigned(vm.RoleSelected.Id);
+
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+                if (vm.RoleSelected != null)
+                {
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.Id));
+                }
+            }
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.Id));
         }
 
         private async void RemoveRoleButton_Click(object sender, RoutedEventArgs e)
@@ -418,7 +427,8 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
-            await vm.removeRole();
+            if (vm.RoleSelected != null)
+                await vm.removeRole();
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;

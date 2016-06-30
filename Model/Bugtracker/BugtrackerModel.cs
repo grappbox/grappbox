@@ -52,5 +52,13 @@ namespace GrappBox.Model
 
         [JsonProperty("users")]
         public List<Users> Users { get; set; }
+
+        public string Infos
+        {
+            get
+            {
+                return "Created By " + Creator.Fullname + " at " + DateTime.Parse(CreatedAt.date);
+            }
+        }
     }
 }

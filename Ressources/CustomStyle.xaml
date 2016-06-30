@@ -110,8 +110,9 @@
             <SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="White" />
             <SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="{StaticResource RedGrappBox}" />
             <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource BlackGrappbox}" />
-            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource LightWhiteGrappBox}"/>
+            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource GrayGrappBox}"/>
             <SolidColorBrush x:Key="ListBoxItemSelectedBackgroundThemeBrush" Color="{StaticResource LightBlackGrappbox}"/>
+            <SolidColorBrush x:Key="ListBoxItemSelectedForegroundThemeBrush" Color="{StaticResource BlackGrappbox}"/>
 
             <SolidColorBrush x:Key="CheckBoxPressedBackgroundThemeBrush" Color="{StaticResource RedGrappBox}"/>
             <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="{StaticResource RedGrappBox}"/>

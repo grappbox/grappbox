@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace GrappBox.Model
 {
@@ -40,5 +42,36 @@ namespace GrappBox.Model
         public int Bugs { get; set; }
         [JsonProperty("number_messages")]
         public string Messages { get; set; }
+
+        public BitmapImage Img
+        {
+            get
+            {
+                string base64 = Logo;
+                if (base64 == null || base64 == "")
+                {
+                    BitmapImage bmi = new BitmapImage();
+                    Uri uri = new Uri("ms-appx:///Assets/grappbox-logo.png");
+                    bmi.UriSource = uri;
+                    return bmi;
+                }
+                else
+                {
+                    var imageBytes = Convert.FromBase64String(base64);
+                    using (InMemoryRandomAccessStream ms = new InMemoryRandomAccessStream())
+                    {
+                        using (DataWriter writer = new DataWriter(ms.GetOutputStreamAt(0)))
+                        {
+                            writer.WriteBytes((byte[])imageBytes);
+                            writer.StoreAsync().GetResults();
+                        }
+
+                        var image = new BitmapImage();
+                        image.SetSource(ms);
+                        return image;
+                    }
+                }
+            }
+        }
     }
 }

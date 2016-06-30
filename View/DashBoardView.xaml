@@ -15,7 +15,7 @@
         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Pivot Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" Margin="0,27,0,0">
                 <PivotItem Background="{StaticResource BackgroundGrayBrush}" Margin="0,0,0,0" Header="Settings">
-                    <StackPanel Margin="15,5,0,0">
+                    <StackPanel Margin="15,15,0,0">
                         <TextBlock FontSize="24" Foreground="Black">Displayed Pans</TextBlock>
                         <CheckBox Name="team_cb" Click="team_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Team</CheckBox>
                         <CheckBox Name="meetings_cb" Click="meetings_cb_Checked" Foreground="Black" BorderBrush="Black" RequestedTheme="Light">Meetings</CheckBox>

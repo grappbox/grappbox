@@ -33,6 +33,7 @@ namespace GrappBox.CustomControler.SlidingMenu
     [TemplatePart(Name = ElementCloudButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementCalendarButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementProjectName, Type = typeof(TextBlock))]
+    [TemplatePart(Name = ElementAvatar, Type = typeof(ImageBrush))]
     public sealed class SlideInMenuContentControl : ContentControl
     {
         enum MenuState
@@ -55,6 +56,8 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementDisableContentOverlay = "DisableContentOverlay";
 
         private const string ElementMenuButton = "MenuButton";
+
+        private const string ElementAvatar = "Avatar";
 
         private const string ElementDashboardButton = "DashboardButton";
         private const string ElementWhiteboardButton = "WhiteboardButton";
@@ -87,6 +90,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private Button calendarButton;
         private Button logoutButton;
         private TextBlock projectName;
+        private ImageBrush avatar;
 
         public SlideInMenuContentControl()
         {
@@ -123,11 +127,14 @@ namespace GrappBox.CustomControler.SlidingMenu
             calendarButton = GetTemplateChild(ElementCalendarButton) as Button;
             logoutButton = GetTemplateChild(ElementLogoutButton) as Button;
             projectName = GetTemplateChild(ElementProjectName) as TextBlock;
+            avatar = GetTemplateChild(ElementAvatar) as ImageBrush;
+
 
             var contentFrame = GetTemplateChild("ContentFrame") as FrameworkElement;
             contentFrame.Width = Window.Current.Bounds.Width;
 
             projectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen") ?? "";
+            avatar.ImageSource = User.GetUser().Img;
 
             buttons = new List<StackPanel>();
             buttons.Add(GetTemplateChild(ElementBugtrackerPanel) as StackPanel);

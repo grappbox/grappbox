@@ -193,12 +193,12 @@ namespace GrappBox.View
             CloseListView.SelectedItem = null;
             vm.CloseSelect = null;
 
-            if (num == 1)
+            if (num == 0)
             {
                 EditOpenBug.Visibility = Visibility.Visible;
                 EditCloseBug.Visibility = Visibility.Collapsed;
             }
-            else if (num == 2)
+            else if (num == 1)
             {
                 EditOpenBug.Visibility = Visibility.Collapsed;
                 EditCloseBug.Visibility = Visibility.Visible;
@@ -233,6 +233,7 @@ namespace GrappBox.View
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView), vm.CloseSelect.Id));
             }
         }
     }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Popups;
 
 namespace GrappBox.ViewModel
 {
@@ -27,12 +28,12 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, "dashboard/getprojectsglobalprogress");
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 ProjectList = api.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(await res.Content.ReadAsStringAsync());
             }
             else
             {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
     }

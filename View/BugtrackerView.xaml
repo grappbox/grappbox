@@ -24,30 +24,70 @@
             <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
             <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
                 <PivotItem Header="Open">
-                    <ListBox x:Name="OpenListView" ItemsSource="{Binding OpenList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="openListView_SelectionChanged">
+                    <ListBox x:Name="OpenListView" ItemsSource="{Binding OpenList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="openListView_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
-                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                <StackPanel Background="White">
+                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                    <ListView ItemsSource="{Binding Tags}" SelectionMode="None" ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="Red" Margin="10,5,0,0">
+                                                    <TextBlock Text="{Binding Name}" Foreground="White" TextAlignment="Center" TextWrapping="NoWrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="6"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ListView.ItemsPanel>
+                                    </ListView>
+                                    <TextBlock Text="{Binding Infos}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="10" Margin="5"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="15"></Setter>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                     </ListBox>
                 </PivotItem>
                 <PivotItem Header="Closed">
-                    <StackPanel Grid.Row="0">
-                        <ListBox x:Name="CloseListView" ItemsSource="{Binding CloseList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="closeListView_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
+                    <ListBox x:Name="CloseListView" ItemsSource="{Binding CloseList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="closeListView_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Background="White">
+                                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                                    <ListView ItemsSource="{Binding Tags}" SelectionMode="None" ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="Red" Margin="10,5,0,0">
+                                                    <TextBlock Text="{Binding Name}" Foreground="White" TextAlignment="Center" TextWrapping="NoWrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="6"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ListView.ItemsPanel>
+                                    </ListView>
+                                    <TextBlock Text="{Binding Infos}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="10" Margin="5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="15"></Setter>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
                 </PivotItem>
             </Pivot>
         </Grid>

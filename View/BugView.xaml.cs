@@ -120,9 +120,9 @@ namespace GrappBox.View
             else
             {
                 isAdd = true;
-                Comments.Visibility = Visibility.Collapsed;
-                Tags.Visibility = Visibility.Collapsed;
-                Users.Visibility = Visibility.Collapsed;
+                Comments.IsEnabled = false;
+                Tags.IsEnabled = false;
+                Users.IsEnabled = false;
             }
             PostComPopUp.Visibility = Visibility.Collapsed;
             Pivot.IsLocked = false;
@@ -139,37 +139,40 @@ namespace GrappBox.View
         {
             int num = Pivot.SelectedIndex;
 
-            if (num == 0)
+            if (isAdd == false)
             {
-                SaveBug.Visibility = Visibility.Visible;
-                PostComment.Visibility = Visibility.Collapsed;
-                RemoveTag.Visibility = Visibility.Collapsed;
-                EditTag.Visibility = Visibility.Collapsed;
-                SaveUser.Visibility = Visibility.Collapsed;
-            }
-            else if (num == 1)
-            {
-                SaveBug.Visibility = Visibility.Collapsed;
-                PostComment.Visibility = Visibility.Visible;
-                RemoveTag.Visibility = Visibility.Collapsed;
-                EditTag.Visibility = Visibility.Collapsed;
-                SaveUser.Visibility = Visibility.Collapsed;
-            }
-            else if (num == 2)
-            {
-                SaveBug.Visibility = Visibility.Collapsed;
-                PostComment.Visibility = Visibility.Collapsed;
-                RemoveTag.Visibility = Visibility.Visible;
-                EditTag.Visibility = Visibility.Visible;
-                SaveUser.Visibility = Visibility.Collapsed;
-            }
-            else if (num == 3)
-            {
-                SaveBug.Visibility = Visibility.Collapsed;
-                PostComment.Visibility = Visibility.Collapsed;
-                RemoveTag.Visibility = Visibility.Collapsed;
-                EditTag.Visibility = Visibility.Collapsed;
-                SaveUser.Visibility = Visibility.Visible;
+                if (num == 0)
+                {
+                    SaveBug.Visibility = Visibility.Visible;
+                    PostComment.Visibility = Visibility.Collapsed;
+                    RemoveTag.Visibility = Visibility.Collapsed;
+                    EditTag.Visibility = Visibility.Collapsed;
+                    SaveUser.Visibility = Visibility.Collapsed;
+                }
+                else if (num == 1)
+                {
+                    SaveBug.Visibility = Visibility.Collapsed;
+                    PostComment.Visibility = Visibility.Visible;
+                    RemoveTag.Visibility = Visibility.Collapsed;
+                    EditTag.Visibility = Visibility.Collapsed;
+                    SaveUser.Visibility = Visibility.Collapsed;
+                }
+                else if (num == 2)
+                {
+                    SaveBug.Visibility = Visibility.Collapsed;
+                    PostComment.Visibility = Visibility.Collapsed;
+                    RemoveTag.Visibility = Visibility.Visible;
+                    EditTag.Visibility = Visibility.Visible;
+                    SaveUser.Visibility = Visibility.Collapsed;
+                }
+                else if (num == 3)
+                {
+                    SaveBug.Visibility = Visibility.Collapsed;
+                    PostComment.Visibility = Visibility.Collapsed;
+                    RemoveTag.Visibility = Visibility.Collapsed;
+                    EditTag.Visibility = Visibility.Collapsed;
+                    SaveUser.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -184,9 +187,9 @@ namespace GrappBox.View
                 if (isAdd == true)
                 {
                     await vm.addBug();
-                    Comments.Visibility = Visibility.Visible;
-                    Tags.Visibility = Visibility.Visible;
-                    Users.Visibility = Visibility.Visible;
+                    Comments.IsEnabled = true;
+                    Tags.IsEnabled = true;
+                    Users.IsEnabled = true;
                 }
                 else
                     await vm.editBug();

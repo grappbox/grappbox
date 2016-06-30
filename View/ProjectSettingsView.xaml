@@ -34,7 +34,7 @@
                 <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
                     <PivotItem Header="Settings">
                         <ScrollViewer>
-                            <StackPanel ScrollViewer.BringIntoViewOnFocusChange="True" ScrollViewer.VerticalScrollMode="Auto" ScrollViewer.IsDeferredScrollingEnabled="True">
+                            <StackPanel ScrollViewer.BringIntoViewOnFocusChange="True" ScrollViewer.VerticalScrollMode="Auto" ScrollViewer.IsDeferredScrollingEnabled="True" Margin="15">
                                 <StackPanel.Resources>
                                     <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
                                 </StackPanel.Resources>
@@ -48,10 +48,10 @@
                                 <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
                                 <TextBlock Text="Logo" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <Grid>
-                                    <Image x:Name="img" Source="{Binding Logo, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
-                                    <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
-                                    <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <Image x:Name="img" Source="{Binding Logo, Mode=OneWay}" Height="100" Width="100"/>
+                                    <Button Content="Button" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
+                                    <Border BorderBrush="Black" BorderThickness="2" Height="100" Width="100"/>
                                 </Grid>
 
                                 <TextBlock Text="Phone" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
@@ -72,7 +72,7 @@
                         </ScrollViewer>
                     </PivotItem>
                     <PivotItem Header="Users">
-                        <StackPanel>
+                        <StackPanel Margin="15">
                             <ListBox x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userListView_SelectionChanged">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -98,7 +98,7 @@
                         </StackPanel>
                     </PivotItem>
                     <PivotItem Header="Customer access">
-                        <StackPanel>
+                        <StackPanel Margin="15">
                             <ListBox x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="customerListView_SelectionChanged">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -124,7 +124,7 @@
                         </StackPanel>
                     </PivotItem>
                     <PivotItem Header="Roles">
-                        <StackPanel>
+                        <StackPanel Margin="15">
                             <ListBox x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="roleListView_SelectionChanged">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>

@@ -24,7 +24,7 @@
             HorizontalContentAlignment="Center">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="15" Margin="0,15,0,15" Background="White">
+                        <Border Padding="15" Background="White">
                             <StackPanel>
                                 <StackPanel.Resources>
                                     <Style TargetType="TextBlock">
@@ -32,9 +32,11 @@
                                     </Style>
                                 </StackPanel.Resources>
                                 <TextBlock Name="hidden" Text="{Binding Id, Converter={StaticResource IntegerToStringConverter}}" Visibility="Collapsed"/>
-                                <Image HorizontalAlignment="Center" Source="/Assets/grappbox-logo.png" />
-                                <TextBlock Name="projectName" HorizontalAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}"/>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                    <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Img}" />
+                                    <TextBlock Name="projectName" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}" Margin="20,0,0,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                     <StackPanel.Resources>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Margin" Value="10,0,0,0"/>
@@ -44,7 +46,7 @@
                                     <TextBlock Text="{Binding Bugs}"/>
                                     <TextBlock Text="bugs"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                     <StackPanel.Resources>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Margin" Value="10,0,0,0"/>
@@ -54,7 +56,7 @@
                                     <TextBlock Text="{Binding Messages}"/>
                                     <TextBlock Text="messages"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                     <StackPanel.Resources>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Margin" Value="10,0,0,0"/>
@@ -70,6 +72,12 @@
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding" Value="15"></Setter>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
             </ListView>
             <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
         </Grid>
