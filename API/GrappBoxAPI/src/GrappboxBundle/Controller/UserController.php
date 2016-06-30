@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use GrappboxBundle\Controller\RolesAndTokenVerificationController;
+use GrappboxBundle\Controller\User;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -334,7 +335,7 @@ class UserController extends RolesAndTokenVerificationController
 		{
 			if ($this->container->get('security.password_encoder')->isPasswordValid($user, $content->oldPassword))
 			{
-				print("op = password\n");
+				//print("op = password\n");
 				$encoder = $this->container->get('security.password_encoder');
 				$encoded = $encoder->encodePassword($user, $content->password);
 				$user->setPassword($encoded);
@@ -852,7 +853,6 @@ class UserController extends RolesAndTokenVerificationController
 
 		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Task')->findUserCurrentAndNextTasksV2($user->getId(), "7", "User", "getcurrentandnexttasks");
 	}
-
 
 	/**
 	* @api {get} /V0.2/user/getuseravatar/:token/:userId Get user avatar

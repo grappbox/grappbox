@@ -31,7 +31,7 @@ class UserController extends RolesAndTokenVerificationController
 
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.1.3", "User", "basicinformations"));
 
 		$method = $request->getMethod();
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -44,14 +44,19 @@ class UserController extends RolesAndTokenVerificationController
 
 	/**
 	* @api {get} /mongo/user/basicinformations/:token Request the basic informations of the connected user
+	* @apiName getBasicInformations
+	* @apiGroup Users
+	* @apiDescription Request the basic informations of the connected user
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token token of the person connected
 	*/
 	private function getBasicInformations($user)
 	{
 		$firstName = $user->getFirstname();
 		$lastName = $user->getLastname();
-		$birthday = $user->getBirthday()->format('Y-m-d');
+		$birthday = $user->getBirthday();
+		if ($birthday != null)
+			$birthday = $birthday->format('Y-m-d');
 		$avatar = $user->getAvatar();
 		$email = $user->getEmail();
 		$phone = $user->getPhone();
@@ -60,34 +65,33 @@ class UserController extends RolesAndTokenVerificationController
 		$viadeo = $user->getViadeo();
 		$twitter = $user->getTwitter();
 
-		return new JsonResponse(array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday,
+		return $this->setSuccess("1.7.1", "User", "getbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
 			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
 	* @api {get} /mongo/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
+	* @apiName getUserBasicInformations
+	* @apiGroup Users
+	* @apiDescription Request the basic informations for the given user
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token token of the person connected
-	* @apiParam {Number} userId id of the user you want some informations
 	*/
 	public function getUserBasicInformationsAction(Request $request, $token, $userId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.2.3", "User", "getuserbasicinformations"));
 
 		$userInfos = $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:User')->find($userId);
 		if ($userInfos === null)
-		{
-			throw new NotFoundHttpException("The user with id ".$userId." doesn't exist");
-		}
+			return $this->setBadRequest("7.2.4", "User", "getuserbasicinformations", "Bad Parameter: userId");
 
 		$firstName = $userInfos->getFirstname();
 		$lastName = $userInfos->getLastname();
-		if ($userInfos->getBirthday() instanceof DateTime)
-			$birthday = $userInfos->getBirthday()->format('Y-m-d');
-		else
-			$birthday = null;
+		$birthday = $user->getBirthday();
+		if ($birthday!= null)
+			$birthday = $birthday->format('Y-m-d');
 		$avatar = $userInfos->getAvatar();
 		$email = $userInfos->getEmail();
 		$phone = $userInfos->getPhone();
@@ -96,43 +100,22 @@ class UserController extends RolesAndTokenVerificationController
 		$viadeo = $userInfos->getViadeo();
 		$twitter = $userInfos->getTwitter();
 
-		return new JsonResponse(array("first_name" => $firstName, "last_name" => $lastName, "birthday" => $birthday,
+		return $this->setSuccess("1.7.1", "User", "getuserbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
 			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
 	* @api {put} /mongo/user/basicinformations/:token Update the basic informations of the user connected
+	* @apiName putBasicInformations
+	* @apiGroup Users
+	* @apiDescription Update the basic informations of the user connected
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [first_name] First name of the person
-	* @apiParam {String} [last_name] Last name of the person
-	* @apiParam {Date} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [password] Password of the person
-	* @apiParam {Number} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"first_name": "John",
-	*		"last_name": "Doe",
-	*		"birthday": "1945-06-18"
-	*		"avatar": "10001111001100110010101010",
-	*		"email": "john.doe@gmail.com",
-	*		"password": "azertyuiop",
-	*		"phone": +33984231475,
-	*		"country": "France",
-	*		"linkedin": "linkedin.com/john.doe",
-	*		"viadeo": "viadeo.com/john.doe",
-	*		"twitter": "twitter.com/john.doe"
-	* 	}
 	*/
 	private function putBasicInformations($content, $user, $em)
 	{
+		$content = $content->data;
+
 		if (array_key_exists('first_name', $content))
 			$user->setFirstname($content->first_name);
 		if (array_key_exists('last_name', $content))
@@ -166,110 +149,211 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setTwitter($content->twitter);
 		if (array_key_exists('password', $content))
 		{
-			$encoder = $this->container->get('security.password_encoder');
-   			$encoded = $encoder->encodePassword($user, $content->password);
-			$user->setPassword($encoded);
+			if ($this->container->get('security.password_encoder')->isPasswordValid($user, $content->oldPassword))
+			{
+				//print("op = password\n");
+				$encoder = $this->container->get('security.password_encoder');
+				$encoded = $encoder->encodePassword($user, $content->password);
+				$user->setPassword($encoded);
+			}
 		}
 
 		$em->flush();
-		return new JsonResponse("User Basic Informations changed.");
+
+		$id = $user->getId();
+		$firstName = $user->getFirstname();
+		$lastName = $user->getLastname();
+		$birthday = $user->getBirthday();
+		if ($birthday!= null)
+			$birthday = $birthday->format('Y-m-d');
+		$avatar = $user->getAvatar();
+		$email = $user->getEmail();
+		$phone = $user->getPhone();
+		$country = $user->getCountry();
+		$linkedin = $user->getLinkedin();
+		$viadeo = $user->getViadeo();
+		$twitter = $user->getTwitter();
+
+		return $this->setSuccess("1.7.1", "User", "putbasicinformations", "Complete Success", array("id" => $id, "firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
+			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
 	}
 
 	/**
 	* @api {get} /mongo/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
+	* @apiName getIdByName
+	* @apiGroup Users
+	* @apiDescription Request the user Id with the first name and the last name
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
 	*/
 	public function getIdByNameAction(Request $request, $token, $firstname, $lastname)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.4.3", "User", "getidbyname"));
 
-		return new JsonResponse($this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:User')->findUserByName($firstname, $lastname));
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$repository = $em->getRepository('MongoBundle:User');
+		$qb = $repository->createQueryBuilder('u')->where('u.firstname = :firstname', 'u.lastname = :lastname')->setParameter('firstname', $firstname)->setParameter('lastname', $lastname);
+		$users = $qb->getQuery()->execute();
+		if ($users === null)
+			return $this->setBadRequest("7.4.4", "User", "getidbyname", "Bad Parameters");
+
+		$arr = array();
+
+		foreach ($users as $user) {
+			$id = $user->getId();
+
+			$arr[] = array("id" => $id, "firstname" => $firstname, "lastname" => $lastname);
+		}
+
+		if (count($arr) == 0)
+			return $this->setNoDataSuccess("1.7.3", "User", "getidbyname");
+
+		return $this->setSuccess("1.7.1", "User", "getidbyname", "Complete Success", array("array" => $arr));
 	}
 
 	/**
 	* @api {get} /mongo/user/getidbyemail/:token/:email Request the user Id with the email
+	* @apiName getIdByEmail
+	* @apiGroup Users
+	* @apiDescription Request the user Id with the email
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} email email of the user
 	*/
 	public function getIdByEmailAction(Request $request, $token, $email)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.5.3", "User", "getidbyemail"));
 
 		$userEmail = $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:User')->findOneByEmail($email);
 
 		if ($userEmail === null)
-		{
-			throw new NotFoundHttpException("The user with email ".$email." doesn't exist");
-		}
+			return $this->setBadRequest("7.5.4", "User", "getidbyemail", "Bad Parameter: email");
 
 		$id = $userEmail->getId();
 		$firstname = $userEmail->getFirstname();
 		$lastname = $userEmail->getLastname();
 
-		return new JsonResponse(array("id" => $id, "first_name" => $firstname, "last_name" => $lastname));
+		return $this->setSuccess("1.7.1", "User", "getidbyemail", "Complete Success", array("id" => $id, "firstname" => $firstname, "lastname" => $lastname));
 	}
 
 	/**
 	* @api {get} /mongo/user/getnextmeetings/:token Request the next meetings of the connected user
+	* @apiName getNextMeetings
+	* @apiGroup Users
+	* @apiDescription Request the next meetings of the connected user
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {string} token user's authentication token
 	*/
 	public function getNextMeetingsAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.6.3", "User", "getnextmeetings"));
 
-		return new JsonResponse($this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Event')->findNextMeetings($user->getId()));
+		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Event')->findNextMeetingsV2($user->getId(), "7", "User", "getnextmeetings");
 	}
 
 	/**
 	* @api {get} /mongo/user/getprojects/:token Request the user connected projects
+	* @apiName getProjects
+	* @apiGroup Users
+	* @apiDescription Request all the user's connected projects
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {string} token user's authentication token
 	*/
 	public function getProjectsAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.7.3", "User", "getprojects"));
 
-		return new JsonResponse($this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Project')->findUserProjects($user->getId()));
+		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Project')->findUserProjectsV2($user->getId(), "7", "User", "getprojects");
 	}
 
 	/**
 	* @api {get} /mongo/user/getalltasks/:token Request the user connected tasks
+	* @apiName getAllTasks
+	* @apiGroup Users
+	* @apiDescription Request the user connected tasks
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {string} token user's authentication token
 	*/
 	public function getAllTasksAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.8.3", "User", "getalltasks"));
 
-		return new JsonResponse($this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Task')->findUserAllTasks($user->getId()));
+		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Task')->findUserAllTasksV2($user->getId(), "7", "User", "getalltasks");
 	}
 
 	/**
 	* @api {get} /mongo/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
+	* @apiName getCurrentAndNextTasks
+	* @apiGroup Users
+	* @apiDescription Request the user connected current and next tasks
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {string} token user's authentication token
 	*/
 	public function getCurrentAndNextTasksAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("7.9.3", "User", "getcurrentandnexttasks"));
 
-		return new JsonResponse($this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Task')->findUserCurrentAndNextTasks($user->getId()));
+		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Task')->findUserCurrentAndNextTasksV2($user->getId(), "7", "User", "getcurrentandnexttasks");
+	}
+
+	/**
+	* @api {get} /V0.2/user/getuseravatar/:token/:userId Get user avatar
+	* @apiName getUserAvatar
+	* @apiGroup Users
+	* @apiDescription Get the avatar of the given user
+	* @apiVersion 0.2.0
+	*
+	*/
+	public function getUserAvatarAction(Request $request, $token, $userId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("7.9.3", "User", "getUserAvatar"));
+
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$requestedUser = $em->getRepository('MongoBundle:User')->find($userId);
+
+		if ($requestedUser === null)
+			return $this->setBadRequest("7.9.4", "User", "getUserAvatar", "Bad Parameter: userId");
+
+		return $this->setSuccess("1.7.1", "User", "getUserAvatar", "Complete Success", array("avatar" => $requestedUser->getAvatar()));
+	}
+
+	/**
+	* @api {get} /V0.2/user/getallprojectuseravatar/:token/:projectId Get all project user avatar
+	* @apiName getAllProjectUserAvatar
+	* @apiGroup Users
+	* @apiDescription Get the avatar of all the users of the given project
+	* @apiVersion 0.2.0
+	*
+	*/
+	public function getAllProjectUserAvatarAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("7.10.3", "User", "getAllProjectUserAvatar"));
+
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("7.10.4", "User", "getAllProjectUserAvatar", "Bad Parameter: projectId");
+
+			foreach ($project->getUsers() as $key => $user) {
+				$data[] = array("userId" => $user->getId(), "avatar" => $user->getAvatar());
+			}
+
+		return $this->setSuccess("1.7.1", "User", "getAllProjectUserAvatar", "Complete Success", array("array" => $data));
 	}
 }

@@ -1523,7 +1523,6 @@ class TaskController extends RolesAndTokenVerificationController
 				"deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
 	}
 
-
 	/**
 	* @api {put} /V0.2/tasks/archivetask Archive a task
 	* @apiName archiveTask

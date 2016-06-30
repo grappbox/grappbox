@@ -26,27 +26,28 @@ use DateTime;
 */
 class TimelineController extends RolesAndTokenVerificationController
 {
-
 	/**
 	* @api {get} /mongo/timeline/gettimelines/:token/:id List the timeline of a project
+	* @apiName getTimelines
+	* @apiGroup Timeline
+	* @apiDescription List all the timelines of a project
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} id id of the project
 	*/
 	public function getTimelinesAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.1.3", "Task", "gettimelines"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$timelines = $em->getRepository('MongoBundle:Timeline')->findBy(array("projectId" => $id));
 
 		$timeline_array = array();
 		foreach ($timelines as $key => $value) {
-			$type = $em->getRepository('MongoBundle:TimelineType')->find($value->getTypeId());
-			if (($this->checkRoles($user, $id, "customerTimeline") && strcmp($type->getName(), "customerTimeline") == 0)
-					|| ($this->checkRoles($user, $id, "teamTimeline") && strcmp($type->getName(), "teamTimeline") == 0))
+			$type = $em->getRepository('GrappboxBundle:TimelineType')->find($value->getTypeId());
+			if (($this->checkRoles($user, $id, "customerTimeline") > 1 && strcmp($type->getName(), "customerTimeline") == 0)
+					|| ($this->checkRoles($user, $id, "teamTimeline") > 1 && strcmp($type->getName(), "teamTimeline") == 0))
 			{
 				$tmp = $value->objectToArray();
 				$tmp["typeName"] = $type->getName();
@@ -54,26 +55,19 @@ class TimelineController extends RolesAndTokenVerificationController
 			}
 		}
 
-		return new JsonResponse(array("timelines" => $timeline_array));
+		if (count($timeline_array) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "gettimelines");
+
+		return $this->setSuccess("1.11.1", "Timeline", "gettimelines", "Complete Success", array("array" => $timeline_array));
 	}
 
 	/**
 	* @api {post} /mongo/timeline/postmessage/:id Post a new message or comment
+	* @apiName postMessage/Comment
+	* @apiGroup Timeline
+	* @apiDescription Post a new message or a comment for the given timeline
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id Id of the timeline
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} title Title of the message
-	* @apiParam {String} message Message to post on the timeline
-	* @apiParam {int} [commentedId] (required only for comments) Id of the message you want to comment
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	* 	{
-	*		"data": {
-	*			"token": "13135",
-	*			"title": "Project delayed",
-	*			"message": "Hi, i think we should delay the delivery date of the project, what do you think about it?"
-	*		}
-	* 	}
 	*/
 	public function postMessageAction(Request $request, $id)
 	{
@@ -91,10 +85,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		}
 
@@ -132,13 +126,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /mongo/timeline/editmessage/:id Edit a message
+	* @api {put} /mongo/timeline/editmessage/:id Edit a message or comment
+	* @apiName editMessage
+	* @apiGroup Timeline
+	* @apiDescription Edit a given message or comment
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId message's id
-	* @apiParam {String} title message title
-	* @apiParam {String} message message to post
 	*/
 	public function editMessageAction(Request $request, $id)
 	{
@@ -147,7 +140,7 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.3.3", "Timeline", "editmessage"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$timeline = $em->getRepository('MongoBundle:Timeline')->find($id);
@@ -155,11 +148,11 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		}
 
 		$message = $em->getRepository('MongoBundle:TimelineMessage')->find($content->messageId);
@@ -170,56 +163,74 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
-		return new JsonResponse(array("message" => $message->objectToArray()));
+		return $this->setSuccess("1.11.1", "Timeline", "editmessage", "Complete Success", $message->objectToArray());
 	}
 
 	/**
 	* @api {get} /mongo/timeline/getmessages/:token/:id Get all messages from a timeline except comments
+	* @apiName getMessages
+	* @apiGroup Timeline
+	* @apiDescription Get all the messages but not the comments from a timeline
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
 	*/
 	public function getMessagesAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.4.3", "Timeline", "getmessages"));
+
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$timeline = $em->getRepository('MongoBundle:Timeline')->find($id);
-
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 1)
+				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 1)
+				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		}
 
-		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"));
+		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "DESC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
-			$timelineMessages[] = $value->objectToArray();
+
+			$query = $em->getRepository('MongoBundle:TimelineMessage')->createQueryBuilder('m');
+			$commentsNb = $query->select($query->expr()->count('m.id'))
+						->where("m.parentId = :parent AND m.deletedAt IS NULL")
+						->setParameter("parent", $value->getId())
+						->getQuery()->getSingleScalarResult();
+
+			$elem = $value->objectToArray();
+			$elem['nbComment'] = $commentsNb;
+			$timelineMessages[] = $elem;
 		}
 
-		return new JsonResponse(array("messages" => $timelineMessages));
+		if (count($timelineMessages) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "getmessages");
+
+		return $this->setSuccess("1.11.1", "Timeline", "getmessages", "Complete Success", array("array" => $timelineMessages));
 	}
+
 
 	/**
 	* @api {get} /mongo/timeline/getcomments/:token/:id/:message Get comments of a message
+	* @apiName getComments
+	* @apiGroup Timeline
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} message commented message id
 	*/
 	public function getCommentsAction(Request $request, $token, $id, $messageId)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.6.3", "Timeline", "getComments"));
 		$em = $this->get('doctrine_mongodb')->getManager();
+
 		$timeline = $em->getRepository('MongoBundle:Timeline')->find($id);
+		if (!($timeline instanceof Timeline))
+			return $this->setBadRequest("11.6.4", "Timeline", "getComments", "Bad Parameter: id");
 
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
@@ -230,59 +241,74 @@ class TimelineController extends RolesAndTokenVerificationController
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
 				return ($this->setNoRightsError());
 		}
-
-		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "DESC"));
+		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "ASC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
 		}
 
-		return new JsonResponse(array("comments" => $timelineMessages));
+		if (count($timelineMessages) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "getComments");
+
+		return $this->setSuccess("1.11.1", "Timeline", "getComments", "Complete Success", array("array" => $timelineMessages));
 	}
 
 	/**
 	* @api {get} /mongo/timeline/getlastmessages/:token/:id/:offset/:limit Get X last message from offset Y
+	* @apiName getLastMessages
+	* @apiGroup Timeline
+	* @apiDescription Get the last X messages from offset Y of the given timeline
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset message offset from where to get the messages (start to 0)
-	* @apiParam {int} limit number max of messages to get
 	*/
 	public function getLastMessagesAction(Request $request, $token, $id, $offset, $limit)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError());
+			return ($this->setBadTokenError("11.5.3", "Timeline", "getlastmessages"));
+
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$timeline = $em->getRepository('MongoBundle:Timeline')->find($id);
 		if (!($timeline instanceof Timeline))
-			return $this->setBadRequest("Bad Timeline Id");
+			return $this->setBadRequest("11.5.4", "Timeline", "getlastmessages", "Bad Parameter: id");
 
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 1)
+				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 1)
+				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		}
 
-		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "ASC"), $limit, $offset);
+		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "DESC"), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
-			$timelineMessages[] = $value->objectToArray();
+			$query = $em->getRepository('GrappboxBundle:TimelineMessage')->createQueryBuilder('m');
+			$commentsNb = $query->select($query->expr()->count('m.id'))
+						->where("m.parentId = :parent AND m.deletedAt IS NULL")
+						->setParameter("parent", $value->getId())
+						->getQuery()->getSingleScalarResult();
+
+			$elem = $value->objectToArray();
+			$elem['nbComment'] = $commentsNb;
+			$timelineMessages[] = $elem;
 		}
 
-		return new JsonResponse(array("messages" => $timelineMessages));
+		if (count($timelineMessages) == 0)
+			return $this->setNoDataSuccess("1.11.3", "Timeline", "getlastmessages");
+
+		return $this->setSuccess("1.11.1", "Timeline", "getlastmessages", "Complete Success", array("array" => $timelineMessages));
 	}
 
 	/**
-	* @api {get} /mongo/timeline/archivemessage/:token/:id/:messageId Archive a message and his comments
+	* @api {delete} /mongo/timeline/archivemessage/:token/:id/:messageId Archive a comment or a message and his comments
+	* @apiName ArchiveMessage
+	* @apiGroup Timeline
+	* @apiDescription Archive the given message and his comments or just a given comment
+	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} messageId id of the message
 	*/
 	public function archiveMessageAction(Request $request, $token, $id, $messageId)
 	{
@@ -293,30 +319,30 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$timeline = $em->getRepository('MongoBundle:Timeline')->find($id);
 		if (!($timeline instanceof Timeline))
-			return $this->setBadRequest("Bad Timeline Id");
+			return $this->setBadRequest("11.6.4", "Timeline", "archivemessage", "Bad Parameter: id");
 
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		}
 
 		$message = $em->getRepository('MongoBundle:TimelineMessage')->find($messageId);
-		while($message instanceof TimelineMessage)
-		{
-			$parentMsg = $message->getId();
-			$message->setDeletedAt(new DateTime('now'));
+		$message->setDeletedAt(new DateTime('now'));
+		$em->persist($message);
+		$em->flush();
 
-			$em->persist($message);
+		$comments = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("parentId" => $message->getId()));
+		foreach ($comments as $key => $value) {
+			$value->setDeletedAt(new DateTime('now'));
+			$em->persist($value);
 			$em->flush();
-
-			$message = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("parentId" => $parentMsg));
 		}
 
-		return new JsonResponse('Success');
+		return $this->setSuccess("1.11.1", "Timeline", "archivemessage", "Complete Success", array("id" => $messageId));
 	}
 }
