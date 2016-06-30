@@ -27,10 +27,15 @@ angular.module('GrappBox.controllers')
     canvas.width = width;
     canvas.height = height;
 
-    canvas.isDrawingMode = false;
+    canvas.isDrawingMode = false; // Drawing mode is disabled by default
     $scope.brushSize = 2; //Set brush size to by default
     canvas.freeDrawingBrush.width = $scope.brushSize; //Size of the drawing brush
     $scope.brushcolor = '#000000'; //Set brushcolor to black at the beginning
+
+    $scope.border = {};
+    $scope.border.hasBorder = false; // Shape border is disabled by default
+    $scope.border.size = 0;
+    $scope.border.color = '#000000';
 
     //List of colors
     $scope.colorTab = [
@@ -124,7 +129,12 @@ angular.module('GrappBox.controllers')
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
+        canvas.off('mouse:up');
         canvas.isDrawingMode = false;
+
+        if ($scope.border.hasBorder == false) {
+            $scope.border.size = 0;
+        }
 
         canvas.on('mouse:down', function (option) {
             started = true;
@@ -136,7 +146,8 @@ angular.module('GrappBox.controllers')
                 width: 0,
                 height: 0,
                 fill: isTransparent ? 'transparent' : $scope.brushcolor,
-                stroke: $scope.brushcolor,
+                stroke: $scope.border.color,
+                strokeWidth: $scope.border.size
             });
             canvas.add(rect);
         });
@@ -173,7 +184,8 @@ angular.module('GrappBox.controllers')
             if (height > 0)
                 real_init.y = mouse_pos.y;
             var positionEnd = { "x": real_init.x, "y": real_init.y };
-            $scope.PushOnWhiteboard("RECTANGLE", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
+            //type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold
+            $scope.PushOnWhiteboard("RECTANGLE", $scope.border.color, $scope.brushcolor, $scope.border.size, positionStart, positionEnd);
             //canvas.remove(rect);
         });
         $scope.popoverShapes.hide();
@@ -191,7 +203,12 @@ angular.module('GrappBox.controllers')
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
+        canvas.off('mouse:up');
         canvas.isDrawingMode = false;
+
+        if ($scope.border.hasBorder == false) {
+            $scope.border.size = 0;
+        }
 
         canvas.on('mouse:down', function (option) {
             started = true;
@@ -200,7 +217,8 @@ angular.module('GrappBox.controllers')
                 top: mouse_pos_init.y,
                 left: mouse_pos_init.x,
                 fill: isTransparent ? 'transparent' : $scope.brushcolor,
-                stroke: $scope.brushcolor,
+                stroke: $scope.border.color,
+                strokeWidth: $scope.border.size,
                 rx: 0,
                 ry: 0
             });
@@ -240,7 +258,9 @@ angular.module('GrappBox.controllers')
                 real_init.y = mouse_pos.y;
             var positionEnd = { "x": real_init.x, "y": real_init.y };
             var radius = { "x": Math.abs(real_init.x - mouse_pos_init.x) / 2, "y": Math.abs(real_init.y - mouse_pos_init.y) / 2 };
-            $scope.PushOnWhiteboard("ELLIPSE", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd, radius);
+            console.log("lineWeight in mouse:up = " + $scope.border.size);
+            //type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold
+            $scope.PushOnWhiteboard("ELLIPSE", $scope.border.color, $scope.brushcolor, $scope.border.size, positionStart, positionEnd, radius);
         });
         $scope.popoverShapes.hide();
     }
@@ -257,7 +277,12 @@ angular.module('GrappBox.controllers')
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
+        canvas.off('mouse:up');
         canvas.isDrawingMode = false;
+
+        if ($scope.border.hasBorder == false) {
+            $scope.border.size = 0;
+        }
 
         canvas.on('mouse:down', function (option) {
             started = true;
@@ -271,6 +296,8 @@ angular.module('GrappBox.controllers')
                 top: mouse_pos_init.y,
                 left: mouse_pos_init.x,
                 fill: isTransparent ? 'transparent' : $scope.brushcolor,
+                stroke: $scope.border.color,
+                strokeWidth: $scope.border.size,
                 hasBorders: true,
                 hasControls: false,
                 hasRotatingPoint: false,
@@ -299,7 +326,8 @@ angular.module('GrappBox.controllers')
             started = false;
             var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
             var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
-            $scope.PushOnWhiteboard("DIAMOND", $scope.brushcolor, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
+            //type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold
+            $scope.PushOnWhiteboard("DIAMOND", $scope.border.color, $scope.brushcolor, $scope.brushSize, positionStart, positionEnd);
 
         });
         $scope.popoverShapes.hide();
@@ -315,7 +343,12 @@ angular.module('GrappBox.controllers')
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
+        canvas.off('mouse:up');
         canvas.isDrawingMode = false;
+
+        if ($scope.border.hasBorder == false) {
+            $scope.border.size = 2;
+        }
 
         canvas.on('mouse:down', function (option) {
             started = true;
@@ -323,7 +356,7 @@ angular.module('GrappBox.controllers')
             points = [mouse_pos_init.x, mouse_pos_init.y, mouse_pos_init.x, mouse_pos_init.y];
             line = new fabric.Line(points, {
                 stroke: $scope.brushcolor,
-                strokeWidth: $scope.brushSize
+                strokeWidth: $scope.border.size
             });
             canvas.add(line);
         });
@@ -342,7 +375,8 @@ angular.module('GrappBox.controllers')
             started = false;
             var positionStart = { "x": mouse_pos_init.x, "y": mouse_pos_init.y };
             var positionEnd = { "x": mouse_pos.x, "y": mouse_pos.y };
-            $scope.PushOnWhiteboard("LINE", $scope.brushcolor, "", $scope.brushSize, positionStart, positionEnd);
+            //type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold
+            $scope.PushOnWhiteboard("LINE", $scope.brushcolor, "", $scope.border.size, positionStart, positionEnd);
         });
         $scope.popoverShapes.hide();
     }
@@ -354,6 +388,7 @@ angular.module('GrappBox.controllers')
 
         $ionicScrollDelegate.freezeScroll(true);
         canvas.off('mouse:down');
+        canvas.off('mouse:up');
         canvas.isDrawingMode = false;
 
         canvas.on('mouse:down', function (option) {
@@ -504,6 +539,7 @@ angular.module('GrappBox.controllers')
                     height: obj[i].object.positionEnd.y - obj[i].object.positionStart.y,
                     fill: obj[i].object.background,
                     stroke: obj[i].object.color,
+                    strokeWidth: obj[i].object.lineWeight ? obj[i].object.lineWeight : 0,
                     selectable: false,
                     evented: false
                 });
@@ -515,6 +551,7 @@ angular.module('GrappBox.controllers')
                     left: obj[i].object.positionStart.x > obj[i].object.positionEnd.x ? obj[i].object.positionEnd.x : obj[i].object.positionStart.x,
                     fill: obj[i].object.background,
                     stroke: obj[i].object.color,
+                    strokeWidth: obj[i].object.lineWeight ? obj[i].object.lineWeight : 0,
                     rx: obj[i].object.radius.x,
                     ry: obj[i].object.radius.y,
                     selectable: false,
@@ -571,6 +608,7 @@ angular.module('GrappBox.controllers')
                     left: obj[i].object.positionStart.x > obj[i].object.positionEnd.x ? obj[i].object.positionEnd.x : obj[i].object.positionStart.x,
                     fill: obj[i].object.background,
                     stroke: obj[i].object.color,
+                    strokeWidth: obj[i].object.lineWeight ? obj[i].object.lineWeight : 0,
                     hasBorders: true,
                     hasControls: false,
                     hasRotatingPoint: false,
@@ -607,7 +645,7 @@ angular.module('GrappBox.controllers')
     $scope.pushOnWhiteboardData = {};
     $scope.PushOnWhiteboard = function (type, color, background, lineWeight, positionStart, positionEnd, radius, points, text, size, isItalic, isBold) {
         //$rootScope.showLoading();
-        canvas.off('mouse:up');
+        console.log("lineWeight = " + lineWeight);
         Whiteboard.Push().update({
             id: $scope.whiteboardId,
             data: {

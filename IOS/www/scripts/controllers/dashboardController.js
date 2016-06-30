@@ -21,7 +21,13 @@ angular.module('GrappBox.controllers')
         console.log("View refreshed !");
     }*/
 
+    // Just to know if we are in a project or not for UI
     $rootScope.hasProject = true;
+
+    // Disable back button
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+        viewData.enableBack = false;
+    });
 
     console.log("PROJECTID = " + $stateParams.projectId);
     $rootScope.projectId = $stateParams.projectId;

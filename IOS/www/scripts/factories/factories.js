@@ -21,10 +21,10 @@ angular.module('GrappBox.factories', [])
             }
             else {
                 if (duration == 'short') {
-                    duration = 2000;
+                    duration = 1000;
                 }
                 else {
-                    duration = 5000;
+                    duration = 3000;
                 }
                 $ionicLoading.show({ template: message, noBackdrop: true, duration: duration });
             }

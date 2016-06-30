@@ -71,6 +71,7 @@ textarea {
     padding-left: 56px;
 }
 
+/* Make the blue background in disabled text area white */
 input[disabled],
 select[disabled],
 textarea[disabled],
@@ -80,6 +81,13 @@ select[readonly] {
     background-color: white;
 }
 
+/* Put a black border around canvas in whiteboard */
 canvas {
     border: solid black 1px;
+}
+
+/* Fit the height of the popover with content */
+ion-popover-view {
+  height: auto;
+  width: auto;
 }
