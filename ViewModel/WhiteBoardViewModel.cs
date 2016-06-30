@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using GrappBox.Model;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Shapes;
 using GrappBox.CustomControler;
-using Windows.UI.Xaml.Controls;
 using System.Collections.ObjectModel;
 using GrappBox.Model.Whiteboard;
 using GrappBox.ApiCom;
-using GrappBox.Ressources;
 using System.Net.Http;
 using Windows.UI.Popups;
 
@@ -34,7 +26,7 @@ namespace GrappBox.ViewModel
     class WhiteBoardViewModel : ViewModelBase
     {
         private WhiteBoardModel model;
-        private PullModel _pullModel;
+        public PullModel PullModel { get; private set; }
         private ObservableCollection<WhiteboardObject> _objectsList;
         private DateTime _lastUpdate;
 
@@ -183,7 +175,7 @@ namespace GrappBox.ViewModel
         public bool TextPanOpened
         {
             get { return _textPanOpened; }
-            set { _textPanOpened = value;  NotifyPropertyChanged("TextPanOpened"); }
+            set { _textPanOpened = value; NotifyPropertyChanged("TextPanOpened"); }
         }
         private bool _popUpTextConfirmed = false;
         public bool PopUpTextConfirmed
@@ -280,12 +272,15 @@ namespace GrappBox.ViewModel
         #region Actions
 
         #region RoutedEventsActions
-        private void TextPanTappedAction(bool val)
+        private async void TextPanTappedAction(bool val)
         {
             if (val == true)
             {
                 ShapeControler sc = new ShapeControler(textPos, PopUpTextEntered, IsBold, IsItalic, StrokeColor, 18);
                 CurrentDraw = sc;
+                WhiteboardObject wo = await pushDraw(ShapeModelConverter.ShapeToModel(CurrentDraw));
+                CurrentDraw.Id = wo.Id;
+                CurrentDraw = null;
             }
         }
         private void CanvasTappedAction(Point p)
@@ -328,9 +323,17 @@ namespace GrappBox.ViewModel
         {
             if (CurrentDraw == null)
                 return;
+            WhiteboardObject wo = null;
             CurrentDraw.Update(p);
-            WhiteboardObject wo = await pushDraw(ShapeModelConverter.ShapeToModel(CurrentDraw));
-            CurrentDraw.Id = wo.Id;
+            try
+            {
+                wo = await pushDraw(ShapeModelConverter.ShapeToModel(CurrentDraw));
+                CurrentDraw.Id = wo.Id;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
             CurrentDraw = null;
         }
         #endregion RoutedEventsActions
@@ -377,18 +380,12 @@ namespace GrappBox.ViewModel
             props.Add("token", User.GetUser().Token);
             props.Add("lastUpdate", _lastUpdate);
             HttpResponseMessage res = await api.Post(props, "whiteboard/pulldraw/" + model.Id);
+            Debug.WriteLine(await res.Content.ReadAsStringAsync());
             if (res.IsSuccessStatusCode)
             {
-                _pullModel = api.DeserializeJson<PullModel>(await res.Content.ReadAsStringAsync());
-                foreach (WhiteboardObject item in _pullModel.addObjects)
-                {
-                    //ajouter les objets au whiteboard
-                }
-                foreach (WhiteboardObject item in _pullModel.delObjects)
-                {
-                    //remove les objets au whiteboard
-                }
+                PullModel = api.DeserializeJson<PullModel>(await res.Content.ReadAsStringAsync());
                 _lastUpdate = new DateTime();
+
             }
             else
             {

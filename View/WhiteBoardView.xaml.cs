@@ -19,6 +19,7 @@ namespace GrappBox.View
         private readonly NavigationHelper navigationHelper;
         private Timer pullTimer;
         private WhiteBoardViewModel wbvm;
+        private int whiteboardId;
 
         public WhiteBoardView()
         {
@@ -45,20 +46,22 @@ namespace GrappBox.View
         {
             get { return this.navigationHelper; }
         }
+
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-
         }
+
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
             pullTimer.Dispose();
         }
+
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-            int id = (int)e.Parameter;
+            whiteboardId = (int)e.Parameter;
             wbvm = this.DataContext as WhiteBoardViewModel;
-            await wbvm.OpenWhiteboard(id);
+            await wbvm.OpenWhiteboard(whiteboardId);
             foreach (WhiteboardObject wo in wbvm.ObjectsList)
             {
                 this.drawingCanvas.AddNewElement(wo);
@@ -68,13 +71,26 @@ namespace GrappBox.View
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            //this.Frame.Navigate(typeof(View.WhiteBoardListView));
             this.navigationHelper.OnNavigatedFrom(e);
         }
         #endregion
 
         public async void runPull(object source)
         {
+            Debug.WriteLine("RunPull_1");
             await wbvm.pullDraw();
+            foreach (WhiteboardObject item in wbvm.PullModel.addObjects)
+            {
+                Debug.WriteLine("RunPull_2");
+                this.drawingCanvas.AddNewElement(item);
+                Debug.WriteLine("RunPull_2.5");
+            }
+            foreach (WhiteboardObject item in wbvm.PullModel.delObjects)
+            {
+                Debug.WriteLine("RunPull_3");
+                this.drawingCanvas.DeleteElement(item.Id);
+            }
         }
     }
 }
