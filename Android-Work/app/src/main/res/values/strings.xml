@@ -48,9 +48,20 @@
     <string name="meeting_date_end_label">Date end</string>
 
     <string-array name="size_text">
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
         <item>14</item>
         <item>18</item>
-        <item>22</item>
+        <item>24</item>
+        <item>30</item>
+        <item>36</item>
+        <item>48</item>
+        <item>60</item>
+        <item>72</item>
+        <item>96</item>
     </string-array>
 
     <string-array name="size_brush">

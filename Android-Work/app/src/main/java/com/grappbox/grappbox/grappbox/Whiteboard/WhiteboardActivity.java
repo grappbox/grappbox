@@ -17,11 +17,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.grappbox.grappbox.grappbox.BugTracker.EditCommentTask;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.text.SimpleDateFormat;
@@ -40,6 +43,7 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
     private DrawingView     _DrawView;
     private String          _idWhiteboard;
     private String          _dateWithboard;
+    private TextView        _WhiteboardTitle;
     private ImageButton     _ColorBorderBtn;
     private ImageButton     _ColorBtn;
     private ImageButton     _DrawBtn;
@@ -52,6 +56,16 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
     private String          _lastUpadte;
 
     private float t = 0;
+
+    enum Shape{
+        RECTANGLE,
+        OVAL,
+        LINE,
+        FREEHAND,
+        LOSANGE,
+        TEXT,
+        ERASE
+    }
 
     public class MyReceiver extends BroadcastReceiver
     {
@@ -85,6 +99,8 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
         _EraseButton.setOnClickListener(this);
         _MoveButton = (ImageButton)findViewById(R.id.move_btn);
         _MoveButton.setOnClickListener(this);
+        _WhiteboardTitle = (TextView)findViewById(R.id.whiteboard_title);
+        _WhiteboardTitle.setText(getIntent().getStringExtra("title"));
 
         _lastUpadte = _dateWithboard;
 
@@ -157,7 +173,9 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
             colorGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
-                    _DrawView.setSecondColor(getResources().getIntArray(R.array.color)[position]);
+                    int borderColor = getResources().getIntArray(R.array.color)[position];
+                    _ColorBorderBtn.setColorFilter(borderColor);
+                    _DrawView.setSecondColor(borderColor);
                     colorBorderDialog.dismiss();
                 }
             });
@@ -179,7 +197,12 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
             colorGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v,
                                         int position, long id) {
-                    _DrawView.setColor(getResources().getIntArray(R.array.color)[position]);
+                    int color = getResources().getIntArray(R.array.color)[position];
+                    _ColorBtn.setColorFilter(color);
+                    _DrawBtn.setColorFilter(color);
+                    _EraseButton.setColorFilter(color);
+                    _MoveButton.setColorFilter(color);
+                    _DrawView.setColor(color);
                     colorDialog.dismiss();
                 }
             });
@@ -251,6 +274,17 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
                 }
             });
 
+            ImageButton lineButton = (ImageButton)formDialog.findViewById(R.id.line_shape);
+            lineButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    _DrawView.setFormShape(6);
+                    _SizeSpinnerSelected = sizeBrush.getSelectedItemPosition();
+                    _DrawView.setBrushSize(_SizeSpinnerSelected);
+                    formDialog.dismiss();
+                }
+            });
+
             formDialog.show();
         }
 
@@ -258,6 +292,11 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
         {
             _DrawView.onMove(true);
         }
+    }
+
+    public void refresh()
+    {
+        _DrawView.Refresh();
     }
 
     public void refreshWhiteboard(List<ContentValues> whiteboardForm)

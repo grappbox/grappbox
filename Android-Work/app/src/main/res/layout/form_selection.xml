@@ -14,7 +14,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75dip">
+        android:layout_height="55dip">
 
         <ImageButton
             android:id="@+id/rect_shape"
@@ -46,8 +46,16 @@
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="0.2"
-            android:contentDescription="Rectange_Shape"
+            android:contentDescription="Spline_Shape"
             android:background="@drawable/spline" />
+
+        <ImageButton
+            android:id="@+id/line_shape"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Spline_Shape"
+            android:background="@drawable/line" />
 
         <ImageButton
             android:id="@+id/text_selection"

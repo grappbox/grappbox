@@ -37,6 +37,7 @@ public class WhiteboardListFragment extends Fragment {
     private WhiteboardListFragment _whiteboard = this;
     private ListView _ListWhiteboard;
     private FloatingActionButton _fab;
+    private Vector<String> _titleWhiteboard = new Vector<String>();
     private Vector<String> _idWhiteboard = new Vector<String>();
     private Vector<String> _dateWhiteboard = new Vector<String>();
     private APIRequestAddWhiteboard _apiAdd;
@@ -98,6 +99,7 @@ public class WhiteboardListFragment extends Fragment {
             map.put("whiteboard_project_name", item.get("createdAt").toString());
             _idWhiteboard.add(item.get("id").toString());
             _dateWhiteboard.add(item.get("createdAt").toString());
+            _titleWhiteboard.add(item.get("name").toString());
             listWhiteboard.add(map);
         }
 
@@ -109,18 +111,19 @@ public class WhiteboardListFragment extends Fragment {
         _ListWhiteboard.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                whiteboardAction(_idWhiteboard.get(position), _dateWhiteboard.get(position));
+                whiteboardAction(_idWhiteboard.get(position), _dateWhiteboard.get(position), _titleWhiteboard.get(position));
 
             }
         });
         _fab.show();
     }
 
-    private void openWhiteboard(String id, String date)
+    private void openWhiteboard(String id, String date, String title)
     {
         Intent intent = new Intent(this.getActivity(), WhiteboardActivity.class);
         intent.putExtra("idWhiteboard", id);
         intent.putExtra("createdAt", date);
+        intent.putExtra("title", title);
         startActivity(intent);
     }
 
@@ -147,7 +150,7 @@ public class WhiteboardListFragment extends Fragment {
         dialog.show();
     }
 
-    private void whiteboardAction(String id, String date)
+    private void whiteboardAction(String id, String date, String title)
     {
         AlertDialog.Builder whiteboardBuilder = new AlertDialog.Builder(this.getActivity());
 
@@ -157,7 +160,7 @@ public class WhiteboardListFragment extends Fragment {
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
                 case 0:
-                    openWhiteboard(id, date);
+                    openWhiteboard(id, date, title);
                     break;
 
                 case 1:

@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -46,6 +47,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 
 public class DrawingView extends View {
@@ -71,6 +73,7 @@ public class DrawingView extends View {
     private Region _clip;
 
     private ArrayList<DrawingShape> _ListShape = new ArrayList<DrawingShape>();
+    private ArrayList<DrawingShape> _tempDelete = new ArrayList<DrawingShape>();
 
     private static float MIN_ZOOM = 1f;
     private static float MAX_ZOOM = 10f;
@@ -82,6 +85,7 @@ public class DrawingView extends View {
     private float _previousTouchY = 0;
     private float _decalX = 0;
     private float _decalY = 0;
+    private float _brushSize = 10;
     private ScaleGestureDetector _detector;
 
 
@@ -100,7 +104,7 @@ public class DrawingView extends View {
 
         _DrawPaint.setColor(_PaintColor);
         _DrawPaint.setAntiAlias(true);
-        _DrawPaint.setStrokeWidth(10);
+        _DrawPaint.setStrokeWidth(_brushSize);
         _DrawPaint.setStyle(Paint.Style.FILL);
         _DrawPaint.setStrokeJoin(Paint.Join.BEVEL);
         _DrawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -210,6 +214,9 @@ public class DrawingView extends View {
                         for (Iterator<DrawingShape> it = _ListShape.iterator(); it.hasNext(); ) {
                             DrawingShape shape = it.next();
                             if (intersect(shape.getPath())) {
+                                _tempDelete.add(shape);
+                                APIRequestDeleteObjectWhiteboard api = new APIRequestDeleteObjectWhiteboard((WhiteboardActivity) this.getContext(), _ListShape, shape);
+                                api.execute(_idWhiteboard, String.valueOf(touchX + _decalX), String.valueOf(touchY + _decalY), String.valueOf(_brushSize));
                                 it.remove();
                             }
                         }
@@ -302,6 +309,10 @@ public class DrawingView extends View {
                 shape = "DIAMOND";
                 break;
 
+            case 6:
+                shape = "LINE";
+                break;
+
             default:
                 shape = null;
                 break;
@@ -335,7 +346,7 @@ public class DrawingView extends View {
             String bold = String.valueOf(pushShape.isBoldText());
             String sizeText = String.valueOf(pushShape.getSizeText());
             APIRequestWhiteboardPush push = new APIRequestWhiteboardPush(this, "add");
-            push.execute(_idWhiteboard, shape, positionStartX, positionStartY, positionEndX, positionEndY, inColor, outColor, text, radius, italic, bold, sizeText, pointListX, pointListY);
+            push.execute(_idWhiteboard, shape, positionStartX, positionStartY, positionEndX, positionEndY, inColor, outColor, text, radius, italic, bold, sizeText, pointListX, pointListY, String.valueOf(_brushSize));
         }
     }
 
@@ -377,6 +388,11 @@ public class DrawingView extends View {
         path.lineTo((touchX + touchStartX) / 2, touchStartY);
     }
 
+    public void Refresh()
+    {
+        invalidate();
+    }
+
     public void drawFormWhiteboard(List<ContentValues> whiteboardForm)
     {
         boolean already;
@@ -415,6 +431,8 @@ public class DrawingView extends View {
                 } else if (form.getAsString("type").equals("DIAMOND")) {
                     path.setFillType(Path.FillType.EVEN_ODD);
                     drawDiamond(startx, starty, endx, endy, path);
+                } else if (form.getAsString("type").equals("LINE")) {
+                    drawLine(startx, starty, endx, endy);
                 } else if (form.getAsString("type").equals("HANDWRITE")) {
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setStrokeJoin(Paint.Join.ROUND);
@@ -449,38 +467,58 @@ public class DrawingView extends View {
         invalidate();
     }
 
+    private void drawRectangle(float touchX, float touchY)
+    {
+        float rectXStart = touchXStart;
+        float rectYStart = touchYStart;
+        float rectXEnd = touchX;
+        float rectYEnd = touchY;
+
+        if (touchXStart > touchX) {
+            rectXStart = touchX;
+            rectXEnd = touchXStart;
+        }
+        if (touchYStart > touchY) {
+            rectYStart = touchY;
+            rectYEnd = touchYStart;
+        }
+        _DrawPath.addRect(rectXStart, rectYStart, rectXEnd, rectYEnd, Path.Direction.CCW);
+    }
+
+    private void drawOvale(float touchX, float touchY)
+    {
+        float ovalXStart = touchXStart;
+        float ovalYStart = touchYStart;
+        float ovalXEnd = touchX;
+        float ovalYEnd = touchY;
+
+        if (touchXStart > touchX) {
+            ovalXStart = touchX;
+            ovalXEnd = touchXStart;
+        }
+        if (touchYStart > touchY) {
+            ovalYStart = touchY;
+            ovalYEnd = touchYStart;
+        }
+        _DrawPath.addOval(new RectF(ovalXStart, ovalYStart, ovalXEnd, ovalYEnd), Path.Direction.CCW);
+    }
+
+    private void drawLine(float startX, float startY, float touchX, float touchY){
+        float lineXStart = startX;
+        float lineYStart = startY;
+        float lineXEnd = touchX;
+        float lineYEnd = touchY;
+
+        _DrawPath.moveTo(lineXStart, lineYStart);
+        _DrawPath.lineTo(lineXEnd, lineYEnd);
+    }
+
     private void drawShape(float touchX, float touchY)
     {
         if (_ShapeType == 0) {
-            float rectXStart = touchXStart;
-            float rectYStart = touchYStart;
-            float rectXEnd = touchX;
-            float rectYEnd = touchY;
-
-            if (touchXStart > touchX) {
-                rectXStart = touchX;
-                rectXEnd = touchXStart;
-            }
-            if (touchYStart > touchY) {
-                rectYStart = touchY;
-                rectYEnd = touchYStart;
-            }
-            _DrawPath.addRect(rectXStart, rectYStart, rectXEnd, rectYEnd, Path.Direction.CCW);
+            drawRectangle(touchX, touchY);
         } else if (_ShapeType == 1){
-            float ovalXStart = touchXStart;
-            float ovalYStart = touchYStart;
-            float ovalXEnd = touchX;
-            float ovalYEnd = touchY;
-
-            if (touchXStart > touchX) {
-                ovalXStart = touchX;
-                ovalXEnd = touchXStart;
-            }
-            if (touchYStart > touchY) {
-                ovalYStart = touchY;
-                ovalYEnd = touchYStart;
-            }
-            _DrawPath.addOval(new RectF(ovalXStart, ovalYStart, ovalXEnd, ovalYEnd), Path.Direction.CCW);
+            drawOvale(touchX, touchY);
         } else if (_ShapeType == 2) {
             _DrawPath.lineTo(touchX, touchY);
             _pointXList.add(String.valueOf(touchX));
@@ -491,6 +529,8 @@ public class DrawingView extends View {
             drawDiamond(touchX, touchY);
         } else if (_ShapeType == 5){
             _DrawPath.addCircle(touchX, touchY, 100, Path.Direction.CCW);
+        } else if (_ShapeType == 6){
+            drawLine(touchXStart, touchYStart, touchX, touchY);
         }
     }
 
@@ -540,8 +580,9 @@ public class DrawingView extends View {
     public void setBrushSize(int pos)
     {
         float sizeValue;
-        String sizeString = getResources().getStringArray(R.array.size_brush)[pos];
-        sizeValue = Float.parseFloat(sizeString);
+        String _brushSize = getResources().getStringArray(R.array.size_brush)[pos];
+
+        sizeValue = Float.parseFloat(_brushSize);
         sizeValue *= 10;
         _DrawPaint.setStrokeWidth(sizeValue);
     }
@@ -601,6 +642,26 @@ public class DrawingView extends View {
         EditText _msg;
         CheckBox _italic;
         CheckBox _bold;
+        List<Float> _size = new Vector<Float>();
+
+        private void initSize()
+        {
+            Resources res = getResources();
+            _size.add(res.getDimension(R.dimen.text_size_8));
+            _size.add(res.getDimension(R.dimen.text_size_9));
+            _size.add(res.getDimension(R.dimen.text_size_10));
+            _size.add(res.getDimension(R.dimen.text_size_11));
+            _size.add(res.getDimension(R.dimen.text_size_12));
+            _size.add(res.getDimension(R.dimen.text_size_14));
+            _size.add(res.getDimension(R.dimen.text_size_18));
+            _size.add(res.getDimension(R.dimen.text_size_24));
+            _size.add(res.getDimension(R.dimen.text_size_30));
+            _size.add(res.getDimension(R.dimen.text_size_36));
+            _size.add(res.getDimension(R.dimen.text_size_48));
+            _size.add(res.getDimension(R.dimen.text_size_60));
+            _size.add(res.getDimension(R.dimen.text_size_72));
+            _size.add(res.getDimension(R.dimen.text_size_96));
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -610,6 +671,7 @@ public class DrawingView extends View {
             final Spinner spinner = (Spinner) view.findViewById(R.id.text_size_spinner);
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.size_text, android.R.layout.simple_spinner_item);
             spinner.setAdapter(adapter);
+            initSize();
             _msg = (EditText)view.findViewById(R.id.dialog_write_text);
             _bold = (CheckBox)view.findViewById(R.id.bold_text_checkbox);
             _italic = (CheckBox)view.findViewById(R.id.italic_text_checkbox);
@@ -624,16 +686,9 @@ public class DrawingView extends View {
                                 _DrawText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
                             if (_italic.isChecked() && _bold.isChecked())
                                 _DrawText.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD_ITALIC));
-                            if(spinner.getSelectedItemPosition() == 0) {
-                                _DrawText.setTextSize(getResources().getDimension(R.dimen.text_little));
-                                textSize = 14;
-                            } else if (spinner.getSelectedItemPosition() == 1) {
-                                _DrawText.setTextSize(getResources().getDimension(R.dimen.text_medium));
-                                textSize = 18;
-                            } else {
-                                _DrawText.setTextSize(getResources().getDimension(R.dimen.text_large));
-                                textSize = 22;
-                            }
+                            Log.v("Size spinner", spinner.getSelectedItem().toString());
+                            textSize = Float.valueOf(spinner.getSelectedItem().toString());
+                            _DrawText.setTextSize(_size.get(spinner.getSelectedItemPosition()));
                             String message;
                             Rect bound = new Rect();
                             message = _msg.getText().toString();

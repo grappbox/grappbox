@@ -82,6 +82,7 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
             String size = param[12];
             String pointListX = param[13];
             String pointListY = param[14];
+            String brushSize = param[15];
 
             JSONParam.put("token", token);
             JSONParam.put("modification", _type);
@@ -93,6 +94,7 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
                 JSONPositionEnd.put("y", posEndY);
                 JSONObjParam.put("positionStart", JSONPositionStart);
                 JSONObjParam.put("positionEnd", JSONPositionEnd);
+                JSONObjParam.put("lineWeight", brushSize);
                 if (typeObject.equals("HANDWRITE")) {
                     Log.v("PointsX", pointListX);
                     Log.v("PointsY", pointListY);
