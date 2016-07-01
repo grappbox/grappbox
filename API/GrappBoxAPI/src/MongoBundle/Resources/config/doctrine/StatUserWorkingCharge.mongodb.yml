@@ -1,7 +1,7 @@
 MongoBundle\Document\StatUserWorkingCharge:
     type: document
     db: symfony_database
-    collection: null
+    collection: statUserWorkingCharge
     fields:
         id:
             type: id

@@ -1,7 +1,7 @@
 MongoBundle\Document\StatStorageSize:
     type: document
     db: symfony_database
-    collection: null
+    collection: statStorageSize
     fields:
         id:
             type: id

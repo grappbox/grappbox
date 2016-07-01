@@ -1,13 +1,13 @@
-MongoBundle\Document\StatBugsTagsRepartition:
+MongoBundle\Document\StatBugsUsersRepartition:
     type: document
     db: symfony_database
-    collection: null
+    collection: statBugsUsersRepartition
     fields:
         id:
             type: id
             id: true
             strategy: AUTO
-        name:
+        user:
             type: string
             length: 255
         value:
@@ -17,5 +17,5 @@ MongoBundle\Document\StatBugsTagsRepartition:
     referenceOne:
         projects:
           targetDocument: Project
-          inversedBy: statBugsTagsRepartition
+          inversedBy: statBugsUsersRepartition
     lifecycleCallbacks: {  }

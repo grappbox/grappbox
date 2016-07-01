@@ -1,7 +1,7 @@
 MongoBundle\Document\Devices:
     type: document
     db: symfony_database
-    collection: null
+    collection: devices
     fields:
         id:
             type: id

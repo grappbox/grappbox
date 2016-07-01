@@ -1,7 +1,7 @@
 MongoBundle\Document\StatProjectAdvancement:
     type: document
     db: symfony_database
-    collection: null
+    collection: statProjectAdvancement
     fields:
         id:
             type: id

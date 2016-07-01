@@ -1,7 +1,7 @@
 MongoBundle\Document\StatTasksRepartition:
     type: document
     db: symfony_database
-    collection: null
+    collection: statTasksRepartition
     fields:
         id:
             type: id

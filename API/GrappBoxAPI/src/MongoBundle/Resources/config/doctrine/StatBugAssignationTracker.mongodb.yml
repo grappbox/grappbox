@@ -1,7 +1,7 @@
 MongoBundle\Document\StatBugAssignationTracker:
     type: document
     db: symfony_database
-    collection: null
+    collection: statBugAssignationTracker
     fields:
         id:
             type: id

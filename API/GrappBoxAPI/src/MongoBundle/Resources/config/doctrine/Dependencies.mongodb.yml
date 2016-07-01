@@ -1,7 +1,7 @@
 MongoBundle\Document\Dependencies:
     type: document
     db: symfony_database
-    collection: null
+    collection: dependence
     fields:
         id:
             type: id
