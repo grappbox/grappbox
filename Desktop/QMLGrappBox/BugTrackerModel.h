@@ -617,6 +617,8 @@ public slots:
     void onRemoveCommentFail(int id, QByteArray data);
     void onEditCommentDone(int id, QByteArray data);
     void onEditCommentFail(int id, QByteArray data);
+    void onRemoveUserDone(int id, QByteArray data);
+    void onRemoveUserFail(int id, QByteArray data);
 
     void setClosedTickets(QVariantList closedTickets)
     {

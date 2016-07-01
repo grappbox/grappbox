@@ -52,6 +52,7 @@ void BugTrackerModel::loadYoursTickets()
 
 void BugTrackerModel::loadCommentTicket(int id)
 {
+    qDebug() << m_openTickets.length();
     BEGIN_REQUEST_ADV(this, "onLoadCommentTicketDone", "onLoadCommentTicketFail");
     {
         ADD_URL_FIELD(USER_TOKEN);
@@ -110,7 +111,16 @@ void BugTrackerModel::addUsersToTicket(int idTicket, int idUsers)
 
 void BugTrackerModel::removeUsersToTicket(int idTicket, int idUsers)
 {
-
+    BEGIN_REQUEST_ADV(this, "onRemoveUserDone", "onRemoveUserFail");
+    {
+        ADD_FIELD("token", USER_TOKEN);
+        ADD_FIELD("bugId", idTicket);
+        ADD_ARRAY("toAdd");
+        ADD_ARRAY("toRemove");
+        ADD_FIELD_ARRAY(idUsers, "toRemove");
+        PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
+    }
+    END_REQUEST;
 }
 
 void BugTrackerModel::addTagsToTicket(int idTicket, int idTag)
@@ -230,6 +240,7 @@ void BugTrackerModel::onLoadOpenTicketDone(int id, QByteArray data)
     for (BugTrackerTicketData *item : toRemove)
         m_openTickets.removeAll(item);
     emit openTicketsChanged(openTickets());
+    qDebug() << m_openTickets.size();
 }
 
 void BugTrackerModel::onLoadOpenTicketFail(int id, QByteArray data)
@@ -277,11 +288,11 @@ void BugTrackerModel::onLoadYoursTicketDone(int id, QByteArray data)
         }
     }
     QList<BugTrackerTicketData*> toRemove;
-    for (BugTrackerTicketData *item : m_openTickets)
+    for (BugTrackerTicketData *item : m_yoursTickets)
         if (!idPresent.contains(item->id()))
             toRemove.push_back(item);
     for (BugTrackerTicketData *item : toRemove)
-        m_openTickets.removeAll(item);
+        m_yoursTickets.removeAll(item);
     emit yoursTicketsChanged(yoursTickets());
 }
 
@@ -296,6 +307,8 @@ void BugTrackerModel::onLoadCommentTicketDone(int id, QByteArray data)
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
     BugTrackerTicketData *ticket = nullptr;
+    qDebug() << m_closedTickets.size();
+    qDebug() << m_openTickets.size();
     for (BugTrackerTicketData *item : m_closedTickets)
     {
         if (item->id() == m_loadingComment[id])
@@ -313,19 +326,12 @@ void BugTrackerModel::onLoadCommentTicketDone(int id, QByteArray data)
                 break;
             }
         }
-    if (ticket == nullptr)
-        for (BugTrackerTicketData *item : m_yoursTickets)
-        {
-            if (item->id() == m_loadingComment[id])
-            {
-                ticket = item;
-                break;
-            }
-        }
+    qDebug() << ticket;
     if (obj["array"].toArray().size() == 0)
     {
         ticket->realListComment().clear();
         ticket->setComments(ticket->comments());
+        return;
     }
     QList<int> idKeep;
     QList<BugTrackerComment*> list = ticket->realListComment();
@@ -631,6 +637,41 @@ void BugTrackerModel::onEditCommentDone(int id, QByteArray data)
 
 void BugTrackerModel::onEditCommentFail(int id, QByteArray data)
 {
+}
+
+void BugTrackerModel::onRemoveUserDone(int id, QByteArray data)
+{
+    QJsonDocument doc;
+    doc = QJsonDocument::fromJson(data);
+    QJsonObject obj = doc.object()["data"].toObject();
+    int idTicket = obj["id"].toInt();
+    BugTrackerTicketData *ticket = nullptr;
+    for (BugTrackerTicketData *item : m_openTickets)
+    {
+        if (item->id() == idTicket)
+            ticket = item;
+    }
+    if (ticket == nullptr)
+        for (BugTrackerTicketData *item : m_closedTickets)
+        {
+            if (item->id() == idTicket)
+                ticket = item;
+        }
+    if (ticket == nullptr)
+    {
+        loadClosedTickets();
+        loadOpenTickets();
+        loadYoursTickets();
+    }
+    else
+    {
+        ticket->modifyByJsonObject(obj);
+    }
+}
+
+void BugTrackerModel::onRemoveUserFail(int id, QByteArray data)
+{
+
 }
 
 BugTrackerTicketData *BugTrackerModel::getTicketById(int id)

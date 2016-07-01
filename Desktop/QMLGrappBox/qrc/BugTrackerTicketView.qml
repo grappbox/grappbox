@@ -23,7 +23,7 @@ Column {
 
         title: "Add a new tag"
 
-        Behavior on width {
+        Behavior on height {
             NumberAnimation { duration: 200 }
         }
 
@@ -33,8 +33,8 @@ Column {
 
         RadioButton {
             id: addAnExistingTag
-            visible: chooseTag.visible
-            checked: bugModels.tags.length < ticket.tags.length
+            visible: bugModel.tags.length > ticket.tags.length
+            checked: bugModel.tags.length > ticket.tags.length
             text: "Add an existing tag"
             canToggle: false
             exclusiveGroup: tagChoiceGroup
@@ -47,11 +47,13 @@ Column {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: Units.dp(32)
-            visible: addAnExistingTag.checked && bugModels.tags.length < ticket.tags.length
+            visible: addAnExistingTag.checked && bugModel.tags.length > ticket.tags.length
 
             Component.onCompleted: {
                 completeModel = Qt.binding(function() {
                     var ret = []
+                    if (ticket == undefined)
+                        return ret
                     for (var indexTicket in bugModel.tags) {
                         var keep = true
                         for (var index in ticket.tags) {
@@ -71,7 +73,9 @@ Column {
                     return ret
                 })
                 model = Qt.binding(function() {
-                    var ret = [];
+                    var ret = []
+                    if (ticket == undefined)
+                        return ret
                     for (var i in completeModel)
                     {
                         ret.push(completeModel[i].name)
@@ -83,7 +87,7 @@ Column {
 
         RadioButton {
             id: addANewTag
-            visible: chooseTag.visible
+            visible: bugModel.tags.length > ticket.tags.length
             checked: false
             text: "Add a new tag"
             canToggle: false
@@ -92,10 +96,10 @@ Column {
 
         TextField {
             id: tag
-            visible: addANewTag.checked || !chooseTag.visible
+            visible: addANewTag.checked || bugModel.tags.length === ticket.tags.length
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.leftMargin: bugModels.tags.length < ticket.tags.length ? Units.dp(32) : Units.dp(0)
+            anchors.leftMargin: bugModel.tags.length > ticket.tags.length ? Units.dp(32) : Units.dp(0)
             width: parent.width
             placeholderText: "Tag name"
         }
@@ -115,28 +119,42 @@ Column {
     }
 
     Dialog {
+        id: deleteUser
+
+        title: "Do you want to remove this user from this ticket ?"
+        text: "You are going to unassigne this user to this ticket. Are you sure ?"
+        hasActions: true
+        positiveButtonText: "Yes"
+        negativeButtonText: "No"
+
+        property int idUser
+
+        width: Units.dp(300)
+
+        onAccepted: {
+            bugModel.removeUsersToTicket(ticket.id, idUser)
+        }
+    }
+
+    Dialog {
         id: addUser
 
         title: "Add a new user"
-
-        Behavior on width {
-            NumberAnimation { duration: 200 }
-        }
+        width: Units.dp(300)
 
         MenuField {
             id: chooseUser
             model: []
-            visible: addAnExistingTag.checked
             property var completeModel: []
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: Units.dp(32)
 
             Component.onCompleted: {
-                if (ticket === undefined)
-                    return
                 completeModel = Qt.binding(function() {
                     var ret = []
+                    if (ticket == undefined)
+                        return ret
                     for (var indexTicket in SDataManager.project.users) {
                         var keep = true
                         for (var index in ticket.users) {
@@ -153,7 +171,7 @@ Column {
                     return ret
                 })
                 model = Qt.binding(function() {
-                    var ret = [];
+                    var ret = []
                     for (var i in completeModel)
                     {
                         ret.push(completeModel[i].firstName + " " + completeModel[i].lastName)
@@ -354,11 +372,16 @@ Column {
                                 }
                             })
                         }
+
+                        onClicked: {
+                            deleteUser.idUser = modelData
+                            deleteUser.show()
+                        }
                     }
                 }
 
                 IconButton {
-                    visible: ticket === undefined || SDataManager.project.users.length > ticket.users.length
+                    visible: ticket == undefined || SDataManager.project.users.length > ticket.users.length
                     Layout.alignment: Qt.AlignVCenter
                     iconName: "content/add_circle_outline"
 
@@ -407,7 +430,7 @@ Column {
                 Button {
                     id: closeButton
                     anchors.right: parent.right
-                    text: columnMainMessage.onEditMessage ? "Cancel" : (ticket.isClosed ? "Re-open" : "Close")
+                    text: columnMainMessage.onEditMessage ? "Cancel" : ((ticket == undefined || ticket.isClosed) ? "Re-open" : "Close")
                     textColor: Theme.primaryColor
 
                     onClicked: {
