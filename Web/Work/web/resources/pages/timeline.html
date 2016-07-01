@@ -39,15 +39,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div data-ng-if="!timeline.team.onLoad">
               <div data-ng-if="view.authorized">
                 <div data-ng-if="timeline.team.valid && timeline.team.messages" class="line">
-                  <div class="each-data each-timeline col-md-6" data-ng-repeat="message in timeline.team.messages" data-ng-class-even="'even col-md-offset-6'" data-ng-class-odd="'odd'">
+                  <div class="each-data each-message col-md-6" data-ng-repeat="message in timeline.team.messages" data-ng-class-even="'even col-md-offset-6'" data-ng-class-odd="'odd'">
                     <div class="well no-shadow border">
                       <ul>
-                        <li>By <strong>{[{ message.creator.fullname }]}</strong>, {[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
-                        <li><strong>Title:</strong> {[{ message.title }]}<br><strong>Message:</strong> {[{ message.message }]}</li>
+                        <li class="ellipsis"><strong>{[{ message.title }]}</strong><br>{[{ message.message }]}</li>
+                        <li class="divider"></li>
+                        <li class="author">{[{ message.creator.fullname }]}<br>{[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
                       </ul>
                       <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="view_onMessageOpen(message)" class="btn btn-raised btn-info">Open</a>
-                      <a href="" title="Edit this message" class="btn" data-ng-click="view_onMessageEdit(message)" data-ng-if="user.id == message.creator.id">Edit</a>
-                      <a href="" title="Delete this message" class="btn btn-default" data-ng-click="view_onMessageDelete(message.id)" data-ng-if="user.id == message.creator.id">Delete</a>
                       <div class="clearfix"></div>
                     </div>
                     <div class="dot"></div>
@@ -80,15 +79,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div data-ng-if="!timeline.customer.onLoad">
               <div data-ng-if="view.authorized">
                 <div data-ng-if="timeline.customer.valid && timeline.customer.messages" class="line">
-                  <div class="each-data each-timeline col-md-6" data-ng-repeat="message in timeline.customer.messages" data-ng-class-even="'even col-md-offset-6'" data-ng-class-odd="'odd'">
+                  <div class="each-data each-message col-md-6" data-ng-repeat="message in timeline.customer.messages" data-ng-class-even="'even col-md-offset-6'" data-ng-class-odd="'odd'">
                     <div class="well no-shadow border">
                       <ul>
-                        <li>By <strong>{[{ message.creator.fullname }]}</strong>, {[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
-                        <li><strong>Title:</strong> {[{ message.title }]}<br><strong>Message:</strong> {[{ message.message }]}</li>
+                        <li class="ellipsis"><strong>{[{ message.title }]}</strong><br>{[{ message.message }]}</li>
+                        <li class="divider"></li>
+                        <li class="author">{[{ message.creator.fullname }]}<br>{[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
                       </ul>
                       <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="view_onMessageOpen(message)" class="btn btn-raised btn-info">Open</a>
-                      <a href="" title="Edit this message" class="btn" data-ng-click="view_onMessageEdit(message)" data-ng-if="user.id == message.creator.id">Edit</a>
-                      <a href="" title="Delete this message" class="btn btn-default" data-ng-click="view_onMessageDelete(message.id)" data-ng-if="user.id == message.creator.id">Delete</a>
                       <div class="clearfix"></div>
                     </div>
                     <div class="dot"></div>
@@ -132,37 +130,34 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <h4 class="modal-title">Message</h4>
     </div>
     <div class="modal-body">
-      <div class="each-data message">
+      <div class="each-data message-data">
         <ul>
-          <li>By <strong>{[{ active.message.creator.fullname }]}</strong>, {[{ method.formatObjectDate(active.message.createdAt.date) }]}<span data-ng-if="active.message.editedAt"> (edited on {[{ method.formatObjectDate(active.message.editedAt.date) }]})</span></li>
-          <li><strong>Title:</strong> {[{ active.message.title }]}<br><strong>Message:</strong> {[{ active.message.message }]}</li>
+          <li><strong>{[{ active.message.title }]}</strong><br>{[{ active.message.message }]}</li>
+          <li class="author">{[{ active.message.creator.fullname }]}<br>{[{ method.formatObjectDate(active.message.createdAt.date) }]}<span data-ng-if="active.message.editedAt"> (edited on {[{ method.formatObjectDate(active.message.editedAt.date) }]})</span></li>
         </ul>
-      </div>
-      <div class="each-data comments">
-        <h4 class="modal-title">Comments</h4>
-        <button type="button" class="btn btn-info btn-raised" data-ng-click="view_onNewComment(active.message)">Add comment</button>
+        <div class="action">
+          <a href="" title="Delete this message" class="btn btn-default" data-ng-click="view_onMessageDelete(active.message.id)" data-ng-if="user.id == active.message.creator.id">Delete</a>
+          <a href="" title="Edit this message" class="btn" data-ng-click="view_onMessageEdit(active.message)" data-ng-if="user.id == active.message.creator.id">Edit</a>
+        </div>
         <div class="clearfix"></div>
+      </div>
+      <div class="each-data comments-data">
+        <h4 class="modal-title">Comments</h4>
         <div data-ng-if="modal.onLoad">
           <div class="spinner data"><div></div></div>
         </div>
         <div data-ng-if="!modal.onLoad">
           <div data-ng-if="modal.authorized">
             <div data-ng-if="modal.valid && comments">
-              <div class="each-data each-comment col-md-12" data-ng-repeat="comment in comments">
+              <div class="each-data each-comment" data-ng-repeat="comment in comments">
                 <div class="well well-soft no-shadow border">
                   <ul>
-                    <li>By <strong>{[{ comment.creator.fullname }]}</strong>, {[{ method.formatObjectDate(comment.createdAt.date) }]}<span data-ng-if="comment.editedAt"> (edited on {[{ method.formatObjectDate(comment.editedAt.date) }]})</span></li>
-                    <li><strong>Title:</strong> {[{ comment.title }]}<br><strong>Message:</strong> {[{ comment.message }]}</li>
+                    <li><strong>{[{ comment.title }]}</strong><br>{[{ comment.message }]}</li>
+                    <li class="author">{[{ comment.creator.fullname }]}<br>{[{ method.formatObjectDate(comment.createdAt.date) }]}<span data-ng-if="comment.editedAt"> (edited on {[{ method.formatObjectDate(comment.editedAt.date) }]})</span></li>
                   </ul>
                   <div class="action">
-                    <button type="button" class="btn btn-fab btn-fab-mini" name="Delete this comment" data-ng-click="view_onCommentDelete(comment.id)" data-ng-if="user.id == comment.creator.id">
-                      <i class="material-icons">clear</i>
-                      <div class="ripple-container"></div>
-                    </button>
-                    <button type="button" class="btn btn-fab btn-fab-mini" name="Edit this comment" data-ng-click="view_onCommentEdit(comment)" data-ng-if="user.id == comment.creator.id">
-                      <i class="material-icons">mode_edit</i>
-                      <div class="ripple-container"></div>
-                    </button>
+                    <a href="" title="Delete this comment" class="btn btn-default" data-ng-click="view_onCommentDelete(comment.id)" data-ng-if="user.id == comment.creator.id">Delete</a>
+                    <a href="" title="Edit this comment" class="btn" data-ng-click="view_onCommentEdit(comment)" data-ng-if="user.id == comment.creator.id">Edit</a>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -187,8 +182,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
       </div>
     </div>
-    <div class="modal-footer" id="close-message">
-      <button type="button" class="btn" data-ng-click="view_closeMessage()">Close</button>
+    <div class="modal-footer" id="message-action">
+      <a href="" title="Add a comment" class="btn btn-info btn-raised" data-ng-click="view_onNewComment(active.message)">Add comment</a>    
+      <button type="button" name="Close this message" class="btn" data-ng-click="view_closeMessage()">Close</button>
     </div>
   </script>
 </div>
@@ -206,21 +202,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
             <label for="new-message-title" class="col-md-1 control-label">Title</label>
             <div class="col-md-11">
-              <input type="text" class="form-control" id="new-message-title" data-ng-model="active.message.title" placeholder="Title">
+              <input type="text" class="form-control" id="new-message-title" data-ng-model="new.message.title" placeholder="Title">
             </div>
           </div>
           <div class="form-group {[{ error.content ? 'has-error' : '' }]}">
             <label for="new-message-content" class="col-md-1 control-label">Message</label>
             <div class="col-md-11">
-              <textarea class="form-control" rows="3" id="new-message-content" data-ng-model="active.message.content" placeholder="Message"></textarea>
+              <textarea class="form-control" rows="3" id="new-message-content" data-ng-model="new.message.message" placeholder="Message"></textarea>
             </div>
           </div>
         </fieldset>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn" data-ng-click="view_cancelMessageCreation()">Cancel</button>
       <button type="button" class="btn btn-default" data-ng-click="view_confirmMessageCreation()">Create</button>
+      <button type="button" class="btn" data-ng-click="view_cancelMessageCreation()">Cancel</button>
     </div>
   </script>
 </div>
@@ -238,21 +234,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
             <label for="new-comment-title" class="col-md-1 control-label">Title</label>
             <div class="col-md-11">
-              <input type="text" class="form-control" id="new-comment-title" data-ng-model="active.comment.title" placeholder="Title">
+              <input type="text" class="form-control" id="new-comment-title" data-ng-model="new.comment.title" placeholder="Title">
             </div>
           </div>
           <div class="form-group {[{ error.content ? 'has-error' : '' }]}">
             <label for="new-comment-content" class="col-md-1 control-label">Message</label>
             <div class="col-md-11">
-              <textarea class="form-control" rows="3" id="new-comment-content" data-ng-model="active.comment.content" placeholder="Message"></textarea>
+              <textarea class="form-control" rows="3" id="new-comment-content" data-ng-model="new.comment.message" placeholder="Message"></textarea>
             </div>
           </div>
         </fieldset>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn" data-ng-click="view_cancelCommentCreation()">Cancel</button>
       <button type="button" class="btn btn-default" data-ng-click="view_confirmCommentCreation()">Create</button>
+      <button type="button" class="btn" data-ng-click="view_cancelCommentCreation()">Cancel</button>
     </div>
   </script>
 </div>
@@ -270,21 +266,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
             <label for="message-edited-title" class="col-md-1 control-label">Title</label>
             <div class="col-md-11">
-              <input type="text" class="form-control" id="message-edited-title" data-ng-model="active.message.title" placeholder="Title">
+              <input type="text" class="form-control" id="message-edited-title" data-ng-model="new.message.title" placeholder="Title">
             </div>
           </div>
           <div class="form-group {[{ error.content ? 'has-error' : '' }]}">
             <label for="message-edited-content" class="col-md-1 control-label">Message</label>
             <div class="col-md-11">
-              <textarea class="form-control" rows="3" id="message-edited-content" data-ng-model="active.message.content" placeholder="Message"></textarea>
+              <textarea class="form-control" rows="3" id="message-edited-content" data-ng-model="new.message.message" placeholder="Message"></textarea>
             </div>
           </div>
         </fieldset>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn" data-ng-click="view_cancelMessageEdition()">Cancel</button>
       <button type="button" class="btn btn-default" data-ng-click="view_confirmMessageEdition()">Update</button>
+      <button type="button" class="btn" data-ng-click="view_cancelMessageEdition()">Cancel</button>
     </div>
   </script>
 </div>
@@ -302,21 +298,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
             <label for="comment-edited-title" class="col-md-1 control-label">Title</label>
             <div class="col-md-11">
-              <input type="text" class="form-control" id="comment-edited-title" data-ng-model="active.comment.title" placeholder="Title">
+              <input type="text" class="form-control" id="comment-edited-title" data-ng-model="new.comment.title" placeholder="Title">
             </div>
           </div>
           <div class="form-group {[{ error.content ? 'has-error' : '' }]}">
             <label for="comment-edited-content" class="col-md-1 control-label">Message</label>
             <div class="col-md-11">
-              <textarea class="form-control" rows="3" id="comment-edited-content" data-ng-model="active.comment.content" placeholder="Comment"></textarea>
+              <textarea class="form-control" rows="3" id="comment-edited-content" data-ng-model="new.comment.message" placeholder="Comment"></textarea>
             </div>
           </div>
         </fieldset>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn" data-ng-click="view_cancelCommentEdition()">Cancel</button>
       <button type="button" class="btn btn-default" data-ng-click="view_confirmCommentEdition()">Update</button>
+      <button type="button" class="btn" data-ng-click="view_cancelCommentEdition()">Cancel</button>
     </div>
   </script>
 </div>
@@ -332,8 +328,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <p>Are you sure you want to delete this message?</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn" data-ng-click="view_cancelMessageDeletion()">No</button>
       <button type="button" class="btn btn-default" data-ng-click="view_confirmMessageDeletion()">Yes</button>
+      <button type="button" class="btn" data-ng-click="view_cancelMessageDeletion()">No</button>
     </div>
   </script>
 </div>
@@ -349,8 +345,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <p>Are you sure you want to delete this comment?</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn" data-ng-click="view_cancelCommentDeletion()">No</button>
       <button type="button" class="btn btn-default" data-ng-click="view_confirmCommentDeletion()">Yes</button>
+      <button type="button" class="btn" data-ng-click="view_cancelCommentDeletion()">No</button>
     </div>
   </script>
 </div>

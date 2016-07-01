@@ -66,7 +66,7 @@ section:last-child { margin: 30px 0 60px 0; }
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
 .bold { font-weight: 900; }
 .centered { text-align: center; }
-.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
 
 .row-header > h4 { font-weight: 400; margin: 30px 0 15px 0; }
 .row-header > p { margin: 0 0 20px 0; }
@@ -240,47 +240,52 @@ section:last-child { margin: 30px 0 60px 0; }
 /* =========================================================== */
 
 #timeline .tab-pane.active .line::before { content: ''; position: absolute; top: 0; left: 18px; height: 100%; width: 2px; background: #bdbdbd; }
-#close-message .btn { margin: 35px 0 0 0; }
+#message-action .btn { margin: 35px 0 0 0; }
 
-.each-timeline > .dot { position: absolute; top: 15%; bottom: auto; width: 25px; height: 25px; background: #03a9f4; border: 5px solid #fafafa; border-radius: 50%; }
-
-.each-data.message { margin: -10px 0 35px 0; }
-.each-data.comments > h4 { margin: 0 0 10px 0; float: left; }
-.each-data.comments > .btn { float: right; top: -15px; }
-.each-comment { padding: 0; }
+.each-message .dot { position: absolute; top: 15%; bottom: auto; width: 25px; height: 25px; background: #03a9f4; border: 5px solid #fafafa; border-radius: 50%; }
+.each-message .author { padding: 15px 0 5px 0; text-align: right; }
 .each-comment .well { margin: 0 0 5px 0; padding: 14px 14px 5px 14px!important; }
 
-@media (min-width: 1200px) {
-  .each-timeline.even > .well::before { right: auto; left: 16px!important }
-  .each-timeline.odd > .well::before { right: 16px!important; left: auto; }  
+.message-data .author,
+.comments-data .author { padding: 15px 0 5px 0; }
+
+.message-data { margin: -10px 0 35px 0; }
+.comments-data .modal-title { margin: 0 0 10px 0; }
+
+@media (max-width: 768px) {
+  .message-data .author,
+  .comments-data .author { float: none; }
+
+  .message-data .action,
+  .each-comment .action { text-align: center; margin: 0 0 15px 0; }
+  .message-data .action a,
+  .each-comment .action a { margin: 0 10px; float: none; }
+}
+
+@media (min-width: 768px) {
+  .message-data .author,
+  .comments-data .author { float: left; }
+
+  .message-data .action { margin: 0 15px 0 0; }
+
+  .message-data .action,
+  .each-comment .action { float: right; }
+  .message-data .action a,
+  .each-comment .action a { float: none; }
 }
 
 @media (min-width: 992px) {
-  .each-timeline > .well { width: 97%; }
-  .each-timeline.even > .well { float: right; }
-  .each-timeline > .well::before { content: ''; position: absolute; top: 16%; bottom: auto; border-color: rgba(0, 0, 0, 0) #bdbdbd; border-style: solid; height: 0; width: 0; }
-  .each-timeline.even > .well::before { border-width: 10px 15px 10px 0; right: auto; left: 13px; }
-  .each-timeline.odd > .well::before { border-width: 10px 0 10px 15px; right: 13px; left: auto; }
-  .each-timeline.even > .dot { left: -13px; }
-  .each-timeline.odd > .dot { right: -13px; }
+  .each-message > .well { width: 97%; }
+  .each-message.even > .well { float: right; }
+  .each-message.even > .dot { left: -13px; }
+  .each-message.odd > .dot { right: -13px; }
 
   #timeline .tab-pane.active .line::before { left: 50%; margin: 0 10px 0 0; }
 }
 
 @media (max-width: 992px) {
-  .each-timeline { margin-left: 25px; }
-  .each-timeline > .dot { left: -18px; }
-}
-
-@media (max-width: 768px) {
-  .each-comment .action { text-align: center; margin: 0 0 15px 0; }
-  .each-comment .action button { margin: 0 10px; }
-}
-
-@media (min-width: 768px) {
-  .each-comment .well button { position: absolute; top: 50%; bottom: 50%; height: 35px!important; min-width: 35px!important; width: 35px!important; }
-  .each-comment .well button:nth-of-type(1) { right: 2%; }
-  .each-comment .well button:nth-of-type(2) { right: 0; margin: auto 65px auto auto; }
+  .each-message { margin-left: 25px; }
+  .each-message > .dot { left: -18px; }
 }
 
 
