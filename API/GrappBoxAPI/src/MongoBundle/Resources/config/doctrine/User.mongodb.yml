@@ -95,6 +95,6 @@ MongoBundle\Document\User:
           mappedBy: user
           cascade: [remove]
         ressources:
-          targetEntity: Ressources
+          targetDocument: Ressources
           mappedBy: user
     lifecycleCallbacks: {  }
