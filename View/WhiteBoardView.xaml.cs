@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-
+using GrappBox.CustomControler;
+using Windows.UI.Xaml;
+using System.Collections.Generic;
 
 namespace GrappBox.View
 {
@@ -15,6 +17,17 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class WhiteBoardView : Page
     {
+        private static readonly List<string> buttonsBinding = new List<string>()
+        {
+            "ms-appx:///Assets/rectangle.png",
+            "ms-appx:///Assets/ellipse.png",
+            "ms-appx:///Assets/lozenge.png",
+            "ms-appx:///Assets/line.png",
+            "ms-appx:///Assets/handwrite.png",
+            "ms-appx:///Assets/text.png",
+            "ms-appx:///Assets/erazer.png",
+            "ms-appx:///Assets/pointer.png"
+        };
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
         private Timer pullTimer;
@@ -26,13 +39,14 @@ namespace GrappBox.View
             try
             {
                 this.InitializeComponent();
+                MainGrid.Width = Window.Current.Bounds.Width;
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
             }
             this.DataContext = new ViewModel.WhiteBoardViewModel();
-
+            drawingCanvas.Tapped += DrawingCanvas_Tapped;
             //Required for navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;
             this.navigationHelper = new NavigationHelper(this);
@@ -54,6 +68,7 @@ namespace GrappBox.View
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
             pullTimer.Dispose();
+            drawingCanvas.Clear();
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -71,13 +86,13 @@ namespace GrappBox.View
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            //this.Frame.Navigate(typeof(View.WhiteBoardListView));
             this.navigationHelper.OnNavigatedFrom(e);
         }
         #endregion
 
         public async void runPull(object source)
         {
+            return;
             Debug.WriteLine("RunPull_1");
             await wbvm.pullDraw();
             foreach (WhiteboardObject item in wbvm.PullModel.addObjects)
@@ -91,6 +106,49 @@ namespace GrappBox.View
                 Debug.WriteLine("RunPull_3");
                 this.drawingCanvas.DeleteElement(item.Id);
             }
+        }
+
+        private async void FillcolorBtn_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            Colorpan cp = new Colorpan();
+            WhiteboardPopUp.Child = cp;
+            WhiteboardPopUp.IsOpen = true;
+            await cp.WaitForSelect();
+            wbvm.FillColor = cp.SelectedColor;
+            WhiteboardPopUp.IsOpen = false;
+            WhiteboardPopUp.Child = null;
+            Debug.WriteLine(wbvm.FillColor.Color.ToString());
+        }
+
+        private async void ColorBtn_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            Colorpan cp = new Colorpan();
+            WhiteboardPopUp.Child = cp;
+            WhiteboardPopUp.IsOpen = true;
+            await cp.WaitForSelect();
+            wbvm.StrokeColor = cp.SelectedColor;
+            WhiteboardPopUp.IsOpen = false;
+            WhiteboardPopUp.Child = null;
+            Debug.WriteLine(wbvm.FillColor.Color.ToString());
+        }
+
+        private async void ToolsButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            Debug.WriteLine("TOTO");
+            ToolPan tp = new ToolPan();
+            WhiteboardPopUp.Child = tp;
+            WhiteboardPopUp.IsOpen = true;
+            await tp.WaitForSelect();
+            wbvm.CurrentTool = tp.SelectedTool;
+            ToolsButtonIcon.UriSource = new Uri(buttonsBinding[tp.SelectedImage]);
+            WhiteboardPopUp.IsOpen = false;
+            WhiteboardPopUp.Child = null;
+            Debug.WriteLine(wbvm.CurrentTool);
+        }
+
+        private void DrawingCanvas_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+
         }
     }
 }

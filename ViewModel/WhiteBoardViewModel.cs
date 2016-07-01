@@ -20,7 +20,7 @@ namespace GrappBox.ViewModel
     #region Enum
     public enum WhiteboardTool
     {
-        EXPLORE = 0, ERAZER, TEXT, RECTANGLE, ELLIPSE, LOZENGE, LINE, HANDWRITING
+        NONE = 0, POINTER, ERAZER, TEXT, RECTANGLE, ELLIPSE, LOZENGE, LINE, HANDWRITING
     }
     #endregion Enum
     class WhiteBoardViewModel : ViewModelBase
@@ -36,173 +36,11 @@ namespace GrappBox.ViewModel
         private SolidColorBrush _strokeColor;
         private SolidColorBrush _fillColor;
         private double _strokeThickness;
-        #endregion BindedPropertiesDeclaration
-
-        public WhiteBoardViewModel()
-        {
-            _currentDraw = null;
-            _currentTool = WhiteboardTool.EXPLORE;
-            _strokeThickness = 1;
-            _strokeColor = new SolidColorBrush();
-            _strokeColor.Color = Colors.Black;
-            _fillColor = new SolidColorBrush();
-            _fillColor.Color = Colors.Transparent;
-        }
-
-        #region ColorPansLogic
-        private ColorMod _selectedColormod;
-        public ColorMod SelectedColorMod
-        {
-            get { return _selectedColormod; }
-            set { _selectedColormod = value; NotifyPropertyChanged("SelectedColorMod"); }
-        }
-        private bool _colorPanOpened = false;
-        public bool ColorPanOpened
-        {
-            get { return _colorPanOpened; }
-            set
-            {
-                _colorPanOpened = value;
-                NotifyPropertyChanged("ColorPanOpened");
-                if (value)
-                {
-                    if (FillColorPanOpened)
-                        FillColorPanOpened = false;
-                    if (BrushPanOpened)
-                        BrushPanOpened = false;
-                    ColorPanVisible = Visibility.Visible;
-                    Offset = -350;
-                }
-                else
-                    ColorPanVisible = FillColorPanOpened ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-        private bool _fillColorPanOpened = false;
-        public bool FillColorPanOpened
-        {
-            get { return _fillColorPanOpened; }
-            set
-            {
-                _fillColorPanOpened = value;
-                NotifyPropertyChanged("FillColorPanOpened");
-                if (value)
-                {
-                    if (ColorPanOpened)
-                        ColorPanOpened = false;
-                    if (BrushPanOpened)
-                        BrushPanOpened = false;
-                    ColorPanVisible = Visibility.Visible;
-                    Offset = -280;
-                }
-                else
-                    ColorPanVisible = ColorPanOpened ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-        private bool _brushPanOpened = false;
-        public bool BrushPanOpened
-        {
-            get { return _brushPanOpened; }
-            set
-            {
-                _brushPanOpened = value;
-                NotifyPropertyChanged("BrushPanOpened");
-                if (value)
-                {
-                    if (ColorPanOpened || FillColorPanOpened)
-                    {
-                        ColorPanOpened = false;
-                        FillColorPanOpened = false;
-                    }
-                    BrushPanVisible = Visibility.Visible;
-                    Offset = -200;
-                }
-                else
-                    BrushPanVisible = Visibility.Collapsed;
-            }
-        }
-        private Visibility _brushPanVisible = Visibility.Collapsed;
-        public Visibility BrushPanVisible
-        {
-            get { return _brushPanVisible; }
-            set
-            {
-                _brushPanVisible = value;
-                NotifyPropertyChanged("BrushPanVisible");
-                if (value == Visibility.Collapsed)
-                {
-                    _brushPanOpened = false;
-                    NotifyPropertyChanged("BrushPanOpened");
-                }
-                if (ColorPanVisible == Visibility.Visible)
-                    ColorPanVisible = Visibility.Collapsed;
-            }
-        }
-        private double _offset;
-        public double Offset
-        {
-            get { return _offset; }
-            set { _offset = value; NotifyPropertyChanged("Offset"); }
-        }
-        private Visibility _colorPanVisible = Visibility.Collapsed;
-        public Visibility ColorPanVisible
-        {
-            get { return _colorPanVisible; }
-            set
-            {
-                _colorPanVisible = value; NotifyPropertyChanged("ColorPanVisible");
-                if (value == Visibility.Collapsed)
-                {
-                    _colorPanOpened = false;
-                    _fillColorPanOpened = false;
-                    NotifyPropertyChanged("FillColorPanOpened");
-                    NotifyPropertyChanged("ColorPanOpened");
-                }
-                if (BrushPanVisible == Visibility.Visible)
-                    BrushPanVisible = Visibility.Collapsed;
-            }
-        }
-        #endregion ColorPansLogic
-
-        #region TextPanLogic
         private int _fontSize;
-        public int FontSize
-        {
-            get { return _fontSize; }
-            set { _fontSize = value; }
-        }
         private Point textPos;
-        private bool _textPanOpened = false;
-        public bool TextPanOpened
-        {
-            get { return _textPanOpened; }
-            set { _textPanOpened = value; NotifyPropertyChanged("TextPanOpened"); }
-        }
-        private bool _popUpTextConfirmed = false;
-        public bool PopUpTextConfirmed
-        {
-            get { return _popUpTextConfirmed; }
-            set { _popUpTextConfirmed = value; NotifyPropertyChanged("PopUpTextConfirmed"); TextPanTappedAction(value); }
-        }
-        private string _popUpTextEntered;
-        public string PopUpTextEntered
-        {
-            get { return _popUpTextEntered; }
-            set { _popUpTextEntered = value; }
-        }
-        private bool _isBold;
-        public bool IsBold
-        {
-            get { return _isBold; }
-            set { _isBold = value; NotifyPropertyChanged("IsBold"); }
-        }
         private bool _isItalic;
-        public bool IsItalic
-        {
-            get { return _isItalic; }
-            set { _isItalic = value; NotifyPropertyChanged("IsItalic"); }
-        }
-        #endregion TextPanLogic
-
+        private bool _isBold;
+        #endregion BindedPropertiesDeclaration
         #region BindedPropertiesNotifiers
         public WhiteboardTool CurrentTool
         {
@@ -230,21 +68,36 @@ namespace GrappBox.ViewModel
             get { return _strokeThickness; }
             set { _strokeThickness = value; NotifyPropertyChanged("StrokeThickness"); }
         }
+        public int FontSize
+        {
+            get { return _fontSize; }
+            set { _fontSize = value; }
+        }
+        public bool IsBold
+        {
+            get { return _isBold; }
+            set { _isBold = value; NotifyPropertyChanged("IsBold"); }
+        }
+        public bool IsItalic
+        {
+            get { return _isItalic; }
+            set { _isItalic = value; NotifyPropertyChanged("IsItalic"); }
+        }
         #endregion
 
-        #region Commands
-        #region toolsCommand
-        private ICommand _toolCommand;
-        public ICommand ToolCommand
+        public WhiteBoardViewModel()
         {
-            get { return _toolCommand ?? (_toolCommand = new CommandHandler<WhiteboardTool>(ToolAction)); }
+            IsBold = false;
+            IsItalic = false;
+            _currentDraw = null;
+            _currentTool = WhiteboardTool.POINTER;
+            _strokeThickness = 1;
+            _strokeColor = new SolidColorBrush();
+            _strokeColor.Color = Colors.Black;
+            _fillColor = new SolidColorBrush();
+            _fillColor.Color = Colors.Transparent;
         }
-        private ICommand _colorButtonTapped;
-        public ICommand ColorButtonTapped
-        {
-            get { return _colorButtonTapped ?? (_colorButtonTapped = new CommandHandler<ColorMod>(ColorPanTappedAction)); }
-        }
-        #endregion toolsCommand
+
         #region CanvasManipCommands
         private ICommand _canvasTappedCommand;
         public ICommand CanvasTappedCommand
@@ -267,44 +120,17 @@ namespace GrappBox.ViewModel
             get { return _canvasManipCompletedCommand ?? (_canvasManipCompletedCommand = new CommandHandler<Point>(CanvasManipCompletedAction)); }
         }
         #endregion CanvasManipCommands
-        #endregion Commands
 
         #region Actions
 
         #region RoutedEventsActions
-        private async void TextPanTappedAction(bool val)
-        {
-            if (val == true)
-            {
-                ShapeControler sc = new ShapeControler(textPos, PopUpTextEntered, IsBold, IsItalic, StrokeColor, 18);
-                CurrentDraw = sc;
-                WhiteboardObject wo = await pushDraw(ShapeModelConverter.ShapeToModel(CurrentDraw));
-                CurrentDraw.Id = wo.Id;
-                CurrentDraw = null;
-            }
-        }
         private void CanvasTappedAction(Point p)
         {
-            if (CurrentTool == WhiteboardTool.TEXT && TextPanOpened == false)
-            {
-                textPos = p;
-                TextPanOpened = true;
-            }
             if (CurrentTool == WhiteboardTool.ERAZER)
             {
             }
         }
 
-        private void ColorPanTappedAction(ColorMod mod)
-        {
-            Debug.WriteLine("ColorPanTappedAction {0}", mod);
-            SelectedColorMod = mod;
-        }
-        private void CanvasHoldAction(Point p)
-        {
-            Debug.WriteLine("CanvasHoldAction");
-            Debug.WriteLine(p.X.ToString() + " " + p.Y.ToString());
-        }
         private void CanvasManipStartedAction(Point p)
         {
             if (CurrentTool < WhiteboardTool.RECTANGLE)
@@ -337,14 +163,6 @@ namespace GrappBox.ViewModel
             CurrentDraw = null;
         }
         #endregion RoutedEventsActions
-
-        #region ToolsBoxActions
-        private void ToolAction(WhiteboardTool val)
-        {
-            CurrentTool = val;
-            Debug.WriteLine("TOOL SELECTION => {0}", val);
-        }
-        #endregion ToolBoxActions
 
         #endregion Actions
 

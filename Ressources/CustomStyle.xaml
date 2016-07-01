@@ -18,7 +18,58 @@
     <SolidColorBrush x:Key="BackgroundBlackBrush" Color="{StaticResource LightBlackGrappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="BlackGrappboxBrush" Color="{StaticResource BlackGrappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="GreenGrappboxBrush" Color="{StaticResource GreenGrappbox}"></SolidColorBrush>
-
+    <!--WhiteboardColors-->
+    <Color x:Key="Color_01">#F44336</Color>
+    <Color x:Key="Color_02">#E91E63</Color>
+    <Color x:Key="Color_03">#9C27B0</Color>
+    <Color x:Key="Color_04">#673AB7</Color>
+    <Color x:Key="Color_05">#3F51B5</Color>
+    <Color x:Key="Color_06">#2196F3</Color>
+    <Color x:Key="Color_07">#03A9F4</Color>
+    <Color x:Key="Color_08">#00BCD4</Color>
+    <Color x:Key="Color_09">#009688</Color>
+    <Color x:Key="Color_10">#4CAF50</Color>
+    <Color x:Key="Color_11">#8BC34A</Color>
+    <Color x:Key="Color_12">#CDDC39</Color>
+    <Color x:Key="Color_13">#FFEB3B</Color>
+    <Color x:Key="Color_14">#FFC107</Color>
+    <Color x:Key="Color_15">#FF9800</Color>
+    <Color x:Key="Color_16">#FF5722</Color>
+    <Color x:Key="Color_17">#795548</Color>
+    <Color x:Key="Color_18">#607D8B</Color>
+    <Color x:Key="Color_19">#FFFFFF</Color>
+    <Color x:Key="Color_20">#EEEEEE</Color>
+    <Color x:Key="Color_21">#BDBDBD</Color>
+    <Color x:Key="Color_22">#757575</Color>
+    <Color x:Key="Color_23">#424242</Color>
+    <Color x:Key="Color_24">#000000</Color>
+    <Color x:Key="Color_25">Transparent</Color>
+    <SolidColorBrush x:Key="Color_1Brush" Color="{StaticResource Color_01}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_2Brush" Color="{StaticResource Color_02}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_3Brush" Color="{StaticResource Color_03}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_4Brush" Color="{StaticResource Color_04}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_5Brush" Color="{StaticResource Color_05}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_6Brush" Color="{StaticResource Color_06}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_7Brush" Color="{StaticResource Color_07}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_8Brush" Color="{StaticResource Color_08}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_9Brush" Color="{StaticResource Color_09}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_10Brush" Color="{StaticResource Color_10}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_11Brush" Color="{StaticResource Color_11}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_12Brush" Color="{StaticResource Color_12}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_13Brush" Color="{StaticResource Color_13}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_14Brush" Color="{StaticResource Color_14}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_15Brush" Color="{StaticResource Color_15}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_16Brush" Color="{StaticResource Color_16}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_17Brush" Color="{StaticResource Color_17}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_18Brush" Color="{StaticResource Color_18}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_19Brush" Color="{StaticResource Color_19}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_20Brush" Color="{StaticResource Color_20}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_21Brush" Color="{StaticResource Color_21}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_22Brush" Color="{StaticResource Color_22}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_23Brush" Color="{StaticResource Color_23}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_24Brush" Color="{StaticResource Color_24}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_25Brush" Color="{StaticResource Color_25}"></SolidColorBrush>
+    <!--WhiteboardColors-->
     <Style TargetType="MenuFlyoutPresenter">
         <Setter Property="Background" Value="{StaticResource GrayGrappBox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>

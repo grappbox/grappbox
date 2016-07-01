@@ -5,49 +5,23 @@
     xmlns:local="using:GrappBox.CustomControler"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    d:DesignHeight="150"
-    d:DesignWidth="135">
-
-    <Grid Background="Transparent" x:Name="ColorpanGrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-        <Ellipse x:Name="c1" Grid.Row="0" Grid.Column="0" Fill="#F44336"/>
-        <Ellipse x:Name="c2" Grid.Row="0" Grid.Column="1" Fill="#E91E63"/>
-        <Ellipse x:Name="c3" Grid.Row="0" Grid.Column="2" Fill="#9C27B0"/>
-        <Ellipse x:Name="c4" Grid.Row="0" Grid.Column="3" Fill="#673AB7 "/>
-        <Ellipse x:Name="c5" Grid.Row="0" Grid.Column="4" Fill="#3F51B5"/>
-        <Ellipse x:Name="c6" Grid.Row="1" Grid.Column="0" Fill="#2196F3"/>
-        <Ellipse x:Name="c7" Grid.Row="1" Grid.Column="1" Fill="#03A9F4"/>
-        <Ellipse x:Name="c8" Grid.Row="1" Grid.Column="2" Fill="#00BCD4"/>
-        <Ellipse x:Name="c9" Grid.Row="1" Grid.Column="3" Fill="#009688"/>
-        <Ellipse x:Name="c10" Grid.Row="1" Grid.Column="4" Fill="#4CAF50"/>
-        <Ellipse x:Name="c11" Grid.Row="2" Grid.Column="0" Fill="#8BC34A"/>
-        <Ellipse x:Name="c12" Grid.Row="2" Grid.Column="1" Fill="#CDDC39"/>
-        <Ellipse x:Name="c13" Grid.Row="2" Grid.Column="2" Fill="#FFEB3B"/>
-        <Ellipse x:Name="c14" Grid.Row="2" Grid.Column="3" Fill="#FFC107"/>
-        <Ellipse x:Name="c15" Grid.Row="2" Grid.Column="4" Fill="#FF9800"/>
-        <Ellipse x:Name="c16" Grid.Row="3" Grid.Column="0" Fill="#FF5722"/>
-        <Ellipse x:Name="c17" Grid.Row="3" Grid.Column="1" Fill="#795548"/>
-        <Ellipse x:Name="c18" Grid.Row="3" Grid.Column="2" Fill="#607D8B"/>
-        <Ellipse x:Name="c19" Grid.Row="3" Grid.Column="3" Fill="#FFFFFF"/>
-        <Ellipse x:Name="c20" Grid.Row="3" Grid.Column="4" Fill="#EEEEEE"/>
-        <Ellipse x:Name="c21" Grid.Row="4" Grid.Column="0" Fill="#BDBDBD"/>
-        <Ellipse x:Name="c22" Grid.Row="4" Grid.Column="1" Fill="#757575"/>
-        <Ellipse x:Name="c23" Grid.Row="4" Grid.Column="2" Fill="#424242"/>
-        <Ellipse x:Name="c24" Grid.Row="4" Grid.Column="3" Fill="#000000" Stroke="#FF00F800"/>
-        <Ellipse x:Name="c25" Grid.Row="4" Grid.Column="4" Fill="Transparent" Stroke="Black" StrokeDashArray="2"/>
-    </Grid>
+    mc:Ignorable="d">
+    <GridView x:Name="GridViewColors" Background="WhiteSmoke" SelectionChanged="GridViewColors_SelectionChanged">
+        <GridView.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapGrid MaximumRowsOrColumns="5" Orientation="Horizontal" HorizontalChildrenAlignment="Stretch" VerticalChildrenAlignment="Stretch">
+                </WrapGrid>
+            </ItemsPanelTemplate>
+        </GridView.ItemsPanel>
+        <GridView.ItemTemplate>
+            <DataTemplate>
+                <Ellipse Width="20" Height="20" StrokeThickness="1.5" Stroke="{StaticResource GrayGrappBoxBrush}" Fill="{Binding }" />
+            </DataTemplate>
+        </GridView.ItemTemplate>
+        <GridView.ItemContainerStyle>
+            <Style TargetType="GridViewItem">
+                <Setter Property="Padding" Value="10"></Setter>
+            </Style>
+        </GridView.ItemContainerStyle>
+    </GridView>
 </UserControl>
