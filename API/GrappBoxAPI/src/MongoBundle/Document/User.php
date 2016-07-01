@@ -156,6 +156,7 @@ class User implements UserInterface
       $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
       $this->events = new \Doctrine\Common\Collections\ArrayCollection();
       $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+      $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 

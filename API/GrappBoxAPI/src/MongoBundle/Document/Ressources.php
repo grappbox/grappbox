@@ -82,7 +82,7 @@ class Ressources
      * @param MongoBundle\Document\User $user
      * @return self
      */
-    public function setUser(MongoBundle\Document\User $user = null)
+    public function setUser(MongoBundle\Document\User $user)
     {
         $this->user = $user;
 
