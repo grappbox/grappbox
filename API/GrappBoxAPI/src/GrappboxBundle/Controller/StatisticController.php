@@ -567,7 +567,7 @@ class StatisticController extends RolesAndTokenVerificationController
   private function updateUserWorkingCharge($project)
   {
     //em = $this->getDoctrine()->getManager();
-    $em = $this->em;
+    $em = $this->getDoctrine()->getManager();
 
     $users = $project->getUsers();
 
@@ -1005,7 +1005,7 @@ class StatisticController extends RolesAndTokenVerificationController
   //                    STATISTICS DATA - INITIATE PROJECT
   // -----------------------------------------------------------------------
 
-  static function initiateStatistics($project)
+  public function initiateStatistics($project, $token, $request)
   {
     // INITIATE CUSTOM UPDATE STAT
     $this->updateUserTasksAdvancement($project);

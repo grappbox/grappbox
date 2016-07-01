@@ -274,7 +274,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} content Whiteboard content objects
 	* @apiSuccess {int} content.id id whiteboard's object
 	* @apiSuccess {int} content.whiteboardId whiteboardId whiteboard's object
-	* @apiSuccess {object} content.object object whiteboard's object
+	* @apiSuccess {object} content.object object whiteboard's object (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
 	* @apiSuccess {DateTime} content.createdAt createdAt object creation date
 	* @apiSuccess {DateTime} content.deletedAt deletedAt object deletion date
 	*
@@ -389,15 +389,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {int} id Id of the whiteboard
 	* @apiParam {String} token Client authentification token
-	* @apiParam {String}  modification Type of modification ("add" or "del")
-	* @apiParam {int}  objectId IN CASE OF DEL: object's id
-	* @apiParam {object} object IN CASE OF ADD: whiteboard's object (json array)
+	* @apiParam {object} object Whiteboard's object add (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
 	*
 	* @apiParamExample {json} Request-Delete-Example:
 	*	{
 	*		"data": {
 	*			"token": "aeqf231ced651qcd",
-	*			"modification": "del",
 	*			"objectId": 3
 	*		}
 	*	}
@@ -405,7 +402,6 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	{
 	*		"data": {
 	*			"token": "aeqf231ced651qcd",
-	*			"modification": "add",
 	*			"object": {
 	*				"type": "RECTANGLE",
 	*				"color": "#8BC800",
@@ -416,7 +412,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {int} id object id
 	* @apiSuccess {int} whiteboardId whiteboard id
-	* @apiSuccess {String} object the object caracterictics
+	* @apiSuccess {String} object the object caracterictics (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
 	* @apiSuccess {DateTime} createdAt object creation date
 	* @apiSuccess {DateTime} deletedAt object deletion date
 	*
@@ -495,22 +491,13 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
 			return ($this->setNoRightsError("10.4.9", "Whiteboard", "push"));
 
-		if ($content->modification == "add")
-		{
-			if (!array_key_exists('object', $content))
+		if (!array_key_exists('object', $content))
 	 			return $this->setBadRequest("10.4.6", "Whiteboard", "push", "Missing Parameter");
-			$object = new WhiteboardObject();
-			$object->setWhiteboardId($id);
-			$object->setWhiteboard($whiteboard);
-			$object->setObject(json_encode($content->object));
-			$object->setCreatedAt(new DateTime('now'));
-		}
-		else {
-			if (!array_key_exists('objectId', $content))
-	 			return $this->setBadRequest("10.4.6", "Whiteboard", "push", "Missing Parameter");
-			$object = $em->getRepository('GrappboxBundle:WhiteboardObject')->find($content->objectId);
-			$object->setDeletedAt(new DateTime('now'));
-		}
+		$object = new WhiteboardObject();
+		$object->setWhiteboardId($id);
+		$object->setWhiteboard($whiteboard);
+		$object->setObject(json_encode($content->object));
+		$object->setCreatedAt(new DateTime('now'));
 
 		$em->persist($object);
 		$em->flush();
@@ -537,13 +524,13 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccess {Object[]} add Array of the objects added in the whiteboard
+	* @apiSuccess {Object[]} add Array of the objects added in the whiteboard (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
 	* @apiSuccess {int} add.id id whiteboard's object
 	* @apiSuccess {int} add.whiteboardId whiteboardId whiteboard's object
 	* @apiSuccess {object} add.object object whiteboard's object
 	* @apiSuccess {DateTime} add.createdAt createdAt object creation date
 	* @apiSuccess {DateTime} add.deletedAt deletedAt object deletion date
-	* @apiSuccess {Object[]} delete Array of the objects deleted in the whiteboard
+	* @apiSuccess {Object[]} delete Array of the objects deleted in the whiteboard (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
 	* @apiSuccess {int} delete.id id whiteboard's object
 	* @apiSuccess {int} delete.whiteboardId whiteboardId whiteboard's object
 	* @apiSuccess {object} delete.object object whiteboard's object
@@ -728,7 +715,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		{
 			$whiteboard->setDeletedAt(new DateTime('now'));
 			$em->persist($whiteboard);
-			// $em->remove($whiteboard);
+			$em->remove($whiteboard);
 			$em->flush();
 		}
 
@@ -741,12 +728,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @api {put} /V0.2/whiteboard/deleteObject Delete object
 	* @apiName deleteObject
 	* @apiGroup Whiteboard
-	* @apiDescription Determiner object(s) to delete from rubber position and radius
+	* @apiDescription Get the last object created to delete from rubber position and radius
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Client authentification token
 	* @apiParam {int} whiteboardId Id of the whiteboard
-	* @apiParam (Object) center position in X and Y of the rubber center
+	* @apiParam {Object} center position in X and Y of the rubber center
 	* @apiParam {float}  center.x postion in x of the center
 	* @apiParam {float}  center.y postion in y of the center
 	* @apiParam {float}  radius radius of the rubber
@@ -775,7 +762,6 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	    "return_message": "Whiteboard - deleteObject - Complete Success"
 	*	  },
 	*	  "data": {
-	*	    "array": [
 	*	      {
 	*	        "id": 11,
 	*	        "whiteboardId": 3,
@@ -786,9 +772,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	        },
 	*	        "createdAt": { "date": "2016-05-21 08:53:05", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*	        "deletedAt": { "date": "2016-05-21 08:57:42", "timezone_type": 3, "timezone": "Europe/Paris" }
-	*	      },
-	*	      ...
-	*	    ]
+	*	      }
 	*	  }
 	*	}
 	*
@@ -846,63 +830,60 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
 			 return ($this->setNoRightsError("10.7.9", "Whiteboard", "deleteObject"));
 
-		$objects =  $em->getRepository('GrappboxBundle:WhiteboardObject')->findBy(array("whiteboardId" => $whiteboard->getId(), "deletedAt" => NULL));
+		$objects =  $em->getRepository('GrappboxBundle:WhiteboardObject')->findBy(array("whiteboardId" => $whiteboard->getId(), "deletedAt" => NULL), array("createdAt" => 'DESC'));
 
 		$toDel = $this->checkDeletion($objects, $content->center, $content->radius);
 
 		$data = array();
-		foreach ($toDel as $key => $value) {
-			$value->setDeletedAt(new DateTime("now"));
-			$em->persist($value);
-			$em->flush();
+		$value = $toDel;
+		$value->setDeletedAt(new DateTime("now"));
+		$em->persist($value);
+		$em->flush();
 
-			$data[] = $value->objectToArray();
-		}
-		return $this->setSuccess("1.10.1", "Whiteboard", "deleteObject", "Complete Success", array("array" => $data));
+		$data[] = $value->objectToArray();
+		return $this->setSuccess("1.10.1", "Whiteboard", "deleteObject", "Complete Success", $data);
 	}
 
 	private function checkDeletion($objects, $center, $radius)
 	{
-		$toDel = array();
 		foreach ($objects as $key => $object) {
 			$obj = json_decode($object->getObject());
 			switch ($obj->type) {
 				case 'LINE':
 					if ($this->intersectionWithLine($center, $radius, array("x" => $obj->positionStart->x, "y" => $obj->positionStart->y), array("x" => $obj->positionEnd->x, "y" => $obj->positionEnd->y)))
-						$toDel[] = $object;
+						return $object;
 					break;
 				case 'HANDWRITE':
-					if ($this->intersectionWithHandwrite($center, $radius, array("x" => $obj->positionStart->x, "y" => $obj->positionStart->y), array("x" => $obj->positionEnd->x, "y" => $obj->positionEnd->y)))
-						$toDel[] = $object;
+					if ($this->intersectionWithHandwrite($center, $radius, $obj))
+						return $object;
 					break;
 				case 'RECTANGLE':
 					$square = $this->determineMinimalSquare($obj);
 					if ($this->intersectionWithSquare($center, $radius, $square))
-						$toDel[] = $object;
+						return $object;
 					break;
 				case 'TEXT':
-				$square = $this->determineMinimalSquare($obj);
+					$square = $this->determineMinimalSquare($obj);
 					if ($this->intersectionWithSquare($center, $radius, $square))
-						$toDel[] = $object;
+						return $object;
 					break;
 				case 'DIAMOND':
 					$square = $this->determineMinimalSquare($obj);
 					$diamond = $this->determineDiamond($square);
 					if ($this->intersectionWithSquare($center, $radius, $diamond))
-						$toDel[] = $object;
+						return $object;
 					break;
 				case 'ELLIPSE':
 					if ($this->intersectionWithEllipse($center, $radius, $obj))
-						$toDel[] = $object;
+						return $object;
 					break;
 				default:
 					$square = $this->determineMinimalSquare($obj);
 					if ($this->intersectionWithSquare($center, $radius, $square))
-						$toDel[] = $object;
+						return $object;
 					break;
 			}
 		}
-		return $toDel;
 	}
 
 	private function determineMinimalSquare($object)
@@ -966,15 +947,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	private function intersectionWithHandwrite($center, $radius, $obj)
 	{
 		$prev = null;
-			foreach ($obj->points as $key => $point) {
-				if (!$prev)
-					$prev = $point;
-				else {
-					if ($this->intersectionWithLine($center, $radius, $prev, $point))
-						return true;
-					$prev = $point;
-				}
+		foreach ($obj->points as $point) {
+			if (!$prev)
+				$prev = $point;
+			else {
+				if ($this->intersectionWithLine($center, $radius, array("x" => $prev->x, "y" => $prev->y), array("x" => $point->x, "y" => $point->y)))
+					return true;
+				$prev = $point;
 			}
+		}
 		return false;
 	}
 
