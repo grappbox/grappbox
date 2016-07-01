@@ -89,6 +89,8 @@ namespace GrappBox.View
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            SettingsPopUp.Visibility = Visibility.Collapsed;
+            db_pivot.IsEnabled = true;
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
             this.dvm = DashBoardViewModel.GetViewModel();
             LoadingBar.IsEnabled = true;
@@ -96,10 +98,11 @@ namespace GrappBox.View
             await this.dvm.InitialiseAsync();
             team = CreateOccupationTab();
             meetings = CreateMeetingsTab();
-            if (team_cb.IsChecked == true)
-                this.db_pivot.Items.Add(this.team);
-            if (meetings_cb.IsChecked == true)
-                this.db_pivot.Items.Add(this.meetings);
+            team_cb.IsChecked = true;
+            this.db_pivot.Items.Add(this.team);
+            this.db_pivot.Items.Add(this.meetings);
+            team_cb.IsChecked = true;
+            meetings_cb.IsChecked = true;
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
         }
@@ -161,6 +164,18 @@ namespace GrappBox.View
             pivotItem.Content = mdp;
             this.dvm.NotifyPropertyChanged("MeetingList");
             return pivotItem;
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsPopUp.Visibility = Visibility.Visible;
+            db_pivot.IsEnabled = false;
+        }
+
+        private void CloseSettings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsPopUp.Visibility = Visibility.Collapsed;
+            db_pivot.IsEnabled = true;
         }
     }
 }

@@ -3,27 +3,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GrappBox.CustomControler.SlidingMenu"
     xmlns:local2="using:GrappBox.CustomControler">
-    <Style
-        TargetType="local:SlideInMenuContentControl">
-        <Setter
-            Property="Template">
+    <Style TargetType="local:SlideInMenuContentControl">
+        <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate
-                    TargetType="local:SlideInMenuContentControl">
+                <ControlTemplate TargetType="local:SlideInMenuContentControl">
                     <Grid x:Name="ContentSelector">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0" x:Name="ContentLeftSideMenu" MaxWidth="{TemplateBinding LeftSideMenuWidth}" Visibility="Visible" Width="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="65"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Background="{StaticResource GrayGrappBoxBrush}">
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource GrayGrappBoxBrush}">
                                 <Ellipse Height="48" Stroke="Transparent" VerticalAlignment="Center" Width="48">
                                     <Ellipse.Fill>
-                                        <ImageBrush x:Name="Avatar" Stretch="Uniform"/>
+                                        <ImageBrush x:Name="Avatar" Stretch="Uniform" ImageSource="/Assets/dashboard.png"/>
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock Name="ProjectName" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
@@ -87,19 +84,12 @@
                             </Grid.RowDefinitions>
                             <StackPanel x:Name="Menubar" ManipulationMode="TranslateX" Grid.Row="0" Orientation="Horizontal" Background="{StaticResource RedGrappBoxBrush}">
                                 <Button x:Name="MenuButton" Width="24" Height="24" MinHeight="48" MinWidth="48" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource ButtonStyle1}">
-                                    <Image Source="/Assets/menu.png" />
+                                    <Image Source="/Assets/menu.png"/>
                                 </Button>
                                 <TextBlock Margin="15,0,0,0" FontSize="24" Text="{TemplateBinding PageTitle}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             </StackPanel>
-                            <ContentPresenter
-                                        Grid.Row="1"
-                                        Margin="-1,0,-4,0"
-                                        Content="{TemplateBinding Content}"/>
-                            <Border
-                                        Grid.Row="1"
-                                        Visibility="Collapsed"
-                                        x:Name="DisableContentOverlay"
-                                        Background="Gray" Opacity="0.5"/>
+                            <ContentPresenter Grid.Row="1" Margin="-1,0,-4,0" Content="{TemplateBinding Content}"/>
+                            <Border Grid.Row="1" Visibility="Collapsed" x:Name="DisableContentOverlay" Background="Gray" Opacity="0.5"/>
                         </Grid>
                     </Grid>
                 </ControlTemplate>
