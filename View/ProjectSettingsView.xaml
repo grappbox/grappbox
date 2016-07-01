@@ -15,7 +15,7 @@
     <Page.BottomAppBar>
         <CommandBar Visibility="Collapsed" x:Name="CB" ClosedDisplayMode="Compact">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Visibility="Collapsed" Name="UpdateSettings" Label="Update" Click="ProjectSettingsUpdate_Click" Icon="Save"/>
+                <AppBarButton Visibility="Collapsed" Name="UpdateSettings" Label="Save" Click="ProjectSettingsUpdate_Click" Icon="Save"/>
                 <AppBarButton Visibility="Collapsed" Name="RemoveUser" Label="Remove" Click="RemoveUserButton_Click" Icon="Delete"/>
                 <AppBarButton Visibility="Collapsed" Name="RemoveCU" Label="Remove" Click="RemoveCustomerButton_Click" Icon="Delete"/>
                 <AppBarButton Visibility="Collapsed" Name="RegenerateCu" Label="Regenerate" Click="RegenerateCU_Click" Icon="Sync"/>
@@ -68,10 +68,24 @@
 
                                 <TextBlock Text="Twitter" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
                                 <TextBox PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
+
+                                <StackPanel Name="NewPassword" Visibility="Collapsed">
+                                    <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17"/>
+                                    <PasswordBox x:Name="password" BorderBrush="" VerticalAlignment="Stretch"/>
+                                </StackPanel>
+                                <StackPanel Name="UpdatePassword" Visibility="Collapsed">
+                                    <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17"/>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Old Password" FontFamily="Segoe WP" FontSize="15"/>
+                                    <PasswordBox x:Name="oldPassword" BorderBrush="" VerticalAlignment="Stretch"/>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="New Password" FontFamily="Segoe WP" FontSize="15"/>
+                                    <PasswordBox x:Name="newPassword"  BorderBrush="" VerticalAlignment="Stretch"/>
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Retype Password" FontFamily="Segoe WP" FontSize="15"/>
+                                    <PasswordBox x:Name="retypePassword" BorderBrush="" VerticalAlignment="Stretch"/>
+                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                     </PivotItem>
-                    <PivotItem Header="Users">
+                    <PivotItem Name="User" Header="Users">
                         <StackPanel Margin="15">
                             <ListBox x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userListView_SelectionChanged">
                                 <ListBox.ItemTemplate>
@@ -97,7 +111,7 @@
                             </Grid>
                         </StackPanel>
                     </PivotItem>
-                    <PivotItem Header="Customer access">
+                    <PivotItem Name="CustomerAccess" Header="Customer access">
                         <StackPanel Margin="15">
                             <ListBox x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="customerListView_SelectionChanged">
                                 <ListBox.ItemTemplate>
@@ -123,7 +137,7 @@
                             </Grid>
                         </StackPanel>
                     </PivotItem>
-                    <PivotItem Header="Roles">
+                    <PivotItem Name="Roles" Header="Roles">
                         <StackPanel Margin="15">
                             <ListBox x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="roleListView_SelectionChanged">
                                 <ListBox.ItemTemplate>

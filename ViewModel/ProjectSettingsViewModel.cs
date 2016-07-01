@@ -22,16 +22,16 @@ namespace GrappBox.ViewModel
         static private ProjectSettingsViewModel instance = null;
         private ObservableCollection<CustomerAccessModel> _customerAccessModel = new ObservableCollection<CustomerAccessModel>();
         private ObservableCollection<ProjectRoleModel> _projectRoleModel = new ObservableCollection<ProjectRoleModel>();
-        private ProjectSettingsModel _projectSettingsModel;
+        private ProjectSettingsModel _projectSettingsModel = new ProjectSettingsModel();
         private ObservableCollection<ProjectUserModel> _projectUserModel = new ObservableCollection<ProjectUserModel>();
         private ObservableCollection<ProjectUserModel> _userAssigned = new ObservableCollection<ProjectUserModel>();
         private ObservableCollection<ProjectUserModel> _userNonAssigned = new ObservableCollection<ProjectUserModel>();
-        private RoleUserModel _roleUser;
-        private ProjectUserModel _userSelected;
-        private ProjectUserModel _userAssignSelected;
-        private ProjectUserModel _userNonAssignSelected;
-        private CustomerAccessModel _customerSelected;
-        private ProjectRoleModel _roleSelected;
+        private RoleUserModel _roleUser = new RoleUserModel();
+        private ProjectUserModel _userSelected = new ProjectUserModel();
+        private ProjectUserModel _userAssignSelected = new ProjectUserModel();
+        private ProjectUserModel _userNonAssignSelected = new ProjectUserModel();
+        private CustomerAccessModel _customerSelected = new CustomerAccessModel();
+        private ProjectRoleModel _roleSelected = new ProjectRoleModel();
         private ProjectRoleModel _role = new ProjectRoleModel();
 
         static public ProjectSettingsViewModel GetViewModel()
@@ -537,7 +537,7 @@ namespace GrappBox.ViewModel
         #endregion ProjectRole
 
         #region ProjectSettings
-        public async System.Threading.Tasks.Task updateProjectSettings()
+        public async System.Threading.Tasks.Task updateProjectSettings(string oldPassword = null, string newPassword = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -573,6 +573,65 @@ namespace GrappBox.ViewModel
                 t.Cancel();
             }
             else {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+
+        public async System.Threading.Tasks.Task createProject(string password)
+        {
+            ApiCommunication api = ApiCommunication.GetInstance();
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            SettingsManager.setOption("ProjectIdChoosen", 0);
+            props.Add("token", User.GetUser().Token);
+            if (_projectSettingsModel.Name != null && _projectSettingsModel.Name != "")
+                props.Add("name", _projectSettingsModel.Name);
+            else
+            {
+                MessageDialog msgbox = new MessageDialog("A man needs a name!");
+                await msgbox.ShowAsync();
+                return;
+            }
+            if (_projectSettingsModel.Description != null && _projectSettingsModel.Description != "")
+                props.Add("description", _projectSettingsModel.Description);
+            if (_projectSettingsModel.Logo != null && _projectSettingsModel.Logo != "")
+                props.Add("logo", _projectSettingsModel.Logo);
+            if (_projectSettingsModel.Phone != null && _projectSettingsModel.Phone != "")
+                props.Add("phone", _projectSettingsModel.Phone);
+            if (_projectSettingsModel.Company != null && _projectSettingsModel.Company != "")
+                props.Add("company", _projectSettingsModel.Company);
+            if (_projectSettingsModel.ContactMail != null && _projectSettingsModel.ContactMail != "")
+                props.Add("email", _projectSettingsModel.ContactMail);
+            if (_projectSettingsModel.Facebook != null && _projectSettingsModel.Facebook != "")
+                props.Add("facebook", _projectSettingsModel.Facebook);
+            if (_projectSettingsModel.Twitter != null && _projectSettingsModel.Twitter != "")
+                props.Add("twitter", _projectSettingsModel.Twitter);
+            if (password != null && password != "")
+                props.Add("password", password);
+            else
+            {
+                MessageDialog msgbox = new MessageDialog("You need to put a password for your cloud's safe folder");
+                await msgbox.ShowAsync();
+                return;
+            }
+            HttpResponseMessage res = await api.Post(props, "projects/projectcreation");
+            if (res.IsSuccessStatusCode)
+            {
+                _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
+                SettingsManager.setOption("ProjectIdChoosen", _projectSettingsModel.Id);
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
+            }
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }

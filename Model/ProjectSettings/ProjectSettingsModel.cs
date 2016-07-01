@@ -9,6 +9,7 @@ namespace GrappBox.Model
 {
     class ProjectSettingsModel
     {
+        private int _id;
         private string _name;
         private string _description;
         private string _logo;
@@ -20,6 +21,13 @@ namespace GrappBox.Model
         private string _color;
         private DateModel _creationDate;
         private DateModel _deletedAt;
+
+        [JsonProperty("id")]
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
         [JsonProperty("name")]
         public string Name
