@@ -126,7 +126,7 @@ Options FollowSymlinks
 
 # Enable password protection for public access.
 # Should be temporary.
-# AuthType Basic
-# AuthName "Please enter your password."
-# AuthUserFile /web/app/web/.htpasswd
-# Require valid-user
+AuthType Basic
+AuthName "Please enter your password."
+AuthUserFile /web/app/web/.htpasswd
+Require valid-user
