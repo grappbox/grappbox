@@ -225,7 +225,23 @@ ApplicationWindow {
         tabHighlightColor: "white"
     }
 
-    property var sectionTitles: [ "Dashboard", "Calendar", "Whiteboard", "Timeline", "Bug Tracker", "Cloud", "Gantt" ]
+    property var sectionTitles: [   "Dashboard",
+                                    "Calendar",
+                                    "Cloud",
+                                    "Timeline",
+                                    "Bug Tracker",
+                                    "Gantt",
+                                    "Whiteboard",
+                                    "Project settings" ]
+
+    property var sectionIcon: [     "action/dashboard",
+                                    "action/event",
+                                    "file/cloud_upload",
+                                    "communication/forum",
+                                    "action/bug_report",
+                                    "action/view_list",
+                                    "content/create",
+                                    "action/settings" ]
 
     property string previousSelectedComponent: ""
     property string selectedComponent: ""
@@ -341,8 +357,8 @@ ApplicationWindow {
                                 height: Units.dp(20)
                             }
 
-                            Image {
-                                source: Qt.resolvedUrl("qrc:/Material/icons/action/account_circle.svg")
+                            CircleImage {
+                                source: Qt.resolvedUrl("qrc:/icons/icons/default-avatar.min.png")
                                 height: Units.dp(90)
                                 width: height
                             }
@@ -402,6 +418,12 @@ ApplicationWindow {
                     Repeater {
                         model: demo.sectionTitles
                         delegate: ListItem.Standard {
+
+                            action: Icon {
+                                anchors.verticalCenter: parent.verticalCenter
+                                name: demo.sectionIcon[index]
+                            }
+
                             text: modelData
                             selected: modelData == demo.selectedComponent
                             visible: SDataManager.hasProject || index <= 1

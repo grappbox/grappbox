@@ -102,7 +102,8 @@ namespace API
         DR_CLOSE_STREAM,
         DR_DELETE_ITEM,
         DR_DELETE_SECURE_ITEM,
-        DR_TASK_TAG
+        DR_TASK_TAG,
+        DR_REMOVE_TAG_TO_BUG
     };
 
     enum PutRequest
@@ -118,6 +119,7 @@ namespace API
 		PUTR_EDIT_BUG,
 		PUTR_EDIT_COMMENTBUG,
         PUTR_SEND_CHUNK,
+        PUTR_REOPEN_BUG
     };
 
 	enum RequestType

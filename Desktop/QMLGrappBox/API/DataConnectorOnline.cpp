@@ -87,6 +87,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_DeleteMap[DR_CUSTOMER_ACCESS] = "";
 	_DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/closeticket";
 	_DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/deletetag";
+    _DeleteMap[DR_REMOVE_TAG_TO_BUG] = "bugtracker/removetag";
 	_DeleteMap[DR_REMOVE_EVENT] = "";
     _DeleteMap[DR_ARCHIVE_MESSAGE_TIMELINE] = "timeline/archivemessage";
     _DeleteMap[DR_CLOSE_STREAM] = "cloud/stream";
@@ -105,6 +106,8 @@ DataConnectorOnline::DataConnectorOnline()
 	_PutMap[PUTR_EDIT_BUG] = "bugtracker/editticket";
     _PutMap[PUTR_EDIT_MESSAGE_TIMELINE] = "timeline/editmessage";
     _PutMap[PUTR_SEND_CHUNK] = "cloud/file";
+    _PutMap[PUTR_ASSIGNUSER_BUG] = "bugtracker/setparticipants";
+    _PutMap[PUTR_REOPEN_BUG] = "bugtracker/reopenticket";
 }
 
 void DataConnectorOnline::unregisterObjectRequest(QObject *obj)
@@ -477,13 +480,13 @@ QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
             continue;
 		if (it.value().canConvert<QString>())
 			ret[it.key()] = it.value().toString();
-		else if (it.value().canConvert<QList<QString> >())
+        else if (it.value().canConvert<QList<QVariant> >())
 		{
-			QJsonArray arr;
-			QList<QString> strList;
-			for (QString str : strList)
-				arr.append(str);
-			ret[it.key()] = arr;
+            QJsonArray arr;
+            QList<QVariant> strList = it.value().toList();
+            for (QVariant str : strList)
+                arr.append(str.toString());
+            ret[it.key()] = arr;
 		}
 		else
         {

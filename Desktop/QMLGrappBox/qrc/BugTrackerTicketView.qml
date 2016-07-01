@@ -18,6 +18,159 @@ Column {
 
     signal back()
 
+    Dialog {
+        id: addTagDialog
+
+        title: "Add a new tag"
+
+        Behavior on width {
+            NumberAnimation { duration: 200 }
+        }
+
+        Controls.ExclusiveGroup {
+            id: tagChoiceGroup
+        }
+
+        RadioButton {
+            id: addAnExistingTag
+            visible: chooseTag.visible
+            checked: bugModels.tags.length < ticket.tags.length
+            text: "Add an existing tag"
+            canToggle: false
+            exclusiveGroup: tagChoiceGroup
+        }
+
+        MenuField {
+            id: chooseTag
+            model: []
+            property var completeModel: []
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(32)
+            visible: addAnExistingTag.checked && bugModels.tags.length < ticket.tags.length
+
+            Component.onCompleted: {
+                completeModel = Qt.binding(function() {
+                    var ret = []
+                    for (var indexTicket in bugModel.tags) {
+                        var keep = true
+                        for (var index in ticket.tags) {
+                            if (bugModel.tags[indexTicket].id == ticket.tags[index]) {
+                                keep = false
+                                break;
+                            }
+                        }
+                        if (keep)
+                        {
+                            console.log(bugModel.tags[indexTicket])
+                            console.log(bugModel.tags[indexTicket]["name"])
+                            console.log(bugModel.tags[indexTicket].name)
+                            ret.push(bugModel.tags[indexTicket])
+                        }
+                    }
+                    return ret
+                })
+                model = Qt.binding(function() {
+                    var ret = [];
+                    for (var i in completeModel)
+                    {
+                        ret.push(completeModel[i].name)
+                    }
+                    return ret
+                })
+            }
+        }
+
+        RadioButton {
+            id: addANewTag
+            visible: chooseTag.visible
+            checked: false
+            text: "Add a new tag"
+            canToggle: false
+            exclusiveGroup: tagChoiceGroup
+        }
+
+        TextField {
+            id: tag
+            visible: addANewTag.checked || !chooseTag.visible
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: bugModels.tags.length < ticket.tags.length ? Units.dp(32) : Units.dp(0)
+            width: parent.width
+            placeholderText: "Tag name"
+        }
+
+        onRejected: tag.text = ""
+
+        onAccepted: {
+            if (tag.visible)
+                bugModel.createAndAddTagsToTicket(ticket.id, tag.text)
+            else
+                bugModel.addTagsToTicket(ticket.id, chooseTag.completeModel[chooseTag.selectedIndex].id)
+            tag.text = ""
+        }
+
+        positiveButtonText: tag.visible ? "Create and Add" : "Add"
+        negativeButtonText: "Cancel"
+    }
+
+    Dialog {
+        id: addUser
+
+        title: "Add a new user"
+
+        Behavior on width {
+            NumberAnimation { duration: 200 }
+        }
+
+        MenuField {
+            id: chooseUser
+            model: []
+            visible: addAnExistingTag.checked
+            property var completeModel: []
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(32)
+
+            Component.onCompleted: {
+                if (ticket === undefined)
+                    return
+                completeModel = Qt.binding(function() {
+                    var ret = []
+                    for (var indexTicket in SDataManager.project.users) {
+                        var keep = true
+                        for (var index in ticket.users) {
+                            if (SDataManager.project.users[indexTicket].id === ticket.users[index]) {
+                                keep = false
+                                break;
+                            }
+                        }
+                        if (keep)
+                        {
+                            ret.push(SDataManager.project.users[indexTicket])
+                        }
+                    }
+                    return ret
+                })
+                model = Qt.binding(function() {
+                    var ret = [];
+                    for (var i in completeModel)
+                    {
+                        ret.push(completeModel[i].firstName + " " + completeModel[i].lastName)
+                    }
+                    return ret
+                })
+            }
+        }
+
+        onAccepted: {
+            bugModel.addUsersToTicket(ticket.id, chooseUser.completeModel[chooseUser.selectedIndex].id)
+        }
+
+        positiveButtonText: "Add"
+        negativeButtonText: "Cancel"
+    }
+
     IconTextButton {
         iconName: "hardware/keyboard_backspace"
         text: "BACK"
@@ -66,6 +219,7 @@ Column {
             }
 
             TextField {
+                id: editTitleTicket
                 width: parent.width
                 text: titleTicket.text
                 visible: columnMainMessage.onEditMessage
@@ -86,6 +240,7 @@ Column {
             }
 
             TextArea {
+                id: editMessageTicket
                 text: messageTicket.text
 
                 width: parent.width
@@ -121,7 +276,22 @@ Column {
                     model: (ticketColumn.ticket != undefined) ? ticketColumn.ticket.tags : []
                     delegate: Button {
                         text: ""
+                        visible: text !== ""
                         elevation: 1
+
+                        onClicked: {
+                            for (var item in bugModel.tags)
+                            {
+                                if (bugModel.tags[item].id === modelData)
+                                {
+                                    tagEdit.assignedTag = bugModel.tags[item]
+                                    console.log(tagEdit.assignedTag)
+                                    break
+                                }
+                            }
+                            tagEdit.open()
+                        }
+
                         Component.onCompleted: {
                             text = Qt.binding(function() {
                                 for (var item in bugModel.tags)
@@ -131,6 +301,7 @@ Column {
                                         return bugModel.tags[item].name
                                     }
                                 }
+                                return ""
                             })
                         }
                     }
@@ -139,6 +310,9 @@ Column {
                 IconButton {
                     Layout.alignment: Qt.AlignVCenter
                     iconName: "content/add_circle_outline"
+                    onClicked: {
+                        addTagDialog.show()
+                    }
                 }
             }
 
@@ -184,8 +358,11 @@ Column {
                 }
 
                 IconButton {
+                    visible: ticket === undefined || SDataManager.project.users.length > ticket.users.length
                     Layout.alignment: Qt.AlignVCenter
                     iconName: "content/add_circle_outline"
+
+                    onClicked: addUser.show()
                 }
             }
 
@@ -217,7 +394,8 @@ Column {
                     onClicked: {
                         if (columnMainMessage.onEditMessage)
                         {
-
+                            bugModel.modifyTicket(ticket.id, editTitleTicket.text, editMessageTicket.text)
+                            columnMainMessage.onEditMessage = false
                         }
                         else
                         {
@@ -229,7 +407,7 @@ Column {
                 Button {
                     id: closeButton
                     anchors.right: parent.right
-                    text: columnMainMessage.onEditMessage ? "Cancel" : "Close"
+                    text: columnMainMessage.onEditMessage ? "Cancel" : (ticket.isClosed ? "Re-open" : "Close")
                     textColor: Theme.primaryColor
 
                     onClicked: {
@@ -237,9 +415,14 @@ Column {
                         {
                             columnMainMessage.onEditMessage = false
                         }
+                        else if (ticket.isClosed)
+                        {
+                            bugModel.reopenTicket(ticket.id)
+                        }
                         else
                         {
-
+                            bugModel.closeTicket(ticket.id)
+                            back()
                         }
                     }
                 }
@@ -303,7 +486,7 @@ Column {
             height: Units.dp(24)
 
             onClicked: {
-                addComment(newCommentary.text)
+                bugModel.addComment(ticket.id, newCommentary.text)
                 newCommentary.text = ""
             }
         }
@@ -416,7 +599,7 @@ Column {
                     id: deleteComment
                     iconName: "action/delete"
                     onClicked: {
-                        deleteMessage(modelData.id, messageData.id)
+                        bugModel.removeComment(modelData.id, ticket.id)
                     }
                 }
 
@@ -427,8 +610,19 @@ Column {
                     elevation: 1
 
                     onClicked: {
-                        editMessages(messageData.id, modelData.id, modelData.title, editMessageComment.text)
+                        bugModel.modifyComment(modelData.id, editMessageComment.text, ticket.id)
                         comment.onEditComment = false
+                    }
+                }
+
+                Button {
+                    visible: comment.onEditComment
+                    text: "Cancel"
+                    elevation: 1
+
+                    onClicked: {
+                        comment.onEditComment = false
+                        editMessageComment.text = modelData.message
                     }
                 }
             }
@@ -445,6 +639,33 @@ Column {
                 opacity: 0.25
             }
         }
+    }
+
+
+    BottomActionSheet {
+        id: tagEdit
+
+        title: "Action"
+        property BugTrackerTags assignedTag
+
+        actions: [
+            Action {
+                iconName: "action/delete"
+                name: "Delete from ticket"
+                onTriggered: {
+                    bugModel.removeTagsToTicket(ticket.id, tagEdit.assignedTag.id)
+                }
+            },
+            Action {
+                iconName: "action/delete"
+                name: "Delete permanently"
+
+                onTriggered: {
+                    bugModel.removeTags(tagEdit.assignedTag.id)
+                }
+            }
+
+        ]
     }
 }
 

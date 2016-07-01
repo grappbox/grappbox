@@ -251,7 +251,7 @@ Item {
                             textColor: Theme.primaryColor
 
                             onClicked: {
-                                "Select project"
+                                dashboardModel.selectProject(modelData)
                             }
                         }
                     }

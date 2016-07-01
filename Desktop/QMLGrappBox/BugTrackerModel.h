@@ -43,6 +43,12 @@ public:
         m_user->setId(obj["creator"].toObject()["id"].toInt());
         m_user->setFirstName(obj["creator"].toObject()["fullname"].toString());
         m_user->setLastName(m_user->firstName());
+        emit userChanged(user());
+        emit parentIdChanged(parentId());
+        emit messageChanged(message());
+        emit createdAtChanged(createdAt());
+        emit editedAtChanged(editedAt());
+        emit idChanged(id());
     }
 
     int id() const
@@ -173,6 +179,16 @@ public:
         return m_name;
     }
 
+    QString toString()
+    {
+        return name();
+    }
+
+    operator QString()
+    {
+        return name();
+    }
+
 signals:
 
     void idChanged(int id);
@@ -217,6 +233,7 @@ class BugTrackerTicketData : public QObject
     Q_PROPERTY(QDateTime editDate READ editDate WRITE setEditDate NOTIFY editDateChanged)
     Q_PROPERTY(QDateTime closeDate READ closeDate WRITE setCloseDate NOTIFY closeDateChanged)
     Q_PROPERTY(QVariantList comments READ comments WRITE setComments NOTIFY commentsChanged)
+    Q_PROPERTY(bool isClosed READ isClosed NOTIFY isClosedChanged)
 
 public:
     BugTrackerTicketData()
@@ -244,14 +261,26 @@ public:
         else
             m_editDate = JSON_TO_DATETIME(obj["editedAt"].toObject()["date"].toString());
         if (obj["deletedAt"].isNull())
-            m_closeDate = m_editDate;
+            m_closeDate = QDateTime();
         else
             m_closeDate = JSON_TO_DATETIME(obj["deletedAt"].toObject()["date"].toString());
         m_tags.clear();
         for (QJsonValueRef tagObj : obj["tags"].toArray())
             m_tags.push_back(tagObj.toObject()["id"].toInt());
+        qDebug() << obj["title"].toString();
+        m_users.clear();
         for (QJsonValueRef userObj : obj["users"].toArray())
             m_users.push_back(userObj.toObject()["id"].toInt());
+        emit idChanged(id());
+        emit creatorChanged(creator());
+        emit titleChanged(title());
+        emit messageChanged(message());
+        emit createDateChanged(createDate());
+        emit editDateChanged(editDate());
+        emit closeDateChanged(closeDate());
+        emit tagsChanged(tags());
+        emit usersChanged(users());
+        emit isClosedChanged(isClosed());
     }
 
     int id() const
@@ -318,6 +347,11 @@ public:
         return m_comments;
     }
 
+    bool isClosed() const
+    {
+        return !m_closeDate.isNull();
+    }
+
 signals:
 
     void idChanged(int id);
@@ -339,6 +373,8 @@ signals:
     void closeDateChanged(QDateTime closeDate);
 
     void commentsChanged(QVariantList comments);
+
+    void isClosedChanged(bool isClosed);
 
 public slots:
 
@@ -425,6 +461,7 @@ public slots:
 
         m_closeDate = closeDate;
         emit closeDateChanged(closeDate);
+        emit isClosedChanged(isClosed());
     }
 
     void setComments(QVariantList comments)
@@ -432,7 +469,9 @@ public slots:
         m_comments.clear();
         for (QVariant var : comments)
         {
-            m_comments.push_back(qobject_cast<BugTrackerComment*>(var.value<BugTrackerComment*>()));
+            BugTrackerComment *newCom = qobject_cast<BugTrackerComment*>(var.value<BugTrackerComment*>());
+            if (newCom != nullptr)
+                m_comments.push_back(newCom);
         }
 
         emit commentsChanged(comments);
@@ -473,17 +512,22 @@ public:
     Q_INVOKABLE void loadCommentTicket(int id);
 
     Q_INVOKABLE void addTicket(QString title, QString message, QVariantList users, QVariantList tags);
-    Q_INVOKABLE void modifyTicket(/*Add fields here...*/);
+    Q_INVOKABLE void modifyTicket(int idTicket, QString title, QString message);
+    Q_INVOKABLE void closeTicket(int idTicket);
+    Q_INVOKABLE void reopenTicket(int idTicket);
+
     Q_INVOKABLE void addUsersToTicket(int idTicket, int idUsers);
     Q_INVOKABLE void removeUsersToTicket(int idTicket, int idUsers);
+
     Q_INVOKABLE void addTagsToTicket(int idTicket, int idTag);
     Q_INVOKABLE void removeTagsToTicket(int idTicket, int idTag);
+    Q_INVOKABLE void removeTags(int idTag);
     Q_INVOKABLE void createAndAddTagsToTicket(int idTicket, QString tag);
-    Q_INVOKABLE void closeTicket(int idTicket);
 
-    Q_INVOKABLE void addComment(QString comment);
-    Q_INVOKABLE void removeComment(int idComment);
-    Q_INVOKABLE void modifyComment(QString comment);
+
+    Q_INVOKABLE void addComment(int idTicket, QString comment);
+    Q_INVOKABLE void removeComment(int idComment, int idTicket);
+    Q_INVOKABLE void modifyComment(int idComment, QString comment, int idTicket);
 
     QVariantList closedTickets() const
     {
@@ -535,6 +579,9 @@ signals:
 
     void tagsChanged(QVariantList tags);
 
+    void error(QString title, QString message);
+    void notif(QString message);
+
 public slots:
     void onLoadClosedTicketDone(int id, QByteArray data);
     void onLoadClosedTicketFail(int id, QByteArray data);
@@ -550,6 +597,26 @@ public slots:
     void onAddTagFail(int id, QByteArray data);
     void onAddTicketDone(int id, QByteArray data);
     void onAddTicketFail(int id, QByteArray data);
+    void onAddUsersDone(int id, QByteArray data);
+    void onAddUsersFail(int id, QByteArray data);
+    void onAssignTagDone(int id, QByteArray data);
+    void onAssignTagFail(int id, QByteArray data);
+    void onRemoveTagsToTicketDone(int id, QByteArray data);
+    void onRemoveTagsToTicketFail(int id, QByteArray data);
+    void onDeleteTagDone(int id, QByteArray data);
+    void onDeleteTagFail(int id, QByteArray data);
+    void onModifyTicketDone(int id, QByteArray data);
+    void onModifyTicketFail(int id, QByteArray data);
+    void onCloseDone(int id, QByteArray data);
+    void onCloseFail(int id, QByteArray data);
+    void onAddCommentDone(int id, QByteArray data);
+    void onAddCommentFail(int id, QByteArray data);
+    void onReopenDone(int id, QByteArray data);
+    void onReopenFail(int id, QByteArray data);
+    void onRemoveCommentDone(int id, QByteArray data);
+    void onRemoveCommentFail(int id, QByteArray data);
+    void onEditCommentDone(int id, QByteArray data);
+    void onEditCommentFail(int id, QByteArray data);
 
     void setClosedTickets(QVariantList closedTickets)
     {
@@ -593,13 +660,20 @@ public slots:
 
 private:
 
+    BugTrackerTicketData *getTicketById(int id);
+
     QList<BugTrackerTicketData*> m_closedTickets;
     QList<BugTrackerTicketData*> m_openTickets;
     QList<BugTrackerTicketData*> m_yoursTickets;
     QList<BugTrackerTags*> m_tags;
+
     QMap<int, int> m_loadingComment;
     QMap<int, int> m_addingComment;
+    QMap<int, int> m_removeComment;
+    QMap<int, int> m_editComment;
+
     QMap<int, int> m_addingTags;
+    QMap<int, int> m_assignTags;
 };
 
 #endif // BUGTRACKERMODEL_H

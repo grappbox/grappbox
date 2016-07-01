@@ -86,7 +86,7 @@ Column {
         width: parent.width
     }
 
-    Row {
+    /*Row {
 
         anchors.left: parent.left
         anchors.right: parent.right
@@ -169,7 +169,7 @@ Column {
                 }
             }
         }
-    }
+    }*/
 
     RowLayout {
         Layout.alignment: Qt.AlignRight
