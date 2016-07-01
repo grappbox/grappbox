@@ -725,7 +725,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/whiteboard/deleteObject Delete object
+	* @api {put} /V0.2/whiteboard/deleteobject Delete object
 	* @apiName deleteObject
 	* @apiGroup Whiteboard
 	* @apiDescription Get the last object created to delete from rubber position and radius
@@ -835,10 +835,13 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$toDel = $this->checkDeletion($objects, $content->center, $content->radius);
 
 		$data = array();
-		$value = $toDel;
-		$value->setDeletedAt(new DateTime("now"));
-		$em->persist($value);
-		$em->flush();
+		if ($toDel != null)
+		{
+			$value = $toDel;
+			$value->setDeletedAt(new DateTime("now"));
+			$em->persist($value);
+			$em->flush();
+		}
 
 		$data[] = $value->objectToArray();
 		return $this->setSuccess("1.10.1", "Whiteboard", "deleteObject", "Complete Success", $data);
