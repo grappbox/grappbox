@@ -22,6 +22,7 @@
 /* ======================================================== */
 
 body { overflow-x: hidden; }
+body.modal-open { overflow: hidden; }
 
 body .container .well p,
 body .container-fluid .well p,
@@ -73,6 +74,14 @@ section:last-child { margin: 30px 0 60px 0; }
 .modal-content { border-radius: 0; }
 .modal-title { font-weight: 400; }
 .modal-content .modal-body + .modal-footer { padding: 20px; }
+.modal-content .modal-footer button { padding: 8px 30px; }
+.modal-backdrop { background: #000; }
+.modal-backdrop.in { filter: alpha(opacity=60); opacity: .6; }
+
+@media (min-width: 768px) {
+  .modal .modal-dialog { margin: 90px auto; }
+  .submodal .modal-dialog { margin: 210px auto; }
+}
 
 .ui-notification > .message { overflow: hidden!important; text-overflow: ellipsis; }
 .ui-notification > h3 { font-weight: 400; }
@@ -83,8 +92,10 @@ section:last-child { margin: 30px 0 60px 0; }
 .well-soft { background: #fafafa!important; }
 .well-ext { min-height: 260px; }
 .no-shadow { box-shadow: none!important; }
-.border { border: 1px solid #bdbdbd!important; }
+.border { border: 1px solid #bdbdbd!important; border-radius: 0; }
 
+.error { text-align: center; margin: 30px 0 45px 0; }
+.modal .error { margin: 45px 0 30px 0; }
 
 
 /* ================================================================== */
@@ -95,10 +106,12 @@ section:last-child { margin: 30px 0 60px 0; }
 .spinner > div { position: relative; box-sizing: border-box; }
 .spinner { display: block; width: 48px; height: 48px; font-size: 0; color: #fff; padding: 10px 0 0 0; margin: 0 auto; border: none!important; }
 .spinner > div { display: inline-block; float: none; border: 0 solid #616161; width: 48px; height: 48px; background: transparent; border-width: 3px; border-bottom-color: transparent; border-radius: 100%; animation: ball-clip-rotate .75s linear infinite; }
+
 .spinner.master { width: 40px; height: 40px; top: 50px; margin: 0 auto; }
 .spinner.master > div { width: 40px; height: 40px; border-width: 3px; }
+
 .spinner.section { margin-top: 90px; }
-.spinner.data { margin-top: 30px; }
+.spinner.data { margin: 30px auto; padding: 0; }
 
 @keyframes ball-clip-rotate { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
 
@@ -226,11 +239,49 @@ section:last-child { margin: 30px 0 60px 0; }
 /* ==================== SECTION: TIMELINE ==================== */
 /* =========================================================== */
 
-#timeline .tab-pane.active .line::before { content: ''; position: absolute; top: 0; left: 18px; height: 100%; width: 2px; background: #c0392b; }
-.each-timeline { float: none; display: block; }
+#timeline .tab-pane.active .line::before { content: ''; position: absolute; top: 0; left: 18px; height: 100%; width: 2px; background: #bdbdbd; }
+#close-message .btn { margin: 35px 0 0 0; }
 
-@media (min-width: 992px) { #timeline .tab-pane.active .line::before { left: 50%; margin: 0 10px 0 0; } }
-@media (max-width: 992px) { .each-timeline { margin-left: 25px; } }
+.each-timeline > .dot { position: absolute; top: 15%; bottom: auto; width: 25px; height: 25px; background: #03a9f4; border: 5px solid #fafafa; border-radius: 50%; }
+
+.each-data.message { margin: -10px 0 35px 0; }
+.each-data.comments > h4 { margin: 0 0 10px 0; float: left; }
+.each-data.comments > .btn { float: right; top: -15px; }
+.each-comment { padding: 0; }
+.each-comment .well { margin: 0 0 5px 0; padding: 14px 14px 5px 14px!important; }
+
+@media (min-width: 1200px) {
+  .each-timeline.even > .well::before { right: auto; left: 16px!important }
+  .each-timeline.odd > .well::before { right: 16px!important; left: auto; }  
+}
+
+@media (min-width: 992px) {
+  .each-timeline > .well { width: 97%; }
+  .each-timeline.even > .well { float: right; }
+  .each-timeline > .well::before { content: ''; position: absolute; top: 16%; bottom: auto; border-color: rgba(0, 0, 0, 0) #bdbdbd; border-style: solid; height: 0; width: 0; }
+  .each-timeline.even > .well::before { border-width: 10px 15px 10px 0; right: auto; left: 13px; }
+  .each-timeline.odd > .well::before { border-width: 10px 0 10px 15px; right: 13px; left: auto; }
+  .each-timeline.even > .dot { left: -13px; }
+  .each-timeline.odd > .dot { right: -13px; }
+
+  #timeline .tab-pane.active .line::before { left: 50%; margin: 0 10px 0 0; }
+}
+
+@media (max-width: 992px) {
+  .each-timeline { margin-left: 25px; }
+  .each-timeline > .dot { left: -18px; }
+}
+
+@media (max-width: 768px) {
+  .each-comment .action { text-align: center; margin: 0 0 15px 0; }
+  .each-comment .action button { margin: 0 10px; }
+}
+
+@media (min-width: 768px) {
+  .each-comment .well button { position: absolute; top: 50%; bottom: 50%; height: 35px!important; min-width: 35px!important; width: 35px!important; }
+  .each-comment .well button:nth-of-type(1) { right: 2%; }
+  .each-comment .well button:nth-of-type(2) { right: 0; margin: auto 65px auto auto; }
+}
 
 
 
