@@ -3,7 +3,6 @@
 namespace MongoBundle\Document;
 
 
-
 /**
  * MongoBundle\Document\StatLateTasks
  */
