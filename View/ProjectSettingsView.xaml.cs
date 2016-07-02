@@ -25,6 +25,8 @@ using System.Collections.ObjectModel;
 using Windows.UI.Popups;
 using GrappBox.Resources;
 using Windows.UI.Core;
+using GrappBox.Ressources;
+using Windows.UI;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -39,6 +41,7 @@ namespace GrappBox.View
         String ImagePath;
         ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
         DateTime defaultDate = DateTime.MinValue;
+        private bool isNew = false;
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
@@ -120,19 +123,34 @@ namespace GrappBox.View
             LoadingBar.Visibility = Visibility.Visible;
 
             this.navigationHelper.OnNavigatedTo(e);
-            await vm.getProjectSettings();
-            await vm.getProjectUsers();
-            await vm.getCustomerAccesses();
-            await vm.getRoles();
-
-            if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
+            if (e.Parameter == null)
             {
-                DeleteDate.Visibility = Visibility.Visible;
-                DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
+                await vm.getProjectSettings();
+                await vm.getProjectUsers();
+                await vm.getCustomerAccesses();
+                await vm.getRoles();
+
+                UpdatePassword.Visibility = Visibility.Visible;
+                NewPassword.Visibility = Visibility.Collapsed;
+
+                if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
+                {
+                    DeleteDate.Visibility = Visibility.Visible;
+                    DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
+                }
+                else
+                {
+                    DeleteDate.Visibility = Visibility.Collapsed;
+                }
             }
             else
             {
-                DeleteDate.Visibility = Visibility.Collapsed;
+                isNew = true;
+                User.IsEnabled = false;
+                CustomerAccess.IsEnabled = false;
+                Roles.IsEnabled = false;
+                UpdatePassword.Visibility = Visibility.Collapsed;
+                NewPassword.Visibility = Visibility.Visible;
             }
 
             LoadingBar.IsEnabled = false;
@@ -210,7 +228,40 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
-            await vm.updateProjectSettings();
+            if (isNew == false)
+            {
+                if (oldPassword.Password == "" && newPassword.Password == "")
+                    await vm.updateProjectSettings();
+                else
+                {
+                    if (newPassword.Password != retypePassword.Password)
+                    {
+                        newPassword.BorderBrush = new SolidColorBrush(Colors.Red);
+                        retypePassword.BorderBrush = new SolidColorBrush(Colors.Red);
+                        MessageDialog msgbox = new MessageDialog("New Password and Retype Password must be the same");
+                        await msgbox.ShowAsync();
+                    }
+                    else
+                    {
+                        await vm.updateProjectSettings(oldPassword.Password, newPassword.Password);
+                        newPassword.BorderBrush = new SolidColorBrush();
+                        retypePassword.BorderBrush = new SolidColorBrush();
+                    }
+                }
+            }
+            else
+            {
+                await vm.createProject(password.Password);
+                if (SettingsManager.getOption<int>("ProjectIdChoosen") != 0)
+                {
+                    UpdatePassword.Visibility = Visibility.Visible;
+                    NewPassword.Visibility = Visibility.Collapsed;
+                    User.IsEnabled = false;
+                    CustomerAccess.IsEnabled = false;
+                    Roles.IsEnabled = false;
+                    isNew = false;
+                }
+            }
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
@@ -248,17 +299,23 @@ namespace GrappBox.View
                 //retreive
                 await vm.retrieveProject();
                 await vm.getProjectSettings();
-                DeleteDate.Visibility = Visibility.Collapsed;
-                ProjectDelete.Label = "Delete Project";
+                if (vm.DeletedAt == null)
+                {
+                    DeleteDate.Visibility = Visibility.Collapsed;
+                    ProjectDelete.Label = "Delete Project";
+                }
             }
             else
             {
                 //delete
                 await vm.deleteProject();
                 await vm.getProjectSettings();
-                DeleteDate.Visibility = Visibility.Visible;
-                DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
-                ProjectDelete.Label = "Retreive Project";
+                if (vm.DeletedAt != null)
+                {
+                    DeleteDate.Visibility = Visibility.Visible;
+                    DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
+                    ProjectDelete.Label = "Retreive Project";
+                }
             }
 
             LoadingBar.IsEnabled = false;
@@ -273,7 +330,7 @@ namespace GrappBox.View
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
-            
+
             if (num == 0)
             {
                 CB.Visibility = Visibility.Visible;

@@ -58,5 +58,10 @@ namespace GrappBox.View
             SettingsManager.setOption("ProjectNameChoosen", plm.Name);
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
         }
+
+        private async void CreateProject_Click(object sender, RoutedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.ProjectSettingsView), "newProject"));
+        }
     }
 }

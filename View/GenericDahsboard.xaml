@@ -9,6 +9,13 @@
     xmlns:customControl="using:GrappBox.CustomControler"
     xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.BottomAppBar>
+        <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
+            <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+
     <slideMenu:SlideInMenuContentControl  x:Name="slideInMenuContentControl" PageTitle="Dashboard" IsDoubleTapEnabled="False">
         <Grid>
             <ListView
