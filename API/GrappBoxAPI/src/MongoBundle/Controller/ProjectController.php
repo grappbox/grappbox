@@ -140,7 +140,9 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		//$this->get('service_stat')->initiateStatistics($project);
 
-		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id, "role" => $role, "projectuserrole" => $pur));
+		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id,
+		"role" => $role->objectToArray(),
+		"projectuserrole" => array("project" => $pur->getProjectId(), "user" => $pur->getUserId(), "role" => $pur->getRoleId()));
 	}
 
 	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
