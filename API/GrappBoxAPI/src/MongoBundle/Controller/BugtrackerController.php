@@ -273,12 +273,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.4.4", "Bugtracker", "getComments", "Bad Parameter: id");
 
-		$tickets = $em->getRepository("MongoBundle:Bug")->createQueryBuilder()
-								->field("projects.id")->equals($project->getId())
-								->field("deletedAt")->equals(null)
-								->field("parentId")->equals($ticketId)
-								->getQuery()->execute();
-		//findBy(array("projects.id" => $project->getId(), "deletedAt" => null, "parentId" => $ticketId));
+		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects.id" => $project->getId(), "deletedAt" => null, "parentId" => $ticketId));
+
+		if (count($tickets) == 0)
+			print("no tickets");
 
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
