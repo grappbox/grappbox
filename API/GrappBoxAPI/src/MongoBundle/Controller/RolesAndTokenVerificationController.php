@@ -69,6 +69,9 @@ class RolesAndTokenVerificationController extends Controller
 		$result = $em->getRepository("MongoBundle:Role")->find($qb->getRoleId());
 
 		$res = $result->objectToArray();
+
+		print($res);
+
 		return $res[$role];
 	}
 
