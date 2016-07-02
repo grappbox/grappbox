@@ -70,7 +70,7 @@ class RolesAndTokenVerificationController extends Controller
 
 		$res = $result->objectToArray();
 
-		print(json_encode($res));
+		print($res[$role]);
 
 		return $res[$role];
 	}
