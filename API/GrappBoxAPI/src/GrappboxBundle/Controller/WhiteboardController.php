@@ -451,7 +451,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
-		if (!array_key_exists('modification', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('object', $content) || !array_key_exists('token', $content))
 		 	return $this->setBadRequest("10.4.6", "Whiteboard", "push", "Missing Parameter");
 		$user = $this->checkToken($content->token);
 		if (!$user)
@@ -800,7 +800,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$value->setDeletedAt(new DateTime("now"));
 			$em->persist($value);
 			$em->flush();
-			$data[] = $value->objectToArray();
+			$data = $value->objectToArray();
 		}
 		if (count($data) <= 0)
 			return $this->setNoDataSuccess("1.10.3", "Whiteboard", "deleteObject");
@@ -821,18 +821,18 @@ class WhiteboardController extends RolesAndTokenVerificationController
 					break;
 				case 'RECTANGLE':
 					$square = $this->determineMinimalSquare($obj);
-					if ($this->intersectionWithSquare($center, $radius, $square))
+					if ($this->intersectionWithSquare($center, $radius, $obj, $square))
 						return $object;
 					break;
 				case 'TEXT':
 					$square = $this->determineMinimalSquare($obj);
-					if ($this->intersectionWithSquare($center, $radius, $square))
+					if ($this->intersectionWithText($center, $radius, $obj, $square))
 						return $object;
 					break;
 				case 'DIAMOND':
 					$square = $this->determineMinimalSquare($obj);
 					$diamond = $this->determineDiamond($square);
-					if ($this->intersectionWithSquare($center, $radius, $diamond))
+					if ($this->intersectionWithDiamond($center, $radius, $obj, $diamond))
 						return $object;
 					break;
 				case 'ELLIPSE':
@@ -841,7 +841,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 					break;
 				default:
 					$square = $this->determineMinimalSquare($obj);
-					if ($this->intersectionWithSquare($center, $radius, $square))
+					if ($this->intersectionWithSquare($center, $radius, $obj, $square))
 						return $object;
 					break;
 			}
@@ -910,11 +910,113 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		}
 		return false;
 	}
-	private function intersectionWithSquare($center, $radius, $square)
+	private function intersectionWithText($center, $radius, $obj, $square)
 	{
 		if ($this->intersectionWithLine($center, $radius, $square["A"], $square["B"]) || $this->intersectionWithLine($center, $radius, $square["B"], $square["C"])
 			|| $this->intersectionWithLine($center, $radius, $square["C"], $square["D"]) || $this->intersectionWithLine($center, $radius, $square["D"], $square["A"]))
 			return true;
+		$xStart = $obj->positionStart->x;
+		$yStart = $obj->positionStart->y;
+
+		$xEnd = $obj->positionEnd->x;
+		$yEnd = $obj->positionEnd->y;
+		if ($xStart > $xEnd)
+		{
+			$x = $xStart;
+			$xStart = $xEnd;
+			$xEnd = $x;
+		}
+		if ($yStart > $yEnd)
+		{
+			$y = $yStart;
+			$yStart = $yEnd;
+			$yEnd = $y;
+		}
+		if ($center->x >= $xStart && $center->x <= $xEnd)
+		{
+			if ($center->y >= $yStart && $center->y <= $yEnd)
+				return true;
+		}
+		return false;
+	}
+	private function intersectionWithSquare($center, $radius, $obj, $square)
+	{
+		if (($obj->background == "" || $obj->background == null) && $obj->type != "TEXT")
+		{
+			if ($this->intersectionWithLine($center, $radius, $square["A"], $square["B"]) || $this->intersectionWithLine($center, $radius, $square["B"], $square["C"])
+				|| $this->intersectionWithLine($center, $radius, $square["C"], $square["D"]) || $this->intersectionWithLine($center, $radius, $square["D"], $square["A"]))
+				return true;
+		}
+		else
+		{
+			if ($this->intersectionWithLine($center, $radius, $square["A"], $square["B"]) || $this->intersectionWithLine($center, $radius, $square["B"], $square["C"])
+				|| $this->intersectionWithLine($center, $radius, $square["C"], $square["D"]) || $this->intersectionWithLine($center, $radius, $square["D"], $square["A"]))
+				return true;
+			$xStart = $obj->positionStart->x;
+			$yStart = $obj->positionStart->y;
+
+			$xEnd = $obj->positionEnd->x;
+			$yEnd = $obj->positionEnd->y;
+			if ($xStart > $xEnd)
+			{
+				$x = $xStart;
+				$xStart = $xEnd;
+				$xEnd = $x;
+			}
+			if ($yStart > $yEnd)
+			{
+				$y = $yStart;
+				$yStart = $yEnd;
+				$yEnd = $y;
+			}
+			if ($center->x >= $xStart && $center->x <= $xEnd)
+			{
+				if ($center->y >= $yStart && $center->y <= $yEnd)
+					return true;
+			}
+		}
+		return false;
+	}
+	private function checkRight($center, $pointA, $pointB)
+	{
+		$Dx = $pointB["x"] - $pointA["x"];
+     	$Dy = $pointB["y"] - $pointA["y"];
+     	$Tx = $center->x - $pointA["x"];
+     	$Ty = $center->y - $pointA["y"];
+     	$d = $Dx*$Ty - $Dy*$Tx;
+     	if ($d<0)
+        	return true;
+        return false;
+	}
+	private function intersectionWithDiamond($center, $radius, $obj, $square)
+	{
+		if ($obj->background == "" || $obj->background == null)
+		{
+			if ($this->intersectionWithLine($center, $radius, $square["A"], $square["B"]) || $this->intersectionWithLine($center, $radius, $square["B"], $square["C"])
+				|| $this->intersectionWithLine($center, $radius, $square["C"], $square["D"]) || $this->intersectionWithLine($center, $radius, $square["D"], $square["A"]))
+				return true;
+		}
+		else
+		{
+			if ($this->intersectionWithLine($center, $radius, $square["A"], $square["B"]) || $this->intersectionWithLine($center, $radius, $square["B"], $square["C"])
+				|| $this->intersectionWithLine($center, $radius, $square["C"], $square["D"]) || $this->intersectionWithLine($center, $radius, $square["D"], $square["A"]))
+				return true;
+			$a = $this->checkRight($center, $square["A"], $square["B"]);
+			$b = $this->checkRight($center, $square["B"], $square["C"]);
+			$c = $this->checkRight($center, $square["C"], $square["D"]);
+			$d = $this->checkRight($center, $square["D"], $square["A"]);
+			if ($a == true && $b == true && $c == true && $d == true)
+				return true;
+			if ($a == false && $b == false && $c == $false && $d == false)
+			{
+				$a = $this->checkRight($center, $square["A"], $square["D"]);
+				$b = $this->checkRight($center, $square["D"], $square["C"]);
+				$c = $this->checkRight($center, $square["C"], $square["B"]);
+				$d = $this->checkRight($center, $square["B"], $square["A"]);
+				if ($a == true && $b == true && $c == true && $d == true)
+					return true;
+			}
+		}
 		return false;
 	}
 	private function intersectionWithEllipse($center, $radius, $obj)
