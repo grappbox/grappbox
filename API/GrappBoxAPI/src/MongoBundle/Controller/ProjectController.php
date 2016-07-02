@@ -78,10 +78,10 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setTwitter($content->twitter);
 
 		$em->persist($project);
-		$em->flush();
+		//$em->flush();
 
 		$project->addUser($user);
-		$em->flush();
+		//$em->flush();
 
 		$role = new Role();
 		$role->setName("Admin");
@@ -97,7 +97,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$role->setProjects($project);
 
 		$em->persist($role);
-		$em->flush();
+		//$em->flush();
 
 		$pur = new ProjectUserRole();
 		$pur->setProjectId($project->getId());
@@ -105,7 +105,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$pur->setRoleId($role->getId());
 
 		$em->persist($pur);
-		$em->flush();
+		//$em->flush();
 
 		$qb = $em->getRepository('MongoBundle:Tag')->createQueryBuilder();
 		$tags = $qb->getQuery()->execute();
@@ -121,7 +121,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			}
 		}
 
-		$em->flush();
+		//$em->flush();
 		$id = $project->getId();
 
 		$cloudClass = new CloudController();
@@ -133,7 +133,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$teamTimeline->setProjectId($project->getId());
 		$teamTimeline->setName("TeamTimeline - ".$project->getName());
 		$em->persist($teamTimeline);
-		$em->flush();
+		//$em->flush();
 
 		$customerTimeline = new Timeline();
 		$customerTimeline->setTypeId(1);
