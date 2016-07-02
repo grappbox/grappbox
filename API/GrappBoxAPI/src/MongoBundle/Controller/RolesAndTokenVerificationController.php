@@ -66,7 +66,7 @@ class RolesAndTokenVerificationController extends Controller
 
 		$qb = $em->getRepository("MongoBundle:ProjectUserRole")->findOneBy(array("userId" => $user->getId(), "projectId" => $projectId));
 
-		$result = $em->getRepository("MongoBundle:Role")->findOneBy($qb->getRoleId());
+		$result = $em->getRepository("MongoBundle:Role")->find($qb->getRoleId());
 
 		$res = $result->objectToArray();
 		return $res[$role];
