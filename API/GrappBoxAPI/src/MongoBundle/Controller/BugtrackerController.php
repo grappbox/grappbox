@@ -192,6 +192,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setClientOrigin($content->clientOrigin);
 		$bug->setEditedAt(new DateTime('now'));
 
+		$state = null;
 		if ($content->stateId != 0)
 			$state = $em->getRepository("MongoBundle:BugState")->find($content->stateId);
 		if ($state instanceof BugState)
@@ -467,7 +468,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$object = $bug->objectToArray();
-		$object['state'] = $em->getRepository("MongoBundle:BugState")->find($bug->getStateId())->objectToArray();
+		$object['state'] = null; // $em->getRepository("MongoBundle:BugState")->find($bug->getStateId())->objectToArray();
 		$object['tags'] = array();
 		foreach ($bug->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
