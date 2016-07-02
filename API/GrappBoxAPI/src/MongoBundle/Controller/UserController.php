@@ -21,6 +21,7 @@ use MongoBundle\Document\User;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiDescription")
  */
 class UserController extends RolesAndTokenVerificationController
 {
