@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------
 mongo_accountAdministration_login:
     path:       accountadministration/login
-    defaults:   { _controller: MongoBundle:AccountAdministration:login }
+    defaults:   { _controller: MongoBundle:AccountAdministration:login, _format: json }
     methods:    [POST]
 
 mongo_accountAdministration_logout:

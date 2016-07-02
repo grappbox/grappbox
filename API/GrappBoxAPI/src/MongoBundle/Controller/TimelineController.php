@@ -45,7 +45,7 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		$timeline_array = array();
 		foreach ($timelines as $key => $value) {
-			$type = $em->getRepository('GrappboxBundle:TimelineType')->find($value->getTypeId());
+			$type = $em->getRepository('MongoBundle:TimelineType')->find($value->getTypeId());
 			if (($this->checkRoles($user, $id, "customerTimeline") > 1 && strcmp($type->getName(), "customerTimeline") == 0)
 					|| ($this->checkRoles($user, $id, "teamTimeline") > 1 && strcmp($type->getName(), "teamTimeline") == 0))
 			{
@@ -241,7 +241,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
 				return ($this->setNoRightsError());
 		}
-		$messages = $em->getRepository('GrappboxBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "ASC"));
+		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "ASC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$timelineMessages[] = $value->objectToArray();
@@ -285,7 +285,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "DESC"), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
-			$query = $em->getRepository('GrappboxBundle:TimelineMessage')->createQueryBuilder('m');
+			$query = $em->getRepository('MongoBundle:TimelineMessage')->createQueryBuilder('m');
 			$commentsNb = $query->select($query->expr()->count('m.id'))
 						->where("m.parentId = :parent AND m.deletedAt IS NULL")
 						->setParameter("parent", $value->getId())

@@ -16,7 +16,7 @@ use MongoBundle\Document\Role;
 use MongoBundle\Document\ProjectUserRole;
 use MongoBundle\Document\Tag;
 use MongoBundle\Document\Timeline;
-use GrappboxBundle\Entity\Color;
+use MongoBundle\Document\Color;
 
 /**
 *  @IgnoreAnnotation("apiName")
@@ -272,7 +272,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$contactMail = $project->getContactEmail();
 		$facebook = $project->getFacebook();
 		$twitter = $project->getTwitter();
-		$color = $em->getRepository('GrappboxBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
 		if ($color === null)
 			$color = $project->getColor();
 		else
@@ -755,7 +755,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("6.15.3", "Project", "getProjectLogo"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$project = $em->getRepository('GrappboxBundle:Project')->find($projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 
 		if ($project === null)
 			return $this->setBadRequest("6.15.4", "Project", "getProjectLogo", "Bad Parameter: projectId");
