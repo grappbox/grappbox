@@ -742,7 +742,10 @@ class StatisticController extends RolesAndTokenVerificationController
                      ->setParameters(array('project' => $project, 'tag' => $tag))
                      ->getQuery()->getSingleScalarResult();
 
-      $percentage = ($number * 100) / $totalBugs;
+      if ($totalBugs > 0)
+        $percentage = ($number * 100) / $totalBugs;
+      else
+        $percentage = 0;
 
       $statBugsTagsRepartition = $em->getRepository('GrappboxBundle:StatBugsTagsRepartition')->findOneBy(array('project' => $project, 'name' => $tag->getName()));
       if ($statBugsTagsRepartition === null)
