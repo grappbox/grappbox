@@ -812,7 +812,7 @@ class Project
      *
      * @param MongoBundle\Document\Color $colors
      */
-    public function addColor( MongoBundle\Document\Color $colors)
+    public function addColor(\MongoBundle\Document\Color $colors)
     {
         $this->colors[] = $colors;
 
@@ -824,7 +824,7 @@ class Project
      *
      * @param  MongoBundle\Document\Color $colors
      */
-    public function removeColor( MongoBundle\Document\Color $colors)
+    public function removeColor(\MongoBundle\Document\Color $colors)
     {
         $this->colors->removeElement($colors);
     }
@@ -844,7 +844,7 @@ class Project
      *
      * @param MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement
      */
-    public function addStatProjectAdvancement(MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
+    public function addStatProjectAdvancement(\MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
     {
         $this->statProjectAdvancement[] = $statProjectAdvancement;
 
@@ -856,7 +856,7 @@ class Project
      *
      * @param MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement
      */
-    public function removeStatProjectAdvancement(MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
+    public function removeStatProjectAdvancement(\MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
     {
         $this->statProjectAdvancement->removeElement($statProjectAdvancement);
     }
@@ -876,7 +876,7 @@ class Project
      *
      * @param MongoBundle\Document\StatLateTasks $statLateTasks
      */
-    public function addStatLateTasks(MongoBundle\Document\StatLateTasks $statLateTasks)
+    public function addStatLateTasks(\MongoBundle\Document\StatLateTasks $statLateTasks)
     {
         $this->statLateTasks[] = $statLateTasks;
 
@@ -888,7 +888,7 @@ class Project
      *
      * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
      */
-    public function removeStatLateTasks(MongoBundle\Document\StatLateTasks $statLateTasks)
+    public function removeStatLateTasks(\MongoBundle\Document\StatLateTasks $statLateTasks)
     {
         $this->statLateTasks->removeElement($statLateTasks);
     }
@@ -908,7 +908,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsEvolution $statBugsEvolution
      */
-    public function addStatBugsEvolution(MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
+    public function addStatBugsEvolution(\MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
     {
         $this->statBugsEvolution[] = $statBugsEvolution;
 
@@ -920,7 +920,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsEvolution $statBugsEvolution
      */
-    public function removeStatBugsEvolution(MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
+    public function removeStatBugsEvolution(\MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
     {
         $this->statBugsEvolution->removeElement($statBugsEvolution);
     }
@@ -940,7 +940,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition
      */
-    public function addStatBugsTagsRepartition(MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
+    public function addStatBugsTagsRepartition(\MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
     {
         $this->statBugsTagsRepartition[] = $statBugsTagsRepartition;
 
@@ -952,7 +952,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition
      */
-    public function removeStatBugsTagsRepartition(MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
+    public function removeStatBugsTagsRepartition(\MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
     {
         $this->statBugsTagsRepartition->removeElement($statBugsTagsRepartition);
     }
@@ -972,7 +972,7 @@ class Project
      *
      * @param MongoBundle\Document\tatBugAssignationTracker $statBugAssignationTracker
      */
-    public function addStatBugAssignationTracker(MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
+    public function addStatBugAssignationTracker(\MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
     {
         $this->statBugAssignationTracker[] = $statBugAssignationTracker;
 
@@ -984,7 +984,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker
      */
-    public function removeStatBugAssignationTracker(MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
+    public function removeStatBugAssignationTracker(\MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
     {
         $this->statBugAssignationTracker->removeElement($statBugAssignationTracker);
     }
@@ -1004,7 +1004,7 @@ class Project
      *
      * @param MongoBundle\Document\tatBugsUsersRepartition $statBugsUsersRepartition
      */
-    public function addStatBugsUsersRepartition(MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
+    public function addStatBugsUsersRepartition(\MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
     {
         $this->statBugsUsersRepartition[] = $statBugsUsersRepartition;
 
@@ -1016,7 +1016,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition
      */
-    public function removeStatBugsUsersRepartition(MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
+    public function removeStatBugsUsersRepartition(\MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
     {
         $this->statBugsUsersRepartition->removeElement($statBugsUsersRepartition);
     }
@@ -1036,7 +1036,7 @@ class Project
      *
      * @param MongoBundle\Document\StatTasksRepartition $statTasksRepartition
      */
-    public function addStatTasksRepartition(MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
+    public function addStatTasksRepartition(\MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
     {
         $this->statTasksRepartition[] = $statTasksRepartition;
 
@@ -1048,7 +1048,7 @@ class Project
      *
      * @param MongoBundle\Document\StatTasksRepartition $statTasksRepartition
      */
-    public function removeStatTasksRepartition(MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
+    public function removeStatTasksRepartition(\MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
     {
         $this->statTasksRepartition->removeElement($statTasksRepartition);
     }
@@ -1068,7 +1068,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge
      */
-    public function addStatUserWorkingCharge(MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
+    public function addStatUserWorkingCharge(\MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
     {
         $this->statUserWorkingCharge[] = $statUserWorkingCharge;
 
@@ -1080,7 +1080,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge
      */
-    public function removeStatUserWorkingCharge(MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
+    public function removeStatUserWorkingCharge(\MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
     {
         $this->statUserWorkingCharge->removeElement($statUserWorkingCharge);
     }
@@ -1100,7 +1100,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement
      */
-    public function addStatUserTasksAdvancement(MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
+    public function addStatUserTasksAdvancement(\MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
     {
         $this->statUserTasksAdvancement[] = $statUserTasksAdvancement;
 
@@ -1112,7 +1112,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement
      */
-    public function removeStatUserTasksAdvancement(MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
+    public function removeStatUserTasksAdvancement(\MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
     {
         $this->statUserTasksAdvancement->removeElement($statUserTasksAdvancement);
     }
@@ -1132,7 +1132,7 @@ class Project
      *
      * @param MongoBundle\Document\StatStorageSize $statStorageSize
      */
-    public function addStatStorageSize(MongoBundle\Document\StatStorageSize $statStorageSize)
+    public function addStatStorageSize(\MongoBundle\Document\StatStorageSize $statStorageSize)
     {
         $this->statStorageSize[] = $statStorageSize;
 
@@ -1144,7 +1144,7 @@ class Project
      *
      * @param MongoBundle\Document\StatStorageSize $statStorageSize
      */
-    public function removeStatStorageSize(MongoBundle\Document\StatStorageSize $statStorageSize)
+    public function removeStatStorageSize(\MongoBundle\Document\StatStorageSize $statStorageSize)
     {
         $this->statStorageSize->removeElement($statStorageSize);
     }
