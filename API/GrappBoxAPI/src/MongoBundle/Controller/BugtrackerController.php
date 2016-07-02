@@ -90,7 +90,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
 			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
-			|| !array_key_exists("clientorigin", $content))
+			|| !array_key_exists("clientOrigin", $content))
 				return $this->setBadRequest("4.2.6", "Bugtracker", "postTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
