@@ -346,12 +346,14 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if ($whiteboard->getDeletedAt())
 			return $this->setBadRequest("Whiteboard Deleted");
 		$arr = $whiteboard->objectToArray();
-		// foreach ($whiteboard->getObjects() as $key => $obj) {
-		// 	$object = $obj->objectToArray();
-		// 	$object["object"] = $obj->getObject();
-		// 	$arr["content"][] = json_decode($obj->getObject());
-		// }
-		$arr["content"] =  $this->serializeInArray($whiteboard->getObjects());
+		foreach ($whiteboard->getObjects() as $key => $obj) {
+			if ($obj->getDeletedAt() == null)
+			{
+				$object = $obj->objectToArray();
+				$arr["content"][] = $object;
+			}
+		}
+		//$arr["content"] =  $this->serializeInArray($whiteboard->getObjects());
 		return $this->setSuccess("1.10.1", "Whiteboard", "open", "Complete Success", $arr);
 	}
 	/**
