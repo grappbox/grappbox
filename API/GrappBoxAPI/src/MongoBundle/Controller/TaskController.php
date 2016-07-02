@@ -85,7 +85,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.1.3", "Task", "taskcreation"));
 
-		if (!$this->checkRoles($user, $content->projectId, "task") < 2)
+		if ($this->checkRoles($user, $content->projectId, "task") < 2)
 			return ($this->setNoRightsError("12.1.9", "Task", "taskcreation"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -329,7 +329,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.2.4", "Task", "taskupdate", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 2)
+		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.2.9", "Task", "taskupdate"));
 
 		$taskDep = $task->getTaskDepended();
@@ -654,7 +654,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.3.4", "Task", "taskinformations", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 1)
+		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.3.9", "Task", "taskinformations"));
 
 		$arrTasks = array();
@@ -745,7 +745,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.4.4", "Task", "archivetask", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 1)
+		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.4.9", "Task", "archivetask"));
 
 		$task->setDeletedAt(new \Datetime);
@@ -779,7 +779,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.5.4", "Task", "taskdelete", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 2)
+		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.5.9", "Task", "taskdelete"));
 
 		$em->remove($task);
@@ -825,7 +825,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: You can't add someone on a milestone");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 2)
+		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.6.9", "Task", "assignusertotask"));
 
 		$userToAdd = $em->getRepository('MongoBundle:User')->find($content->userId);
@@ -890,7 +890,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 2)
+		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.7.9", "Task", "removeusertotask"));
 
 		$userToRemove = $em->getRepository('MongoBundle:User')->find($userId);
@@ -959,7 +959,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.8.3", "Task", "tagcreation"));
 
-		if (!$this->checkRoles($user, $content->projectId, "task") < 2)
+		if ($this->checkRoles($user, $content->projectId, "task") < 2)
 			return ($this->setNoRightsError("12.8.9", "Task", "tagcreation"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -1006,7 +1006,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.9.4", "Task", "tagupdate", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 2)
+		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.9.9", "Task", "tagupdate"));
 
 		$tag->setName($content->name);
@@ -1037,7 +1037,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.10.4", "Task", "taginformations", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 1)
+		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.10.9", "Task", "taginformations"));
 
 		return $this->setSuccess("1.12.1", "Task", "taginformations", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
@@ -1062,7 +1062,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($tag === null)
 			return $this->setBadRequest("12.11.4", "Task", "deletetag", "Bad Parameter: tagId");
 
-		if (!$this->checkRoles($user, $tag->getProject()->getId(), "task") < 2)
+		if ($this->checkRoles($user, $tag->getProject()->getId(), "task") < 2)
 			return ($this->setNoRightsError("12.11.9", "Task", "deletetag"));
 
 		$em->remove($tag);
@@ -1102,7 +1102,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.12.4", "Task", "assigntagtotask", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 2)
+		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.12.9", "Task", "assigntagtotask"));
 
 		$tagToAdd = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
@@ -1142,7 +1142,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("12.13.4", "Task", "removetagtotask", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "task") < 2)
+		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.13.9", "Task", "removetagtotask"));
 
 		$tagToRemove = $em->getRepository('MongoBundle:Tag')->find($tagId);
@@ -1183,7 +1183,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.14.3", "Task", "getprojecttasks"));
 
-		if (!$this->checkRoles($user, $projectId, "task") < 1)
+		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.14.9", "Task", "getprojecttasks"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -1288,7 +1288,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.15.3", "Task", "getprojecttags"));
 
-		if (!$this->checkRoles($user, $projectId, "task") < 1)
+		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.15.9", "Task", "getprojecttags"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();

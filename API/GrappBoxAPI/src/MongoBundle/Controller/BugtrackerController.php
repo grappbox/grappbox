@@ -49,7 +49,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($ticket instanceof Bug))
 			return $this->setBadRequest("4.1.4", "Bugtracker", "getTicket", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker") < 1)
+		if ($this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker") < 1)
 			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
 
 		$object = $ticket->objectToArray();
@@ -97,7 +97,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.2.3", "Bugtracker", "postTicket"));
 
-		if (!$this->checkRoles($user, $content->projectId, "bugtracker") < 2)
+		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 2)
 			return ($this->setNoRightsError("4.2.9", "Bugtracker", "postTicket"));
 
 		$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
@@ -184,7 +184,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($bug instanceof Bug))
 			return $this->setBadRequest("4.3.4", "Bugtracker", "postTicket", "Bad Parameter: bugId");
 
-		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
+		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.3.9", "Bugtracker", "postTicket"));
 
 		$bug->setTitle($content->title);
@@ -264,7 +264,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("4.4.3", "Bugtracker", "getComments"));
-		if (!$this->checkRoles($user, $id, "bugtracker") < 1)
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.4.9", "Bugtracker", "getComments"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -306,7 +306,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.5.3", "Bugtracker", "postComments"));
 
-		if (!$this->checkRoles($user, $content->projectId, "bugtracker") < 1)
+		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.5.9", "Bugtracker", "postComments"));
 
 		$project = $em->getRepository("MongoBundle:Project")->find($content->projectId);
@@ -370,7 +370,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.6.3", "Bugtracker", "editComments"));
 
-		if (!$this->checkRoles($user, $content->projectId, "bugtracker") < 1)
+		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.6.9", "Bugtracker", "editComments"));
 
 		$bug = $em->getRepository("MongoBundle:Bug")->find($content->commentId);
@@ -415,7 +415,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($bug instanceof Bug))
 			return $this->setBadRequest("4.7.4", "Bugtracker", "setParticipants", "Bad Parameter: bugId");
 
-		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
+		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.7.9", "Bugtracker", "setParticipants"));
 
 
@@ -510,7 +510,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($bug instanceof Bug))
 			return $this->setBadRequest("4.8.4", "Bugtracker", "closeTicket", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
+		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.8.9", "Bugtracker", "closeTicket"));
 
 		$bug->setDeletedAt(new DateTime('now'));
@@ -563,7 +563,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.9.4", "Bugtracker", "getTickets", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $id, "bugtracker") < 1)
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.9.9", "Bugtracker", "getTickets"));
 
 		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
@@ -668,7 +668,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.10.4", "Bugtracker", "getLastTickets", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $id, "bugtracker"))
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.10.9", "Bugtracker", "getLastTickets"));
 
 		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
@@ -725,7 +725,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.11.4", "Bugtracker", "getLastClosedTickets", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $id, "bugtracker") < 1)
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.11.9", "Bugtracker", "getLastClosedTickets"));
 
 		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "parentId" => null), array(), $limit, $offset);
@@ -779,7 +779,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.12.4", "Bugtracker", "getTicketsByUser", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $id, "bugtracker") < 1)
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.12.9", "Bugtracker", "getTicketsByUser"));
 
 		$tickets = $em->getRepository("MongoBundle:Bug")->createQueryBuilder('b')
@@ -835,7 +835,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.13.4", "Bugtracker", "getTicketsByStatus", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $id, "bugtracker") < 1)
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.13.9", "Bugtracker", "getTicketsByStatus"));
 
 		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
@@ -975,7 +975,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.15.3", "Bugtracker", "tagCreation"));
 
-		if (!$this->checkRoles($user, $content->projectId, "bugtracker") < 2)
+		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 2)
 			return ($this->setNoRightsError("4.15.9", "Bugtracker", "tagCreation"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -1022,7 +1022,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("4.16.4", "Bugtracker", "tagUpdate", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
-		if (!$this->checkRoles($user, $projectId, "bugtracker") < 2)
+		if ($this->checkRoles($user, $projectId, "bugtracker") < 2)
 			return ($this->setNoRightsError("4.16.9", "Bugtracker", "tagUpdate"));
 
 		$tag->setName($content->name);
@@ -1053,7 +1053,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("4.17.4", "Bugtracker", "tagInformations", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
-		if (!$this->checkRoles($user, $projectId, "bugtracker") < 1)
+		if ($this->checkRoles($user, $projectId, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.17.9", "Bugtracker", "tagInformations"));
 
 		return $this->setSuccess("4.17.3", "Bugtracker", "tagInformations", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
@@ -1118,7 +1118,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("4.19.4", "Bugtracker", "assignTagToBug", "Bad Parameter: bugId");
 
 		$projectId = $bug->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "bugtracker") < 2)
+		if ($this->checkRoles($user, $projectId, "bugtracker") < 2)
 			return ($this->setNoRightsError("4.19.9", "Bugtracker", "assignTagToBug"));
 
 		$tagToAdd = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
@@ -1161,7 +1161,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: bugId");
 
 		$projectId = $bug->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "bugtracker") < 2)
+		if ($this->checkRoles($user, $projectId, "bugtracker") < 2)
 			return ($this->setNoRightsError("4.20.9", "Bugtracker", "removeTagToBug"));
 
 		$tagToRemove = $em->getRepository('MongoBundle:Tag')->find($tagId);

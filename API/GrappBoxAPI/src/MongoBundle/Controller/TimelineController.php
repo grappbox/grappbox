@@ -85,10 +85,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		}
 
@@ -235,10 +235,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
 				return ($this->setNoRightsError());
 		} else {
-			if (!$this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
+			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
 				return ($this->setNoRightsError());
 		}
 		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "ASC"));
