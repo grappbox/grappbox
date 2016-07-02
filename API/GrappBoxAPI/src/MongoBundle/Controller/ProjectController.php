@@ -272,7 +272,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$contactMail = $project->getContactEmail();
 		$facebook = $project->getFacebook();
 		$twitter = $project->getTwitter();
-		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project.id" => $project->getId(), "user.id" => $user->getId()));
 		if ($color === null)
 			$color = $project->getColor();
 		else
