@@ -78,8 +78,10 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setTwitter($content->twitter);
 
 		$em->persist($project);
+		$em->flush();
 
 		$project->addUser($user);
+		$em->flush();
 
 		$role = new Role();
 		$role->setName("Admin");
@@ -103,6 +105,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$pur->setRoleId($role->getId());
 
 		$em->persist($pur);
+		$em->flush();
 
 		$qb = $em->getRepository('MongoBundle:Tag')->createQueryBuilder();
 		$tags = $qb->getQuery()->execute();
@@ -130,6 +133,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$teamTimeline->setProjectId($project->getId());
 		$teamTimeline->setName("TeamTimeline - ".$project->getName());
 		$em->persist($teamTimeline);
+		$em->flush();
 
 		$customerTimeline = new Timeline();
 		$customerTimeline->setTypeId(1);
