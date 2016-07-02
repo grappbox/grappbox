@@ -53,7 +53,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
 
 		$object = $ticket->objectToArray();
-		$object['state'] = $em->getRepository("MongoBundle:BugState")->find($ticket->getStateId())->objectToArray();
+		$object['state'] = null;//$em->getRepository("MongoBundle:BugState")->find($ticket->getStateId())->objectToArray();
 		$object['tags'] = array();
 		foreach ($ticket->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
@@ -344,7 +344,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $bug);
+		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $ticket);
 	}
 
 	/**
