@@ -783,11 +783,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.12.9", "Bugtracker", "getTicketsByUser"));
 
-		$tickets = $em->getRepository("MongoBundle:Bug")->createQueryBuilder('b')
-									 ->where("b.projects = :project")
-									 ->andWhere(':user MEMBER OF b.users')
-									 ->setParameters(array('project' => $project, 'user' => $userId))
-									 ->getQuery()->getResult();
+		$tickets = $em->getRepository("MongoBundle:Bug")->createQueryBuilder()
+									 ->field('projects.id')->equals($project->getId())
+									 ->field('users.id')->equals($userId)
+									 ->getQuery()->execute();
+									//  ->where("b.projects = :project")
+									//  ->andWhere(':user MEMBER OF b.users')
+									//  ->setParameters(array('project' => $project, 'user' => $userId))
+									//  ->getQuery()->getResult();
 
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
