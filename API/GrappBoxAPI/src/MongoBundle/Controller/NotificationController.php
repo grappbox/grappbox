@@ -60,7 +60,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
+		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user.id" => $user->getId(), "type" => $content->device_type, "token" => $content->device_token));
 
 		if ($device instanceof Devices)
 		{
@@ -120,7 +120,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user" => $user));
+		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user.id" => $user->getId()));
 
 		$array = array();
 		foreach ($device as $key => $value) {
@@ -152,7 +152,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			$read_value = false;
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$notification = $em->getRepository("MongoBundle:Notification")->findBy(array("user" => $user, "isRead" => $read), array(), $limit, $offset);
+		$notification = $em->getRepository("MongoBundle:Notification")->findBy(array("user.id" => $user->getId(), "isRead" => $read), array(), $limit, $offset);
 
 		$notif_array = array();
 		foreach ($notification as $key => $value) {
