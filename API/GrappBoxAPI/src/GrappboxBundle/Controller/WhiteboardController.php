@@ -677,7 +677,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		return new JsonResponse($response);
 	}
 	/**
-	* @api {put} /V0.2/whiteboard/deleteObject Delete object
+	* @api {put} /V0.2/whiteboard/deleteobject Delete object
 	* @apiName deleteObject
 	* @apiGroup Whiteboard
 	* @apiDescription Get the last object created to delete from rubber position and radius
@@ -726,6 +726,18 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	        "deletedAt": { "date": "2016-05-21 08:57:42", "timezone_type": 3, "timezone": "Europe/Paris" }
 	*	      }
 	*	  }
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.10.3",
+	*			"return_message": "Whiteboard - deleteObject - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
 	*	}
 	*
 	* @apiErrorExample Missing Parameters
@@ -780,11 +792,16 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$objects =  $em->getRepository('GrappboxBundle:WhiteboardObject')->findBy(array("whiteboardId" => $whiteboard->getId(), "deletedAt" => NULL), array("createdAt" => 'DESC'));
 		$toDel = $this->checkDeletion($objects, $content->center, $content->radius);
 		$data = array();
-		$value = $toDel;
-		$value->setDeletedAt(new DateTime("now"));
-		$em->persist($value);
-		$em->flush();
-		$data[] = $value->objectToArray();
+		if ($toDel != null)
+		{
+			$value = $toDel;
+			$value->setDeletedAt(new DateTime("now"));
+			$em->persist($value);
+			$em->flush();
+			$data[] = $value->objectToArray();
+		}
+		if (count($data) <= 0)
+			return $this->setNoDataSuccess("1.10.3", "Whiteboard", "deleteObject");
 		return $this->setSuccess("1.10.1", "Whiteboard", "deleteObject", "Complete Success", $data);
 	}
 	private function checkDeletion($objects, $center, $radius)
