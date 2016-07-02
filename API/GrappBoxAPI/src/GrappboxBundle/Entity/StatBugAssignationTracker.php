@@ -9,31 +9,32 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class StatBugAssignationTracker
 {
+    
     /**
-     * @var id
+     * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
-     * @var int
+     * @var integer
      */
-    protected $assignedBugs;
+    private $assignedBugs;
 
     /**
-     * @var int
+     * @var integer
      */
-    protected $unassignedBugs;
+    private $unassignedBugs;
 
     /**
-     * @var MongoBundle\Document\Project
+     * @var \GrappboxBundle\Entity\Project
      */
-    protected $project;
+    private $project;
 
 
     /**
      * Get id
      *
-     * @return id
+     * @return integer 
      */
     public function getId()
     {
@@ -43,8 +44,8 @@ class StatBugAssignationTracker
     /**
      * Set assignedBugs
      *
-     * @param int $assignedBugs
-     * @return self
+     * @param integer $assignedBugs
+     * @return StatBugAssignationTracker
      */
     public function setAssignedBugs($assignedBugs)
     {
@@ -56,7 +57,7 @@ class StatBugAssignationTracker
     /**
      * Get assignedBugs
      *
-     * @return int
+     * @return integer 
      */
     public function getAssignedBugs()
     {
@@ -66,8 +67,8 @@ class StatBugAssignationTracker
     /**
      * Set unassignedBugs
      *
-     * @param int $unassignedBugs
-     * @return self
+     * @param integer $unassignedBugs
+     * @return StatBugAssignationTracker
      */
     public function setUnassignedBugs($unassignedBugs)
     {
@@ -79,7 +80,7 @@ class StatBugAssignationTracker
     /**
      * Get unassignedBugs
      *
-     * @return int
+     * @return integer 
      */
     public function getUnassignedBugs()
     {
@@ -89,10 +90,10 @@ class StatBugAssignationTracker
     /**
      * Set project
      *
-     * @param MongoBundle\Document\Project $project
-     * @return Project
+     * @param \GrappboxBundle\Entity\Project $project
+     * @return StatBugAssignationTracker
      */
-    public function setProject(\MongoBundle\Document\Project $project = null)
+    public function setProject(\GrappboxBundle\Entity\Project $project = null)
     {
         $this->project = $project;
 
@@ -102,7 +103,7 @@ class StatBugAssignationTracker
     /**
      * Get project
      *
-     * @return MongoBundle\Document\Project
+     * @return \GrappboxBundle\Entity\Project 
      */
     public function getProject()
     {
