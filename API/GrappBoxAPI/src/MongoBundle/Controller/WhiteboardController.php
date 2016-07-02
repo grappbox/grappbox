@@ -309,15 +309,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("10.7.3", "Whiteboard", "deleteObject"));
 
-		$em = $this->getDoctrine()->getManager();
-		$whiteboard =  $em->getRepository('GrappboxBundle:Whiteboard')->find($content->whiteboardId);
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$whiteboard =  $em->getRepository('MongoBundle:Whiteboard')->find($content->whiteboardId);
 		if (!$whiteboard)
 			return $this->setBadRequest("10.7.4", "Whiteboard", "deleteObject", "Bad Parameter: whiteboardId");
 
 		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 2)
 			 return ($this->setNoRightsError("10.7.9", "Whiteboard", "deleteObject"));
 
-		$objects =  $em->getRepository('GrappboxBundle:WhiteboardObject')->findBy(array("whiteboardId" => $whiteboard->getId(), "deletedAt" => NULL));
+		$objects =  $em->getRepository('MongoBundle:WhiteboardObject')->findBy(array("whiteboardId" => $whiteboard->getId(), "deletedAt" => NULL));
 
 		$toDel = $this->checkDeletion($objects, $content->center, $content->radius);
 

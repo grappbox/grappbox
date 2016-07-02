@@ -179,7 +179,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em->persist($user);
 		$em->flush();
 
-		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", array("message" => "Successfully Logout"));
+		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
  	}
 
 	/**
