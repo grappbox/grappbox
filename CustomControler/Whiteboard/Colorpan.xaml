@@ -15,7 +15,7 @@
         </GridView.ItemsPanel>
         <GridView.ItemTemplate>
             <DataTemplate>
-                <Ellipse Width="20" Height="20" StrokeThickness="1.5" Stroke="{StaticResource GrayGrappBoxBrush}" Fill="{Binding }" />
+                <Ellipse Width="30" Height="30" StrokeThickness="1.5" Stroke="{StaticResource GrayGrappBoxBrush}" Fill="{Binding }" />
             </DataTemplate>
         </GridView.ItemTemplate>
         <GridView.ItemContainerStyle>

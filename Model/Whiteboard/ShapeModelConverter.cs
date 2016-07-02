@@ -20,6 +20,8 @@ namespace GrappBox.Model.Whiteboard
 
         public static string ColorToHexa(Color c)
         {
+            if (c == Colors.Transparent)
+                return null;
             string s = "#";
             s += c.R.ToString("X2");
             s += c.G.ToString("X2");
@@ -28,6 +30,8 @@ namespace GrappBox.Model.Whiteboard
         }
         public static Color FromhexaToColor(string hex)
         {
+            if (hex == null)
+                return Colors.Transparent;
             Color color = new Color();
             hex = hex.Substring(1);
             color.A = 255;
@@ -58,8 +62,8 @@ namespace GrappBox.Model.Whiteboard
 
         private static ShapeControler jsonToRectangle(ObjectModel om, int objectId)
         {
-            SolidColorBrush fillColor = new SolidColorBrush(FromhexaToColor(om.Background));
             SolidColorBrush strokeColor = new SolidColorBrush(FromhexaToColor(om.Color));
+            SolidColorBrush fillColor = new SolidColorBrush(FromhexaToColor(om.Background));
             Point p = new Point(om.PositionStart.X, om.PositionStart.Y);
             double thickness = om.LineWeight;
             ShapeControler sc = new ShapeControler(WhiteboardTool.RECTANGLE, p, strokeColor, fillColor, thickness);
@@ -171,8 +175,8 @@ namespace GrappBox.Model.Whiteboard
             om.PositionEnd.X = sc.PosEnd.X;
             om.PositionEnd.Y = sc.PosEnd.Y;
             om.Radius = new Position();
-            om.Radius.X = (om.PositionEnd.X - om.PositionStart.X) / 2;
-            om.Radius.Y = (om.PositionEnd.Y - om.PositionStart.Y) / 2;
+            om.Radius.X = Math.Abs((om.PositionEnd.X - om.PositionStart.X) / 2);
+            om.Radius.Y = Math.Abs((om.PositionEnd.Y - om.PositionStart.Y) / 2);
             om.Color = ColorToHexa(sc.StrokeColor);
             om.Background = ColorToHexa(sc.FillColor);
             om.LineWeight = (int)sc.Lineweight;

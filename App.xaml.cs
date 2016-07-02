@@ -8,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -63,7 +64,7 @@ namespace GrappBox
                 rootFrame = new Frame();
 
                 // TODO: modifier cette valeur à une taille de cache qui contient à votre application
-                rootFrame.CacheSize = 1;
+                rootFrame.CacheSize = 5;
 
                 // Définir la page par défaut
                 rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
@@ -99,13 +100,8 @@ namespace GrappBox
                 {
                     throw new Exception("Failed to create initial page");
                 }
-
-                //if (!rootFrame.Navigate(typeof(UserSettingsView), e.Arguments))
-                //{
-                //    throw new Exception("Failed to create initial page");
-                //}
             }
-
+            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
             // Vérifiez que la fenêtre actuelle est active
             Window.Current.Activate();
         }

@@ -70,6 +70,7 @@ namespace GrappBox.ApiCom
             }
             put.Add("data", JToken.FromObject(data));
             StringContent sc = new StringContent(put.ToString(), null, "application/json");
+            Debug.WriteLine("JsonContent {0}", await sc.ReadAsStringAsync());
             HttpResponseMessage res = await webclient.PutAsync(url, sc);
             return res;
         }
@@ -99,7 +100,6 @@ namespace GrappBox.ApiCom
         }
         public string GetErrorMessage(string jsonTxt)
         {
-            Debug.WriteLine(jsonTxt);
             if (jsonTxt == "")
                 return ("no internet connection");
             JObject info = (JObject)JObject.Parse(jsonTxt).GetValue("info");

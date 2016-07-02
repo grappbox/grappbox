@@ -12,15 +12,15 @@ namespace GrappBox.Model
         public int timezone_type { get; set; }
         public string timezone { get; set; }
 
-        static private DateModel instance = null;
+        //static private DateModel instance = null;
 
-        static public DateModel GetInstance()
-        {
-            return instance;
-        }
-        public DateModel()
-        {
-            instance = this;
-        }
+        //static public DateModel GetInstance()
+        //{
+        //    return instance;
+        //}
+        //public DateModel()
+        //{
+        //    instance = this;
+        //}
     }
 }

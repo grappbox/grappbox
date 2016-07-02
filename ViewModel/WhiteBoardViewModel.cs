@@ -27,8 +27,7 @@ namespace GrappBox.ViewModel
     {
         private WhiteBoardModel model;
         public PullModel PullModel { get; private set; }
-        private ObservableCollection<WhiteboardObject> _objectsList;
-        private DateTime _lastUpdate;
+        public DateTime LastUpdate { get; set; }
 
         #region BindedPropertiesDeclaration
         private ShapeControler _currentDraw;
@@ -36,10 +35,6 @@ namespace GrappBox.ViewModel
         private SolidColorBrush _strokeColor;
         private SolidColorBrush _fillColor;
         private double _strokeThickness;
-        private int _fontSize;
-        private Point textPos;
-        private bool _isItalic;
-        private bool _isBold;
         #endregion BindedPropertiesDeclaration
         #region BindedPropertiesNotifiers
         public WhiteboardTool CurrentTool
@@ -68,27 +63,10 @@ namespace GrappBox.ViewModel
             get { return _strokeThickness; }
             set { _strokeThickness = value; NotifyPropertyChanged("StrokeThickness"); }
         }
-        public int FontSize
-        {
-            get { return _fontSize; }
-            set { _fontSize = value; }
-        }
-        public bool IsBold
-        {
-            get { return _isBold; }
-            set { _isBold = value; NotifyPropertyChanged("IsBold"); }
-        }
-        public bool IsItalic
-        {
-            get { return _isItalic; }
-            set { _isItalic = value; NotifyPropertyChanged("IsItalic"); }
-        }
         #endregion
 
         public WhiteBoardViewModel()
         {
-            IsBold = false;
-            IsItalic = false;
             _currentDraw = null;
             _currentTool = WhiteboardTool.POINTER;
             _strokeThickness = 1;
@@ -99,11 +77,6 @@ namespace GrappBox.ViewModel
         }
 
         #region CanvasManipCommands
-        private ICommand _canvasTappedCommand;
-        public ICommand CanvasTappedCommand
-        {
-            get { return _canvasTappedCommand ?? (_canvasTappedCommand = new CommandHandler<Point>(CanvasTappedAction)); }
-        }
         private ICommand _canvasManipStartedCommand;
         public ICommand CanvasManipStartedCommand
         {
@@ -124,13 +97,6 @@ namespace GrappBox.ViewModel
         #region Actions
 
         #region RoutedEventsActions
-        private void CanvasTappedAction(Point p)
-        {
-            if (CurrentTool == WhiteboardTool.ERAZER)
-            {
-            }
-        }
-
         private void CanvasManipStartedAction(Point p)
         {
             if (CurrentTool < WhiteboardTool.RECTANGLE)
@@ -166,11 +132,7 @@ namespace GrappBox.ViewModel
 
         #endregion Actions
 
-        public ObservableCollection<WhiteboardObject> ObjectsList
-        {
-            get { return _objectsList; }
-            set { if (value != null) _objectsList = value; }
-        }
+        public ObservableCollection<WhiteboardObject> ObjectsList { get; set; }
 
         #region API
         public async System.Threading.Tasks.Task OpenWhiteboard(int whiteboardId)
@@ -183,6 +145,7 @@ namespace GrappBox.ViewModel
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 model = api.DeserializeJson<WhiteBoardModel>(await res.Content.ReadAsStringAsync());
                 ObjectsList = model.Object;
+                LastUpdate = DateTime.Now;
             }
             else
             {
@@ -196,13 +159,12 @@ namespace GrappBox.ViewModel
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
-            props.Add("lastUpdate", _lastUpdate);
+            props.Add("lastUpdate", LastUpdate);
             HttpResponseMessage res = await api.Post(props, "whiteboard/pulldraw/" + model.Id);
             Debug.WriteLine(await res.Content.ReadAsStringAsync());
             if (res.IsSuccessStatusCode)
             {
                 PullModel = api.DeserializeJson<PullModel>(await res.Content.ReadAsStringAsync());
-                _lastUpdate = new DateTime();
 
             }
             else
@@ -225,7 +187,6 @@ namespace GrappBox.ViewModel
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
-                _objectsList.Add(tmp);
                 return tmp;
             }
             else
@@ -236,26 +197,29 @@ namespace GrappBox.ViewModel
             return null;
         }
 
-        public async System.Threading.Tasks.Task deleteObject()
+        public async System.Threading.Tasks.Task<int> deleteObject(Position p)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("token", User.GetUser().Token);
             props.Add("whiteboardId", model.Id);
-            //props.Add("center", ); centre du pinceau
-            //props.Add("radius", ); radius du pinceau
-            HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
+            props.Add("center", p);
+            props.Add("radius", 15.0);
+            HttpResponseMessage res = await api.Put(props, "whiteboard/deleteobject");
             if (res.IsSuccessStatusCode)
             {
+                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
-                _objectsList.Remove(tmp);
-                //retirer à la map? + delete objet sur canvas
+                Debug.WriteLine("ObjectId= {0}", tmp.Id);
+                return tmp.Id;
             }
             else
             {
+                Debug.WriteLine("Failed => {0}",await res.Content.ReadAsStringAsync());
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
+            return -1;
         }
         #endregion API
     }

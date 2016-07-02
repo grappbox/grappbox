@@ -42,14 +42,14 @@
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton Grid.Column="2" x:Name="FillcolorBtn" Label="FillColor" Icon="Pictures" Click="FillcolorBtn_Click" Foreground="{Binding FillColor}"/>
-                <AppBarButton Grid.Column="3" Icon="Edit" Label="BrushSize" />
+                <AppBarButton Grid.Column="3" Icon="Edit" Label="BrushSize" Click="BrushSizeButton_Click" />
             </Grid>
             <ScrollViewer ZoomMode="Enabled" MinZoomFactor="0.25" MaxZoomFactor="10.0" IsZoomInertiaEnabled="False" HorizontalScrollMode="Enabled" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
-                <customControler:CustomCanvas x:Name="drawingCanvas" Background="White" CurrDraw="{Binding CurrentDraw}" IsRightTapEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Visible" >
+                <customControler:CustomCanvas x:Name="drawingCanvas" Background="White" CurrDraw="{Binding CurrentDraw}" IsRightTapEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Visible" Tapped="drawingCanvas_Tapped" >
                     <i:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="Tapped">
+                        <!--<core:EventTriggerBehavior EventName="Tapped">
                             <core:InvokeCommandAction Command="{Binding CanvasTappedCommand}" InputConverter="{StaticResource TappedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
-                        </core:EventTriggerBehavior>
+                        </core:EventTriggerBehavior>-->
                         <core:EventTriggerBehavior EventName="ManipulationStarted">
                             <core:InvokeCommandAction Command="{Binding CanvasManipStartedCommand}" InputConverter="{StaticResource ManipStartedPositionConverter}" InputConverterParameter="{Binding ElementName=drawingCanvas, Mode=OneWay}"/>
                         </core:EventTriggerBehavior>
@@ -62,7 +62,7 @@
                     </i:Interaction.Behaviors>
                 </customControler:CustomCanvas>
             </ScrollViewer>
-            <Popup x:Name="WhiteboardPopUp" IsOpen="False" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Popup x:Name="WhiteboardPopUp" IsOpen="False" HorizontalAlignment="Left" VerticalAlignment="Center">
             </Popup>
         </Grid>
     </slideMenu:SlideInMenuContentControl>

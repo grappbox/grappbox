@@ -125,6 +125,7 @@
     <Compile Include="Model\Calendar\CalendarModel.cs" />
     <Compile Include="Model\Cloud\CloudModel.cs" />
     <Compile Include="Model\Global\Creator.cs" />
+    <Compile Include="Model\Global\DateTimeModelConverter.cs" />
     <Compile Include="Model\Global\Position.cs" />
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
     <Compile Include="Model\Whiteboard\CustomShapes.cs" />
@@ -367,9 +368,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Themes\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.8.0.3\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>

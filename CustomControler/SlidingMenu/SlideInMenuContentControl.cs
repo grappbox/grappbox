@@ -216,6 +216,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
             foreach (StackPanel b in buttons)
                 b.Visibility = id == 0 ? Visibility.Collapsed : Visibility.Visible;
+            projectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen") ?? "";
         }
 
         private async void DashboardButton_Tapped(object sender, TappedRoutedEventArgs e)

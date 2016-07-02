@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
@@ -21,40 +22,43 @@ namespace GrappBox.CustomControler
 {
     public sealed partial class BrushPan : UserControl
     {
-        public static readonly DependencyProperty ThicknessProperty =
-            DependencyProperty.Register("SelectedThickness", typeof(double), typeof(BrushPan), null);
-        private double[] brushes = { 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0};
-        private int selected = 1;
-        public double SelectedThickness
+        public class BrushesPair
         {
-            get { return (double)GetValue(ThicknessProperty); }
-            set { SetValue(ThicknessProperty,value); }
+            public string Label { get; set; }
+            public double Size { get; set; }
+            public BrushesPair()
+            {}
         }
+        public static readonly List<BrushesPair> Brushes = new List<BrushesPair>()
+        {
+            new BrushesPair(){ Label="0.5", Size= 0.5},
+            new BrushesPair(){ Label="1.0", Size= 1.0},
+            new BrushesPair(){ Label="1.5", Size= 1.5},
+            new BrushesPair(){ Label="2.0", Size= 2.0},
+            new BrushesPair(){ Label="2.5", Size= 2.5},
+            new BrushesPair(){ Label="3.0", Size= 3.0},
+            new BrushesPair(){ Label="4.0", Size= 4.0},
+            new BrushesPair(){ Label="5.0", Size= 5.0}
+        };
+        public double SelectedThickness { get; set; }
         public BrushPan()
         {
-            SelectedThickness = 1.0;
+            SelectedThickness = 0.0;
             this.InitializeComponent();
+            BrushListView.ItemsSource = Brushes;
+            BrushListView.SelectedValuePath = "Size";
         }
-        private void Elem_Tapped(object sender, TappedRoutedEventArgs e)
+        public async System.Threading.Tasks.Task WaitForSelect()
         {
-            var res = BrushGrid.Children.Where(SortBorder);
-            Border elem = res.First<UIElement>() as Border;
-            elem.BorderBrush = new SolidColorBrush(Colors.Transparent);
-            Grid grid = sender as Grid;
-            selected = int.Parse(grid.Name.Substring(1));
-            res = BrushGrid.Children.Where(SortBorder);
-            elem = res.First<UIElement>() as Border;
-            SelectedThickness = brushes[selected];
-            elem.BorderBrush = new SolidColorBrush(Colors.Black);
+            await Task.Run(() =>
+            {
+                while (SelectedThickness == 0.0) ;
+            });
+        }
 
-            this.Visibility = Visibility.Collapsed;
-        }
-        private bool SortBorder(UIElement elem)
+        private void BrushListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var tmp = elem as FrameworkElement;
-            if (tmp.Name.Contains("b" + selected.ToString()))
-                return true;
-            return false;            
+            SelectedThickness = (double)BrushListView.SelectedValue;
         }
     }
 }

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Shapes;
 using System.Collections.ObjectModel;
 using GrappBox.Model.Whiteboard;
+using Windows.UI.Popups;
 
 namespace GrappBox.CustomControler
 {
@@ -36,8 +37,6 @@ namespace GrappBox.CustomControler
             else
                 this.ManipulationMode = ManipulationModes.None;
         }
-        private static readonly DependencyProperty ObjectListProperty =
-            DependencyProperty.Register("ObjectList", typeof(ObservableCollection<ShapeControler>), typeof(CustomCanvas), null);
 
         public static readonly DependencyProperty CurrentDrawDependency =
             DependencyProperty.Register("CurrDraw", typeof(ShapeControler), typeof(CustomCanvas), new PropertyMetadata(null, OnValueChanged));
@@ -83,11 +82,16 @@ namespace GrappBox.CustomControler
             ++index;
         }
 
-        public void DeleteElement(int id)
+        public bool DeleteElement(int id)
         {
-            ShapeControler toDel = this.ObjectList.First(item => item.Id == id);
+            ShapeControler toDel = this.ObjectList.FirstOrDefault(item => item.Id == id);
+            if (toDel == null)
+            {
+                return false;
+            }
             this.Children.RemoveAt(toDel.Index);
             this.ObjectList.Remove(toDel);
+            return true;
         }
 
         public void Clear()
@@ -95,11 +99,7 @@ namespace GrappBox.CustomControler
             Children.Clear();
         }
 
-        public ObservableCollection<ShapeControler> ObjectList
-        {
-            get { return (ObservableCollection<ShapeControler>)GetValue(ObjectListProperty); }
-            set { SetValue(ObjectListProperty, value); }
-        }
+        public ObservableCollection<ShapeControler> ObjectList { get; set; }
 
         public ShapeControler CurrDraw
         {

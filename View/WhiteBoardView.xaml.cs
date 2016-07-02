@@ -9,6 +9,9 @@ using Windows.UI.Xaml.Navigation;
 using GrappBox.CustomControler;
 using Windows.UI.Xaml;
 using System.Collections.Generic;
+using Windows.Foundation;
+using Windows.UI.Popups;
+using GrappBox.Model.Global;
 
 namespace GrappBox.View
 {
@@ -30,7 +33,7 @@ namespace GrappBox.View
         };
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
-        private Timer pullTimer;
+        private DispatcherTimer pullTimer;
         private WhiteBoardViewModel wbvm;
         private int whiteboardId;
 
@@ -46,7 +49,6 @@ namespace GrappBox.View
                 Debug.WriteLine(e.Message);
             }
             this.DataContext = new ViewModel.WhiteBoardViewModel();
-            drawingCanvas.Tapped += DrawingCanvas_Tapped;
             //Required for navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;
             this.navigationHelper = new NavigationHelper(this);
@@ -67,7 +69,7 @@ namespace GrappBox.View
 
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-            pullTimer.Dispose();
+            pullTimer.Stop();
             drawingCanvas.Clear();
         }
 
@@ -81,7 +83,16 @@ namespace GrappBox.View
             {
                 this.drawingCanvas.AddNewElement(wo);
             }
-            pullTimer = new Timer(runPull, "pull", TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+            pullTimer = new DispatcherTimer();
+
+            pullTimer.Interval = new TimeSpan(0, 0, 10);
+            pullTimer.Tick += PullTimer_Tick;
+            pullTimer.Start();
+        }
+
+        private void PullTimer_Tick(object sender, object e)
+        {
+            runPull();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -90,22 +101,18 @@ namespace GrappBox.View
         }
         #endregion
 
-        public async void runPull(object source)
+        public async void runPull()
         {
-            return;
-            Debug.WriteLine("RunPull_1");
             await wbvm.pullDraw();
             foreach (WhiteboardObject item in wbvm.PullModel.addObjects)
             {
-                Debug.WriteLine("RunPull_2");
                 this.drawingCanvas.AddNewElement(item);
-                Debug.WriteLine("RunPull_2.5");
             }
             foreach (WhiteboardObject item in wbvm.PullModel.delObjects)
             {
-                Debug.WriteLine("RunPull_3");
                 this.drawingCanvas.DeleteElement(item.Id);
             }
+            wbvm.LastUpdate = DateTime.Now;
         }
 
         private async void FillcolorBtn_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -113,6 +120,7 @@ namespace GrappBox.View
             Colorpan cp = new Colorpan();
             WhiteboardPopUp.Child = cp;
             WhiteboardPopUp.IsOpen = true;
+            WhiteboardPopUp.VerticalOffset = WhiteboardPopUp.ActualHeight;
             await cp.WaitForSelect();
             wbvm.FillColor = cp.SelectedColor;
             WhiteboardPopUp.IsOpen = false;
@@ -134,7 +142,6 @@ namespace GrappBox.View
 
         private async void ToolsButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            Debug.WriteLine("TOTO");
             ToolPan tp = new ToolPan();
             WhiteboardPopUp.Child = tp;
             WhiteboardPopUp.IsOpen = true;
@@ -145,10 +152,34 @@ namespace GrappBox.View
             WhiteboardPopUp.Child = null;
             Debug.WriteLine(wbvm.CurrentTool);
         }
-
-        private void DrawingCanvas_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private async void BrushSizeButton_Click(object sender, RoutedEventArgs e)
         {
+            BrushPan bp = new BrushPan();
+            WhiteboardPopUp.Child = bp;
+            WhiteboardPopUp.IsOpen = true;
+            await bp.WaitForSelect();
+            wbvm.StrokeThickness = bp.SelectedThickness;
+            WhiteboardPopUp.IsOpen = false;
+            WhiteboardPopUp.Child = null;
+            Debug.WriteLine(wbvm.StrokeThickness);
+        }
 
+        private async void drawingCanvas_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            if (wbvm.CurrentTool == WhiteboardTool.ERAZER)
+            {
+                int objectId;
+                Point p = e.GetPosition(drawingCanvas);
+                objectId = await wbvm.deleteObject(new Model.Position() { X = p.X, Y = p.Y });
+                if (objectId != -1)
+                {
+                    if (drawingCanvas.DeleteElement(objectId) == false)
+                    {
+                        MessageDialog dialogBox = new MessageDialog("Can't delete this object", "Error");
+                        await dialogBox.ShowAsync();
+                    }
+                }
+            }
         }
     }
 }
