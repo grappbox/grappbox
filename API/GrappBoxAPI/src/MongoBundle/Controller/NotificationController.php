@@ -226,7 +226,7 @@ class NotificationController extends RolesAndTokenVerificationController
 			if ($user != null)
 			{
 				//notificaton for devices
-				// $devices = $em->getRepository("MongoBundle:Devices")->findByuser($user);
+				// $devices = $em->getRepository("MongoBundle:Devices")->findByUser($user);
 
 				// foreach ($devices as $device) {
 				// 	$type = $device->getType();

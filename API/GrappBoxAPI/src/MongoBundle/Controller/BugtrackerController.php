@@ -795,7 +795,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['state'] = null;//$em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -846,7 +846,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
+			$object['state'] = null; // $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();

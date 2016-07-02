@@ -452,7 +452,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("6.8.3", "Project", "getcustomeraccessbyproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByprojects($projectId);
+		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByProjects($projectId);
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.8.4", "Project", "getcustomeraccessbyproject", "Bad Parameter: projectId");
 
