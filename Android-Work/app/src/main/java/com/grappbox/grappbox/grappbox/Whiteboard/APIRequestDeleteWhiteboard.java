@@ -49,9 +49,10 @@ public class APIRequestDeleteWhiteboard  extends AsyncTask<String, Void, String>
 
             _APIResponse = APIConnectAdapter.getInstance().getResponseCode();
             Log.v("JSON Response", String.valueOf(_APIResponse));
-            if (_APIResponse >= 200 && _APIResponse < 300)
+            if (_APIResponse >= 200 && _APIResponse < 300) {
                 resultAPI = APIConnectAdapter.getInstance().getInputSream();
-            Log.v("JSON Content", resultAPI);
+                Log.v("JSON Content", resultAPI);
+            }
         } catch (IOException e){
             e.printStackTrace();
             return null;

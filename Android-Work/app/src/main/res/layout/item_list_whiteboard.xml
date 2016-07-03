@@ -17,39 +17,35 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/whiteboard_name_label"
-                android:text="Whiteboard :"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="16sp" />
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/whiteboard_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingStart="10dp"
-                android:paddingEnd="0dp"
-                android:textSize="16sp"/>
+                android:textSize="20sp"
+                android:text="Whiteboard Title"/>
 
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/whiteboard_project_label"
+
                 android:text="Created at"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:textColor="#000"
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/whiteboard_project_name"
+                android:id="@+id/whiteboard_create_date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingStart="10dp"

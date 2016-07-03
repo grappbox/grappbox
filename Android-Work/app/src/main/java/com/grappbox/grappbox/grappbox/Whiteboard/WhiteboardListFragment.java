@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +97,7 @@ public class WhiteboardListFragment extends Fragment {
         {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("whiteboard_title", item.get("name").toString());
-            map.put("whiteboard_project_name", item.get("createdAt").toString());
+            map.put("whiteboard_create_date", item.get("createdAt").toString().substring(0, 9));
             _idWhiteboard.add(item.get("id").toString());
             _dateWhiteboard.add(item.get("createdAt").toString());
             _titleWhiteboard.add(item.get("name").toString());
@@ -104,8 +105,8 @@ public class WhiteboardListFragment extends Fragment {
         }
 
         SimpleAdapter whiteboardAdapter = new SimpleAdapter(_view.getContext(), listWhiteboard, R.layout.item_list_whiteboard,
-                new String[] {"whiteboard_title", "project_name", },
-                new int[] {R.id.whiteboard_title, R.id.whiteboard_project_name, });
+                new String[] {"whiteboard_title", "whiteboard_create_date", },
+                new int[] {R.id.whiteboard_title, R.id.whiteboard_create_date, });
 
         _ListWhiteboard.setAdapter(whiteboardAdapter);
         _ListWhiteboard.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -115,6 +116,7 @@ public class WhiteboardListFragment extends Fragment {
 
             }
         });
+        whiteboardAdapter.notifyDataSetChanged();
         _fab.show();
     }
 
