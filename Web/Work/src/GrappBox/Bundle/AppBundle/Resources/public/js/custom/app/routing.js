@@ -8,19 +8,16 @@
 /* ==================== PAGE ACCESS ==================== */
 /* ===================================================== */
 
-/**
-* Routine definition
-* APP project page access
-*
-*/
-var isProjectAccessible = function($q, $http, $rootScope, $route, $location, Notification) {
+// Routine definition
+// APP project page access
+var isProjectAccessible = function($rootScope, $q, $http, $route, $location, Notification) {
   var deferred = $q.defer();
 
-  $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $route.current.params.project_id)
-    .then(function onGetSuccess(response) {
+  $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $route.current.params.project_id).then(
+  	function onGetProjectInformationsSuccess(response) {
       deferred.resolve();
     },
-    function onGetFail(response) {
+    function onGetProjectInformationsFail(response) {
       if (response.data.info.return_code) {
         switch(response.data.info.return_code) {
           case "6.3.3":
@@ -31,26 +28,26 @@ var isProjectAccessible = function($q, $http, $rootScope, $route, $location, Not
           case "6.3.4":
           deferred.reject();
           $location.path("./");
-          Notification.warning({ message: "Project not found.", delay: 10000 });
+          Notification.error({ title: "GrappBox", message: "Project not found.", delay: 4500 });
           break;
 
           case "6.3.9":
           deferred.reject();
           $location.path("./");
-          Notification.warning({ message: "You don\'t have access to this part of the project.", delay: 10000 });
+          Notification.error({ title: "GrappBox", message: "You don\'t have access to this part of the project.", delay: 4500 });
           break;
 
           default:
           deferred.reject();
           $location.path("./");
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          Notification.error({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
           break;
         }
       }
       else {
         deferred.reject();
         $location.path("./");
-        Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        Notification.error({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
       }
     });
 
@@ -58,7 +55,26 @@ var isProjectAccessible = function($q, $http, $rootScope, $route, $location, Not
 };
 
 // "isProjectSettingsPageAccessible" routine injection
-isProjectAccessible["$inject"] = ["$q", "$http", "$rootScope", "$route", "$location", "Notification"];
+isProjectAccessible["$inject"] = ["$rootScope", "$q", "$http", "$route", "$location", "Notification"];
+
+// Routine definition
+// APP dashboard redirect
+var isProjectSelected = function($rootScope, $q, localStorageService, $location, $base64, Notification) {
+	var deferred = $q.defer();
+  
+  if (localStorageService.get("HAS_PROJECT")) {
+    if (!localStorageService.get("PROJECT_ID")) {
+      Notification.error({ title: "Dashboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+      $rootScope.project.switch();
+    }
+    else
+      $location.path("/dashboard/" + $base64.decode(localStorageService.get("PROJECT_ID")));
+  }
+  deferred.resolve();
+};
+
+// "isProjectSelected" routine injection
+isProjectSelected["$inject"] = ["$rootScope", "$q", "localStorageService", "$location", "$base64", "Notification"];
 
 
 
@@ -66,13 +82,9 @@ isProjectAccessible["$inject"] = ["$q", "$http", "$rootScope", "$route", "$locat
 /* ==================== ROUTING TABLE ==================== */
 /* ======================================================= */
 
-/**
-* GRAPPBOX
-* APP routing definition
-*
-*/
+// GRAPPBOX
+// APP routing definition
 app.config(["$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
-
 	$routeProvider
 	// Homepage
 	.when("/", {
@@ -80,14 +92,16 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		templateUrl : "../resources/pages/dashboard-list.html",
 		controller  : "dashboardListController",
 		caseInsensitiveMatch : true,
-		homepage: true
+		homepage: true,
+		resolve: { factory: isProjectSelected }
 	})
 	.when("/dashboard/", {
 		title: "Welcome to GrappBox",
 		templateUrl : "../resources/pages/dashboard-list.html",
 		controller  : "dashboardListController",
 		caseInsensitiveMatch : true,
-		homepage: true
+		homepage: true,
+		resolve: { factory: isProjectSelected }
 	})
 	.when("/dashboard/:project_id/", {
 		title: "Dashboard",
@@ -100,12 +114,13 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 	.when("/login", {
 		caseInsensitiveMatch : true,
 		homepage: false,
-		resolve: { factory: login_onSuccessRedirect }
+		resolve: { factory: redirectOnLogin }
 	})
 	.when("/logout", {
+		title: "Logging out...",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: logout_onSuccessRedirect }
+		homepage: true,
+		resolve: { factory: redirectOnLogout }
 	})
 	// Bugtracker-related pages
 	.when("/bugtracker/:project_id", {

@@ -8,7 +8,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div class="well">
         <!-- grappbox.data : tickets list -->
         <div data-ng-if="data.onLoad">
-          <div class="spinner section"><div></div></div>
+          <div class="spinner section">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle>
+            </svg>
+          </div>
         </div>
         <div data-ng-if="!data.onLoad">
           <div data-ng-if="data.message == '_valid'">

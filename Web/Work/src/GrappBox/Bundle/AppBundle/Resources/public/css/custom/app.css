@@ -90,7 +90,6 @@ section:last-child { margin: 30px 0 60px 0; }
 .ui-notification.warning { background: #FF9800; }
 
 .well-soft { background: #fafafa!important; }
-.well-ext { min-height: 260px; }
 .no-shadow { box-shadow: none!important; }
 .border { border: 1px solid #bdbdbd!important; border-radius: 0; }
 
@@ -98,22 +97,49 @@ section:last-child { margin: 30px 0 60px 0; }
 .modal .error { margin: 45px 0 30px 0; }
 
 
+
 /* ================================================================== */
 /* ==================== GENERAL LAYOUT (LOADING) ==================== */
 /* ================================================================== */
 
-.spinner,
-.spinner > div { position: relative; box-sizing: border-box; }
-.spinner { display: block; width: 48px; height: 48px; font-size: 0; color: #fff; padding: 10px 0 0 0; margin: 0 auto; border: none!important; }
-.spinner > div { display: inline-block; float: none; border: 0 solid #616161; width: 48px; height: 48px; background: transparent; border-width: 3px; border-bottom-color: transparent; border-radius: 100%; animation: ball-clip-rotate .75s linear infinite; }
+.spinner .circular {
+  -webkit-animation: rotate 2s linear infinite;
+  animation: rotate 2s linear infinite;
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+  display: block;
+  margin: 0 auto;
+}
 
-.spinner.master { width: 40px; height: 40px; top: 50px; margin: 0 auto; }
-.spinner.master > div { width: 40px; height: 40px; border-width: 3px; }
+.spinner .circular .path {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  -webkit-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite;
+  animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite;
+  stroke-linecap: round;
+}
 
-.spinner.section { margin-top: 90px; }
-.spinner.data { margin: 30px auto; padding: 0; }
+.spinner.view { margin: 80px auto 40px auto; }
+.spinner.view .circular { width: 72px; height: 72px; }
 
-@keyframes ball-clip-rotate { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+.spinner.section { margin: 30px auto 30px auto; }
+.spinner.section .circular { width: 56px; height: 56px; }
+
+@-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+@-webkit-keyframes color { 100%, 0% { stroke: #c0392b; } }
+@-webkit-keyframes dash {
+  0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
+  100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
+}
+
+@keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+@keyframes color { 100%, 0% { stroke: #c0392b; } }
+@keyframes dash {
+  0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
+  100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
+}
 
 
 
@@ -122,7 +148,6 @@ section:last-child { margin: 30px 0 60px 0; }
 /* ===================================================================== */
 
 .page-content { margin: 90px 0 0 0; }
-
 .sidebar {
 	width: 300px;
 	margin: 0;
@@ -159,6 +184,10 @@ section:last-child { margin: 30px 0 60px 0; }
 
 .navbar .navbar-toggle { float: left; padding: 15px 5px 15px 15px; display: block; }
 .navbar .navbar-brand { float: left; font-weight: 400; padding: 15px; }
+
+@media (max-width: 768px) {
+  .navbar .navbar-toggle { margin: 8px 0 8px 15px; }
+}
 
 .navbar,
 .navbar.navbar-default {

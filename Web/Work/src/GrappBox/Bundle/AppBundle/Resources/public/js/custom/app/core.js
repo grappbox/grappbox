@@ -40,6 +40,8 @@ app.config(["$httpProvider", function($httpProvider) {
   $httpProvider.useApplyAsync(true);
   $httpProvider.defaults.useXDomain = true;
   delete $httpProvider.defaults.headers.common["X-Requested-With"];
+  // IE family workaround
+  $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache'
 }]);
 
 // Local storage settings
@@ -73,10 +75,10 @@ app.config(["NotificationProvider", function(NotificationProvider) {
 // GrappBox (main)
 app.controller("grappboxController", ["$rootScope", "$scope", "localStorageService", "$location", function($rootScope, $scope, localStorageService, $location) {
 
-  $scope.content = { routeList: "", iconList: "", homepage: false };
-  $scope.method = { switchProject: "" };
+  $scope.app = { routeList: "", iconList: "" };
 
-  $scope.content.routeList = {
+  $scope.app.routeList = {
+    "/notifications": false,
     "/dashboard": false,
     "/bugtracker": false,
     "/calendar": false,
@@ -89,7 +91,8 @@ app.controller("grappboxController", ["$rootScope", "$scope", "localStorageServi
     "/logout": false
   };
 
-  $scope.content.iconList = {
+  $scope.app.iconList = {
+    "/notifications": "notifications",
     "/dashboard": "dashboard",
     "/bugtracker": "bug_report",
     "/calendar": "event",
@@ -103,24 +106,12 @@ app.controller("grappboxController", ["$rootScope", "$scope", "localStorageServi
   };
 
   // Routine definition
-  // Project change button handler
-  $scope.method.switchProject = function() {
-    localStorageService.clearAll();
-    $rootScope.project.id = null;
-    $rootScope.project.name = null;
-    $rootScope.project.set = false;
-    $rootScope.page.menuFull = false;    
-
-    $location.path("/");
-  };
-
-  // Routine definition
   // Check if the request route is not a subsection of another one
-  var isSubRouteOf = function(routeToTest, routeToLoad) {
+  var _isRouteFrom = function(routeToTest, routeToLoad) {
     var isRouteKnown = false;
 
     if (routeToLoad.indexOf(routeToTest) > -1) {
-      $scope.content.routeList["/" + routeToTest] = true;
+      $scope.app.routeList["/" + routeToTest] = true;
       isRouteKnown = true;
     }
     return isRouteKnown;
@@ -130,15 +121,14 @@ app.controller("grappboxController", ["$rootScope", "$scope", "localStorageServi
   $scope.$on("$routeChangeStart", function() {
     var routeToLoad = $location.path();
 
-    angular.forEach($scope.content.routeList, function(key, value) {
+    angular.forEach($scope.app.routeList, function(key, value) {
       if (value === routeToLoad)
-        $scope.content.routeList[value] = true;
-      else if (isSubRouteOf(value, routeToLoad))
-        $scope.content.routeList[value] = true;
+        $scope.app.routeList[value] = true;
+      else if (_isRouteFrom(value, routeToLoad))
+        $scope.app.routeList[value] = true;
       else
-        $scope.content.routeList[value] = false;
+        $scope.app.routeList[value] = false;
     });
-
   });
 
 }]);
@@ -164,19 +154,3 @@ app.directive("sidebarDirective", function() {
     }
   };
 });
-
-
-
-/* =============================================== */
-/* ==================== OTHER ==================== */
-/* =============================================== */
-
-(function($) {
-
-  // Auto page height (depending on page content)
-  $(window).bind("load resize", function() {
-    newHeight = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height);
-    $("#app-wrapper").css("min-height", (newHeight < 1 ? 1 : newHeight) + "px");
-  });
-  
-})(jQuery);

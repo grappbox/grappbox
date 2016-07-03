@@ -28,9 +28,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <section id="project-creation" data-ng-if="data.project_new">
   <div class="row">
     <div class="col-lg-12">
-      <div class="well well-ext">
+      <div class="well">
         <div data-ng-if="data.onLoad">
-          <div class="spinner section"><div></div></div>
+          <div class="spinner section">
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+          </div>
         </div>
         <div data-ng-if="!data.onLoad">
           <form class="form-horizontal">
@@ -107,7 +109,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <section id="project-edition" data-ng-if="!data.project_new">
   <div class="row">
     <div class="col-lg-12">
-      <div class="well well-ext">
+      <div class="well">
         <div id="tab-pannel">
 
           <!-- project edition: all tabs -->
@@ -130,7 +132,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <!-- project edition: general -->
             <div role="tabpanel" class="tab-pane active" id="general-content">
               <div data-ng-if="data.onLoad">
-                <div class="spinner data"><div></div></div>
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
               </div>
               <div data-ng-if="(!data.onLoad && !data.project_error)">
                 <form class="form-horizontal" novalidate>
@@ -214,7 +218,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <!-- project edition: users -->
             <div role="tabpanel" class="tab-pane" id="users-content">
               <div data-ng-if="data.onLoad">
-                <div class="spinner data"><div></div></div>
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
               </div>
               <div data-ng-if="!data.usersLoad && !data.users_error && data.canEdit">
                 <div class="col-md-12">
@@ -284,7 +290,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <!-- project edition: roles -->
             <div role="tabpanel" class="tab-pane" id="roles-content">
               <div data-ng-if="data.rolesLoad">
-                <div class="spinner data"><div></div></div>
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
               </div>
               <div data-ng-if="!data.rolesLoad && !data.roles_error && data.canEdit">
                 <div class="col-md-12">
@@ -566,7 +574,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <!-- project edition: customers -->
             <div role="tabpanel" class="tab-pane" id="customers-content">
               <div data-ng-if="data.customersLoad">
-                <div class="spinner data"><div></div></div>
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
               </div>
               <div data-ng-if="!data.customersLoad && !data.customers_error && data.canEdit">
                 <div class="col-md-12">

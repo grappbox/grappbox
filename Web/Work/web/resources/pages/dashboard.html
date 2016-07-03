@@ -24,7 +24,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </p>
       </div>
       <div data-ng-if="occupation.onLoad">
-        <div class="spinner data"><div></div></div>
+        <div class="spinner section">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle>
+          </svg>
+        </div>
       </div>
       <div data-ng-if="!occupation.onLoad">
         <div data-ng-if="occupation.valid && occupation.list">
@@ -42,14 +46,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <li class="col-md-offset-1"><i class="material-icons">playlist_add_check</i>{[{ member.number_of_tasks_begun }]} started tasks</li>
                 <li class="col-md-offset-1"><i class="material-icons">playlist_add</i>{[{ member.number_of_ongoing_tasks }]} remaining tasks</li>
               </ul>
-              <a href="" title="Assign a task to {[{ member.user.firstname }]}" class="btn btn-success">Assign</a>
+              <!-- BETA -->
+              <a href="tasks/{[{ data.project_id }]}" title="Assign a task to {[{ member.user.firstname }]}" class="btn btn-success disabled">Assign</a>
               <div class="clearfix"></div>
             </div>
           </div>
         </div>
         <div data-ng-if="occupation.valid && !occupation.list">
           <div class="well centered">
-            <p><i class="material-icons">sentiment_satisfied</i><br>{[{ occupation.message }]}</p>
+            <p><i class="material-icons">people</i><br>{[{ occupation.message }]}</p>
           </div>
         </div>
         <div data-ng-if="!occupation.valid">
@@ -73,7 +78,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </p>
       </div>
       <div data-ng-if="meetings.onLoad">
-        <div class="spinner data"><div></div></div>
+        <div class="spinner section">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle>
+          </svg>
+        </div>
       </div>
       <div data-ng-if="!meetings.onLoad">
         <div data-ng-if="meetings.valid && meetings.list">
@@ -82,18 +91,18 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <ul>
                 <li class="ellipsis title">"{[{ meeting.title }]}"</li>
                 <li><i class="material-icons">info</i>Meeting type: {[{ meeting.type }]}</li>
-                <li><i class="material-icons">alarm_on</i>Begin: {[{ formatObjectDate(meeting.begin_date.date) }]}</li>
-                <li><i class="material-icons">alarm_off</i>End: {[{ formatObjectDate(meeting.end_date.date) }]}</li>
+                <li><i class="material-icons">alarm_on</i>Begin: {[{ method.formatObjectDate(meeting.begin_date.date) }]}</li>
+                <li><i class="material-icons">alarm_off</i>End: {[{ method.formatObjectDate(meeting.end_date.date) }]}</li>
                 <li class="ellipsis"><i class="material-icons">date_range</i>"{[{ meeting.description }]}"</li>
               </ul>
-              <a href="" title="Open this event in GrappBox calendar" class="btn btn-default">Open</a>
+              <a href="calendar" title="Open this event in GrappBox calendar" class="btn btn-default">Open</a>
               <div class="clearfix"></div>
             </div>
           </div>
         </div>
         <div data-ng-if="meetings.valid && !meetings.list">
           <div class="well centered">
-            <p><i class="material-icons">sentiment_satisfied</i><br>{[{ meetings.message }]}</p>
+            <p><i class="material-icons">assignment_turned_in</i><br>{[{ meetings.message }]}</p>
           </div>
         </div>
         <div data-ng-if="!meetings.valid">

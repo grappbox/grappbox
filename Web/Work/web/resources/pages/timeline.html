@@ -16,7 +16,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <section id="timeline">
   <div class="row">
     <div class="col-lg-12">
-      <div class="well well-ext well-soft">
+      <div class="well well-soft">
         <!-- timeline: all tabs -->
         <ul class="nav nav-tabs" role="tablist">
           <li id="team-title" role="presentation" class="col-md-6 col-xs-12 {[{ timeline.team.active ? 'active' : '' }]}">
@@ -34,7 +34,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <!-- timeline: team tab -->
           <div role="tabpanel" class="tab-pane {[{ timeline.team.active ? 'active' : '' }]}">
             <div data-ng-if="timeline.team.onLoad">
-              <div class="spinner data"><div></div></div>
+              <div class="spinner section">
+                <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+              </div>
             </div>
             <div data-ng-if="!timeline.team.onLoad">
               <div data-ng-if="view.authorized">
@@ -74,7 +76,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <!-- timeline: customer tab -->
           <div role="tabpanel" class="tab-pane {[{ timeline.customer.active ? 'active' : '' }]}">
             <div data-ng-if="timeline.customer.onLoad">
-              <div class="spinner data"><div></div></div>
+              <div class="spinner section">
+                <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+              </div>
             </div>
             <div data-ng-if="!timeline.customer.onLoad">
               <div data-ng-if="view.authorized">
@@ -144,7 +148,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div class="each-data comments-data">
         <h4 class="modal-title">Comments</h4>
         <div data-ng-if="modal.onLoad">
-          <div class="spinner data"><div></div></div>
+          <div class="spinner section">
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+          </div>
         </div>
         <div data-ng-if="!modal.onLoad">
           <div data-ng-if="modal.authorized">

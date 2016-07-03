@@ -7,12 +7,13 @@
 {% spaceless %}
 
 <!DOCTYPE html>
-<html lang="en" data-ng-app="grappbox">
+<html lang="en">
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 		<meta http-equiv="content-language" content="en-us" />
-		<meta name="description" content="GrappBox" />
-		<meta name="author" content="GrappBox" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="description" content="GrappBox - The new way to manage projects" />
+		<meta name="author" content="The GrappBox team" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta charset="UTF-8" />
 		<base href="/app/">
@@ -79,12 +80,12 @@
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
-		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
 		<![endif]-->
 	</head>
 
-	<body>
+	<body id="ng-app" data-ng-app="grappbox">
 		<div class="container-fluid">
 			<div class="row">
 				<div class="container-main" data-ng-controller="grappboxController">
@@ -93,108 +94,107 @@
 					<div class="navbar navbar-default">
 						<div class="container-fluid">
 							<div class="navbar-header">
-								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" data-ng-click="page.toggleMenuState()">
+								<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" data-ng-click="menu.toggle()">
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 									<span class="icon-bar"></span>
 								</button>
-								<a href="" class="navbar-brand" data-ng-click="page.toggleMenuState()">GrappBox</a>
+								<a href="" class="navbar-brand" data-ng-click="menu.toggle()">GrappBox</a>
 							</div>
 							<div class="navbar-collapse collapse navbar-responsive-collapse">
 								<ul class="nav navbar-nav navbar-right">
-									<li><a href="notifications" title="See all your notifications"><i class="material-icons">notifications</i></a></li>
-									<li><a href="profile" title="View and edit your profile"><i class="material-icons">person</i></a></li>
-									<li><a href="logout" title="Sign out of GrappBox"><i class="material-icons">exit_to_app</i></a></li>
+									<li><a href="notifications" title="See all your notifications"><i class="material-icons">{[{ app.iconList['/notifications'] ? app.iconList['/notifications'] : 'clear' }]}</i></a></li>
+									<li><a href="profile" title="View and edit your profile"><i class="material-icons">{[{ app.iconList['/profile'] ? app.iconList['/profile'] : 'clear' }]}</i></a></li>
+									<li><a href="logout" title="Sign out of GrappBox"><i class="material-icons">{[{ app.iconList['/logout'] ? app.iconList['/logout'] : 'clear' }]}</i></a></li>
 								</ul>
 							</div>
 						</div>
 					</div>
 
 					<!-- Navigation drawer -->
-					<aside class="sidebar" role="navigation" sidebar-directive="page.menuState">
+					<aside class="sidebar" role="navigation" sidebar-directive="menu.open">
 						<div class="sidebar-header">
-							<div class="sidebar-toggle"><a href="" data-ng-click="page.toggleMenuState()"><i class="material-icons">arrow_back</i></a></div>
+							<div class="sidebar-toggle"><a href="" data-ng-click="menu.toggle()"><i class="material-icons">arrow_back</i></a></div>
 							<div class="sidebar-image"><img src="../resources/images/default-avatar.min.png"></div>
 							<div class="sidebar-brand">
 								<p class="ellipsis">{[{ user.firstname }]} {[{ user.lastname }]}<br>{[{ user.email }]}</p>
 								<p class="ellipsis" data-ng-if="project.set">Project: <a href="settings/{[{ project.id }]}" title="Edit this project"><strong>{[{ project.name }]}</strong></a></p>
 								<p class="ellipsis" data-ng-if="!project.set"><a href="./" title="Choose a project">No project selected</a></p>
-								<a href="" data-ng-if="project.set" data-ng-click="method.switchProject()" class="btn btn-raised btn-default">Change</a>
+								<a href="" data-ng-if="project.set" data-ng-click="project.switch()" class="btn btn-raised btn-default">Change</a>
 							</div>
 							<div class="clearfix"></div>
 						</div>
 						<div class="sidebar-content">
 							<ul>
 								<li>
-									<a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ content.routeList['/dashboard'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/dashboard'] ? content.iconList['/dashboard'] : 'clear' }]}</i>
-										Dashboard
-									</a>
+									<a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ app.routeList['/dashboard'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/dashboard'] ? app.iconList['/dashboard'] : 'clear' }]}</i>Dashboard</a>
 								</li>
 								<li>
-									<a href="calendar" title="Go to your calendar" class="btn {[{ content.routeList['/calendar'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/calendar'] ? content.iconList['/calendar'] : 'clear' }]}</i>
-										Calendar
-									</a>
+									<a href="calendar" title="Go to your calendar" class="btn {[{ app.routeList['/calendar'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/calendar'] ? app.iconList['/calendar'] : 'clear' }]}</i>Calendar</a>
 								</li>
 								<li data-ng-if="project.set">
-									<a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ content.routeList['/cloud'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/cloud'] ? content.iconList['/cloud'] : 'clear' }]}</i>
-										Cloud
-									</a>
+									<a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ app.routeList['/cloud'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/cloud'] ? app.iconList['/cloud'] : 'clear' }]}</i>Cloud</a>
 								</li>
 								<li data-ng-if="project.set">
-									<a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ content.routeList['/timeline'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/timeline'] ? content.iconList['/timeline'] : 'clear' }]}</i>
-										Timeline
-									</a>
+									<a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ app.routeList['/timeline'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/timeline'] ? app.iconList['/timeline'] : 'clear' }]}</i>Timeline</a>
 								</li>
 								<li data-ng-if="project.set">
-									<a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ content.routeList['/bugtracker'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/bugtracker'] ? content.iconList['/bugtracker'] : 'clear' }]}</i>
-										Bugtracker
-									</a>
+									<a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ app.routeList['/bugtracker'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/bugtracker'] ? app.iconList['/bugtracker'] : 'clear' }]}</i>Bugtracker</a>
 								</li>
-								<li data-ng-if="project.set">
-									<a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks and gantt section" class="btn {[{ content.routeList['/tasks'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/tasks'] ? content.iconList['/tasks'] : 'clear' }]}</i>
+<!-- BETA -->
+<!-- 								<li data-ng-if="project.set">
+									<a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks and gantt section" class="btn {[{ app.routeList['/tasks'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/tasks'] ? app.iconList['/tasks'] : 'clear' }]}</i>
 										Tasks
 									</a>
+								</li> -->
+								<li data-ng-if="project.set">
+									<a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ app.routeList['/whiteboard'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/whiteboard'] ? app.iconList['/whiteboard'] : 'clear' }]}</i>Whiteboard</a>
 								</li>
 								<li data-ng-if="project.set">
-									<a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ content.routeList['/whiteboard'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/whiteboard'] ? content.iconList['/whiteboard'] : 'clear' }]}</i>
-										Whiteboard
-									</a>
-								</li>
-								<li data-ng-if="project.set">
-									<a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ content.routeList['/settings'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/settings'] ? content.iconList['/settings'] : 'clear' }]}</i>
-										Project settings
-									</a>
+									<a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ app.routeList['/settings'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/settings'] ? app.iconList['/settings'] : 'clear' }]}</i>Project settings</a>
 								</li>
 								<li class="divider"></li>
 								<li>
-									<a href="profile" title="View and edit your profile" class="btn {[{ content.routeList['/profile'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ content.iconList['/profile'] ? content.iconList['/profile'] : 'clear' }]}</i>
-										Profile
-									</a>
+									<a href="profile" title="View and edit your profile" class="btn {[{ app.routeList['/profile'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/profile'] ? app.iconList['/profile'] : 'clear' }]}</i>Profile</a>
 								</li>
+								<li>
+									<a href="notifications" title="See all your notifications" class="visible-xs btn {[{ app.routeList['/notifications'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/notifications'] ? app.iconList['/notifications'] : 'clear' }]}</i>Notifications</a>
+								</li>								
+								<li>
+									<a href="logout" title="Sign out of GrappBox" class="visible-xs btn {[{ app.routeList['/logout'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/logout'] ? app.iconList['/logout'] : 'clear' }]}</i>Logout</a>
+								</li>																
 							</ul>
 						</div>
 					</aside>
 
 					<!-- Page content -->
-					<div class="page-content" sidebar-directive="content.menuState">
+					<div class="page-content" sidebar-directive="app.menuState">
 						<div class="container">
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="container-title" data-ng-cloak>
-										<h1 class="{[{ !page.onLoad ? (page.home ? 'centered' : '') : '' }]}">{[{ page.onLoad ? 'Loading...' : page.title }]}</h1>
+										<h1 class="{[{ !page.onLoad ? (page.isHome ? 'centered' : '') : '' }]}">{[{ page.onLoad ? 'Loading...' : page.title }]}</h1>
 									</div>
 									<!-- Dynamic view -->
-									<div data-ng-if="page.onLoad" class="spinner master"><div></div></div>
-									<div data-ng-if="!page.onLoad" class="container-content" data-ng-view></div>
+									<div data-ng-if="page.onLoad">
+										<div class="spinner view">
+											<svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+										</div>
+									</div>
+									<div data-ng-if="!page.onLoad">
+										<div class="container-content" data-ng-view></div>
+									</div>
 								</div>
 							</div>
 						</div>

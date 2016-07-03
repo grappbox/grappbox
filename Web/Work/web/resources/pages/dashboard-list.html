@@ -13,14 +13,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div class="row">
     <div class="col-lg-12">
       <!-- grappbox.data : (dashboard) user projects list -->
-      <div data-ng-if="content.onLoad">
+      <div data-ng-if="view.onLoad">
         <div class="spinner section">
-          <div></div>
+          <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
         </div>
       </div>
-      <div data-ng-if="!content.onLoad">
-        <div data-ng-if="content.isValid && data.projects">
-          <div class="each-data col-md-4" data-ng-repeat="project in data.projects">
+      <div data-ng-if="!view.onLoad">
+        <div data-ng-if="view.valid && projects">
+          <div class="each-data col-md-4" data-ng-repeat="project in projects">
             <div class="well">
               <ul>
                 <li class="col-xs-offset-2 avatar" data-ng-if="!project.project_logo">
@@ -34,19 +34,19 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <li class="col-xs-offset-2"><i class="material-icons">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</li>
                 <li class="col-xs-offset-2"><i class="material-icons">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</li>
               </ul>
-              <a href="dashboard/{[{ project.project_id }]}" title="Use this project" class="btn btn-default">Open</a>
+              <a href="" title="Use this project" class="btn btn-default" data-ng-click="method.loadProject(project)">Open</a>
               <a href="settings/{[{ project.project_id }]}" title="Edit this project" class="btn">Edit</a>
               <div class="clearfix"></div>
             </div>
           </div>
         </div>
 
-        <div data-ng-if="content.isValid && !data.projects">
+        <div data-ng-if="view.valid && !projects">
           <div class="well centered">
-            <p><i class="material-icons">sentiment_satisfied</i><br>You don't have any project.</p>
+            <p><i class="material-icons">border_clear</i><br>You don't have any project.<br>Create one now!</p>
           </div>
         </div>
-        <div data-ng-if="!content.isValid">
+        <div data-ng-if="!view.valid">
           <div class="well centered">
             <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
           </div>

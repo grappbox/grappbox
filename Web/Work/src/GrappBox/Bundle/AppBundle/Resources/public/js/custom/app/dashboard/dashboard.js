@@ -9,40 +9,34 @@
 * APP dashboard
 *
 */
-app.controller("dashboardController", ["$rootScope", "$scope", "localStorageService", "$base64", "$route", "$http", function($rootScope, $scope, localStorageService, $base64, $route, $http) {
+app.controller("dashboardController", ["$rootScope", "$scope", "$route", "$http", function($rootScope, $scope, $route, $http) {
+
+  /* ==================== INITIALIZATION ==================== */
 
 	// Scope variables initialization
+  $scope.data = { project_id: $route.current.params.project_id };
+  $scope.method = { formatObjectDate: "" };
+
 	$scope.occupation = { list: "", onLoad: true, valid: false, message: "" };
 	$scope.meetings = { list: "", onLoad: true, valid: false, message: "" };
 
-	$scope.content = { projectID: "" };
-	$scope.content.projectID = $route.current.params.project_id;
 
-  // Local storage initialization
-  if (!localStorageService.get("HAS_PROJECT")) {
-    $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.content.projectID)
-    .then(function onGetSuccess(response) {
-      var data = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
 
-      localStorageService.set("HAS_PROJECT", true);
-      localStorageService.set("PROJECT_ID", $base64.encode($scope.content.projectID));
-      localStorageService.set("PROJECT_NAME", $base64.encode(data.name));
+  /* ==================== ROUTINES ==================== */
 
-      $rootScope.project.id = $scope.content.projectID;
-      $rootScope.project.name = data.name;
-      $rootScope.project.set = true;
-    },
-    function onGetFail(response) {
-      context.rootScope.onUserTokenError();
-    });
-  }
+  // Routine definition
+  // Format date
+  $scope.method.formatObjectDate = function(dateToFormat) {
+    return dateToFormat.substring(0, dateToFormat.lastIndexOf(":"));
+  };
 
-	/* ==================== INITIALIZATION (TEAM OCCUPATION) ==================== */
+
+
+	/* ==================== TEAM OCCUPATION ==================== */
 
 	// Get current team occupation
-	$http.get($rootScope.api.url + "/dashboard/getteamoccupation/" + $rootScope.user.token + "/" + $scope.content.projectID)
-		.then(function onGetSuccess(response) {
-
+	$http.get($rootScope.api.url + "/dashboard/getteamoccupation/" + $rootScope.user.token + "/" + $scope.data.project_id).then(
+    function onGetTeamOccupationSuccess(response) {
       if (response.data.info) {
         switch(response.data.info.return_code) {
           case "1.2.1":
@@ -73,7 +67,7 @@ app.controller("dashboardController", ["$rootScope", "$scope", "localStorageServ
 	    	$scope.occupation.onLoad = false;
     	}
 		},
-		function onGetFail(response) {
+		function onGetTeamOccupationFail(response) {
 			$scope.occupation.list = null;
 			$scope.occupation.onLoad = false;
 			$scope.occupation.valid = false;
@@ -99,18 +93,11 @@ app.controller("dashboardController", ["$rootScope", "$scope", "localStorageServ
 
 
 
-	/* ==================== INITIALIZATION (NEXT MEETINGS) ==================== */
-
-	// Routine definition
-	// Format date
-	$scope.formatObjectDate = function(dateToFormat) {
-		return dateToFormat.substring(0, dateToFormat.lastIndexOf(":"));
-	};
+	/* ==================== NEXT MEETINGS ==================== */
 
 	// Get next meetings
-	$http.get($rootScope.api.url + "/dashboard/getnextmeetings/" + $rootScope.user.token + "/" + $scope.content.projectID)
-		.then(function onGetSuccess(response) {
-
+	$http.get($rootScope.api.url + "/dashboard/getnextmeetings/" + $rootScope.user.token + "/" + $scope.data.project_id).then(
+    function onGetMeetingsSuccess(response) {
       if (response.data.info) {
         switch(response.data.info.return_code) {
           case "1.2.1":
@@ -141,7 +128,7 @@ app.controller("dashboardController", ["$rootScope", "$scope", "localStorageServ
 	    	$scope.meetings.onLoad = false;
     	}
 		},
-		function onGetFail(response) {
+		function onGetMeetingsFail(response) {
 			$scope.meetings.list = null;
 			$scope.meetings.onLoad = false;
 			$scope.meetings.valid = false;
