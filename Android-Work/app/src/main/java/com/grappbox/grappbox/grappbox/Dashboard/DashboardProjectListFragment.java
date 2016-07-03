@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
@@ -76,8 +77,11 @@ public class DashboardProjectListFragment extends LoadingFragment {
             @Override
             public void onItemClick(ProjectModel project)
             {
+                TextView txt_projectSelected = (TextView) getActivity().findViewById(R.id.txt_current_project);
                 SessionAdapter.getInstance().setCurrentSelectedProject(project.getId());
                 SessionAdapter.getInstance().setCurrentSelectedProjectName(project.getName());
+                if (txt_projectSelected != null)
+                    txt_projectSelected.setText(project.getName());
                 FragmentManager fm = getFragmentManager();
                 if (fm != null) {
                     Fragment fragment = new DashboardFragment();

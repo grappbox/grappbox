@@ -414,7 +414,6 @@ public class MainActivity extends AppCompatActivity
         switch (id){
 
             case R.id.nav_dashboard:
-                Log.v("Dashboard", SessionAdapter.getInstance().getCurrentSelectedProject());
                 if (SessionAdapter.getInstance().getCurrentSelectedProject().equals("-1")) {
                     fragment = new DashboardProjectListFragment();
                 } else {
