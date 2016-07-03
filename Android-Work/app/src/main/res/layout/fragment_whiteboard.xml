@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFCCCCCC"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    tools:context=".Whiteboard.WhiteboardActivity" >
 
     <TextView
         android:id="@+id/whiteboard_title"

@@ -220,8 +220,8 @@
     <string name="project_create_company_hint">Company name</string>
     <string name="project_create_mail">Mail</string>
     <string name="project_create_mail_hint">example@mail.com</string>
-    <string name="project_create_facebook_link">Facebook</string>
-    <string name="project_create_twitter_link">Twitter</string>
+    <string name="project_create_facebook_link">Facebook link</string>
+    <string name="project_create_twitter_link">Twitter link</string>
     <string name="project_create_safe_passeword">Safe passeword project</string>
     <string name="project_create_safe_passeword_hint">Your safe passeword</string>
     <string name="project_create_send">Create</string>

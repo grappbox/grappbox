@@ -57,11 +57,11 @@ public class APIRequestDeleteObjectWhiteboard extends AsyncTask<String, Void, St
             JSONObject JSONcenter = new JSONObject();
 
             JSONparam.put("token", SessionAdapter.getInstance().getToken().toString());
-            JSONparam.put("whiteboardId", whiteboardId);
-            JSONcenter.put("x", x);
-            JSONcenter.put("y", y);
+            JSONparam.put("whiteboardId", Integer.valueOf(whiteboardId));
+            JSONcenter.put("x", Float.valueOf(x));
+            JSONcenter.put("y", Float.valueOf(y));
             JSONparam.put("center", JSONcenter);
-            JSONparam.put("radius", radius);
+            JSONparam.put("radius", Float.valueOf(radius));
 
             JSONdata.put("data", JSONparam);
             APIConnectAdapter.getInstance().sendJSON(JSONdata);

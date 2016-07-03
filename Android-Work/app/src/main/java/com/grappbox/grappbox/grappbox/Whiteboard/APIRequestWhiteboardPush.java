@@ -69,23 +69,30 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
 
             String token = SessionAdapter.getInstance().getToken();
             String typeObject = param[1];
-            String posStartX = param[2];
-            String posStartY = param[3];
-            String posEndX = param[4];
-            String posEndY = param[5];
+            float posStartX = Float.valueOf(param[2]);
+            float posStartY = Float.valueOf(param[3]);
+            float posEndX = Float.valueOf(param[4]);
+            float posEndY = Float.valueOf(param[5]);
             String colorObject = param[6];
             String colorBackground = param[7];
             String text = param[8];
-            String radius = param[9];
+            String radiusArrahy = param[9];
+            float radiusX = -1;
+            float radiusY = -1;
+            if (radiusArrahy != null) {
+                Log.v("radius", radiusArrahy);
+                String[] radius = radiusArrahy.split(";");
+                radiusX = Float.valueOf(radius[0]);
+                radiusY = Float.valueOf(radius[1]);
+            }
             boolean isItalic = Boolean.getBoolean(param[10]);
             boolean isBold = Boolean.getBoolean(param[11]);
-            String size = param[12];
+            float size = Float.valueOf(param[12]);
             String pointListX = param[13];
             String pointListY = param[14];
-            String brushSize = param[15];
+            float brushSize = Float.valueOf(param[15]);
 
             JSONParam.put("token", token);
-            JSONParam.put("modification", _type);
             if (_type.equals("add")) {
                 JSONObjParam.put("type", typeObject);
                 JSONPositionStart.put("x", posStartX);
@@ -103,8 +110,8 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
                     JSONArray points = new JSONArray();
                     for (int i = 0; i < pointX.size(); ++i){
                         JSONObject coord = new JSONObject();
-                        coord.put("x", pointX.get(i));
-                        coord.put("y", pointY.get(i));
+                        coord.put("x", Float.valueOf(pointX.get(i)));
+                        coord.put("y", Float.valueOf(pointY.get(i)));
                         points.put(coord);
                     }
                     JSONObjParam.put("points", points);
@@ -118,8 +125,12 @@ public class APIRequestWhiteboardPush extends AsyncTask<String, Void, String> {
                     JSONObjParam.put("isBold", isBold);
                     JSONObjParam.put("size", size);
                 }
-                if (radius != null)
-                    JSONObjParam.put("radius", radius);
+                if (radiusX != -1 && radiusY != -1) {
+                    JSONObject radiusCoord = new JSONObject();
+                    radiusCoord.put("x", radiusX);
+                    radiusCoord.put("y", radiusY);
+                    JSONObjParam.put("radius", radiusCoord);
+                }
                 JSONParam.put("object", JSONObjParam);
             } else if (_type.equals("del")) {
                 JSONParam.put("objectId",  Integer.getInteger(param[1]));

@@ -136,6 +136,7 @@ public class DrawingView extends View {
         }
         canvas.drawBitmap(_WhiteboardBitmap, 0, 0, _CanvasPaint);
 
+        Log.v("List size",String.valueOf(_ListShape.size()));
         for (DrawingShape shape : _ListShape) {
             if (shape.getTypeShape() == DrawingShape.typeShape.SHAPE) {
                 canvas.drawPath(shape.getPath(), shape.getInPaint());
@@ -216,7 +217,7 @@ public class DrawingView extends View {
                             if (intersect(shape.getPath())) {
                                 _tempDelete.add(shape);
                                 APIRequestDeleteObjectWhiteboard api = new APIRequestDeleteObjectWhiteboard((WhiteboardActivity) this.getContext(), _ListShape, shape);
-                                api.execute(_idWhiteboard, String.valueOf(touchX + _decalX), String.valueOf(touchY + _decalY), String.valueOf(_brushSize));
+                                api.execute(_idWhiteboard, String.valueOf(touchX + _decalX), String.valueOf(touchY + _decalY), String.valueOf(_brushSize + 10));
                                 it.remove();
                             }
                         }
@@ -253,6 +254,7 @@ public class DrawingView extends View {
                         newShape.setPaint(inPaint, outPaint);
                         newShape.scalePath(_scaleFactor);
                         _ListShape.add(newShape);
+                        invalidate();
                     } else if (_ShapeType != 5) {
                         _DrawPath.reset();
                         drawShape(touchX, touchY);
@@ -265,6 +267,7 @@ public class DrawingView extends View {
                         newShape.setPaint(inPaint, outPaint);
                         newShape.scalePath(_scaleFactor);
                         _ListShape.add(newShape);
+                        invalidate();
                     }
                     invalidate();
                     _DrawPath.reset();
@@ -457,8 +460,11 @@ public class DrawingView extends View {
                     Paint outPaint = new Paint(_DrawPaint);
 
                     inPaint.setColor(Color.parseColor(form.getAsString("color")));
-
                     outPaint.setColor(Color.parseColor(form.getAsString("background")));
+                    if (!form.getAsString("type").equals("HANDWRITE")) {
+                        inPaint.setStyle(Paint.Style.FILL);
+                        outPaint.setStyle(Paint.Style.STROKE);
+                    }
                     _ListShape.add(new DrawingShape(DrawingShape.typeShape.SHAPE, new Path(path), rect, inPaint, outPaint, 1.0f));
                     Log.v("form", form.getAsString("type"));
                 }

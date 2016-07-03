@@ -1,7 +1,9 @@
 package com.grappbox.grappbox.grappbox.Dashboard;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
+import com.grappbox.grappbox.grappbox.Project.CreateProjectActivity;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ public class DashboardProjectListFragment extends LoadingFragment {
     private SwipeRefreshLayout _swiper;
     private DashboardRVAdapter _adapter = null;
     public SwipeRefreshLayout.OnRefreshListener _refresher;
+    private FloatingActionButton _fab;
 
     public void onCreate(Bundle savedInstanceBundle)
     {
@@ -43,6 +47,12 @@ public class DashboardProjectListFragment extends LoadingFragment {
         View rootView = inflater.inflate(R.layout.fragment_project_list, container, false);
         _swiper = (SwipeRefreshLayout) rootView.findViewById(R.id.pull_refresher);
         startLoading(rootView, R.id.loader, _swiper);
+
+        _fab = (FloatingActionButton) rootView.findViewById(R.id.add_project);
+        _fab.setOnClickListener((View v) -> {
+            createProject();
+        });
+        _fab.hide();
 
         _recycleView = (RecyclerView)rootView.findViewById(R.id.project_list);
         _recycleView.setHasFixedSize(true);
@@ -84,5 +94,12 @@ public class DashboardProjectListFragment extends LoadingFragment {
     public void fillView()
     {
         endLoading();
+        _fab.show();
+    }
+
+    private void createProject()
+    {
+        Intent intent = new Intent(this.getActivity(), CreateProjectActivity.class);
+        startActivity(intent);
     }
 }

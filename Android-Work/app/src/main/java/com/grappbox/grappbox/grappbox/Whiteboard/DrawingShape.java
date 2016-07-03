@@ -25,7 +25,7 @@ public class DrawingShape {
     private Path _path;
     private Paint _InPaint;
     private Paint _OutPaint;
-    private int _id = -1;
+    private int _id = 0;
     private float _ray = -1;
     private RectF _rect = null;
 

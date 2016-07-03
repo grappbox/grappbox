@@ -17,28 +17,6 @@
         tools:context="com.grappbox.grappbox.grappbox.Project.CreateProjectActivity"
         tools:showIn="@layout/activity_create_project">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_title"
-            android:textSize="30sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:textColor="#c0392b"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/user_profile_name_label"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
-
         <EditText
             android:id="@+id/create_project_title"
             android:singleLine="true"
@@ -49,18 +27,6 @@
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
             android:hint="@string/project_create_title_hint"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_description"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/create_project_description"
@@ -74,18 +40,6 @@
             android:paddingBottom="5dip"
             android:hint="@string/project_create_description_hint"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_phone"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
-
         <EditText
             android:id="@+id/create_project_phone"
             android:inputType="phone"
@@ -95,19 +49,7 @@
             android:paddingRight="10dip"
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
-            android:hint="XXXXXXXXXX"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_mail"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
+            android:hint="Project phone number"/>
 
         <EditText
             android:id="@+id/create_project_mail"
@@ -120,18 +62,6 @@
             android:paddingBottom="5dip"
             android:hint="@string/project_create_mail_hint"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_company"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
-
         <EditText
             android:id="@+id/create_project_company"
             android:layout_width="match_parent"
@@ -141,18 +71,6 @@
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
             android:hint="@string/project_create_company_hint"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_facebook_link"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/create_project_facebook"
@@ -164,18 +82,6 @@
             android:paddingBottom="5dip"
             android:hint="@string/project_create_facebook_link"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_twitter_link"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
-
         <EditText
             android:id="@+id/create_project_twitter"
             android:layout_width="match_parent"
@@ -185,18 +91,6 @@
             android:paddingTop="5dip"
             android:paddingBottom="5dip"
             android:hint="@string/project_create_twitter_link"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/project_create_safe_passeword"
-            android:textSize="20sp"
-            android:paddingLeft="10dip"
-            android:paddingRight="10dip"
-            android:paddingTop="5dip"
-            android:paddingBottom="5dip"
-            android:textColor="#000"
-            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/create_project_safe_passeword"

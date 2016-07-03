@@ -38,7 +38,7 @@ import java.util.TimeZone;
 public class WhiteboardActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int             _SizeSpinnerSelected = 0;
-    private int             _timeRefresh = 15000;
+    private int             _timeRefresh = 3000;
 
     private DrawingView     _DrawView;
     private String          _idWhiteboard;
@@ -75,29 +75,41 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            Log.v("Call", String.valueOf(t++));
-            pullWhiteboard();
+                Log.v("Call", String.valueOf(t++));
+                pullWhiteboard();
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _context = this;
         setContentView(R.layout.fragment_whiteboard);
+        _context = this;
         _idWhiteboard = getIntent().getStringExtra("idWhiteboard");
         _dateWithboard = getIntent().getStringExtra("createdAt");
-        _DrawView = (DrawingView)findViewById(R.id.drawing);
+        _DrawView = (DrawingView) this.findViewById(R.id.drawing);
+        if (_DrawView == null)
+            return ;
         _DrawView.setIdWhiteboard(_idWhiteboard);
         _DrawBtn = (ImageButton)findViewById(R.id.draw_btn);
+        if (_DrawBtn == null)
+            return ;
         _DrawBtn.setOnClickListener(this);
         _ColorBtn = (ImageButton)findViewById(R.id.color_btn);
+        if (_ColorBtn == null)
+            return ;
         _ColorBtn.setOnClickListener(this);
         _ColorBorderBtn = (ImageButton)findViewById(R.id.color_border_btn);
+        if (_ColorBorderBtn == null)
+            return ;
         _ColorBorderBtn.setOnClickListener(this);
         _EraseButton = (ImageButton)findViewById(R.id.erase_btn);
+        if (_EraseButton == null)
+            return ;
         _EraseButton.setOnClickListener(this);
         _MoveButton = (ImageButton)findViewById(R.id.move_btn);
+        if (_MoveButton == null)
+            return ;
         _MoveButton.setOnClickListener(this);
         _WhiteboardTitle = (TextView)findViewById(R.id.whiteboard_title);
         _WhiteboardTitle.setText(getIntent().getStringExtra("title"));
@@ -110,7 +122,6 @@ public class WhiteboardActivity extends AppCompatActivity implements View.OnClic
         Intent msgIntent = new Intent(_context, WhiteboardPullIntentService.class);
         _pendingIntent = PendingIntent.getService(_context, 0, msgIntent, 0);
         AlarmManager alarmManager = (AlarmManager)_context.getSystemService(Context.ALARM_SERVICE);
-
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), _timeRefresh, _pendingIntent);
         _context.startService(msgIntent);
     }
