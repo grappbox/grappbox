@@ -1,23 +1,14 @@
 package com.grappbox.grappbox.grappbox;
 
-import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.util.Pair;
-import android.support.v7.graphics.drawable.DrawableWrapper;
-import android.support.v7.view.menu.MenuBuilder;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -28,12 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.google.common.collect.ImmutableMap;
@@ -47,30 +33,24 @@ import com.grappbox.grappbox.grappbox.Gantt.TaskFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.AccessModel;
 import com.grappbox.grappbox.grappbox.Model.GetAccessesTask;
-import com.grappbox.grappbox.grappbox.Model.ProjectMenuAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.Model.UserProjectTask;
 import com.grappbox.grappbox.grappbox.Project.CreateProjectActivity;
 import com.grappbox.grappbox.grappbox.Settings.UserProfileActivity;
-import com.grappbox.grappbox.grappbox.Settings.UserProfileFragment;
 import com.grappbox.grappbox.grappbox.Timeline.TimelineFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SessionAdapter.SessionListener, FragmentManager.OnBackStackChangedListener{
@@ -212,7 +192,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 UserProjectTask task = new UserProjectTask(_currentActivity);
-
                 task.execute();
             }
         });
@@ -414,7 +393,7 @@ public class MainActivity extends AppCompatActivity
         switch (id){
 
             case R.id.nav_dashboard:
-                if (SessionAdapter.getInstance().getCurrentSelectedProject().equals("-1")) {
+                if (SessionAdapter.getInstance().getCurrentSelectedProject().equals("")) {
                     fragment = new DashboardProjectListFragment();
                 } else {
                     fragment = new DashboardFragment();
