@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:layout_width="200dip"
             android:layout_height="200dip"
-            android:src="@mipmap/icon_launcher"
+            android:src="@drawable/grappbox_logo"
             android:contentDescription="@string/logo_description" />
 
         <TextView
