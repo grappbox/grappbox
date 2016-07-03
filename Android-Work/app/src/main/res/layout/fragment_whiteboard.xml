@@ -15,7 +15,8 @@
         android:textSize="30sp"
         android:paddingLeft="10dip"
         android:textColor="#c0392b"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"/>
 
     <com.grappbox.grappbox.grappbox.Whiteboard.DrawingView
         android:id="@+id/drawing"
@@ -30,7 +31,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:orientation="horizontal" >
 
@@ -41,7 +42,8 @@
             android:layout_weight="0.2"
             android:contentDescription="icon_color"
             android:src="@drawable/painter"
-            android:clickable="true" />
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/color_border_btn"
@@ -50,7 +52,8 @@
             android:layout_weight="0.2"
             android:src="@drawable/square"
             android:contentDescription="icon_color_border"
-            android:clickable="true" />
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/draw_btn"
@@ -59,7 +62,8 @@
             android:layout_weight="0.2"
             android:contentDescription="test"
             android:src="@drawable/edit"
-            android:clickable="true" />
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/erase_btn"
@@ -68,7 +72,8 @@
             android:layout_weight="0.2"
             android:contentDescription="Erase button"
             android:src="@drawable/eraser"
-            android:clickable="true" />
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
 
         <ImageButton
             android:id="@+id/move_btn"
@@ -77,9 +82,8 @@
             android:layout_weight="0.2"
             android:contentDescription="Erase button"
             android:src="@drawable/arrows"
-            android:clickable="true" />
-
-
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
 
     </LinearLayout>
 
