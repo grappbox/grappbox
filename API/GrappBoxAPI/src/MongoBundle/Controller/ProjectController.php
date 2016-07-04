@@ -171,7 +171,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.2.3", "Project", "updateinformations"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -299,7 +299,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.4.3", "Project", "delproject"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -333,7 +333,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.5.3", "Project", "retrieveproject"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.5.9", "Project", "retrieveproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -369,7 +369,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.6.3", "Project", "generatecustomeraccess"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.6.9", "Project", "generatecustomeraccess"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -452,7 +452,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("6.8.3", "Project", "getcustomeraccessbyproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByprojects($projectId);
+		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByProjects($projectId);
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.8.4", "Project", "getcustomeraccessbyproject", "Bad Parameter: projectId");
 
@@ -487,7 +487,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.9.3", "Project", "delcustomeraccess"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.9.9", "Project", "delcustomeraccess"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -525,7 +525,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.10.3", "Project", "addusertoproject"));
 
-		if (!$this->checkRoles($user, $content->id, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->id, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -580,7 +580,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.11.3", "Project", "removeusertoproject"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -692,7 +692,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("6.13.4", "Project", "changeprojectcolor", "Bad Parameter: projectId");
 
-		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project.id" => $project->getId(), "user.id" => $user->getId()));
 		if ($color === null)
 		{
 			$color = new Color();
@@ -729,7 +729,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: projectId");
 
-		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
+		$color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project.id" => $project->getId(), "user.id" => $user->getId()));
 		if ($color === null)
 			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: No color for the user");
 

@@ -70,8 +70,6 @@ class RolesAndTokenVerificationController extends Controller
 
 		$res = $result->objectToArray();
 
-		print($res[$role]);
-
 		return $res[$role];
 	}
 
@@ -158,7 +156,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($content->name == "Admin")
 			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: You can't create a role named Admin");
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings"))
+		if ($this->checkRoles($user, $content->projectId, "projectSettings"))
 			return $this->setNoRightsError("13.1.9", "Role", "addprojectroles");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -206,7 +204,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: id");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
+		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.2.9", "Role", "delprojectroles");
 
 		if ($role->getName() == "Admin")
@@ -247,7 +245,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: roleId");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
+		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.3.9", "Role", "putprojectroles");
 
 		if ($role->getName() == "Admin")
@@ -293,11 +291,11 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.4.3", "Role", "getprojectroles"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings") < 1)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$roles = $em->getRepository('MongoBundle:Role')->findByprojects($projectId);
+		$roles = $em->getRepository('MongoBundle:Role')->findByProjects($projectId);
 
 		if ($roles === null)
 			return $this->setBadRequest("13.4.4", "Role", "getprojectroles", "Bad Parameter: projectId");
@@ -358,7 +356,7 @@ class RolesAndTokenVerificationController extends Controller
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
 		$projectId = $role->getProjects()->getId();
-		if (!$this->checkRoles($user, $projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "assignpersontorole");
 
 		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
@@ -403,7 +401,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.6.3", "Role", "putpersonrole"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "putpersonrole");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -442,7 +440,7 @@ class RolesAndTokenVerificationController extends Controller
 			return ($this->setBadTokenError("13.7.3", "Role", "getuserroles"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
+		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByUserId($user->getId());
 
 		if (count($userRoles) == 0 || $userRoles === null)
 			return $this->setNoDataSuccess("1.13.3", "Role", "getuserroles");
@@ -474,7 +472,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.8.3", "Role", "delpersonrole"));
 
-		if (!$this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -521,7 +519,7 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$user)
 			return ($this->setBadTokenError("13.9.3", "Role", "getrolebyprojectanduser"));
 
-		if (!$this->checkRoles($user, $projectId, "projectSettings") < 1)
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return $this->setNoRightsError("13.9.9", "Role", "getrolebyprojectanduser");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
@@ -564,7 +562,7 @@ class RolesAndTokenVerificationController extends Controller
 		if ($role === null)
 			return $this->setBadRequest("13.10.4", "Role", "getusersforrole", "Bad Parameter: roleId");
 
-		if (!$this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 1)
+		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 1)
 			return $this->setNoRightsError("13.10.9", "Role", "getusersforrole");
 
 		$purRepository = $em->getRepository('MongoBundle:ProjectUserRole');
@@ -609,7 +607,7 @@ class RolesAndTokenVerificationController extends Controller
 			return ($this->setBadTokenError("13.11.3", "Role", "getuserconnectedrolesinformations"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
+		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByUserId($user->getId());
 
 		if (count($userRoles) == 0 || $userRoles === null)
 			return $this->setNoDataSuccess("1.13.3", "Role", "getuserconnectedrolesinformations");

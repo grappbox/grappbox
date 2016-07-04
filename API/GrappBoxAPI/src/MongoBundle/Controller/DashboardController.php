@@ -165,7 +165,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("2.6.3", "Dashboard", "getProjectTasks"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$tasks = $em->getRepository('MongoBundle:Task')->findByprojects($id);
+		$tasks = $em->getRepository('MongoBundle:Task')->findByProjects($id);
 
 		$arr = array();
 
@@ -358,7 +358,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("2.11.3", "Dashboard", "getProjectTasksStatus"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$tasks = $em->getRepository('MongoBundle:Task')->findByprojects($id);
+		$tasks = $em->getRepository('MongoBundle:Task')->findByProjects($id);
 
 		$arr = array();
 
@@ -395,7 +395,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("2.12.3", "Dashboard", "getNumberTimelineMessages"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$timelineMessages = $em->getRepository('MongoBundle:TimelineMessage')->findBytimelineId($id);
+		$timelineMessages = $em->getRepository('MongoBundle:TimelineMessage')->findByTimelineId($id);
 
 		return $this->setSuccess("1.2.1", "Dashboard", "getNumberTimelineMessages", "Complete Success", array("message_number" => count($timelineMessages)));
 	}
@@ -415,7 +415,7 @@ class DashboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("2.13.3", "Dashboard", "getNumberBugs"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$bugs = $em->getRepository('MongoBundle:Bug')->findByprojectId($id);
+		$bugs = $em->getRepository('MongoBundle:Bug')->findByProjectId($id);
 
 		return $this->setSuccess("1.2.1", "Dashboard", "getNumberBugs", "Complete Success", array("bug_number" => count($bugs)));
 	}
