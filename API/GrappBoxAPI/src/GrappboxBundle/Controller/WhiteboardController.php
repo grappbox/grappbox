@@ -1007,7 +1007,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$d = $this->checkRight($center, $square["D"], $square["A"]);
 			if ($a == true && $b == true && $c == true && $d == true)
 				return true;
-			if ($a == false && $b == false && $c == $false && $d == false)
+			if ($a == false && $b == false && $c == false && $d == false)
 			{
 				$a = $this->checkRight($center, $square["A"], $square["D"]);
 				$b = $this->checkRight($center, $square["D"], $square["C"]);

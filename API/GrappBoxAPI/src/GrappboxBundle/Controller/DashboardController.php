@@ -122,9 +122,6 @@ class DashboardController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("2.1.4", "Dashboard", "getteamoccupation", "Bad Parameter: projectId");
 
-		if ($this->checkRoles($user, $project->getId(), "projectSettings") < 2)
-			return ($this->setNoRightsError("2.1.9", "Dashboard", "getteamoccupation"));
-
 		return $this->getDoctrine()->getManager()->getRepository('GrappboxBundle:Project')->findTeamOccupationV2($project->getId());
 	}
 
