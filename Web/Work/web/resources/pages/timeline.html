@@ -45,10 +45,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="well no-shadow border">
                       <ul>
                         <li class="ellipsis"><strong>{[{ message.title }]}</strong><br>{[{ message.message }]}</li>
-                        <li class="divider"></li>
                         <li class="author">{[{ message.creator.fullname }]}<br>{[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
                       </ul>
-                      <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="view_onMessageOpen(message)" class="btn btn-raised btn-info">Open</a>
+                      <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="action.onOpenMessage(message)" class="btn btn-raised btn-info">Open</a>
                       <div class="clearfix"></div>
                     </div>
                     <div class="dot"></div>
@@ -90,7 +89,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         <li class="divider"></li>
                         <li class="author">{[{ message.creator.fullname }]}<br>{[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
                       </ul>
-                      <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="view_onMessageOpen(message)" class="btn btn-raised btn-info">Open</a>
+                      <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="action.onOpenMessage(message)" class="btn btn-raised btn-info">Open</a>
                       <div class="clearfix"></div>
                     </div>
                     <div class="dot"></div>
@@ -123,14 +122,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- timeline: new message fixed button -->
 <section>
-  <a href="" class="btn btn-danger btn-fab btn-fixed" title="Create a new message" data-ng-click="view_onNewMessage()" data-ng-if="view.authorized"><i class="material-icons">add</i></a>
+  <a href="" class="btn btn-danger btn-fab btn-fixed" title="Create a new message" data-ng-click="action.onNewMessage()" data-ng-if="view.authorized"><i class="material-icons">add</i></a>
 </section>
 
 <!-- timeline: message view modal -->
 <div>
-  <script type="text/ng-template" id="view_openMessage.html">
+  <script type="text/ng-template" id="modal_openMessage.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="view_closeMessage()">×</button>
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_closeMessage()">×</button>
       <h4 class="modal-title">Message</h4>
     </div>
     <div class="modal-body">
@@ -140,8 +139,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <li class="author">{[{ active.message.creator.fullname }]}<br>{[{ method.formatObjectDate(active.message.createdAt.date) }]}<span data-ng-if="active.message.editedAt"> (edited on {[{ method.formatObjectDate(active.message.editedAt.date) }]})</span></li>
         </ul>
         <div class="action">
-          <a href="" title="Delete this message" class="btn btn-default" data-ng-click="view_onMessageDelete(active.message.id)" data-ng-if="user.id == active.message.creator.id">Delete</a>
-          <a href="" title="Edit this message" class="btn" data-ng-click="view_onMessageEdit(active.message)" data-ng-if="user.id == active.message.creator.id">Edit</a>
+          <a href="" title="Delete this message" class="btn btn-default" data-ng-click="action.onDeleteMessage(active.message.id)" data-ng-if="user.id == active.message.creator.id">Delete</a>
+          <a href="" title="Edit this message" class="btn" data-ng-click="action.onEditMessage(active.message)" data-ng-if="user.id == active.message.creator.id">Edit</a>
         </div>
         <div class="clearfix"></div>
       </div>
@@ -162,8 +161,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <li class="author">{[{ comment.creator.fullname }]}<br>{[{ method.formatObjectDate(comment.createdAt.date) }]}<span data-ng-if="comment.editedAt"> (edited on {[{ method.formatObjectDate(comment.editedAt.date) }]})</span></li>
                   </ul>
                   <div class="action">
-                    <a href="" title="Delete this comment" class="btn btn-default" data-ng-click="view_onCommentDelete(comment.id)" data-ng-if="user.id == comment.creator.id">Delete</a>
-                    <a href="" title="Edit this comment" class="btn" data-ng-click="view_onCommentEdit(comment)" data-ng-if="user.id == comment.creator.id">Edit</a>
+                    <a href="" title="Delete this comment" class="btn btn-default" data-ng-click="action.onDeleteComment(comment.id)" data-ng-if="user.id == comment.creator.id">Delete</a>
+                    <a href="" title="Edit this comment" class="btn" data-ng-click="action.onEditComment(comment)" data-ng-if="user.id == comment.creator.id">Edit</a>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -189,17 +188,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>
     </div>
     <div class="modal-footer" id="message-action">
-      <a href="" title="Add a comment" class="btn btn-info btn-raised" data-ng-click="view_onNewComment(active.message)">Add comment</a>    
-      <button type="button" name="Close this message" class="btn" data-ng-click="view_closeMessage()">Close</button>
+      <a href="" title="Add a comment" class="btn btn-info btn-raised" data-ng-click="action.onNewComment(active.message)">Add comment</a>    
+      <button type="button" name="Close this message" class="btn" data-ng-click="modal_closeMessage()">Close</button>
     </div>
   </script>
 </div>
 
 <!-- timeline: message creation modal -->
 <div>
-  <script type="text/ng-template" id="view_createNewMessage.html">
+  <script type="text/ng-template" id="modal_createNewMessage.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="view_cancelMessageCreation()">×</button>
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelMessageCreation()">×</button>
       <h4 class="modal-title">Message creation</h4>
     </div>
     <div class="modal-body">
@@ -221,17 +220,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="view_confirmMessageCreation()">Create</button>
-      <button type="button" class="btn" data-ng-click="view_cancelMessageCreation()">Cancel</button>
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmMessageCreation()">Create</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelMessageCreation()">Cancel</button>
     </div>
   </script>
 </div>
 
 <!-- timeline: comment creation modal -->
 <div>
-  <script type="text/ng-template" id="view_createNewComment.html">
+  <script type="text/ng-template" id="modal_createNewComment.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="view_cancelCommentCreation()">×</button>
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelCommentCreation()">×</button>
       <h4 class="modal-title">Comment creation</h4>
     </div>
     <div class="modal-body">
@@ -253,17 +252,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="view_confirmCommentCreation()">Create</button>
-      <button type="button" class="btn" data-ng-click="view_cancelCommentCreation()">Cancel</button>
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmCommentCreation()">Create</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelCommentCreation()">Cancel</button>
     </div>
   </script>
 </div>
 
 <!-- timeline: message edition modal -->
 <div>
-  <script type="text/ng-template" id="view_editMessage.html">
+  <script type="text/ng-template" id="modal_editMessage.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="view_cancelMessageEdition()">×</button>
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelMessageEdition()">×</button>
       <h4 class="modal-title">Message edition</h4>
     </div>
     <div class="modal-body">
@@ -285,17 +284,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="view_confirmMessageEdition()">Update</button>
-      <button type="button" class="btn" data-ng-click="view_cancelMessageEdition()">Cancel</button>
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmMessageEdition()">Update</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelMessageEdition()">Cancel</button>
     </div>
   </script>
 </div>
 
 <!-- timeline: comment edition modal -->
 <div>
-  <script type="text/ng-template" id="view_editComment.html">
+  <script type="text/ng-template" id="modal_editComment.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="view_cancelCommentEdition()">×</button>
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelCommentEdition()">×</button>
       <h4 class="modal-title">Comment edition</h4>
     </div>
     <div class="modal-body">
@@ -317,42 +316,42 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="view_confirmCommentEdition()">Update</button>
-      <button type="button" class="btn" data-ng-click="view_cancelCommentEdition()">Cancel</button>
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmCommentEdition()">Update</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelCommentEdition()">Cancel</button>
     </div>
   </script>
 </div>
 
 <!-- timeline: message deletion modal -->
 <div>
-  <script type="text/ng-template" id="view_deleteMessage.html">
+  <script type="text/ng-template" id="modal_deleteMessage.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="view_cancelMessageDeletion()">×</button>
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelMessageDeletion()">×</button>
       <h4 class="modal-title">Message deletion</h4>
     </div>
     <div class="modal-body">
     <p>Are you sure you want to delete this message?</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="view_confirmMessageDeletion()">Yes</button>
-      <button type="button" class="btn" data-ng-click="view_cancelMessageDeletion()">No</button>
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmMessageDeletion()">Yes</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelMessageDeletion()">No</button>
     </div>
   </script>
 </div>
 
 <!-- timeline: comment deletion modal -->
 <div>
-  <script type="text/ng-template" id="view_deleteComment.html">
+  <script type="text/ng-template" id="modal_deleteComment.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="view_cancelCommentDeletion()">×</button>
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelCommentDeletion()">×</button>
       <h4 class="modal-title">Comment deletion</h4>
     </div>
     <div class="modal-body">
     <p>Are you sure you want to delete this comment?</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="view_confirmCommentDeletion()">Yes</button>
-      <button type="button" class="btn" data-ng-click="view_cancelCommentDeletion()">No</button>
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmCommentDeletion()">Yes</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelCommentDeletion()">No</button>
     </div>
   </script>
 </div>

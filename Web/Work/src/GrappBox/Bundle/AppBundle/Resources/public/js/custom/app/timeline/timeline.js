@@ -20,9 +20,11 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
   $scope.timeline = { project_id: $route.current.params.project_id, team: {}, customer: {} };
   $scope.active = { message: { title: "", message: "" }, comment: { title: "", comment: "" }, modal: "" };
+  $scope.action = { onOpenMessage: "", onNewMessage: "", onNewComment: "", onEditMessage: "", onEditComment: "", onDeleteMessage: "", onDeleteComment: "" }
+  
   $scope.new = { message: { title: "", message: "" }, comment: { title: "", comment: "" } };
   $scope.comments = {};
-
+  
 
 
 	/* ==================== LOCAL ROUTINES ==================== */
@@ -172,15 +174,15 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
   /* ==================== SCOPE ROUTINES ==================== */
 
-	// Routine definition
-  // Switch tab (timeline)
+	// Routine definition (scope)
+  // Switch timeline tab
   $scope.method.switchTab = function(name) {
   	$scope.timeline.team.active = (name == "team" ? true : false);
   	$scope.timeline.customer.active = (name == "customer" ? true : false);
   };
 
-  // Routine definition
-  // Format object date (posted)
+  // Routine definition (scope)
+  // Format object date
   $scope.method.formatObjectDate = function(dateToFormat) {
   	return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
   };
@@ -278,12 +280,12 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   };
 
   // "Open message" button handler
-  $scope.view_onMessageOpen = function(message) {
+  $scope.action.onOpenMessage = function(message) {
     _resetModalContent();
     _getMessageComments(message);
 
     $scope.active.message = message;
-    $scope.active.modal = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_openMessage.html", controller: "view_openMessage" });
+    $scope.active.modal = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_openMessage.html", controller: "modal_openMessage" });
   };
 
 
@@ -291,11 +293,11 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   /* ==================== CREATE OBJECT (CREATE MESSAGE/COMMENT) ==================== */
 
   // "Add message" button handler
-  $scope.view_onNewMessage = function() {
+  $scope.action.onNewMessage = function() {
     $scope.new.message.title = "";
     $scope.new.message.message = "";
 
-    var modal_newMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_createNewMessage.html", controller: "view_createNewMessage" });
+    var modal_newMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewMessage.html", controller: "modal_createNewMessage" });
     modal_newMessage.result.then(
       function onModalConfirm() {
         $http.post($rootScope.api.url + "/timeline/postmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
@@ -332,11 +334,11 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     };
 
   // "Add comment" button handler
-  $scope.view_onNewComment = function(message) {
+  $scope.action.onNewComment = function(message) {
     $scope.new.comment.title = "";
     $scope.new.comment.message = "";
 
-    var modal_newComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "view_createNewComment.html", controller: "view_createNewComment" });
+    var modal_newComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_createNewComment.html", controller: "modal_createNewComment" });
     modal_newComment.result.then(
       function onModalConfirm() {
         $http.post($rootScope.api.url + "/timeline/postmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
@@ -374,11 +376,11 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   /* ==================== EDIT OBJECT (EDIT MESSAGE/COMMENT) ==================== */
 
   // "Edit message" button handler
-  $scope.view_onMessageEdit = function(message) {
+  $scope.action.onEditMessage = function(message) {
     $scope.new.message.title = message.title;
     $scope.new.message.message = message.message;
 
-    var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "view_editMessage.html", controller: "view_editMessage" });
+    var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_editMessage.html", controller: "modal_editMessage" });
     modal_editMessage.result.then(
       function onModalConfirm() {
         $http.put($rootScope.api.url + "/timeline/editmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
@@ -418,11 +420,11 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     };
 
   // "Edit comment" button handler
-  $scope.view_onCommentEdit = function(comment) {
+  $scope.action.onEditComment = function(comment) {
     $scope.new.comment.title = comment.title;
     $scope.new.comment.message = comment.message;
 
-    var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "view_editComment.html", controller: "view_editComment" });
+    var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_editComment.html", controller: "modal_editComment" });
     modal_editMessage.result.then(
       function onModalConfirm() {
         $http.put($rootScope.api.url + "/timeline/editmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
@@ -463,8 +465,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   /* ==================== DELETE OBJECT (DELETE MESSAGE/COMMENT) ==================== */
 
   // "Delete message" button handler
-  $scope.view_onMessageDelete = function(message_id) {
-    var modal_deleteMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "view_deleteMessage.html", controller: "view_deleteMessage" });
+  $scope.action.onDeleteMessage = function(message_id) {
+    var modal_deleteMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "modal_deleteMessage.html", controller: "modal_deleteMessage" });
     modal_deleteMessage.result.then(
       function onModalConfirm(data) {
         $http.delete($rootScope.api.url + "/timeline/archivemessage/" + $rootScope.user.token + "/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message_id).then(
@@ -501,8 +503,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     };
 
   // "Delete comment" button handler
-  $scope.view_onCommentDelete = function(comment_id) {
-    var modal_deleteComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "view_deleteComment.html", controller: "view_deleteComment" });
+  $scope.action.onDeleteComment = function(comment_id) {
+    var modal_deleteComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "modal_deleteComment.html", controller: "modal_deleteComment" });
     modal_deleteComment.result.then(
       function onModalConfirm(data) {
         $http.delete($rootScope.api.url + "/timeline/archivemessage/" + $rootScope.user.token + "/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + comment_id).then(
@@ -534,7 +536,6 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
       });
     };
 
-
 }]);
 
 
@@ -544,9 +545,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 * MESSAGE VIEW AND COMMENTS => view message, view comments, new comment form.
 *
 */
-app.controller("view_openMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("modal_openMessage", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
-  $scope.view_closeMessage = function() { $uibModalInstance.close(); };
+  $scope.modal_closeMessage = function() { $uibModalInstance.close(); };
 }]);
 
 
@@ -556,17 +557,16 @@ app.controller("view_openMessage", ["$scope", "modalInputService", "$uibModalIns
 * MESSAGE CREATION => new message form.
 *
 */
-app.controller("view_createNewMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("modal_createNewMessage", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
   $scope.error = { title: false, content: false };
 
-  $scope.view_confirmMessageCreation = function() {
+  $scope.modal_confirmMessageCreation = function() {
     $scope.error.title = ($scope.new.message.title && $scope.new.message.title.length ? false : true);
     $scope.error.content = ($scope.new.message.message && $scope.new.message.message.length ? false : true);
-
     if (!$scope.error.title && !$scope.error.content)
       $uibModalInstance.close();
   };
-  $scope.view_cancelMessageCreation = function() { $uibModalInstance.dismiss(); };
+  $scope.modal_cancelMessageCreation = function() { $uibModalInstance.dismiss(); };
 }]);
 
 
@@ -576,17 +576,16 @@ app.controller("view_createNewMessage", ["$scope", "modalInputService", "$uibMod
 * COMMENT CREATION => new comment form.
 *
 */
-app.controller("view_createNewComment", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("modal_createNewComment", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
   $scope.error = { title: false, content: false };
 
-  $scope.view_confirmCommentCreation = function() {
+  $scope.modal_confirmCommentCreation = function() {
     $scope.error.title = ($scope.new.comment.title && $scope.new.comment.title.length ? false : true);
     $scope.error.content = ($scope.new.comment.message && $scope.new.comment.message.length ? false : true);
-
     if (!$scope.error.title && !$scope.error.content)
       $uibModalInstance.close();
   };
-  $scope.view_cancelCommentCreation = function() { $uibModalInstance.dismiss(); };
+  $scope.modal_cancelCommentCreation = function() { $uibModalInstance.dismiss(); };
 }]);
 
 
@@ -595,17 +594,16 @@ app.controller("view_createNewComment", ["$scope", "modalInputService", "$uibMod
 * MESSAGE EDITION => edit message form.
 *
 */
-app.controller("view_editMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("modal_editMessage", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
   $scope.error = { title: false, content: false };
 
-  $scope.view_confirmMessageEdition = function() {
+  $scope.modal_confirmMessageEdition = function() {
     $scope.error.title = ($scope.new.message.title && $scope.new.message.title.length ? false : true);
     $scope.error.content = ($scope.new.message.message && $scope.new.message.message.length ? false : true);
-
     if (!$scope.error.title && !$scope.error.content)
       $uibModalInstance.close();
   };
-  $scope.view_cancelMessageEdition = function() { $uibModalInstance.dismiss(); };
+  $scope.modal_cancelMessageEdition = function() { $uibModalInstance.dismiss(); };
 }]);
 
 
@@ -615,17 +613,16 @@ app.controller("view_editMessage", ["$scope", "modalInputService", "$uibModalIns
 * COMMENT EDITION => edit comment form.
 *
 */
-app.controller("view_editComment", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("modal_editComment", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
   $scope.error = { title: false, content: false };
 
-  $scope.view_confirmCommentEdition = function() {
+  $scope.modal_confirmCommentEdition = function() {
     $scope.error.title = ($scope.new.comment.title && $scope.new.comment.title.length ? false : true);
     $scope.error.content = ($scope.new.comment.message && $scope.new.comment.message.length ? false : true);
-
     if (!$scope.error.title && !$scope.error.content)
       $uibModalInstance.close();
   };
-  $scope.view_cancelCommentEdition = function() { $uibModalInstance.dismiss(); };
+  $scope.modal_cancelCommentEdition = function() { $uibModalInstance.dismiss(); };
 }]);
 
 
@@ -635,10 +632,10 @@ app.controller("view_editComment", ["$scope", "modalInputService", "$uibModalIns
 * MESSAGE DELETION => confirmation prompt.
 *
 */
-app.controller("view_deleteMessage", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("modal_deleteMessage", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
-  $scope.view_confirmMessageDeletion = function() { $uibModalInstance.close(); };
-  $scope.view_cancelMessageDeletion = function() { $uibModalInstance.dismiss(); };
+  $scope.modal_confirmMessageDeletion = function() { $uibModalInstance.close(); };
+  $scope.modal_cancelMessageDeletion = function() { $uibModalInstance.dismiss(); };
 }]);
 
 
@@ -648,8 +645,8 @@ app.controller("view_deleteMessage", ["$scope", "modalInputService", "$uibModalI
 * COMMENT DELETION => confirmation prompt.
 *
 */
-app.controller("view_deleteComment", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("modal_deleteComment", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
-  $scope.view_confirmCommentDeletion = function() { $uibModalInstance.close(); };
-  $scope.view_cancelCommentDeletion = function() { $uibModalInstance.dismiss(); };
+  $scope.modal_confirmCommentDeletion = function() { $uibModalInstance.close(); };
+  $scope.modal_cancelCommentDeletion = function() { $uibModalInstance.dismiss(); };
 }]);
