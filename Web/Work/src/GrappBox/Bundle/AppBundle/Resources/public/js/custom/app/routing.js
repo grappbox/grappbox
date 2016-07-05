@@ -9,7 +9,7 @@
 /* ===================================================== */
 
 // Routine definition
-// APP project page access
+// APP project-related page access
 var isProjectAccessible = function($rootScope, $q, $http, $route, $location, Notification) {
   var deferred = $q.defer();
 
@@ -28,26 +28,26 @@ var isProjectAccessible = function($rootScope, $q, $http, $route, $location, Not
           case "6.3.4":
           deferred.reject();
           $location.path("./");
-          Notification.error({ title: "GrappBox", message: "Project not found.", delay: 4500 });
+          Notification.warning({ title: "GrappBox", message: "Project not found.", delay: 4500 });
           break;
 
           case "6.3.9":
           deferred.reject();
           $location.path("./");
-          Notification.error({ title: "GrappBox", message: "You don\'t have access to this part of the project.", delay: 4500 });
+          Notification.warning({ title: "GrappBox", message: "You don\'t have access to this part of the project.", delay: 4500 });
           break;
 
           default:
           deferred.reject();
           $location.path("./");
-          Notification.error({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
+          Notification.warning({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
           break;
         }
       }
       else {
         deferred.reject();
         $location.path("./");
-        Notification.error({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
+        Notification.warning({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
       }
     });
 
@@ -56,25 +56,6 @@ var isProjectAccessible = function($rootScope, $q, $http, $route, $location, Not
 
 // "isProjectSettingsPageAccessible" routine injection
 isProjectAccessible["$inject"] = ["$rootScope", "$q", "$http", "$route", "$location", "Notification"];
-
-// Routine definition
-// APP dashboard redirect
-var isProjectSelected = function($rootScope, $q, localStorageService, $location, $base64, Notification) {
-	var deferred = $q.defer();
-  
-  if (localStorageService.get("HAS_PROJECT")) {
-    if (!localStorageService.get("PROJECT_ID")) {
-      Notification.error({ title: "Dashboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
-      $rootScope.project.switch();
-    }
-    else
-      $location.path("/dashboard/" + $base64.decode(localStorageService.get("PROJECT_ID")));
-  }
-  deferred.resolve();
-};
-
-// "isProjectSelected" routine injection
-isProjectSelected["$inject"] = ["$rootScope", "$q", "localStorageService", "$location", "$base64", "Notification"];
 
 
 
@@ -103,6 +84,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		homepage: true,
 		resolve: { factory: isProjectSelected }
 	})
+	// Project dashboard
 	.when("/dashboard/:project_id/", {
 		title: "Dashboard",
 		templateUrl : "../resources/pages/dashboard.html",
@@ -111,11 +93,13 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		homepage: false,
 		resolve: { factory: isProjectAccessible }
 	})
+	// Login
 	.when("/login", {
 		caseInsensitiveMatch : true,
 		homepage: false,
 		resolve: { factory: redirectOnLogin }
 	})
+	// Logout
 	.when("/logout", {
 		title: "Logging out...",
 		caseInsensitiveMatch : true,

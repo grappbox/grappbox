@@ -8,6 +8,7 @@
 /* ==================== LOGIN/LOGOUT ==================== */
 /* ====================================================== */
 
+// Routine definition
 // Redirect user after successful login
 var redirectOnLogin = function($q, $location) {
 	var deferred = $q.defer();
@@ -20,8 +21,7 @@ var redirectOnLogin = function($q, $location) {
 
 redirectOnLogin["$inject"] = ["$q", "$location"];
 
-
-
+// Routine definition
 // Redirect user after successful logout
 var redirectOnLogout = function($q, $http, $rootScope, $cookies, localStorageService, $window) {
 	var deferred = $q.defer();
