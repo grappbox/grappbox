@@ -75,9 +75,12 @@ GrappboxBundle\Entity\User:
         project_creator:
           targetEntity: Project
           mappedBy: creator_user
-        gantt_creator:
-          targetEntity: Gantt
+        whiteboard_creator:
+          targetEntity: Whiteboard
           mappedBy: creator_user
+        whiteboard_updator:
+          targetEntity: Gantt
+          mappedBy: updator_user
         gantt_updator:
           targetEntity: Gantt
           mappedBy: updator_id

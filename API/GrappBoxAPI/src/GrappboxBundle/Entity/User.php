@@ -932,4 +932,80 @@ class User implements UserInterface
     {
         return $this->ressources;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $whiteboard_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $whiteboard_updator;
+
+
+    /**
+     * Add whiteboard_creator
+     *
+     * @param \GrappboxBundle\Entity\Whiteboard $whiteboardCreator
+     * @return User
+     */
+    public function addWhiteboardCreator(\GrappboxBundle\Entity\Whiteboard $whiteboardCreator)
+    {
+        $this->whiteboard_creator[] = $whiteboardCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboard_creator
+     *
+     * @param \GrappboxBundle\Entity\Whiteboard $whiteboardCreator
+     */
+    public function removeWhiteboardCreator(\GrappboxBundle\Entity\Whiteboard $whiteboardCreator)
+    {
+        $this->whiteboard_creator->removeElement($whiteboardCreator);
+    }
+
+    /**
+     * Get whiteboard_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWhiteboardCreator()
+    {
+        return $this->whiteboard_creator;
+    }
+
+    /**
+     * Add whiteboard_updator
+     *
+     * @param \GrappboxBundle\Entity\Gantt $whiteboardUpdator
+     * @return User
+     */
+    public function addWhiteboardUpdator(\GrappboxBundle\Entity\Gantt $whiteboardUpdator)
+    {
+        $this->whiteboard_updator[] = $whiteboardUpdator;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboard_updator
+     *
+     * @param \GrappboxBundle\Entity\Gantt $whiteboardUpdator
+     */
+    public function removeWhiteboardUpdator(\GrappboxBundle\Entity\Gantt $whiteboardUpdator)
+    {
+        $this->whiteboard_updator->removeElement($whiteboardUpdator);
+    }
+
+    /**
+     * Get whiteboard_updator
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWhiteboardUpdator()
+    {
+        return $this->whiteboard_updator;
+    }
 }

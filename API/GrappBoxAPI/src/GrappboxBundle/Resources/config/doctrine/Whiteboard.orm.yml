@@ -8,15 +8,9 @@ GrappboxBundle\Entity\Whiteboard:
             generator:
                 strategy: AUTO
     fields:
-        userId:
-           type: integer
-           column: user_id
         name:
             type: string
             length: 255
-        updatorId:
-            type: integer
-            column: updator_id
         updatedAt:
             type: datetime
             column: updated_at
@@ -33,6 +27,18 @@ GrappboxBundle\Entity\Whiteboard:
           inversedBy: whiteboards
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        creator_user:
+          targetEntity: User
+          inversedBy: whiteboard_creator
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+        updator_user:
+          targetEntity: User
+          inversedBy: whiteboard_updator
+          joinColumn:
+            name: updator_id
             referencedColumnName: id
     oneToMany:
         objects:
