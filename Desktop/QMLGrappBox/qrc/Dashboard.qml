@@ -7,7 +7,7 @@ import QtQuick.Controls 1.3 as Controls
 import GrappBoxController 1.0
 
 Item {
-
+    id: dashboardItem
     anchors.fill: parent
 
     property var mouseCursor
@@ -125,7 +125,7 @@ Item {
 
                             anchors.left: parent.left
                             anchors.top: parent.top
-                            anchors.bottom: openProject.top
+                            anchors.bottom: rowProjectButton.top
                             anchors.leftMargin: Units.dp(8)
                             width: 80
 
@@ -138,7 +138,7 @@ Item {
                                 left: logo.right
                                 right: parent.right
                                 top: parent.top
-                                bottom: openProject.top
+                                bottom: rowProjectButton.top
                                 leftMargin: Units.dp(16)
                                 topMargin: Units.dp(16)
                                 bottomMargin: Units.dp(16)
@@ -240,18 +240,33 @@ Item {
                             }
                         }
 
-                        Button {
-                            id: openProject
-                            text: "Open"
-
+                        RowLayout {
+                            id: rowProjectButton
+                            Layout.alignment: Qt.AlignRight
+                            spacing: Units.dp(8)
                             anchors.bottom: parent.bottom
                             anchors.right: parent.right
                             anchors.rightMargin: Units.dp(16)
 
-                            textColor: Theme.primaryColor
+                            height: openProject.height
 
-                            onClicked: {
-                                dashboardModel.selectProject(modelData)
+                            Button {
+                                text: "Edit"
+                                textColor: Theme.accentColor
+
+                                onClicked: {
+                                    dashboardItem.parent.loadPage("Project Settings", modelData.id)
+                                }
+                            }
+
+                            Button {
+                                id: openProject
+                                text: "Open"
+                                textColor: Theme.primaryColor
+
+                                onClicked: {
+                                    dashboardModel.selectProject(modelData)
+                                }
                             }
                         }
                     }

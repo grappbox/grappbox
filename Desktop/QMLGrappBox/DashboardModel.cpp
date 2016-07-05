@@ -59,7 +59,6 @@ void DashboardModel::selectProject(ProjectData *project)
     API::SDataManager::GetDataManager()->setProject(project);
     m_userProjectList.clear();
     m_newEventList.clear();
-    qDebug() << "Project called";
     loadUserProjectList();
     loadNewEventList();
 }

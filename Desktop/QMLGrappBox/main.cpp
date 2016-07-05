@@ -15,6 +15,7 @@
 #include "UserModel.h"
 #include "TimelineModel.h"
 #include "BugTrackerModel.h"
+#include "ProjectSettingsModel.h"
 #include "API/SDataManager.h"
 
 #define GRAPPBOX_URL "GrappBoxController"
@@ -55,6 +56,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<BugTrackerModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "BugTrackerModel");
     qmlRegisterType<BugTrackerTicketData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "BugTrackerTicketData");
     qmlRegisterType<BugTrackerTags>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "BugTrackerTags");
+    qmlRegisterType<RolesData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "RolesData");
+    qmlRegisterType<CustomerAccessData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "CustomerAccessData");
+    qmlRegisterType<ProjectSettingsModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "ProjectSettingsModel");
     qmlRegisterSingletonType<API::SDataManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SDataManager", qobject_datamanager_provider);
 
     QQmlApplicationEngine engine;

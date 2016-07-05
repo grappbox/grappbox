@@ -9,6 +9,7 @@
 #include <QVariant>
 #include <QVariantList>
 #include <QStringList>
+#include <QJsonObject>
 
 class ProjectData : public QObject
 {
@@ -23,8 +24,8 @@ class ProjectData : public QObject
     Q_PROPERTY(QString facebook READ facebook WRITE setFacebook NOTIFY facebookChanged)
     Q_PROPERTY(QString twitter READ twitter WRITE setTwitter NOTIFY twitterChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(QDate creationDate READ creationDate WRITE setCreationDate NOTIFY creationDateChanged)
-    Q_PROPERTY(QDate deleteDate READ deleteDate WRITE setDeleteDate NOTIFY deleteDateChanged)
+    Q_PROPERTY(QDateTime creationDate READ creationDate WRITE setCreationDate NOTIFY creationDateChanged)
+    Q_PROPERTY(QDateTime deleteDate READ deleteDate WRITE setDeleteDate NOTIFY deleteDateChanged)
     Q_PROPERTY(QVariantList users READ users WRITE setUsers NOTIFY usersChanged)
     Q_PROPERTY(int numTaskOnGoing READ numTaskOnGoing WRITE setNumTaskOnGoing NOTIFY numTaskOnGoingChanged)
     Q_PROPERTY(int numTaskFinished READ numTaskFinished WRITE setNumTaskFinished NOTIFY numTaskFinishedChanged)
@@ -36,6 +37,37 @@ public:
     ProjectData()
     {
 
+    }
+
+    ProjectData(QJsonObject obj)
+    {
+        modifyByJsonObject(obj);
+    }
+
+    void modifyByJsonObject(QJsonObject obj)
+    {
+        m_name = obj["name"].toString();
+        m_description = obj["description"].toString();
+        m_phone = obj["phone"].toString();
+        m_company = obj["company"].toString();
+        m_mail = obj["contact_mail"].toString();
+        m_facebook = obj["facebook"].toString();
+        m_twitter = obj["twitter"].toString();
+        //m_color = obj["color"].toString();
+        m_creationDate = QDateTime::fromString(obj["creation_date"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+        if (obj["deleted_at"].isNull())
+            m_deleteDate = QDateTime();
+        else
+            m_deleteDate = QDateTime::fromString(obj["deleted_at"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+        emit nameChanged(name());
+        emit descriptionChanged(description());
+        emit phoneChanged(phone());
+        emit companyChanged(company());
+        emit mailChanged(mail());
+        emit facebookChanged(facebook());
+        emit twitterChanged(twitter());
+        emit creationDateChanged(creationDate());
+        emit deleteDateChanged(deleteDate());
     }
 
     Q_INVOKABLE QStringList usersName()
@@ -150,12 +182,12 @@ public:
         return m_color;
     }
 
-    QDate creationDate() const
+    QDateTime creationDate() const
     {
         return m_creationDate;
     }
 
-    QDate deleteDate() const
+    QDateTime deleteDate() const
     {
         return m_deleteDate;
     }
@@ -210,9 +242,9 @@ signals:
 
     void colorChanged(QColor color);
 
-    void creationDateChanged(QDate creationDate);
+    void creationDateChanged(QDateTime creationDate);
 
-    void deleteDateChanged(QDate deleteDate);
+    void deleteDateChanged(QDateTime deleteDate);
 
     void usersChanged(QVariantList users);
 
@@ -309,7 +341,7 @@ public slots:
         emit colorChanged(color);
     }
 
-    void setCreationDate(QDate creationDate)
+    void setCreationDate(QDateTime creationDate)
     {
         if (m_creationDate == creationDate)
             return;
@@ -318,7 +350,7 @@ public slots:
         emit creationDateChanged(creationDate);
     }
 
-    void setDeleteDate(QDate deleteDate)
+    void setDeleteDate(QDateTime deleteDate)
     {
         if (m_deleteDate == deleteDate)
             return;
@@ -391,8 +423,8 @@ private:
     QString m_facebook;
     QString m_twitter;
     QColor m_color;
-    QDate m_creationDate;
-    QDate m_deleteDate;
+    QDateTime m_creationDate;
+    QDateTime m_deleteDate;
     QVariantList m_users;
     QStringList m_nameList;
     int m_numTaskOnGoing;

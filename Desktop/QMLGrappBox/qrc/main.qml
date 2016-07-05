@@ -215,6 +215,9 @@ Window {
 ApplicationWindow {
     id: demo
 
+    minimumWidth: Units.dp(500)
+    minimumHeight: Units.dp(300)
+
     title: SDataManager.hasProject ? "GrappBox - " + SDataManager.project.name : "GrappBox"
     visible: !loginPage.visible && controller.isLoged
 
@@ -232,7 +235,7 @@ ApplicationWindow {
                                     "Bug Tracker",
                                     "Gantt",
                                     "Whiteboard",
-                                    "Project settings" ]
+                                    "Project Settings" ]
 
     property var sectionIcon: [     "action/dashboard",
                                     "action/event",
@@ -245,6 +248,9 @@ ApplicationWindow {
 
     property string previousSelectedComponent: ""
     property string selectedComponent: ""
+
+    property var arguments
+    property string loadPageName
 
     initialPage:
     TabbedPage {
@@ -448,6 +454,16 @@ ApplicationWindow {
         }
     }
 
+    Dialog {
+        id: errorMessage
+        text: ""
+        title: ""
+
+        hasActions: true
+        positiveButtonText: "OK"
+        negativeButtonText: "Cancel"
+    }
+
     MouseArea {
         id: cursorMouseArea
         anchors.fill: parent
@@ -477,9 +493,11 @@ ApplicationWindow {
                     asynchronous: true
                     visible: status == Loader.Ready
                     property var compo: null
+
                     source: {
                         if (demo.selectedComponent == "")
                             return null
+
                         compo = Qt.resolvedUrl(demo.selectedComponent.replace(" ", "") + ".qml")
                         return compo
                     }
@@ -487,12 +505,33 @@ ApplicationWindow {
                         if (example.item)
                         {
                             example.item.mouseCursor = cursorMouseArea
+                            if (example.item.args !== undefined)
+                                example.item.args = demo.arguments
                             example.item.finishedLoad()
+                            if (demo.selectedComponent == demo.loadPageName)
+                            {
+                                demo.loadPageName = ""
+                                demo.arguments = undefined
+                            }
                         }
                     }
+
+                    function loadPage(pageName, args) {
+                        demo.arguments = args
+                        demo.loadPageName = pageName
+                        demo.selectedComponent = pageName
+                    }
+
                     function returnPage() {
                         demo.selectedComponent = demo.previousSelectedComponent
                     }
+
+                    function error(title, message) {
+                        errorMessage.title = title
+                        errorMessage.text = message
+                        errorMessage.show()
+                    }
+
                     function info(val) {
                         snackBar.open(val)
                     }

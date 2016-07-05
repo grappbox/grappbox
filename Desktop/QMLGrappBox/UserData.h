@@ -19,6 +19,7 @@ class UserData : public QObject
     Q_PROPERTY(QString mail READ mail WRITE setMail NOTIFY mailChanged)
     Q_PROPERTY(QString phone READ phone WRITE setPhone NOTIFY phoneChanged)
     Q_PROPERTY(QString country READ country WRITE setCountry NOTIFY countryChanged)
+    Q_PROPERTY(int roleId READ roleId WRITE setRoleId NOTIFY roleIdChanged)
     Q_PROPERTY(int occupation READ occupation WRITE setOccupation NOTIFY occupationChanged)
 
 public:
@@ -32,6 +33,7 @@ public:
         m_twitter = copy.m_twitter;
         m_linkedin = copy.m_linkedin;
         m_viadeo = copy.m_viadeo;
+        m_roleId = copy.m_roleId;
     }
 
     UserData &operator=(const UserData& copy)
@@ -43,6 +45,7 @@ public:
         m_twitter = copy.m_twitter;
         m_linkedin = copy.m_linkedin;
         m_viadeo = copy.m_viadeo;
+        m_roleId = copy.m_roleId;
         return *this;
     }
 
@@ -103,6 +106,11 @@ public:
         return m_country;
     }
 
+    int roleId() const
+    {
+        return m_roleId;
+    }
+
 signals:
 
     void firstNameChanged(QString firstName);
@@ -126,6 +134,8 @@ signals:
     void phoneChanged(QString phone);
 
     void countryChanged(QString country);
+
+    void roleIdChanged(int roleId);
 
 public slots:
 
@@ -228,6 +238,15 @@ public slots:
         emit countryChanged(country);
     }
 
+    void setRoleId(int roleId)
+    {
+        if (m_roleId == roleId)
+            return;
+
+        m_roleId = roleId;
+        emit roleIdChanged(roleId);
+    }
+
 private:/*
     int m_id;
     QString m_firstName;
@@ -251,6 +270,7 @@ private:/*
     QString m_mail;
     QString m_phone;
     QString m_country;
+    int m_roleId;
 };
 
 Q_DECLARE_METATYPE(UserData)

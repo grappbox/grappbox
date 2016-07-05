@@ -6,7 +6,8 @@
 #include "DataConnectorOnline.h"
 #include "SDebugLog.h"
 
-#define LARGE_DEBUG
+//#define LARGE_DEBUG
+#define MIN_DEBUG
 
 #ifdef LARGE_DEBUG
 #include <QJsonDocument>
@@ -40,12 +41,12 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_WHITEBOARD] = "";
     _GetMap[GR_LOGOUT] = "accountadministration/logout";
 	_GetMap[GR_USER_SETTINGS] = "";
-	_GetMap[GR_PROJECTS_USER] = "";
-	_GetMap[GR_PROJECT_ROLE] = "";
+    _GetMap[GR_PROJECTS_USER] = "projects/getusertoproject";
+    _GetMap[GR_PROJECT_ROLE] = "roles/getprojectroles";
     _GetMap[GR_PROJECT_USERS] = "projects/getusertoproject";
 	_GetMap[GR_PROJECT_CANCEL_DELETE] = "";
-	_GetMap[GR_PROJECT_USER_ROLE] = "";
-	_GetMap[GR_CUSTOMER_ACCESSES] = "";
+    _GetMap[GR_PROJECT_USER_ROLE] = "roles/getrolebyprojectanduser";
+    _GetMap[GR_CUSTOMER_ACCESSES] = "projects/getcustomeraccessbyproject";
 	_GetMap[GR_CUSTOMER_ACCESS_BY_ID] = "";
 	_GetMap[GR_XLAST_BUG_OFFSET] = "bugtracker/getlasttickets";
 	_GetMap[GR_XLAST_BUG_OFFSET_BY_STATE] = "bugtracker/getticketsbystate";
@@ -66,9 +67,9 @@ DataConnectorOnline::DataConnectorOnline()
 
 	// Initialize Post request
 	_PostMap[PR_LOGIN] = "accountadministration/login";
-	_PostMap[PR_ROLE_ADD] = "";
+    _PostMap[PR_ROLE_ADD] = "roles/addprojectroles";
 	_PostMap[PR_ROLE_ASSIGN] = "";
-	_PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "";
+    _PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "projects/generatecustomeraccess";
 	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
 	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";
     _PostMap[PR_CREATE_BUG_TAG] = "bugtracker/tagcreation";
@@ -78,13 +79,14 @@ DataConnectorOnline::DataConnectorOnline()
     _PostMap[PR_CREATE_DIRECTORY] = "cloud/createdir";
     _PostMap[PR_OPEN_STREAM] = "cloud/stream";
     _PostMap[PR_ADD_TAG_TASK] = "tasks/tagcreation";
+    _PostMap[PR_ADD_USER_PROJECT] = "projects/addusertoproject";
 
 	// Initialize Delete request
-	_DeleteMap[DR_PROJECT_ROLE] = "";
+    _DeleteMap[DR_PROJECT_ROLE] = "roles/delprojectroles";
 	_DeleteMap[DR_ROLE_DETACH] = "";
-	_DeleteMap[DR_PROJECT_USER] = "";
+    _DeleteMap[DR_PROJECT_USER] = "projects/removeusertoproject";
 	_DeleteMap[DR_PROJECT] = "";
-	_DeleteMap[DR_CUSTOMER_ACCESS] = "";
+    _DeleteMap[DR_CUSTOMER_ACCESS] = "projects/delcustomeraccess";
 	_DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/closeticket";
 	_DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/deletetag";
     _DeleteMap[DR_REMOVE_TAG_TO_BUG] = "bugtracker/removetag";
@@ -108,6 +110,9 @@ DataConnectorOnline::DataConnectorOnline()
     _PutMap[PUTR_SEND_CHUNK] = "cloud/file";
     _PutMap[PUTR_ASSIGNUSER_BUG] = "bugtracker/setparticipants";
     _PutMap[PUTR_REOPEN_BUG] = "bugtracker/reopenticket";
+    _PutMap[PUTR_EDIT_PROJECT] = "projects/updateinformations";
+    _PutMap[PUTR_ROLE_USER] = "roles/putpersonrole";
+    _PutMap[PUTR_ROLE] = "roles/putprojectroles";
 }
 
 void DataConnectorOnline::unregisterObjectRequest(QObject *obj)
@@ -122,29 +127,38 @@ void DataConnectorOnline::unregisterObjectRequest(QObject *obj)
 void DataConnectorOnline::OnResponseAPI()
 {
 	QNetworkReply *request = dynamic_cast<QNetworkReply*>(QObject::sender());
-	qDebug() << "[DataConnectorOnline] Receive status code : " << request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
-	qDebug() << "[DataConnectorOnline] Receive response from API with the url : " + request->request().url().toString();
-	if (request == nullptr || !_Request.contains(request))
+
+    if (request == nullptr || !_Request.contains(request))
 	{
 		return;
     }
     QByteArray req = request->readAll();
+
+#ifdef MIN_DEBUG
+    qDebug() << "[API][RESPONSE]["  << request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString().toStdString().c_str() << "] " << request->request().url().toString().toStdString().c_str();
+#endif
+
+#ifdef LARGE_DEBUG
+    qDebug() << "[DataConnectorOnline] Receive status code : " << request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString();
+    qDebug() << "[DataConnectorOnline] Receive response from API with the url : " + request->request().url().toString();
     qDebug() << req;
+#endif
     //FINISH_REQUEST(_Request[request], request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString(), request->errorString(), req);
 	if (request->error())
 	{
 #ifdef LARGE_DEBUG
-		qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString();
+        qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString().toStdString().c_str();
 		if (request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString()[0] == '4')
 		{
 			QJsonDocument doc = QJsonDocument::fromJson(req);
 			QJsonObject info = doc.object()["info"].toObject();
-			qDebug() << "[DataConnectorOnline] Error code : " << info["return_code"].toString();
-			qDebug() << "[DataConnectorOnline] Error message : " << info["return_message"].toString();
+            qDebug() << "[DataConnectorOnline] Error code : " << info["return_code"].toString().toStdString().c_str();
+            qDebug() << "[DataConnectorOnline] Error message : " << info["return_message"].toString().toStdString().c_str();
             LOG(QString(req));
         }
-#else
-		qDebug() << "[DataConnectorOnline] Error with response : " << request->errorString();
+#endif
+#ifdef MIN_DEBUG
+        qDebug() << "[API][RESPONSE][ERROR] " << request->errorString().toStdString().c_str();
 #endif
         if (_CallBack[request]._Request != nullptr)
             QMetaObject::invokeMethod(_CallBack[request]._Request, _CallBack[request]._SlotFailure, Q_ARG(int, _Request[request]), Q_ARG(QByteArray, req));

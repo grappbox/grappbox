@@ -85,7 +85,8 @@ namespace API
         PR_NEW_WHITEBOARD,
         PR_CREATE_DIRECTORY,
         PR_OPEN_STREAM,
-        PR_ADD_TAG_TASK
+        PR_ADD_TAG_TASK,
+        PR_ADD_USER_PROJECT
     };
 
     enum DeleteRequest
@@ -119,7 +120,10 @@ namespace API
 		PUTR_EDIT_BUG,
 		PUTR_EDIT_COMMENTBUG,
         PUTR_SEND_CHUNK,
-        PUTR_REOPEN_BUG
+        PUTR_REOPEN_BUG,
+        PUTR_EDIT_PROJECT,
+        PUTR_ROLE_USER,
+        PUTR_ROLE
     };
 
 	enum RequestType

@@ -74,6 +74,7 @@ Column {
     }
 
     Row {
+        id: rowTabHeader
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: Units.dp(8)
@@ -100,6 +101,8 @@ Column {
                 }
 
                 Label {
+                    id: labelTitle
+                    visible: rowTabHeader.width >= 800
                     anchors.left: iconTitle.right
                     anchors.right: parent.right
                     anchors.leftMargin: Units.dp(8)

@@ -87,7 +87,6 @@ void LoginController::OnUserInfoDone(int id, QByteArray response)
     user->setViadeo(obj["viadeo"].toString());
     user->setTwitter(obj["twitter"].toString());
     API::SDataManager::GetDataManager()->setUser(user);
-    SHOW_JSON(response);
 }
 
 void LoginController::OnUserInfoFail(int id, QByteArray response)

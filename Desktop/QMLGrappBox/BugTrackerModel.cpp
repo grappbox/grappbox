@@ -240,7 +240,6 @@ void BugTrackerModel::onLoadOpenTicketDone(int id, QByteArray data)
     for (BugTrackerTicketData *item : toRemove)
         m_openTickets.removeAll(item);
     emit openTicketsChanged(openTickets());
-    qDebug() << m_openTickets.size();
 }
 
 void BugTrackerModel::onLoadOpenTicketFail(int id, QByteArray data)
