@@ -9,25 +9,29 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Whiteboard
 {
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'projectId' => $this->getProjects()->getId(),
+            'user' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'name' => $this->name,
+            'updator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'updatedAt' => $this->updatedAt,
+            'createdAt' => $this->createdAt,
+            'deletedAt' => $this->deletedAt
+        );
+    }
+
     /**
      * @var integer
      */
     private $id;
 
     /**
-     * @var integer
-     */
-    private $userId;
-
-    /**
      * @var string
      */
     private $name;
-
-    /**
-     * @var integer
-     */
-    private $updatorId;
 
     /**
      * @var \DateTime
@@ -55,6 +59,16 @@ class Whiteboard
     private $projects;
 
     /**
+     * @var \GrappboxBundle\Entity\User
+     */
+    private $creator_user;
+
+    /**
+     * @var \GrappboxBundle\Entity\User
+     */
+    private $updator_user;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -62,51 +76,14 @@ class Whiteboard
         $this->objects = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-    public function objectToArray()
-    {
-        return array(
-            'id' => $this->id,
-            'projectId' => $this->getProjects()->getId(),
-            'userId' => $this->userId,
-            'name' => $this->name,
-            'updatorId' => $this->updatorId,
-            'updatedAt' => $this->updatedAt,
-            'createdAt' => $this->createdAt,
-            'deletedAt' => $this->deletedAt
-        );
-    }
-
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set userId
-     *
-     * @param integer $userId
-     * @return Whiteboard
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return integer
-     */
-    public function getUserId()
-    {
-        return $this->userId;
     }
 
     /**
@@ -125,34 +102,11 @@ class Whiteboard
     /**
      * Get name
      *
-     * @return string
+     * @return string 
      */
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set updatorId
-     *
-     * @param integer $updatorId
-     * @return Whiteboard
-     */
-    public function setUpdatorId($updatorId)
-    {
-        $this->updatorId = $updatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get updatorId
-     *
-     * @return integer
-     */
-    public function getUpdatorId()
-    {
-        return $this->updatorId;
     }
 
     /**
@@ -171,7 +125,7 @@ class Whiteboard
     /**
      * Get updatedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getUpdatedAt()
     {
@@ -194,7 +148,7 @@ class Whiteboard
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getCreatedAt()
     {
@@ -217,7 +171,7 @@ class Whiteboard
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDeletedAt()
     {
@@ -250,7 +204,7 @@ class Whiteboard
     /**
      * Get objects
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection 
      */
     public function getObjects()
     {
@@ -273,10 +227,56 @@ class Whiteboard
     /**
      * Get projects
      *
-     * @return \GrappboxBundle\Entity\Project
+     * @return \GrappboxBundle\Entity\Project 
      */
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * Set creator_user
+     *
+     * @param \GrappboxBundle\Entity\User $creatorUser
+     * @return Whiteboard
+     */
+    public function setCreatorUser(\GrappboxBundle\Entity\User $creatorUser = null)
+    {
+        $this->creator_user = $creatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_user
+     *
+     * @return \GrappboxBundle\Entity\User 
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
+    }
+
+    /**
+     * Set updator_user
+     *
+     * @param \GrappboxBundle\Entity\User $updatorUser
+     * @return Whiteboard
+     */
+    public function setUpdatorUser(\GrappboxBundle\Entity\User $updatorUser = null)
+    {
+        $this->updator_user = $updatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get updator_user
+     *
+     * @return \GrappboxBundle\Entity\User 
+     */
+    public function getUpdatorUser()
+    {
+        return $this->updator_user;
     }
 }
