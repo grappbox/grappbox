@@ -344,7 +344,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 1)
 			return ($this->setNoRightsError("10.3.9", "Whiteboard", "open"));
 		if ($whiteboard->getDeletedAt())
-			return $this->setBadRequest("Whiteboard Deleted");
+			return $this->setBadRequest("10.3.4", "Whiteboard", "open", "Bad Parameter: Whiteboard Deleted");
 		$arr = $whiteboard->objectToArray();
 		foreach ($whiteboard->getObjects() as $key => $obj) {
 			if ($obj->getDeletedAt() == null)
@@ -1007,7 +1007,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$d = $this->checkRight($center, $square["D"], $square["A"]);
 			if ($a == true && $b == true && $c == true && $d == true)
 				return true;
-			if ($a == false && $b == false && $c == $false && $d == false)
+			if ($a == false && $b == false && $c == false && $d == false)
 			{
 				$a = $this->checkRight($center, $square["A"], $square["D"]);
 				$b = $this->checkRight($center, $square["D"], $square["C"]);
