@@ -42,9 +42,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} array Array of whiteboards informations
 	* @apiSuccess {int} array.id Whiteboard id
-	* @apiSuccess {int} array.userId User creator id
+	* @apiSuccess {Object} array.user User creator informations
+	* @apiSuccess {int} array.user.Id Id of the user
+	* @apiSuccess {string} array.user.firstname Firstname of the user
+	* @apiSuccess {string} array.user.lastname Lastname of the User
 	* @apiSuccess {string} array.name Whiteboard name
-	* @apiSuccess {int} array.updatorId User who update last the whiteboard id
+	* @apiSuccess {int} array.updator User who update last the whiteboard informations
+	* @apiSuccess {int} array.updator.Id Id of the user
+	* @apiSuccess {string} array.updator.firstname Firstname of the user
+	* @apiSuccess {string} array.updator.lastname Lastname of the User
 	* @apiSuccess {DateTime} array.updatedAt Update date
 	* @apiSuccess {DateTime} array.createdAt Creation date
 	* @apiSuccess {DateTime} array.deledtedAt Deletion date
@@ -61,9 +67,17 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	      {
 	*	        "id": 1,
 	*	        "projectId": 1,
-	*	        "userId": 13,
+	*	        "user": {
+	*				"id": 13,
+	*				"fistname": "john",
+	*				"lastname": "Doe"
+	*			},
 	*	        "name": "test whiteboard",
-	*	        "updatorId": 13,
+	*	        "updator": {
+	*				"id": 13,
+	*				"fistname": "john",
+	*				"lastname": "Doe"
+	*			},
 	*	        "updatedAt": { "date": "2015-10-30 08:53:01", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*	        "createdAt": { "date": "2015-10-30 08:53:01", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*	        "deletedAt": null
@@ -147,9 +161,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {int} id whiteboard id
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {int} userId user creator id
-	* @apiSuccess {string} name whiteboard name
-	* @apiSuccess {int} updatorId id of the whiteboard's last updator (creator)
+	* @apiSuccess {Object} array.user User creator informations
+	* @apiSuccess {int} array.user.Id Id of the user
+	* @apiSuccess {string} array.user.firstname Firstname of the user
+	* @apiSuccess {string} array.user.lastname Lastname of the User
+	* @apiSuccess {string} array.name Whiteboard name
+	* @apiSuccess {int} array.updator User who update last the whiteboard informations
+	* @apiSuccess {int} array.updator.Id Id of the user
+	* @apiSuccess {string} array.updator.firstname Firstname of the user
+	* @apiSuccess {string} array.updator.lastname Lastname of the User
 	* @apiSuccess {DateTime} updatedAt update date (creation date)
 	* @apiSuccess {DateTime} createdAt creation date
 	* @apiSuccess {DateTime} deledtedAt deletion date
@@ -164,9 +184,17 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	  "data": {
 	*	    "id": 7,
 	*	    "projectId": 1,
-	*	    "userId": 13,
+	*	    "user": {
+	*			"id": 13,
+	*			"fistname": "john",
+	*			"lastname": "Doe"
+	*		},
 	*	    "name": "Test Whiteboard #42",
-	*	    "updatorId": 13,
+	*	    "updator": {
+	*			"id": 13,
+	*			"fistname": "john",
+	*			"lastname": "Doe"
+	*		},
 	*	    "updatedAt": { "date": "2016-05-21 08:16:01", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*	    "createdAt": { "date": "2016-05-21 08:16:01", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*	    "deletedAt": null
@@ -224,8 +252,8 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$this->setBadRequest("10.2.4", "Whiteboard", "new", "Bad Parameter: projectId");
 		$whiteboard = new Whiteboard();
 		$whiteboard->setProjects($project);
-		$whiteboard->setUserId($user->getId());
-		$whiteboard->setUpdatorId($user->getId());
+		$whiteboard->setCreatorUser($user);
+		$whiteboard->setUpdatorUser($user);
 		$whiteboard->setName($content->whiteboardName);
 		$whiteboard->setCreatedAt(new DateTime('now'));
 		$whiteboard->setUpdatedAt(new DateTime('now'));
@@ -245,9 +273,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {int} id Whiteboard id
 	* @apiSuccess {int} projectId Project id
-	* @apiSuccess {int} userId User creator id
-	* @apiSuccess {string} name Whiteboard name
-	* @apiSuccess {int} updatorId Id of the whiteboard's last updator (creator)
+	* @apiSuccess {Object} array.user User creator informations
+	* @apiSuccess {int} array.user.Id Id of the user
+	* @apiSuccess {string} array.user.firstname Firstname of the user
+	* @apiSuccess {string} array.user.lastname Lastname of the User
+	* @apiSuccess {string} array.name Whiteboard name
+	* @apiSuccess {int} array.updator User who update last the whiteboard informations
+	* @apiSuccess {int} array.updator.Id Id of the user
+	* @apiSuccess {string} array.updator.firstname Firstname of the user
+	* @apiSuccess {string} array.updator.lastname Lastname of the User
 	* @apiSuccess {DateTime} updatedAt Update date (creation date)
 	* @apiSuccess {DateTime} createdAt Creation date
 	* @apiSuccess {DateTime} deledtedAt Deletion date
@@ -268,9 +302,17 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	  "data": {
 	*	    "id": 3,
 	*	    "projectId": 1,
-	*	    "userId": 13,
+	*	    "user": {
+	*			"id": 13,
+	*			"fistname": "john",
+	*			"lastname": "Doe"
+	*		},
 	*	    "name": "Test Whiteboard #42",
-	*	    "updatorId": 13,
+	*	    "updator": {
+	*			"id": 13,
+	*			"fistname": "john",
+	*			"lastname": "Doe"
+	*		},
 	*	    "updatedAt": { "date": "2016-03-24 10:49:18", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*	    "createdAt": { "date": "2016-03-24 10:49:18", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*	    "deletedAt": null,
@@ -510,7 +552,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	{
 	*	  "info": {
 	*	    "return_code": "1.10.1",
-	*	    "return_message": "Whiteboard - push - Complete Success"
+	*	    "return_message": "Whiteboard - pull - Complete Success"
 	*	  },
 	*	  "data": {
 	*	    "add": [
@@ -610,7 +652,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		foreach ($to_del as $key => $value) {
 			$toDel[] = $value->objectToArray();
 		}
-		return $this->setSuccess("1.10.1", "Whiteboard", "push", "Complete Success", array('add' => $toAdd, 'delete' => $toDel));
+		return $this->setSuccess("1.10.1", "Whiteboard", "pull", "Complete Success", array('add' => $toAdd, 'delete' => $toDel));
 	}
 	/**
 	* @api {delete} /V0.2/whiteboard/delete/:token/:id Delete a Whiteboard
