@@ -30,6 +30,11 @@ class Project
     private $logo;
 
     /**
+     * @var \DateTime
+     */
+    private $logoDate;
+
+    /**
      * @var string
      */
     private $phone;
@@ -288,6 +293,29 @@ class Project
     public function getLogo()
     {
         return $this->logo;
+    }
+
+    /**
+     * Set logoDate
+     *
+     * @param \DateTime $logoDate
+     * @return Project
+     */
+    public function setLogoDate($logoDate)
+    {
+        $this->logoDate = $logoDate;
+
+        return $this;
+    }
+
+    /**
+     * Get logoDate
+     *
+     * @return \DateTime
+     */
+    public function getLogoDate()
+    {
+        return $this->logoDate;
     }
 
     /**

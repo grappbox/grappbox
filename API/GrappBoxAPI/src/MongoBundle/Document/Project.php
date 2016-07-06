@@ -30,6 +30,11 @@ class Project
     protected $logo;
 
     /**
+     * @var date $logoDate
+     */
+    protected $logoDate;
+
+    /**
      * @var string $phone
      */
     protected $phone;

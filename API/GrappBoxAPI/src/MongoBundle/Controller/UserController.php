@@ -58,7 +58,7 @@ class UserController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday();
 		if ($birthday != null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatar();
+		$avatar = $user->getAvatarDate();
 		$email = $user->getEmail();
 		$phone = $user->getPhone();
 		$country = $user->getCountry();
@@ -93,7 +93,7 @@ class UserController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday();
 		if ($birthday!= null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $userInfos->getAvatar();
+		$avatar = $userInfos->getAvatarDate();
 		$email = $userInfos->getEmail();
 		$phone = $userInfos->getPhone();
 		$country = $userInfos->getCountry();
@@ -167,7 +167,7 @@ class UserController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday();
 		if ($birthday!= null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatar();
+		$avatar = $user->getAvatarDate();
 		$email = $user->getEmail();
 		$phone = $user->getPhone();
 		$country = $user->getCountry();

@@ -55,7 +55,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} firstname First name of the person
 	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatar of the person
+	* @apiSuccess {date} avatar Avatar last modif date
 	* @apiSuccess {String} email Email of the person
 	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
@@ -74,7 +74,7 @@ class UserController extends RolesAndTokenVerificationController
 	*			"firstname": "John",
 	*			"lastname": "Doe",
 	*			"birthday": "1945-06-18",
-	*			"avatar": "10001111001100110010101010",
+	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"email": "john.doe@gmail.com"
 	*			"phone": "+33984231475",
 	*			"country": "France",
@@ -100,7 +100,7 @@ class UserController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday();
 		if ($birthday != null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatar();
+		$avatar = $user->getAvatarDate();
 		$email = $user->getEmail();
 		$phone = $user->getPhone();
 		$country = $user->getCountry();
@@ -125,7 +125,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} firstname First name of the person
 	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
+	* @apiSuccess {date} avatar Avatr last date of modif
 	* @apiSuccess {String} email Email of the person
 	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
@@ -144,7 +144,7 @@ class UserController extends RolesAndTokenVerificationController
 	*			"firstname": "John",
 	*			"lastname": "Doe",
 	*			"birthday": "1945-06-18"
-	*			"avatar": "10001111001100110010101010",
+	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"email": "john.doe@gmail.com"
 	*			"phone": "+33984231475",
 	*			"country": "France",
@@ -186,7 +186,7 @@ class UserController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday();
 		if ($birthday!= null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $userInfos->getAvatar();
+		$avatar = $userInfos->getAvatarDate();
 		$email = $userInfos->getEmail();
 		$phone = $userInfos->getPhone();
 		$country = $userInfos->getCountry();
@@ -257,7 +257,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} firstname First name of the person
 	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {Text} avatar Avatr of the person
+	* @apiSuccess {date} avatar Avatar last date of modif
 	* @apiSuccess {String} email Email of the person
 	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
@@ -277,7 +277,7 @@ class UserController extends RolesAndTokenVerificationController
 	*			"firstname": "John",
 	*			"lastname": "Doe",
 	*			"birthday": "1945-06-18"
-	*			"avatar": "10001111001100110010101010",
+	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"email": "john.doe@gmail.com"
 	*			"phone": "+33984231475",
 	*			"country": "France",
@@ -310,7 +310,11 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setBirthday($birthday);
 		}
 		if (array_key_exists('avatar', $content))
+		{
 			$user->setAvatar($content->avatar);
+			$user->setAvatarDate(new DateTime('now'));
+		}
+
 		if (array_key_exists('email', $content) && $user->getEmail() != $content->email)
 		{
 			if ($em->getRepository('GrappboxBundle:User')->findOneBy(array('email' => $content->email)))
@@ -350,7 +354,7 @@ class UserController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday();
 		if ($birthday!= null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatar();
+		$avatar = $user->getAvatarDate();
 		$email = $user->getEmail();
 		$phone = $user->getPhone();
 		$country = $user->getCountry();
@@ -551,16 +555,8 @@ class UserController extends RolesAndTokenVerificationController
 	*					"type": "Client",
 	*					"title": "Cahier Des Charges",
 	*					"description": "Mise à jour du CDC avec le client",
-	*					"begin_date": {
-	*						"date": "1945-06-18 08:00:00",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe\/Paris"
-	*					},
-	*					"end_date": {
-	*						"date": "1945-06-18 18:00:00",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe\/Paris"
-	*					}
+	*					"begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
 	*				},
 	*				{
 	*					"projects": {
@@ -570,16 +566,8 @@ class UserController extends RolesAndTokenVerificationController
 	*					"type": "Personnel",
 	*					"title": "Dentiste",
 	*					"description": "Rdv avec le dentiste pour changer ma couronne",
-	*					"begin_date": {
-	*						"date": "1946-06-18 09:00:00",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe\/Paris"
-	*					},
-	*					"end_date": {
-	*						"date": "1946-06-18 11:00:00",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe\/Paris"
-	*					},
+	*					"begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris" },
 	*				}
 	*			]
 	*		}
@@ -634,7 +622,7 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} array.creator.lastname Lastname of the creator
 	* @apiSuccess {String} array.phone Phone of the project
 	* @apiSuccess {String} array.company Company of the project
-	* @apiSuccess {String} array.logo Logo of the project
+	* @apiSuccess {date} array.logo Logo last modif date of the project
 	* @apiSuccess {String} array.contact_mail Mail for the project
 	* @apiSuccess {String} array.facebook Facebook of the project
 	* @apiSuccess {String} array.twitter Twitter of the project
@@ -653,14 +641,10 @@ class UserController extends RolesAndTokenVerificationController
 	*					"id": 2,
 	*					"name": "Grappbox",
 	*					"description": "Grappbox est une application de gestion de projet.",
-	*					"creator": {
-	*						"id": 2,
-	*						"firstname": "John",
-	*						"lastname": "Snow"
-	*					}
+	*					"creator": { "id": 2, "firstname": "John", "lastname": "Snow" },
 	*					"phone": "+339 46 12 45 78",
 	*					"company": "Ubisoft",
-	*					"logo": "DATA",
+	*					"logo": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*					"contact_mail": "contact@grappbox.com",
 	*					"facebook": "www.facebook.com/GrappBox",
 	*					"twitter": "twitter.com/GrappBox",

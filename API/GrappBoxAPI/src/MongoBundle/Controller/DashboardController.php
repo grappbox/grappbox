@@ -137,7 +137,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$name = $project->getName();
 		$description = $project->getDescription();
-		$logo = $project->getLogo();
+		$logo = $project->getLogoDate();
 		$phone = $project->getPhone();
 		$company = $project->getCompany();
 		$contactMail = $project->getContactEmail();
@@ -210,7 +210,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday()->format('Y-m-d');
 		if ($birthday != null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatar();
+		$avatar = $user->getAvatarDate();
 		$mail = $user->getEmail();
 		$phone = $user->getPhone();
 		$country = $user->getCountry();

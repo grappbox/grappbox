@@ -169,7 +169,7 @@ class ProjectRepository extends EntityRepository
 			$projectDescription = $project->getDescription();
 			$phone = $project->getPhone();
 			$company = $project->getCompany();
-			$projectLogo = $project->getLogo();
+			$projectLogo = $project->getLogoDate();
 			$contactMail = $project->getContactEmail();
 			$facebook = $project->getFacebook();
 			$twitter = $project->getTwitter();
@@ -246,7 +246,7 @@ class ProjectRepository extends EntityRepository
 			$projectDescription = $project->getDescription();
 			$phone = $project->getPhone();
 			$company = $project->getCompany();
-			$projectLogo = $project->getLogo();
+			$projectLogo = $project->getLogoDate();
 			$contactMail = $project->getContactEmail();
 			$facebook = $project->getFacebook();
 			$twitter = $project->getTwitter();
@@ -321,7 +321,7 @@ class ProjectRepository extends EntityRepository
 				$projectId = $project->getId();
 				$projectName = $project->getName();
 				$projectDescription = $project->getDescription();
-				$projectLogo = $project->getLogo();
+				$projectLogo = $project->getLogoDate();
 				$projectPhone = $project->getPhone();
 				$projectCompany = $project->getCompany();
 				$contactMail = $project->getContactEmail();
@@ -343,7 +343,7 @@ class ProjectRepository extends EntityRepository
 						$projectId = $project->getId();
 						$projectName = $project->getName();
 						$projectDescription = $project->getDescription();
-						$projectLogo = $project->getLogo();
+						$projectLogo = $project->getLogoDate();
 						$projectPhone = $project->getPhone();
 						$projectCompany = $project->getCompany();
 						$contactMail = $project->getContactEmail();
@@ -394,7 +394,7 @@ class ProjectRepository extends EntityRepository
 				$projectId = $project->getId();
 				$projectName = $project->getName();
 				$projectDescription = $project->getDescription();
-				$projectLogo = $project->getLogo();
+				$projectLogo = $project->getLogoDate();
 				$projectPhone = $project->getPhone();
 				$projectCompany = $project->getCompany();
 				$contactMail = $project->getContactEmail();
@@ -419,7 +419,7 @@ class ProjectRepository extends EntityRepository
 						$projectId = $project->getId();
 						$projectName = $project->getName();
 						$projectDescription = $project->getDescription();
-						$projectLogo = $project->getLogo();
+						$projectLogo = $project->getLogoDate();
 						$projectPhone = $project->getPhone();
 						$projectCompany = $project->getCompany();
 						$contactMail = $project->getContactEmail();

@@ -402,7 +402,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {String} name Name of the project
 	* @apiSuccess {String} description Description of the project
-	* @apiSuccess {String} logo Logo of the project
+	* @apiSuccess {date} logo Logo last modif date of the project
 	* @apiSuccess {String} phone Phone of the project
 	* @apiSuccess {String} company Company of the project
 	* @apiSuccess {String} contact_mail Contact mail of the project
@@ -420,7 +420,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	*			{
 	*			"name": "Grappbox",
 	*			"description": "Grappbox est un projet de gestion de projet",
-	*			"logo": "logo data",
+	*			"logo": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"phone": "+339 76 13 45 78",
 	*			"company": "Ubisoft",
 	*			"contact_mail": "contact@grappbox.com",
@@ -461,7 +461,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$name = $project->getName();
 		$description = $project->getDescription();
-		$logo = $project->getLogo();
+		$logo = $project->getLogoDate();
 		$phone = $project->getPhone();
 		$company = $project->getCompany();
 		$contactMail = $project->getContactEmail();
@@ -580,7 +580,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} first_name First name of the user
 	* @apiSuccess {String} last_name Last name of the user
 	* @apiSuccess {Date} birthday birthday date of the user
-	* @apiSuccess {String} avatar avatar of the user
+	* @apiSuccess {date} avatar avatar last modif date of the user
 	* @apiSuccess {String} email Email of the user
 	* @apiSuccess {String} phone Phone number of the user
 	* @apiSuccess {String} country Country of the user
@@ -599,7 +599,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	*			"first_name": "John",
 	*			"last_name": "Doe",
 	*			"birthday": "2015-10-15",
-	*			"avatar": "avatar data ...",
+	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"email": "john.doe@gmail.com",
 	*			"phone": +33631245478,
 	*			"country": "France",
@@ -632,7 +632,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		$birthday = $user->getBirthday();
 		if ($birthday != null)
 			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatar();
+		$avatar = $user->getAvatarDate();
 		$mail = $user->getEmail();
 		$phone = $user->getPhone();
 		//print(gettype($phone));

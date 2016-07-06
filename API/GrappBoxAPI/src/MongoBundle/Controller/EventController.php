@@ -98,7 +98,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object = $event->objectToArray();
@@ -203,7 +203,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object = $event->objectToArray();
@@ -267,7 +267,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object = $event->objectToArray();
@@ -344,7 +344,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 

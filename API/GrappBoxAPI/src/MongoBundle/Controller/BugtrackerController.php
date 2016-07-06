@@ -64,7 +64,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object["users"] = $participants;
@@ -143,7 +143,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$ticket["users"] = $participants;
@@ -222,7 +222,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$ticket["users"] = $participants;
@@ -484,7 +484,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object["users"] = $participants;
@@ -587,7 +587,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -641,7 +641,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -692,7 +692,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -711,12 +711,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiGroup Bugtracker
 	* @apiDescription Get X last closed tickets from offset Y
 	* @apiVersion 0.2.0
-	*
-	* @apiParam {int} id id of the project
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
-	* @apiParam {int} limit number max of tickets to get
-	*
 	*
 	*/
 	public function getLastClosedTicketsAction(Request $request, $token, $id, $offset, $limit)
@@ -751,7 +745,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 						"id" => $user_value->getId(),
 						"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 						"email" => $user_value->getEmail(),
-						"avatar" => $user_value->getAvatar()
+						"avatar" => $user_value->getAvatarDate()
 					);
 				}
 				$object["users"] = $participants;
@@ -811,7 +805,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -862,7 +856,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;

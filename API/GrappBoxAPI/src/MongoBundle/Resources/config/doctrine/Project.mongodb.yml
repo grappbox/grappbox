@@ -17,6 +17,9 @@ MongoBundle\Document\Project:
         logo:
             type: string
             nullable: TRUE
+        logoDate:
+            type: date
+            nullable: TRUE
         phone:
             type: string
             nullable: true

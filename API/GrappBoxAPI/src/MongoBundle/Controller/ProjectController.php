@@ -267,7 +267,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$name = $project->getName();
 		$description = $project->getDescription();
-		$logo = $project->getLogo();
+		$logo = $project->getLogoDate();
 		$phone = $project->getPhone();
 		$company = $project->getCompany();
 		$contactMail = $project->getContactEmail();
@@ -563,7 +563,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "addusertoproject", "Complete Success",
-			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatar()));
+			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatarDate()));
 	}
 
 	/**
