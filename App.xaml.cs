@@ -8,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -53,6 +54,11 @@ namespace GrappBox
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+
+            var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+            statusBar.BackgroundColor = (Color)App.Current.Resources["RedGrappBox"];
+            statusBar.ForegroundColor = (Color)App.Current.Resources["LightWhiteGrappBox"];
+            statusBar.BackgroundOpacity = 1;
 
             Frame rootFrame = Window.Current.Content as Frame;
 
