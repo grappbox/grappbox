@@ -16,8 +16,7 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   // ------------------------------------------------------
 
   //Scope variables initialization
-  $scope.projectID = $routeParams.projectId;
-  $scope.projectName = $routeParams.projectName;
+  $scope.projectID = $routeParams.project_id;
   $scope.ticketID = $routeParams.id;
 
   $scope.data = { onLoad: true, bugtracker_new: false, canEdit: true, ticket: { }, tags: [], users: [], message: "_invalid" };

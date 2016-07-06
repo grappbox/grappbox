@@ -127,7 +127,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     $http.put($rootScope.api.url + "/projects/updateinformations", data)
       .then(function successCallback(response) {
         Notification.success({ message: "Project updated", delay: 5000 });
-        $location.path("/project/" + $scope.projectID);
+        $location.path("/settings/" + $scope.projectID);
       },
       function errorCallback(response) {
         Notification.warning({ message: "Unable to update project. Please try again.", delay: 5000 });
@@ -163,7 +163,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         // TODO assign users to project and to their roles
         // TODO generate customer access
         Notification.success({ message: "Project created", delay: 5000 });
-        $location.path("/project/" + $scope.projectID);
+        $location.path("./");
       },
       function errorCallback(response) {
         Notification.warning({ message: "Unable to create project. Please try again.", delay: 5000 });
@@ -176,8 +176,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     $http.delete($rootScope.api.url + "/projects/delproject/" + $rootScope.user.token + "/" + $scope.projectID)
       .then(function successCallback(response) {
         Notification.success({ message: "Project deleted", delay: 5000 });
-        //$location.path("/project/" + $scope.projectID);
-        $route.reload();
+        $location.path("./");
       },
       function errorCallback(response) {
         Notification.warning({ message: "Unable to delete project. Please try again.", delay: 5000 });
