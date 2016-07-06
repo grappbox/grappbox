@@ -125,7 +125,7 @@
     <Compile Include="Model\Calendar\CalendarModel.cs" />
     <Compile Include="Model\Cloud\CloudModel.cs" />
     <Compile Include="Model\Global\Creator.cs" />
-    <Compile Include="Model\Global\DateTimeModelConverter.cs" />
+    <Compile Include="Model\Global\DateTimeFormator.cs" />
     <Compile Include="Model\Global\Position.cs" />
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
     <Compile Include="Model\Whiteboard\CustomShapes.cs" />

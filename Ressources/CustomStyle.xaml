@@ -78,6 +78,7 @@
         <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
     </Style>
     <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
+        <Setter Property="Margin" Value="0,27,0,0" />
         <Setter Property="Background" Value="{StaticResource GrayGrappBox}"/>
     </Style>
     <Style TargetType="Button">
