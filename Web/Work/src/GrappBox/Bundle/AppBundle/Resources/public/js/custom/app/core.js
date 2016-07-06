@@ -40,8 +40,6 @@ app.config(["$httpProvider", function($httpProvider) {
   $httpProvider.useApplyAsync(true);
   $httpProvider.defaults.useXDomain = true;
   delete $httpProvider.defaults.headers.common["X-Requested-With"];
-  // IE family workaround
-  $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache'
 }]);
 
 // Local storage settings
