@@ -159,9 +159,9 @@ Column {
                     width: parent.width * purcentWidth[1]
 
                     onItemSelected: {
-                        if (completeModel[selectedIndex].id !== modelData.roleId) {
-                            console.log("Change user !")
-                            projectSettingsModel.changeRoleUser(modelData.id, completeModel[selectedIndex].id, modelData.roleId === -1 ? 0 : modelData.roleId)
+                        if (completeModel[index].id !== modelData.roleId) {
+                            console.log(modelData.roleId)
+                            projectSettingsModel.changeRoleUser(modelData.id, completeModel[index].id, modelData.roleId)
                         }
                     }
 

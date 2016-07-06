@@ -124,7 +124,7 @@ Column {
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
-        text: "If you click on the button bellow named \"Destroy the project\" you will have 7 days to retrieve it. After that the project will be destroyed and you will not be able to retrieve it. Use this button only if you are sure of you !"
+        text: "This function is not yet implemented."//"If you click on the button bellow named \"Destroy the project\" you will have 7 days to retrieve it. After that the project will be destroyed and you will not be able to retrieve it. Use this button only if you are sure of you !"
         style: "body2"
         wrapMode: Text.Wrap
         color: Theme.primaryColor
@@ -138,16 +138,17 @@ Column {
         backgroundColor: Theme.primaryColor
         textColor: Theme.dark.textColor
         elevation: 1
+        enabled: false
 
         onClicked: deleteProjectConfirmation.show()
     }
 
-    /*Separator {}
+    Separator {}
 
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
-        text: "If you click on the button bellow named \"Leave the project\" you will leave the project and not be able to undo this action. An other member of your project will have to invite you if you want to be part of the project again."
+        text: "This function is not yet implemented."//"If you click on the button bellow named \"Leave the project\" you will leave the project and not be able to undo this action. An other member of your project will have to invite you if you want to be part of the project again."
         style: "body2"
         wrapMode: Text.Wrap
         color: Theme.primaryColor
@@ -161,6 +162,7 @@ Column {
         backgroundColor: Theme.primaryColor
         textColor: Theme.dark.textColor
         elevation: 1
-    }*/
+        enabled: false
+    }
 }
 

@@ -39,8 +39,8 @@ Window {
         }
 
         Component.onCompleted: {
-            controller.login(loginName.text, loginPassword.text)
-            loginPage.isLoading = true
+            /*controller.login(loginName.text, loginPassword.text)
+            loginPage.isLoading = true*/
         }
 
         onLogoutSuccess: {

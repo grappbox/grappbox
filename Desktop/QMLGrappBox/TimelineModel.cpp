@@ -406,8 +406,8 @@ void TimelineModel::loadNextTimelineContent(bool isClient)
     {
         ADD_URL_FIELD(USER_TOKEN);
         ADD_URL_FIELD(isClient ? m_idTimelineClient : m_idTimelineTeam);
-        ADD_URL_FIELD(isClient ? m_timelineClient.size() : m_timelineTeam.size());
-        ADD_URL_FIELD(15);
+        //ADD_URL_FIELD(isClient ? m_timelineClient.size() : m_timelineTeam.size());
+        //ADD_URL_FIELD(15);
         GET(API::DP_TIMELINE, API::GR_TIMELINE);
     }
     END_REQUEST;

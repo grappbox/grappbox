@@ -35,7 +35,7 @@ DataConnectorOnline::DataConnectorOnline()
     _GetMap[GR_LIST_TIMELINE] = "timeline/gettimelines";
     _GetMap[GR_LIST_TASK_TAG] = "tasks/getprojecttags";
 	_GetMap[GR_TASK] = "";
-    _GetMap[GR_TIMELINE] = "timeline/getlastmessages";
+    _GetMap[GR_TIMELINE] = "timeline/getmessages";
 	_GetMap[GR_COMMENT_TIMELINE] = "timeline/getcomments";
     _GetMap[GR_USER_DATA] = "user/getuserbasicinformations";
 	_GetMap[GR_WHITEBOARD] = "";
@@ -68,7 +68,7 @@ DataConnectorOnline::DataConnectorOnline()
 	// Initialize Post request
 	_PostMap[PR_LOGIN] = "accountadministration/login";
     _PostMap[PR_ROLE_ADD] = "roles/addprojectroles";
-	_PostMap[PR_ROLE_ASSIGN] = "";
+    _PostMap[PR_ROLE_ASSIGN] = "roles/assignpersontorole";
     _PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "projects/generatecustomeraccess";
 	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
 	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";

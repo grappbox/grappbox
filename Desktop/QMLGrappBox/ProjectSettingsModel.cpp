@@ -80,16 +80,30 @@ void ProjectSettingsModel::deleteUser(int idUser)
 void ProjectSettingsModel::changeRoleUser(int idUser, int idRole, int oldIdRole)
 {
     m_isLoading++;
-    BEGIN_REQUEST_ADV(this, "onChangeRoleUserDone", "onChangeRoleUserFail");
+    if (oldIdRole == -1)
     {
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("projectId", m_idProject);
-        ADD_FIELD("userId", idUser);
-        ADD_FIELD("old_roleId", oldIdRole);
-        ADD_FIELD("roleId", idRole);
-        PUT(API::DP_PROJECT, API::PUTR_ROLE_USER);
+        BEGIN_REQUEST_ADV(this, "onChangeRoleUserDone", "onChangeRoleUserFail");
+        {
+            ADD_FIELD("token", USER_TOKEN);
+            ADD_FIELD("userId", idUser);
+            ADD_FIELD("roleId", idRole);
+            POST(API::DP_PROJECT, API::PR_ROLE_ASSIGN);
+        }
+        END_REQUEST;
     }
-    END_REQUEST;
+    else
+    {
+        BEGIN_REQUEST_ADV(this, "onChangeRoleUserDone", "onChangeRoleUserFail");
+        {
+            ADD_FIELD("token", USER_TOKEN);
+            ADD_FIELD("projectId", m_idProject);
+            ADD_FIELD("userId", idUser);
+            ADD_FIELD("old_roleId", oldIdRole);
+            ADD_FIELD("roleId", idRole);
+            PUT(API::DP_PROJECT, API::PUTR_ROLE_USER);
+        }
+        END_REQUEST;
+    }
 }
 
 void ProjectSettingsModel::addCustomerAccess(QString name)

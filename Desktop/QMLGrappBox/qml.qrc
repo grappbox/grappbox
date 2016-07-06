@@ -25,6 +25,7 @@
         <file>qrc/ProjectSettingsCustomersAccess.qml</file>
         <file>qrc/Separator.qml</file>
         <file>qrc/ProjectSettingsDangerZone.qml</file>
+        <file>qrc/CreateProject.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

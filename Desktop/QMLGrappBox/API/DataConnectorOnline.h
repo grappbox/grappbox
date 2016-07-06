@@ -13,7 +13,7 @@
 #include "IDataConnector.h"
 
 #define OLD_URL_API QString("http://api.grappbox.com/app_dev.php/V0.11/")
-#define URL_API QString("http://api.grappbox.com/app_dev.php/V0.2/")
+#define URL_API QString("http://beta.api.grappbox.com/app_dev.php/V0.2/")
 
 namespace API
 {

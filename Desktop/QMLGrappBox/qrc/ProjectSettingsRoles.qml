@@ -72,7 +72,9 @@ Column {
                     model: ["No access", "Read access", "All access"]
                     selectedIndex: rolesValueNew[index]
 
-                    onSelectedIndexChanged: rolesValueNew[index] = selectedIndex
+                    onSelectedIndexChanged: {
+                        rolesValueNew[index] = selectedIndex
+                    }
                 }
             }
         }
@@ -121,9 +123,7 @@ Column {
                 anchors.top: parent.top
                 anchors.right: parent.right
 
-                property var modelRight
-
-                Component.onCompleted: modelRight = modelData.accessRight
+                property var modelRight: modelData.accessRight
 
                 elevation: 2
 
@@ -167,7 +167,7 @@ Column {
                                 selectedIndex: viewRoles.modelRight[index]
 
                                 onSelectedIndexChanged: {
-                                    viewRoles.modelRight[index] = selectedText == "No access" ? 0 : (selectedText == "Read access" ? 1 : 2)
+                                    viewRoles.modelRight[index] = selectedIndex
                                 }
                             }
                         }

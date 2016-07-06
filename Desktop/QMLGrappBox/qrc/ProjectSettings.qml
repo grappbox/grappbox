@@ -19,7 +19,8 @@ Item {
         // in order to have the correct position of the cursor.
         tab.selectedIndex = 1
         tab.selectedIndex = 0
-        projectSettingsModel.idProject = args
+
+        projectSettingsModel.idProject = args === undefined ? SDataManager.project.id : args
         projectSettingsModel.loadInformation()
     }
 
