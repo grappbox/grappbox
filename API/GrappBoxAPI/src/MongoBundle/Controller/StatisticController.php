@@ -74,62 +74,62 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $stat["clientBugTracker"] = $this->getClientBugTracker($project);
 
-    $data = $em->getRepository('MongoBundle:StatStorageSize')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatStorageSize')->findBy(array("project.id" => $project->getId()));
     if (!count($data))
       $stat["storageSize"] = array("occupied" => 0, "total" => 1000000000);
     else
       $stat["storageSize"] = array("occupied" => $data[0]->getValue(), "total" => 1000000000);
 
     $stat["userTasksAdvancement"] = array();
-    $data = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["userTasksAdvancement"][] = $value->objectToArray();
     }
 
     $stat["lateTask"] = array();
-    $data = $em->getRepository('MongoBundle:StatLateTasks')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatLateTasks')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["lateTask"][] = $value->objectToArray();
     }
 
     $stat["bugsEvolution"] = array();
-    $data = $em->getRepository('MongoBundle:StatBugsEvolution')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatBugsEvolution')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["bugsEvolution"][] = $value->objectToArray();
     }
 
     $stat["bugsTagsRepartition"] = array();
-    $data = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["bugsTagsRepartition"][] = $value->objectToArray();
     }
 
-    $data = $em->getRepository('MongoBundle:StatBugAssignationTracker')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatBugAssignationTracker')->findBy(array("project.id" => $project->getId()));
     if (!count($data))
       $stat["bugAssignationTracker"] = array("assigned" => 0, "unassigned" => 0);
     else
       $stat["bugAssignationTracker"] = array("assigned" => $data[0]->getAssignedBugs(), "unassigned" => $data[0]->getUnassignedBugs());
 
     $stat["bugsUsersRepartition"] = array();
-    $data = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["bugsUsersRepartition"][] = $value->objectToArray();
     }
 
     $stat["tasksRepartition"] = array();
-    $data = $em->getRepository('MongoBundle:StatTasksRepartition')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatTasksRepartition')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["tasksRepartition"][] = $value->objectToArray();
     }
 
     $stat["userWorkingCharge"] = array();
-    $data = $em->getRepository('MongoBundle:StatUserWorkingCharge')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatUserWorkingCharge')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["userWorkingCharge"][] = $value->objectToArray();
     }
 
     $stat["projectAdvancement"] = array();
-    $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->findBy(array("project" => $project));
+    $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["projectAdvancement"][] = $value->objectToArray();
     }
@@ -182,7 +182,7 @@ class StatisticController extends RolesAndTokenVerificationController
         $stat["clientBugTracker"] = $this->getClientBugTracker($project);
         break;
       case 'storagesize':
-        $data = $em->getRepository('MongoBundle:StatStorageSize')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatStorageSize')->findBy(array("project.id" => $project->getId()));
         if (!count($data))
           $stat["storageSize"] = array("occupied" => 0, "total" => 1000000000);
         else
@@ -190,34 +190,34 @@ class StatisticController extends RolesAndTokenVerificationController
         break;
       case 'usertasksadvancement':
         $stat["userTasksAdvancement"] = array();
-        $data = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["userTasksAdvancement"][] = $value->objectToArray();
         }
         break;
       case 'latetask':
         $stat["lateTask"] = array();
-        $data = $em->getRepository('MongoBundle:StatLateTasks')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatLateTasks')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["lateTask"][] = $value->objectToArray();
         }
         break;
       case 'bugsevolution':
         $stat["bugsEvolution"] = array();
-        $data = $em->getRepository('MongoBundle:StatBugsEvolution')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatBugsEvolution')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["bugsEvolution"][] = $value->objectToArray();
         }
         break;
       case 'bugstagsrepartition':
         $stat["bugsTagsRepartition"] = array();
-        $data = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["bugsTagsRepartition"][] = $value->objectToArray();
         }
         break;
       case 'bugassignationtracker':
-        $data = $em->getRepository('MongoBundle:StatBugAssignationTracker')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatBugAssignationTracker')->findBy(array("project.id" => $project->getId()));
         if (!count($data))
           $stat["bugAssignationTracker"] = array("assigned" => 0, "unassigned" => 0);
         else
@@ -225,28 +225,28 @@ class StatisticController extends RolesAndTokenVerificationController
         break;
       case 'bugsusersrepartition':
         $stat["bugsUsersRepartition"] = array();
-        $data = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["bugsUsersRepartition"][] = $value->objectToArray();
         }
         break;
       case 'tasksrepartition':
         $stat["tasksRepartition"] = array();
-        $data = $em->getRepository('MongoBundle:StatTasksRepartition')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatTasksRepartition')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["tasksRepartition"][] = $value->objectToArray();
         }
         break;
       case 'userworkingcharge':
         $stat["userWorkingCharge"] = array();
-        $data = $em->getRepository('MongoBundle:StatUserWorkingCharge')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatUserWorkingCharge')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["userWorkingCharge"][] = $value->objectToArray();
         }
         break;
       case 'projectadvancement':
         $stat["projectAdvancement"] = array();
-        $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->findBy(array("project" => $project));
+        $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["projectAdvancement"][] = $value->objectToArray();
         }
@@ -654,7 +654,10 @@ class StatisticController extends RolesAndTokenVerificationController
                      ->setParameters(array('project' => $project, 'tag' => $tag))
                      ->getQuery()->getSingleScalarResult();
 
-      $percentage = ($number * 100) / $totalBugs;
+      if ($totalBugs > 0)
+        $percentage = ($number * 100) / $totalBugs;
+      else
+        $percentage = 0;
 
       $statBugsTagsRepartition = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->findOneBy(array('project' => $project, 'name' => $tag->getName()));
       if ($statBugsTagsRepartition === null)
@@ -892,7 +895,7 @@ class StatisticController extends RolesAndTokenVerificationController
     else
       $percentage = 0;
 
-    $prev = $em->getRepository('MongoBundle:statProjectAdvancement')->findBy(array("project" => $project), array('date' => 'DESC'));
+    $prev = $em->getRepository('MongoBundle:statProjectAdvancement')->findBy(array("project.id" => $project->getId()), array('date' => 'DESC'));
     if ($prev == null)
       $progress = $percentage;
     else

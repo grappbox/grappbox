@@ -120,7 +120,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 				{
 					if ($project->getDeletedAt() < $defDate)
 					{
-						$purs = $em->getRepository('MongoBundle:ProjectUserRole')->findByprojectId($project->getId());
+						$purs = $em->getRepository('MongoBundle:ProjectUserRole')->findByProjectId($project->getId());
 
 						foreach ($purs as $pur) {
 							$em->remove($pur);
@@ -142,7 +142,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 						{
 							if ($project->getDeletedAt() < $defDate)
 							{
-								$purs = $em->getRepository('MongoBundle:projectUserRole')->findByprojectId($project->getId());
+								$purs = $em->getRepository('MongoBundle:projectUserRole')->findByProjectId($project->getId());
 
 								foreach ($purs as $pur) {
 									$em->remove($pur);

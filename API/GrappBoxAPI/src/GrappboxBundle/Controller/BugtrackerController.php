@@ -62,7 +62,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* {
@@ -87,7 +87,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*      { "id": 4, "name": "ASAP", "projectId": 1 }
 	*    ],
 	*    "users": [
-	*      { "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": "100111010000110111 ....." },
+	*      { "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"} },
 	*      { "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null }
 	*    ]
 	*  }
@@ -145,7 +145,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object["users"] = $participants;
@@ -201,9 +201,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} tags.name Ticket tags name
 	* @apiSuccess {Object[]} users assigned user list
 	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {date} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -326,7 +326,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$ticket["users"] = $participants;
@@ -388,7 +388,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -477,6 +477,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setClientOrigin($content->clientOrigin);
 		$bug->setEditedAt(new DateTime('now'));
 
+		$state = null;
 		if ($content->stateId != 0)
 			$state = $em->getRepository("GrappboxBundle:BugState")->find($content->stateId);
 		if ($state instanceof BugState)
@@ -506,7 +507,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$ticket["users"] = $participants;
@@ -963,7 +964,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -1118,7 +1119,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object["users"] = $participants;
@@ -1250,7 +1251,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -1370,7 +1371,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -1414,7 +1415,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -1537,7 +1538,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -1583,7 +1584,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -1703,7 +1704,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -1749,7 +1750,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -1871,7 +1872,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 						"id" => $user_value->getId(),
 						"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 						"email" => $user_value->getEmail(),
-						"avatar" => $user_value->getAvatar()
+						"avatar" => $user_value->getAvatarDate()
 					);
 				}
 				$object["users"] = $participants;
@@ -1917,7 +1918,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -2044,7 +2045,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;
@@ -2091,7 +2092,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* HTTP/1.1 201 Created
@@ -2211,7 +2212,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					"id" => $user_value->getId(),
 					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
 					"email" => $user_value->getEmail(),
-					"avatar" => $user_value->getAvatar()
+					"avatar" => $user_value->getAvatarDate()
 				);
 			}
 			$object["users"] = $participants;

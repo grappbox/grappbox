@@ -44,6 +44,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiSuccess {string} lastname user's lastname
 	* @apiSuccess {string} email user's email
 	* @apiSuccess {string} token user's authentication token
+	* @apiSuccess {Date} avatar user's avatar last modification date
 	*
 	* @apiSuccessExample {json} Success-Response:
  	* 	{
@@ -57,7 +58,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": "01101000101101000111...."
+	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
 	*			}
  	* 	}
 	*
@@ -104,7 +105,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
 	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {String} avatar user's avatar
+	* @apiSuccess {date} avatar user's avatar last modif date
  	*
  	* @apiSuccessExample {json} Success-Response:
  	* 	{
@@ -118,7 +119,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": "01101000101101000111...."
+	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
 	*			}
  	* 	}
  	*
@@ -349,7 +350,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
 	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {String} avatar user's avatar
+	* @apiSuccess {Date} avatar user's avatar last modification date
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	HTTP/1.1 201 Created
@@ -364,7 +365,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"lastname": "Doe",
 	*				"email": "janne.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": "01101000101101000111...."
+	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
 	*			}
 	* 	}
 	*
@@ -392,7 +393,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content) || !array_key_exists('password', $content) || !array_key_exists('email', $content))
+		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content)
+				|| !array_key_exists('password', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Missing Parameter");
 
 		$em = $this->getDoctrine()->getManager();
@@ -409,7 +411,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$user->setPassword($encoded);
 
 		if (array_key_exists('avatar', $content))
-			$user->setAvatar(date_create($content->avatar));
+		{
+			$user->setAvatar($content->avatar);
+			$user->setAvatarDate(date_create(new DateTime('now')));
+		}
 		if (array_key_exists('birthday', $content))
 			$user->setBirthday(date_create($content->birthday));
 		if (array_key_exists('phone', $content))

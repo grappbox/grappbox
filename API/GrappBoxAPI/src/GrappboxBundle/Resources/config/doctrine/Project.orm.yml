@@ -18,6 +18,9 @@ GrappboxBundle\Entity\Project:
         logo:
             type: text
             nullable: TRUE
+        logoDate:
+            type: date
+            nullable: TRUE
         phone:
             type: string
             nullable: true

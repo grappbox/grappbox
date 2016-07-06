@@ -21,6 +21,9 @@ GrappboxBundle\Entity\User:
         avatar:
             type: text
             nullable: TRUE
+        avatarDate:
+            type: date
+            nullable: TRUE
         password:
             type: string
             length: 255

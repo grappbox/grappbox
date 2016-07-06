@@ -128,7 +128,7 @@ class EventController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -150,8 +150,8 @@ class EventController extends RolesAndTokenVerificationController
 	*			"editedAt": null,
 	*			"deletedAt": null,
 	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}}
 	*			]
 	*		}
 	* 	}
@@ -216,7 +216,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object = $event->objectToArray();
@@ -266,7 +266,7 @@ class EventController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -286,8 +286,8 @@ class EventController extends RolesAndTokenVerificationController
 	*			"editedAt": null,
 	*			"deletedAt": null,
 	*			"users": [
-	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"},
-	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": "XXXXXXXXXXX"}
+	*				{"id": 95, "name": "John Doe", "email": "john.doe@wanadoo.fr", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}},
+	*				{"id": 96, "name": "Joanne Doe", "email": "joanne.doe@wanadoo.fr", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}}
 	*			]
 	*		}
 	* 	}
@@ -431,7 +431,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object = $event->objectToArray();
@@ -602,7 +602,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 		$object = $event->objectToArray();
@@ -678,7 +678,7 @@ class EventController extends RolesAndTokenVerificationController
 	*	@apiSuccess {int} users.id user id
 	*	@apiSuccess {string} users.name user full name
 	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {string} users.avatar user avatar
+	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -797,7 +797,7 @@ class EventController extends RolesAndTokenVerificationController
 				"id" => $value->getId(),
 				"name" => $value->getFirstname()." ".$value->getLastName(),
 				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatar()
+				"avatar" => $value->getAvatarDate()
 			);
 		}
 

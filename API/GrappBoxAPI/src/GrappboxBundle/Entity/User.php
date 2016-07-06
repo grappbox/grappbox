@@ -37,6 +37,11 @@ class User implements UserInterface
     private $avatar;
 
     /**
+     * @var \DateTime
+     */
+    private $avatarDate;
+
+    /**
      * @var string
      */
     private $password;
@@ -140,7 +145,7 @@ class User implements UserInterface
      * @var \Doctrine\Common\Collections\Collection
      */
     private $colors;
-    
+
     /**
      * Constructor
      */
@@ -183,7 +188,7 @@ class User implements UserInterface
           'lastname' => $this->lastname,
           'email' => $this->email,
           'token' => $this->token,
-          'avatar' => $this->avatar
+          'avatar' => $this->avatarDate
       );
     }
 
@@ -287,6 +292,29 @@ class User implements UserInterface
     public function getAvatar()
     {
         return $this->avatar;
+    }
+
+    /**
+     * Set avatarDate
+     *
+     * @param \DateTime $avatardate
+     * @return User
+     */
+    public function setAvatarDate($avatarDate)
+    {
+        $this->avatarDate = $avatarDate;
+
+        return $this;
+    }
+
+    /**
+     * Get avatarDate
+     *
+     * @return \DateTime
+     */
+    public function getAvatarDate()
+    {
+        return $this->avatarDate;
     }
 
     /**
@@ -969,7 +997,11 @@ class User implements UserInterface
     /**
      * Get whiteboard_creator
      *
+<<<<<<< HEAD
      * @return \Doctrine\Common\Collections\Collection 
+=======
+     * @return \Doctrine\Common\Collections\Collection
+>>>>>>> API-Work
      */
     public function getWhiteboardCreator()
     {
@@ -1002,7 +1034,11 @@ class User implements UserInterface
     /**
      * Get whiteboard_updator
      *
+<<<<<<< HEAD
      * @return \Doctrine\Common\Collections\Collection 
+=======
+     * @return \Doctrine\Common\Collections\Collection
+>>>>>>> API-Work
      */
     public function getWhiteboardUpdator()
     {

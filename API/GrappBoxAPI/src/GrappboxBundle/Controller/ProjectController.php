@@ -451,7 +451,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {String} name Name of the project
 	* @apiSuccess {String} description Description of the project
-	* @apiSuccess {Text} logo Logo of the project
+	* @apiSuccess {date} logo Logo last modif date of the project
 	* @apiSuccess {String} phone Phone number of the project
 	* @apiSuccess {String} company Company name
 	* @apiSuccess {String} contact_mail for the project
@@ -472,7 +472,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		{
 	*			"name": "Grappbox",
 	*			"description": "Grappbox est un projet",
-	*			"logo": "10100011000011001",
+	*			"logo": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
 	*			"phone": "+89130 2145 8795",
 	*			"company": "L'oie Oppressée",
 	*			"contact_mail": "contact@grappbox.com",
@@ -528,7 +528,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$name = $project->getName();
 		$description = $project->getDescription();
-		$logo = $project->getLogo();
+		$logo = $project->getLogoDate();
 		$phone = $project->getPhone();
 		$company = $project->getCompany();
 		$contactMail = $project->getContactEmail();
@@ -1200,7 +1200,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "addusertoproject", "Complete Success",
-			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatar()));
+			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatarDate()));
 	}
 
 	/**

@@ -37,6 +37,11 @@ class User implements UserInterface
     protected $avatar;
 
     /**
+     * @var date $avatarDate
+     */
+    protected $avatarDate;
+
+    /**
      * @var string $password
      */
     protected $password;
@@ -184,7 +189,7 @@ class User implements UserInterface
           'lastname' => $this->lastname,
           'email' => $this->email,
           'token' => $this->token,
-          'avatar' => $this->avatar
+          'avatar' => $this->avatarDate
       );
     }
 
@@ -285,6 +290,28 @@ class User implements UserInterface
     public function getAvatar()
     {
         return $this->avatar;
+    }
+
+    /**
+     * Set avatarDate
+     *
+     * @param date $avatarDate
+     * @return self
+     */
+    public function setAvatarDate($avatarDate)
+    {
+        $this->avatarDate = $avatarDate;
+        return $this;
+    }
+
+    /**
+     * Get avatarDate
+     *
+     * @return date $avatarDate
+     */
+    public function getAvatarDate()
+    {
+        return $this->avatarDate;
     }
 
     /**
