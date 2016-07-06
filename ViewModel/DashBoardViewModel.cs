@@ -2,7 +2,7 @@
 using System.Linq;
 using GrappBox.Model;
 using GrappBox.ApiCom;
-using System.Net.Http;
+using Windows.Web.Http;
 using System.Diagnostics;
 using GrappBox.Ressources;
 using System.Collections.ObjectModel;
@@ -21,6 +21,8 @@ namespace GrappBox.ViewModel
         }
         public DashBoardViewModel()
         {
+            _occupationList = null;
+            _meetingList = null;
             instance = this;
         }
 

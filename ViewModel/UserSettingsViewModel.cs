@@ -4,7 +4,7 @@ using GrappBox.View;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Http;
+using Windows.Web.Http;
 using Windows.Storage.Streams;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;

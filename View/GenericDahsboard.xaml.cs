@@ -53,7 +53,6 @@ namespace GrappBox.View
         {
             ListView lv = sender as ListView;
             ProjectListModel plm = lv.SelectedItem as ProjectListModel;
-            Debug.WriteLine("ProjectName= {0}  ProjectId= {1}", plm.Name, plm.Id);
             SettingsManager.setOption("ProjectIdChoosen", plm.Id);
             SettingsManager.setOption("ProjectNameChoosen", plm.Name);
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));

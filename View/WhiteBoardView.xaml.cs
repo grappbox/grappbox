@@ -50,7 +50,7 @@ namespace GrappBox.View
             }
             this.DataContext = new ViewModel.WhiteBoardViewModel();
             //Required for navigation
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
@@ -70,7 +70,6 @@ namespace GrappBox.View
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
             pullTimer.Stop();
-            drawingCanvas.Clear();
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)

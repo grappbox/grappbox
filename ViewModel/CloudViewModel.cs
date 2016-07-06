@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
+using Windows.Web.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
@@ -119,7 +119,7 @@ namespace GrappBox.ViewModel
             {
                 res = await api.Get(token, "cloud/file");
             }
-            if (res.StatusCode == System.Net.HttpStatusCode.Redirect)
+            if (res.StatusCode == HttpStatusCode.Ok)
             {
                 _dowloadUrl = res.Headers.Location.AbsoluteUri;
                 FolderPicker folderPicker = new FolderPicker();
@@ -144,8 +144,9 @@ namespace GrappBox.ViewModel
                 _view.Activated -= folderActivated;
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    var data = await httpClient.GetByteArrayAsync(new Uri(_dowloadUrl, UriKind.Absolute));
-                    var file = await args.Folder.CreateFileAsync(_fileSelect.Filename, CreationCollisionOption.ReplaceExisting);
+                    string tmp = await httpClient.GetStringAsync(new Uri(_dowloadUrl, UriKind.Absolute));
+                    byte[] data = Encoding.UTF8.GetBytes(tmp);
+                    StorageFile file = await args.Folder.CreateFileAsync(_fileSelect.Filename, CreationCollisionOption.ReplaceExisting);
                     using (var targetStream = await file.OpenAsync(FileAccessMode.ReadWrite))
                     {
                         await targetStream.AsStreamForWrite().WriteAsync(data, 0, data.Length);
@@ -277,7 +278,7 @@ namespace GrappBox.ViewModel
                 }
                 props.Add("file_chunk", data);
                 HttpResponseMessage res = await api.Put(props, "cloud/file");
-                if (res.StatusCode == System.Net.HttpStatusCode.OK)
+                if (res.IsSuccessStatusCode == true)
                 {
                     ContentDialog cd = new ContentDialog();
                     cd.Title = "Success";

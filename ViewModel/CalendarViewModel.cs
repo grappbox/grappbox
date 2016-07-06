@@ -1,10 +1,12 @@
 ﻿using GrappBox.ApiCom;
 using GrappBox.Model;
+using GrappBox.Model.Global;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Windows.Web.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,165 +16,74 @@ namespace GrappBox.ViewModel
 {
     class CalendarViewModel : ViewModelBase
     {
-        private ObservableCollection<int> _days;
-        public ObservableCollection<int> Days
-        {
-            get { return _days; }
-            set { Days = value; }
-        }
-        public ObservableCollection<string> MonthList
-        {
-            get
-            {
-                var t = new ObservableCollection<string>();
-                t.Add("January");
-                t.Add("February");
-                t.Add("March");
-                t.Add("April");
-                t.Add("May");
-                t.Add("June");
-                t.Add("Jully");
-                t.Add("August");
-                t.Add("Septemner");
-                t.Add("October");
-                t.Add("November");
-                t.Add("December");
-                return t;
-            }
-        }
-        private int _currentYear;
+        #region Private members
+        private DateTime currentDateTime;
+        #endregion
+        #region Public Properties
         public int CurrentYear
         {
-            get { return _currentYear; }
-            set { _currentYear = value; NotifyPropertyChanged("CurrentYear"); }
+            get { return currentDateTime.Year; }
         }
-        private int _monthIndex;
+
         public int MonthIndex
         {
-            get { return _monthIndex; }
-            set
-            {
-                if (_monthIndex == 11 && value == 0)
-                    CurrentYear = CurrentYear + 1;
-                if (_monthIndex == 0 && value == 11)
-                    CurrentYear = CurrentYear - 1;
-                _monthIndex = value;
-                NotifyPropertyChanged("MonthIndex");
-                UpdateMonth();
-            }
+            get { return currentDateTime.Month-1; }
         }
-        private ObservableCollection<Model.Task> _tasks;
-        private ObservableCollection<Event> _events;
-        public ObservableCollection<Event> Events
+
+        public int CurrentMonth
         {
-            get { return _events; }
-            set { _events = value; NotifyPropertyChanged("Events"); }
+            get { return currentDateTime.Month; }
         }
-        public ObservableCollection<Model.Task> Tasks
+
+        public int CurrentDay
         {
-            get { return _tasks; }
-            set { _tasks = value; NotifyPropertyChanged("Tasks"); }
+            get { return currentDateTime.Day; }
         }
-        private CalendarModel model;
-        private DateTime currentDateTime;
+        #endregion
 
         public CalendarViewModel()
         {
-            currentDateTime = new DateTime(DateTime.Now.Ticks);
-            _currentYear = currentDateTime.Year;
-            _monthIndex = currentDateTime.Month - 1;
-            _days = new ObservableCollection<int>();
-            for (int i = 1; i < 32; ++i)
-                _days.Add(i);
-            model = new CalendarModel();
-            InitViewModel();
-        }
-        public async void InitViewModel()
-        {
-            Debug.WriteLine("currentDateTime: {0}", currentDateTime);
-            _currentYear = currentDateTime.Year;
-            Planning plan = await model.GetMonthPlanning(currentDateTime);
-            Events = new ObservableCollection<Event>(plan.Events);
-            Tasks = new ObservableCollection<Model.Task>(plan.Tasks);
-            NotifyPropertyChanged("MonthIndex");
-            NotifyPropertyChanged("CurrentYear");
-        }
-        public async void UpdateMonth()
-        {
-            currentDateTime = new DateTime(_currentYear, _monthIndex + 1, 1);
-
-            Debug.WriteLine("currentDateTime: {0}", currentDateTime);
-            Planning plan = await model.GetMonthPlanning(currentDateTime);
-            Events = new ObservableCollection<Event>(plan.Events);
-            Tasks = new ObservableCollection<Model.Task>(plan.Tasks);
-        }
-        private ICommand _addEventCommand;
-        public ICommand AddEventCommand
-        {
-            get { return _addEventCommand ?? (_addEventCommand = new CommandHandler(AddEventAction)); }
-        }
-        private DateModel DateTimeToDateModel(DateTime dt)
-        {
-            DateModel dm = new DateModel();
-            dm.date = dt.ToString("yyyy-MM-dd HH:mm:ss");
-            return dm;
-        }
-        public void AddEventAction()
-        {
-            EventPromptOpened = true;
-        }
-
-        #region EventCreation
-        private bool _eventPromptOpened;
-        private bool _eventPromptConfirmed;
-        private string _eventPromptTitle;
-        private string _eventPromptDescription;
-        private DateTime _eventPromptBeginDate;
-        private DateTime _eventPromptEndDate;
-        public bool EventPromptOpened
-        {
-            get { return _eventPromptOpened; }
-            set { _eventPromptOpened = value; NotifyPropertyChanged("EventPromptOpened"); }
-        }
-        public bool EventPromptConfirmed
-        {
-            get { return _eventPromptConfirmed; }
-            set { _eventPromptConfirmed = value; NotifyPropertyChanged("EventPromptConfirmed");
-                if (value == true)
-                {
-                    Event evt = new Event();
-                    evt.Creator = new Creator();
-                    evt.Creator.Fullname = User.GetUser().Firstname + " " + User.GetUser().Lastname;
-                    evt.Creator.Id = User.GetUser().Id;
-                    evt.CreatedAt = DateTimeToDateModel(DateTime.Now);
-                    evt.BeginDate = DateTimeToDateModel(EventPromptBeginDate);
-                    evt.EndDate = DateTimeToDateModel(EventPromptEndDate);
-                    evt.Title = EventPromptTitle;
-                    evt.Description = EventPromptDescription;
-                    //Events.Add(evt);
-                    //this.model.AddEvent(evt);
-                }
+            currentDateTime = DateTime.Now;
+            MonthList = new ObservableCollection<CalendarModel>();
+            for (int i = 0; i < 12; ++i)
+            {
+                MonthList.Add(new CalendarModel(i, ref currentDateTime));
             }
         }
-        public string EventPromptTitle
+
+        public ObservableCollection<CalendarModel> MonthList { get; set; }
+
+        public async void UpdateMonth()
         {
-            get { return _eventPromptTitle; }
-            set { _eventPromptTitle = value; NotifyPropertyChanged("EventPromptTitle"); }
+            //Debug.WriteLine("currentDateTime: {0}", currentDateTime);
+            //Planning plan = await GetMonthPlanning(currentDateTime);
+            //Events = new ObservableCollection<Event>(plan.Events);
+            //Tasks = new ObservableCollection<Model.Task>(plan.Tasks);
         }
-        public string EventPromptDescription
+
+        #region ApiGetters
+        public async Task<Planning> GetMonthPlanning(DateTime month)
         {
-            get { return _eventPromptDescription; }
-            set { _eventPromptDescription = value; NotifyPropertyChanged("EventPromptDescription"); }
+            Debug.WriteLine("date {0}", month.ToString("yyyy-MM-dd"));
+            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
+            object[] token = { ApiCom.User.GetUser().Token, month.ToString("yyyy-MM-dd") };
+            HttpResponseMessage res = await api.Get(token, "planning/getmonth");
+            string resString = await res.Content.ReadAsStringAsync();
+            Debug.WriteLine(resString);
+            return api.DeserializeArrayJson<Planning>(resString);
         }
-        public DateTime EventPromptBeginDate
+        public async void AddEvent(Event evt)
         {
-            get { return _eventPromptBeginDate; }
-            set { _eventPromptBeginDate = value; NotifyPropertyChanged("EventPromptBeginDate"); }
-        }
-        public DateTime EventPromptEndDate
-        {
-            get { return _eventPromptEndDate; }
-            set { _eventPromptEndDate = value; NotifyPropertyChanged("EventPromptEndDate"); }
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            dict.Add("token", User.GetUser().Token);
+            dict.Add("title", evt.Title);
+            dict.Add("description", evt.Description);
+            dict.Add("icon", "");
+            dict.Add("typeId", 1);
+            dict.Add("begin", evt.BeginDate.date);
+            dict.Add("end", evt.EndDate.date);
+            ApiCommunication api = ApiCommunication.GetInstance();
+            await api.Post(dict, "event/postevent");
         }
         #endregion
     }

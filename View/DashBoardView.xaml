@@ -20,7 +20,7 @@
 
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  PageTitle="Dashboard">
         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <Pivot Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" Margin="0,27,0,0">
+            <Pivot Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" >
             </Pivot>
             <Popup x:Name="SettingsPopUp" Visibility="Collapsed" IsOpen="True">
                 <StackPanel Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">

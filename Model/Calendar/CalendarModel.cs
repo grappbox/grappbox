@@ -4,51 +4,63 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
+using Windows.Web.Http;
 using System.Text;
 using System.Threading.Tasks;
+using GrappBox.Model.Global;
+using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace GrappBox.Model
 {
-    class CalendarModel
+    class CalendarModel : INotifyPropertyChanged
     {
-        public enum ViewType
-        {
-            DAY,
-            WEEK,
-            MONTH
-        }
-
-        #region PublicAccessor
-        public ObservableCollection<Event> Events
-        { get; private set; }
-        public ObservableCollection<Task> Tasks
-        { get; private set; }
-
+        #region Private members
+        private DateTime[] currentDateTimeRef;
+        private Planning planning;
         #endregion
-        #region ApiGetters
-        public async Task<Planning> GetMonthPlanning(DateTime month)
+
+        #region Notifier
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void NotifyPropertyChanged(string property)
         {
-            Debug.WriteLine("date {0}", month.ToString("yyyy-MM-dd"));
-            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
-            object[] token = { ApiCom.User.GetUser().Token, month.ToString("yyyy-MM-dd") };
-            HttpResponseMessage res = await api.Get(token, "planning/getmonth");
-            string resString = await res.Content.ReadAsStringAsync();
-            Debug.WriteLine(resString);
-            return api.DeserializeArrayJson<Planning>(resString);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
         }
-        public async void AddEvent(Event evt)
+        #endregion
+        #region Public Accessors
+        public DateTime CurrentDateTime
         {
-            Dictionary<string, object> dict = new Dictionary<string, object>();
-            dict.Add("token", User.GetUser().Token);
-            dict.Add("title", evt.Title);
-            dict.Add("description", evt.Description);
-            dict.Add("icon", "");
-            dict.Add("typeId", 1);
-            dict.Add("begin", evt.BeginDate.date);
-            dict.Add("end", evt.EndDate.date);
-            ApiCommunication api = ApiCommunication.GetInstance();
-            await api.Post(dict, "event/postevent");
+            get { return currentDateTimeRef[0]; }
+        }
+        public int MonthIndex { get; private set; }
+        public string MonthName
+        {
+            get { return DateTimeFormator.GetMonthName(CurrentDateTime, MonthIndex+1); }
+        }
+        public void SetCurrentDateTime(ref DateTime dt)
+        {
+            currentDateTimeRef = new DateTime[] { dt };
+        }
+        public CalendarModel(int monthIndex, ref DateTime currentDateTime)
+        {
+            MonthIndex = monthIndex;
+            SetCurrentDateTime(ref currentDateTime);
+        }
+        public IEnumerable<string> DaysList
+        {
+            get { return DateTimeFormator.GetDayList(CurrentDateTime, MonthIndex+1); }
+        }
+        public ObservableCollection<Event> Events
+        {
+            get { return planning.Events; }
+        }
+
+        public ObservableCollection<Model.Task> Tasks
+        {
+            get { return planning.Tasks; }
         }
         #endregion
     }

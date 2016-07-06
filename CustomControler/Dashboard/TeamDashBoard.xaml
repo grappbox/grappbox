@@ -12,60 +12,67 @@
     d:DesignWidth="400">
 
     <ListView Name="TeamGridView" ItemsSource="{Binding OccupationList}"
-    HorizontalAlignment="Center"
-    HorizontalContentAlignment="Center"
-    Background="{StaticResource BackgroundGrayBrush}"
+    HorizontalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
     ScrollViewer.HorizontalScrollMode="Disabled"
     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
     ScrollViewer.VerticalScrollMode="Auto"
-    ScrollViewer.VerticalScrollBarVisibility="Auto">
+    ScrollViewer.VerticalScrollBarVisibility="Hidden"
+    IsDoubleTapEnabled="False" IsRightTapEnabled="False">
         <ListView.ItemTemplate>
-            <DataTemplate>
-                <Border Width="350" Background="White" Margin="10" Padding="15">
-                    <Grid >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Ellipse Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="80" Height="80">
-                            <Ellipse.Fill>
-                                <ImageBrush ImageSource="/Assets/grappbox-logo.png"></ImageBrush>
-                            </Ellipse.Fill>
-                        </Ellipse>
+        <DataTemplate>
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Ellipse Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="80" Height="80">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="/Assets/grappbox-logo.png"></ImageBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
 
-                        <TextBlock Margin="0,10,0,0" Grid.Row="1" Name="name_tb" Text="{Binding UserName }" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"></TextBlock>
+                    <TextBlock Margin="0,10,0,0" Grid.Row="1" Name="name_tb" Text="{Binding UserName }" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"></TextBlock>
 
-                        <StackPanel Margin="0,10,0,0" Grid.Row="2" Orientation="Horizontal">
-                            <StackPanel.Resources>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Margin" Value="10,0,0,0"/>
-                                </Style>
-                            </StackPanel.Resources>
-                            <Image VerticalAlignment="Center" Source="/Assets/task_begin.png"/>
-                            <TextBlock Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
-                            <TextBlock Text="started tasks" VerticalAlignment="Center" FontSize="16"></TextBlock>
-                        </StackPanel>
+                    <StackPanel Margin="0,10,0,0" Grid.Row="2" Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin" Value="10,0,0,0"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Image VerticalAlignment="Center" Source="/Assets/task_begin.png"/>
+                        <TextBlock Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
+                        <TextBlock Text="started tasks" VerticalAlignment="Center" FontSize="16" />
+                    </StackPanel>
 
-                        <StackPanel Margin="0,10,0,10" Grid.Row="3" Orientation="Horizontal">
-                            <StackPanel.Resources>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Margin" Value="10,0,0,0"/>
-                                </Style>
-                            </StackPanel.Resources>
-                            <Image VerticalAlignment="Center" Source="/Assets/task_ongoing.png"/>
-                            <TextBlock Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
-                            <TextBlock Text="remaining tasks" VerticalAlignment="Center" FontSize="16"></TextBlock>
-                        </StackPanel>
+                    <StackPanel Margin="0,10,0,10" Grid.Row="3" Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Margin" Value="10,0,0,0"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <Image VerticalAlignment="Center" Source="/Assets/task_ongoing.png"/>
+                        <TextBlock Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
+                        <TextBlock Text="remaining tasks" VerticalAlignment="Center" FontSize="16"></TextBlock>
+                    </StackPanel>
 
-                        <Border Grid.Row="4" Height="25" Name="occupation_back" Background="{Binding Occupation, Converter={StaticResource OccupationColorConverter}}" Margin="-15,0,-15,-15">
-                            <TextBlock  Name="occupation_tb" Text="{Binding Occupation}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Foreground="White" FontWeight="Bold"></TextBlock>
-                        </Border>
-                    </Grid>
-                </Border>
-            </DataTemplate>
+                    <Border Grid.Row="4" Height="25" Name="occupation_back" Background="{Binding Occupation, Converter={StaticResource OccupationColorConverter}}" Margin="-15,0,-15,-15">
+                        <TextBlock  Name="occupation_tb" Text="{Binding Occupation}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Foreground="White" FontWeight="Bold"></TextBlock>
+                    </Border>
+                </Grid>
+        </DataTemplate>
         </ListView.ItemTemplate>
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="Padding" Value="15" />
+                <Setter Property="Margin" Value="15" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </ListView.ItemContainerStyle>
     </ListView>
 </UserControl>

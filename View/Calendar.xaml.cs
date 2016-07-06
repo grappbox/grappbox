@@ -30,21 +30,20 @@ namespace GrappBox.View
 
         public Calendar()
         {
-            try
-            {
-                this.InitializeComponent();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
             this.DataContext = new ViewModel.CalendarViewModel();
-            
+            this.InitializeComponent();
+            MonthPivot.SelectionChanged += MonthPivot_SelectionChanged;
+
             //Required for navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+        }
+
+        private void MonthPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
 
         //Required for navigation

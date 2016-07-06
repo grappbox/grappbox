@@ -19,70 +19,69 @@
     <slideMenu:SlideInMenuContentControl  x:Name="slideInMenuContentControl" PageTitle="Dashboard" IsDoubleTapEnabled="False">
         <Grid>
             <ListView
+            d:UseSampleData="True"
             Padding="15,0,15,0"
             ItemsSource="{Binding ProjectList}"
-            Background="{StaticResource BackgroundGrayBrush}"
             SelectionChanged="ListView_SelectionChanged"
             ScrollViewer.HorizontalScrollMode="Disabled"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.VerticalScrollMode="Auto"
-            ScrollViewer.VerticalScrollBarVisibility="Auto"
-            HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Center">
+            ScrollViewer.VerticalScrollBarVisibility="Hidden"
+            HorizontalAlignment="Stretch" IsDoubleTapEnabled="False" IsRightTapEnabled="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="15" Background="White">
-                            <StackPanel>
+                        <StackPanel>
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="16"/>
+                                </Style>
+                            </StackPanel.Resources>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Img}" />
+                                <TextBlock Name="projectName" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}" Margin="20,0,0,0"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <StackPanel.Resources>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="FontSize" Value="16"/>
+                                        <Setter Property="Margin" Value="10,0,0,0"/>
                                     </Style>
                                 </StackPanel.Resources>
-                                <TextBlock Name="hidden" Text="{Binding Id, Converter={StaticResource IntegerToStringConverter}}" Visibility="Collapsed"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Img}" />
-                                    <TextBlock Name="projectName" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}" Margin="20,0,0,0"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <StackPanel.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0,0,0"/>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <Image Source="/Assets/bug.png"/>
-                                    <TextBlock Text="{Binding Bugs}"/>
-                                    <TextBlock Text="bugs"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <StackPanel.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0,0,0"/>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <Image Source="/Assets/chat.png"/>
-                                    <TextBlock Text="{Binding Messages}"/>
-                                    <TextBlock Text="messages"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <StackPanel.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0,0,0"/>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <Image Source="/Assets/task_ongoing.png"/>
-                                    <TextBlock Text="{Binding OngoingTasks}"/>
-                                    <TextBlock Text="/" Margin="0"/>
-                                    <TextBlock Text="{Binding TotalTasks}" Margin="0"/>
-                                    <TextBlock Text="finished tasks"/>
-                                </StackPanel>
+                                <Image Source="/Assets/bug.png"/>
+                                <TextBlock Text="{Binding Bugs}"/>
+                                <TextBlock Text="bugs"/>
                             </StackPanel>
-                        </Border>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Margin" Value="10,0,0,0"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Image Source="/Assets/chat.png"/>
+                                <TextBlock Text="{Binding Messages}"/>
+                                <TextBlock Text="messages"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <StackPanel.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Margin" Value="10,0,0,0"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Image Source="/Assets/task_ongoing.png"/>
+                                <TextBlock Text="{Binding OngoingTasks}"/>
+                                <TextBlock Text="/" Margin="0"/>
+                                <TextBlock Text="{Binding TotalTasks}" Margin="0"/>
+                                <TextBlock Text="finished tasks"/>
+                            </StackPanel>
+                        </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-                        <Setter Property="Padding" Value="15"></Setter>
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Padding" Value="15" />
+                        <Setter Property="Margin" Value="15" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>

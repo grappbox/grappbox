@@ -3,17 +3,25 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.ViewManagement;
+using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 
 namespace GrappBox.ApiCom
 {
     //This class is a singleton
     class ApiCommunication
     {
-        private string version = "V0.2";
+        private const string baseAdress = "http://api.grappbox.com/app_dev.php/";
+        private const string version = "V0.2/";
+        private const string baseUrl = baseAdress + version;
+        public Uri RequestUri(string requestUrl)
+        {
+            Uri reqUri = new Uri(baseUrl + requestUrl);
+            return reqUri;
+        }
         private static ApiCommunication instance = null;
         public static ApiCommunication GetInstance()
         {
@@ -23,18 +31,9 @@ namespace GrappBox.ApiCom
         private HttpClient webclient;
         private ApiCommunication()
         {
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.AllowAutoRedirect = false;
-            webclient = new HttpClient(handler);
-            webclient.BaseAddress = new Uri("http://api.grappbox.com/app_dev.php/" + version + "/");
+            webclient = new HttpClient();
             webclient.DefaultRequestHeaders.Accept.Clear();
-            webclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            webclient.Timeout = new TimeSpan(0, 0, 20);
-        }
-        public async Task<string> Request(string requestUrl)
-        {
-            HttpResponseMessage result = await webclient.GetAsync(requestUrl);
-            return result.Content.ToString();
+            webclient.DefaultRequestHeaders.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/json"));
         }
         public T DeserializeJson<T>(string json)
         {
@@ -56,8 +55,15 @@ namespace GrappBox.ApiCom
                 data.Add(it.Key, JToken.FromObject(it.Value));
             }
             post.Add("data", JToken.FromObject(data));
-            StringContent sc = new StringContent(post.ToString(), null, "application/json");
-            HttpResponseMessage res = await webclient.PostAsync(url, sc);
+            HttpStringContent sc = new HttpStringContent(post.ToString());
+            Windows.Web.Http.HttpResponseMessage res = null;
+            try {
+                 res = await webclient.PostAsync(RequestUri(url), sc);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
             return res;
         }
         public async Task<HttpResponseMessage> Put(Dictionary<string, object> properties, string url)
@@ -69,9 +75,9 @@ namespace GrappBox.ApiCom
                 data.Add(it.Key, JToken.FromObject(it.Value));
             }
             put.Add("data", JToken.FromObject(data));
-            StringContent sc = new StringContent(put.ToString(), null, "application/json");
+            HttpStringContent sc = new HttpStringContent(put.ToString(), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
             Debug.WriteLine("JsonContent {0}", await sc.ReadAsStringAsync());
-            HttpResponseMessage res = await webclient.PutAsync(url, sc);
+            HttpResponseMessage res = await webclient.PutAsync(RequestUri(url), sc);
             return res;
         }
         public async Task<HttpResponseMessage> Get(object[] values, string url)
@@ -83,7 +89,7 @@ namespace GrappBox.ApiCom
                 if (i + 1 < values.Length)
                     get.Append("/");
             }
-            HttpResponseMessage res = await webclient.GetAsync(url + get);
+            HttpResponseMessage res = await webclient.GetAsync(RequestUri(url + get));
             return res;
         }
         public async Task<HttpResponseMessage> Delete(object[] values, string url)
@@ -95,7 +101,7 @@ namespace GrappBox.ApiCom
                 if (i + 1 < values.Length)
                     del.Append("/");
             }
-            HttpResponseMessage res = await webclient.DeleteAsync(url + del);
+            HttpResponseMessage res = await webclient.DeleteAsync(RequestUri(url + del));
             return res;
         }
         public string GetErrorMessage(string jsonTxt)

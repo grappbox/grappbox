@@ -152,7 +152,8 @@ namespace GrappBox.View
             TeamDashBoard td = new TeamDashBoard();
             td.HorizontalAlignment = HorizontalAlignment.Stretch;
             pivotItem.Content = td;
-            this.dvm.NotifyPropertyChanged("OccupationList");
+            if (dvm.OccupationList != null)
+                this.dvm.NotifyPropertyChanged("OccupationList");
             return pivotItem;
         }
 
@@ -162,7 +163,8 @@ namespace GrappBox.View
             initPivotItem("Meetings", out pivotItem);
             MeetingDashBoardPanel mdp = new MeetingDashBoardPanel();
             pivotItem.Content = mdp;
-            this.dvm.NotifyPropertyChanged("MeetingList");
+            if (dvm.OccupationList != null)
+                this.dvm.NotifyPropertyChanged("MeetingList");
             return pivotItem;
         }
 

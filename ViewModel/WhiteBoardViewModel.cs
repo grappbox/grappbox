@@ -12,7 +12,7 @@ using GrappBox.CustomControler;
 using System.Collections.ObjectModel;
 using GrappBox.Model.Whiteboard;
 using GrappBox.ApiCom;
-using System.Net.Http;
+using Windows.Web.Http;
 using Windows.UI.Popups;
 
 namespace GrappBox.ViewModel
