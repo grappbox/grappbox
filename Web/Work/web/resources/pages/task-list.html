@@ -51,8 +51,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
           </div>
           <div data-ng-if="data.message == '_empty'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+            <div class="row">
+              <div class="centered">
+                <a href="{[{'tasks/' + projectID + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+              </div>
             </div>
           </div>
           <div data-ng-if="data.message == '_invalid'">
