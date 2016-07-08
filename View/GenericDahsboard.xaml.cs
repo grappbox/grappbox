@@ -46,6 +46,7 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
             await vmdl.getProjectList();
+            await vmdl.getProjectsLogo();
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
         }

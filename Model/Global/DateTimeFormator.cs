@@ -20,8 +20,17 @@ namespace GrappBox.Model.Global
         public static DateTime DateModelToDateTime(DateModel model)
         {
             DateTime dt = DateTime.Parse(model.date, CultureInfo.CurrentCulture);
-            Debug.WriteLine(dt.ToString(CultureInfo.CurrentCulture));
             return dt;
+        }
+        public static bool DateModelToDateTime(DateModel model, out DateTime dt)
+        {
+            if (model == null)
+            {
+                dt = new DateTime();
+                return false;
+            }
+            dt = DateTime.Parse(model.date, CultureInfo.CurrentCulture);
+            return true;
         }
         public static DateModel DateTimeToDateModel(DateTime dt)
         {

@@ -1,12 +1,18 @@
-﻿using GrappBox.ViewModel;
+﻿using GrappBox.ApiCom;
+using GrappBox.Model.Global;
+using GrappBox.Ressources;
+using GrappBox.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
+using Windows.UI.Popups;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Web.Http;
 
 namespace GrappBox.Model
 {
@@ -23,7 +29,7 @@ namespace GrappBox.Model
         [JsonProperty("project_company")]
         public string Company { get; set; }
         [JsonProperty("project_logo")]
-        public string Logo { get; set; }
+        public DateModel LogoDate { get; set; }
         [JsonProperty("contact_mail")]
         public string Email { get; set; }
         [JsonProperty("facebook")]
@@ -42,36 +48,61 @@ namespace GrappBox.Model
         public int Bugs { get; set; }
         [JsonProperty("number_messages")]
         public string Messages { get; set; }
-
-        public BitmapImage Img
+        private BitmapImage _logo;
+        public BitmapImage Logo
         {
-            get
+            get { return _logo; }
+            set
             {
-                string base64 = Logo;
-                if (base64 == null || base64 == "")
-                {
-                    BitmapImage bmi = new BitmapImage();
-                    Uri uri = new Uri("ms-appx:///Assets/grappbox-logo.png");
-                    bmi.UriSource = uri;
-                    return bmi;
-                }
-                else
-                {
-                    var imageBytes = Convert.FromBase64String(base64);
-                    using (InMemoryRandomAccessStream ms = new InMemoryRandomAccessStream())
-                    {
-                        using (DataWriter writer = new DataWriter(ms.GetOutputStreamAt(0)))
-                        {
-                            writer.WriteBytes((byte[])imageBytes);
-                            writer.StoreAsync().GetResults();
-                        }
-
-                        var image = new BitmapImage();
-                        image.SetSource(ms);
-                        return image;
-                    }
-                }
+                _logo = value;
+                NotifyPropertyChanged("Logo");
             }
+        }
+        #region FormatedStrings
+        private string logoDateFmt;
+        private string logoImgFmt;
+        #endregion
+        public async System.Threading.Tasks.Task LogoUpdate()
+        {
+            logoDateFmt = "LogoDate_" + Id.ToString();
+            logoImgFmt = "LogoImg_" + Id.ToString();
+            if (LogoDate == null)
+                return;
+            DateTime update;
+            if (DateTimeFormator.DateModelToDateTime(LogoDate, out update) == false)
+                return;
+            string tmp = SettingsManager.getOption<string>(logoDateFmt);
+            DateTime stored = new DateTime();
+            if (tmp != null && tmp != "")
+                stored = DateTime.Parse(tmp);
+            if (DateTime.Compare(stored, update) < 0)
+            {
+                SettingsManager.setOption(logoDateFmt, update.ToString());
+                await getProjectLogo();
+            }
+        }
+        public async System.Threading.Tasks.Task getProjectLogo()
+        {
+            LogoModel logoMod = null;
+            ApiCommunication api = ApiCommunication.GetInstance();
+            object[] token = { User.GetUser().Token, Id };
+            HttpResponseMessage res = await api.Get(token, "projects/getprojectlogo");
+            if (res.IsSuccessStatusCode)
+            {
+                logoMod = api.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
+                Logo = BytesToImage.String64ToImage(logoMod.Logo);
+                await BytesToImage.StoreImage(logoMod.Logo, logoImgFmt);
+            }
+            else
+            {
+                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            }
+        }
+
+        public async System.Threading.Tasks.Task SetLogo()
+        {
+            string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
+            Logo = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
         }
     }
 }

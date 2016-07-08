@@ -37,7 +37,7 @@
                                 </Style>
                             </StackPanel.Resources>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Img}" />
+                                <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Logo}" />
                                 <TextBlock Name="projectName" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}" Margin="20,0,0,0"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">

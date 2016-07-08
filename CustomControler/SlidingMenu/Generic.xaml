@@ -17,8 +17,8 @@
                                 <RowDefinition Height="65"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource GrayGrappBoxBrush}" Height="65">
-                                <Ellipse Height="48" Stroke="Transparent" VerticalAlignment="Center" Width="48">
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource GrayGrappBoxBrush}">
+                                <Ellipse Height="48" Width="48" Stroke="Transparent" VerticalAlignment="Center" >
                                     <Ellipse.Fill>
                                         <ImageBrush x:Name="Avatar" Stretch="Uniform" ImageSource="/Assets/dashboard.png"/>
                                     </Ellipse.Fill>

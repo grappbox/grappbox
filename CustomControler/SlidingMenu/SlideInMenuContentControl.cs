@@ -134,7 +134,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             contentFrame.Width = Window.Current.Bounds.Width;
 
             projectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen") ?? "";
-            avatar.ImageSource = User.GetUser().Img;
+            //avatar.ImageSource = User.GetUser().Img;
 
             buttons = new List<StackPanel>();
             buttons.Add(GetTemplateChild(ElementBugtrackerPanel) as StackPanel);
