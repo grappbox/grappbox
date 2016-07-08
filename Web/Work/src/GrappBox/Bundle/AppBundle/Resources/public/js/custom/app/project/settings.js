@@ -81,7 +81,20 @@ isProjectSettingsPageAccessible["$inject"] = ["$q", "$http", "$rootScope", "$rou
 * APP project page
 *
 */
-app.controller("projectSettingsController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", function($rootScope, $scope, $routeParams, $http, Notification, $route, $location) {
+app.controller("projectSettingsController", ["$rootScope", "$scope", "$routeParams", "$http", "$uibModal", "Notification", "$route", "$location", function($rootScope, $scope, $routeParams, $http, $uibModal, Notification, $route, $location) {
+
+
+  // ------------------------------------------------------
+  //                PAGE INITILIZATION
+  // ------------------------------------------------------
+
+  var content= "";
+
+  // Scope variables initialization
+  $scope.data = { onLoad: true, customersLoad: true, usersLoad: true, project: { }, customers: { }, isValid: false, canEdit: true, editMode: false };
+  $scope.projectID = $routeParams.project_id;
+  $scope.action = { deleteProject: "" };
+
 
   // ------------------------------------------------------
   //                DATA FORMATING
@@ -137,6 +150,10 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   $scope.createProject = function(project){
     //var logo = ;
+    if (project.password != project.confirm_password) {
+      Notification.warning({ message: "'Cloud Password' and 'Confirmation' should be the same !", delay: 5000 });
+      return 0;
+    }
 
     var encrypted_password = project.password;
     var elem = {
@@ -159,9 +176,6 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         $scope.data.project_error = false;
         $scope.data.project_new = false;
         $scope.projectID = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data.id : null);
-        // TODO create roles
-        // TODO assign users to project and to their roles
-        // TODO generate customer access
         Notification.success({ message: "Project created", delay: 5000 });
         $location.path("./");
       },
@@ -169,18 +183,6 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         Notification.warning({ message: "Unable to create project. Please try again.", delay: 5000 });
       }, $scope);
 
-  };
-
-  $scope.deleteProject = function(){
-    Notification.info({ message: "Deleting project...", delay: 5000 });
-    $http.delete($rootScope.api.url + "/projects/delproject/" + $rootScope.user.token + "/" + $scope.projectID)
-      .then(function successCallback(response) {
-        Notification.success({ message: "Project deleted", delay: 5000 });
-        $location.path("./");
-      },
-      function errorCallback(response) {
-        Notification.warning({ message: "Unable to delete project. Please try again.", delay: 5000 });
-      }, $scope);
   };
 
   $scope.retrieveProject = function(){
@@ -195,11 +197,104 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
       }, $scope);
   };
 
-  // ------------------------------------------------------
-  //                PASSWORD
-  // ------------------------------------------------------
+  $scope.updatePassword = function(project){
+    if (project.password != project.confirm_password) {
+      Notification.warning({ message: "'New password' and 'Confirmation' should be the same !", delay: 5000 });
+      return 0;
+    }
 
-  // TODO
+    var encrypted_password = project.password;
+    var elem = {
+      "token": $rootScope.user.token,
+      "projectId": $scope.projectID,
+      "password": encrypted_password,
+      "oldPassword": project.old_password
+    };
+    var data = {"data": elem};
+
+    Notification.info({ message: "Updating password...", delay: 5000 });
+    $http.put($rootScope.api.url + "/projects/updateinformations", data)
+      .then(function successCallback(response) {
+        Notification.success({ message: "Password updated", delay: 5000 });
+        $location.path("/settings/" + $scope.projectID);
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: "Unable to update password. Please try again.", delay: 5000 });
+      }, $scope);
+  }
+
+
+  // "Delete project" button handler
+  $scope.action.onDeleteProject = function() {
+    var modal_deleteProject = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "modal_deleteProject.html", controller: "modal_deleteProject" });
+    modal_deleteProject.result.then(
+      function onModalConfirm(data) {
+        Notification.success({ title: "Project", message: "Project successfully deleted.", delay: 2000 });
+        $http.delete($rootScope.api.url + "/projects/delproject/" + $rootScope.user.token + "/" + $scope.projectID).then(
+          function onDeleteProjectSuccess(response) {
+            if (response.data.info && response.data.info.return_code !== "1.6.1")
+              Notification.error({ title: "Project", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            else
+              Notification.success({ title: "Project", message: "Project successfully deleted.", delay: 2000 });
+            $location.path("/settings/" + $scope.projectID);
+          },
+          function onDeleteProjectFail(response) {
+            if (response.data.info)
+              switch(response.data.info.return_code) {
+                case "6.4.3":
+                $rootScope.onUserTokenError();
+                break;
+
+                case "6.4.9":
+                Notification.error({ title: "Project", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                break;
+
+                default:
+                Notification.error({ title: "Project", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                break;
+              }
+            }
+          ),
+        function onModalDismiss() { }
+      }
+    );
+  };
+
+var getProjectInfo = function() {
+  //Get project informations if not new
+  if ($scope.projectID != 0) {
+    $scope.data.project_new = false;
+
+    // $http.get($rootScope.api.url + "/roles/getuserroleforpart/" + $rootScope.user.token + "/" + $scope.user.id + "/" + $scope.projectID + "/project_settings")
+    //   .then(function successCallback(response) {
+    //     $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value > 1 ? true : false);
+    //   },
+    //   function errorCallback(response) {
+    //     $scope.data.canEdit = false;
+    //   });
+
+    $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.projectID)
+      .then(function successCallback(response) {
+        $scope.data.project_error = false;
+        $scope.data.project = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+        $scope.data.onLoad = false;
+      },
+      function errorCallback(response) {
+        $scope.data.project_error = true;
+        $scope.data.project = null;
+        $scope.data.onLoad = false;
+      });
+
+    getRoles(true);
+    getCustomers();
+  }
+  else {
+    $scope.data.project_new = true;
+    $scope.data.onLoad = false;
+    $scope.data.project_error = false;
+  }
+};
+
 
   // ------------------------------------------------------
   //                CUSTOMER ACCESS
@@ -325,7 +420,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   $scope.changeProjectOwner = function() {
-
+    // TODO ???
   };
 
   $scope.assignRoleToUser = function(user) {
@@ -485,7 +580,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     $scope.lastTabContent = "#general-content";
     $scope.lastTabTitle = "#general-title";
-    
+
     $scope.displayTab = function(tabContent, tabTitle) {
 
       $($scope.lastTabContent)[0].classList.remove("active");
@@ -497,48 +592,17 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
       $scope.lastTabTitle = tabTitle;
     };
 
-  // ------------------------------------------------------
-  //                PAGE INITILIZATION
-  // ------------------------------------------------------
-
-  var content= "";
-
-  // Scope variables initialization
-  $scope.data = { onLoad: true, customersLoad: true, usersLoad: true, project: { }, customers: { }, isValid: false, canEdit: true, editMode: false };
-  $scope.projectID = $routeParams.project_id;
+    getProjectInfo();
+}]);
 
 
-  //Get project informations if not new
-  if ($scope.projectID != 0) {
-    $scope.data.project_new = false;
+/**
+* Controller definition (from view)
+* PROJECT DELETION => confirmation prompt.
+*
+*/
+app.controller("modal_deleteProject", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
-    // $http.get($rootScope.api.url + "/roles/getuserroleforpart/" + $rootScope.user.token + "/" + $scope.user.id + "/" + $scope.projectID + "/project_settings")
-    //   .then(function successCallback(response) {
-    //     $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value > 1 ? true : false);
-    //   },
-    //   function errorCallback(response) {
-    //     $scope.data.canEdit = false;
-    //   });
-
-    $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.projectID)
-      .then(function successCallback(response) {
-        $scope.data.project_error = false;
-        $scope.data.project = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
-        $scope.data.onLoad = false;
-      },
-      function errorCallback(response) {
-        $scope.data.project_error = true;
-        $scope.data.project = null;
-        $scope.data.onLoad = false;
-      });
-
-    getRoles(true);
-    getCustomers();
-  }
-  else {
-    $scope.data.project_new = true;
-    $scope.data.onLoad = false;
-    $scope.data.project_error = false;
-  }
-
+  $scope.modal_confirmProjectDeletion = function() { $uibModalInstance.close(); };
+  $scope.modal_cancelProjectDeletion = function() { $uibModalInstance.dismiss(); };
 }]);

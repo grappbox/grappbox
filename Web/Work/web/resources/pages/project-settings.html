@@ -54,10 +54,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="col-md-11">
                   <input type="file" class="form-control" data-ng-model="data.project.logo" id="logo" placeholder="Browse">
                 </div>
-              </div>                
+              </div>
               <div class="form-group">
                 <label for="company" class="col-md-1 control-label">Company</label>
-                <div class="col-md-11"> 
+                <div class="col-md-11">
                   <input type="text" class="form-control" data-ng-model="data.project.company" id="company" placeholder="Company">
                 </div>
               </div>
@@ -65,6 +65,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <label for="password" class="col-md-1 control-label">Cloud password</label>
                 <div class="col-md-11">
                   <input type="password" class="form-control" data-ng-model="data.project.password" id="password" placeholder="Password">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="passwordConfirm" class="col-md-1 control-label">Confirmation</label>
+                <div class="col-md-11">
+                  <input type="password" class="form-control" data-ng-model="data.project.confirm_password" id="passwordConfirm" placeholder="Password">
                 </div>
               </div>
               <div class="form-group">
@@ -142,6 +148,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div data-ng-if="(!data.onLoad && !data.project_error)">
                 <form class="form-horizontal" novalidate>
                   <fieldset>
+                    <div class="form-group" data-ng-if="data.project.deleted_at">
+                      <div class="centered">
+                        <a class="btn btn-raised btn-danger" title="Retrieve This project" data-ng-click="retrieveProject()">Retrieve Project</a>
+                      </div>
+                    </div>
                     <div class="form-group">
                       <label for="name" class="col-md-1 control-label">Name</label>
                       <div class="col-md-11">
@@ -159,17 +170,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="col-md-11">
                         <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="file" class="form-control" data-ng-model="data.project.logo" id="logo" placeholder="Browse">
                       </div>
-                    </div>                
+                    </div>
                     <div class="form-group">
                       <label for="company" class="col-md-1 control-label">Company</label>
                       <div class="col-md-11">
                         <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.company" id="company" placeholder="Company">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="password" class="col-md-1 control-label">Cloud password</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="password" class="form-control" data-ng-model="data.project.password" id="password" placeholder="Password">
                       </div>
                     </div>
                     <div class="form-group">
@@ -197,13 +202,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       </div>
                     </div>
                     <div class="form-group">
-                      <div class="col-md-2" data-ng-if="data.canEdit">
-                        <a class="btn btn-default" data-ng-click="deleteProject()">Delete this projet</a>
-                      </div>
-                      <div class="col-md-offset-10" data-ng-if="!data.editMode && data.canEdit">
+                      <div class="col-md-offset-10" data-ng-if="!data.editMode && data.canEdit && !data.project.deleted_at">
                         <a class="btn" data-ng-click="project_switchEditMode()">Edit</a>
                       </div>
-                      <div class="col-md-offset-9" data-ng-if="data.editMode && data.canEdit">
+                      <div class="col-md-offset-9" data-ng-if="data.editMode && data.canEdit && !data.project.deleted_at">
                         <a class="btn" data-ng-click="project_switchEditMode()">Cancel</a>
                         <a class="btn btn-default" data-ng-click="updateProject(data.project)">Update</a>
                       </div>
@@ -225,7 +227,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="!data.usersLoad && !data.users_error && data.canEdit">
+              <div data-ng-if="!data.usersLoad && !data.users_error && data.canEdit && !data.project.deleted_at">
                 <div class="col-md-12">
                   <h4>Add a user</h4>
                 </div>
@@ -238,7 +240,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <input type="email" class="form-control" data-ng-model="new_user" id="newUser" placeholder="New user's email">
                         </div>
                         <div class="col-md-1">
-                          <button type="submit" class="btn btn-default" data-ng-click="addUser(new_user)">Add</button>  
+                          <button type="submit" class="btn btn-default" data-ng-click="addUser(new_user)">Add</button>
                         </div>
                       </div>
                     </fieldset>
@@ -297,7 +299,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="!data.rolesLoad && !data.roles_error && data.canEdit">
+              <div data-ng-if="!data.rolesLoad && !data.roles_error && data.canEdit && !data.project.deleted_at">
                 <div class="col-md-12">
                   <h4>Create a new role</h4>
                 </div>
@@ -581,7 +583,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="!data.customersLoad && !data.customers_error && data.canEdit">
+              <div data-ng-if="!data.customersLoad && !data.customers_error && data.canEdit && !data.project.deleted_at">
                 <div class="col-md-12">
                   <h4>Add a customer access</h4>
                 </div>
@@ -594,12 +596,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <input type="text" class="form-control" data-ng-model="new_customer.name" id="newCustomer" placeholder="Customer access name">
                         </div>
                         <div class="col-md-1">
-                          <button type="submit" class="btn btn-default" data-ng-click="createCustomersAccess(new_customer)">Add</button>  
+                          <button type="submit" class="btn btn-default" data-ng-click="createCustomersAccess(new_customer)">Add</button>
                         </div>
                       </div>
                     </fieldset>
                   </form>
-                </div>                  
+                </div>
                 <div class="col-md-12">
                   <h4>Registered customer accesses</h4>
                 </div>
@@ -635,7 +637,61 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
             <!-- project edition: danger -->
             <div role="tabpanel" class="tab-pane" id="danger-content">
+              <div data-ng-if="data.onLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="(!data.onLoad && !data.project_error && !data.project.deleted_at)">
+                <div class="col-md-12">
+                  <h4>Cloud Password</h4>
+                </div>
+                <div class="col-md-12">
+                  <form class="form-horizontal" novalidate>
+                    <fieldset>
+                      <div class="form-group">
+                        <label for="oldPassword" class="col-md-1 control-label">Actual password</label>
+                        <div class="col-md-11">
+                          <input type="password" class="form-control" data-ng-model="data.project.old_password" id="oldPassword" placeholder="Actual Password">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="password" class="col-md-1 control-label">New password</label>
+                        <div class="col-md-11">
+                          <input type="password" class="form-control" data-ng-model="data.project.password" id="password" placeholder="New Password">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="passwordConfirm" class="col-md-1 control-label">Confirmation</label>
+                        <div class="col-md-11">
+                          <input type="password" class="form-control" data-ng-model="data.project.confirm_password" id="passwordConfirm" placeholder="New Password">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="centered">
+                          <p>Click on the <b>"Update"</b> button to validate the password changement.<br><b>Be sure to remember your new password !</b></p>
+                          <a class="btn btn-raised btn-danger" title="Update Cloud password" data-ng-click="updatePassword(data.project)">Update</a>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </form>
+                </div>
+                <div class="col-md-12">
+                  <h4>Project deletion</h4>
+                </div>
+                <div class="col-md-12">
+                  <div class="centered">
+                    <p>Click on the <b>"Delete"</b> button to delete your project.<br><b>Every information related to this project will be deleted after the retrieving period !</b></p>
+                    <a class="btn btn-raised btn-danger" title="Delete project" data-ng-click="action.onDeleteProject()">Delete projet</a>
+                  </div>
+                </div>
 
+              </div>
+              <div data-ng-if="!data.onLoad && data.project_error">
+                <div class="centered">
+                  <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                </div>
+              </div>
             </div>
 
           </div>
@@ -644,3 +700,22 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </div>
 </section>
+
+<!-- project-settings: project deletion modal -->
+<div>
+  <script type="text/ng-template" id="modal_deleteProject.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelProjectDeletion()">×</button>
+      <h4 class="modal-title">Project deletion</h4>
+    </div>
+    <div class="modal-body">
+    <p>Are you sure you want to delete this project?</p>
+    <p>After deleting the project, you have <b>7 days</b> before the effective deletion of the project data <b>to retrieve the project</b>.</p>
+    <p><b>After 7 days</b>, the project is definitively deleted and <b>all data are lost</b>.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmProjectDeletion()">Yes</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelProjectDeletion()">No</button>
+    </div>
+  </script>
+</div>
