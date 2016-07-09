@@ -1,0 +1,1105 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:CustomControl="using:GrappBox.CustomControler"
+    x:Class="GrappBox.View.Calendar"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="GrappBox.ViewModel.CalendarViewModel">
+    <Page.BottomAppBar>
+    <CommandBar>
+        <AppBarButton Icon="Add" Command="{Binding AddEventCommand}">Add Event</AppBarButton>
+    </CommandBar>
+    </Page.BottomAppBar>
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" MenuState="Left" IsDoubleTapEnabled="False">
+        <slideMenu:SlideInMenuContentControl.LeftMenuContent>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+            </Grid>
+        </slideMenu:SlideInMenuContentControl.LeftMenuContent>
+        <slideMenu:SlideInMenuContentControl.Content>
+            <Grid Background="{StaticResource GrayGrappBoxBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*" />
+                    <RowDefinition Height="50*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="{Binding CurrentYear}" FontWeight="Bold" FontSize="20"/>
+                <Button Grid.Row="0" Content="{Binding CurrentViewType}" Command="{Binding ViewTappedCommand}" HorizontalAlignment="Right"/>
+                <Pivot Grid.Row="1" x:Name="WeekView" Visibility="{Binding WeekView}" SelectedIndex="{Binding WeekIndex, Mode=TwoWay}">
+                    <PivotItem  x:Name="Week_1" Header="Week 1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="#FFF70000" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem x:Name="Week_2" Header="Week 2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="#FFF70000" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem x:Name="Week_3" Header="Week 3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="#FFF70000" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem x:Name="Week_4" Header="Week 4">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="#FFF70000" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                </Pivot>
+                <Pivot Grid.Row="1" x:Name="MonthView" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}"  Visibility="{Binding MonthView}">
+                    <PivotItem Header="January">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="February">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="March">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="April">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="May">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="June">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="Jully">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="August">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="September">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="October">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="November">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="December">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*"/>
+                                <RowDefinition Height="5*"/>
+                            </Grid.RowDefinitions>
+                            <ListView Grid.Row="0" SelectionMode="None" ItemsSource="{Binding Path=Tasks}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Red" Text="Tasks" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Red" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding StartedAt, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding DueDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                            <ListView Grid.Row="1" SelectionMode="Single" ItemsSource="{Binding Path=Events}">
+                                <ListView.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Foreground="Cyan" Text="Events" FontSize="18" FontWeight="Bold" />
+                                    </DataTemplate>
+                                </ListView.HeaderTemplate>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="2*" />
+                                                <RowDefinition Height="1*" />
+                                                <RowDefinition Height="1*" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                                <Rectangle Fill="Cyan" Height="10" Width="10"/>
+                                                <TextBlock Text="{Binding Title}" FontWeight="Bold" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                <TextBlock Text="ToDo:"/>
+                                                <TextBlock Text="{Binding Description}" MaxLines="3" Margin="5,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="2" Text="{Binding BeginDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                            <TextBlock Grid.Row="3" Text="{Binding EndDate, Converter={StaticResource DateModelToStringConverter}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </PivotItem>
+                </Pivot>
+                <Popup x:Name="TextPopup" IsOpen="{Binding EventPromptOpened , Mode=TwoWay}" HorizontalAlignment="left" VerticalAlignment="Top">
+                    <Grid x:Name="TextPopupGrid" Background="#FFB3B3B3">
+                        <CustomControl:EventPlanPrompt x:Name="PromptPan" IsEventConfirmed="{Binding EventPromptConfirmed, Mode=TwoWay}" IsOpened="{Binding EventPromptOpened, Mode=TwoWay}" Title="{Binding EventPromptTitle, Mode=TwoWay}" Description="{Binding EventPromptDescription , Mode=TwoWay}" BeginDate="{Binding EventPromptBeginDate, Mode=TwoWay}" EndDate="{Binding EventPromptEndDate, Mode=TwoWay}"/>
+                    </Grid>
+                </Popup>
+            </Grid>
+        </slideMenu:SlideInMenuContentControl.Content>
+    </slideMenu:SlideInMenuContentControl>
+</Page>

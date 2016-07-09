@@ -1,0 +1,18 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModel="using:GrappBox.ViewModel">
+    <viewModel:NumberInverter x:Key="NumberInverter"/>
+    <viewModel:TappedPositionConverter x:Key="TappedPositionConverter"/>
+    <viewModel:ManipStartedPositionConverter x:Key="ManipStartedPositionConverter"/>
+    <viewModel:ManipDeltaPositionConverter x:Key="ManipDeltaPositionConverter"/>
+    <viewModel:ManipCompletedPositionConverter x:Key="ManipCompletedPositionConverter"/>
+    <viewModel:BrushTappedConverter x:Key="BrushTappedConverter"/>
+    <viewModel:DoubleInputConverter x:Key="DoubleInputConverter"/>
+    <viewModel:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter"/>
+    <viewModel:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
+    <viewModel:SenderParameterConverter x:Key="SenderParameterConverter"/>
+    <viewModel:DateModelToStringConverter x:Key="DateModelToStringConverter"/>
+    <viewModel:IntegerToStringConverter x:Key="IntegerToStringConverter"/>
+    <viewModel:OccupationColorConverter x:Key="OccupationColorConverter"/>
+</ResourceDictionary>
