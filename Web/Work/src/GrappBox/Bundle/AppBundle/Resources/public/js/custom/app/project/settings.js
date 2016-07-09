@@ -236,7 +236,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
               Notification.error({ title: "Project", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
             else
               Notification.success({ title: "Project", message: "Project successfully deleted.", delay: 2000 });
-            $location.path("/settings/" + $scope.projectID);
+            $route.reload();
           },
           function onDeleteProjectFail(response) {
             if (response.data.info)
@@ -260,40 +260,40 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     );
   };
 
-var getProjectInfo = function() {
-  //Get project informations if not new
-  if ($scope.projectID != 0) {
-    $scope.data.project_new = false;
+  var getProjectInfo = function() {
+    //Get project informations if not new
+    if ($scope.projectID != 0) {
+      $scope.data.project_new = false;
 
-    // $http.get($rootScope.api.url + "/roles/getuserroleforpart/" + $rootScope.user.token + "/" + $scope.user.id + "/" + $scope.projectID + "/project_settings")
-    //   .then(function successCallback(response) {
-    //     $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value > 1 ? true : false);
-    //   },
-    //   function errorCallback(response) {
-    //     $scope.data.canEdit = false;
-    //   });
+      // $http.get($rootScope.api.url + "/roles/getuserroleforpart/" + $rootScope.user.token + "/" + $scope.user.id + "/" + $scope.projectID + "/project_settings")
+      //   .then(function successCallback(response) {
+      //     $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value > 1 ? true : false);
+      //   },
+      //   function errorCallback(response) {
+      //     $scope.data.canEdit = false;
+      //   });
 
-    $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.projectID)
-      .then(function successCallback(response) {
-        $scope.data.project_error = false;
-        $scope.data.project = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
-        $scope.data.onLoad = false;
-      },
-      function errorCallback(response) {
-        $scope.data.project_error = true;
-        $scope.data.project = null;
-        $scope.data.onLoad = false;
-      });
+      $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.projectID)
+        .then(function successCallback(response) {
+          $scope.data.project_error = false;
+          $scope.data.project = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+          $scope.data.onLoad = false;
+        },
+        function errorCallback(response) {
+          $scope.data.project_error = true;
+          $scope.data.project = null;
+          $scope.data.onLoad = false;
+        });
 
-    getRoles(true);
-    getCustomers();
-  }
-  else {
-    $scope.data.project_new = true;
-    $scope.data.onLoad = false;
-    $scope.data.project_error = false;
-  }
-};
+      getRoles(true);
+      getCustomers();
+    }
+    else {
+      $scope.data.project_new = true;
+      $scope.data.onLoad = false;
+      $scope.data.project_error = false;
+    }
+  };
 
 
   // ------------------------------------------------------
@@ -426,13 +426,13 @@ var getProjectInfo = function() {
   $scope.assignRoleToUser = function(user) {
     Notification.info({ message: "Changing user role...", delay: 5000 });
     if (user.actualRole) {
-      $http.delete($rootScope.api.url + "/roles/delpersonrole/" + $rootScope.user.token + "/" + $scope.projectID + "/" + user.id + "/" + user.actualRole)
+      var elem = {"token": $rootScope.user.token,
+                  "userId": user.id,
+                  "roleId": user.role};
+      var data = {"data": elem};
+      $http.post($rootScope.api.url + "/roles/assignpersontorole", data)
         .then(function successCallback(response) {
-          var elem = {"token": $rootScope.user.token,
-                      "userId": user.id,
-                      "roleId": user.role};
-          var data = {"data": elem};
-          $http.post($rootScope.api.url + "/roles/assignpersontorole", data)
+          $http.delete($rootScope.api.url + "/roles/delpersonrole/" + $rootScope.user.token + "/" + $scope.projectID + "/" + user.id + "/" + user.actualRole)
             .then(function successCallback(response) {
               getUsersRoles();
               Notification.success({ message: "User role changed", delay: 5000 });

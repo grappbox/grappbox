@@ -110,7 +110,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
 </section>
 
-
 <!-- grappbox.data: project edition -->
 <section id="project-edition" data-ng-if="!data.project_new">
   <div class="row">
@@ -123,16 +122,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <li id="general-title" role="presentation" class="col-md-2 col-xs-12 active">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#general-content', '#general-title')">General</a>
             </li>
-            <li id="users-title" role="presentation" class="col-md-2 col-xs-12">
+            <li id="users-title" role="presentation" class="col-md-2 col-xs-12" data-ng-if="!data.project.deleted_at">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#users-content', '#users-title')">Users</a>
             </li>
-            <li id="roles-title" role="presentation" class="col-md-2 col-xs-12">
+            <li id="roles-title" role="presentation" class="col-md-2 col-xs-12" data-ng-if="!data.project.deleted_at">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#roles-content', '#roles-title')">Roles</a>
             </li>
-            <li id="customers-title" role="presentation" class="col-md-3 col-xs-12">
+            <li id="customers-title" role="presentation" class="col-md-3 col-xs-12" data-ng-if="!data.project.deleted_at">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#customers-content', '#customers-title')">Customers acccess</a>
             </li>
-            <li id="danger-title" role="presentation" class="col-md-3 col-xs-12">
+            <li id="danger-title" role="presentation" class="col-md-3 col-xs-12" data-ng-if="!data.project.deleted_at">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#danger-content', '#danger-title')">Danger zone</a>
             </li>
           </ul>
