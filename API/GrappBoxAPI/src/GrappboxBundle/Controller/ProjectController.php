@@ -412,7 +412,10 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (array_key_exists('description', $content))
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
+		{
 			$project->setLogo($content->logo);
+			$project->setLogoDate(new \Datetime("now"));
+		}
 		if (array_key_exists('phone', $content))
 			$project->setPhone($content->phone);
 		if (array_key_exists('company', $content))
