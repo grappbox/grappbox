@@ -32,7 +32,7 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Connection failed ! Reason: ' + error.status + ' ' + error.statusText);
                 $rootScope.hideLoading();
-                Toast.show("Connection failed");
+                Toast.show("Bad login or password");
                 console.error(error);
             })
             .finally(function () {

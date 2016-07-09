@@ -11,7 +11,7 @@
         </ion-refresher>
 
         <!-- Project information -->
-        <div class="item item-divider"></div>
+        <div class="item item-divider">Project information</div>
         <p>Type your new project information</p>
         <form name="project_form">
             <ion-input class="item item-input">
@@ -93,14 +93,14 @@
             </ion-input>
             <span ng-show="project.newPassword != project.confirmPassword">Passwords do not match.</span>
             <!--<span ng-show="profile_form.profile_confirmPassword.$dirty && profile_form.profile_confirmPassword.$error.passwordVerify">Passwords do not match.</span>-->
-            <a class="button button-block button-positive" ng-disabled="(project.newPassword != project.confirmPassword) || (project.newPassword && !project.oldPassword) || (!project.newPassword && project.oldPassword))" ng-click="EditProject()">
+            <a class="button button-block button-positive" ng-disabled="(project.newPassword != project.confirmPassword) || (project.newPassword && !project.oldPassword) || (!project.newPassword && project.oldPassword)" ng-click="EditProject()">
                 <!--profile_form.$invalid-->
                 Save
             </a>
 
-            <a class="button button-block button-positive" ng-click="EditProject()">
+            <!--<a class="button button-block button-positive" ng-click="EditProject()">
                 Save
-            </a>
+            </a>-->
         </form>
     </ion-content>
 </ion-view>

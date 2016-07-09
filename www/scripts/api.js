@@ -90,11 +90,15 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Generate a customer access on project
         GenCustomerAccess: function () {
-            return $resource($rootScope.API + 'projects/getcustomeraccessbyproject/:token/:projectId', { token: "@token", projectId: "@projectId" });
+            return $resource($rootScope.API + 'projects/generatecustomeraccess', { token: "@token", projectId: "@projectId", name: "@name" });
         },
         // Delete a customer access
         DeleteCustomerAccess: function () {
             return $resource($rootScope.API + 'projects/delcustomeraccess/:token/:projectId/:customerAccessId', { token: "@token", projectId: "@projectId", customerAccessId: "@customerAccessId" });
+        },
+        // Get logo
+        Logo: function () {
+            return $resource($rootScope.API + 'projects/getprojectlogo/:token/:projectId', { token: "@token", projectId: "@projectId" });
         }
     }
 })

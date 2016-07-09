@@ -18,6 +18,33 @@ angular.module('GrappBox.controllers')
     $scope.projectId = $stateParams.projectId;
 
     /*
+    ** Get project logo
+    ** Method: GET
+    */
+    $scope.projectLogo = {};
+    $scope.GetProjectLogo = function () {
+        //$rootScope.showLoading();
+        Projects.Logo().get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get project logo successful !');
+                $scope.projectLogo = data.data;
+                console.log("LOGO = ");
+                console.log(data.data.logo);
+            })
+            .catch(function (error) {
+                console.error('Get project logo failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetProjectLogo();
+
+    /*
     ** Get project information
     ** Method: GET
     */
@@ -31,8 +58,6 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get project info successful !');
                 $scope.projectInfo = data.data;
-                console.log("LOGO = ");
-                console.log(data.data.logo);
             })
             .catch(function (error) {
                 console.error('Get project info failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -94,7 +119,8 @@ angular.module('GrappBox.controllers')
                 console.log('Add user to project successful !');
                 Toast.show("User added");
                 $scope.noUser = false;
-                $scope.GetUsersOnProject;
+                $scope.userToAdd = {};
+                $scope.GetUsersOnProject();
             })
             .catch(function (error) {
                 console.error('Add user to project failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -223,6 +249,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Generate a customer access successful !');
                 Toast.show("Access generated");
+                $scope.customerAccessToAdd = {};
                 $scope.noCustomer = false;
             })
             .then(function () {

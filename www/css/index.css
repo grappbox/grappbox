@@ -95,3 +95,19 @@ ion-popover-view {
 .gb-nav-bar {
     background-color: #c0392b !important;
 }
+
+.tabs-striped.tabs-positive .tabs {
+    background-color: #bdbdbd !important;
+}
+
+.gb-tab {
+    background-color: #bdbdbd !important;
+}
+
+.tab-title {
+    color: white;
+}
+
+.button-positive {
+    background-color: #c0392b !important;
+}

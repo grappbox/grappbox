@@ -7,7 +7,7 @@
     <ion-content>
         <div class="item item-divider"></div>
         <p>Type your project informations</p>
-        <form>
+        <form name="createProject_form">
             <ion-input class="item item-input">
                 <ion-label>Name*</ion-label>
                 <input type="text" placeholder="My Project name"
@@ -49,20 +49,20 @@
                        name="project_twitter" ng-model="project.twitter" />
             </ion-input>
             <ion-input class="item item-input">
-                <ion-label>Password</ion-label>
+                <ion-label>Password*</ion-label>
                 <input type="password" placeholder="My Project's password'"
-                       name="project_password" ng-model="project.password" />
+                       name="project_password" ng-model="project.password" required/>
             </ion-input>
             <ion-input class="item item-input">
-                <ion-label>Confirm password</ion-label>
+                <ion-label>Confirm password*</ion-label>
                 <input type="password"
                        placeholder="Confirm password'"
                        name="project_confirmPassword"
-                       ng-model="project.confirmPassword" />
+                       ng-model="project.confirmPassword" required/>
             </ion-input>
-            <span ng-show="project.newPassword != project.confirmPassword">Passwords do not match.</span>
+            <span ng-show="project.password != project.confirmPassword">Passwords do not match.</span>
             <p>Fields with a '*' are required.</p>
-            <a class="button button-block button-positive" ng-disabled="(project.password != project.confirmPassword)" ng-click="CreateProject()">
+            <a class="button button-block button-positive" ng-disabled="createProject_form.$invalid || (project.password != project.confirmPassword)" ng-click="CreateProject()">
                 Create
             </a>
         </form>

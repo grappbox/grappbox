@@ -4,11 +4,12 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CreateProjectCtrl', function ($scope, $rootScope, $state, Toast, Projects) {
+.controller('CreateProjectCtrl', function ($scope, $rootScope, $state, $ionicHistory, Toast, Projects) {
     $scope.project = {};
 
+    $scope.dataProject = {};
     $scope.CreateProject = function () {
-        //$rootScope.showLoading();
+        $rootScope.showLoading();
         Projects.Create().save({
             data: {
                 token: $rootScope.userDatas.token,
@@ -24,13 +25,16 @@ angular.module('GrappBox.controllers')
             }
         }).$promise
             .then(function (data) {
+                $scope.dataProject = data.data;
                 console.log('Create project successful !');
+                $rootScope.hideLoading();
                 Toast.show("Project created");
                 $ionicHistory.clearCache().then(function () {
-                    $state.go('app.projects');
+                    $state.go('app.dashboard', {projectId: $scope.dataProject.id});
                 });
             })
             .catch(function (error) {
+                $rootScope.hideLoading();
                 Toast.show("Project error");
                 console.error('Create project failed ! Reason: ' + error.status + ' ' + error.statusText);
             })

@@ -4,14 +4,14 @@
 
 <ion-view>
     <!--<ion-nav-buttons side="left">-->
-        <!-- Menu button on top left -->
-        <!--<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    <!-- Menu button on top left -->
+    <!--<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
     </ion-nav-buttons>-->
     <ion-nav-title>Dashboard</ion-nav-title>
     <ion-tabs class="tabs-positive tabs-striped">
 
         <!-- Team Occupation -->
-        <ion-tab title="Teams">
+        <ion-tab title="Teams" class="gb-tab">
             <ion-pane>
                 <ion-content overflow-scroll="false">
                     <!-- Refresher -->
@@ -40,7 +40,7 @@
         </ion-tab>
 
         <!-- Next Meeting -->
-        <ion-tab title="Meetings">
+        <ion-tab title="Meetings" class="gb-tab">
             <ion-pane>
                 <ion-content overflow-scroll="false">
                     <!-- Refresher -->
@@ -67,34 +67,33 @@
             </ion-pane>
         </ion-tab>
 
-        <!-- Global Progress -->
-        <!--<ion-tab title="Progress">
+        <!-- Progress -->
+        <ion-tab title="Progress" class="gb-tab">
             <ion-pane>
-                <ion-content overflow-scroll="false">-->
-        <!-- Refresher -->
-        <!--<ion-refresher pulling-text="Pull to refresh..."
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
                                    on-refresh="doRefreshGlobalProgress()">
                     </ion-refresher>
                     <div class="item item-divider">
-                        Global Progress
+                        Progress
                     </div>
                     <div class="list">
                         <ion-item ng-show="noProject">{{noProject}}</ion-item>
-                        <a ng-show="!noProject" class="item item-thumbnail-left"
+                        <a class="item item-thumbnail-left"
                            ng-repeat="globalProgress in globalProgressTab"
+                           ng-show="!noProject && globalProgress.project_id == projectId"
                            ui-sref="app.project({projectId: globalProgress.project_id})">
-                            <img data-ng-src="data:image/png;base64, {{globalProgress.project_logo}}" />
-                            <h2>{{ globalProgress.project_name }}</h2>
-                            <h3 class="icon-left ion-ios-people-outline"> {{ globalProgress.project_company }}</h3>
-                            <h4 class="icon-left ion-ios-telephone-outline"> {{ globalProgress.project_phone }}</h4>
-                            <h4 class="icon-left ion-ios-paperplane-outline"> {{ globalProgress.contact_mail }}</h4>
-                            <h4 class="icon-left ion-ios-list-outline"> {{ globalProgress.number_finished_tasks }} / {{ globalProgress.number_ongoing_tasks }} tasks done</h4>
-                            <h4 class="icon-left ion-ios-email-outline"> {{ globalProgress.number_messages }} messages</h4>
-                            <h4 class="icon-left ion-bug"> {{ globalProgress.number_bugs }} problems</h4>
+                            <!--<img data-ng-src="data:image/png;base64, {{globalProgress.project_logo}}" />-->
+                            <img ng-src="{{ globalProgress.project_logo ? globalProgress.project_logo : './images/noproject.png' }}" />
+                            <h2 style="color:black">{{ globalProgress.project_name }}</h2><br />
+                            <p style="color:black" class="icon-left ion-ios-list-outline"> {{ globalProgress.number_finished_tasks }} / {{ globalProgress.number_ongoing_tasks }} task(s) done</p>
+                            <p style="color:black" class="icon-left ion-ios-email-outline"> {{ globalProgress.number_messages ? globalProgress.number_messages : 0}} message(s)</p>
+                            <p style="color:black" class="icon-left ion-bug"> {{ globalProgress.number_bugs }} problems</p>
                         </a>
                     </div>
                 </ion-content>
             </ion-pane>
-        </ion-tab>-->
+        </ion-tab>
     </ion-tabs>
 </ion-view>

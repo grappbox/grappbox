@@ -89,10 +89,12 @@ angular.module('GrappBox.controllers')
     $scope.GetNextMeetings();
 
     //Get Global Progress
-    /*$scope.globalProgressTab = {};
+    $scope.globalProgressTab = {};
     $scope.GetGlobalProgress = function () {
         $rootScope.showLoading();
-        Dashboard.GlobalProgress().get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.GlobalProgress().get({
+            token: $rootScope.userDatas.token
+        }).$promise
             .then(function (data) {
                 console.log('Get global progress list successful !');
                 console.log(data.data);
@@ -108,7 +110,7 @@ angular.module('GrappBox.controllers')
                 $rootScope.hideLoading();
             })
     }
-    $scope.GetGlobalProgress();*/
+    $scope.GetGlobalProgress();
 
     /*
     ** Get users avatars
