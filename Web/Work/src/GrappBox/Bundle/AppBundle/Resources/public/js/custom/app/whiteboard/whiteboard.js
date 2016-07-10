@@ -16,8 +16,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   // Scope variables initialization
   $scope.view = { onLoad: true, valid: false, authorized: false };
   $scope.data = { id: $route.current.params.id, project_id: $route.current.params.project_id, name: "", creator: "" };
-  $scope.whiteboard = { canvas: {}, objects: {}, points: [] };
-  $scope.action = { setWhiteboard: "", undoLastAction: "", resetTool: "" };
+  $scope.whiteboard = { canvas: {}, objects: {}, points: [], fullscreen: false, wrapper: "" };
+  $scope.action = { setWhiteboard: "", undoLastAction: "", resetTool: "", toggleFullscreen: "" };
 
   $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
   $scope.text = { value: "", italic: false, bold: false, font: { label: "24", value: "24pt" } };
@@ -96,7 +96,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
     return data = {
       tool: "pencil",
       size: Number(size),
-      color: color,
+      color: (!color ? "none" : color),
       points: points
     };
   };
@@ -107,7 +107,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
     return data = {
       tool: "line",
       size: Number(size),
-      color: color,
+      color: (!color ? "none" : color),
       start_x: start_x,
       start_y: start_y,
       end_x: end_x,
@@ -121,8 +121,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
     return data = {
       tool: "rectangle",
       size: Number(size),
-      color: color,
-      fill: fill,
+      color: (!color ? "none" : color),
+      fill: (!fill ? "none" : fill),
       start_x: start_x,
       start_y: start_y,
       height: end_y - start_y,
@@ -132,12 +132,13 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
 
   // Routine definition (local)
   // Create new diamond render object
-  var _newDiamond = function(size, color, fill, start_x, start_y, end_x, end_y) {
+  var _newDiamond = function(API, size, color, fill, start_x, start_y, end_x, end_y) {
     return data = {
+      API: API,
       tool: "diamond",
       size: Number(size),
-      color: color,
-      fill: fill,
+      color: (!color ? "none" : color),
+      fill: (!fill ? "none" : fill),
       start_x: start_x,
       start_y: start_y,
       end_x: end_x,
@@ -149,16 +150,17 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
 
   // Routine definition (local)
   // Create new ellipse render object
-  var _newEllipse = function(size, color, fill, start_x, start_y, end_x, end_y) {
+  var _newEllipse = function(API, size, color, fill, start_x, start_y, end_x, end_y) {
     return data = {
+      API: API,
       tool: "ellipse",
       size: Number(size),
-      color: color,
-      fill: fill,
+      color: (!color ? "none" : color),
+      fill: (!fill ? "none" : fill),
       start_x: start_x,
       start_y: start_y,
-      radius_x: (Math.abs(end_x - start_x)),
-      radius_y: (Math.abs(end_y - start_y))
+      radius_x: (Math.abs((end_x - start_x) / 2)),
+      radius_y: (Math.abs((end_y - start_y)  / 2))
     };
   };
 
@@ -173,7 +175,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
       value: value,
       start_x: start_x,
       start_y: start_y,
-      color: color
+      color: (!color ? "none" : color)
     };
   };
 
@@ -182,27 +184,72 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   var _setRenderObject = function() {
     switch ($scope.selected.tool) {
       case "pencil":
-      var data = _newPencil($scope.selected.size.value, $scope.selected.color.value, $scope.whiteboard.points);
+      var data = _newPencil(
+        $scope.selected.size.value,
+        $scope.selected.color.value,
+        $scope.whiteboard.points
+        );
       break;
 
       case "line":
-      var data = _newLine($scope.selected.size.value, $scope.selected.color.value, $scope.mouse.start.x, $scope.mouse.start.y, $scope.mouse.end.x, $scope.mouse.end.y);
+      var data = _newLine(
+        $scope.selected.size.value,
+        $scope.selected.color.value,
+        $scope.mouse.start.x,
+        $scope.mouse.start.y,
+        $scope.mouse.end.x,
+        $scope.mouse.end.y
+        );
       break;
 
       case "rectangle":
-      var data = _newRectange($scope.selected.size.value, $scope.selected.color.value, $scope.selected.fill.value, $scope.mouse.start.x, $scope.mouse.start.y, $scope.mouse.end.x, $scope.mouse.end.y);
+      var data = _newRectange(
+        $scope.selected.size.value,
+        $scope.selected.color.value,
+        $scope.selected.fill.value,
+        $scope.mouse.start.x,
+        $scope.mouse.start.y,
+        $scope.mouse.end.x,
+        $scope.mouse.end.y
+        );
       break;
 
       case "diamond":
-      var data = _newDiamond($scope.selected.size.value, $scope.selected.color.value, $scope.selected.fill.value, $scope.mouse.start.x, $scope.mouse.start.y, $scope.mouse.end.x, $scope.mouse.end.y);
+      var data = _newDiamond(
+        false,
+        $scope.selected.size.value,
+        $scope.selected.color.value,
+        $scope.selected.fill.value,
+        $scope.mouse.start.x,
+        $scope.mouse.start.y,
+        $scope.mouse.end.x,
+        $scope.mouse.end.y
+        );
       break;
 
       case "ellipse":
-      var data = _newEllipse($scope.selected.size.value, $scope.selected.color.value, $scope.selected.fill.value, $scope.mouse.start.x, $scope.mouse.start.y, $scope.mouse.end.x, $scope.mouse.end.y);
+      var data = _newEllipse(
+        false,
+        $scope.selected.size.value,
+        $scope.selected.color.value,
+        $scope.selected.fill.value,
+        $scope.mouse.start.x,
+        $scope.mouse.start.y,
+        $scope.mouse.end.x,
+        $scope.mouse.end.y
+        );
       break;
 
       case "text":
-      var data = _newText($scope.text.font.value, $scope.text.italic, $scope.text.bold, $scope.text.value, $scope.mouse.start.x, $scope.mouse.start.y, $scope.selected.color.value);
+      var data = _newText(
+        $scope.text.font.value,
+        $scope.text.italic,
+        $scope.text.bold,
+        $scope.text.value,
+        $scope.mouse.start.x,
+        $scope.mouse.start.y,
+        $scope.selected.color.value
+        );
       break;
 
       default:
@@ -218,27 +265,72 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   var _setRenderObjectFromAPI = function(object) {
     switch (object.type) {
       case "HANDWRITE":
-      var data = _newPencil(object.lineWeight, object.color, object.points);
+      var data = _newPencil(
+        object.lineweight,
+        object.color,
+        object.points
+        );
       break;
 
       case "LINE":
-      var data = _newLine(object.lineWeight, object.color, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+      var data = _newLine(
+        object.lineweight,
+        object.color,
+        object.positionStart.x,
+        object.positionStart.y,
+        object.positionEnd.x,
+        object.positionEnd.y
+        );
       break;
 
       case "RECTANGLE":
-      var data = _newRectange(object.lineWeight, object.color, object.background, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+      var data = _newRectange(
+        object.lineweight,
+        object.color,
+        object.background,
+        object.positionStart.x,
+        object.positionStart.y,
+        object.positionEnd.x,
+        object.positionEnd.y
+        );
       break;
 
       case "DIAMOND":
-      var data = _newDiamond(object.lineWeight, object.color, object.background, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+      var data = _newDiamond(
+        true,
+        object.lineweight,
+        object.color,
+        object.background,
+        (object.positionStart.x < object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
+        (object.positionStart.y < object.positionEnd.y ? object.positionStart.y : object.positionEnd.y),
+        (object.positionStart.x > object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
+        (object.positionStart.y > object.positionEnd.y ? object.positionStart.y : object.positionEnd.y)
+        );
       break;
 
       case "ELLIPSE":
-      var data = _newEllipse(object.lineWeight, object.color, object.background, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+      var data = _newEllipse(
+        true,
+        object.lineweight,
+        object.color,
+        object.background,
+        (object.positionStart.x < object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
+        (object.positionStart.y < object.positionEnd.y ? object.positionStart.y : object.positionEnd.y),
+        (object.positionStart.x > object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
+        (object.positionStart.y > object.positionEnd.y ? object.positionStart.y : object.positionEnd.y)
+        );
       break;
 
       case "TEXT":
-      var data = _newText(object.size, object.isItalic, object.isBold, object.text, object.positionStart.x, object.positionStart.y, object.color);
+      var data = _newText(
+        object.size,
+        object.isItalic,
+        object.isBold,
+        object.text,
+        object.positionStart.x,
+        object.positionStart.y,
+        object.color
+        );
       break;
 
       default:
@@ -250,7 +342,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   };
 
   // Routine definition (local)
-  // Render/display canvas data using whiteboardFactory
+  // Render/display canvas data using whiteboardFactory (from user input)
   var _renderObject = function(data) {
     if (data.tool === "line" || data.tool === "rectangle" || data.tool === "diamond" || data.tool === "ellipse")
       whiteboardFactory.renderCanvasBuffer();
@@ -258,8 +350,30 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   };
 
   // Routine definition (local)
+  // Render/display canvas data using whiteboardFactory (from API)
+  var _renderObjectFromAPI = function(data) {
+    whiteboardFactory.renderObject(data);
+  };
+
+  // Routine definition (local)
+  // Handle page fullscreen changes
+  var _onFullscreenChange = function() {
+    if (document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement)
+      $scope.whiteboard.fullscreen = true;
+    else if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement)
+      $scope.whiteboard.fullscreen = false;
+  };
+
+  // Routine definition (local)
   // Set whiteboard canvas and context
   var _setCanvas = function() {
+    $scope.whiteboard.wrapper = document.getElementById("whiteboard-wrapper");
+
+    document.addEventListener('webkitfullscreenchange', _onFullscreenChange(), false);
+    document.addEventListener('mozfullscreenchange', _onFullscreenChange(), false);
+    document.addEventListener('msfullscreenchange', _onFullscreenChange(), false);
+    document.addEventListener('fullscreenchange', _onFullscreenChange(), false);
+
     $scope.whiteboard.canvas = document.getElementById("whiteboard-canvas");
     whiteboardFactory.setCanvas($scope.whiteboard.canvas);
     whiteboardFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
@@ -325,7 +439,9 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
 
             $scope.action.setWhiteboard();
             angular.forEach($scope.data.objects, function(value, key) {
-              _renderObject(_setRenderObjectFromAPI(value.object));
+              var data = _setRenderObjectFromAPI(value.object);
+              whiteboardFactory.addToCanvasBuffer(data);
+              _renderObjectFromAPI(data);
             });
             break;
 
@@ -414,6 +530,32 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
     $scope.selected.tool = "none";
     $scope.text.italic = false;
     $scope.text.bold = false;
+  };
+
+  // "Fullscreen" button handler
+  $scope.action.toggleFullscreen = function() {
+    if (!$scope.whiteboard.fullscreen) {
+      if ($scope.whiteboard.wrapper.requestFullscreen)
+        $scope.whiteboard.wrapper.requestFullscreen();
+      else if ($scope.whiteboard.wrapper.webkitRequestFullscreen)
+        $scope.whiteboard.wrapper.webkitRequestFullscreen();
+      else if ($scope.whiteboard.wrapper.mozRequestFullScreen)
+        $scope.whiteboard.wrapper.mozRequestFullScreen();
+      else if ($scope.whiteboard.wrapper.msRequestFullscreen)
+        $scope.whiteboard.wrapper.msRequestFullscreen();
+      $scope.whiteboard.fullscreen = true;
+    }
+    else {
+      if (document.exitFullscreen)
+        document.exitFullscreen();
+      else if (document.webkitExitFullscreen)
+        document.webkitExitFullscreen();
+      else if (document.mozCancelFullScreen)
+        document.mozCancelFullScreen();
+      else if (document.msExitFullscreen)
+        document.msExitFullscreen();
+      $scope.whiteboard.fullscreen = false;
+    }
   };
 
   // Initialize whiteboard on launch

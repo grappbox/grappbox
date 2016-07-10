@@ -95,7 +95,10 @@ app.factory("whiteboardFactory", function() {
   // Ellipse rendering
   var _renderEllipse = function(data) {
     canvasContext.beginPath();
-    canvasContext.ellipse(data.start_x, data.start_y, data.radius_x, data.radius_y, 0, 0, Math.PI * 2);
+    if (data.API)
+      canvasContext.ellipse(data.start_x + data.radius_x, data.start_y + data.radius_y, data.radius_x, data.radius_y, 0, 0, Math.PI * 2);
+    else
+      canvasContext.ellipse(data.start_x, data.start_y, data.radius_x * 2, data.radius_y * 2, 0, 0, Math.PI * 2);
 
     if (data.color != "none") {
       canvasContext.lineWidth = data.size;
