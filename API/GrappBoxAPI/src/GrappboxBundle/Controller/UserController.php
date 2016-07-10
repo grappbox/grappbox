@@ -325,7 +325,7 @@ class UserController extends RolesAndTokenVerificationController
 		if (array_key_exists('avatar', $content))
 		{
 			$user->setAvatar($content->avatar);
-			$user->setAvatarDate(new DateTime('now'));
+			$user->setAvatarDate(new \DateTime('now'));
 		}
 
 		if (array_key_exists('email', $content) && $user->getEmail() != $content->email)
