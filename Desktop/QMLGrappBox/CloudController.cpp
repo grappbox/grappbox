@@ -53,6 +53,7 @@ void FileData::setIsDirectory(bool directory)
 
 FileDataTransit::FileDataTransit(QUrl name, TransitType type, QString password)
 {
+	Q_UNUSED(password)
     _FileName = name;
     _IsUpload = type;
     _Progress = 0;
@@ -148,6 +149,7 @@ void CloudController::createDirectory(QString dirName)
 {
     BEGIN_REQUEST;
     {
+        EPURE_WARNING_INDEX
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnCreateSuccess");
         SET_ON_FAIL("OnCreateFailed");
@@ -334,6 +336,7 @@ void CloudController::SendChunckFile()
     array = array.toBase64();
     BEGIN_REQUEST;
     {
+        EPURE_WARNING_INDEX
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnSendChunkSuccess");
         SET_ON_FAIL("OnSendChunkFailed");
@@ -430,6 +433,7 @@ bool CloudController::downloadPending() const
 
 void CloudController::OnLSSuccess(int id, QByteArray array)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -460,6 +464,8 @@ void CloudController::OnLSSuccess(int id, QByteArray array)
 
 void CloudController::OnLSFailed(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
     _IsLoading = false;
     emit isLoadingChanged();
     emit directoryFailedLoad();
@@ -467,15 +473,21 @@ void CloudController::OnLSFailed(int id, QByteArray array)
 
 void CloudController::OnCreateSuccess(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
     loadDirectory();
 }
 
 void CloudController::OnCreateFailed(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
 }
 
 void CloudController::OnSendChunkSuccess(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
     if (!_CurrentStream->atEnd())
     {
         double value = (_CurrentFile->size() / BYTE_UPLOAD * 100);
@@ -504,11 +516,14 @@ void CloudController::OnSendChunkSuccess(int id, QByteArray array)
 
 void CloudController::OnSendChunkFailed(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
 
 }
 
 void CloudController::OnOpenStreamSuccess(int id, QByteArray array)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -519,10 +534,14 @@ void CloudController::OnOpenStreamSuccess(int id, QByteArray array)
 
 void CloudController::OnOpenStreamFailed(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
 }
 
 void CloudController::OnCloseStreamSuccess(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
     _PendingFiles.removeAll(_CurrentTransit);
     if (_PendingFiles.size() == 0)
     {
@@ -564,6 +583,8 @@ void CloudController::OnCloseStreamSuccess(int id, QByteArray array)
 
 void CloudController::OnCloseStreamFailed(int id, QByteArray array)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(array)
 }
 
 void CloudController::OnGetDownloadSuccess(int id, QByteArray array)
@@ -579,15 +600,18 @@ void CloudController::OnGetDownloadSuccess(int id, QByteArray array)
 
 void CloudController::OnGetDownloadFailed(int, QByteArray array)
 {
+	Q_UNUSED(array)
 }
 
 void CloudController::OnDeleteItemSuccess(int, QByteArray array)
 {
+	Q_UNUSED(array)
     loadDirectory();
 }
 
 void CloudController::OnDeleteItemFailed(int, QByteArray array)
 {
+	Q_UNUSED(array)
 
 }
 

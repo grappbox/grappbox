@@ -177,6 +177,7 @@ void DataConnectorOnline::OnResponseAPI()
 
 int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
+	Q_UNUSED(part)
 	QNetworkReply *reply = nullptr;
 	switch (request)
 	{
@@ -231,6 +232,7 @@ int DataConnectorOnline::Post(DataPart part, int request, QVector<QString> &data
 
 int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
+	Q_UNUSED(part)
 	QNetworkReply *reply = nullptr;
 	switch (request)
 	{
@@ -356,6 +358,7 @@ int DataConnectorOnline::Get(DataPart part, int request, QVector<QString> &data,
 
 int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure)
 {
+	Q_UNUSED(part)
 	QNetworkReply *reply = nullptr;
 	switch (request)
 	{
@@ -404,6 +407,7 @@ int DataConnectorOnline::Delete(DataPart part, int request, QVector<QString> &da
 
 int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
 {
+	Q_UNUSED(part)
 	QNetworkReply *reply = nullptr;
 	switch (request)
 	{
@@ -449,6 +453,7 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 
 int API::DataConnectorOnline::Request(RequestType type, DataPart part, int request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
 {
+	Q_UNUSED(part)
     QNetworkReply *reply = nullptr;
 	switch (type)
 	{
@@ -1106,7 +1111,7 @@ QNetworkReply * API::DataConnectorOnline::EditEventParticipant(QVector<QString>&
 	dataObj["token"] = data[0];
 	dataObj["eventId"] = data[1];
 	bool AddMod = true;
-	for (size_t i = 2; i < data.size(); i++)
+    for (int i = 2; i < data.size(); i++)
 	{
 		if (data[i] == "#")
 		{

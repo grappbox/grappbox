@@ -99,6 +99,7 @@ void GanttModel::addTag(QString name)
     qDebug() << "Add tag " << name;
     BEGIN_REQUEST;
     {
+        EPURE_WARNING_INDEX
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnAddTagDone");
         SET_ON_FAIL("OnAddTagFail");

@@ -37,6 +37,7 @@ void ProjectSettingsModel::modifyInformation(QString title, QString description,
 {
     BEGIN_REQUEST_ADV(this, "onModifyInformationDone", "onModifyInformationFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("projectId", m_idProject);
         ADD_FIELD("name", title);
@@ -56,6 +57,7 @@ void ProjectSettingsModel::addUser(QString users)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onAddUserDone", "onAddUserFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("id", m_idProject);
         ADD_FIELD("email", users);
@@ -84,6 +86,7 @@ void ProjectSettingsModel::changeRoleUser(int idUser, int idRole, int oldIdRole)
     {
         BEGIN_REQUEST_ADV(this, "onChangeRoleUserDone", "onChangeRoleUserFail");
         {
+            EPURE_WARNING_INDEX
             ADD_FIELD("token", USER_TOKEN);
             ADD_FIELD("userId", idUser);
             ADD_FIELD("roleId", idRole);
@@ -95,6 +98,7 @@ void ProjectSettingsModel::changeRoleUser(int idUser, int idRole, int oldIdRole)
     {
         BEGIN_REQUEST_ADV(this, "onChangeRoleUserDone", "onChangeRoleUserFail");
         {
+            EPURE_WARNING_INDEX
             ADD_FIELD("token", USER_TOKEN);
             ADD_FIELD("projectId", m_idProject);
             ADD_FIELD("userId", idUser);
@@ -110,6 +114,7 @@ void ProjectSettingsModel::addCustomerAccess(QString name)
 {
     BEGIN_REQUEST_ADV(this, "onAddCustomerAccessDone", "onAddCustomerAccessFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("projectId", m_idProject);
         ADD_FIELD("name", name);
@@ -134,6 +139,7 @@ void ProjectSettingsModel::addNewRole(QString name, QList<int> roleValue)
 {
     BEGIN_REQUEST_ADV(this, "onAddNewRoleDone", "onAddNewRoleFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("projectId", m_idProject);
         ADD_FIELD("name", name);
@@ -164,6 +170,7 @@ void ProjectSettingsModel::updateRole(int id, QList<int> roleValue)
 {
     BEGIN_REQUEST_ADV(this, "onUpdateRoleDone", "onUpdateRoleFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("roleId", id);
         int i = 0;
@@ -180,6 +187,7 @@ void ProjectSettingsModel::updateRole(int id, QList<int> roleValue)
 
 void ProjectSettingsModel::onLoadProjectInfoDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     m_isLoading--;
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
@@ -203,6 +211,8 @@ void ProjectSettingsModel::onLoadProjectInfoDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadProjectInfoFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
@@ -237,6 +247,8 @@ void ProjectSettingsModel::onLoadUserRoleDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadUserRoleFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
@@ -244,6 +256,7 @@ void ProjectSettingsModel::onLoadUserRoleFail(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadProjectRolesDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     m_isLoading--;
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
@@ -278,6 +291,8 @@ void ProjectSettingsModel::onLoadProjectRolesDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadProjectRolesFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
@@ -285,6 +300,7 @@ void ProjectSettingsModel::onLoadProjectRolesFail(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadCustomerAccessDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     m_isLoading--;
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
@@ -319,6 +335,8 @@ void ProjectSettingsModel::onLoadCustomerAccessDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadCustomerAccessFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
@@ -326,6 +344,7 @@ void ProjectSettingsModel::onLoadCustomerAccessFail(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadUsersProjectDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     m_isLoading--;
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
@@ -387,6 +406,8 @@ void ProjectSettingsModel::onLoadUsersProjectDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onLoadUsersProjectFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
@@ -394,16 +415,22 @@ void ProjectSettingsModel::onLoadUsersProjectFail(int id, QByteArray data)
 
 void ProjectSettingsModel::onModifyInformationDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     loadInformation();
 }
 
 void ProjectSettingsModel::onModifyInformationFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onAddUserDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     BEGIN_REQUEST_ADV(this, "onLoadUsersProjectDone", "onLoadUsersProjectFail");
     {
         ADD_URL_FIELD(USER_TOKEN);
@@ -415,11 +442,15 @@ void ProjectSettingsModel::onAddUserDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onAddUserFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onDeleteUserDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     BEGIN_REQUEST_ADV(this, "onLoadUsersProjectDone", "onLoadUsersProjectFail");
     {
         ADD_URL_FIELD(USER_TOKEN);
@@ -431,11 +462,15 @@ void ProjectSettingsModel::onDeleteUserDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onDeleteUserFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onChangeRoleUserDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     BEGIN_REQUEST_ADV(this, "onLoadUsersProjectDone", "onLoadUsersProjectFail");
     {
         ADD_URL_FIELD(USER_TOKEN);
@@ -447,11 +482,15 @@ void ProjectSettingsModel::onChangeRoleUserDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onChangeRoleUserFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onAddCustomerAccessDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadCustomerAccessDone", "onLoadCustomerAccessFail");
     {
@@ -464,11 +503,15 @@ void ProjectSettingsModel::onAddCustomerAccessDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onAddCustomerAccessFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onRemoveCustomerAccessDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadCustomerAccessDone", "onLoadCustomerAccessFail");
     {
@@ -481,11 +524,15 @@ void ProjectSettingsModel::onRemoveCustomerAccessDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onRemoveCustomerAccessFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onAddNewRoleDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadProjectRolesDone", "onLoadProjectRolesFail");
     {
@@ -498,11 +545,15 @@ void ProjectSettingsModel::onAddNewRoleDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onAddNewRoleFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onDeleteRoleDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadProjectRolesDone", "onLoadProjectRolesFail");
     {
@@ -515,11 +566,15 @@ void ProjectSettingsModel::onDeleteRoleDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onDeleteRoleFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onUpdateRoleDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadProjectRolesDone", "onLoadProjectRolesFail");
     {
@@ -532,5 +587,7 @@ void ProjectSettingsModel::onUpdateRoleDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onUpdateRoleFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }

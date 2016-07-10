@@ -23,6 +23,7 @@
 
 #define BEGIN_REQUEST {QMap<QString, QVariant> __data; int __currentIndex = 0
 #define BEGIN_REQUEST_ADV(obj, onDone, onFail) BEGIN_REQUEST; SET_CALL_OBJECT(obj); SET_ON_DONE(onDone); SET_ON_FAIL(onFail)
+#define EPURE_WARNING_INDEX Q_UNUSED(__currentIndex)
 #define SET_ON_DONE(value) const char *__onDone = value
 #define SET_ON_FAIL(value) const char *__onFail = value
 #define SET_CALL_OBJECT(object) QObject *__callObj = object
@@ -62,7 +63,7 @@ namespace API
         void                       RegisterUserConnected(int id, QString userName, QString userLastName, QString token, QImage *avatar);
         void                       LogoutUser();
 
-        Q_INVOKABLE                updateCurrentProject()
+        Q_INVOKABLE void           updateCurrentProject()
         {
             BEGIN_REQUEST;
             {
@@ -160,6 +161,7 @@ namespace API
 
         void UpdateProjectDone(int id, QByteArray data)
         {
+            Q_UNUSED(id)
             QJsonDocument doc;
             doc = QJsonDocument::fromJson(data);
             QJsonObject obj = doc.object()["data"].toObject();
@@ -182,6 +184,7 @@ namespace API
 
         void UpdateProjectUserDone(int id, QByteArray data)
         {
+            Q_UNUSED(id)
             QJsonDocument doc;
             doc = QJsonDocument::fromJson(data);
             QJsonObject obj = doc.object()["data"].toObject();

@@ -42,6 +42,7 @@ SDataManager      *SDataManager::GetDataManager()
 
 void                       SDataManager::RegisterUserConnected(int id, QString userName, QString userLastName, QString token, QImage *avatar)
 {
+	Q_UNUSED(avatar)
     _UserId = id;
     _UserName = userName;
     _UserLastName = userLastName;

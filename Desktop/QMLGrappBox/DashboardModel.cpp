@@ -68,6 +68,7 @@ void DashboardModel::addANewProject(ProjectData *project, QString securedPasswor
 {
     BEGIN_REQUEST_ADV(this, "OnCreateProjectDone", "OnCreateProjectFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("name", project->name());
         ADD_FIELD("description", project->description());
@@ -132,6 +133,8 @@ void DashboardModel::OnLoadProjectListDone(int id, QByteArray data)
 
 void DashboardModel::OnLoadProjectListFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     emit error("Dashboard", "Unable to retrieve project. Please try again later.");
 }
 
@@ -175,6 +178,8 @@ void DashboardModel::OnLoadUserListDone(int id, QByteArray data)
 
 void DashboardModel::OnLoadUserListFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     emit error("Dashboard", "Unable to retrieve the list of user in your project. Please try again later.");
 }
 
@@ -220,16 +225,22 @@ void DashboardModel::OnLoadEventListDone(int id, QByteArray data)
 
 void DashboardModel::OnLoadEventListFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     emit error("Dashboard", "Unable to retrieve the list of next events in your project. Please try again later.");
 }
 
 void DashboardModel::OnCreateProjectDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     loadProjectList();
     SInfoManager::GetManager()->info("Project created!");
 }
 
 void DashboardModel::OnCreateProjectFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->error("Project creation", "Unable to create the project.");
 }

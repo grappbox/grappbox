@@ -86,8 +86,6 @@ public:
         int listIndex = 0;
         for (QVariant userTmp : m_users)
         {
-            UserData *d = userTmp.value<UserData*>();
-
             if (listIndex == index)
                 return listIndex;
             listIndex++;
@@ -106,7 +104,7 @@ public:
         return 0;
     }
 
-    ProjectData(const ProjectData &copy)
+    ProjectData(const ProjectData &copy) : QObject(nullptr)
     {
         m_id = copy.m_id;
         m_name = copy.m_name;

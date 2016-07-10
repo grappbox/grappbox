@@ -725,6 +725,8 @@ void GanttView::onMove(QPointF mousePos)
             // Si on etend une tache
         }
         break;
+    default:
+        break;
     }
     _LastMousePos = mousePos;
 }
@@ -753,6 +755,8 @@ void GanttView::onRelease(QPointF mousePos)
     case CHANGE_DEADLINE:
         qDebug() << "Register data for deadlines";
         break;
+    default:
+        break;
     }
 
     _LastMousePos = QPointF(-1, -1);
@@ -763,6 +767,7 @@ void GanttView::onRelease(QPointF mousePos)
 
 void GanttView::onDoubleClic(QPointF mousePos)
 {
+	Q_UNUSED(mousePos)
     _LastMousePos = QPointF(-1, -1);
 }
 

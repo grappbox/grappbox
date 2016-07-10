@@ -8,6 +8,7 @@ TimelineModel::TimelineModel(QObject *parent) : QObject(parent)
 
 void TimelineModel::OnTimelineLoadDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -65,6 +66,8 @@ void TimelineModel::OnTimelineLoadDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineLoadFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     m_numberLoading--;
     if (m_numberLoading <= 0)
         setIsLoadingTimeline(false);
@@ -145,11 +148,14 @@ void TimelineModel::OnTimelineCommentLoadDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineCommentLoadFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
         SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::OnTimelineAddMessageDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject info = doc.object()["info"].toObject();
@@ -218,6 +224,8 @@ void TimelineModel::OnTimelineAddMessageDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineAddMessageFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
@@ -291,6 +299,8 @@ void TimelineModel::OnTimelineRemoveMessageDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineRemoveMessageFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
@@ -366,11 +376,14 @@ void TimelineModel::OnTimelineEditMessageDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineEditMessageFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::OnGetTimelineDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -397,6 +410,8 @@ void TimelineModel::OnGetTimelineDone(int id, QByteArray data)
 
 void TimelineModel::OnGetTimelineFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     setIsLoadingTimeline(false);
     SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }

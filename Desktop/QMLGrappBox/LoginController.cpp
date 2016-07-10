@@ -5,6 +5,7 @@
 
 LoginController::LoginController(QWidget *parent)
 {
+	Q_UNUSED(parent)
     _IsLoged = false;
 }
 
@@ -12,6 +13,7 @@ void LoginController::login(QString name, QString password)
 {
     BEGIN_REQUEST;
     {
+        EPURE_WARNING_INDEX
         SET_ON_DONE("OnLoginSuccess");
         SET_ON_FAIL("OnLoginFailure");
         SET_CALL_OBJECT(this);
@@ -37,6 +39,7 @@ void LoginController::logout()
 
 void LoginController::OnLoginSuccess(int id, QByteArray response)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(response);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -63,6 +66,8 @@ void LoginController::OnLoginSuccess(int id, QByteArray response)
 
 void LoginController::OnLoginFailure(int id, QByteArray response)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(response)
     _IsLoged = false;
     emit isLogedChanged();
     emit loginFailed();
@@ -70,6 +75,7 @@ void LoginController::OnLoginFailure(int id, QByteArray response)
 
 void LoginController::OnUserInfoDone(int id, QByteArray response)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(response);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -91,16 +97,22 @@ void LoginController::OnUserInfoDone(int id, QByteArray response)
 
 void LoginController::OnUserInfoFail(int id, QByteArray response)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(response)
 
 }
 
 void LoginController::OnLogoutSuccess(int id, QByteArray response)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(response)
 
 }
 
 void LoginController::OnLogoutFail(int id, QByteArray response)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(response)
 
 }
 

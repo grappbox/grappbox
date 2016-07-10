@@ -57,6 +57,7 @@ bool UserModel::isLoading()
 
 void UserModel::onGetUserDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -81,6 +82,8 @@ void UserModel::onGetUserDone(int id, QByteArray data)
 
 void UserModel::onGetUserFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     emit error("User", "Unable to retrive user information. Please try again later.");
     m_isLoading = false;
     emit isLoadingChanged(false);
@@ -88,11 +91,15 @@ void UserModel::onGetUserFail(int id, QByteArray data)
 
 void UserModel::onSetUserDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     getUserModel();
 }
 
 void UserModel::onSetUserFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     emit error("User", "Unable to change user information. Please try again later.");
     m_isLoading = false;
     emit isLoadingChanged(false);

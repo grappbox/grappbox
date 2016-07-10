@@ -24,7 +24,7 @@ class UserData : public QObject
 
 public:
     UserData();
-    UserData(const UserData &copy)
+    UserData(const UserData &copy) : QObject(nullptr)
     {
         m_firstName = copy.m_firstName;
         m_lastName = copy.m_lastName;

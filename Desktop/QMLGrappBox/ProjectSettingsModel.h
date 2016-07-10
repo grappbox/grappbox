@@ -18,6 +18,7 @@ class RolesData : public QObject
 public:
     explicit RolesData(QObject *parent = 0)
     {
+    Q_UNUSED(parent)
         m_name = "";
     }
 
@@ -112,6 +113,7 @@ class CustomerAccessData : public QObject
 public:
     explicit CustomerAccessData(QObject *parent = 0)
     {
+    Q_UNUSED(parent)
 
     }
 

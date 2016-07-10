@@ -65,8 +65,11 @@ void BugTrackerModel::loadCommentTicket(int id)
 
 void BugTrackerModel::addTicket(QString title, QString message, QVariantList users, QVariantList tags)
 {
+	Q_UNUSED(users)
+	Q_UNUSED(tags)
     BEGIN_REQUEST_ADV(this, "onAddTicketDone", "onAddTicketFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("title", title);
@@ -83,6 +86,7 @@ void BugTrackerModel::modifyTicket(int idTicket, QString title, QString message)
 {
     BEGIN_REQUEST_ADV(this, "onModifyTicketDone", "onModifyTicketFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("bugId", idTicket);
         ADD_FIELD("title", title);
@@ -99,6 +103,7 @@ void BugTrackerModel::addUsersToTicket(int idTicket, int idUsers)
 {
     BEGIN_REQUEST_ADV(this, "onAddUsersDone", "onAddUsersFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("bugId", idTicket);
         ADD_ARRAY("toAdd");
@@ -113,6 +118,7 @@ void BugTrackerModel::removeUsersToTicket(int idTicket, int idUsers)
 {
     BEGIN_REQUEST_ADV(this, "onRemoveUserDone", "onRemoveUserFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("bugId", idTicket);
         ADD_ARRAY("toAdd");
@@ -127,6 +133,7 @@ void BugTrackerModel::addTagsToTicket(int idTicket, int idTag)
 {
     BEGIN_REQUEST_ADV(this, "onAssignTagDone", "onAssignTagFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("bugId", idTicket);
         ADD_FIELD("tagId", idTag);
@@ -162,6 +169,7 @@ void BugTrackerModel::createAndAddTagsToTicket(int idTicket, QString tag)
 {
     BEGIN_REQUEST_ADV(this, "onAddTagDone", "onAddTagFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("name", tag);
@@ -175,6 +183,7 @@ void BugTrackerModel::createAndAddTagsToTicket(int idTicket, QString tag)
 
 void BugTrackerModel::onLoadClosedTicketDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -207,11 +216,14 @@ void BugTrackerModel::onLoadClosedTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadClosedTicketFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onLoadOpenTicketDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -244,11 +256,14 @@ void BugTrackerModel::onLoadOpenTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadOpenTicketFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onLoadYoursTicketDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -297,6 +312,8 @@ void BugTrackerModel::onLoadYoursTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadYoursTicketFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
@@ -370,11 +387,14 @@ void BugTrackerModel::onLoadCommentTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadCommentTicketFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onLoadTagsDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -414,6 +434,8 @@ void BugTrackerModel::onLoadTagsDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadTagsFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
@@ -432,11 +454,14 @@ void BugTrackerModel::onAddTagDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddTagFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAddTicketDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -446,11 +471,14 @@ void BugTrackerModel::onAddTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddTicketFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAddUsersDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -481,6 +509,8 @@ void BugTrackerModel::onAddUsersDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddUsersFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
@@ -502,22 +532,30 @@ void BugTrackerModel::onAssignTagDone(int id, QByteArray data)
 
 void BugTrackerModel::onAssignTagFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onRemoveTagsToTicketDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     loadClosedTickets();
     loadOpenTickets();
 }
 
 void BugTrackerModel::onRemoveTagsToTicketFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onDeleteTagDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     loadTags();
     loadClosedTickets();
     loadOpenTickets();
@@ -525,11 +563,14 @@ void BugTrackerModel::onDeleteTagDone(int id, QByteArray data)
 
 void BugTrackerModel::onDeleteTagFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onModifyTicketDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -560,11 +601,15 @@ void BugTrackerModel::onModifyTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onModifyTicketFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onCloseDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     loadOpenTickets();
     loadClosedTickets();
     loadYoursTickets();
@@ -572,11 +617,14 @@ void BugTrackerModel::onCloseDone(int id, QByteArray data)
 
 void BugTrackerModel::onCloseFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAddCommentDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -600,11 +648,15 @@ void BugTrackerModel::onAddCommentDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddCommentFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onReopenDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     loadOpenTickets();
     loadClosedTickets();
     loadYoursTickets();
@@ -612,11 +664,14 @@ void BugTrackerModel::onReopenDone(int id, QByteArray data)
 
 void BugTrackerModel::onReopenFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onRemoveCommentDone(int id, QByteArray data)
 {
+	Q_UNUSED(data)
     int idTicket = m_removeComment[id];
     m_removeComment.remove(id);
     loadCommentTicket(idTicket);
@@ -624,11 +679,14 @@ void BugTrackerModel::onRemoveCommentDone(int id, QByteArray data)
 
 void BugTrackerModel::onRemoveCommentFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onEditCommentDone(int id, QByteArray data)
 {
+	Q_UNUSED(data)
     int idTicket = m_editComment[id];
     m_editComment.remove(id);
     loadCommentTicket(idTicket);
@@ -636,11 +694,14 @@ void BugTrackerModel::onEditCommentDone(int id, QByteArray data)
 
 void BugTrackerModel::onEditCommentFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
         SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onRemoveUserDone(int id, QByteArray data)
 {
+	Q_UNUSED(id)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -671,6 +732,8 @@ void BugTrackerModel::onRemoveUserDone(int id, QByteArray data)
 
 void BugTrackerModel::onRemoveUserFail(int id, QByteArray data)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
@@ -711,6 +774,7 @@ void BugTrackerModel::addComment(int idParent, QString comment)
 {
     BEGIN_REQUEST_ADV(this, "onAddCommentDone", "onAddCommentFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("parentId", idParent);
@@ -736,6 +800,7 @@ void BugTrackerModel::modifyComment(int idComment, QString comment, int idTicket
 {
     BEGIN_REQUEST_ADV(this, "onEditCommentDone", "onEditCommentFail");
     {
+        EPURE_WARNING_INDEX
         ADD_FIELD("token", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("commentId", idComment);

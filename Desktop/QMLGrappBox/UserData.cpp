@@ -8,6 +8,9 @@ UserData::UserData() : QObject(nullptr)
 
 UserData::UserData(int id, QString firstName, QString lastName) : QObject(nullptr)
 {
+	Q_UNUSED(id)
+	Q_UNUSED(firstName)
+	Q_UNUSED(lastName)
 }
 
 

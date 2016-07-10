@@ -17,6 +17,7 @@ void SInfoManager::emitInfo(QString infoMessage)
 
 void SInfoManager::emitError(QString infoData)
 {
+	Q_UNUSED(infoData)
     emit error("An error as encoured", "An error as encoured. Please try again later.");
 }
 
