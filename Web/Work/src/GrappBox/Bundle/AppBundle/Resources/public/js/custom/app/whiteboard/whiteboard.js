@@ -9,7 +9,8 @@
 * APP whiteboard page content
 *
 */
-app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "whiteboardFactory", "$http", "$location", "Notification", function($rootScope, $scope, $route, whiteboardFactory, $http, $location, Notification) {
+app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "whiteboardFactory", "$http", "$location", "Notification", "$q", "$interval",
+    function($rootScope, $scope, $route, whiteboardFactory, $http, $location, Notification, $q, $interval) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -17,6 +18,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   $scope.view = { onLoad: true, valid: false, authorized: false };
   $scope.data = { id: $route.current.params.id, project_id: $route.current.params.project_id, name: "", creator: "" };
   $scope.whiteboard = { canvas: {}, objects: {}, points: [], fullscreen: false, wrapper: "" };
+  $scope.pull = { date: "", add: "", delete: "" };
   $scope.action = { setWhiteboard: "", undoLastAction: "", resetTool: "", toggleFullscreen: "" };
 
   $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
@@ -428,6 +430,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   // Routine definition (local)
   // Open whiteboard and get content for first use
   var _openWhiteboard = function() {
+    var deferred = $q.defer();
+
     $http.get($rootScope.api.url + "/whiteboard/open/" + $rootScope.user.token + "/" + $scope.data.id).then(
       function onGetWhiteboardSuccess(response) {
         if (response.data.info) {
@@ -436,9 +440,91 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
             $scope.data.objects = (response.data.data.content ? response.data.data.content : null);
             $scope.data.name = response.data.data.name;
             $scope.data.creator = response.data.data.user.firstname + " " + response.data.data.user.lastname;
+            $scope.pull.date = new Date();
 
             $scope.action.setWhiteboard();
             angular.forEach($scope.data.objects, function(value, key) {
+              var data = _setRenderObjectFromAPI(value.object);
+              whiteboardFactory.addToCanvasBuffer(data);
+              _renderObjectFromAPI(data);
+            });
+            deferred.resolve();
+            break;
+
+            default:
+            $scope.whiteboards.list = null;
+            $scope.view.valid = false;
+            $scope.view.onLoad = false;
+            $scope.view.authorized = true;
+            deferred.reject();
+            break;
+          }
+        }
+        else {
+          $scope.whiteboards.list = null;
+          $scope.view.valid = false;
+          $scope.view.onLoad = false;
+          $scope.view.authorized = true;
+          deferred.reject();
+        }
+        return deferred.promise;
+      },
+      function onGetWhiteboardFail(response) {
+        if (response.data.info) {
+          switch(response.data.info.return_code) {
+            case "10.3.3":
+            $rootScope.onUserTokenError();
+            deferred.reject();
+            break;
+
+            case "10.3.9":
+            $scope.whiteboards.list = null;
+            $scope.view.valid = false;
+            $scope.view.onLoad = false;
+            $scope.view.authorized = false;
+            deferred.reject();
+            break;
+
+            case "10.3.4":
+            $location.path("whiteboard/" + $route.current.params.project_id);
+            Notification.warning({ title: "Whiteboard", message: "This whiteboard has been deleted.", delay: 4500 });
+            deferred.reject();
+            break;
+
+            default:
+            $scope.whiteboards.list = null;
+            $scope.view.valid = false;
+            $scope.view.onLoad = false;
+            $scope.view.authorized = true;
+            deferred.reject();
+            break;
+          }
+        }
+        else {
+          $scope.whiteboards.list = null;
+          $scope.view.valid = false;
+          $scope.view.onLoad = false;
+          $scope.view.authorized = true;
+          deferred.reject();
+        }
+        return deferred.promise;
+      }
+    );
+    return deferred.promise;
+  };
+
+  // Routine definition (local)
+  // Pull whiteboard modifications
+  var _pull = function() {
+    $http.post($rootScope.api.url + "/whiteboard/pulldraw/" + $scope.data.id,
+      { data: { token: $rootScope.user.token, lastUpdate: $scope.pull.date }}).then(
+      function onPostWhiteboardUpdateSuccess(response) {
+        if (response.data.info) {
+          switch(response.data.info.return_code) {
+            case "1.10.1":
+            $scope.pull.add = (response.data.data.add ? response.data.data.add : null);
+
+            angular.forEach($scope.pull.add, function(value, key) {
               var data = _setRenderObjectFromAPI(value.object);
               whiteboardFactory.addToCanvasBuffer(data);
               _renderObjectFromAPI(data);
@@ -460,21 +546,21 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
           $scope.view.authorized = true;
         }
       },
-      function onGetWhiteboardFail(response) {
+      function onPostWhiteboardUpdateFail(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
-            case "10.3.3":
+            case "10.5.3":
             $rootScope.onUserTokenError();
             break;
 
-            case "10.3.9":
+            case "10.5.9":
             $scope.whiteboards.list = null;
             $scope.view.valid = false;
             $scope.view.onLoad = false;
             $scope.view.authorized = false;
             break;
 
-            case "10.3.4":
+            case "10.5.4":
             $location.path("whiteboard/" + $route.current.params.project_id);
             Notification.warning({ title: "Whiteboard", message: "This whiteboard has been deleted.", delay: 4500 });
             break;
@@ -495,12 +581,6 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
         }
       }
     );
-  };
-
-  // Routine definition (local)
-  // Pull whiteboard modifications
-  var _pull = function() {
-
   };
 
   // Routine definition (local)
@@ -572,7 +652,14 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   $scope.view.onLoad = false;
   $scope.view.authorized = true;
 
-  _openWhiteboard();
+  var openWhiteboard = _openWhiteboard();
+  openWhiteboard.then(
+    function onOpenWhiteboardSuccess() {
+      $interval(_pull , 1000);
+    },
+    function onOpenWhiteboardFail() {
+    }
+  );
 
 
 }]);
