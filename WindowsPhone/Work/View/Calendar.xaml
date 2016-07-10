@@ -16,7 +16,7 @@
     </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Calendar">
         <Grid VerticalAlignment="Stretch">
-            <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}">
+            <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}">
                 <Pivot.ItemTemplate>
                     <DataTemplate>
                         <GridView ItemsSource="{Binding DaysList}">

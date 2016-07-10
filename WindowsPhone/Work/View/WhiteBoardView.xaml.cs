@@ -69,7 +69,7 @@ namespace GrappBox.View
 
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-            pullTimer.Stop();
+            //pullTimer.Stop();
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -78,22 +78,23 @@ namespace GrappBox.View
             whiteboardId = (int)e.Parameter;
             wbvm = this.DataContext as WhiteBoardViewModel;
             await wbvm.OpenWhiteboard(whiteboardId);
-            foreach (WhiteboardObject wo in wbvm.ObjectsList)
+            if (wbvm.ObjectsList != null)
             {
-                this.drawingCanvas.AddNewElement(wo);
-            }
+                foreach (WhiteboardObject wo in wbvm.ObjectsList)
+                {
+                    this.drawingCanvas.AddNewElement(wo);
+                }
+            }/*
             pullTimer = new DispatcherTimer();
-
             pullTimer.Interval = new TimeSpan(0, 0, 10);
             pullTimer.Tick += PullTimer_Tick;
-            pullTimer.Start();
+            pullTimer.Start();*/
         }
 
         private void PullTimer_Tick(object sender, object e)
         {
             runPull();
         }
-
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedFrom(e);

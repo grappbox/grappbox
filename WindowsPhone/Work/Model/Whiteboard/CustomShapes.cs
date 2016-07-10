@@ -189,31 +189,33 @@ namespace GrappBox.Model
         private double height;
         private Point origin;
         private Polygon elem;
-        private PointCollection pc;
+        PointCollection Pc
+        {
+            get { return elem.Points; }
+        }
+        Point _left;
         Point Left
         {
-            get { return pc[0]; }
-            set { pc[0] = value; }
+            set { elem.Points[0] = value; }
         }
+        Point _top;
         Point Top
         {
-            get { return pc[1]; }
-            set { pc[1] = value; }
+            set { elem.Points[1] = value; }
         }
+        Point _right;
         Point Right
         {
-            get { return pc[2]; }
-            set { pc[2] = value; }
+            set { elem.Points[2] = value; }
         }
+        Point _bottom;
         Point Bottom
         {
-            get { return pc[3]; }
-            set { pc[3] = value; }
+            set { elem.Points[3] = value; }
         }
         public Lozenge()
         {
             origin = new Point();
-            pc = new PointCollection();
             elem = new Polygon();
         }
         public void Initialize(string txt, bool bold, bool italic, SolidColorBrush stroke, int size)
@@ -233,31 +235,27 @@ namespace GrappBox.Model
             elem.StrokeThickness = thickness;
             origin.X = pos.X;
             origin.Y = pos.Y;
-            for (int i = 0; i < 4; ++i)
-                pc.Add(new Point());
-            elem.Points = pc;
+            Pc.Add(new Point());
+            Pc.Add(new Point());
+            Pc.Add(new Point());
+            Pc.Add(new Point());
         }
         public void Update(Point p)
         {
-            System.GC.Collect(50, GCCollectionMode.Forced);
             width = ShapeControler.AbsoluteDiff(p.X, origin.X);
             height = ShapeControler.AbsoluteDiff(p.Y, origin.Y);
-            Point left = new Point();
-            Point top = new Point();
-            Point right = new Point();
-            Point bottom = new Point();
-            left.X = 0;
-            left.Y = height / 2;
-            top.X = width / 2;
-            top.Y = 0;
-            right.X = width;
-            right.Y = height / 2;
-            bottom.X = width / 2;
-            bottom.Y = height;
-            Left = left;
-            Top = top;
-            Right = right;
-            Bottom = bottom;
+            _left.X = 0;
+            _left.Y = height / 2;
+            _top.X = width / 2;
+            _top.Y = 0;
+            _right.X = width;
+            _right.Y = height / 2;
+            _bottom.X = width / 2;
+            _bottom.Y = height;
+            Left = _left;
+            Top = _top;
+            Right = _right;
+            Bottom = _bottom;
             if (p.X < origin.X)
                 Canvas.SetLeft(elem, p.X);
             if (p.Y < origin.Y)

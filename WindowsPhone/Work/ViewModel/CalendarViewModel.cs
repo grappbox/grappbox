@@ -28,6 +28,17 @@ namespace GrappBox.ViewModel
         public int MonthIndex
         {
             get { return currentDateTime.Month-1; }
+            set
+            {
+                Debug.WriteLine("Value= {0} - MonthIndex= {1}", value, MonthIndex);
+                if (value > MonthIndex)
+                    currentDateTime.AddMonths(value - MonthIndex);
+                else if (value < MonthIndex)
+                {
+                    currentDateTime.AddMonths(MonthIndex - value);
+                }
+                Debug.WriteLine(currentDateTime);
+            }
         }
 
         public int CurrentMonth
