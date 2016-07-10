@@ -28,7 +28,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="well">
               <!-- whiteboard: toolbox -->
               <div class="col-lg-12 col-md-12 col-xs-12 action">
-                <div class="col-lg-3 col-md-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-xs-12">
                   <div class="form-group">
                     <label for="pencil" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'pencil' ? 'active' : '' }]}">
                       <i class="material-icons">border_color</i>
@@ -60,7 +60,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </label>
                   </div>
                 </div>
-                <div class="col-lg-4 col-md-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-xs-12">
+                  <div class="form-group">
+                    <label for="draw" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">color_lens</i></label>
+                    <select id="draw" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.color"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="fill" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_color_fill</i></label>
+                    <select id="fill" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.fill"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="width" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_line_spacing</i></label>
+                    <select id="width" class="col-md-2 col-xs-12" data-ng-options="size.label for size in sizes track by size.value" data-ng-model="selected.size"></select>
+                  </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-xs-12">
                   <div class="form-group">
                     <label for="text" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'text' ? 'active' : '' }]}">
                       <i class="material-icons">format_color_text</i>
@@ -68,34 +82,24 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </label>
                   </div>
                   <div class="form-group">
-                    <input type="text" data-ng-model="text.value" class="col-md-6" placeholder="Text to draw">
+                    <input type="text" data-ng-model="text.value" class="col-md-6 col-xs-12" placeholder="Text to draw">
                   </div>
                   <div class="form-group">
-                    <label for="italic" class="col-md-1 col-xs-1 control-label {[{ text.italic ? 'active' : '' }]}">
+                    <label for="italic" class="col-md-1 col-xs-12 control-label {[{ text.italic ? 'active' : '' }]}">
                       <i class="material-icons">format_italic</i>
                       <input type="checkbox" data-ng-model="text.italic" id="italic" value="italic">
                     </label>
                   </div>
                   <div class="form-group">
-                    <label for="bold" class="col-md-1 col-xs-1 control-label {[{ text.bold ? 'active' : '' }]}">
+                    <label for="bold" class="col-md-1 col-xs-12 control-label {[{ text.bold ? 'active' : '' }]}">
                       <i class="material-icons">format_bold</i>
                       <input type="checkbox" data-ng-model="text.bold" id="bold" value="bold">
                     </label>
                   </div>
-                </div>
-                <div class="col-lg-5 col-md-12 col-xs-12">
                   <div class="form-group">
-                    <label for="draw" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">color_lens</i></label>
-                    <select id="draw" class="col-md-2 col-xs-2" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.color"></select>
-                  </div>
-                  <div class="form-group">
-                    <label for="fill" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_color_fill</i></label>
-                    <select id="fill" class="col-md-2 col-xs-2" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.fill"></select>
-                  </div>
-                  <div class="form-group">
-                    <label for="width" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_line_spacing</i></label>
-                    <select id="width" class="col-md-2 col-xs-2" data-ng-options="size.label for size in sizes track by size.value" data-ng-model="selected.size"></select>
-                  </div>
+                    <label for="font" class="col-md-1 col-xs-12 control-label no-select"><i class="material-icons">format_size</i></label>
+                    <select id="font" class="col-md-2 col-xs-12" data-ng-options="font.label for font in fonts track by font.value" data-ng-model="text.font"></select>
+                  </div>                  
                 </div>
               </div>
               <!-- whiteboard: canvas -->

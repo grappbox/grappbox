@@ -74,7 +74,6 @@ app.factory("whiteboardFactory", function() {
   // Diamond rendering
   var _renderDiamond = function(data) {
     canvasContext.beginPath();
-
     canvasContext.moveTo(data.start_x, data.start_y + (data.height / 2));
     canvasContext.lineTo(data.start_x + (data.width / 2), data.start_y);
     canvasContext.lineTo(data.end_x, data.start_y + (data.height / 2));

@@ -19,10 +19,10 @@ app.controller("whiteboardController", ["$scope", "$http", "$route", "whiteboard
   $scope.action = { undoLastAction: "", setWhiteboard: "" };
 
   $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
-  $scope.text = { value: "", italic: false, bold: false };
+  $scope.text = { value: "", italic: false, bold: false, font: { label: "11", value: "11pt" } };
 
   $scope.colors = [
-    { name: "-None-", value: "none" },
+    { name: "-None-", value: null },
     { name: "Red", value: "#F44336" },
     { name: "Pink", value: "#E91E63" },
     { name: "Purple", value: "#9C27B0" },
@@ -48,6 +48,23 @@ app.controller("whiteboardController", ["$scope", "$http", "$route", "whiteboard
     { name: "Grey 60%", value: "#757575" },
     { name: "Grey 80%", value: "#424242" },
     { name: "Black", value: "#000000" }
+  ];
+
+  $scope.fonts = [
+    { label: "8", value: "8pt" },
+    { label: "9", value: "9pt" },
+    { label: "10", value: "10pt" },
+    { label: "11", value: "11pt" },
+    { label: "12", value: "12pt" },
+    { label: "14", value: "14pt" },
+    { label: "18", value: "18pt" },
+    { label: "24", value: "24pt" },
+    { label: "30", value: "30pt" },
+    { label: "36", value: "36pt" },
+    { label: "48", value: "48pt" },
+    { label: "60", value: "60pt" },
+    { label: "72", value: "72pt" },
+    { label: "96", value: "96pt" }
   ];
 
   $scope.sizes = [
@@ -143,7 +160,7 @@ app.controller("whiteboardController", ["$scope", "$http", "$route", "whiteboard
       case "text":
       data = {
         tool: "text",
-        font: "32pt Roboto Condensed",
+        font: $scope.text.font.value + " Roboto",
         italic: $scope.text.italic,
         bold: $scope.text.bold,
         value: $scope.text.value,
@@ -198,17 +215,15 @@ app.controller("whiteboardController", ["$scope", "$http", "$route", "whiteboard
 
     // Canvas default callback: mouse drag
     $scope.whiteboard.canvas.onmousemove = function(event) {
-      var last = "";
-
       if ($scope.mouse.pressed) {
-        last = $scope.whiteboard.points[$scope.whiteboard.points.length - 1];
+        var last = $scope.whiteboard.points[$scope.whiteboard.points.length - 1];
         $scope.whiteboard.points.push({
           x: event.offsetX,
           y: event.offsetY,
           color: $scope.selected.color.value
         });
         $scope.mouse.end.x = last.x;
-        $scope.mouse.start.y = last.y;
+        $scope.mouse.end.y = last.y;
         _renderObject(_setRenderObject());
       }
     };
