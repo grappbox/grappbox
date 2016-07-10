@@ -90,8 +90,8 @@ namespace GrappBox.Model
             if (res.IsSuccessStatusCode)
             {
                 logoMod = api.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
-                Logo = BytesToImage.String64ToImage(logoMod.Logo);
                 await BytesToImage.StoreImage(logoMod.Logo, logoImgFmt);
+                Debug.WriteLine(logoImgFmt);
             }
             else
             {
@@ -103,6 +103,7 @@ namespace GrappBox.Model
         {
             string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
             Logo = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
+            Debug.WriteLine(logoImgFmt);
         }
     }
 }

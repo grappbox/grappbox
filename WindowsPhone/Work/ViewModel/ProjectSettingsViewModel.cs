@@ -61,7 +61,8 @@ namespace GrappBox.ViewModel
                 _customerAccessModel.Clear();
                 await getCustomerAccesses();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -82,7 +83,8 @@ namespace GrappBox.ViewModel
                 _customerAccessModel.Clear();
                 await getCustomerAccesses();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -99,7 +101,8 @@ namespace GrappBox.ViewModel
                 _customerAccessModel = api.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("CustomerList");
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -119,7 +122,8 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("CustomerList");
                     _customerSelected = null;
                 }
-                else {
+                else
+                {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
@@ -168,7 +172,8 @@ namespace GrappBox.ViewModel
                 await getRoles();
                 _role = _projectRoleModel.Last();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -207,7 +212,8 @@ namespace GrappBox.ViewModel
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -241,7 +247,8 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("UserAssignedList");
                     NotifyPropertyChanged("UserNonAssignedList");
                 }
-                else {
+                else
+                {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
@@ -267,7 +274,8 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("UserAssignedList");
                     NotifyPropertyChanged("UserNonAssignedList");
                 }
-                else {
+                else
+                {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
@@ -291,7 +299,8 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("UserAssignedList");
                     NotifyPropertyChanged("UserNonAssignedList");
                 }
-                else {
+                else
+                {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
@@ -327,7 +336,8 @@ namespace GrappBox.ViewModel
                 _projectRoleModel = api.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("RoleList");
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -347,7 +357,8 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("RoleList");
                     _roleSelected = null;
                 }
-                else {
+                else
+                {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
@@ -537,6 +548,13 @@ namespace GrappBox.ViewModel
         #endregion ProjectRole
 
         #region ProjectSettings
+        public async System.Threading.Tasks.Task getProjectLogo()
+        {
+            await _projectSettingsModel.LogoUpdate();
+            await _projectSettingsModel.SetLogo();
+            NotifyPropertyChanged("Logo");
+        }
+
         public async System.Threading.Tasks.Task updateProjectSettings(string oldPassword = null, string newPassword = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
@@ -548,8 +566,8 @@ namespace GrappBox.ViewModel
                 props.Add("name", _projectSettingsModel.Name);
             if (_projectSettingsModel.Description != null && _projectSettingsModel.Description != "")
                 props.Add("description", _projectSettingsModel.Description);
-            if (_projectSettingsModel.Logo != null && _projectSettingsModel.Logo != "")
-                props.Add("logo", _projectSettingsModel.Logo);
+            if (_projectSettingsModel.LogoString != null && _projectSettingsModel.LogoString != "")
+                props.Add("logo", _projectSettingsModel.LogoString);
             if (_projectSettingsModel.Phone != null && _projectSettingsModel.Phone != "")
                 props.Add("phone", _projectSettingsModel.Phone);
             if (_projectSettingsModel.Company != null && _projectSettingsModel.Company != "")
@@ -572,7 +590,8 @@ namespace GrappBox.ViewModel
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -596,8 +615,8 @@ namespace GrappBox.ViewModel
             }
             if (_projectSettingsModel.Description != null && _projectSettingsModel.Description != "")
                 props.Add("description", _projectSettingsModel.Description);
-            if (_projectSettingsModel.Logo != null && _projectSettingsModel.Logo != "")
-                props.Add("logo", _projectSettingsModel.Logo);
+            if (_projectSettingsModel.LogoString != null && _projectSettingsModel.LogoString != "")
+                props.Add("logo", _projectSettingsModel.LogoString);
             if (_projectSettingsModel.Phone != null && _projectSettingsModel.Phone != "")
                 props.Add("phone", _projectSettingsModel.Phone);
             if (_projectSettingsModel.Company != null && _projectSettingsModel.Company != "")
@@ -648,7 +667,8 @@ namespace GrappBox.ViewModel
                 _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 notifyProjectSettings();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -670,7 +690,8 @@ namespace GrappBox.ViewModel
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -692,7 +713,8 @@ namespace GrappBox.ViewModel
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -745,36 +767,18 @@ namespace GrappBox.ViewModel
             {
                 if (_projectSettingsModel == null)
                     return new BitmapImage();
-                string base64 = _projectSettingsModel.Logo;
-                if (base64 == null || base64 == "")
-                    return new BitmapImage();
-                else
-                {
-                    var imageBytes = Convert.FromBase64String(base64);
-                    using (InMemoryRandomAccessStream ms = new InMemoryRandomAccessStream())
-                    {
-                        using (DataWriter writer = new DataWriter(ms.GetOutputStreamAt(0)))
-                        {
-                            writer.WriteBytes((byte[])imageBytes);
-                            writer.StoreAsync().GetResults();
-                        }
-
-                        var image = new BitmapImage();
-                        image.SetSource(ms);
-                        return image;
-                    }
-                }
+                return _projectSettingsModel.Logo;
             }
         }
 
         public string logo
         {
-            get { if (_projectSettingsModel == null) return ""; string name = _projectSettingsModel.Logo; if (name != null) { return name; } else return ""; }
+            get { if (_projectSettingsModel == null) return ""; string name = _projectSettingsModel.LogoString; if (name != null) { return name; } else return ""; }
             set
             {
-                if (value != _projectSettingsModel.Logo)
+                if (value != _projectSettingsModel.LogoString)
                 {
-                    _projectSettingsModel.Logo = value;
+                    _projectSettingsModel.LogoString = value;
                     NotifyPropertyChanged("Logo");
                 }
             }
@@ -902,7 +906,8 @@ namespace GrappBox.ViewModel
                 _projectUserModel.Add(newUser);
                 NotifyPropertyChanged("UserList");
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -919,7 +924,8 @@ namespace GrappBox.ViewModel
                 _projectUserModel = api.DeserializeArrayJson<ObservableCollection<ProjectUserModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("UserList");
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -939,7 +945,8 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("UserList");
                     _userSelected = null;
                 }
-                else {
+                else
+                {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }

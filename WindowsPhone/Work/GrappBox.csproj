@@ -124,7 +124,6 @@
     <Compile Include="Model\Bugtracker\BugtrackerModel.cs" />
     <Compile Include="Model\Calendar\CalendarModel.cs" />
     <Compile Include="Model\Cloud\CloudModel.cs" />
-    <Compile Include="Model\Global\AvatarModel.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
     <Compile Include="Model\Global\Creator.cs" />
     <Compile Include="Model\Global\DateTimeFormator.cs" />

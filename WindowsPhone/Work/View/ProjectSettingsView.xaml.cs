@@ -129,6 +129,7 @@ namespace GrappBox.View
                 await vm.getProjectUsers();
                 await vm.getCustomerAccesses();
                 await vm.getRoles();
+                await vm.getProjectLogo();
 
                 UpdatePassword.Visibility = Visibility.Visible;
                 NewPassword.Visibility = Visibility.Collapsed;

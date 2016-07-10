@@ -13,5 +13,8 @@ namespace GrappBox.Model.Global
     {
         [JsonProperty("logo")]
         public string Logo { get; set; }
+
+        [JsonProperty("avatar")]
+        public string Avatar { get; set; }
     }
 }

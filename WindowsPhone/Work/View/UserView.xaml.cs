@@ -112,6 +112,7 @@ namespace GrappBox.View
 
             this.navigationHelper.OnNavigatedTo(e);
             await vm.getAPI();
+            await vm.getProjectLogo();
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;

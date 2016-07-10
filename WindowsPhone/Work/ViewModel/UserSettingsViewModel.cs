@@ -15,7 +15,7 @@ namespace GrappBox.ViewModel
     class UserSettingsViewModel : ViewModelBase
     {
         static private UserSettingsViewModel instance = null;
-        private UserSettingsModel model;
+        private UserSettingsModel model = new UserSettingsModel();
 
         static public UserSettingsViewModel GetViewModel()
         {
@@ -26,6 +26,13 @@ namespace GrappBox.ViewModel
         public UserSettingsViewModel()
         {
             instance = this;
+        }
+
+        public async System.Threading.Tasks.Task getProjectLogo()
+        {
+            await model.LogoUpdate();
+            await model.SetLogo();
+            NotifyPropertyChanged("Avatar");
         }
 
         public async System.Threading.Tasks.Task updateAPI(string password = null)
@@ -39,8 +46,8 @@ namespace GrappBox.ViewModel
                 props.Add("lastname", model.Lastname);
             if (model.Birthday != null)
                 props.Add("birthday", model.Birthday);
-            if (model.Avatar != null && model.Avatar != "")
-                props.Add("avatar", model.Avatar);
+            if (model.av != null && model.av != "")
+                props.Add("avatar", model.av);
             if (password != null)
                 props.Add("password", password);
             if (model.Phone != null && model.Phone != "")
@@ -183,25 +190,7 @@ namespace GrappBox.ViewModel
             {
                 if (model == null)
                     return new BitmapImage();
-                string base64 = model.Avatar;
-                if (base64 == null || base64 == "")
-                    return new BitmapImage();
-                else
-                {
-                    var imageBytes = Convert.FromBase64String(base64);
-                    using (InMemoryRandomAccessStream ms = new InMemoryRandomAccessStream())
-                    {
-                        using (DataWriter writer = new DataWriter(ms.GetOutputStreamAt(0)))
-                        {
-                            writer.WriteBytes((byte[])imageBytes);
-                            writer.StoreAsync().GetResults();
-                        }
-
-                        var image = new BitmapImage();
-                        image.SetSource(ms);
-                        return image;
-                    }
-                }
+                return model.Avatar;
             }
         }
 
@@ -209,9 +198,9 @@ namespace GrappBox.ViewModel
         {
             set
             {
-                if (value != model.Avatar)
+                if (value != model.av)
                 {
-                    model.Avatar = value;
+                    model.av = value;
                     NotifyPropertyChanged("Avatar");
                 }
             }
