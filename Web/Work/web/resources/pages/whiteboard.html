@@ -3,6 +3,10 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- whiteboard: information -->
+<div class="navigation">
+  <h4>{[{ data.name ? '"' + data.name + '"' : 'Loading...' }]}{[{ data.creator ? ', by ' + data.creator : '' }]}</h4>
+  <a href="whiteboard/{[{ data.project_id }]}" title="Go back to the whiteboard list" class="btn btn-raised btn-info">Back</a>
+</div>
 <div class="panel panel-default">
   <div class="panel-heading">Draw and share your ideas.</div>
   <div class="panel-body">
@@ -31,7 +35,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="col-lg-12 col-md-12 col-xs-12">
                   <div class="form-group">
                     <label for="pencil" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'pencil' ? 'active' : '' }]}">
-                      <i class="material-icons">border_color</i>
+                      <i class="material-icons">mode_edit</i>
                       <input type="radio" data-ng-model="selected.tool" id="pencil" value="pencil">
                     </label>
                   </div>
@@ -57,6 +61,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <label for="ellipse" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'ellipse' ? 'active' : '' }]}">
                       <i class="material-icons">radio_button_unchecked</i>
                       <input type="radio" data-ng-model="selected.tool" id="ellipse" value="ellipse">
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label for="none" class="col-md-1 col-xs-1 control-label">
+                      <i class="material-icons">block</i>
+                      <input type="radio" data-ng-click="action.resetTool()" id="none" value="none">
                     </label>
                   </div>
                 </div>
@@ -104,7 +114,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
               <!-- whiteboard: canvas -->
               <div class="col-lg-12 col-md-12 col-xs-12 canvas-wrapper">
-                <canvas id="whiteboard-canvas" height="2160px" width="4096px" data-ng-init="action.setWhiteboard()"></canvas>
+                <canvas class="{[{ selected.tool != 'none' ? 'edit' : '' }]}" id="whiteboard-canvas" height="2160px" width="4096px"></canvas>
               </div>
               <div class="clearfix"></div>
             </div>
