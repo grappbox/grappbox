@@ -205,6 +205,7 @@ void ProjectSettingsModel::onLoadProjectInfoFail(int id, QByteArray data)
 {
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onLoadUserRoleDone(int id, QByteArray data)
@@ -238,6 +239,7 @@ void ProjectSettingsModel::onLoadUserRoleFail(int id, QByteArray data)
 {
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onLoadProjectRolesDone(int id, QByteArray data)
@@ -278,6 +280,7 @@ void ProjectSettingsModel::onLoadProjectRolesFail(int id, QByteArray data)
 {
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onLoadCustomerAccessDone(int id, QByteArray data)
@@ -318,6 +321,7 @@ void ProjectSettingsModel::onLoadCustomerAccessFail(int id, QByteArray data)
 {
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onLoadUsersProjectDone(int id, QByteArray data)
@@ -385,6 +389,7 @@ void ProjectSettingsModel::onLoadUsersProjectFail(int id, QByteArray data)
 {
     m_isLoading--;
     emit isLoadingChanged(m_isLoading != 0);
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onModifyInformationDone(int id, QByteArray data)
@@ -394,7 +399,7 @@ void ProjectSettingsModel::onModifyInformationDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onModifyInformationFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onAddUserDone(int id, QByteArray data)
@@ -410,7 +415,7 @@ void ProjectSettingsModel::onAddUserDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onAddUserFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onDeleteUserDone(int id, QByteArray data)
@@ -426,7 +431,7 @@ void ProjectSettingsModel::onDeleteUserDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onDeleteUserFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onChangeRoleUserDone(int id, QByteArray data)
@@ -442,7 +447,7 @@ void ProjectSettingsModel::onChangeRoleUserDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onChangeRoleUserFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onAddCustomerAccessDone(int id, QByteArray data)
@@ -459,7 +464,7 @@ void ProjectSettingsModel::onAddCustomerAccessDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onAddCustomerAccessFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onRemoveCustomerAccessDone(int id, QByteArray data)
@@ -476,7 +481,7 @@ void ProjectSettingsModel::onRemoveCustomerAccessDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onRemoveCustomerAccessFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onAddNewRoleDone(int id, QByteArray data)
@@ -493,7 +498,7 @@ void ProjectSettingsModel::onAddNewRoleDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onAddNewRoleFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onDeleteRoleDone(int id, QByteArray data)
@@ -510,7 +515,7 @@ void ProjectSettingsModel::onDeleteRoleDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onDeleteRoleFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void ProjectSettingsModel::onUpdateRoleDone(int id, QByteArray data)
@@ -527,5 +532,5 @@ void ProjectSettingsModel::onUpdateRoleDone(int id, QByteArray data)
 
 void ProjectSettingsModel::onUpdateRoleFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }

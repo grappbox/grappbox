@@ -15,6 +15,7 @@
 #include "UserData.h"
 #include "ProjectData.h"
 #include "SDebugLog.h"
+#include "Manager/SInfoManager.h"
 #include "IDataConnector.h"
 
 #define USER_TOKEN API::SDataManager::GetDataManager()->GetToken()

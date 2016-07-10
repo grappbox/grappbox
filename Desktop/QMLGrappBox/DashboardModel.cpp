@@ -1,4 +1,5 @@
 #include "DashboardModel.h"
+#include "Manager/SInfoManager.h"
 
 DashboardModel::DashboardModel() : QObject(nullptr)
 {
@@ -61,6 +62,24 @@ void DashboardModel::selectProject(ProjectData *project)
     m_newEventList.clear();
     loadUserProjectList();
     loadNewEventList();
+}
+
+void DashboardModel::addANewProject(ProjectData *project, QString securedPassword)
+{
+    BEGIN_REQUEST_ADV(this, "OnCreateProjectDone", "OnCreateProjectFail");
+    {
+        ADD_FIELD("token", USER_TOKEN);
+        ADD_FIELD("name", project->name());
+        ADD_FIELD("description", project->description());
+        ADD_FIELD("phone", project->phone());
+        ADD_FIELD("company", project->company());
+        ADD_FIELD("email", project->mail());
+        ADD_FIELD("facebook", project->facebook());
+        ADD_FIELD("twitter", project->twitter());
+        ADD_FIELD("password", securedPassword);
+        POST(API::DP_PROJECT, API::PR_CREATE_PROJECT);
+    }
+    END_REQUEST;
 }
 
 void DashboardModel::OnLoadProjectListDone(int id, QByteArray data)
@@ -202,4 +221,15 @@ void DashboardModel::OnLoadEventListDone(int id, QByteArray data)
 void DashboardModel::OnLoadEventListFail(int id, QByteArray data)
 {
     emit error("Dashboard", "Unable to retrieve the list of next events in your project. Please try again later.");
+}
+
+void DashboardModel::OnCreateProjectDone(int id, QByteArray data)
+{
+    loadProjectList();
+    SInfoManager::GetManager()->info("Project created!");
+}
+
+void DashboardModel::OnCreateProjectFail(int id, QByteArray data)
+{
+    SInfoManager::GetManager()->error("Project creation", "Unable to create the project.");
 }

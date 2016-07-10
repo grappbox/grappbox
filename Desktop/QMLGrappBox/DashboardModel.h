@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void loadUserProjectList();
     Q_INVOKABLE void loadNewEventList();
     Q_INVOKABLE void selectProject(ProjectData *project);
+    Q_INVOKABLE void addANewProject(ProjectData *project, QString securedPassword);
     // Here put the statistics load
 
     QVariantList projectList() const
@@ -119,6 +120,8 @@ public slots:
     void OnLoadUserListFail(int id, QByteArray data);
     void OnLoadEventListDone(int id, QByteArray data);
     void OnLoadEventListFail(int id, QByteArray data);
+    void OnCreateProjectDone(int id, QByteArray data);
+    void OnCreateProjectFail(int id, QByteArray data);
 
 private:
     QList<ProjectData*> m_projectList;

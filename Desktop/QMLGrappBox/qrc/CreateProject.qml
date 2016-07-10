@@ -9,10 +9,62 @@ import GrappBoxController 1.0
 import QtQuick.Controls.Styles 1.3 as Styles
 
 View {
+
+    id: projectView
+
+    anchors.centerIn: parent
+
+    property DashboardModel model
+
+    ProjectData {
+        id: createProjectData
+
+        name: ""
+        description: ""
+        mail: ""
+        facebook: ""
+        twitter: ""
+        company: ""
+        phone: ""
+    }
+
+    onVisibleChanged: {
+        createProjectData.name = ""
+        createProjectData.description = ""
+        createProjectData.mail = ""
+        createProjectData.facebook = ""
+        createProjectData.twitter = ""
+        createProjectData.company = ""
+        createProjectData.phone = ""
+        name.text = ""
+        company.text = ""
+        phone.text = ""
+        facebook.text = ""
+        twitter.text = ""
+        email.text = ""
+        newPassword.text = ""
+        newPasswordConfirm.text = ""
+        avatarProject.source = Qt.resolvedUrl("qrc:/icons/icons/default-avatar.min.png")
+    }
+
+    elevation: 1
+
+    width: Units.dp(500)
+    height: mainColumn.implicitHeight + Units.dp(32)
+
     Column {
 
+        id: mainColumn
+
         anchors.margins: Units.dp(16)
-        property ProjectSettingsModel projectSettingsModel
+        anchors.fill: parent
+
+        Label {
+            text: "Create a new project"
+            style: "title"
+        }
+
+        Separator {}
 
         TextField {
             id: name
@@ -20,7 +72,6 @@ View {
             floatingLabel: true
             anchors.left: parent.left
             anchors.right: parent.right
-            text: projectSettingsModel.project.name
             hasError: text == ""
         }
 
@@ -32,7 +83,6 @@ View {
             height: Units.dp(86)
             anchors.left: parent.left
             anchors.right: parent.right
-            text: projectSettingsModel.project.description
         }
 
         Separator {}
@@ -65,7 +115,6 @@ View {
             floatingLabel: true
             anchors.left: parent.left
             anchors.right: parent.right
-            text: projectSettingsModel.project.company
         }
 
         Separator {}
@@ -76,9 +125,10 @@ View {
             floatingLabel: true
             anchors.left: parent.left
             anchors.right: parent.right
-            text: projectSettingsModel.project.mail
 
             Component.onCompleted: {
+                if (email.text == "")
+                    return false
                 hasError = Qt.binding(function() {
                     var mailValidator = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                     return !mailValidator.test(email.text)
@@ -94,9 +144,10 @@ View {
             floatingLabel: true
             anchors.left: parent.left
             anchors.right: parent.right
-            text: projectSettingsModel.project.phone
 
             Component.onCompleted: {
+                if (phone.text == "")
+                    return false
                 hasError = Qt.binding(function() {
                     var phoneValidator = /^(\+(([0-9]){1,2})[-.])?((((([0-9]){2,3})[-.]){1,2}([0-9]{4,10}))|([0-9]{10}))$/
                     return !phoneValidator.test(phone.text) && phone.text != ""
@@ -112,10 +163,11 @@ View {
             floatingLabel: true
             anchors.left: parent.left
             anchors.right: parent.right
-            text: projectSettingsModel.project.facebook
 
             Component.onCompleted: {
                 hasError = Qt.binding(function() {
+                    if (facebook.text == "")
+                        return false
                     var phoneValidator = /https?\:\/\/(?:www\.)?facebook\.com\/(\d+|[A-Za-z0-9\.]+)\/?/
                     return !phoneValidator.test(facebook.text) && facebook.text != ""
                 })
@@ -130,14 +182,51 @@ View {
             floatingLabel: true
             anchors.left: parent.left
             anchors.right: parent.right
-            text: projectSettingsModel.project.twitter
 
             Component.onCompleted: {
                 hasError = Qt.binding(function() {
+                    if  (twitter.text == "")
+                        return false
                     var phoneValidator = /(?:http:\/\/)?(?:www\.)?twitter\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-]*)/
                     return !phoneValidator.test(twitter.text) && twitter.text != ""
                 })
             }
+        }
+
+        Separator {}
+
+        TextField {
+            id: newPassword
+            anchors.left: parent.left
+            anchors.right: parent.right
+            placeholderText: "Secured password"
+            floatingLabel: true
+            echoMode: TextInput.Password
+            hasError: passwordErrorMessage.visible
+        }
+
+        Separator {}
+
+        TextField {
+            id: newPasswordConfirm
+            anchors.left: parent.left
+            anchors.right: parent.right
+            placeholderText: "Confirm secured password"
+            floatingLabel: true
+            echoMode: TextInput.Password
+            hasError: passwordErrorMessage.visible
+        }
+
+        Separator {}
+
+        Label {
+            id: passwordErrorMessage
+            anchors.left: parent.left
+            anchors.right: parent.right
+            text: "The new password and the confirmation doesn't match."
+            color: Theme.primaryColor
+
+            visible: newPassword.text != "" && newPasswordConfirm.text != "" && newPassword.text != newPasswordConfirm.text
         }
 
         Separator {}
@@ -152,16 +241,32 @@ View {
             }
 
             Button {
+                text: "Cancel"
+
+                onClicked: {
+                    projectView.visible = false
+                }
+            }
+
+            Button {
                 text: "Save"
 
-                property bool formError: name.hasError || email.hasError || phone.hasError || twitter.hasError || facebook.hasError
+                property bool formError: name.hasError || email.hasError || phone.hasError || twitter.hasError || facebook.hasError || newPassword.text == "" || newPassword.text != newPasswordConfirm.text
 
-                textColor: formError ? Theme.primaryColor : Theme.accentColor
+                textColor: Theme.primaryColor
 
                 enabled: !formError
 
                 onClicked: {
-                    projectSettingsModel.modifyInformation(name.text, description.text, company.text, email.text, phone.text, facebook.text, twitter.text)
+                    createProjectData.name = name.text
+                    createProjectData.description = description.text
+                    createProjectData.company = company.text
+                    createProjectData.mail = email.text
+                    createProjectData.facebook = facebook.text
+                    createProjectData.twitter = twitter.text
+                    createProjectData.phone = phone.text
+                    model.addANewProject(createProjectData, newPassword.text)
+                    projectView.visible = false
                 }
             }
         }

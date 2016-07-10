@@ -86,7 +86,8 @@ namespace API
         PR_CREATE_DIRECTORY,
         PR_OPEN_STREAM,
         PR_ADD_TAG_TASK,
-        PR_ADD_USER_PROJECT
+        PR_ADD_USER_PROJECT,
+        PR_CREATE_PROJECT
     };
 
     enum DeleteRequest

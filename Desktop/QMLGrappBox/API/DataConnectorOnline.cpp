@@ -80,6 +80,7 @@ DataConnectorOnline::DataConnectorOnline()
     _PostMap[PR_OPEN_STREAM] = "cloud/stream";
     _PostMap[PR_ADD_TAG_TASK] = "tasks/tagcreation";
     _PostMap[PR_ADD_USER_PROJECT] = "projects/addusertoproject";
+    _PostMap[PR_CREATE_PROJECT] = "projects/projectcreation";
 
 	// Initialize Delete request
     _DeleteMap[DR_PROJECT_ROLE] = "roles/delprojectroles";

@@ -68,6 +68,7 @@ void TimelineModel::OnTimelineLoadFail(int id, QByteArray data)
     m_numberLoading--;
     if (m_numberLoading <= 0)
         setIsLoadingTimeline(false);
+    SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::OnTimelineCommentLoadDone(int id, QByteArray data)
@@ -144,6 +145,7 @@ void TimelineModel::OnTimelineCommentLoadDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineCommentLoadFail(int id, QByteArray data)
 {
+        SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::OnTimelineAddMessageDone(int id, QByteArray data)
@@ -216,7 +218,7 @@ void TimelineModel::OnTimelineAddMessageDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineAddMessageFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::OnTimelineRemoveMessageDone(int id, QByteArray data)
@@ -289,7 +291,7 @@ void TimelineModel::OnTimelineRemoveMessageDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineRemoveMessageFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::OnTimelineEditMessageDone(int id, QByteArray data)
@@ -364,7 +366,7 @@ void TimelineModel::OnTimelineEditMessageDone(int id, QByteArray data)
 
 void TimelineModel::OnTimelineEditMessageFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::OnGetTimelineDone(int id, QByteArray data)
@@ -396,7 +398,7 @@ void TimelineModel::OnGetTimelineDone(int id, QByteArray data)
 void TimelineModel::OnGetTimelineFail(int id, QByteArray data)
 {
     setIsLoadingTimeline(false);
-
+    SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void TimelineModel::loadNextTimelineContent(bool isClient)

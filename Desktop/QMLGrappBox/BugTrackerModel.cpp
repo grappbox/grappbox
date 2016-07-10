@@ -207,7 +207,7 @@ void BugTrackerModel::onLoadClosedTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadClosedTicketFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onLoadOpenTicketDone(int id, QByteArray data)
@@ -244,7 +244,7 @@ void BugTrackerModel::onLoadOpenTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadOpenTicketFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onLoadYoursTicketDone(int id, QByteArray data)
@@ -297,7 +297,7 @@ void BugTrackerModel::onLoadYoursTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadYoursTicketFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onLoadCommentTicketDone(int id, QByteArray data)
@@ -370,7 +370,7 @@ void BugTrackerModel::onLoadCommentTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadCommentTicketFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onLoadTagsDone(int id, QByteArray data)
@@ -414,7 +414,7 @@ void BugTrackerModel::onLoadTagsDone(int id, QByteArray data)
 
 void BugTrackerModel::onLoadTagsFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAddTagDone(int id, QByteArray data)
@@ -432,7 +432,7 @@ void BugTrackerModel::onAddTagDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddTagFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAddTicketDone(int id, QByteArray data)
@@ -446,7 +446,7 @@ void BugTrackerModel::onAddTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddTicketFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAddUsersDone(int id, QByteArray data)
@@ -481,7 +481,7 @@ void BugTrackerModel::onAddUsersDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddUsersFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAssignTagDone(int id, QByteArray data)
@@ -502,7 +502,7 @@ void BugTrackerModel::onAssignTagDone(int id, QByteArray data)
 
 void BugTrackerModel::onAssignTagFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onRemoveTagsToTicketDone(int id, QByteArray data)
@@ -513,7 +513,7 @@ void BugTrackerModel::onRemoveTagsToTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onRemoveTagsToTicketFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onDeleteTagDone(int id, QByteArray data)
@@ -525,7 +525,7 @@ void BugTrackerModel::onDeleteTagDone(int id, QByteArray data)
 
 void BugTrackerModel::onDeleteTagFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onModifyTicketDone(int id, QByteArray data)
@@ -560,7 +560,7 @@ void BugTrackerModel::onModifyTicketDone(int id, QByteArray data)
 
 void BugTrackerModel::onModifyTicketFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onCloseDone(int id, QByteArray data)
@@ -572,7 +572,7 @@ void BugTrackerModel::onCloseDone(int id, QByteArray data)
 
 void BugTrackerModel::onCloseFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onAddCommentDone(int id, QByteArray data)
@@ -600,7 +600,7 @@ void BugTrackerModel::onAddCommentDone(int id, QByteArray data)
 
 void BugTrackerModel::onAddCommentFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onReopenDone(int id, QByteArray data)
@@ -612,7 +612,7 @@ void BugTrackerModel::onReopenDone(int id, QByteArray data)
 
 void BugTrackerModel::onReopenFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onRemoveCommentDone(int id, QByteArray data)
@@ -624,7 +624,7 @@ void BugTrackerModel::onRemoveCommentDone(int id, QByteArray data)
 
 void BugTrackerModel::onRemoveCommentFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onEditCommentDone(int id, QByteArray data)
@@ -636,6 +636,7 @@ void BugTrackerModel::onEditCommentDone(int id, QByteArray data)
 
 void BugTrackerModel::onEditCommentFail(int id, QByteArray data)
 {
+        SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 void BugTrackerModel::onRemoveUserDone(int id, QByteArray data)
@@ -670,7 +671,7 @@ void BugTrackerModel::onRemoveUserDone(int id, QByteArray data)
 
 void BugTrackerModel::onRemoveUserFail(int id, QByteArray data)
 {
-
+    SInfoManager::GetManager()->emitError("Bug tracker", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
 }
 
 BugTrackerTicketData *BugTrackerModel::getTicketById(int id)

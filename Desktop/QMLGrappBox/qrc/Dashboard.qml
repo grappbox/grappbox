@@ -30,10 +30,17 @@ Item {
 
         anchors.fill: parent
 
-        contentHeight: Math.max(flowProject.height + 190, parent.height)
+        contentHeight: Math.max(createProjectView.visible ? createProjectView.height + Units.dp(32) : flowProject.height + 190, parent.height)
+
+        CreateProject {
+            id: createProjectView
+            visible: false
+            model: dashboardModel
+        }
 
         Label {
             id: welcomeLabel
+            visible: !createProjectView.visible
             text: "Welcome to GrappBox"
             style: "display3"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -43,6 +50,7 @@ Item {
 
         Label {
             id: bodyWelcomeLabel
+            visible: !createProjectView.visible
             text: "You can create a project or select a project from the list"
             style: "body2"
             anchors.horizontalCenter: parent.horizontalCenter
@@ -53,6 +61,7 @@ Item {
         Button {
             id: createProjectButton
             text: "Create a project"
+            visible: !createProjectView.visible
             elevation: 1
             backgroundColor: Theme.primaryColor
             anchors.horizontalCenter: parent.horizontalCenter
@@ -60,7 +69,7 @@ Item {
             anchors.topMargin: Units.dp(32)
 
             onClicked: {
-                console.log("Create Project")
+                createProjectView.visible = true;
             }
         }
 
@@ -88,9 +97,7 @@ Item {
                         elevation: viewMouseArea.containsMouse ? 2 : 1
                         radius: Units.dp(2)
 
-                        onElevationChanged: {
-
-                        }
+                        visible: !createProjectView.visible
 
                         MouseArea {
                             id: viewMouseArea
