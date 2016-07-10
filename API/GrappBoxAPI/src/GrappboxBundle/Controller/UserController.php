@@ -25,6 +25,19 @@ use GrappboxBundle\Controller\User;
  */
 class UserController extends RolesAndTokenVerificationController
 {
+  public function passwordEncryptAction(Request $request, $id)
+  {
+    $em = $this->getDoctrine()->getManager();
+    $user = $em->getRepository("GrappboxBundle:User")->findOneBy(array('id' => $id));
+
+    $pwd = $user->getPassword();
+    $encoder = $this->container->get('security.password_encoder');
+    $encoded = $encoder->encodePassword($user, $pwd);
+    $user->setPassword($encoded);
+    $em->flush();
+    return new JsonResponse("Success: Password encoded for user ".$user->getFirstname()." ".$user->getLastname());
+  }
+
 	public function basicInformationsAction(Request $request, $token)
 	{
 		$content = $request->getContent();

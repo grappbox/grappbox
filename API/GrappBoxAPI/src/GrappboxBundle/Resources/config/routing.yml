@@ -1,3 +1,11 @@
+# -----------------------------------------------------------------------
+#                     FOR BETA ONLY
+# -----------------------------------------------------------------------
+v2_user_passwordEncrypt:
+    path:       user/passwordencrypt/{id}
+    defaults:   { _controller:GrappboxBundle:User:passwordEncrypt, _format: json }
+    methods:    [GET]
+
 
 # -----------------------------------------------------------------------
 #                     ACCOUNT ADMINISTRATION CONTROLLER
