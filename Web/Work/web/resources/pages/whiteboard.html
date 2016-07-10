@@ -2,86 +2,122 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="panel panel-warning">
-  <div class="panel-heading">Warning</div>
+<!-- whiteboard: information -->
+<div class="panel panel-default">
+  <div class="panel-heading">Draw and share your ideas.</div>
   <div class="panel-body">
-    <p>This section is under construction.</p>
+    <p>
+      Use the <strong>toolbox</strong> of each whiteboard to draw lines, shapes and words.<br>If you or one of your team members have trouble connecting to any whiteboard, please check your access rights using <strong>the project settings</strong> page.</p>
+    </p>
   </div>
 </div>
 
-<div class="view view-content" id="whiteboard-content-view" data-ng-init="setWhiteboard()">
+<!-- whiteboard: canvas and toolbox -->
+<section id="whiteboard">
+  <div class="row">
+    <div class="col-lg-12">
+      <div data-ng-if="view.onLoad">
+        <div class="spinner section">
+          <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+        </div>
+      </div>
+      <div data-ng-if="!view.onLoad">
+        <div data-ng-if="view.authorized">
+          <div data-ng-if="view.valid">
 
-  <section class="app-section" id="whiteboard-content">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : whiteboard content -->
-          <div class="section-heading">
-            <h2>Whiteboard #{[{ id.whiteboard }]}</h2>
-            <p>Use the toolbox below the whiteboard to draw and share your ideas.<br>If you or one of your team members have trouble connecting to this whiteboard, please check your access rights using the project settings page.</p>
-          </div>
-          <div class="section-content">
-            <div id="all-whiteboard-objects">
-              <div class="row data-actions">
-                <div class="col-md-3">
-                  <label for="tool-pencil">
-                    <input type="radio" data-ng-model="selectedTool" id="tool-pencil" value="pencil">
-                    <span><i class="fa fa-pencil"></i>Pencil</span>
-                  </label>
-                  <label for="tool-line">
-                    <input type="radio" data-ng-model="selectedTool" id="tool-line" value="line">
-                    <span><i class="fa fa-minus"></i>Line</span>
-                  </label>
-                  <label for="tool-rectangle">
-                    <input type="radio" data-ng-model="selectedTool" id="tool-rectangle" value="rectangle">
-                    <span><i class="fa fa-square-o"></i>Rectangle</span>
-                  </label>
-                  <label for="tool-circle">
-                    <input type="radio" data-ng-model="selectedTool" id="tool-circle" value="circle">
-                    <span><i class="fa fa-circle-o"></i>Circle</span>
-                  </label>
+            <div class="well">
+              <!-- whiteboard: toolbox -->
+              <div class="col-lg-12 col-md-12 col-xs-12 action">
+                <div class="col-lg-3 col-md-12 col-xs-12">
+                  <div class="form-group">
+                    <label for="pencil" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'pencil' ? 'active' : '' }]}">
+                      <i class="material-icons">border_color</i>
+                      <input type="radio" data-ng-model="selected.tool" id="pencil" value="pencil">
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label for="line" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'line' ? 'active' : '' }]}">
+                      <i class="material-icons">remove</i>
+                      <input type="radio" data-ng-model="selected.tool" id="line" value="line">
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label for="rectangle" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'rectangle' ? 'active' : '' }]}">
+                      <i class="material-icons">crop_square</i>
+                      <input type="radio" data-ng-model="selected.tool" id="rectangle" value="rectangle">
+                    </label>
+                  </div>        
+                  <div class="form-group">
+                    <label for="diamond" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'diamond' ? 'active' : '' }]}">
+                      <i class="material-icons diamond">crop_square</i>
+                      <input type="radio" data-ng-model="selected.tool" id="diamond" value="diamond">
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label for="ellipse" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'ellipse' ? 'active' : '' }]}">
+                      <i class="material-icons">radio_button_unchecked</i>
+                      <input type="radio" data-ng-model="selected.tool" id="ellipse" value="ellipse">
+                    </label>
+                  </div>
                 </div>
-                <div class="col-md-3">
-                  <label for="tool-text">
-                    <input type="radio" data-ng-model="selectedTool" id="tool-text" value="text">
-                    <span><i class="fa fa-font"></i>Text</span>
-                  </label>
-                  <input type="text" data-ng-model="text.textValue" placeholder="Text to draw...">
-                  <label for="text-italic">
-                    <input type="checkbox" id="text-italic" data-ng-model="text.isItalicEnabled">
-                    <span><i class="fa fa-italic"></i>Italic</span>
-                  </label>
-                  <label for="text-bold">
-                    <input type="checkbox" id="text-bold" data-ng-model="text.isBoldEnabled">
-                    <span><i class="fa fa-bold"></i>Bold</span>
-                  </label>
+                <div class="col-lg-4 col-md-12 col-xs-12">
+                  <div class="form-group">
+                    <label for="text" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'text' ? 'active' : '' }]}">
+                      <i class="material-icons">format_color_text</i>
+                      <input type="radio" data-ng-model="selected.tool" id="text" value="text">
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <input type="text" data-ng-model="text.value" class="col-md-6" placeholder="Text to draw">
+                  </div>
+                  <div class="form-group">
+                    <label for="italic" class="col-md-1 col-xs-1 control-label {[{ text.italic ? 'active' : '' }]}">
+                      <i class="material-icons">format_italic</i>
+                      <input type="checkbox" data-ng-model="text.italic" id="italic" value="italic">
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label for="bold" class="col-md-1 col-xs-1 control-label {[{ text.bold ? 'active' : '' }]}">
+                      <i class="material-icons">format_bold</i>
+                      <input type="checkbox" data-ng-model="text.bold" id="bold" value="bold">
+                    </label>
+                  </div>
                 </div>
-                <div class="col-md-5">
-                  <label for="draw-color" class="no-select">
-                    <span><i class="fa fa-paint-brush"></i>Draw color</span>
-                  </label>
-                  <select id="draw-color" data-ng-options="drawColor.name for drawColor in color.availableColors track by drawColor.value" data-ng-model="color.selectedDrawColor"></select>
-                  <label for="fill-color" class="no-select">
-                    <span><i class="fa fa-tint"></i>Fill color</span>
-                  </label>
-                  <select id="fill-color" data-ng-options="fillColor.name for fillColor in color.availableColors track by fillColor.value" data-ng-model="color.selectedFillColor"></select>
-                  <label for="line-width" class="no-select">
-                    <span><i class="fa fa-expand"></i>Line width</span>
-                  </label>
-                  <select id="line-width" data-ng-options="lineWidth.label for lineWidth in line.availableWidths track by lineWidth.value" data-ng-model="line.selectedLineWidth"></select>
-                </div>
-                <div class="col-md-1">
-                  <a href="" data-ng-click="undoLastCanvasAction()"><i class="fa fa-undo"></i>Undo</a>
+                <div class="col-lg-5 col-md-12 col-xs-12">
+                  <div class="form-group">
+                    <label for="draw" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">color_lens</i></label>
+                    <select id="draw" class="col-md-2 col-xs-2" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.color"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="fill" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_color_fill</i></label>
+                    <select id="fill" class="col-md-2 col-xs-2" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.fill"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="width" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_line_spacing</i></label>
+                    <select id="width" class="col-md-2 col-xs-2" data-ng-options="size.label for size in sizes track by size.value" data-ng-model="selected.size"></select>
+                  </div>
                 </div>
               </div>
-              <div class="data-content">
-                <canvas id="whiteboard-canvas" height="2160px" width="4096px"></canvas>
+              <!-- whiteboard: canvas -->
+              <div class="col-lg-12 col-md-12 col-xs-12 canvas-wrapper">
+                <canvas id="whiteboard-canvas" height="2160px" width="4096px" data-ng-init="action.setWhiteboard()"></canvas>
               </div>
+              <div class="clearfix"></div>
             </div>
+          </div>
+          
+          <div data-ng-if="!view.onLoad && !view.valid">
+            <div class="well centered">
+              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+            </div>
+          </div>
+        </div>
+        <div data-ng-if="!view.authorized">
+          <div class="well centered">
+            <p><i class="material-icons">block</i><br>You don't have sufficient rights to perform this operation.</p>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-</div>
+  </div>
+</section>

@@ -9,309 +9,251 @@
 * APP whiteboard page content
 *
 */
-app.controller("whiteboardController", ["$scope", "$http", "$routeParams", "drawFactory", function($scope, $http, $routeParams, drawFactory) {
+app.controller("whiteboardController", ["$scope", "$http", "$route", "whiteboardFactory", function($scope, $http, $route, whiteboardFactory) {
 
   /* ==================== INITIALIZATION ==================== */
 
   // Scope variables initialization
-  $scope.id = { project: $routeParams.project_id, whiteboard: $routeParams.id };
-  $scope.selectedTool = "pencil";
+  $scope.view = { onLoad: true, valid: false, authorized: false };
+  $scope.whiteboard = { id: $route.current.params.id, project_id: $route.current.params.project_id, canvas: {}, points: [] };
+  $scope.action = { undoLastAction: "", setWhiteboard: "" };
 
-  $scope.draw = { canvasPoints: [], mouseStartPosition: { x: 0, y: 0 }, mouseEndPosition: { x: 0, y: 0 } };
-  $scope.text = { textValue: "", isItalicEnabled: false, isBoldEnabled: false };
+  $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
+  $scope.text = { value: "", italic: false, bold: false };
 
-  $scope.color = {
-    availableColors: [ { name: "-None-", value: "none" }, { name: "Red", value: "#F44336" }, { name: "Pink", value: "#E91E63" }, { name: "Purple", value: "#9C27B0" },
-                       { name: "Deep Purple", value: "#673AB7" }, { name: "Indigo", value: "#3F51B5" }, { name: "Blue", value: "#2196F3" }, { name: "Light Blue", value: "#03A9F4" },
-                       { name: "Cyan", value: "#00BCD4" }, { name: "Teal", value: "#009688" }, { name: "Green", value: "#4CAF50" }, { name: "Light Green", value: "#8BC34A" },
-                       { name: "Lime", value: "#CDDC39" }, { name: "Yellow", value: "#FFEB3B" }, { name: "Amber", value: "#FFC107" }, { name: "Orange", value: "#FF9800" },
-                       { name: "Deep Orange", value: "#FF5722" }, { name: "Brown", value: "#795548" }, { name: "Blue Grey", value: "#607D8B" }, { name: "White", value: "#FFFFFF" },
-                       { name: "Grey 20%", value: "#EEEEEE" }, { name: "Grey 40%", value: "#BDBDBD" }, { name: "Grey 50%", value: "#9E9E9E" }, { name: "Grey 60%", value: "#757575" },
-                       { name: "Grey 80%", value: "#424242" }, { name: "Black", value: "#000000" } ],
-    selectedDrawColor: { name: "Black", value: "#000000" },
-    selectedFillColor: { name: "-None-", value: "none" } };
+  $scope.colors = [
+    { name: "-None-", value: "none" },
+    { name: "Red", value: "#F44336" },
+    { name: "Pink", value: "#E91E63" },
+    { name: "Purple", value: "#9C27B0" },
+    { name: "Deep Purple", value: "#673AB7" },
+    { name: "Indigo", value: "#3F51B5" },
+    { name: "Blue", value: "#2196F3" },
+    { name: "Light Blue", value: "#03A9F4" },
+    { name: "Cyan", value: "#00BCD4" },
+    { name: "Teal", value: "#009688" },
+    { name: "Green", value: "#4CAF50" },
+    { name: "Light Green", value: "#8BC34A" },
+    { name: "Lime", value: "#CDDC39" },
+    { name: "Yellow", value: "#FFEB3B" },
+    { name: "Amber", value: "#FFC107" },
+    { name: "Orange", value: "#FF9800" },
+    { name: "Deep Orange", value: "#FF5722" },
+    { name: "Brown", value: "#795548" },
+    { name: "Blue Grey", value: "#607D8B" },
+    { name: "White", value: "#FFFFFF" },
+    { name: "Grey 20%", value: "#EEEEEE" },
+    { name: "Grey 40%", value: "#BDBDBD" },
+    { name: "Grey 50%", value: "#9E9E9E" },
+    { name: "Grey 60%", value: "#757575" },
+    { name: "Grey 80%", value: "#424242" },
+    { name: "Black", value: "#000000" }
+  ];
 
-  $scope.line = {
-    availableWidths: [ { label: "0.5 pt", value: "0.5" }, { label: "1 pt", value: "1" }, { label: "1.5 pt", value: "1.5" }, { label: "2 pt", value: "2" },
-                       { label: "2.5 pt", value: "2.5" }, { label: "3 pt", value: "3" }, { label: "4 pt", value: "4" }, { label: "5 pt", value: "5" } ],
-    selectedLineWidth: { label: "1 pt", value: "1" } };
+  $scope.sizes = [
+    { label: "0.5 pt", value: "0.5" },
+    { label: "1 pt", value: "1" },
+    { label: "1.5 pt", value: "1.5" },
+    { label: "2 pt", value: "2" },
+    { label: "2.5 pt", value: "2.5" },
+    { label: "3 pt", value: "3" },
+    { label: "4 pt", value: "4" },
+    { label: "5 pt", value: "5" }
+  ];
+
+  $scope.selected = {
+    color: { name: "Black", value: "#000000" },
+    fill: { name: "-None-", value: "none" },
+    size: { label: "1 pt", value: "1" },
+    tool: "pencil"
+  };
 
 
-  // Routine definition
+
+  /* ==================== LOCAL ROUTINES ==================== */
+
+  // Routine definition (local)
   // Create/compile canvasData to render
-  var createRenderObject = function() {
-    var canvasData = {};
+  var _setRenderObject = function() {
+    var data = {};
 
-    switch ($scope.selectedTool) {
+    switch ($scope.selected.tool) {
       case "pencil":
-      canvasData = { tool: "pencil", lineWidth: Number($scope.line.selectedLineWidth.value), drawColor: $scope.color.selectedDrawColor.value, points: $scope.draw.canvasPoints };
+      data = {
+        tool: "pencil",
+        size: Number($scope.selected.size.value),
+        color: $scope.selected.color.value,
+        points: $scope.whiteboard.points
+      };
       break;
 
       case "line":
-      canvasData = { tool: "line", lineWidth: Number($scope.line.selectedLineWidth.value), drawColor: $scope.color.selectedDrawColor.value,
-        startX: $scope.draw.mouseStartPosition.x, startY: $scope.draw.mouseStartPosition.y, endX: $scope.draw.mouseEndPosition.x, endY: $scope.draw.mouseEndPosition.y };
+      data = {
+        tool: "line",
+        size: Number($scope.selected.size.value),
+        color: $scope.selected.color.value,
+        start_x: $scope.mouse.start.x,
+        start_y: $scope.mouse.start.y,
+        end_x: $scope.mouse.end.x,
+        end_y: $scope.mouse.end.y
+      };
       break;
 
       case "rectangle":
-      canvasData = { tool: "rectangle", lineWidth: Number($scope.line.selectedLineWidth.value), drawColor: $scope.color.selectedDrawColor.value,
-        fillColor: $scope.color.selectedFillColor.value, startX: $scope.draw.mouseStartPosition.x, startY: $scope.draw.mouseStartPosition.y, fillWidth: $scope.draw.mouseEndPosition.x - $scope.draw.mouseStartPosition.x,
-        fillHeight: $scope.draw.mouseEndPosition.y - $scope.draw.mouseStartPosition.y };
+      data = {
+        tool: "rectangle",
+        size: Number($scope.selected.size.value),
+        color: $scope.selected.color.value,
+        fill: $scope.selected.fill.value,
+        start_x: $scope.mouse.start.x,
+        start_y: $scope.mouse.start.y,
+        height: $scope.mouse.end.y - $scope.mouse.start.y,
+        width: $scope.mouse.end.x - $scope.mouse.start.x
+      };
       break;
 
-      case "circle":
-      canvasData = { tool: "circle", lineWidth: Number($scope.line.selectedLineWidth.value), drawColor: $scope.color.selectedDrawColor.value,
-        fillColor: $scope.color.selectedFillColor.value, startX: $scope.draw.mouseStartPosition.x, startY: $scope.draw.mouseStartPosition.y,
-        fillRadius: (Math.abs($scope.draw.mouseEndPosition.x - $scope.draw.mouseStartPosition.x) + (Math.abs($scope.draw.mouseEndPosition.y - $scope.draw.mouseStartPosition.y)) / 2) };
+      case "diamond":
+      data = {
+        tool: "diamond",
+        size: Number($scope.selected.size.value),
+        color: $scope.selected.color.value,
+        fill: $scope.selected.fill.value,
+        start_x: $scope.mouse.start.x,
+        start_y: $scope.mouse.start.y,
+        end_x: $scope.mouse.end.x,
+        end_y: $scope.mouse.end.y,
+        height: $scope.mouse.end.y - $scope.mouse.start.y,
+        width: $scope.mouse.end.x - $scope.mouse.start.x
+      };
+      break;
+
+      case "ellipse":
+      data = {
+        tool: "ellipse",
+        size: Number($scope.selected.size.value),
+        color: $scope.selected.color.value,
+        fill: $scope.selected.fill.value,
+        start_x: $scope.mouse.start.x,
+        start_y: $scope.mouse.start.y,
+        radius_x: (Math.abs($scope.mouse.end.x - $scope.mouse.start.x)),
+        radius_y: (Math.abs($scope.mouse.end.y - $scope.mouse.start.y))
+      };
       break;
 
       case "text":
-      canvasData = { tool: "text", font: "32pt Roboto Condensed", isItalicEnabled: $scope.text.isItalicEnabled, isBoldEnabled: $scope.text.isBoldEnabled,
-        content: $scope.text.textValue, startX: $scope.draw.mouseStartPosition.x, startY: $scope.draw.mouseStartPosition.y, drawColor: $scope.color.selectedDrawColor.value };
+      data = {
+        tool: "text",
+        font: "32pt Roboto Condensed",
+        italic: $scope.text.italic,
+        bold: $scope.text.bold,
+        value: $scope.text.value,
+        start_x: $scope.mouse.start.x,
+        start_y: $scope.mouse.start.y,
+        color: $scope.selected.color.value
+      };
       break;
 
       default:
-      canvasData = {};
+      data = {};
       break;
     }
 
-    return canvasData;
+    return data;
   };
 
-
-  // Routine definition
-  // Render/display canvasData using drawFactory
-  var renderPath = function(data) {
-    if ($scope.selectedTool === "rectangle" || $scope.selectedTool === "line" || $scope.selectedTool === "circle")
-      drawFactory.renderAll();
-    drawFactory.render(data);
+  // Routine definition (local)
+  // Render/display canvas data using whiteboardFactory
+  var _renderObject = function(data) {
+    if ($scope.selected.tool === "line" || $scope.selected.tool === "rectangle" || $scope.selected.tool === "diamond" || $scope.selected.tool === "ellipse")
+      whiteboardFactory.renderCanvasBuffer();
+    whiteboardFactory.renderObject(data);
   };
 
-
-
-
-  /* ==================== START ==================== */
-
-  // Routine definition
-  // Handle "Undo" button
-  $scope.undoLastCanvasAction = function() {
-    drawFactory.undoLastCanvasAction();
-    drawFactory.renderAll();
-
-    $scope.draw.canvasPoints = [];
-    $scope.draw.mouseStartPosition.x = 0;
-    $scope.draw.mouseStartPosition.y = 0;
-    $scope.draw.mouseEndPosition.x = 0;
-    $scope.draw.mouseEndPosition.y = 0;
+  // Routine definition (local)
+  // Set whiteboard canvas and context
+  var _setCanvas = function() {
+    $scope.whiteboard.canvas = document.getElementById("whiteboard-canvas");
+    whiteboardFactory.setCanvas($scope.whiteboard.canvas);
+    whiteboardFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
   };
 
-
-  // START
-  // Set whiteboard canvas and controls
-  $scope.setWhiteboard = function() {
-    var canvas = "";
-    var isMousePressed = false;
-
-    canvas = document.getElementById("whiteboard-canvas");
-    drawFactory.setCanvasContext(canvas.getContext("2d"));
-
+  // Routine definition (local)
+  // Set whiteboard mouse handlers
+  var _setMouseHandlers = function() {
     // Canvas default callback: mouse pressed
-    canvas.onmousedown = function(eventPosition) {
-      var canvasData;
+    $scope.whiteboard.canvas.onmousedown = function(event) {
+      $scope.mouse.pressed = true;
+      $scope.mouse.start.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+      $scope.mouse.start.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+      $scope.mouse.end.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+      $scope.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
 
-      isMousePressed = true;
-      $scope.draw.canvasPoints.push({ toolPositionX: eventPosition.offsetX, toolPositionY: eventPosition.offsetY, drawColor: $scope.color.selectedDrawColor.value });
-      $scope.draw.mouseStartPosition.x = $scope.draw.canvasPoints[0].toolPositionX;
-      $scope.draw.mouseStartPosition.y = $scope.draw.canvasPoints[0].toolPositionY;
-      $scope.draw.mouseEndPosition.x = $scope.draw.canvasPoints[0].toolPositionX;
-      $scope.draw.mouseEndPosition.y = $scope.draw.canvasPoints[0].toolPositionY;
-      
-      canvasData = createRenderObject();
-      renderPath(canvasData);
+      $scope.whiteboard.points.push({
+        x: event.offsetX,
+        y: event.offsetY,
+        color: $scope.selected.color.value
+      });
+      _renderObject(_setRenderObject());
     };
 
     // Canvas default callback: mouse drag
-    canvas.onmousemove = function(eventPosition) {
-      var lastPoint;
-      var canvasData;
+    $scope.whiteboard.canvas.onmousemove = function(event) {
+      var last = "";
 
-      if (isMousePressed) {
-        lastPoint = $scope.draw.canvasPoints[$scope.draw.canvasPoints.length - 1];
-        $scope.draw.canvasPoints.push({ x: eventPosition.offsetX, y: eventPosition.offsetY, drawColor: $scope.color.selectedDrawColor.value });
-        $scope.draw.mouseEndPosition.x = lastPoint.x;
-        $scope.draw.mouseEndPosition.y = lastPoint.y;
-        
-        canvasData = createRenderObject();
-        renderPath(canvasData);
+      if ($scope.mouse.pressed) {
+        last = $scope.whiteboard.points[$scope.whiteboard.points.length - 1];
+        $scope.whiteboard.points.push({
+          x: event.offsetX,
+          y: event.offsetY,
+          color: $scope.selected.color.value
+        });
+        $scope.mouse.end.x = last.x;
+        $scope.mouse.start.y = last.y;
+        _renderObject(_setRenderObject());
       }
     };
 
     // Canvas default callback: mouse release
-    canvas.onmouseup = function() {
-      var canvasData;
-
-      isMousePressed = false;
-      canvasData = createRenderObject();
-      drawFactory.addToCanvasBuffer(canvasData);
-
-      $scope.draw.canvasPoints = [];
-      $scope.draw.mouseStartPosition.x = 0;
-      $scope.draw.mouseStartPosition.y = 0;
-      $scope.draw.mouseEndPosition.x = 0;
-      $scope.draw.mouseEndPosition.y = 0;
+    $scope.whiteboard.canvas.onmouseup = function() {
+      $scope.mouse.pressed = false;
+      whiteboardFactory.addToCanvasBuffer(_setRenderObject());
+      $scope.whiteboard.points = [];
+      $scope.mouse.start.x = 0;
+      $scope.mouse.start.y = 0;
+      $scope.mouse.end.x = 0;
+      $scope.mouse.start.y = 0;
     };
   };
 
+
+
+  /* ==================== SCOPE ROUTINES ==================== */
+
+  // "Undo" button handler
+  $scope.action.undoLastAction = function() {
+    whiteboardFactory.undoLastAction();
+    whiteboardFactory.renderCanvasBuffer();
+
+    $scope.whiteboard.points = [];
+    $scope.mouse.start.x = 0;
+    $scope.mouse.start.y = 0;
+    $scope.mouse.end.x = 0;
+    $scope.mouse.end.y = 0;
+  };
+
+  // Initialize whiteboard on launch
+  $scope.action.setWhiteboard = function() {
+    _setCanvas();
+    _setMouseHandlers();
+  };
+
+
+
+  /* ==================== EXECUTION ==================== */
+
+  // TEMP
+  $scope.view.authorized = true;
+  $scope.view.valid = true;
+  $scope.view.onLoad = false;
+
 }]);
-
-
-
-/**
-* Controller definition
-* APP whiteboard draw factory
-*
-*/
-app.factory("drawFactory", function() {
-  var canvas = document.getElementById("whiteboard-canvas");
-  var canvasContext;
-  var canvasBuffer = [];
-
-  // Routine definition
-  // Free-hand draw rendering
-  var renderPencil = function(data) {
-    if (data.drawColor != "none") {
-      canvasContext.beginPath();
-      canvasContext.strokeStyle = data.drawColor;
-      canvasContext.lineWidth = data.lineWidth;
-      canvasContext.lineCap = "round";
-      canvasContext.moveTo(data.points[0].x, data.points[0].y);
-
-      for (var i = 0; i < data.points.length; ++i) {
-        canvasContext.lineTo(data.points[i].x, data.points[i].y);
-      }
-      canvasContext.stroke();
-    }
-  };
-
-  // Routine definition
-  // Line rendering
-  var renderLine = function(data) {
-    if (data.drawColor != "none") {
-      canvasContext.beginPath();
-      canvasContext.strokeStyle = data.drawColor;
-      canvasContext.lineWidth = data.lineWidth;
-      canvasContext.lineCap = "round";
-      canvasContext.moveTo(data.startX, data.startY);
-      canvasContext.lineTo(data.endX, data.endY);
-      canvasContext.stroke();
-    }
-  };
-
-  // Routine definition
-  // Rectangle rendering
-  var renderRectangle = function(data) {
-    canvasContext.beginPath();
-    canvasContext.rect(data.startX, data.startY, data.fillWidth, data.fillHeight);
-
-    if (data.drawColor != "none") {
-      canvasContext.lineWidth = data.lineWidth;
-      canvasContext.strokeStyle = data.drawColor;
-      canvasContext.stroke();
-    }
-    if (data.fillColor != "none") {
-      canvasContext.fillStyle = data.fillColor;
-      canvasContext.fill();
-    }
-  };
-
-  // Routine definition
-  // Circle rendering
-  var renderCircle = function(data) {
-    canvasContext.beginPath();
-    canvasContext.arc(data.startX, data.startY, data.fillRadius, 0, Math.PI * 2, false);
-
-    if (data.drawColor != "none") {
-      canvasContext.lineWidth = data.lineWidth;
-      canvasContext.strokeStyle = data.drawColor;
-      canvasContext.stroke();
-    }
-    if (data.fillColor != "none") {
-      canvasContext.fillStyle = data.fillColor;
-      canvasContext.fill();
-    }
-  };
-
-  // Routine definition
-  // Text rendering
-  var renderText = function(data) {
-    if (data.drawColor != "none") {
-      canvasContext.beginPath();
-      canvasContext.font = (data.isItalicEnabled ? "italic " : "") + (data.isBoldEnabled ? "bold " : "") + data.font;
-      canvasContext.fillStyle = data.drawColor;
-      canvasContext.fillText(data.content, data.startX, data.startY);
-      canvasContext.stroke();
-    }
-  };
-
-  // Routine definition
-  // Rendering HUB
-  var renderAll = function() {
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (var i = 0; i < canvasBuffer.length; ++i) {
-      switch (canvasBuffer[i].tool) {
-        case "pencil":
-        renderPencil(canvasBuffer[i]);
-        break;
-        case "rectangle":
-        renderRectangle(canvasBuffer[i]);
-        break;
-        case "circle":
-        renderCircle(canvasBuffer[i]);
-        break;
-        case "line":
-        renderLine(canvasBuffer[i]);
-        break;
-        case "text":
-        renderText(canvasBuffer[i]);
-        break;
-      }
-    }
-  };
-
-  // Routine access (return)
-  // Give access to built-in routines
-  return {
-    addToCanvasBuffer: function(data) { canvasBuffer.push(data); },
-
-    renderAll: function() { renderAll(); },
-
-    setCanvasContext: function(context) { canvasContext = context; },
-
-    undoLastCanvasAction: function() { canvasBuffer.pop(); },
-
-    render: function(data) {
-      switch (data.tool) {
-        case "pencil":
-        renderPencil(data);
-        break;
-
-        case "rectangle":
-        renderRectangle(data);
-        break;
-        
-        case "circle":
-        renderCircle(data);
-        break;
-        
-        case "line":
-        renderLine(data);
-        break;
-        
-        case "text":
-        renderText(data);
-        break;
-      };
-    }
-  };
-
-});
