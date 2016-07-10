@@ -32,7 +32,13 @@ namespace GrappBox.ViewModel
             {
                 Debug.WriteLine("Value= {0} - MonthIndex= {1}", value, MonthIndex);
                 if (value > MonthIndex)
+                {
+                    //if (MonthIndex == 0 && value == 11)
+                    //{
+                    //    currentDateTime.Subtract(new TimeSpan())
+                    //}
                     currentDateTime.AddMonths(value - MonthIndex);
+                }
                 else if (value < MonthIndex)
                 {
                     currentDateTime.AddMonths(MonthIndex - value);

@@ -12,6 +12,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Shapes;
+using System.Diagnostics;
 
 namespace GrappBox.Model.Whiteboard
 {
@@ -64,24 +65,50 @@ namespace GrappBox.Model.Whiteboard
         {
             SolidColorBrush strokeColor = new SolidColorBrush(FromhexaToColor(om.Color));
             SolidColorBrush fillColor = new SolidColorBrush(FromhexaToColor(om.Background));
-            Point p = new Point(om.PositionStart.X, om.PositionStart.Y);
+            Point pO = new Point();
+            Point pE = new Point();
+            if (om.PositionEnd.Y < om.PositionStart.Y || om.PositionEnd.X < om.PositionStart.X)
+            {
+                pO = new Point(om.PositionStart.X < om.PositionEnd.X ? om.PositionStart.X : om.PositionEnd.X,
+                    om.PositionStart.Y < om.PositionEnd.Y ? om.PositionStart.Y : om.PositionEnd.Y);
+                pE = new Point(om.PositionStart.X > om.PositionEnd.X ? om.PositionStart.X : om.PositionEnd.X,
+                    om.PositionStart.Y > om.PositionEnd.Y ? om.PositionStart.Y : om.PositionEnd.Y);
+            }
+            else
+            {
+                pE = new Point(om.PositionEnd.X, om.PositionEnd.Y);
+                pO = new Point(om.PositionStart.X, om.PositionStart.Y);
+            }
             double thickness = om.LineWeight;
-            ShapeControler sc = new ShapeControler(WhiteboardTool.RECTANGLE, p, strokeColor, fillColor, thickness);
+            ShapeControler sc = new ShapeControler(WhiteboardTool.RECTANGLE, pO, strokeColor, fillColor, thickness);
+            sc.PosEnd = pE;
             sc.Id = objectId;
-            p = new Point(om.PositionEnd.X, om.PositionEnd.Y);
-            sc.Update(p);
+            sc.Update(pE);
             return sc;
         }
         private static ShapeControler jsonToEllipse(ObjectModel om, int objectId)
         {
             SolidColorBrush fillColor = new SolidColorBrush(FromhexaToColor(om.Background));
             SolidColorBrush strokeColor = new SolidColorBrush(FromhexaToColor(om.Color));
-            Point p = new Point(om.PositionStart.X, om.PositionStart.Y);
+            Point pO = new Point();
+            Point pE = new Point();
+            if (om.PositionEnd.Y < om.PositionStart.Y || om.PositionEnd.X < om.PositionStart.X)
+            {
+                pO = new Point(om.PositionStart.X < om.PositionEnd.X ? om.PositionStart.X : om.PositionEnd.X,
+                    om.PositionStart.Y < om.PositionEnd.Y ? om.PositionStart.Y : om.PositionEnd.Y);
+                pE = new Point(om.PositionStart.X > om.PositionEnd.X ? om.PositionStart.X : om.PositionEnd.X,
+                    om.PositionStart.Y > om.PositionEnd.Y ? om.PositionStart.Y : om.PositionEnd.Y);
+            }
+            else
+            {
+                pE = new Point(om.PositionEnd.X, om.PositionEnd.Y);
+                pO = new Point(om.PositionStart.X, om.PositionStart.Y);
+            }
             double thickness = om.LineWeight;
-            ShapeControler sc = new ShapeControler(WhiteboardTool.ELLIPSE, p, strokeColor, fillColor, thickness);
+            ShapeControler sc = new ShapeControler(WhiteboardTool.ELLIPSE, pO, strokeColor, fillColor, thickness);
+            sc.PosEnd = pE;
             sc.Id = objectId;
-            p = new Point(om.PositionEnd.X, om.PositionEnd.Y);
-            sc.Update(p);
+            sc.Update(pE);
             return sc;
         }
 
@@ -102,12 +129,25 @@ namespace GrappBox.Model.Whiteboard
         {
             SolidColorBrush fillColor = new SolidColorBrush(FromhexaToColor(om.Background));
             SolidColorBrush strokeColor = new SolidColorBrush(FromhexaToColor(om.Color));
-            Point p = new Point(om.PositionStart.X, om.PositionStart.Y);
+            Point pO = new Point();
+            Point pE = new Point();
+            if (om.PositionEnd.Y < om.PositionStart.Y || om.PositionEnd.X < om.PositionStart.X)
+            {
+                pO = new Point(om.PositionStart.X < om.PositionEnd.X ? om.PositionStart.X : om.PositionEnd.X,
+                    om.PositionStart.Y < om.PositionEnd.Y ? om.PositionStart.Y : om.PositionEnd.Y);
+                pE = new Point(om.PositionStart.X > om.PositionEnd.X ? om.PositionStart.X : om.PositionEnd.X,
+                    om.PositionStart.Y > om.PositionEnd.Y ? om.PositionStart.Y : om.PositionEnd.Y);
+            }
+            else
+            {
+                pE = new Point(om.PositionEnd.X, om.PositionEnd.Y);
+                pO = new Point(om.PositionStart.X, om.PositionStart.Y);
+            }
             double thickness = om.LineWeight;
-            ShapeControler sc = new ShapeControler(WhiteboardTool.LOZENGE, p, strokeColor, fillColor, thickness);
+            ShapeControler sc = new ShapeControler(WhiteboardTool.LOZENGE, pO, strokeColor, fillColor, thickness);
+            sc.PosEnd = pE;
             sc.Id = objectId;
-            p = new Point(om.PositionEnd.X, om.PositionEnd.Y);
-            sc.Update(p);
+            sc.Update(pE);
             return sc;
         }
         private static ShapeControler jsonToHandWrite(ObjectModel om, int objectId)
