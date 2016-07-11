@@ -198,6 +198,10 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   $scope.updatePassword = function(project){
+    if (!project.password ||! project.confirm_password || !project.old_password) {
+      return 0;
+    }
+
     if (project.password != project.confirm_password) {
       Notification.warning({ message: "'New password' and 'Confirmation' should be the same !", delay: 5000 });
       return 0;
