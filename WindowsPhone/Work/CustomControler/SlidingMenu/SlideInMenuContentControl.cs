@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using System.ComponentModel;
 
 namespace GrappBox.CustomControler.SlidingMenu
 {
@@ -109,7 +110,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             set { SetValue(LeftSideMenuWidthProperty, value); }
         }
 
-        protected override void OnApplyTemplate()
+        protected async override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
@@ -134,7 +135,11 @@ namespace GrappBox.CustomControler.SlidingMenu
             contentFrame.Width = Window.Current.Bounds.Width;
 
             projectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen") ?? "";
-            //avatar.ImageSource = User.GetUser().Img;
+
+            await User.GetUser().LogoUpdate();
+            await User.GetUser().SetLogo();
+            avatar.ImageSource = User.GetUser().Avatar;
+
 
             buttons = new List<StackPanel>();
             buttons.Add(GetTemplateChild(ElementBugtrackerPanel) as StackPanel);

@@ -20,7 +20,7 @@
                             <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource GrayGrappBoxBrush}">
                                 <Ellipse Height="48" Width="48" Stroke="Transparent" VerticalAlignment="Center" >
                                     <Ellipse.Fill>
-                                        <ImageBrush x:Name="Avatar" Stretch="Uniform" ImageSource="/Assets/dashboard.png"/>
+                                        <ImageBrush x:Name="Avatar" Stretch="Uniform" ImageSource="ms-appx:///Assets/user.png"/>
                                     </Ellipse.Fill>
                                 </Ellipse>
                                 <TextBlock Name="ProjectName" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
