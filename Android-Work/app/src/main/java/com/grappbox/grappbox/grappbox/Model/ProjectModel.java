@@ -39,14 +39,14 @@ public class ProjectModel implements Serializable {
     }
 
     public ProjectModel(JSONObject data) throws JSONException {
-        byte[] blob = Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
+        byte[] blob = null;//Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
 
         id = data.getString("project_id");
         name = data.getString("project_name");
         description = data.getString("project_description");
         phone = data.getString("project_phone");
         company = data.getString("project_company");
-        logo = Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
+        logo = null;//Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
         contact_mail = data.getString("contact_mail");
         facebookURL = data.getString("facebook");
         twitterURL = data.getString("twitter");
@@ -94,13 +94,14 @@ public class ProjectModel implements Serializable {
     }
 
     public Bitmap getLogo(Context context) {
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        opt.inScreenDensity = metrics.densityDpi;
-        opt.inTargetDensity =  metrics.densityDpi;
-        opt.inDensity = DisplayMetrics.DENSITY_DEFAULT;
-        return BitmapFactory.decodeByteArray(logo, 0, logo.length, new BitmapFactory.Options());
+        return null;
+//        BitmapFactory.Options opt = new BitmapFactory.Options();
+//
+//        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+//        opt.inScreenDensity = metrics.densityDpi;
+//        opt.inTargetDensity =  metrics.densityDpi;
+//        opt.inDensity = DisplayMetrics.DENSITY_DEFAULT;
+//        return BitmapFactory.decodeByteArray(logo, 0, logo.length, new BitmapFactory.Options());
     }
 
     public String getContact_mail() {

@@ -294,13 +294,34 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < menu.size(); ++i)
         {
             MenuItem item = menu.getItem(i);
+
+            if (item == null)
+                continue;
             if (item.getItemId() == R.id.nav_Timeline)
             {
-                boolean enabled = auths.getAuthorization("teamTimeline").AuthorizationLevel() > 0 || auths.getAuthorization("customerTimeline").AuthorizationLevel() > 0;
+                AccessModel.AccessRights teamTimeline, customerTimeline;
+                teamTimeline = auths.getAuthorization("teamTimeline");
+                customerTimeline = auths.getAuthorization("customerTimeline");
+                if (customerTimeline == null || teamTimeline == null)
+                {
+                    continue;
+                }
+
+                boolean enabled = teamTimeline.AuthorizationLevel() > 0 || customerTimeline.AuthorizationLevel() > 0;
                 item.setEnabled(enabled);
             }
             else if (MENU_MAPING_AUTH.containsKey(item.getItemId()) && MENU_MAPING_AUTH.get(item.getItemId()) != null)
-                item.setEnabled(auths.getAuthorization(MENU_MAPING_AUTH.get(item.getItemId())).AuthorizationLevel() > AccessModel.AccessRights.NONE.ordinal());
+            {
+                AccessModel.AccessRights curAuth =  auths.getAuthorization(MENU_MAPING_AUTH.get(item.getItemId()));
+                if (curAuth == null)
+                {
+                    continue;
+                }
+
+                item.setEnabled(curAuth.AuthorizationLevel() > AccessModel.AccessRights.NONE.ordinal());
+
+            }
+
         }
     }
 
