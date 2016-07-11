@@ -6,8 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.Web.Http;
 
 namespace GrappBox.Model
@@ -120,6 +123,15 @@ namespace GrappBox.Model
         public async System.Threading.Tasks.Task SetLogo()
         {
             string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
+            if (tmp == null)
+            {
+                RandomAccessStreamReference rasr = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/user.png"));
+                var streamWithContent = await rasr.OpenReadAsync();
+                byte[] buffer = new byte[streamWithContent.Size];
+                await streamWithContent.ReadAsync(buffer.AsBuffer(), (uint)streamWithContent.Size, InputStreamOptions.None);
+                StorageFile imageFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(logoImgFmt + ".txt", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteBytesAsync(imageFile, buffer);
+            }
             Avatar = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
         }
     }
