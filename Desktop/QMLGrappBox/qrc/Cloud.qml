@@ -108,7 +108,6 @@ Item {
         selectedNameFilter: "All files (*)"
 
         onAccepted: {
-            console.log(selectMultiple)
             if (!selectMultiple)
             {
                 getPasswordDownloadFile.pathFileUpload = fileUrls[0]
@@ -439,12 +438,15 @@ Item {
         width: 350
         height: 332
 
+        radius: 5
         elevation: 1
 
         anchors {
             right: parent.right
             bottom: parent.bottom
         }
+
+
 
         anchors.rightMargin: 16
         anchors.bottomMargin: 16
@@ -462,9 +464,15 @@ Item {
                     top: parent.top
                 }
                 height: 32
+
+                IconButton {
+                    id: open
+                }
             }
 
             Item {
+
+
 
                 anchors {
                     left: parent.left
@@ -481,7 +489,7 @@ Item {
                     clip: true
                     contentHeight: Math.max(layoutDownloadPage.height, height)
 
-                    ColumnLayout {
+                    Column {
 
                         id: layoutDownloadPage
 

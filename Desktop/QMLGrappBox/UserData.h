@@ -21,6 +21,7 @@ class UserData : public QObject
     Q_PROPERTY(QString country READ country WRITE setCountry NOTIFY countryChanged)
     Q_PROPERTY(int roleId READ roleId WRITE setRoleId NOTIFY roleIdChanged)
     Q_PROPERTY(int occupation READ occupation WRITE setOccupation NOTIFY occupationChanged)
+    Q_PROPERTY(QDateTime avatarDate READ avatarDate WRITE setAvatarDate NOTIFY avatarDateChanged)
 
 public:
     UserData();
@@ -111,6 +112,11 @@ public:
         return m_roleId;
     }
 
+    QDateTime avatarDate() const
+    {
+        return m_avatarDate;
+    }
+
 signals:
 
     void firstNameChanged(QString firstName);
@@ -136,6 +142,8 @@ signals:
     void countryChanged(QString country);
 
     void roleIdChanged(int roleId);
+
+    void avatarDateChanged(QDateTime avatarDate);
 
 public slots:
 
@@ -247,6 +255,15 @@ public slots:
         emit roleIdChanged(roleId);
     }
 
+    void setAvatarDate(QDateTime avatarDate)
+    {
+        if (m_avatarDate == avatarDate)
+            return;
+
+        m_avatarDate = avatarDate;
+        emit avatarDateChanged(avatarDate);
+    }
+
 private:/*
     int m_id;
     QString m_firstName;
@@ -271,6 +288,7 @@ private:/*
     QString m_phone;
     QString m_country;
     int m_roleId;
+    QDateTime m_avatarDate;
 };
 
 Q_DECLARE_METATYPE(UserData)

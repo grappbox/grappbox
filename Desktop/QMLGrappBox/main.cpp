@@ -18,6 +18,7 @@
 #include "ProjectSettingsModel.h"
 #include "API/SDataManager.h"
 #include "Manager/SInfoManager.h"
+#include "Manager/DataImageProvider.h"
 
 #define GRAPPBOX_URL "GrappBoxController"
 #define MAJOR_VERSION 1
@@ -37,6 +38,14 @@ static QObject *qobject_infomanager_provider(QQmlEngine *engine, QJSEngine *scri
     Q_UNUSED(scriptEngine)
 
     return SInfoManager::GetManager();
+}
+
+static QObject *qobject_dataimageprovider_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return DataImageProvider::getInstance();
 }
 
 int main(int argc, char *argv[])
@@ -70,9 +79,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<ProjectSettingsModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "ProjectSettingsModel");
     qmlRegisterSingletonType<API::SDataManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SDataManager", qobject_datamanager_provider);
     qmlRegisterSingletonType<SInfoManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SInfoManager", qobject_infomanager_provider);
+    qmlRegisterSingletonType<DataImageProvider>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "DataImageProvider", qobject_dataimageprovider_provider);
 
     QQmlApplicationEngine engine;
     engine.addImportPath("modules/");
+    engine.addImageProvider("api", DataImageProvider::getInstance());
     engine.load(QUrl(QStringLiteral("qrc:/qrc/qrc/main.qml")));
 
     int ret = app.exec();

@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     TimelineModel.cpp \
     BugTrackerModel.cpp \
     ProjectSettingsModel.cpp \
-    Manager/SInfoManager.cpp
+    Manager/SInfoManager.cpp \
+    Manager/DataImageProvider.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
@@ -56,6 +57,7 @@ HEADERS += \
     TimelineModel.h \
     BugTrackerModel.h \
     ProjectSettingsModel.h \
-    Manager/SInfoManager.h
+    Manager/SInfoManager.h \
+    Manager/DataImageProvider.h
 
 RCC_DIR = qrc

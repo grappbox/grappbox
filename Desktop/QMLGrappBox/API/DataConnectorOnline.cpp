@@ -64,6 +64,8 @@ DataConnectorOnline::DataConnectorOnline()
     _GetMap[GR_LIST_CLOUD] = "cloud/list";
     _GetMap[GR_DOWNLOAD_FILE] = "cloud/file";
     _GetMap[GR_DOWNLOAD_SECURE_FILE] = "cloud/filesecured";
+    _GetMap[GR_PROJECT_LOGO] = "projects/getprojectlogo";
+    _GetMap[GR_USER_AVATAR] = "user/getuseravatar";
 
 	// Initialize Post request
 	_PostMap[PR_LOGIN] = "accountadministration/login";

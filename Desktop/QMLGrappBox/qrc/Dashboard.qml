@@ -127,16 +127,19 @@ Item {
                             }
                         }
 
-                        Image {
+                        CircleImageAsync {
                             id: logo
 
                             anchors.left: parent.left
-                            anchors.top: parent.top
-                            anchors.bottom: rowProjectButton.top
+                            anchors.verticalCenter: parent.verticalCenter
                             anchors.leftMargin: Units.dp(8)
                             width: 80
+                            height: 80
 
-                            source: "qrc:/Logo/Title.png"
+
+                            avatarId: "project#" + modelData.id
+                            avatarDate: modelData.avatarDate
+
                             fillMode: Image.PreserveAspectFit
                         }
 

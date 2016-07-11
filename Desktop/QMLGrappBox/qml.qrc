@@ -26,6 +26,8 @@
         <file>qrc/Separator.qml</file>
         <file>qrc/ProjectSettingsDangerZone.qml</file>
         <file>qrc/CreateProject.qml</file>
+        <file>qrc/ImageAsync.qml</file>
+        <file>qrc/CircleImageAsync.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

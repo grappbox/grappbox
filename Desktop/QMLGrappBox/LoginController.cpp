@@ -26,7 +26,7 @@ void LoginController::login(QString name, QString password)
 
 void LoginController::logout()
 {
-    BEGIN_REQUEST_ADV(this, "OnLoginSuccess", "OnLoginFail");
+    BEGIN_REQUEST_ADV(this, "OnLogoutSuccess", "OnLogoutFail");
     {
         ADD_URL_FIELD(USER_TOKEN);
         GET(API::DP_USER_DATA, API::GR_LOGOUT);
@@ -92,6 +92,7 @@ void LoginController::OnUserInfoDone(int id, QByteArray response)
     user->setLinkedin(obj["linkedin"].toString());
     user->setViadeo(obj["viadeo"].toString());
     user->setTwitter(obj["twitter"].toString());
+    user->setAvatarDate(JSON_TO_DATETIME(obj["avatar"].toString()));
     API::SDataManager::GetDataManager()->setUser(user);
 }
 

@@ -43,13 +43,13 @@ SDataManager      *SDataManager::GetDataManager()
 void                       SDataManager::RegisterUserConnected(int id, QString userName, QString userLastName, QString token, QImage *avatar)
 {
 	Q_UNUSED(avatar)
+    _Token = token;
     _UserId = id;
     _UserName = userName;
     _UserLastName = userLastName;
     m_user->setId(id);
     m_user->setFirstName(userName);
     m_user->setLastName(userLastName);
-    _Token = token;
 }
 
 void                       SDataManager::LogoutUser()

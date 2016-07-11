@@ -8,5 +8,6 @@
         <file>icons/viadeo-logo.svg</file>
         <file>icons/linkedin-box.svg</file>
         <file>icons/default-avatar.min.png</file>
+        <file>icons/default-logo.min.png</file>
     </qresource>
 </RCC>

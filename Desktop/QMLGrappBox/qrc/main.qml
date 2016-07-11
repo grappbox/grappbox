@@ -64,6 +64,7 @@ Item {
 
             onLoginSuccess: {
                 demo.selectedComponent = demo.sectionTitles[0]
+                loginPage.isLoading = false
                 loginPage.close()
             }
 
@@ -397,10 +398,20 @@ Item {
                                     height: Units.dp(20)
                                 }
 
-                                CircleImage {
-                                    source: Qt.resolvedUrl("qrc:/icons/icons/default-avatar.min.png")
+                                CircleImageAsync {
                                     height: Units.dp(90)
                                     width: height
+
+                                    function onIdChanged(id) {
+                                        if (id === -1)
+                                            return
+                                        avatarDate = SDataManager.user.avatarDate
+                                        avatarId = "user#" + SDataManager.user.id
+                                    }
+
+                                    Component.onCompleted: {
+                                        SDataManager.user.idChanged.connect(onIdChanged)
+                                    }
                                 }
 
                                 Item {

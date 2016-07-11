@@ -68,6 +68,8 @@ namespace API
         GR_LIST_CLOUD,
         GR_DOWNLOAD_FILE,
         GR_DOWNLOAD_SECURE_FILE,
+        GR_PROJECT_LOGO,
+        GR_USER_AVATAR
     };
 
     enum PostRequest

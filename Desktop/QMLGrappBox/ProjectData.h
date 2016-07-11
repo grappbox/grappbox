@@ -26,6 +26,7 @@ class ProjectData : public QObject
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QDateTime creationDate READ creationDate WRITE setCreationDate NOTIFY creationDateChanged)
     Q_PROPERTY(QDateTime deleteDate READ deleteDate WRITE setDeleteDate NOTIFY deleteDateChanged)
+    Q_PROPERTY(QDateTime avatarDate READ avatarDate WRITE setAvatarDate NOTIFY avatarDateChanged)
     Q_PROPERTY(QVariantList users READ users WRITE setUsers NOTIFY usersChanged)
     Q_PROPERTY(int numTaskOnGoing READ numTaskOnGoing WRITE setNumTaskOnGoing NOTIFY numTaskOnGoingChanged)
     Q_PROPERTY(int numTaskFinished READ numTaskFinished WRITE setNumTaskFinished NOTIFY numTaskFinishedChanged)
@@ -59,6 +60,7 @@ public:
             m_deleteDate = QDateTime();
         else
             m_deleteDate = QDateTime::fromString(obj["deleted_at"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+        m_avatarDate = QDateTime::fromString(obj["project_logo"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
         emit nameChanged(name());
         emit descriptionChanged(description());
         emit phoneChanged(phone());
@@ -220,6 +222,11 @@ public:
         return m_numMessageTimeline;
     }
 
+    QDateTime avatarDate() const
+    {
+        return m_avatarDate;
+    }
+
 signals:
 
     void idChanged(int id);
@@ -255,6 +262,8 @@ signals:
     void numBugTotalChanged(int numBugTotal);
 
     void numMessageTimelineChanged(int numMessageTimeline);
+
+    void avatarDateChanged(QDateTime avatarDate);
 
 public slots:
 
@@ -411,6 +420,15 @@ public slots:
         emit numMessageTimelineChanged(numMessageTimeline);
     }
 
+    void setAvatarDate(QDateTime avatarDate)
+    {
+        if (m_avatarDate == avatarDate)
+            return;
+
+        m_avatarDate = avatarDate;
+        emit avatarDateChanged(avatarDate);
+    }
+
 private:
     int m_id;
     QString m_name;
@@ -430,6 +448,7 @@ private:
     int m_numTaskTotal;
     int m_numBugTotal;
     int m_numMessageTimeline;
+    QDateTime m_avatarDate;
 };
 
 Q_DECLARE_METATYPE(ProjectData)
