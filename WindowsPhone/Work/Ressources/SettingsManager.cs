@@ -9,6 +9,10 @@ namespace GrappBox.Ressources
 {
     class SettingsManager
     {
+        public static bool OptionExist(string optName)
+        {
+            return Windows.Storage.ApplicationData.Current.LocalSettings.Values.ContainsKey(optName);
+        }
         public static T getOption<T>(string optName)
         {
            Object value = Windows.Storage.ApplicationData.Current.LocalSettings.Values[optName];
