@@ -1,10 +1,14 @@
 ﻿using GrappBox.ApiCom;
+using GrappBox.Model.Global;
+using GrappBox.Ressources;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Web.Http;
 
 namespace GrappBox.Model
 {
@@ -72,6 +76,51 @@ namespace GrappBox.Model
         {
             get { return _tasks_ongoing; }
             set { _tasks_ongoing = value; }
+        }
+
+        public Windows.UI.Xaml.Media.Imaging.BitmapImage Avatar { get; set; }
+
+        #region FormatedStrings
+        private string logoDateFmt;
+        private string logoImgFmt;
+        #endregion
+        public async System.Threading.Tasks.Task LogoUpdate()
+        {
+            logoDateFmt = "LogoDate_" + User.Id;
+            logoImgFmt = "LogoImg_" + User.Id;
+            string tmp = SettingsManager.getOption<string>(logoDateFmt);
+            DateTime stored = new DateTime();
+            if (tmp != null && tmp != "")
+                stored = DateTime.Parse(tmp);
+            string avtmp = await BytesToImage.GetStoredImage(logoImgFmt);
+            if (avtmp == null)
+            {
+                SettingsManager.setOption(logoDateFmt, DateTime.Now.ToString());
+                await getProjectLogo();
+            }
+        }
+        public async System.Threading.Tasks.Task getProjectLogo()
+        {
+            LogoModel logoMod = null;
+            ApiCommunication api = ApiCommunication.GetInstance();
+            object[] token = { ApiCom.User.GetUser().Token, User.Id };
+            HttpResponseMessage res = await api.Get(token, "user/getuseravatar");
+            if (res.IsSuccessStatusCode)
+            {
+                logoMod = api.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
+                Avatar = BytesToImage.String64ToImage(logoMod.Avatar);
+                await BytesToImage.StoreImage(logoMod.Avatar, logoImgFmt);
+            }
+            else
+            {
+                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            }
+        }
+
+        public async System.Threading.Tasks.Task SetLogo()
+        {
+            string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
+            Avatar = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
         }
     }
 }

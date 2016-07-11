@@ -31,7 +31,7 @@
                     </Grid.RowDefinitions>
                     <Ellipse Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="80" Height="80">
                         <Ellipse.Fill>
-                            <ImageBrush ImageSource="/Assets/grappbox-logo.png"></ImageBrush>
+                            <ImageBrush ImageSource="{Binding Avatar}"></ImageBrush>
                         </Ellipse.Fill>
                     </Ellipse>
 

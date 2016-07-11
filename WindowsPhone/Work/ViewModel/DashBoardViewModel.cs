@@ -32,6 +32,13 @@ namespace GrappBox.ViewModel
             await this.getNextMeetings();
         }
 
+        public async System.Threading.Tasks.Task getUserLogo(Occupations model)
+        {
+            await model.LogoUpdate();
+            await model.SetLogo();
+            NotifyPropertyChanged("Avatar");
+        }
+
         public async System.Threading.Tasks.Task getTeam()
         {
             ApiCommunication api = ApiCommunication.GetInstance();
@@ -42,6 +49,11 @@ namespace GrappBox.ViewModel
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 OccupationList = api.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
+                foreach (Occupations item in OccupationList)
+                {
+                    await getUserLogo(item);
+                    NotifyPropertyChanged("Avatar");
+                }
                 NotifyPropertyChanged("OccupationList");
             }
             else

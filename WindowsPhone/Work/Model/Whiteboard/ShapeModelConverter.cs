@@ -166,7 +166,7 @@ namespace GrappBox.Model.Whiteboard
         {
             SolidColorBrush strokeColor = new SolidColorBrush(FromhexaToColor(om.Color));
             Point p = new Point(om.PositionStart.X, om.PositionStart.Y);
-            ShapeControler sc = new ShapeControler(p, om.Text, om.IsBold, om.IsItalic, strokeColor, om.Size);
+            ShapeControler sc = new ShapeControler(p, om.Text, (bool)om.IsBold, (bool)om.IsItalic, strokeColor, (int)om.Size);
             sc.Id = objectId;
             sc.Update(p);
             return sc;

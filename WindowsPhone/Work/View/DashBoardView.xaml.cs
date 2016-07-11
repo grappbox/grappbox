@@ -72,7 +72,10 @@ namespace GrappBox.View
         /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-
+            this.db_pivot.Items.Remove(this.team);
+            this.db_pivot.Items.Remove(this.meetings);
+            team = null;
+            meetings = null;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

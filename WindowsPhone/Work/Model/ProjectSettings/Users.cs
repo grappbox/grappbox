@@ -15,7 +15,5 @@ namespace GrappBox.Model
         public string Name { get; set; }
         [JsonProperty("email")]
         public string Email { get; set; }
-        [JsonProperty("avatar")]
-        public string Avatar { get; set; }
     }
 }

@@ -37,12 +37,12 @@ namespace GrappBox.Model.Whiteboard
         public string Text { get; set; }
 
         [JsonProperty("size")]
-        public int Size { get; set; }
+        public int? Size { get; set; }
 
         [JsonProperty("isItalic")]
-        public bool IsItalic { get; set; }
+        public bool? IsItalic { get; set; }
 
         [JsonProperty("isBold")]
-        public bool IsBold { get; set; }
+        public bool? IsBold { get; set; }
     }
 }
