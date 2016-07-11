@@ -15,17 +15,73 @@
         </CommandBar>
     </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Calendar">
-        <Grid VerticalAlignment="Stretch">
-            <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}">
+        <Grid VerticalAlignment="Stretch" Background="RoyalBlue">
+            <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}" Background="Cyan">
                 <Pivot.ItemTemplate>
                     <DataTemplate>
-                        <GridView ItemsSource="{Binding DaysList}">
-                            <GridView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding }" FontFamily="Roboto" FontSize="20²"/>
-                                </DataTemplate>
-                            </GridView.ItemTemplate>
-                        </GridView>
+                        <Grid Background="Violet" VerticalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <GridView ItemsSource="{Binding DaysList}" Background="Beige">
+                                <GridView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding }" FontFamily="Roboto" FontSize="20²"/>
+                                    </DataTemplate>
+                                </GridView.ItemTemplate>
+                            </GridView>
+                            <ScrollViewer Grid.Row="1" VerticalAlignment="Stretch" Background="AliceBlue">
+                                <StackPanel ScrollViewer.VerticalScrollMode="Enabled" Background="Green">
+                                    <ListView ItemsSource="{Binding Events}" HorizontalAlignment="Stretch">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical">
+                                                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
+                                                    <TextBlock Text="{Binding Description}" />
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding BeginDate, Converter={StaticResource DateTimeToStringConverter}}" />
+                                                        <TextBlock Text="{Binding EndDate, Converter={StaticResource DateTimeToStringConverter}}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="Background" Value="White" />
+                                                <Setter Property="Padding" Value="15" />
+                                                <Setter Property="Margin" Value="15" />
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
+                                    <ListView ItemsSource="{Binding Tasks}" HorizontalAlignment="Stretch">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical">
+                                                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
+                                                    <TextBlock Text="{Binding Description}" />
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding StartedAt, Converter={StaticResource DateTimeToStringConverter}}" />
+                                                        <TextBlock Text="{Binding DueDate, Converter={StaticResource DateTimeToStringConverter}}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="Background" Value="White" />
+                                                <Setter Property="Padding" Value="15" />
+                                                <Setter Property="Margin" Value="15" />
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
                     </DataTemplate>
                 </Pivot.ItemTemplate>
                 <Pivot.HeaderTemplate>

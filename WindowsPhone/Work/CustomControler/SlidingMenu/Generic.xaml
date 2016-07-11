@@ -41,10 +41,10 @@
                                     <Button Style="{StaticResource LeftMenuButton}" x:Name="CalendarButton" MinHeight="33" Content="Calendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
                                 </StackPanel>
 
-                                <StackPanel x:Name="CloudPanel" Orientation="Horizontal">
+                                <!--<StackPanel x:Name="CloudPanel" Orientation="Horizontal">
                                     <Image Source="/Assets/cloud.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
                                     <Button Style="{StaticResource LeftMenuButton}" x:Name="CloudButton" MinHeight="33" Content="Cloud" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontFamily="Segoe WP" FontSize="15" Padding="9.5,0"/>
-                                </StackPanel>
+                                </StackPanel>-->
 
                                 <StackPanel x:Name="TimelinePanel" Orientation="Horizontal">
                                     <Image Grid.Row="5" Grid.Column="0" Source="/Assets/timeline.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>

@@ -33,15 +33,17 @@ namespace GrappBox.ViewModel
                 Debug.WriteLine("Value= {0} - MonthIndex= {1}", value, MonthIndex);
                 if (value > MonthIndex)
                 {
-                    //if (MonthIndex == 0 && value == 11)
-                    //{
-                    //    currentDateTime.Subtract(new TimeSpan())
-                    //}
-                    currentDateTime.AddMonths(value - MonthIndex);
+                    if (MonthIndex == 0 && value == 11)
+                        currentDateTime = currentDateTime.AddMonths(-1);
+                    else
+                        currentDateTime = currentDateTime.AddMonths(value - MonthIndex);
                 }
                 else if (value < MonthIndex)
                 {
-                    currentDateTime.AddMonths(MonthIndex - value);
+                    if (MonthIndex - value > 1)
+                        currentDateTime = currentDateTime.AddMonths(value + 12 - MonthIndex);
+                    else
+                        currentDateTime = currentDateTime.AddMonths(-1);
                 }
                 Debug.WriteLine(currentDateTime);
             }
@@ -67,15 +69,13 @@ namespace GrappBox.ViewModel
                 MonthList.Add(new CalendarModel(i, ref currentDateTime));
             }
         }
-
         public ObservableCollection<CalendarModel> MonthList { get; set; }
 
-        public async void UpdateMonth()
+        public async System.Threading.Tasks.Task<Planning> UpdateMonth()
         {
-            //Debug.WriteLine("currentDateTime: {0}", currentDateTime);
-            //Planning plan = await GetMonthPlanning(currentDateTime);
-            //Events = new ObservableCollection<Event>(plan.Events);
-            //Tasks = new ObservableCollection<Model.Task>(plan.Tasks);
+            Debug.WriteLine("currentDateTime: {0}", currentDateTime);
+            Planning plan = await GetMonthPlanning(currentDateTime);
+            return plan;
         }
 
         #region ApiGetters
@@ -85,6 +85,16 @@ namespace GrappBox.ViewModel
             ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
             object[] token = { ApiCom.User.GetUser().Token, month.ToString("yyyy-MM-dd") };
             HttpResponseMessage res = await api.Get(token, "planning/getmonth");
+            string resString = await res.Content.ReadAsStringAsync();
+            Debug.WriteLine(resString);
+            return api.DeserializeArrayJson<Planning>(resString);
+        }
+        public async Task<Planning> GetDayPlanning(DateTime day)
+        {
+            Debug.WriteLine("date {0}", day.ToString("yyyy-MM-dd"));
+            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
+            object[] token = { ApiCom.User.GetUser().Token, day.ToString("yyyy-MM-dd") };
+            HttpResponseMessage res = await api.Get(token, "planning/getday");
             string resString = await res.Content.ReadAsStringAsync();
             Debug.WriteLine(resString);
             return api.DeserializeArrayJson<Planning>(resString);

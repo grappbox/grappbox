@@ -15,4 +15,5 @@
     <viewModel:DateModelToStringConverter x:Key="DateModelToStringConverter"/>
     <viewModel:IntegerToStringConverter x:Key="IntegerToStringConverter"/>
     <viewModel:OccupationColorConverter x:Key="OccupationColorConverter"/>
+    <viewModel:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
 </ResourceDictionary>

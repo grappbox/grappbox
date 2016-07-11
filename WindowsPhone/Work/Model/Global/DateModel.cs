@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrappBox.Model.Global;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,16 +12,9 @@ namespace GrappBox.Model
         public string date { get; set; }
         public int timezone_type { get; set; }
         public string timezone { get; set; }
-
-        //static private DateModel instance = null;
-
-        //static public DateModel GetInstance()
-        //{
-        //    return instance;
-        //}
-        //public DateModel()
-        //{
-        //    instance = this;
-        //}
+        public static implicit operator DateTime(DateModel dm)
+        {
+            return DateTimeFormator.DateModelToDateTime(dm);
+        }
     }
 }

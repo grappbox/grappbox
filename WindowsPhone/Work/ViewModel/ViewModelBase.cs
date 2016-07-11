@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using GrappBox.Model;
 using Windows.UI;
+using System.Globalization;
 
 namespace GrappBox.ViewModel
 {
@@ -36,6 +37,28 @@ namespace GrappBox.ViewModel
         BUGTRACKER
     }
     #region Converter
+    public class DateTimeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            try
+            {
+                DateModel dm = (DateModel)value;
+                DateTime date = dm;
+                return date.ToString(CultureInfo.CurrentCulture);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return "No date";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            return null;
+        }
+    }
     public class OccupationColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)

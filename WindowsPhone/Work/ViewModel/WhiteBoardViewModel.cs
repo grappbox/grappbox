@@ -216,8 +216,8 @@ namespace GrappBox.ViewModel
             else
             {
                 Debug.WriteLine("Failed => {0}",await res.Content.ReadAsStringAsync());
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
+                //MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                //await msgbox.ShowAsync();
             }
             return -1;
         }

@@ -17,7 +17,6 @@ namespace GrappBox.Model
     {
         #region Private members
         private DateTime[] currentDateTimeRef;
-        private Planning planning;
         #endregion
 
         #region Notifier
@@ -53,14 +52,17 @@ namespace GrappBox.Model
         {
             get { return DateTimeFormator.GetDayList(CurrentDateTime, MonthIndex+1); }
         }
+        private ObservableCollection<Event> _events;
         public ObservableCollection<Event> Events
         {
-            get { return planning.Events; }
+            get { return _events; }
+            set { _events = value;  NotifyPropertyChanged("Events"); }
         }
-
+        private ObservableCollection<Model.Task> _tasks;
         public ObservableCollection<Model.Task> Tasks
         {
-            get { return planning.Tasks; }
+            get { return _tasks; }
+            set { _tasks = value; NotifyPropertyChanged("Tasks"); }
         }
         #endregion
     }
