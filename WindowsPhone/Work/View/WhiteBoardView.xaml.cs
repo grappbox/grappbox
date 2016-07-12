@@ -20,6 +20,16 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class WhiteBoardView : Page
     {
+        enum OpenedPopUp
+        {
+            NONE,
+            TOOLS,
+            STROKE,
+            FILL,
+            BRUSH
+        }
+        private OpenedPopUp popUpStatus = OpenedPopUp.NONE;
+        private CancellationTokenSource cancelToken = new CancellationTokenSource();
         private static readonly List<string> buttonsBinding = new List<string>()
         {
             "ms-appx:///Assets/rectangle.png",
@@ -117,12 +127,37 @@ namespace GrappBox.View
 
         private async void FillcolorBtn_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            if (WhiteboardPopUp.IsOpen == true)
+            {
+                cancelToken.Cancel();
+                if (popUpStatus == OpenedPopUp.FILL)
+                {
+                    popUpStatus = OpenedPopUp.NONE;
+                    WhiteboardPopUp.IsOpen = false;
+                    return;
+                }
+            }
+            popUpStatus = OpenedPopUp.FILL;
+            cancelToken = new CancellationTokenSource();
             Colorpan cp = new Colorpan();
             WhiteboardPopUp.Child = cp;
             WhiteboardPopUp.IsOpen = true;
             WhiteboardPopUp.VerticalOffset = WhiteboardPopUp.ActualHeight;
-            await cp.WaitForSelect();
-            wbvm.FillColor = cp.SelectedColor;
+            try
+            {
+                await cp.WaitForSelect(cancelToken.Token);
+                wbvm.FillColor = cp.SelectedColor;
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine("TaskCanceled {0}", ex.Message);
+                return;
+            }
+            finally
+            {
+                cancelToken.Dispose();
+                popUpStatus = OpenedPopUp.NONE;
+            }
             WhiteboardPopUp.IsOpen = false;
             WhiteboardPopUp.Child = null;
             Debug.WriteLine(wbvm.FillColor.Color.ToString());
@@ -130,11 +165,36 @@ namespace GrappBox.View
 
         private async void ColorBtn_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            if (WhiteboardPopUp.IsOpen == true)
+            {
+                cancelToken.Cancel();
+                if (popUpStatus == OpenedPopUp.STROKE)
+                {
+                    popUpStatus = OpenedPopUp.NONE;
+                    WhiteboardPopUp.IsOpen = false;
+                    return;
+                }
+            }
+            popUpStatus = OpenedPopUp.STROKE;
+            cancelToken = new CancellationTokenSource();
             Colorpan cp = new Colorpan();
             WhiteboardPopUp.Child = cp;
             WhiteboardPopUp.IsOpen = true;
-            await cp.WaitForSelect();
-            wbvm.StrokeColor = cp.SelectedColor;
+            try
+            {
+                await cp.WaitForSelect(cancelToken.Token);
+                wbvm.StrokeColor = cp.SelectedColor;
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine("TaskCanceled {0}", ex.Message);
+                return;
+            }
+            finally
+            {
+                cancelToken.Dispose();
+                popUpStatus = OpenedPopUp.NONE;
+            }
             WhiteboardPopUp.IsOpen = false;
             WhiteboardPopUp.Child = null;
             Debug.WriteLine(wbvm.FillColor.Color.ToString());
@@ -142,10 +202,35 @@ namespace GrappBox.View
 
         private async void ToolsButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            if (WhiteboardPopUp.IsOpen == true)
+            {
+                cancelToken.Cancel();
+                if (popUpStatus == OpenedPopUp.TOOLS)
+                {
+                    popUpStatus = OpenedPopUp.NONE;
+                    WhiteboardPopUp.IsOpen = false;
+                    return;
+                }
+            }
+            popUpStatus = OpenedPopUp.TOOLS;
+            cancelToken = new CancellationTokenSource();
             ToolPan tp = new ToolPan();
             WhiteboardPopUp.Child = tp;
             WhiteboardPopUp.IsOpen = true;
-            await tp.WaitForSelect();
+            try
+            {
+                await tp.WaitForSelect(cancelToken.Token);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine("TaskCanceled {0}", ex.Message);
+                return;
+            }
+            finally
+            {
+                cancelToken.Dispose();
+                popUpStatus = OpenedPopUp.NONE;
+            }
             wbvm.CurrentTool = tp.SelectedTool;
             ToolsButtonIcon.UriSource = new Uri(buttonsBinding[tp.SelectedImage]);
             WhiteboardPopUp.IsOpen = false;
@@ -154,10 +239,35 @@ namespace GrappBox.View
         }
         private async void BrushSizeButton_Click(object sender, RoutedEventArgs e)
         {
+            if (WhiteboardPopUp.IsOpen == true)
+            {
+                cancelToken.Cancel();
+                if (popUpStatus == OpenedPopUp.BRUSH)
+                {
+                    popUpStatus = OpenedPopUp.NONE;
+                    WhiteboardPopUp.IsOpen = false;
+                    return;
+                }
+            }
+            popUpStatus = OpenedPopUp.BRUSH;
+            cancelToken = new CancellationTokenSource();
             BrushPan bp = new BrushPan();
             WhiteboardPopUp.Child = bp;
             WhiteboardPopUp.IsOpen = true;
-            await bp.WaitForSelect();
+            try
+            {
+                await bp.WaitForSelect(cancelToken.Token);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Debug.WriteLine("TaskCanceled {0}", ex.Message);
+                return;
+            }
+            finally
+            {
+                cancelToken.Dispose();
+                popUpStatus = OpenedPopUp.NONE;
+            }
             wbvm.StrokeThickness = bp.SelectedThickness;
             WhiteboardPopUp.IsOpen = false;
             WhiteboardPopUp.Child = null;

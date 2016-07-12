@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
@@ -13,7 +16,7 @@ namespace GrappBox.CustomControler
             public string Label { get; set; }
             public double Size { get; set; }
             public BrushesPair()
-            {}
+            { }
         }
         public static readonly List<BrushesPair> Brushes = new List<BrushesPair>()
         {
@@ -34,12 +37,12 @@ namespace GrappBox.CustomControler
             BrushListView.ItemsSource = Brushes;
             BrushListView.SelectedValuePath = "Size";
         }
-        public async System.Threading.Tasks.Task WaitForSelect()
+        public async System.Threading.Tasks.Task WaitForSelect(CancellationToken tok)
         {
             await Task.Run(() =>
             {
-                while (SelectedThickness == 0.0) ;
-            });
+                while (SelectedThickness == 0.0) {}
+            }, tok);
         }
 
         private void BrushListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

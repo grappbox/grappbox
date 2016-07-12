@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -57,12 +58,12 @@ namespace GrappBox.CustomControler
             GridViewTools.ItemsSource = buttonsBinding;
         }
 
-        public async System.Threading.Tasks.Task WaitForSelect()
+        public async System.Threading.Tasks.Task WaitForSelect(CancellationToken tok)
         {
             await Task.Run(() =>
             {
-                while (SelectedTool == WhiteboardTool.NONE) ;
-            });
+                while (SelectedTool == WhiteboardTool.NONE) {}
+            }, tok);
         }
 
         private void GridViewTools_SelectionChanged(object sender, SelectionChangedEventArgs e)

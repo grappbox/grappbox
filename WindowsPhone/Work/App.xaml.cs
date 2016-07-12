@@ -1,6 +1,7 @@
 ﻿using GrappBox.View;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -37,7 +38,13 @@ namespace GrappBox
         public App()
         {
             this.InitializeComponent();
+            this.UnhandledException += App_UnhandledException;
             this.Suspending += this.OnSuspending;
+        }
+
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
         }
 
         /// <summary>
@@ -55,7 +62,7 @@ namespace GrappBox
             }
 #endif
 
-            var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+            StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
             statusBar.BackgroundColor = (Color)App.Current.Resources["RedGrappBox"];
             statusBar.ForegroundColor = (Color)App.Current.Resources["LightWhiteGrappBox"];
             statusBar.BackgroundOpacity = 1;

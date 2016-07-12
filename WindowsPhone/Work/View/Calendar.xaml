@@ -16,12 +16,12 @@
     </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Calendar">
         <Grid VerticalAlignment="Stretch" Background="RoyalBlue">
-            <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}" Background="Cyan">
+            <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}">
                 <Pivot.ItemTemplate>
                     <DataTemplate>
-                        <Grid Background="Violet" VerticalAlignment="Stretch">
+                        <Grid Background="Violet" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <GridView ItemsSource="{Binding DaysList}" Background="Beige">
@@ -89,6 +89,14 @@
                         <TextBlock Text="{Binding MonthName}" />
                     </DataTemplate>
                 </Pivot.HeaderTemplate>
+                <Pivot.ItemContainerStyle>
+                    <Style TargetType="PivotItem">
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    </Style>
+                </Pivot.ItemContainerStyle>
             </Pivot>
             <!--<Popup x:Name="TextPopup" IsOpen="{Binding EventPromptOpened , Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalOffset="-50">
                 <Grid x:Name="TextPopupGrid" Background="#FFB3B3B3">

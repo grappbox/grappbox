@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -50,13 +51,12 @@ namespace GrappBox.CustomControler
             this.InitializeComponent();
             GridViewColors.ItemsSource = colors;
         }
-
-        public async System.Threading.Tasks.Task WaitForSelect()
+        public async System.Threading.Tasks.Task WaitForSelect(CancellationToken tok)
         {
             await Task.Run(() =>
             {
-                while (SelectedColor == null) ;
-            });
+                while (SelectedColor == null) {}
+            }, tok);
         }
 
         private void GridViewColors_SelectionChanged(object sender, SelectionChangedEventArgs e)
