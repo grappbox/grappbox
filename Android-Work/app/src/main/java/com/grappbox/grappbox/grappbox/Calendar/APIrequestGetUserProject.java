@@ -20,9 +20,9 @@ import java.util.Vector;
  */
 public class APIrequestGetUserProject extends AsyncTask<String, Void, String> {
 
-    private EventFragment _context;
+    private EventActivity _context;
 
-    APIrequestGetUserProject(EventFragment context)
+    APIrequestGetUserProject(EventActivity context)
     {
         _context = context;
     }
@@ -38,8 +38,6 @@ public class APIrequestGetUserProject extends AsyncTask<String, Void, String> {
         super.onPostExecute(result);
 
         if (result != null) {
-
-
             try {
 
                 List<ContentValues> projectUser = new Vector<ContentValues>();

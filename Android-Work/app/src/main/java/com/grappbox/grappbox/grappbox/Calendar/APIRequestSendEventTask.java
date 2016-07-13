@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class APIRequestSendEventTask extends AsyncTask<String, Void, List<ContentValues>> {
 
-    AddEventFragment _context;
+    AddEventActivity _context;
 
-    APIRequestSendEventTask(AddEventFragment context)
+    APIRequestSendEventTask(AddEventActivity context)
     {
         _context = context;
     }

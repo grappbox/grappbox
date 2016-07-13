@@ -1,7 +1,9 @@
 package com.grappbox.grappbox.grappbox.Calendar;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -39,6 +41,8 @@ import butterknife.ButterKnife;
 public class AgendaFragment extends Fragment implements CalendarPickerController {
 
     private static final String LOG_TAG = AgendaFragment.class.getSimpleName();
+    private static final int ADD_EVENT_RESULT = 1;
+    private static final int EVENT_DETAIL = 2;
 
     private View _rootView;
     private AgendaCalendarView _AgendaCalendarView;
@@ -67,13 +71,18 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
 
         _FAB = (FloatingActionButton) _rootView.findViewById(R.id.add_event_float_button);
         _FAB.setOnClickListener((View v)-> {
-            Fragment eventDetail = new AddEventFragment();
-            android.support.v4.app.FragmentManager fragManager = getFragmentManager();
-            android.support.v4.app.FragmentTransaction ft = fragManager.beginTransaction();
-            ft.replace(R.id.content_frame, eventDetail).commit();
+            Intent intent = new Intent(this.getActivity(), AddEventActivity.class);
+            startActivityForResult(intent, ADD_EVENT_RESULT);
+//            startActivity(intent);
         });
         _FAB.hide();
 
+        CalendarAPICallRefresh();
+        return _rootView;
+    }
+
+    private void CalendarAPICallRefresh()
+    {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar cal = Calendar.getInstance();
@@ -88,7 +97,6 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
         Log.v("Date = ", currentDate);
         APIRequestCalendarEvent api = new APIRequestCalendarEvent();
         api.execute(previousMonth, currentDate, nextMonth);
-        return _rootView;
     }
 
     @Override
@@ -100,14 +108,22 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
     public void onEventSelected(CalendarEvent event) {
         if (!event.getTitle().contains("No events"))
         {
-            Fragment eventDetail = new EventDetailFragment();
-            android.support.v4.app.FragmentManager fragManager = getFragmentManager();
-            android.support.v4.app.FragmentTransaction ft = fragManager.beginTransaction();
-            Bundle args = new Bundle();
-            args.putInt("idEvent", (int)event.getId());
-            eventDetail.setArguments(args);
-            ft.replace(R.id.content_frame, eventDetail).commit();
+            Intent intent = new Intent(this.getActivity(), EventDetailActivity.class);
+            intent.putExtra("idEvent", (int)event.getId());
+            startActivityForResult(intent, EVENT_DETAIL);
+//            startActivity(intent);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        if ((requestCode == ADD_EVENT_RESULT || requestCode == EVENT_DETAIL)){
+            AgendaFragment agendaFragment = new AgendaFragment();
+            getFragmentManager().beginTransaction().remove(this).commit();
+            getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();
+        }
+
     }
 
     private void fillListEvent(List<ContentValues> eventList) throws ParseException {

@@ -6,12 +6,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.grappbox.grappbox.grappbox.Calendar.AddEventFragment;
-import com.grappbox.grappbox.grappbox.Calendar.AgendaFragment;
-import com.grappbox.grappbox.grappbox.Calendar.EventDetailFragment;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
-import com.grappbox.grappbox.grappbox.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -3,13 +3,11 @@ package com.grappbox.grappbox.grappbox.Calendar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.res.Resources;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,7 +16,6 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.NonScrollListView;
 import com.grappbox.grappbox.grappbox.R;
 
@@ -31,83 +28,94 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by tan_f on 21/01/2016.
+ * Created by tan_f on 13/07/2016.
  */
-public class EventDetailFragment extends EventFragment {
+public class EventDetailActivity extends EventActivity {
 
-    private int         _idEvent;
-    private int         _projectId;
-    private String      _eventIcon;
-    private View        _rootView;
-    private EditText    _eventTitle;
-    private EditText    _eventDescription;
-    private TextView    _eventBeginDateDay;
-    private TextView    _eventBeginDateHour;
-    private TextView    _eventEndDateDay;
-    private TextView    _eventEndDateHour;
-    private Button      _eventUpdateData;
-    private Button      _eventAddUserEvent;
-    private Button      _eventDeleteEventButton;
-    private Spinner     _eventProjectSpinner;
-    private Spinner     _eventTypes;
+    private int                 _idEvent;
+    private int                 _projectId;
+    private Context             _context = this;
+    private String              _eventIcon;
+    private EditText            _eventTitle;
+    private EditText            _eventDescription;
+    private TextView            _eventBeginDateDay;
+    private TextView            _eventBeginDateHour;
+    private TextView            _eventEndDateDay;
+    private TextView            _eventEndDateHour;
+    private Button              _eventUpdateData;
+    private Button              _eventAddUserEvent;
+    private Button              _eventDeleteEventButton;
+    private Spinner             _eventProjectSpinner;
+    private Spinner             _eventTypes;
     private NonScrollListView   _eventListUser;
-    private ContentValues _eventProjectId = new ContentValues();
+    private ContentValues       _eventProjectId = new ContentValues();
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        _rootView = inflater.inflate(R.layout.fragment_event_details, container, false);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_event_details);
 
-        _idEvent = getArguments().getInt("idEvent");
-        _eventTitle = (EditText)_rootView.findViewById(R.id.event_title);
-        _eventDescription = (EditText) _rootView.findViewById(R.id.event_description);
-        _eventBeginDateDay = (TextView) _rootView.findViewById(R.id.event_begin_date_day);
-        _eventBeginDateDay.setOnClickListener((View v) -> {
+        Intent intent = getIntent();
 
-            DatePickerFragment datePickerFragment = new DatePickerFragment();
-            datePickerFragment.setTextView(_eventBeginDateDay);
-            datePickerFragment.show(getFragmentManager(), "datePicker");
+        _idEvent = intent.getExtras().getInt("idEvent");
+        _eventTitle = (EditText) findViewById(R.id.event_title);
+        _eventDescription = (EditText) findViewById(R.id.event_description);
+        _eventBeginDateDay = (TextView) findViewById(R.id.event_begin_date_day);
+        if (_eventBeginDateDay != null) {
+            _eventBeginDateDay.setOnClickListener((View v) -> {
 
-        });
-        _eventBeginDateHour = (TextView) _rootView.findViewById(R.id.event_begin_date_hour);
-        _eventBeginDateHour.setOnClickListener((View v) -> {
+                DatePickerFragment datePickerFragment = new DatePickerFragment();
+                datePickerFragment.setTextView(_eventBeginDateDay);
+                datePickerFragment.show(getSupportFragmentManager(), "datePicker");
 
-            TimePickerFragment timePickerFragment = new TimePickerFragment();
-            timePickerFragment.setTextViewHour(_eventBeginDateHour);
-            timePickerFragment.show(getFragmentManager(), "timePicker");
+            });
+        }
+        _eventBeginDateHour = (TextView) findViewById(R.id.event_begin_date_hour);
+        if (_eventBeginDateHour != null) {
+            _eventBeginDateHour.setOnClickListener((View v) -> {
 
-        });
-        _eventEndDateDay = (TextView) _rootView.findViewById(R.id.event_end_date_day);
-        _eventEndDateDay.setOnClickListener((View v) -> {
+                TimePickerFragment timePickerFragment = new TimePickerFragment();
+                timePickerFragment.setTextViewHour(_eventBeginDateHour);
+                timePickerFragment.show(getSupportFragmentManager(), "timePicker");
 
-            DatePickerFragment datePickerFragment = new DatePickerFragment();
-            datePickerFragment.setTextView(_eventEndDateDay);
-            datePickerFragment.show(getFragmentManager(), "datePicker");
+            });
+        }
+        _eventEndDateDay = (TextView) findViewById(R.id.event_end_date_day);
+        if (_eventEndDateDay != null) {
+            _eventEndDateDay.setOnClickListener((View v) -> {
 
-        });
-        _eventEndDateHour = (TextView) _rootView.findViewById(R.id.event_end_date_hour);
-        _eventEndDateHour.setOnClickListener((View v) -> {
-            TimePickerFragment timePickerFragment = new TimePickerFragment();
-            timePickerFragment.setTextViewHour(_eventEndDateHour);
-            timePickerFragment.show(getFragmentManager(), "timePicker");
-        });
-        _eventListUser = (NonScrollListView) _rootView.findViewById(R.id.event_list_user);
-        _eventUpdateData = (Button) _rootView.findViewById(R.id.event_update_data);
+                DatePickerFragment datePickerFragment = new DatePickerFragment();
+                datePickerFragment.setTextView(_eventEndDateDay);
+                datePickerFragment.show(getSupportFragmentManager(), "datePicker");
+
+            });
+        }
+        _eventEndDateHour = (TextView) findViewById(R.id.event_end_date_hour);
+        if (_eventEndDateHour != null) {
+            _eventEndDateHour.setOnClickListener((View v) -> {
+                TimePickerFragment timePickerFragment = new TimePickerFragment();
+                timePickerFragment.setTextViewHour(_eventEndDateHour);
+                timePickerFragment.show(getSupportFragmentManager(), "timePicker");
+            });
+        }
+        _eventListUser = (NonScrollListView) findViewById(R.id.event_list_user);
+        _eventUpdateData = (Button) findViewById(R.id.event_update_data);
         _eventUpdateData.setOnClickListener((View v) -> {
 
             sendUpadteRequestToAPI();
 
         });
-        _eventAddUserEvent = (Button) _rootView.findViewById(R.id.event_add_user);
+        _eventAddUserEvent = (Button) findViewById(R.id.event_add_user);
         _eventAddUserEvent.setOnClickListener((View v) -> {
             addUserToEvent();
         });
-        _eventDeleteEventButton = (Button) _rootView.findViewById(R.id.event_delete);
+        _eventDeleteEventButton = (Button) findViewById(R.id.event_delete);
         _eventDeleteEventButton.setOnClickListener((View v) -> {
             deleteEvent();
         });
-        _eventProjectSpinner = (Spinner) _rootView.findViewById(R.id.event_project);
-        _eventTypes = (Spinner) _rootView.findViewById(R.id.event_type);
-        ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter.createFromResource(this.getContext(), R.array.event_types_list_default, android.R.layout.simple_spinner_dropdown_item);
+        _eventProjectSpinner = (Spinner) findViewById(R.id.event_project);
+        _eventTypes = (Spinner) findViewById(R.id.event_type);
+        ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter.createFromResource(this, R.array.event_types_list_default, android.R.layout.simple_spinner_dropdown_item);
         eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _eventTypes.setAdapter(eventTypeAdapter);
         _eventTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -115,7 +123,7 @@ public class EventDetailFragment extends EventFragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 final String newType = getResources().getStringArray(R.array.event_types_list_default)[1];
                 if (_eventTypes.getSelectedItem().toString().equals(newType)){
-                    AlertDialog.Builder build = new AlertDialog.Builder(_rootView.getContext());
+                    AlertDialog.Builder build = new AlertDialog.Builder(_context);
                     build.setTitle("Create new type");
                     build.show();
                 }
@@ -128,7 +136,13 @@ public class EventDetailFragment extends EventFragment {
         });
         APIRequestGetEventData event = new APIRequestGetEventData(this, _idEvent);
         event.execute();
-        return _rootView;
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        getCallingActivity();
     }
 
     @Override
@@ -153,34 +167,15 @@ public class EventDetailFragment extends EventFragment {
             if (Integer.parseInt(item.get("id").toString()) == _projectId)
                 pos = i + 1;
         }
-        ArrayAdapter<String> dataAdater = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, list);
+        ArrayAdapter<String> dataAdater = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list);
         dataAdater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _eventProjectSpinner.setAdapter(dataAdater);
         _eventProjectSpinner.setSelection(pos);
     }
 
-    private void deleteEvent()
-    {
-        final Dialog eventDelete = new Dialog(getActivity());
-        eventDelete.setTitle("Warning ! Delete Event : ");
-        eventDelete.setContentView(R.layout.dialog_event_delete);
-        Button confirmChangePass = (Button)eventDelete.findViewById(R.id.event_confirm_delete);
-        confirmChangePass.setOnClickListener((View v)-> {
-
-            APIRequestDeleteEvent addUser = new APIRequestDeleteEvent(this, _idEvent, eventDelete);
-            addUser.execute();
-
-        });
-        Button cancelChangePass = (Button)eventDelete.findViewById(R.id.event_cancel_delete);
-        cancelChangePass.setOnClickListener((View v) -> {
-            eventDelete.dismiss();
-        });
-        eventDelete.show();
-    }
-
     private void addUserToEvent()
     {
-        AlertDialog.Builder addUser = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder addUser = new AlertDialog.Builder(this);
         addUser.setMessage("");
 
 
@@ -202,6 +197,25 @@ public class EventDetailFragment extends EventFragment {
             eventAddUserDialog.dismiss();
         });
         eventAddUserDialog.show();*/
+    }
+
+    private void deleteEvent()
+    {
+        final Dialog eventDelete = new Dialog(this);
+        eventDelete.setTitle("Warning ! Delete Event : ");
+        eventDelete.setContentView(R.layout.dialog_event_delete);
+        Button confirmChangePass = (Button)eventDelete.findViewById(R.id.event_confirm_delete);
+        confirmChangePass.setOnClickListener((View v)-> {
+
+            APIRequestDeleteEvent addUser = new APIRequestDeleteEvent(this, _idEvent, eventDelete);
+            addUser.execute();
+
+        });
+        Button cancelChangePass = (Button)eventDelete.findViewById(R.id.event_cancel_delete);
+        cancelChangePass.setOnClickListener((View v) -> {
+            eventDelete.dismiss();
+        });
+        eventDelete.show();
     }
 
     private void sendUpadteRequestToAPI()
@@ -242,7 +256,7 @@ public class EventDetailFragment extends EventFragment {
                 listUser.add(map);
             }
 
-            SimpleAdapter eventUserListAdapter = new SimpleAdapter(_rootView.getContext(), listUser, R.layout.item_event_user_list,
+            SimpleAdapter eventUserListAdapter = new SimpleAdapter(_context, listUser, R.layout.item_event_user_list,
                     new String[] {"event_list_profile_username", "event_list_profile_email"},
                     new int[] {R.id.event_list_profile_username, R.id.event_list_profile_email});
             _eventListUser.setAdapter(eventUserListAdapter);

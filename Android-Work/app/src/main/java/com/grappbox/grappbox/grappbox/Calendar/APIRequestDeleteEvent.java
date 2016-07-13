@@ -16,11 +16,11 @@ import java.io.IOException;
  */
 public class APIRequestDeleteEvent extends AsyncTask<String, Void, String> {
 
-    private EventDetailFragment _context;
+    private EventDetailActivity _context;
     private int _idEvent;
     private Dialog _dialog;
 
-    APIRequestDeleteEvent(EventDetailFragment context, int idEvent, Dialog deleteDialog)
+    APIRequestDeleteEvent(EventDetailActivity context, int idEvent, Dialog deleteDialog)
     {
         _context = context;
         _idEvent = idEvent;
@@ -32,14 +32,15 @@ public class APIRequestDeleteEvent extends AsyncTask<String, Void, String> {
     {
         super.onPostExecute(result);
         if (result != null) {
+            _context.finish();
             CharSequence text = "Event correctly delete";
-            Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
             _dialog.dismiss();
-            AgendaFragment agendaFragment = new AgendaFragment();
-            _context.getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();
+/*            AgendaFragment agendaFragment = new AgendaFragment();
+            _context.getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();*/
         } else {
             CharSequence text = "An Error Occured.";
-            Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
         }
     }
 
