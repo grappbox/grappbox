@@ -135,10 +135,13 @@ public class EditBugActivityFragment extends LoadingFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v =  inflater.inflate(R.layout.fragment_edit_bug, container, false);
-        Button btn_assignee, btn_category, btn_comments;
+        View v = null;
+            if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() <= 1)
+                v = inflater.inflate(R.layout.fragment_edit_bug_read_only, container, false);
+            else
+                v = inflater.inflate(R.layout.fragment_edit_bug, container, false);
+        Button btn_assignee, btn_category, btn_comments, btn_save, btn_close;
         View.OnClickListener assigneeListener, categoryListener, commentListener;
-        //TODO: Put Loader on EditScreen
         startLoading(v, R.id.loader, R.id.lay_assignees, R.id.lay_categories, R.id.lay_comments, R.id.btn_save, R.id.btn_close, R.id.et_description, R.id.et_title, R.id.lay_status);
         assigneeListener = new OnAssigneeClickListener();
         categoryListener = new OnCategoryClickListener();
@@ -147,6 +150,8 @@ public class EditBugActivityFragment extends LoadingFragment {
         btn_assignee = (Button) v.findViewById(R.id.btn_assignee);
         btn_category = (Button) v.findViewById(R.id.btn_categories);
         btn_comments = (Button) v.findViewById(R.id.btn_comments);
+        btn_save = (Button) v.findViewById(R.id.btn_save);
+        btn_close = (Button) v.findViewById(R.id.btn_close);
 
         GetTicketTask task = new GetTicketTask(this.getActivity(), new OnTaskListener() {
             @Override
@@ -166,6 +171,13 @@ public class EditBugActivityFragment extends LoadingFragment {
                     }
                     SetBugEntity(_bug);
                     endLoading();
+                    if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() <= 1)
+                    {
+                        btn_close.setVisibility(View.GONE);
+                        btn_save.setVisibility(View.GONE);
+                    }
+                    else if (_bug._creatorId != SessionAdapter.getInstance().getUserID())
+                        btn_save.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

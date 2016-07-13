@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
@@ -230,8 +231,13 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         // create a new view
         if (viewType == VIEW_TYPE_ITEM)
         {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.card_bugtracker_list, parent, false);
+            View v = null;
+            if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() <= 1)
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.card_bugtracker_list_read_only, parent, false);
+            else
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.card_bugtracker_list, parent, false);
             ViewHolder vh = new ViewHolder(this, (CardView) v);
             return vh;
         }

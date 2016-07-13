@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
 import org.json.JSONException;
@@ -42,6 +43,8 @@ public class SeeAssigneeFragment extends LoadingFragment {
     public void InitCheckboxes()
     {
         View v = getView();
+        int bugtrackerAccess = SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal();
+
         if (v == null)
             return;
         LinearLayout lay = (LinearLayout) v.findViewById(R.id.assignee_container);
@@ -59,6 +62,7 @@ public class SeeAssigneeFragment extends LoadingFragment {
                     break;
                 }
             }
+            current.setEnabled(bugtrackerAccess > 1);
         }
     }
 
@@ -119,6 +123,8 @@ public class SeeAssigneeFragment extends LoadingFragment {
                         public void OnTaskEnd(boolean isErrorOccured, String... params) {
                             InitCheckboxes();
                             endLoading();
+                            if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() <= 1)
+                                btnSave.setVisibility(View.GONE);
                         }
                     });
                     utask.execute();

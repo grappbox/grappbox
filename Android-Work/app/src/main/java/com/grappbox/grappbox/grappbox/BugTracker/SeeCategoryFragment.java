@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
 import org.json.JSONException;
@@ -48,6 +49,7 @@ public class SeeCategoryFragment extends LoadingFragment {
     public void InitCheckboxes()
     {
         View v = getView();
+        int bugtrackerAccess = SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal();
         if (v == null)
             return;
         LinearLayout lay = (LinearLayout) v.findViewById(R.id.category_container);
@@ -65,6 +67,7 @@ public class SeeCategoryFragment extends LoadingFragment {
                     break;
                 }
             }
+            current.setEnabled(bugtrackerAccess > 1);
         }
     }
 
@@ -102,7 +105,11 @@ public class SeeCategoryFragment extends LoadingFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_see_category, container, false);
+        View v;
+        if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() <= 1)
+            v = inflater.inflate(R.layout.fragment_see_category_read_only, container, false);
+        else
+            v = inflater.inflate(R.layout.fragment_see_category, container, false);
         startLoading(v, R.id.loader, R.id.scroller);
         if (!(getActivity() instanceof EditBugActivity)){
             getActivity().onBackPressed();

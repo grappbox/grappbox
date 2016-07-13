@@ -20,7 +20,15 @@
         "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\calendar_prev_arrow.png"
     },
     {
+        "merged": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\calendar_next_arrow.png",
+        "source": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\calendar_next_arrow.png"
+    },
+    {
         "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\calendar_next_arrow.png",
         "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\calendar_next_arrow.png"
+    },
+    {
+        "merged": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\calendar_prev_arrow.png",
+        "source": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\calendar_prev_arrow.png"
     }
 ]

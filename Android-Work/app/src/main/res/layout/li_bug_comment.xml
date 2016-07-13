@@ -19,7 +19,8 @@
             android:text="Title"
             android:id="@+id/txt_title"
             android:layout_weight="1"
-            android:gravity="bottom" />
+            android:gravity="bottom"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="match_parent"

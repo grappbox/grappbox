@@ -37,7 +37,11 @@ public class SeeCommentFragment extends LoadingFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_see_comment, container, false);
+        View v;
+        if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() <= 1)
+            v = inflater.inflate(R.layout.fragment_see_comment_read_only, container, false);
+        else
+            v = inflater.inflate(R.layout.fragment_see_comment, container, false);
         ListView commentList = (ListView) v.findViewById(R.id.lv_comment);
         Button btnNew = (Button) v.findViewById(R.id.btn_comment);
         startLoading(v, R.id.loader, commentList);
@@ -65,7 +69,8 @@ public class SeeCommentFragment extends LoadingFragment {
         if (getActivity() instanceof EditBugActivity)
             task.execute(((EditBugActivity)getActivity()).GetModelId());
 
-        commentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() > 1)
+            commentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 BugCommentEntity entity = (BugCommentEntity) parent.getItemAtPosition(position);

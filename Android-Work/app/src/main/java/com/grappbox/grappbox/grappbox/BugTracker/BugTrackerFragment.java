@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.List;
@@ -68,7 +69,11 @@ public class BugTrackerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_bug_tracker, container, false);
+        View v = null;
+        if (SessionAdapter.getInstance().getAuthorizations().getAuthorization("bugtracker").ordinal() <= 1)
+            v = inflater.inflate(R.layout.fragment_bugtracker_read_only, container, false);
+        else
+            v = inflater.inflate(R.layout.fragment_bug_tracker, container, false);
         List<Fragment> pages = new Vector<>();
         Button btnNew = (Button) v.findViewById(R.id.btn_new_issue);
 
