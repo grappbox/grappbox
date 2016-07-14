@@ -106,6 +106,11 @@ namespace GrappBox.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
+            Title.Text = "";
+            Description.Text = "";
+            CommentTitle.Text = "";
+            CommentDescription.Text = "";
+            TagName.Text = "";
             if (e.Parameter != null)
             {
                 isAdd = false;
@@ -123,6 +128,11 @@ namespace GrappBox.View
                 Comments.IsEnabled = false;
                 Tags.IsEnabled = false;
                 Users.IsEnabled = false;
+
+                Title.IsEnabled = true;
+                Description.IsEnabled = true;
+                StatesListView.IsEnabled = true;
+                SaveBug.Visibility = Visibility.Visible;
             }
             PostComPopUp.Visibility = Visibility.Collapsed;
             Pivot.IsLocked = false;

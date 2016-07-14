@@ -14,6 +14,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Text.RegularExpressions;
 
 namespace GrappBox.ViewModel
 {
@@ -133,6 +134,7 @@ namespace GrappBox.ViewModel
         public ObservableCollection<CustomerAccessModel> CustomerList
         {
             get { return _customerAccessModel; }
+            set { _customerAccessModel = value; NotifyPropertyChanged("CustomerList"); }
         }
 
         public CustomerAccessModel CustomerSelected
@@ -368,16 +370,19 @@ namespace GrappBox.ViewModel
         public ObservableCollection<ProjectRoleModel> RoleList
         {
             get { return _projectRoleModel; }
+            set { _projectRoleModel = value; NotifyPropertyChanged("RoleList"); }
         }
 
         public ObservableCollection<ProjectUserModel> UserAssignedList
         {
             get { return _userAssigned; }
+            set { _userAssigned = value; NotifyPropertyChanged("UserAssignedList"); }
         }
 
         public ObservableCollection<ProjectUserModel> UserNonAssignedList
         {
             get { return _userNonAssigned; }
+            set { _userNonAssigned = value; NotifyPropertyChanged("UserNonAssignedList"); }
         }
 
         public ProjectRoleModel RoleSelected
@@ -571,7 +576,18 @@ namespace GrappBox.ViewModel
             if (_projectSettingsModel.Phone != null && _projectSettingsModel.Phone != "")
                 props.Add("phone", _projectSettingsModel.Phone);
             if (_projectSettingsModel.Company != null && _projectSettingsModel.Company != "")
-                props.Add("company", _projectSettingsModel.Company);
+            {
+                Regex regex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*@((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z");
+                Match match = regex.Match(_projectSettingsModel.ContactMail);
+                if (match.Success)
+                    props.Add("email", _projectSettingsModel.ContactMail);
+                else
+                {
+                    MessageDialog msgbox = new MessageDialog("Your email is incorrect");
+                    await msgbox.ShowAsync();
+                    return;
+                }
+            }
             if (_projectSettingsModel.ContactMail != null && _projectSettingsModel.ContactMail != "")
                 props.Add("email", _projectSettingsModel.ContactMail);
             if (_projectSettingsModel.Facebook != null && _projectSettingsModel.Facebook != "")
@@ -609,7 +625,7 @@ namespace GrappBox.ViewModel
                 props.Add("name", _projectSettingsModel.Name);
             else
             {
-                MessageDialog msgbox = new MessageDialog("A man needs a name!");
+                MessageDialog msgbox = new MessageDialog("A name is needed for creating a project");
                 await msgbox.ShowAsync();
                 return;
             }
@@ -622,7 +638,18 @@ namespace GrappBox.ViewModel
             if (_projectSettingsModel.Company != null && _projectSettingsModel.Company != "")
                 props.Add("company", _projectSettingsModel.Company);
             if (_projectSettingsModel.ContactMail != null && _projectSettingsModel.ContactMail != "")
-                props.Add("email", _projectSettingsModel.ContactMail);
+            {
+                Regex regex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*@((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z");
+                Match match = regex.Match(_projectSettingsModel.ContactMail);
+                if (match.Success)
+                    props.Add("email", _projectSettingsModel.ContactMail);
+                else
+                {
+                    MessageDialog msgbox = new MessageDialog("Your email is incorrect");
+                    await msgbox.ShowAsync();
+                    return;
+                }
+            }
             if (_projectSettingsModel.Facebook != null && _projectSettingsModel.Facebook != "")
                 props.Add("facebook", _projectSettingsModel.Facebook);
             if (_projectSettingsModel.Twitter != null && _projectSettingsModel.Twitter != "")
@@ -956,6 +983,7 @@ namespace GrappBox.ViewModel
         public ObservableCollection<ProjectUserModel> UserList
         {
             get { return _projectUserModel; }
+            set { _projectUserModel = value; NotifyPropertyChanged("UserList"); }
         }
 
         public ProjectUserModel UserSelected

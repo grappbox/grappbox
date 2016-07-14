@@ -122,6 +122,21 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
+            ProjectName.Text = "";
+            ProjectDescription.Text = "";
+            img.Source = null;
+            Phone.Text = "";
+            Company.Text = "";
+            Mail.Text = "";
+            Facebook.Text = "";
+            Twitter.Text = "";
+            password.Password = "";
+            oldPassword.Password = "";
+            newPassword.Password = "";
+            retypePassword.Password = "";
+            UserMail.Text = "";
+            CustomerName.Text = "";
+
             this.navigationHelper.OnNavigatedTo(e);
             if (e.Parameter == null)
             {
@@ -150,6 +165,13 @@ namespace GrappBox.View
                 User.IsEnabled = false;
                 CustomerAccess.IsEnabled = false;
                 Roles.IsEnabled = false;
+
+                vm.UserList = null;
+                vm.CustomerList = null;
+                vm.RoleList = null;
+                vm.UserAssignedList = null;
+                vm.UserNonAssignedList = null;
+
                 UpdatePassword.Visibility = Visibility.Collapsed;
                 NewPassword.Visibility = Visibility.Visible;
             }

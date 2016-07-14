@@ -31,7 +31,7 @@
                     </Grid.RowDefinitions>
                     <Ellipse Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="80" Height="80">
                         <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding Avatar}"></ImageBrush>
+                            <ImageBrush ImageSource="{Binding Avatar, Mode=TwoWay}"></ImageBrush>
                         </Ellipse.Fill>
                     </Ellipse>
 

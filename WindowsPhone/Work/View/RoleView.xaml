@@ -22,7 +22,7 @@
             <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
             <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
                 <PivotItem Header="Role">
-                    <ScrollViewer>
+                    <ScrollViewer Padding="15">
                         <StackPanel>
                             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Name" FontFamily="Segoe WP" FontSize="18"/>
                             <TextBox x:Name="RoleName" PlaceholderText="Name" Text="{Binding RoleName, Mode=TwoWay}"/>
@@ -75,7 +75,7 @@
                     </ScrollViewer>
                 </PivotItem>
                 <PivotItem Header="Users">
-                    <ScrollViewer>
+                    <ScrollViewer Padding="15">
                         <StackPanel>
                             <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Users assigned" FontFamily="Segoe WP" FontSize="18"/>
                             <ListBox x:Name="userAssign" ItemsSource="{Binding UserAssignedList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userAssign_SelectionChanged">

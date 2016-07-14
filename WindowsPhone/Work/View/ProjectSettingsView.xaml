@@ -42,32 +42,32 @@
                                 <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
 
                                 <TextBlock Text="Name" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <TextBox PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}"/>
+                                <TextBox Name="ProjectName" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}"/>
 
                                 <TextBlock Text="Description" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                <TextBox Name="ProjectDescription" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
                                 <TextBlock Text="Logo" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
                                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <Image x:Name="img" Source="{Binding Logo, Mode=OneWay}" Height="100" Width="100"/>
+                                    <Image x:Name="img" Source="{Binding Logo, Mode=TwoWay}" Height="100" Width="100"/>
                                     <Button Content="Button" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
                                     <Border BorderBrush="Black" BorderThickness="2" Height="100" Width="100"/>
                                 </Grid>
 
                                 <TextBlock Text="Phone" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <TextBox PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>
+                                <TextBox Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>
 
                                 <TextBlock Text="Company" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <TextBox PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}"/>
+                                <TextBox Name="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}"/>
 
                                 <TextBlock Text="Contact mail" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <TextBox PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}"/>
+                                <TextBox Name="Mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress"/>
 
                                 <TextBlock Text="Facebook" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <TextBox PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}"/>
+                                <TextBox Name="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}"/>
 
                                 <TextBlock Text="Twitter" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                                <TextBox PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
+                                <TextBox Name="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
 
                                 <StackPanel Name="NewPassword" Visibility="Collapsed">
                                     <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17"/>

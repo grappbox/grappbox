@@ -107,6 +107,17 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
+            RoleName.Text = "";
+            TTNButton.IsChecked = true;
+            CTNButton.IsChecked = true;
+            GNButton.IsChecked = true;
+            WNButton.IsChecked = true;
+            BNButton.IsChecked = true;
+            ENButton.IsChecked = true;
+            TNButton.IsChecked = true;
+            PSNButton.IsChecked = true;
+            CNButton.IsChecked = true;
+
             this.navigationHelper.OnNavigatedTo(e);
             if (e.Parameter != null)
             {
@@ -187,6 +198,8 @@ namespace GrappBox.View
             }
             else
             {
+                vm.UserAssignedList = null;
+                vm.UserNonAssignedList = null;
                 Update.Visibility = Visibility.Collapsed;
                 Add.Visibility = Visibility.Visible;
             }

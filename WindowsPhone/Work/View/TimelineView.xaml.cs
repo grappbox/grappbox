@@ -119,6 +119,8 @@ namespace GrappBox.View
             PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
             CustomerListView.IsEnabled = true;
             vm.MessageSelected = null;
+            MessageTitle.Text = "";
+            Message.Text = "";
             await vm.getTimelines();
             await vm.getCustomerMessages();
             await vm.getTeamMessages();
