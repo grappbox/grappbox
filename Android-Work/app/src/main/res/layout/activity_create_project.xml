@@ -27,7 +27,14 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_create_project" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/content_project_creation">
+
+        </FrameLayout>
+
+<!--        <include layout="@layout/content_create_project" /> -->
 
     </LinearLayout>
 

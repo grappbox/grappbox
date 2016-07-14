@@ -18,9 +18,9 @@ import java.io.IOException;
 public class APIRequestCreateProject extends AsyncTask<String, Void, String> {
 
     private final String PATH = "projects/projectcreation";
-    private CreateProjectActivity _createProjectActivity;
+    private CreateProjectPreferenceActivity _createProjectActivity;
 
-    public APIRequestCreateProject(CreateProjectActivity activity)
+    public APIRequestCreateProject(CreateProjectPreferenceActivity activity)
     {
         _createProjectActivity = activity;
     }
@@ -58,6 +58,7 @@ public class APIRequestCreateProject extends AsyncTask<String, Void, String> {
             String facebook = param[5];
             String twitter = param[6];
             String mail = param[7];
+            String logo = param[8];
             String token = SessionAdapter.getInstance().getToken();
             JSONParam.put("name", title);
             JSONParam.put("token", token);
@@ -68,7 +69,9 @@ public class APIRequestCreateProject extends AsyncTask<String, Void, String> {
             JSONParam.put("twitter", twitter);
             JSONParam.put("email", mail);
             JSONParam.put("password", safepassword);
+            JSONParam.put("logo", logo);
             JSONData.put("data", JSONParam);
+            Log.v("CreateProject", JSONData.toString());
             APIConnectAdapter.getInstance().sendJSON(JSONData);
             APIResponse = APIConnectAdapter.getInstance().getResponseCode();
             if (APIResponse == 201) {

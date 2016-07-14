@@ -1,13 +1,18 @@
 package com.grappbox.grappbox.grappbox;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +42,7 @@ import com.grappbox.grappbox.grappbox.Model.ProjectModel;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.Model.UserProjectTask;
 import com.grappbox.grappbox.grappbox.Project.CreateProjectActivity;
+import com.grappbox.grappbox.grappbox.Project.CreateProjectPreferenceActivity;
 import com.grappbox.grappbox.grappbox.Settings.UserProfileActivity;
 import com.grappbox.grappbox.grappbox.Timeline.TimelineFragment;
 import com.grappbox.grappbox.grappbox.Whiteboard.WhiteboardListFragment;
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity
 
     public static final int PICK_DOCUMENT_FROM_SYSTEM = 1;
     public static final int PICK_DOCUMENT_SECURED_FROM_SYSTEM = 2;
+    public static final int REFRESH_AFTER_PROJECT_CREATION = 3;
     static final Map<Integer, String> MENU_MAPING_AUTH = ImmutableMap.<Integer, String>builder()
             .put(R.id.nav_whiteboard, "whiteboard")
             .put(R.id.nav_Bugtracker, "bugtracker")
@@ -74,6 +81,23 @@ public class MainActivity extends AppCompatActivity
     private boolean _bMenuClosed;
     private Map<String, Runnable> _toolbarTitleHandler;
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REFRESH_AFTER_PROJECT_CREATION && resultCode == Activity.RESULT_OK){
+            refreshCurrentFragment();
+        }
+    }
+
+    private void refreshCurrentFragment()
+    {
+        Fragment frg = null;
+        frg = getSupportFragmentManager().findFragmentByTag("Your_Fragment_TAG");
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commit();
+
+    }
 
     private void OnHeaderClicked(View header)
     {
@@ -142,8 +166,9 @@ public class MainActivity extends AppCompatActivity
             create_project.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener(){
                 public boolean onMenuItemClick(MenuItem item)
                 {
-                    Intent intent = new Intent(getBaseContext(), CreateProjectActivity.class);
-                    startActivity(intent);
+                    Intent intent = new Intent(getBaseContext(), CreateProjectPreferenceActivity.class);
+                    startActivityForResult(intent, REFRESH_AFTER_PROJECT_CREATION);
+//                    startActivity(intent);
 
                     return false;
                 }
@@ -385,9 +410,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         if (id == R.id.action_profile) {
             startActivity(new Intent(this, UserProfileActivity.class));
