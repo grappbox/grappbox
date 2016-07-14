@@ -89,7 +89,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             "project_team",
             "project_roles"
     };
-    private GeneralPreferenceFragment _project_settings_fragment;
+    public static GeneralPreferenceFragment _project_settings_fragment;
 
     private void fileSelectedResult(Intent data)
     {
@@ -107,7 +107,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             result64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
             task.execute("project_logo", result64);
             Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-            _project_settings_fragment.findPreference("project_logo").setIcon(drawable);
+            getProjectSettingsFragment().findPreference("project_logo").setIcon(drawable);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -242,7 +242,13 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
     public void setPreferencesEnabled(boolean enabled)
     {
         for (String prefKey : PreferenceKeys)
-            _project_settings_fragment.findPreference(prefKey).setEnabled(enabled);
+        {
+            Preference pref = getProjectSettingsFragment().findPreference(prefKey);
+            if (pref == null)
+                continue;
+            pref.setEnabled(enabled);
+        }
+
     }
 
     public GeneralPreferenceFragment getProjectSettingsFragment()
@@ -278,7 +284,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         title = intent.getStringExtra(EXTRA_PROJECT_NAME);
 
         setTitle(title == null ? getString(R.string.str_project_settings_title) : title + getString(R.string.str_project_settings_footer));
-        _modelBasicInfos = (ProjectModel) intent.getSerializableExtra(EXTRA_PROJECT_MODEL);
+        _modelBasicInfos = SessionAdapter.getInstance().getCurrentSelectedProjectInfos();
 
         super.onCreate(savedInstanceState);
         setupActionBar();
@@ -340,8 +346,11 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             setHasOptionsMenu(true);
             getActivity().setTitle(_modelBasicInfos.getName() + getActivity().getString(R.string.str_project_settings_footer));
             _isChildrenFragment = false;
-            _childrenParent.setProjectPreferenceFragment(this);
+            _childrenParent._project_settings_fragment = (this);
+            Log.v("GENERAL PREF", String.valueOf(_childrenParent._project_settings_fragment));
+
             _baseFragment = this;
+            _modelBasicInfos = SessionAdapter.getInstance().getCurrentSelectedProjectInfos();
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
@@ -357,11 +366,11 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                             task.execute();
                             break;
                         case "project_team":
-                            RetreiveTeamInfoTask teamTask = new RetreiveTeamInfoTask((PreferenceCategory) findPreference(prefKey), _childrenParent, _projectId);
+                            RetreiveTeamInfoTask teamTask = new RetreiveTeamInfoTask((PreferenceCategory) findPreference(prefKey), _childrenParent, SessionAdapter.getInstance().getCurrentSelectedProject());
                             teamTask.execute();
                             break;
                         case "project_roles":
-                            RetreiveProjectRoles rolesTask = new RetreiveProjectRoles(_childrenParent, _projectId, null, this);
+                            RetreiveProjectRoles rolesTask = new RetreiveProjectRoles(_childrenParent, SessionAdapter.getInstance().getCurrentSelectedProject(), null, this);
 
                             rolesTask.execute();
                             break;
@@ -371,7 +380,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                     continue;
                 }
                 if (prefKey.equals("project_safe_password"))
-                    ((SafePasswordPreference)findPreference(prefKey)).setProjectId(_projectId);
+                    ((SafePasswordPreference)findPreference(prefKey)).setProjectId(SessionAdapter.getInstance().getCurrentSelectedProject());
                 super.getActivity().getSharedPreferences("", Context.MODE_PRIVATE).edit().remove(prefKey).commit();
                 bindPreferenceSummaryToValue(findPreference(prefKey));
                 if (Objects.equals(prefKey, "project_logo"))
@@ -393,12 +402,12 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 }
                 else if (prefKey.equals("project_team"))
                 {
-                    RetreiveTeamInfoTask teamTask = new RetreiveTeamInfoTask((PreferenceCategory) findPreference(prefKey), _childrenParent, _projectId);
+                    RetreiveTeamInfoTask teamTask = new RetreiveTeamInfoTask((PreferenceCategory) findPreference(prefKey), _childrenParent, SessionAdapter.getInstance().getCurrentSelectedProject());
                     teamTask.execute();
                 }
                 else if (prefKey.equals("project_roles"))
                 {
-                    RetreiveProjectRoles rolesTask = new RetreiveProjectRoles(_childrenParent, _projectId, null, this);
+                    RetreiveProjectRoles rolesTask = new RetreiveProjectRoles(_childrenParent, SessionAdapter.getInstance().getCurrentSelectedProject(), null, this);
 
                     rolesTask.execute();
                 }
@@ -430,7 +439,107 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
+    public static class GetProjectInfosTask extends AsyncTask<String, Void, String>
+    {
+        APIConnectAdapter _api;
+        Activity _context;
+        String      _projectId;
+        ProjectInfosListener _listener;
+        public interface ProjectInfosListener{
+            void onDataFetched(JSONObject json);
+        }
+        GetProjectInfosTask(Activity context, ProjectInfosListener _listener)
+        {
+            _context = context;
+            _projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
+            this._listener = _listener;
+        }
 
+        private boolean handleAPIError(JSONObject infos) throws JSONException {
+            if (!infos.getString("return_code").startsWith("1."))
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + infos.getString("return_code"));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                if (_context instanceof MainActivity)
+                {
+                    ((MainActivity) _context).logoutUser();
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private boolean disconnectAPI() throws IOException {
+            int responseCode = 500;
+
+            responseCode = _api.getResponseCode();
+            if (responseCode < 300) {
+                APIConnectAdapter.getInstance().closeConnection();
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+
+                builder.setMessage(_context.getString(R.string.problem_grappbox_server) + _context.getString(R.string.error_code_head) + String.valueOf(responseCode));
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.create().show();
+                if (_context instanceof MainActivity)
+                    ((MainActivity) _context).logoutUser();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s == null)
+                return;
+            JSONObject json, info, data;
+
+            try {
+                json = new JSONObject(s);
+                info = json.getJSONObject("info");
+                data = json.getJSONObject("data");
+                if (disconnectAPI())
+                    return;
+                assert info != null;
+                if (handleAPIError(info))
+                    return;
+                _listener.onDataFetched(data);
+
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            _api = APIConnectAdapter.getInstance(true);
+
+            try {
+                _api.startConnection("projects/getinformations/" + SessionAdapter.getInstance().getToken() + "/" + (SessionAdapter.getInstance().getCurrentSelectedProject()));
+                _api.setRequestConnection("GET");
+                return _api.getInputSream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     public static class UpdateKeyBasicInfoTask extends AsyncTask<String, Void, String>
     {
@@ -441,7 +550,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         UpdateKeyBasicInfoTask(Activity context, String projectId)
         {
             _context = context;
-            _projectId = projectId;
+            _projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
         }
 
         private boolean handleAPIError(JSONObject infos) throws JSONException {
@@ -525,7 +634,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             json = new JSONObject();
             try {
                 data.put("token", SessionAdapter.getInstance().getToken());
-                data.put("projectId", _projectId);
+                data.put("projectId", SessionAdapter.getInstance().getCurrentSelectedProject());
                 switch(key)
                 {
                     case "project_name":
@@ -626,7 +735,8 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            assert s != null;
+            if (s == null)
+                return;
             JSONObject json, info;
 
             try {
@@ -654,7 +764,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
             try {
                 _api.setVersion("V0.2");
-                _api.startConnection("projects/delproject/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(_projectId));
+                _api.startConnection("projects/delproject/" + SessionAdapter.getInstance().getToken() + "/" + (SessionAdapter.getInstance().getCurrentSelectedProject()));
                 _api.setRequestConnection("DELETE");
                 return _api.getInputSream();
             } catch (IOException e) {
@@ -747,7 +857,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             _api = APIConnectAdapter.getInstance(true);
             try {
                 _api.setVersion("V0.2");
-                _api.startConnection("projects/retrieveproject/" + SessionAdapter.getInstance().getToken() + "/" + _projectId);
+                _api.startConnection("projects/retrieveproject/" + SessionAdapter.getInstance().getToken() + "/" + SessionAdapter.getInstance().getCurrentSelectedProject());
                 _api.setRequestConnection("GET");
                 return _api.getInputSream();
             } catch (IOException e) {
@@ -833,7 +943,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 {
                     JSONObject current = array.getJSONObject(i);
                     CustomerAccessPreference customerAccess = new CustomerAccessPreference(_context, Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_customer_access_pref)));
-                    customerAccess.setProjectId(_projectId);
+                    customerAccess.setProjectId(SessionAdapter.getInstance().getCurrentSelectedProject());
                     assert current != null;
                     customerAccess.setCustomerAccess(new CustomerAccessModel(current));
                     customerAccess.setCustomerZone(_customer_zone);
@@ -842,7 +952,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 CustomerAccessPreference creator = new CustomerAccessPreference(_context, Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_customer_access_pref)));
 
                 creator.setCustomerAccess(new CustomerAccessModel());
-                creator.setProjectId(_projectId);
+                creator.setProjectId(SessionAdapter.getInstance().getCurrentSelectedProject());
                 creator.setCustomerZone(_customer_zone);
                 _customer_zone.addPreference(creator);
 
@@ -857,7 +967,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             _api = APIConnectAdapter.getInstance(true);
             try {
                 _api.setVersion("V0.2");
-                _api.startConnection("projects/getcustomeraccessbyproject/" + SessionAdapter.getInstance().getToken() + "/" + _projectId);
+                _api.startConnection("projects/getcustomeraccessbyproject/" + SessionAdapter.getInstance().getToken() + "/" + SessionAdapter.getInstance().getCurrentSelectedProject());
                 _api.setRequestConnection("GET");
                 return _api.getInputSream();
             } catch (IOException e) {
@@ -877,7 +987,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
         RetreiveTeamInfoTask(PreferenceCategory category, Context context, String projectId)
         {
             _context = context;
-            _projectId = projectId;
+            _projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
             _category = category;
         }
 
@@ -950,13 +1060,13 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                     assert obj != null;
                     UserModel user = new UserModel(obj);
                     TeamPreference newPref = new TeamPreference(_context, Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_manage_team_member)));
-                    newPref.setUserModel(_projectId, _childrenParent, user);
+                    newPref.setUserModel(SessionAdapter.getInstance().getCurrentSelectedProject(), _childrenParent, user);
                     newPref.setCategory(_category);
                     _category.addPreference(newPref);
                 }
                 UserModel addUser = new UserModel();
                 TeamPreference addPref = new TeamPreference(_context, Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_add_team_member)));
-                addPref.setUserModel(_projectId, _childrenParent, addUser);
+                addPref.setUserModel(SessionAdapter.getInstance().getCurrentSelectedProject(), _childrenParent, addUser);
                 addPref.setCategory(_category);
                 _category.addPreference(addPref);
             } catch (JSONException | IOException e) {
@@ -990,7 +1100,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_team_member);
             _isChildrenFragment = true;
-            RetreiveRolesIDUserProjectTask task = new RetreiveRolesIDUserProjectTask(_childrenParent, _projectId, this);
+            RetreiveRolesIDUserProjectTask task = new RetreiveRolesIDUserProjectTask(_childrenParent, SessionAdapter.getInstance().getCurrentSelectedProject(), this);
             task.execute();
             getActivity().setTitle(_currentUserSeen.getCompleteName());
         }
@@ -1005,7 +1115,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
         RetreiveRolesIDUserProjectTask(Context context, String projectID, PreferenceFragment fragment) {
             _context = context;
-            _projectId = projectID;
+            _projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
             _frag = fragment;
         }
 
@@ -1055,7 +1165,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
             _api.setVersion("V0.2");
             try {
-                _api.startConnection("roles/getrolebyprojectanduser/" + SessionAdapter.getInstance().getToken() + "/" + String.valueOf(_projectId) + "/" + _currentUserSeen.getId());
+                _api.startConnection("roles/getrolebyprojectanduser/" + SessionAdapter.getInstance().getToken() + "/" + (SessionAdapter.getInstance().getCurrentSelectedProject()) + "/" + _currentUserSeen.getId());
                 _api.setRequestConnection("GET");
                 return _api.getInputSream();
             } catch (IOException e) {
@@ -1090,7 +1200,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                     assert obj != null;
                     ids.add(obj.getInt("id"));
                 }
-                RetreiveProjectRoles task = new RetreiveProjectRoles(_context, _projectId, ids, _frag);
+                RetreiveProjectRoles task = new RetreiveProjectRoles(_context, SessionAdapter.getInstance().getCurrentSelectedProject(), ids, _frag);
 
                 task.execute();
             } catch (JSONException | IOException e) {
@@ -1109,7 +1219,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
 
         RetreiveProjectRoles(Context context, String projectID, ArrayList<Integer> ids, PreferenceFragment fragment) {
             _context = context;
-            _projectId = projectID;
+            _projectId = SessionAdapter.getInstance().getCurrentSelectedProject();
             _ids = ids;
             _frag = fragment;
         }
@@ -1196,14 +1306,14 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                     RoleModel model = new RoleModel(obj);
                     if (_ids != null) {
                         UserRolePreference pref = new UserRolePreference(_context);
-                        pref.setRoleModel(model, _ids.contains(model.getId()), _projectId, _currentUserSeen.getId());
+                        pref.setRoleModel(model, _ids.contains(model.getId()), SessionAdapter.getInstance().getCurrentSelectedProject(), _currentUserSeen.getId());
                         _frag.getPreferenceScreen().addPreference(pref);
                     }
                     else
                     {
                         RolePreference pref = new RolePreference(_context,Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_role_choices)));
 
-                        pref.initalize((PreferenceCategory)_frag.findPreference("project_roles"), model, _projectId, _childrenParent);
+                        pref.initalize((PreferenceCategory)_frag.findPreference("project_roles"), model, SessionAdapter.getInstance().getCurrentSelectedProject(), _childrenParent);
                         ((PreferenceCategory)_frag.getPreferenceScreen().findPreference("project_roles")).addPreference(pref);
                     }
                 }
@@ -1213,7 +1323,7 @@ public class ProjectSettingsActivity extends AppCompatPreferenceActivity {
                 {
                     RolePreference pref = new RolePreference(_context,Xml.asAttributeSet(_context.getResources().getLayout(R.layout.dialog_role_choices)));
 
-                    pref.initalize((PreferenceCategory)_frag.findPreference("project_roles"), new RoleModel(), _projectId, _childrenParent);
+                    pref.initalize((PreferenceCategory)_frag.findPreference("project_roles"), new RoleModel(), SessionAdapter.getInstance().getCurrentSelectedProject(), _childrenParent);
                     ((PreferenceCategory)_frag.getPreferenceScreen().findPreference("project_roles")).addPreference(pref);
                 }
             } catch (JSONException | IOException e) {

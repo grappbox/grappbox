@@ -21,6 +21,7 @@ public class SessionAdapter {
     private String    _currentSelectedProject;
     private String    _currentSelectedProjectName;
     private AccessModel _currentAuths;
+    private ProjectModel _currentSelectedProjectInfos;
 
     private int PRIVATE_MODE = 0;
     private static final String PREF_NAME = "GrappboxSessionPref";
@@ -75,6 +76,10 @@ public class SessionAdapter {
     {
         return !_currentSelectedProject.isEmpty();
     }
+
+    public void setCurrentSelectedProjectInfos(ProjectModel model) { _currentSelectedProjectInfos = model; }
+
+    public ProjectModel getCurrentSelectedProjectInfos() { return _currentSelectedProjectInfos; }
 
     public static synchronized void initializeInstance(Context context) {
         if (_instance == null) {
