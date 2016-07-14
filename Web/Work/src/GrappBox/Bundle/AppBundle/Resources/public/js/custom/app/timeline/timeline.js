@@ -374,7 +374,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     );
   };
 
-  // "Add comment" button handler
+  // "Convert to issue" button handler
   $scope.action.onNewIssue = function(message) {
     timelineFactory.clear();
     timelineFactory.setMessage(message);
