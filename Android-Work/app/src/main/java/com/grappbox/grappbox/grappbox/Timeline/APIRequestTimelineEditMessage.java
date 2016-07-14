@@ -23,24 +23,21 @@ public class APIRequestTimelineEditMessage extends AsyncTask<String, Void, Strin
     private TimelineMessage _context;
     private TimelineCommentActivity _contextComment;
     private int _idTimeline;
-    private Dialog _dialog;
     private boolean _isComment = false;
     private int _idMessage;
 
-    APIRequestTimelineEditMessage(TimelineMessage context, int idTimeline, Dialog dialog)
+    APIRequestTimelineEditMessage(TimelineMessage context, int idTimeline)
     {
         _context = context;
         _idTimeline = idTimeline;
-        _dialog = dialog;
         _isComment = false;
     }
 
-    APIRequestTimelineEditMessage(TimelineCommentActivity context, int idTimeline, int idMessage, Dialog dialog)
+    APIRequestTimelineEditMessage(TimelineCommentActivity context, int idTimeline, int idMessage)
     {
         _contextComment = context;
         _idTimeline = idTimeline;
         _idMessage = idMessage;
-        _dialog = dialog;
         _isComment = true;
     }
 
@@ -56,7 +53,6 @@ public class APIRequestTimelineEditMessage extends AsyncTask<String, Void, Strin
                 APIRequestGetListMessageTimeline apiGet = new APIRequestGetListMessageTimeline(_context, _idTimeline);
                 apiGet.execute();
             }
-            _dialog.dismiss();
         } else {
             Context context;
             if (_isComment)

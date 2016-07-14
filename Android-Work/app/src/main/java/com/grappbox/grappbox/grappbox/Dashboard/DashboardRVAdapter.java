@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
@@ -34,18 +35,20 @@ public class DashboardRVAdapter extends RecyclerView.Adapter<DashboardRVAdapter.
     }
 
     public static class ProjectViewHolder extends RecyclerView.ViewHolder {
-        CardView _cv;
-        TextView _projectName;
-        TextView _projectDesc;
-        TextView _projectCompany;
-        TextView _projectMail;
-        TextView _projectBug;
-        TextView _projectTask;
-        TextView _projectMessage;
+        CardView    _cv;
+        ImageView   _projectLogo;
+        TextView    _projectName;
+        TextView    _projectDesc;
+        TextView    _projectCompany;
+        TextView    _projectMail;
+        TextView    _projectBug;
+        TextView    _projectTask;
+        TextView    _projectMessage;
 
         ProjectViewHolder(View itemView){
             super(itemView);
             _cv = (CardView)itemView.findViewById(R.id.card_view_project);
+            _projectLogo = (ImageView)itemView.findViewById(R.id.img_logo_project);
             _projectName = (TextView)itemView.findViewById(R.id.dashboard_project_name);
             _projectDesc = (TextView)itemView.findViewById(R.id.dashboard_project_desc);
             _projectCompany = (TextView)itemView.findViewById(R.id.dashboard_project_company);

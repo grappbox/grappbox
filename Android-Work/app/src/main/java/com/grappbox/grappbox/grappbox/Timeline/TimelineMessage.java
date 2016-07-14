@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by tan_f on 27/02/2016.
  */
-public class TimelineMessage extends Fragment {
+public class TimelineMessage extends LoadingFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

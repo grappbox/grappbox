@@ -1,70 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_width="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/frame_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context=".LoginActivity"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <ImageView
-            android:layout_gravity="center"
-            android:layout_width="200dip"
-            android:layout_height="200dip"
-            android:src="@drawable/grappbox_logo"
-            android:contentDescription="@string/logo_description" />
+         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:paddingLeft="@dimen/activity_horizontal_margin"
+             android:paddingRight="@dimen/activity_horizontal_margin"
+             android:paddingTop="@dimen/activity_vertical_margin"
+             android:paddingBottom="@dimen/activity_vertical_margin"
+             tools:context=".LoginActivity"
+             android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="@string/login_label"
-            android:textSize="@dimen/login_text_size"
-            android:layout_marginTop="15dip"/>
+             <ImageView
+                 android:layout_gravity="center"
+                 android:layout_width="200dip"
+                 android:layout_height="200dip"
+                 android:src="@drawable/grappbox_logo"
+                 android:contentDescription="@string/logo_description" />
 
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/loginInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:hint="@string/login_hint"
-            android:textSize="@dimen/login_input_size"
-            android:layout_marginTop="15dip"
-            android:inputType="textEmailAddress" />
+             <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:textAlignment="center"
+                 android:text="@string/login_label"
+                 android:textSize="@dimen/login_text_size"
+                 android:layout_marginTop="15dip"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="@string/password_label"
-            android:textSize="@dimen/login_text_size"
-            android:layout_marginTop="15dip"/>
+             <android.support.v7.widget.AppCompatEditText
+                 android:id="@+id/loginInput"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:singleLine="true"
+                 android:hint="@string/login_hint"
+                 android:textSize="@dimen/login_input_size"
+                 android:layout_marginTop="15dip"
+                 android:inputType="textEmailAddress" />
 
-        <EditText
-            android:id="@+id/passwInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/password_hint"
-            android:textSize="@dimen/login_input_size"
-            android:inputType="textPassword"
-            android:layout_marginTop="15dip"/>
+             <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:textAlignment="center"
+                 android:text="@string/password_label"
+                 android:textSize="@dimen/login_text_size"
+                 android:layout_marginTop="15dip"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/login_connect_button"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dip"
-            android:onClick="LoginUser"/>
+             <EditText
+                 android:id="@+id/passwInput"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:hint="@string/password_hint"
+                 android:textSize="@dimen/login_input_size"
+                 android:inputType="textPassword"
+                 android:layout_marginTop="15dip"/>
 
-    </LinearLayout>
-</ScrollView>
+             <Button
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:text="@string/login_connect_button"
+                 android:layout_gravity="center_horizontal"
+                 android:layout_marginTop="15dip"
+                 android:onClick="LoginUser"/>
+
+         </LinearLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+    style="?android:attr/progressBarStyleLarge"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/loader"
+    android:layout_gravity="center"
+    android:visibility="gone"/>
+
+</FrameLayout>

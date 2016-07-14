@@ -63,6 +63,7 @@ public class CreateProjectActivity extends AppCompatActivity {
             builder.setTitle(R.string.project_create_alert_error);
             builder.setMessage(R.string.project_create_alert_error_message);
             builder.show();
+            return ;
         }
         APIRequestCreateProject api = new APIRequestCreateProject(this);
         api.execute(title, safePassword, desc, phone, company, facebook, twitter, mail);

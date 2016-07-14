@@ -17,6 +17,7 @@ public class GetAccessesTask extends AsyncTask<Void, Void, String> {
     private APIConnectAdapter   _api;
     private TaskListener        _listener;
     private Context             _context;
+    private Integer             _value;
 
     public GetAccessesTask(TaskListener _listener, Context _context) {
         this._listener = _listener;
@@ -31,6 +32,7 @@ public class GetAccessesTask extends AsyncTask<Void, Void, String> {
         try {
             _api.startConnection("roles/getuserrolesinformations/" + token + "/" + userId);
             _api.setRequestConnection("GET");
+            _value = _api.getResponseCode();
             return _api.getInputSream();
         } catch (IOException e) {
             e.printStackTrace();

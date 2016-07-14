@@ -40,7 +40,7 @@ public class ProjectModel implements Serializable {
 
     public ProjectModel(JSONObject data) throws JSONException {
         byte[] blob = null;//Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
-
+        
         if (data.has("project_id"))
             id = data.getString("project_id");
         if (data.has("project_name"))
