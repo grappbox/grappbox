@@ -16,25 +16,31 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UserController extends Controller
 {
+  private $api_baseURL = "http://api.grappbox.com/app_dev.php/";
+  private $api_version = "V0.2";
+  private $cookies;
+
 
   // Routine definition
-  // Get initial user data from GrappBox API  
-  private function getLoginData($formData)
-  {
-    $api_baseURL = "http://api.grappbox.com/app_dev.php/";
-    $api_version = "V0.2";
-
-    $cookies = array(
+  // UserController constructor
+  public function __construct() {
+    $this->cookies = array(
       "time" => time() + 2592000,
       "base" => "/",
       "domain" => null,
       "secure" => false,
       "httponly" => false
-      );
+    );
+  }
 
+
+  // Routine definition
+  // Get initial user data from GrappBox API  
+  private function getLoginData($formData)
+  {
     $data = curl_init();
 
-    curl_setopt($data, CURLOPT_URL, $api_baseURL.$api_version."/accountadministration/login");
+    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/accountadministration/login");
     curl_setopt($data, CURLOPT_POST, 1);
     curl_setopt($data, CURLOPT_TIMEOUT, 30);
     curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
@@ -54,24 +60,24 @@ class UserController extends Controller
       switch ($response["info"]["return_code"]) {
         case "1.14.1":
         $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_success"),
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
         $redirect->headers->setCookie(new Cookie("TOKEN", base64_encode($response["data"]["token"]),
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
         $redirect->headers->setCookie(new Cookie("ID", base64_encode($response["data"]["id"]),
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         case "14.1.4":
         $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
         $redirect->headers->setCookie(new Cookie("TOKEN", null,
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
         $redirect->headers->setCookie(new Cookie("ID", null,
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         default:
@@ -88,12 +94,9 @@ class UserController extends Controller
   // Check stored user data before login   
   private function checkLoginData($token)
   {
-    $api_baseURL = "http://api.grappbox.com/app_dev.php/";
-    $api_version = "V0.2";
-
     $data = curl_init();
 
-    curl_setopt($data, CURLOPT_URL, $api_baseURL.$api_version."/user/basicinformations/".$token);
+    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/user/basicinformations/".$token);
     curl_setopt($data, CURLOPT_TIMEOUT, 30);
     curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
 
@@ -114,13 +117,13 @@ class UserController extends Controller
 
         case "7.1.3":
         $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_denied"),
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
         $redirect->headers->setCookie(new Cookie("TOKEN", null,
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
         $redirect->headers->setCookie(new Cookie("ID", null,
-          $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         default:
