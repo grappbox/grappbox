@@ -35,7 +35,7 @@ namespace GrappBox.ViewModel
             NotifyPropertyChanged("Avatar");
         }
 
-        public async System.Threading.Tasks.Task updateAPI(string password = null)
+        public async System.Threading.Tasks.Task updateAPI(string password = null, string oldPassword = null)
         {
             ApiCommunication api = ApiCommunication.GetInstance();
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -48,8 +48,11 @@ namespace GrappBox.ViewModel
                 props.Add("birthday", model.Birthday);
             if (model.av != null && model.av != "")
                 props.Add("avatar", model.av);
-            if (password != null)
+            if (password != null && oldPassword != null)
+            {
                 props.Add("password", password);
+                props.Add("oldPassword", oldPassword);
+            }
             if (model.Phone != null && model.Phone != "")
                 props.Add("phone", model.Phone);
             if (model.Country != null && model.Country != "")
@@ -107,7 +110,6 @@ namespace GrappBox.ViewModel
             NotifyPropertyChanged("Email");
             NotifyPropertyChanged("Phone");
             NotifyPropertyChanged("Country");
-            NotifyPropertyChanged("Avatar");
             NotifyPropertyChanged("Linkedin");
             NotifyPropertyChanged("Viadeo");
             NotifyPropertyChanged("Twitter");

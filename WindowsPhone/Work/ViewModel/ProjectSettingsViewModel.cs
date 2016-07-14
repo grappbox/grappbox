@@ -576,6 +576,8 @@ namespace GrappBox.ViewModel
             if (_projectSettingsModel.Phone != null && _projectSettingsModel.Phone != "")
                 props.Add("phone", _projectSettingsModel.Phone);
             if (_projectSettingsModel.Company != null && _projectSettingsModel.Company != "")
+                props.Add("company", _projectSettingsModel.Company);
+            if (_projectSettingsModel.ContactMail != null && _projectSettingsModel.ContactMail != "")
             {
                 Regex regex = new Regex(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*@((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))\z");
                 Match match = regex.Match(_projectSettingsModel.ContactMail);
@@ -588,8 +590,6 @@ namespace GrappBox.ViewModel
                     return;
                 }
             }
-            if (_projectSettingsModel.ContactMail != null && _projectSettingsModel.ContactMail != "")
-                props.Add("email", _projectSettingsModel.ContactMail);
             if (_projectSettingsModel.Facebook != null && _projectSettingsModel.Facebook != "")
                 props.Add("facebook", _projectSettingsModel.Facebook);
             if (_projectSettingsModel.Twitter != null && _projectSettingsModel.Twitter != "")

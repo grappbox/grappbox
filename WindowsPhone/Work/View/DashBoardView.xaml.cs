@@ -93,6 +93,7 @@ namespace GrappBox.View
         {
             this.navigationHelper.OnNavigatedTo(e);
             SettingsPopUp.Visibility = Visibility.Collapsed;
+            SettingsPopUp.IsOpen = true;
             db_pivot.IsEnabled = true;
             DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
             this.dvm = DashBoardViewModel.GetViewModel();

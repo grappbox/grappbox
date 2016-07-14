@@ -16,16 +16,15 @@
             <AppBarButton Visibility="Collapsed" Name="PostComment" Label="Post" Click="Post_Click" Icon="Add"/>
             <AppBarButton Visibility="Collapsed" Name="RemoveTag" Label="Remove" Click="RemoveTag_Click" Icon="Delete"/>
             <AppBarButton Visibility="Collapsed" Name="EditTag" Label="Edt" Click="UpdateTag_Click" Icon="Edit"/>
-            <AppBarButton Visibility="Collapsed" Name="SaveUser" Label="Save Users" Click="SaveUser_Click" Icon="Save"/>
         </CommandBar>
     </Page.BottomAppBar>
 
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl"  PageTitle="Bugtracker">
         <Grid>
             <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-            <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
+            <Pivot Name="Pivot" Style="{StaticResource DefaultPivotStyle}" VerticalAlignment="Stretch" SelectionChanged="Pivot_SelectionChanged" Margin="0,27,0,0">
                 <PivotItem Header="Bug">
-                    <ScrollViewer>
+                    <ScrollViewer VerticalAlignment="Stretch">
                         <StackPanel Margin="15">
                             <TextBlock  Text="Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
                             <TextBox x:Name="Title" PlaceholderText="Title" Text="{Binding Title, Mode=TwoWay}"/>
@@ -33,12 +32,14 @@
                             <TextBlock Text="Description" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
                             <TextBox x:Name="Description" TextWrapping="Wrap" Height="90" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
-                            <TextBlock Text="State" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
-                            <ListBox x:Name="StatesListView" ItemsSource="{Binding StateList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="StatesListView_SelectionChanged">
+                            <TextBlock Text="Assign users" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                            <ListBox x:Name="UserListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel>
-                                            <RadioButton Content="{Binding Name}" GroupName="State" HorizontalAlignment="Left" VerticalAlignment="Stretch" FontFamily="Segoe WP" FontSize="18" Loaded="radioButton_Loaded" Checked="RadioButton_Checked"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <CheckBox x:Name="userCheckBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Checked="userCheckBox_Checked" Loaded="userCheckBox_Loaded" Unchecked="userCheckBox_Unchecked"/>
+                                            <TextBlock Name="firstname" Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                            <TextBlock Name="lastname" Text="{Binding Lastname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -47,7 +48,7 @@
                     </ScrollViewer>
                 </PivotItem>
                 <PivotItem Header="Comments" Name="Comments">
-                    <Grid>
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <ListBox x:Name="CommentListView" ItemsSource="{Binding CommentList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -85,7 +86,7 @@
                     </Grid>
                 </PivotItem>
                 <PivotItem Header="Tags" Name="Tags">
-                    <ScrollViewer>
+                    <ScrollViewer VerticalAlignment="Stretch">
                         <StackPanel>
                             <ListBox x:Name="TagListView" ItemsSource="{Binding TagList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="tagListView_SelectionChanged">
                                 <ListBox.ItemTemplate>
@@ -107,21 +108,6 @@
                             </Grid>
                         </StackPanel>
                     </ScrollViewer>
-                </PivotItem>
-                <PivotItem Header="Users" Name="Users">
-                    <StackPanel>
-                        <ListBox x:Name="UserListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox x:Name="userCheckBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Checked="userCheckBox_Checked" Loaded="userCheckBox_Loaded" Unchecked="userCheckBox_Unchecked"/>
-                                        <TextBlock Name="firstname" Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                        <TextBlock Name="lastname" Text="{Binding Lastname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
                 </PivotItem>
             </Pivot>
         </Grid>

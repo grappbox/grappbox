@@ -28,6 +28,7 @@ namespace GrappBox.View
         String ImagePath;
         bool isPasswordVisible = false;
         string password = "";
+        string oldPwd = "";
         UserSettingsViewModel vm = UserSettingsViewModel.GetViewModel();
 
         //Required for navigation
@@ -131,8 +132,12 @@ namespace GrappBox.View
 
             if (password != "")
             {
-                await vm.updateAPI(password);
+                await vm.updateAPI(password, oldPwd);
                 password = "";
+                oldPwd = "";
+                oldPassword.Password = "";
+                newPassword.Password = "";
+                retypePassword.Password = "";
             }
             else
                 await vm.updateAPI();
@@ -158,6 +163,7 @@ namespace GrappBox.View
                     retypePassword.BorderBrush = new SolidColorBrush();
                     PasswordStackPanel.Visibility = Visibility.Collapsed;
                     password = newPassword.Password;
+                    oldPwd = oldpwd;
                     isPasswordVisible = false;
                     affMessage(false, "Password will be changed on update");
                 }

@@ -114,7 +114,6 @@ namespace GrappBox.View
 
             await vm.getOpenTickets();
             await vm.getClosedTickets();
-            await vm.getStateList();
             await vm.getTagList();
             await vm.getUsers();
 

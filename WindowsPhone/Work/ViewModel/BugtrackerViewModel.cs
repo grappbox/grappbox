@@ -22,7 +22,6 @@ namespace GrappBox.ViewModel
         private ObservableCollection<BugtrackerModel> _closeBugs;
         private ObservableCollection<BugtrackerModel> _commentList = new ObservableCollection<BugtrackerModel>();
         private ObservableCollection<IdNameModel> _tagList;
-        private ObservableCollection<IdNameModel> _stateList;
         private ObservableCollection<ProjectUserModel> _userList;
         private List<int> _toAdd = new List<int>();
         private List<int> _toRemove = new List<int>();
@@ -78,22 +77,6 @@ namespace GrappBox.ViewModel
         public void getTicket(BugtrackerModel md)
         {
             _model = md;
-        }
-
-        public async System.Threading.Tasks.Task getStateList()
-        {
-            ApiCommunication api = ApiCommunication.GetInstance();
-            object[] token = { User.GetUser().Token };
-            HttpResponseMessage res = await api.Get(token, "bugtracker/getstates");
-            if (res.IsSuccessStatusCode)
-            {
-                _stateList = api.DeserializeArrayJson<ObservableCollection<IdNameModel>>(await res.Content.ReadAsStringAsync());
-                NotifyPropertyChanged("StateList");
-            }
-            else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
-            }
         }
 
         public async System.Threading.Tasks.Task getTagList()
@@ -177,10 +160,6 @@ namespace GrappBox.ViewModel
                 props.Add("title", _model.Title);
             if (_model.Description != null && _model.Description != "")
                 props.Add("description", _model.Description);
-            if (_model.State != null)
-                props.Add("stateId", _model.State.Id);
-            if (_model.State != null && _model.State.Name != "")
-                props.Add("stateName", _model.State.Name);
             HttpResponseMessage res = await api.Put(props, "bugtracker/editticket");
             if (res.IsSuccessStatusCode)
             {
@@ -374,8 +353,8 @@ namespace GrappBox.ViewModel
             props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
             props.Add("title", _model.Title);
             props.Add("description", _model.Description);
-            props.Add("stateId", _model.State.Id);
-            props.Add("stateName", _model.State.Name);
+            props.Add("stateId", 1);
+            props.Add("stateName", "To Do");
             props.Add("clientOrigin", false);
             HttpResponseMessage res = await api.Post(props, "bugtracker/postticket");
             if (res.IsSuccessStatusCode)
@@ -528,11 +507,6 @@ namespace GrappBox.ViewModel
         {
             get { return _closeBugs; }
         }
-
-        public ObservableCollection<IdNameModel> StateList
-        {
-            get { return _stateList; }
-        }
         public ObservableCollection<BugtrackerModel> CommentList
         {
             get { return _commentList; }
@@ -619,19 +593,6 @@ namespace GrappBox.ViewModel
         public DateTime EditionDate
         {
             get { if (_model == null) return DateTime.Today; DateTime name = DateTime.Parse(_model.EditedAt.date); if (name != null) { return name; } else return DateTime.Today; }
-        }
-
-        public IdNameModel State
-        {
-            get { if (_model != null) return _model.State; else return null; }
-            set
-            {
-                if (value != _model.State)
-                {
-                    _model.State = value;
-                    NotifyPropertyChanged("State");
-                }
-            }
         }
 
         public List<IdNameModel> Tags

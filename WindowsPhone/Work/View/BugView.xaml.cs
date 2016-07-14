@@ -106,11 +106,6 @@ namespace GrappBox.View
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-            Title.Text = "";
-            Description.Text = "";
-            CommentTitle.Text = "";
-            CommentDescription.Text = "";
-            TagName.Text = "";
             if (e.Parameter != null)
             {
                 isAdd = false;
@@ -118,8 +113,6 @@ namespace GrappBox.View
                 {
                     Title.IsEnabled = false;
                     Description.IsEnabled = false;
-                    StatesListView.IsEnabled = false;
-                    SaveBug.Visibility = Visibility.Collapsed;
                 }
             }
             else
@@ -127,11 +120,15 @@ namespace GrappBox.View
                 isAdd = true;
                 Comments.IsEnabled = false;
                 Tags.IsEnabled = false;
-                Users.IsEnabled = false;
+
+                Title.Text = "";
+                Description.Text = "";
+                CommentTitle.Text = "";
+                CommentDescription.Text = "";
+                TagName.Text = "";
 
                 Title.IsEnabled = true;
                 Description.IsEnabled = true;
-                StatesListView.IsEnabled = true;
                 SaveBug.Visibility = Visibility.Visible;
             }
             PostComPopUp.Visibility = Visibility.Collapsed;
@@ -157,7 +154,6 @@ namespace GrappBox.View
                     PostComment.Visibility = Visibility.Collapsed;
                     RemoveTag.Visibility = Visibility.Collapsed;
                     EditTag.Visibility = Visibility.Collapsed;
-                    SaveUser.Visibility = Visibility.Collapsed;
                 }
                 else if (num == 1)
                 {
@@ -165,7 +161,6 @@ namespace GrappBox.View
                     PostComment.Visibility = Visibility.Visible;
                     RemoveTag.Visibility = Visibility.Collapsed;
                     EditTag.Visibility = Visibility.Collapsed;
-                    SaveUser.Visibility = Visibility.Collapsed;
                 }
                 else if (num == 2)
                 {
@@ -173,15 +168,6 @@ namespace GrappBox.View
                     PostComment.Visibility = Visibility.Collapsed;
                     RemoveTag.Visibility = Visibility.Visible;
                     EditTag.Visibility = Visibility.Visible;
-                    SaveUser.Visibility = Visibility.Collapsed;
-                }
-                else if (num == 3)
-                {
-                    SaveBug.Visibility = Visibility.Collapsed;
-                    PostComment.Visibility = Visibility.Collapsed;
-                    RemoveTag.Visibility = Visibility.Collapsed;
-                    EditTag.Visibility = Visibility.Collapsed;
-                    SaveUser.Visibility = Visibility.Visible;
                 }
             }
         }
@@ -189,7 +175,7 @@ namespace GrappBox.View
         #region Bug
         private async void SaveBug_Click(object sender, RoutedEventArgs e)
         {
-            if (vm.State.Id != null && vm.State.Name != null && vm.Title != "" && vm.Description != "")
+            if (vm.Title != "" && vm.Description != "")
             {
                 LoadingBar.IsEnabled = true;
                 LoadingBar.Visibility = Visibility.Visible;
@@ -199,38 +185,22 @@ namespace GrappBox.View
                     await vm.addBug();
                     Comments.IsEnabled = true;
                     Tags.IsEnabled = true;
-                    Users.IsEnabled = true;
                 }
                 else
-                    await vm.editBug();
+                {
+                    if (vm.creator != null && vm.creator.Id == User.GetUser().Id)
+                        await vm.editBug();
+                    await vm.setParticipants();
+                }
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void radioButton_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (vm.State != null && (sender as RadioButton).Content != null && (sender as RadioButton).Content.ToString() == vm.State.Name)
-                (sender as RadioButton).IsChecked = true;
-        }
-
         private void StatesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             (sender as ListBox).SelectedItem = null;
-        }
-
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-            foreach (var item in vm.StateList)
-            {
-                if (item.Name == (sender as RadioButton).Content.ToString())
-                {
-                    vm.State.Id = item.Id;
-                    vm.State.Name = item.Name;
-                    break;
-                }
-            }
         }
         #endregion
 
@@ -387,16 +357,6 @@ namespace GrappBox.View
                 vm.ToRemove.Add(model.Id);
             }
         }
-        private async void SaveUser_Click(object sender, RoutedEventArgs e)
-        {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
-            await vm.setParticipants();
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
-        }
         #endregion
 
         #region Comment
@@ -457,7 +417,7 @@ namespace GrappBox.View
         {
             BugtrackerModel currentModel = (sender as StackPanel).DataContext as BugtrackerModel;
             ListBoxItem listboxItem = (ListBoxItem)(CommentListView.ContainerFromItem(currentModel));
-            
+
             if (currentModel.Creator.Id != User.GetUser().Id && listboxItem != null)
                 listboxItem.IsEnabled = false;
             foreach (var item in (sender as StackPanel).Children)

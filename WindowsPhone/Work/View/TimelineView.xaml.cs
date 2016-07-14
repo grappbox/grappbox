@@ -115,8 +115,10 @@ namespace GrappBox.View
             this.navigationHelper.OnNavigatedTo(e);
             Pivot.IsLocked = false;
             PostTeamMesPopUp.Visibility = Visibility.Collapsed;
+            PostTeamMesPopUp.IsOpen = true;
             TeamListView.IsEnabled = true;
             PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
+            PostCustomerMesPopUp.IsOpen = true;
             CustomerListView.IsEnabled = true;
             vm.MessageSelected = null;
             MessageTitle.Text = "";
@@ -248,8 +250,7 @@ namespace GrappBox.View
             {
                 LoadingBar.IsEnabled = true;
                 LoadingBar.Visibility = Visibility.Visible;
-
-                await bvm.getStateList();
+                
                 await bvm.getTagList();
                 await bvm.getUsers();
                 vm.MessageSelected = (sender as Button).DataContext as TimelineModel;

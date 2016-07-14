@@ -11,7 +11,6 @@ namespace GrappBox.Model
     {
         public BugtrackerModel()
         {
-            State = new IdNameModel();
             Tags = new List<IdNameModel>();
             Users = new List<Users>();
         }
@@ -43,9 +42,6 @@ namespace GrappBox.Model
 
         [JsonProperty("deletedAt")]
         public DateModel DeletedAt { get; set; }
-
-        [JsonProperty("state")]
-        public IdNameModel State { get; set; }
 
         [JsonProperty("tags")]
         public List<IdNameModel> Tags { get; set; }
