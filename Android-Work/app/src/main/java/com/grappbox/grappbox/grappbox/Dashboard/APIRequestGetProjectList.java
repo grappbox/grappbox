@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.ProjectModel;
@@ -60,11 +61,14 @@ public class APIRequestGetProjectList extends AsyncTask<String, Void, String> {
                 }
                 if (_swiper != null)
                     _swiper.setRefreshing(false);
-                _context.fillView();
+
             } catch (JSONException e){
                 e.printStackTrace();
             }
+        } else {
+            Toast.makeText(_context.getContext(), "An error occur, please try it later", Toast.LENGTH_SHORT).show();
         }
+        _context.fillView();
     }
 
     @Override

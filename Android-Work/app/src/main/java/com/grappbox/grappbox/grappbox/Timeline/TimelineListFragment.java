@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,29 +39,38 @@ import java.util.Vector;
 public class TimelineListFragment extends TimelineMessage {
 
     private int _idTimeline = -1;
-    private View _rootView;
+    private View _rootView = null;
     private TimelineFragment _context;
     private List<ContentValues> _value = null;
     private TimelineListFragment _currentContext = this;
     private Vector<Integer> _idValue = new Vector<Integer>();
     private FloatingActionButton _fab;
-    ProgressDialog _progress;
+    private SwipeRefreshLayout _swiper;
+    public SwipeRefreshLayout.OnRefreshListener _refresher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _rootView = inflater.inflate(R.layout.fragment_list_timeline, container, false);
 
+        _swiper = (SwipeRefreshLayout) _rootView.findViewById(R.id.pull_refresher);
+        if (_swiper != null)
+        startLoading(_rootView, R.id.loader, _swiper);
+
         _fab = (FloatingActionButton) _rootView.findViewById(R.id.add_timeline_message);
         _fab.setOnClickListener((View v) -> {
             addMessage();
         });
         _fab.hide();
-        _progress = new ProgressDialog(this.getContext());
-        _progress.setMessage(getString(R.string.login_progress_label));
-        _progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        _progress.setIndeterminate(true);
-        _progress.show();
+        _refresher = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                _swiper.setRefreshing(false);
+            }
+        };
+        _swiper.setOnRefreshListener(_refresher);
+
         return _rootView;
     }
 
@@ -72,25 +82,29 @@ public class TimelineListFragment extends TimelineMessage {
     private void addMessage()
     {
         if (_idTimeline != -1) {
-            final Dialog TimelineAddMessage = new Dialog(getActivity());
-            TimelineAddMessage.setTitle("Send Message : ");
-            TimelineAddMessage.setContentView(R.layout.dialog_timeline_send_message);
-            final EditText messageTitle = (EditText) TimelineAddMessage.findViewById(R.id.timeline_message_title);
-            final EditText messageContent = (EditText) TimelineAddMessage.findViewById(R.id.timelie_message_content);
-            Button confirmChangePass = (Button) TimelineAddMessage.findViewById(R.id.timeline_send_message);
-            confirmChangePass.setOnClickListener((View v) -> {
-
-                APIRequestTimelineAddMessage addMessage = new APIRequestTimelineAddMessage(this, _idTimeline, TimelineAddMessage);
-                addMessage.execute(messageTitle.getText().toString(), messageContent.getText().toString());
-
+            TimelineListFragment timelineListFragment = this;
+            AlertDialog.Builder builder = new AlertDialog.Builder(_context.getActivity());
+            builder.setTitle(R.string.str_add_message_timeline_option);
+            View dialogView;
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            dialogView = inflater.inflate(R.layout.dialog_timeline_send_message, null);
+            builder.setView(dialogView);
+            builder.setPositiveButton(R.string.str_send_message_timeline, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    final EditText messageTitle = (EditText) dialogView.findViewById(R.id.timeline_message_title);
+                    final EditText messageContent = (EditText) dialogView.findViewById(R.id.timelie_message_content);
+                    APIRequestTimelineAddMessage addMessage = new APIRequestTimelineAddMessage(timelineListFragment, _idTimeline);
+                    addMessage.execute(messageTitle.getText().toString(), messageContent.getText().toString());
+                }
             });
-            Button cancelChangePass = (Button) TimelineAddMessage.findViewById(R.id.timeline_message_cancel);
-            cancelChangePass.setOnClickListener((View v) -> {
-                messageTitle.setText("");
-                messageContent.setText("");
-                TimelineAddMessage.dismiss();
+            builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
             });
-            TimelineAddMessage.show();
+            builder.show();
         }
     }
 
@@ -117,7 +131,7 @@ public class TimelineListFragment extends TimelineMessage {
             final MessageModel model = new MessageModel();
             Calendar dateMessage = Calendar.getInstance();
 
-            _idValue.add(Integer.parseInt(item.get("id").toString()));
+            _idValue.add(0, Integer.parseInt(item.get("id").toString()));
             try {
                 dateMessage.setTime(dateformat.parse(item.get("Date").toString()));
                 model.setDate(dayFormat.format(dateMessage.getTime()));
@@ -128,15 +142,13 @@ public class TimelineListFragment extends TimelineMessage {
             model.setTitle(item.get("title").toString());
             model.setDesc(item.get("message").toString());
             model.setUser(item.get("creator").toString());
-            messageModels.add(model);
+            messageModels.add(0, model);
         }
-
 
         MessageAdapter adapter = new MessageAdapter(this.getActivity(), messageModels, getResources(), this);
         message.setAdapter(adapter);
-        message.setSelection(adapter.getCount() - 1);
+        endLoading();
         _fab.show();
-        _progress.hide();
     }
 
     public void showCommentMessage(int position)
@@ -192,31 +204,37 @@ public class TimelineListFragment extends TimelineMessage {
     public void editTimelineMessage(int position)
     {
         int idMessage = _idValue.get(position);
-        final Dialog TimelineEditMessage = new Dialog(getActivity());
-        TimelineEditMessage.setTitle("Send Message : ");
-        TimelineEditMessage.setContentView(R.layout.dialog_timeline_send_message);
-        final EditText messageTitle = (EditText) TimelineEditMessage.findViewById(R.id.timeline_message_title);
-        final EditText messageContent = (EditText) TimelineEditMessage.findViewById(R.id.timelie_message_content);
-        Button confirmEditMessage = (Button) TimelineEditMessage.findViewById(R.id.timeline_send_message);
-        for (ContentValues item : _value){
-            if (idMessage == Integer.parseInt(item.get("id").toString())){
-                messageTitle.setText(item.get("title").toString());
-                messageContent.setText(item.get("message").toString());
+        TimelineListFragment timelineListFragment = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(_context.getActivity());
+        builder.setTitle(R.string.str_add_message_timeline_option);
+        View dialogView;
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        dialogView = inflater.inflate(R.layout.dialog_timeline_send_message, null);
+        final EditText messageTitle = (EditText) dialogView.findViewById(R.id.timeline_message_title);
+        final EditText messageContent = (EditText) dialogView.findViewById(R.id.timelie_message_content);
+        for (ContentValues value : _value)
+        {
+            if (Integer.parseInt(value.getAsString("id")) == idMessage)
+            {
+                messageTitle.setText(value.getAsString("title"));
+                messageContent.setText(value.getAsString("message"));
             }
         }
-        confirmEditMessage.setOnClickListener((View v) -> {
-
-            APIRequestTimelineEditMessage addMessage = new APIRequestTimelineEditMessage(this, _idTimeline, TimelineEditMessage);
-            addMessage.execute(String.valueOf(idMessage), messageTitle.getText().toString(), messageContent.getText().toString());
-
+        builder.setView(dialogView);
+        builder.setPositiveButton(R.string.str_send_message_timeline, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                APIRequestTimelineEditMessage editMessage = new APIRequestTimelineEditMessage(timelineListFragment, _idTimeline);
+                editMessage.execute(String.valueOf(idMessage), messageTitle.getText().toString(), messageContent.getText().toString());
+            }
         });
-        Button cancelEditMessage = (Button) TimelineEditMessage.findViewById(R.id.timeline_message_cancel);
-        cancelEditMessage.setOnClickListener((View v) -> {
-            messageTitle.setText("");
-            messageContent.setText("");
-            TimelineEditMessage.dismiss();
+        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
         });
-        TimelineEditMessage.show();
+        builder.show();
     }
 
 }

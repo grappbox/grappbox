@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.github.tibolte.agendacalendarview.models.BaseCalendarEvent;
 import com.github.tibolte.agendacalendarview.models.CalendarEvent;
 import com.github.tibolte.agendacalendarview.models.DayItem;
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
@@ -38,30 +40,27 @@ import butterknife.ButterKnife;
 /**
  * Created by tan_f on 21/01/2016.
  */
-public class AgendaFragment extends Fragment implements CalendarPickerController {
+public class AgendaFragment extends LoadingFragment implements CalendarPickerController {
 
     private static final String LOG_TAG = AgendaFragment.class.getSimpleName();
     private static final int ADD_EVENT_RESULT = 1;
     private static final int EVENT_DETAIL = 2;
 
     private View _rootView;
+    private View _frameView;
     private AgendaCalendarView _AgendaCalendarView;
     private FloatingActionButton _FAB;
     private Calendar _minDate = Calendar.getInstance();
     private Calendar _maxDate = Calendar.getInstance();
-    private ProgressDialog  _progress;
+//    private ProgressDialog  _progress;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _rootView = inflater.inflate(R.layout.fragment_agenda_calendar, container, false);
 
+        _frameView = _rootView.findViewById(R.id.frame_view);
+        startLoading(_rootView, R.id.loader, _frameView);
         ButterKnife.bind(this.getActivity());
-
-        _progress = new ProgressDialog(this.getContext());
-        _progress.setMessage(getString(R.string.event_progres_label));
-        _progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        _progress.setIndeterminate(true);
-        _progress.show();
 
         _minDate.add(Calendar.YEAR, -1);
         _minDate.set(Calendar.DAY_OF_MONTH, 1);
@@ -73,7 +72,6 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
         _FAB.setOnClickListener((View v)-> {
             Intent intent = new Intent(this.getActivity(), AddEventActivity.class);
             startActivityForResult(intent, ADD_EVENT_RESULT);
-//            startActivity(intent);
         });
         _FAB.hide();
 
@@ -154,8 +152,8 @@ public class AgendaFragment extends Fragment implements CalendarPickerController
                 calendarEventList.add(calendarEvent);
             }
         }
+        endLoading();
         _FAB.show();
-        _progress.hide();
         _AgendaCalendarView.init(calendarEventList, _minDate, _maxDate, Locale.getDefault(), this);
         _AgendaCalendarView.addEventRenderer(new DrawableEventRenderer());
     }

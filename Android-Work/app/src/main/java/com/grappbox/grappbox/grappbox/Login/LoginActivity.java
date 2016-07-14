@@ -5,29 +5,32 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInstaller;
 import android.content.res.Resources;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 
 import com.grappbox.grappbox.grappbox.MainActivity;
+import com.grappbox.grappbox.grappbox.Model.LoadingActivity;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends LoadingActivity {
 
-    ProgressDialog _progress;
-    EditText    _login;
-    EditText    _passw;
+    private View _view;
+    private EditText    _login;
+    private EditText    _passw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        _progress = new ProgressDialog(this);
-        _progress.setMessage(getString(R.string.login_progress_label));
-        _progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        _progress.setIndeterminate(true);
+
+        _view = findViewById(R.id.frame_view);
         _login = (EditText) findViewById(R.id.loginInput);
         _passw = (EditText) findViewById(R.id.passwInput);
         SessionAdapter.initializeInstance(this.getApplicationContext());
@@ -37,22 +40,21 @@ public class LoginActivity extends AppCompatActivity {
 
     public void LoginUser(View view)
     {
-
         APIRequestLogin api = new APIRequestLogin(this);
         api.execute(_login.getText().toString(), _passw.getText().toString());
-        _progress.show();
+        startLoading(R.id.loader, _view);
     }
 
     public void loginSucced()
     {
-        _progress.dismiss();
+        endLoading();
         Intent intent = new Intent(this, MainActivity.class);
         this.startActivity(intent);
     }
 
     public void loginFail()
     {
-        _progress.dismiss();
+        endLoading();
         DialogFragment loginError = new LoginErrorAlertFragment();
         loginError.show(getFragmentManager(), "LoginError");
     }

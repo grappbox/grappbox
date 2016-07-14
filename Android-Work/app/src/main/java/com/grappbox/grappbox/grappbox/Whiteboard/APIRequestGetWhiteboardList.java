@@ -46,14 +46,18 @@ public class APIRequestGetWhiteboardList extends AsyncTask<String, Void, String>
             for (int i = 0; i < whiteboardListArray.length(); ++i)
             {
                 JSONObject obj = whiteboardListArray.getJSONObject(i);
+                JSONObject user;
+                JSONObject updator;
                 ContentValues content = new ContentValues();
 
                 if (!obj.getString("deletedAt").contains("null"))
                     continue;
                 content.put("id", obj.getString("id"));
-                content.put("userId", obj.getString("userId"));
+                user = obj.getJSONObject("user");
+                content.put("userId", user.getString("id"));
                 content.put("name", obj.getString("name"));
-                content.put("updatorId", obj.getString("updatorId"));
+                updator = obj.getJSONObject("updator");
+                content.put("updatorId", updator.getString("id"));
                 content.put("createdAt", obj.getJSONObject("createdAt").getString("date"));
                 if (!obj.getString("updatedAt").contains("null"))
                     content.put("updatedAt", obj.getJSONObject("updatedAt").getString("date"));

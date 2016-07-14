@@ -62,6 +62,27 @@
             android:paddingBottom="5dip"
             android:hint="@string/project_create_mail_hint"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@mipmap/icon_launcher"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your logo project"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_gravity="center_vertical"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
         <EditText
             android:id="@+id/create_project_company"
             android:layout_width="match_parent"

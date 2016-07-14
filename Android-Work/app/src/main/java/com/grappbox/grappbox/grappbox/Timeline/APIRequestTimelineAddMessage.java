@@ -20,14 +20,24 @@ import java.io.IOException;
 public class APIRequestTimelineAddMessage extends AsyncTask<String, Void, String> {
 
     private TimelineListFragment _context;
+    private TimelineCommentActivity _activity;
+    private boolean _isComment;
+    private int _idMessage;
     private int _idTimeline;
-    private Dialog _dialog;
 
-    APIRequestTimelineAddMessage(TimelineListFragment context, int idTimeline, Dialog dialog)
+    APIRequestTimelineAddMessage(TimelineCommentActivity activity, int idTimeline, int idMessage)
+    {
+        _activity = activity;
+        _idTimeline = idTimeline;
+        _isComment = true;
+        _idMessage = idMessage;
+    }
+
+    APIRequestTimelineAddMessage(TimelineListFragment context, int idTimeline)
     {
         _context = context;
         _idTimeline = idTimeline;
-        _dialog = dialog;
+        _isComment = false;
     }
 
     @Override
@@ -35,9 +45,13 @@ public class APIRequestTimelineAddMessage extends AsyncTask<String, Void, String
     {
         super.onPostExecute(result);
         if (result != null){
-            APIRequestGetListMessageTimeline getApi = new APIRequestGetListMessageTimeline(_context, _idTimeline);
-            getApi.execute();
-            _dialog.dismiss();
+            if (!_isComment) {
+                APIRequestGetListMessageTimeline getApi = new APIRequestGetListMessageTimeline(_context, _idTimeline);
+                getApi.execute();
+            } else {
+                APIRequestGetCommentMessage api = new APIRequestGetCommentMessage(_activity, _idTimeline, _idMessage);
+                api.execute();
+            }
         } else {
             Context context = _context.getContext();
             CharSequence text = "An error occured during the send message";
@@ -60,6 +74,8 @@ public class APIRequestTimelineAddMessage extends AsyncTask<String, Void, String
             JSONParam.put("token", SessionAdapter.getInstance().getToken());
             JSONParam.put("title", param[0]);
             JSONParam.put("message", param[1]);
+            if (_isComment)
+                JSONParam.put("commentedId", _idMessage);
             JSONData.put("data", JSONParam);
             Log.v("JSON", JSONData.toString());
 

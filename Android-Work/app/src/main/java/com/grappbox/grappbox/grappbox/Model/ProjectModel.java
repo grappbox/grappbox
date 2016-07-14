@@ -46,6 +46,7 @@ public class ProjectModel implements Serializable {
         description = data.getString("project_description");
         phone = data.getString("project_phone");
         company = data.getString("project_company");
+        Log.v("Logo data", data.getString("project_logo"));
         logo = null;//Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
         contact_mail = data.getString("contact_mail");
         facebookURL = data.getString("facebook");
