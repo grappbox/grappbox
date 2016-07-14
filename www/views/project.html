@@ -15,7 +15,9 @@
         <ion-list class="card">
             <ion-item class="item-body">
                 <!--<img class="full-image" data-ng-src="data:image/png;base64, {{projectInfo.logo}}" />-->
-                <img class="full-image" ng-src="data:image/png;base64, {{ projectLogo.logo ? projectLogo.logo : './images/noproject.png' }}" />
+                <!--<img class="full-image" ng-src="data:image/png;base64, {{ projectLogo.logo ? projectLogo.logo : './images/noproject.png' }}" />-->
+                <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                <img ng-if="!projectLogo.logo" id="projectLogo" ng-src="./images/noproject.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                 <p ng-show="projectInfo.name"><strong>Name: </strong> {{ projectInfo.name }}</p>
                 <p ng-show="projectInfo.description"><strong>Description: </strong> {{ projectInfo.description }}</p>
                 <p ng-show="projectInfo.phone"><strong>Phone: </strong> {{ projectInfo.phone }}</p>
@@ -46,7 +48,10 @@
                       class="item-avatar"
                       ng-repeat="userOnProject in userList"
                       ng-click="showMemberActionSheet(userOnProject.id)">
-                <img ng-src="userOnProject.avatar" />
+                <img ng-if="findUserAvatar(userOnProject.id)" id="userAvatar" ng-src="data:image/png;base64, {{findUserAvatar(userOnProject.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                <img ng-if="!findUserAvatar(userOnProject.id)" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+
+                <!--<img ng-src="userOnProject.avatar" />-->
                 <h2>{{ userOnProject.firstname }} {{ userOnProject.lastname }}</h2>
             </ion-item>
         </ion-list>
@@ -95,7 +100,7 @@
             <ion-item ng-show="!noCustomer"
                       class="item-avatar item-text-wrap"
                       ng-repeat="customerOnProject in customersList"
-                      ng-click="showCustomerActionSheet(customerOnProject.id)">
+                      ng-click="showCustomerActionSheet(customerOnProject.id, customerOnProject.name)">
                 <img ng-src="" />
                 <h2>{{ customerOnProject.name }}</h2>
                 <p><strong>Created: </strong>{{ customerOnProject.creation_date.date }}</p>

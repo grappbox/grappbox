@@ -13,7 +13,17 @@
         <!-- Profile information -->
         <div class="item item-divider"></div>
         <p>Type your personal informations</p>
+        <img ng-if="userAvatar.avatar" id="profileAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar.base64}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+        <img ng-if="!userAvatar.avatar" id="profileAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <form name="profile_form">
+            <ion-input class="item item-input">
+                <ion-label>Picture</ion-label>
+                <input type="file"
+                       placeholder="Browse"
+                       name="profile_picture"
+                       ng-model="userAvatar.avatar" 
+                       base-sixty-four-input />
+            </ion-input>
             <ion-input class="item item-input">
                 <ion-label>First Name</ion-label>
                 <input type="text"
@@ -31,14 +41,13 @@
             <ion-input class="item item-input">
                 <ion-label>Birthday</ion-label>
                 <input type="date"
-                       placeholder="My birthday'"
                        name="profile_birthday"
-                       ng-model="profileInfo.birthday.date" />
+                       ng-model="profileInfo.birthday" />
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Phone</ion-label>
                 <input type="tel"
-                       placeholder="My phone'"
+                       placeholder="My phone"
                        name="profile_phone"
                        ng-model="profileInfo.phone" />
             </ion-input>
@@ -52,7 +61,7 @@
             <ion-input class="item item-input">
                 <ion-label>Email</ion-label>
                 <input type="text"
-                       placeholder="My email'"
+                       placeholder="My email"
                        name="profile_email"
                        ng-model="profileInfo.email" />
             </ion-input>
@@ -73,26 +82,31 @@
             <ion-input class="item item-input">
                 <ion-label>Old Password</ion-label>
                 <input type="password"
-                       placeholder="My old password'"
+                       placeholder="My old password"
                        name="profile_oldPassword"
                        ng-model="profileInfo.oldPassword" />
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>New Password</ion-label>
                 <input type="password"
-                       placeholder="My new password'"
+                       placeholder="My new password"
                        name="profile_newPassword"
                        ng-model="profileInfo.newPassword" />
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Confirm password</ion-label>
                 <input type="password"
-                       placeholder="Confirm new password'"
+                       placeholder="Confirm new password"
                        name="profile_confirmPassword"
                        ng-model="profileInfo.confirmPassword"/>
             </ion-input>
             <span ng-show="profileInfo.newPassword != profileInfo.confirmPassword">Passwords do not match.</span>
-            <a class="button button-block button-positive" ng-disabled="(profileInfo.newPassword != profileInfo.confirmPassword) || (profileInfo.newPassword && !profileInfo.oldPassword) || (!profileInfo.newPassword && profileInfo.oldPassword)" ng-click="EditProfile()"><!--profile_form.$invalid-->
+            <a class="button button-block button-positive"
+               ng-disabled="profile_form.$invalid
+               || (profileInfo.newPassword != profileInfo.confirmPassword)
+               || (profileInfo.newPassword && !profileInfo.oldPassword)
+               || (!profileInfo.newPassword && profileInfo.oldPassword)"
+               ng-click="EditProfile()"><!--profile_form.$invalid-->
                 Save
             </a>
         </form>

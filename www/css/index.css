@@ -88,26 +88,56 @@ canvas {
 
 /* Fit the height of the popover with content */
 ion-popover-view {
-  height: auto;
+    height: auto;
 }
 
-/* GrappBox colors */
+/*
+** GrappBox colors
+*/
+
+/* Nav bars */
 .gb-nav-bar {
     background-color: #c0392b !important;
 }
-
-.tabs-striped.tabs-positive .tabs {
+/* Tab text container and container of this container */
+.tabs, .gb-tab {
     background-color: #bdbdbd !important;
 }
 
-.gb-tab {
-    background-color: #bdbdbd !important;
+/* Active tab */
+.tab-item.tab-item-active, .tab-item.active, .tab-item.activated {
+    opacity: 1 !important;
+    border-top-color: #c0392b !important;
 }
 
+/* Text in tabs */
 .tab-title {
     color: white;
 }
 
+.tab-item.tab-item-active .tab-title, .tab-item.active .tab-title, .tab-item.activated .tab-title {
+    color: #c0392b !important;
+}
+
+/* Buttons */
 .button-positive {
     background-color: #c0392b !important;
+    border-color: white !important;
+}
+
+/* Default red buttons to make them same "size" as button-positive */
+.button-assertive {
+    border-color: white !important;
+}
+
+/* Button tags */
+.gb-button-tag {
+    margin-left: 1px !important;
+    margin-right: 1px !important;
+}
+
+.progressLabel {
+    position: relative;
+    top: -1.5em;
+    margin-left: 50%;
 }

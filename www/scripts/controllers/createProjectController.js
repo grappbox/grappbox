@@ -7,6 +7,7 @@ angular.module('GrappBox.controllers')
 .controller('CreateProjectCtrl', function ($scope, $rootScope, $state, $ionicHistory, Toast, Projects) {
     $scope.project = {};
 
+    $scope.projectLogo = {};
     $scope.dataProject = {};
     $scope.CreateProject = function () {
         $rootScope.showLoading();
@@ -15,7 +16,7 @@ angular.module('GrappBox.controllers')
                 token: $rootScope.userDatas.token,
                 name: $scope.project.name,
                 description: $scope.project.description,
-                logo: $scope.project.logo,
+                logo: $scope.projectLogo.logo.base64,
                 phone: $scope.project.phone,
                 company: $scope.project.company,
                 email: $scope.project.email,

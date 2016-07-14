@@ -15,10 +15,12 @@
         <ion-list>
             <ion-item class="item-body">
                 <!--<img class="full-image" ng-src="#" />-->
-                <img ng-src="{{ profileInfo.avatar ? profileInfo.avatar : './images/noavatar.png' }}" />
+                <!--<img ng-src="{{ userAvatar.avatar }} ? 'data:image/png;base64, {{userAvatar.avatar}}' : './images/noavatar.png' }}" />-->
+                <img ng-if="userAvatar.avatar" id="userAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                <img ng-if="!userAvatar.avatar" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;"/>
                 <p ng-show="profileInfo.firstname"><strong>First Name: </strong> {{ profileInfo.firstname }}</p>
                 <p ng-show="profileInfo.lastname"><strong>Last Name: </strong> {{ profileInfo.lastname }}</p>
-                <p ng-show="profileInfo.birthday.date"><strong>birthday: </strong> {{ profileInfo.birthday.date }}</p>
+                <p ng-show="profileInfo.birthday"><strong>Birthday: </strong> {{ profileInfo.birthday | date: "MM-dd-yyyy" }}</p>
                 <p ng-show="profileInfo.phone"><strong>Phone: </strong> {{ profileInfo.phone }}</p>
                 <p ng-show="profileInfo.email"><strong>Email: </strong> {{ profileInfo.email }}</p>
                 <p ng-show="profileInfo.country"><strong>Country: </strong> {{ profileInfo.country }}</p>

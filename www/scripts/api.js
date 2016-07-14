@@ -61,7 +61,7 @@ angular.module('GrappBox.api', ['ngResource'])
         // Edit Project
         Edit: function () {
             return $resource($rootScope.API + 'projects/updateinformations', null, {
-                'update': { method: 'PUT' }
+                'update': { method: 'PUT', transformRequest: $rootScope.dropUnchangedFields }
             });
         },
         // Delete project after 7 days
@@ -118,8 +118,8 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Edit profile
         EditProfile: function () {
-            return $resource($rootScope.API + 'user/basicinformations/:token', { token: $rootScope.userDatas.token }, {
-                'update': { method: 'PUT' }
+            return $resource($rootScope.API + 'user/basicinformations/:token', { token: "@token" }, {
+                'update': { method: 'PUT', transformRequest: $rootScope.dropUnchangedFields }
             });
         },
         // Get current tasks

@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Projects) {
+.controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Projects) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -41,26 +41,28 @@ angular.module('GrappBox.controllers')
     }
     $scope.GetProjectInfo();
 
+    $scope.projectLogo = {};
     $scope.EditProject = function () {
-        //$rootScope.showLoading();
+        $rootScope.showLoading();
         Projects.Edit().update({
             data: {
                 token: $rootScope.userDatas.token,
                 projectId: $stateParams.projectId,
                 name: $scope.project.name ? $scope.project.name : "",
                 description: $scope.project.description ? $scope.project.description : "",
-                logo: $scope.project.logo ? $scope.project.logo : "",
+                logo: $scope.projectLogo.logo.base64 ? $scope.projectLogo.logo.base64 : "",
                 phone: $scope.project.phone ? $scope.project.phone : "",
                 company: $scope.project.company ? $scope.project.company : "",
                 email: $scope.project.email ? $scope.project.email : "",
                 facebook: $scope.project.facebook ? $scope.project.facebook : "",
                 twitter: $scope.project.twitter ? $scope.project.twitter : "",
-                password: $scope.project.password ? $scope.project.password && $scope.project.oldPassword : "",
-                oldPassword: $scope.project.oldPassword ? $scope.project.oldPassword && $scope.project.password : ""
+                password: $scope.project.password && $scope.project.oldPassword ? $scope.project.password : "",
+                oldPassword: $scope.project.password && $scope.project.oldPassword ? $scope.project.oldPassword : ""
             }
         }).$promise
             .then(function (data) {
                 console.log('Edit project successful !');
+                $rootScope.hideLoading();
                 Toast.show("Project edited");
                 $ionicHistory.clearCache().then(function () {
                     $state.go('app.project', { projectId: $stateParams.projectId });
@@ -68,6 +70,7 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Edit project failed ! Reason: ' + error.status + ' ' + error.statusText);
+                $rootScope.hideLoading();
                 Toast.show("Project error");
                 console.error(error);
             })

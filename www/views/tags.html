@@ -39,7 +39,8 @@
                 </ion-input>
 
                 <!-- Create tag button -->
-                <button class="button button-block button-positive"
+                <button ng-disabled="createTag_form.$invalid"
+                        class="button button-block button-positive"
                         ng-click="CreateTag()">
                     Create
                 </button>

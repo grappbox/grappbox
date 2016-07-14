@@ -11,9 +11,10 @@
                 <input type="text"
                        placeholder="Bug when I..."
                        name="createDirectory_title"
-                       ng-model="dirName" />
+                       ng-model="dirName" required/>
             </ion-input>
-            <button class="button button-block button-positive"
+            <button ng-disabled="createDirectory_form.$invalid"
+                    class="button button-block button-positive"
                     ng-click="CreateDir()">
                 Create
             </button>

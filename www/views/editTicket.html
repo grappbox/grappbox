@@ -39,7 +39,7 @@
         <!-- Tags on project -->
         <p ng-show="noTag">{{noTag}}</p>
         <button ng-repeat="tag in ticket.tags"
-                class="button button-small button-balanced"
+                class="button button-small button-balanced gb-button-tag"
                 ng-click="showRemoveTagActionSheet(tag.id)">{{ tag.name }}
         </button><br />
         <p>Choose your tag(s)</p>
@@ -73,7 +73,6 @@
                            name="createTag_name"
                            ng-model="createTag.name" required />
                 </ion-input>
-
                 <!-- Create Tag -->
                 <button class="button button-block button-positive"
                         ng-click="CreateTag()">

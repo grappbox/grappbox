@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('EditTagCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Bugtracker) {
+.controller('EditTagCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Bugtracker) {
 
     $scope.doRefresh = function () {
         $scope.GetTagInfo();

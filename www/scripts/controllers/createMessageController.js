@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CreateMessageCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Timeline) {
+.controller('CreateMessageCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Timeline) {
 
     $scope.timelineId = $stateParams.timelineId;
     console.log($scope.timelineId);

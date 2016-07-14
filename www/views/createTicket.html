@@ -11,17 +11,18 @@
                 <input type="text"
                        placeholder="Bug when I..."
                        name="createTicket_title"
-                       ng-model="ticket.title" />
+                       ng-model="ticket.title" required/>
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Description</ion-label>
                 <textarea name="createTicket_description"
                           rows="6"
                           placeholder="Here is exactly how I can reproduce the bug, and where it is"
-                          ng-model="ticket.description">
+                          ng-model="ticket.description" required>
                 </textarea>
             </ion-input>
-            <button class="button button-block button-positive"
+            <button ng-disabled="createTicket_form.$invalid"
+                    class="button button-block button-positive"
                     ng-click="CreateTicket()">
                 Add
             </button>

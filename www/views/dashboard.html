@@ -27,8 +27,8 @@
                            ng-repeat="teamOccupation in teamOccupationTab"
                            ui-sref="app.tasks({projectId: projectId})">
                             <!--ui-sref="app.user({userId: teamOccupation.user.id})"-->
-                            <!--<img data-ng-src="data:image/png;base64, {{teamOccupation.user.id }}" />-->
-                            <img ng-src="{{ teamOccupation.user.avatar ? teamOccupation.user.avatar : './images/noavatar.png' }}" />
+                            <img ng-if="findUserAvatar(teamOccupation.user.id)" id="userAvatar" ng-src="data:image/png;base64, {{findUserAvatar(teamOccupation.user.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="!findUserAvatar(teamOccupation.user.id)" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                             <h2>{{ teamOccupation.user.firstname }} {{ teamOccupation.user.lastname }}</h2>
                             <h3>{{ teamOccupation.occupation }}</h3>
                             <h3>Tasks begun: {{ teamOccupation.number_of_tasks_begun }}</h3>
@@ -85,7 +85,9 @@
                            ng-show="!noProject && globalProgress.project_id == projectId"
                            ui-sref="app.project({projectId: globalProgress.project_id})">
                             <!--<img data-ng-src="data:image/png;base64, {{globalProgress.project_logo}}" />-->
-                            <img ng-src="{{ globalProgress.project_logo ? globalProgress.project_logo : './images/noproject.png' }}" />
+                            <!--<img ng-src="data:image/png;base64, {{ globalProgress.project_logo ? globalProgress.project_logo : './images/noproject.png' }}" />-->
+                            <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="!projectLogo.logo" id="projectLogo" ng-src="./images/noproject.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                             <h2 style="color:black">{{ globalProgress.project_name }}</h2><br />
                             <p style="color:black" class="icon-left ion-ios-list-outline"> {{ globalProgress.number_finished_tasks }} / {{ globalProgress.number_ongoing_tasks }} task(s) done</p>
                             <p style="color:black" class="icon-left ion-ios-email-outline"> {{ globalProgress.number_messages ? globalProgress.number_messages : 0}} message(s)</p>
