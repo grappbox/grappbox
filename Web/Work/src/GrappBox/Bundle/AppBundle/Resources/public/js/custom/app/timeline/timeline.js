@@ -9,7 +9,8 @@
 * APP timeline
 *
 */
-app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http", "$q", "$uibModal", "Notification", function($rootScope, $scope, $route, $http, $q, $uibModal, Notification) {
+app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http", "$q", "$uibModal", "Notification", "timelineFactory", "$location",
+    function($rootScope, $scope, $route, $http, $q, $uibModal, Notification, timelineFactory, $location) {
 
 	/* ==================== INITIALIZATION ==================== */
 
@@ -20,7 +21,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
   $scope.timeline = { project_id: $route.current.params.project_id, team: {}, customer: {} };
   $scope.active = { message: { title: "", message: "" }, comment: { title: "", comment: "" }, modal: "" };
-  $scope.action = { onOpenMessage: "", onNewMessage: "", onNewComment: "", onEditMessage: "", onEditComment: "", onDeleteMessage: "", onDeleteComment: "" }
+  $scope.action = { onOpenMessage: "", onNewMessage: "", onNewComment: "", onEditMessage: "", onEditComment: "", onDeleteMessage: "", onDeleteComment: "", onNewIssue: "" }
   
   $scope.new = { message: { title: "", message: "" }, comment: { title: "", comment: "" } };
   $scope.comments = {};
@@ -290,7 +291,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
 
 
-  /* ==================== CREATE OBJECT (CREATE MESSAGE/COMMENT) ==================== */
+  /* ==================== CREATE OBJECT (CREATE MESSAGE/COMMENT/ISSUE) ==================== */
 
   // "Add message" button handler
   $scope.action.onNewMessage = function() {
@@ -330,8 +331,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
             }
           ),
         function onModalDismiss() { }
-      });
-    };
+      }
+    );
+  };
 
   // "Add comment" button handler
   $scope.action.onNewComment = function(message) {
@@ -368,8 +370,16 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
             }
           ),
         function onModalDismiss() { }
-      });
-    };
+      }
+    );
+  };
+
+  // "Add comment" button handler
+  $scope.action.onNewIssue = function(message) {
+    timelineFactory.clear();
+    timelineFactory.setMessage(message);
+    $location.path("/bugtracker/" + $scope.timeline.project_id + "/0");
+  };
 
 
 
