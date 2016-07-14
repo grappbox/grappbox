@@ -9,8 +9,8 @@
 * APP whiteboard page content
 *
 */
-app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "whiteboardFactory", "objectFactory", "$http", "$location", "Notification", "$q", "moment", "$interval",
-    function($rootScope, $scope, $route, whiteboardFactory, objectFactory, $http, $location, Notification, $q, moment, $interval) {
+app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canvasFactory", "objectFactory", "$http", "$location", "Notification", "$q", "moment", "$interval",
+    function($rootScope, $scope, $route, canvasFactory, objectFactory, $http, $location, Notification, $q, moment, $interval) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -18,7 +18,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   $scope.view = { onLoad: true, valid: false, authorized: false };
   $scope.data = { id: $route.current.params.id, project_id: $route.current.params.project_id, name: "", creator: "" };
   $scope.whiteboard = { canvas: {}, objects: [], points: [], fullscreen: false, wrapper: "" };
-  $scope.pull = { date: "", add: {}, delete: {}, interval: "" };
+  $scope.pull = { date: "", add: {}, delete: {}, interval: "", time: 3 };
   $scope.push = { date: "", add: {}, delete: {} };
   $scope.action = { resetTool: "", toggleFullscreen: "" };
 
@@ -113,9 +113,9 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
     document.addEventListener('fullscreenchange', _onFullscreenChange(), false);
 
     $scope.whiteboard.canvas = document.getElementById("whiteboard-canvas");
-    whiteboardFactory.setCanvas($scope.whiteboard.canvas);
-    whiteboardFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
-    whiteboardFactory.setCanvasBuffer();
+    canvasFactory.setCanvas($scope.whiteboard.canvas);
+    canvasFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
+    canvasFactory.setCanvasBuffer();
   };
 
   // Routine definition (setup)
@@ -145,7 +145,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
 
     // Canvas default callback: mouse release
     $scope.whiteboard.canvas.onmouseup = function() {
-      whiteboardFactory.addToCanvasBuffer(objectFactory.setRenderObject($scope));
+      canvasFactory.addToCanvasBuffer(objectFactory.setRenderObject($scope));
       _push(objectFactory.setRenderObjectToAPI($scope));
 
       $scope.mouse.pressed = false;
@@ -162,11 +162,11 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   /* ==================== ROUTINES (LOCAL) ==================== */
   
   // Routine definition (local)
-  // Render/display canvas data using whiteboardFactory (from Web canvas)
+  // Render/display canvas data using canvasFactory (from Web canvas)
   var _renderObject = function(data) {
     if (data.tool === "line" || data.tool === "rectangle" || data.tool === "diamond" || data.tool === "ellipse")
-      whiteboardFactory.renderCanvasBuffer();
-    whiteboardFactory.renderObject(data);
+      canvasFactory.renderCanvasBuffer();
+    canvasFactory.renderObject(data);
   };
 
   // Routine definition (local)
@@ -186,11 +186,12 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
             $scope.data.name = response.data.data.name;
             $scope.data.creator = response.data.data.user.firstname + " " + response.data.data.user.lastname;
             $scope.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
+            moment($scope.pull.date).subtract($scope.pull.time, 'seconds');
 
             angular.forEach($scope.data.objects, function(value, key) {
               var data = objectFactory.setRenderObjectFromAPI(value.object);
-              whiteboardFactory.addToCanvasBuffer(data);
-              whiteboardFactory.renderObject(data);
+              canvasFactory.addToCanvasBuffer(data);
+              canvasFactory.renderObject(data);
             });
             deferred.resolve();
             break;
@@ -269,11 +270,12 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
             $scope.pull.add = (response.data.data.add ? response.data.data.add : null);
             $scope.pull.delete = (response.data.data.delete ? response.data.data.delete : null);
             $scope.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
+            moment($scope.pull.date).subtract($scope.pull.time, 'seconds');
 
             angular.forEach($scope.pull.add, function(value, key) {
               var data = objectFactory.setRenderObjectFromAPI(value.object);
-              whiteboardFactory.addToCanvasBuffer(data);
-              whiteboardFactory.renderObject(data);
+              canvasFactory.addToCanvasBuffer(data);
+              canvasFactory.renderObject(data);
               $scope.whiteboard.objects.push(data);
             });
             // TEMP
@@ -422,7 +424,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "white
   var openWhiteboard = _openWhiteboard();
   openWhiteboard.then(
     function onOpenWhiteboardSuccess() {
-      $scope.pull.interval = $interval(_pull , 3000);
+      $scope.pull.interval = $interval(_pull , ($scope.pull.time * 1000));
     },
     function onOpenWhiteboardFail() { }
   );

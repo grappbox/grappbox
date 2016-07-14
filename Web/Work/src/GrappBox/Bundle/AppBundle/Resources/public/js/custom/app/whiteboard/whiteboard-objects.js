@@ -72,12 +72,7 @@ app.factory("objectFactory", function() {
 	    break;
 
 	    case "ellipse":
-	    data = _newEllipse(
-	    	scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value,
-	      (scope.mouse.start.x < scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
-	      (scope.mouse.start.y < scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y),
-	      (scope.mouse.start.x > scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
-	      (scope.mouse.start.y > scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y));
+	    data = _newEllipse(scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
 	    break;
 
 	    case "text":

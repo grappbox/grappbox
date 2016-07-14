@@ -6,10 +6,10 @@
 
 /**
 * Controller definition
-* APP whiteboard whiteboard factory
+* APP whiteboard canvas factory
 *
 */
-app.factory("whiteboardFactory", function() {
+app.factory("canvasFactory", function() {
 
 	/* ==================== INITIALIZATION ==================== */
 
