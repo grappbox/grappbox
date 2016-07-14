@@ -11,92 +11,96 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
+using GrappBox.Ressources;
 
 namespace GrappBox.ViewModel
 {
     class CalendarViewModel : ViewModelBase
     {
         #region Private members
-        private DateTime currentDateTime;
+        private MyDateTime _currentDateTime;
+        public MyDateTime CurrentDateTime
+        {
+            get { return _currentDateTime; }
+            set { _currentDateTime = value; }
+        }
         #endregion
         #region Public Properties
-        public int CurrentYear
-        {
-            get { return currentDateTime.Year; }
-        }
-
         public int MonthIndex
         {
-            get { return currentDateTime.Month-1; }
+            get { return CurrentDateTime.Month - 1; }
             set
             {
-                Debug.WriteLine("Value= {0} - MonthIndex= {1}", value, MonthIndex);
                 if (value > MonthIndex)
                 {
                     if (MonthIndex == 0 && value == 11)
-                        currentDateTime = currentDateTime.AddMonths(-1);
+                    {
+                        CurrentDateTime.AddMonths(-1);
+                        NotifyPropertyChanged("CurrentYear");
+                    }
                     else
-                        currentDateTime = currentDateTime.AddMonths(value - MonthIndex);
+                        CurrentDateTime.AddMonths(value - MonthIndex);
                 }
                 else if (value < MonthIndex)
                 {
                     if (MonthIndex - value > 1)
-                        currentDateTime = currentDateTime.AddMonths(value + 12 - MonthIndex);
+                    {
+                        CurrentDateTime.AddMonths(value + 12 - MonthIndex);
+                        NotifyPropertyChanged("CurrentYear");
+                    }
                     else
-                        currentDateTime = currentDateTime.AddMonths(-1);
+                        CurrentDateTime.AddMonths(-1);
                 }
-                Debug.WriteLine(currentDateTime);
             }
         }
-
+        private bool _isEventConfirmed;
+        public bool IsEventConfirmed
+        {
+            get { return _isEventConfirmed; }
+            set { _isEventConfirmed = value; }
+        }
+        public int CurrentYear
+        {
+            get { return CurrentDateTime.Year; }
+        }
         public int CurrentMonth
         {
-            get { return currentDateTime.Month; }
-        }
-
-        public int CurrentDay
-        {
-            get { return currentDateTime.Day; }
+            get { return CurrentDateTime.Month; }
         }
         #endregion
 
         public CalendarViewModel()
         {
-            currentDateTime = DateTime.Now;
+            CurrentDateTime = new MyDateTime();
             MonthList = new ObservableCollection<CalendarModel>();
             for (int i = 0; i < 12; ++i)
             {
-                MonthList.Add(new CalendarModel(i, ref currentDateTime));
+                MonthList.Add(new CalendarModel(i, ref _currentDateTime));
             }
         }
         public ObservableCollection<CalendarModel> MonthList { get; set; }
 
         public async System.Threading.Tasks.Task<Planning> UpdateMonth()
         {
-            Debug.WriteLine("currentDateTime: {0}", currentDateTime);
-            Planning plan = await GetMonthPlanning(currentDateTime);
+            Planning plan = await GetMonthPlanning(CurrentDateTime.DateTimeAccess);
             return plan;
         }
 
         #region ApiGetters
         public async Task<Planning> GetMonthPlanning(DateTime month)
         {
-            Debug.WriteLine("date {0}", month.ToString("yyyy-MM-dd"));
             ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
             object[] token = { ApiCom.User.GetUser().Token, month.ToString("yyyy-MM-dd") };
             HttpResponseMessage res = await api.Get(token, "planning/getmonth");
             string resString = await res.Content.ReadAsStringAsync();
-            Debug.WriteLine(resString);
             return api.DeserializeArrayJson<Planning>(resString);
         }
         public async Task<Planning> GetDayPlanning(DateTime day)
         {
-            Debug.WriteLine("date {0}", day.ToString("yyyy-MM-dd"));
             ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
             object[] token = { ApiCom.User.GetUser().Token, day.ToString("yyyy-MM-dd") };
             HttpResponseMessage res = await api.Get(token, "planning/getday");
             string resString = await res.Content.ReadAsStringAsync();
-            Debug.WriteLine(resString);
             return api.DeserializeArrayJson<Planning>(resString);
         }
         public async void AddEvent(Event evt)

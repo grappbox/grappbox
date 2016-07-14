@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using GrappBox.Model.Global;
 
 namespace GrappBox.Model
 {
@@ -31,5 +32,16 @@ namespace GrappBox.Model
         public DateModel EditedAt { get; set; }
         [JsonProperty("deletedAt")]
         public DateModel DeletedAt { get; set; }
+        public bool IsinRange(DateTime dt)
+        {
+            DateTime begin = DateTimeFormator.DateModelToDateTime(BeginDate);
+            DateTime end = DateTimeFormator.DateModelToDateTime(EndDate);
+            if (DateTime.Compare(dt, begin) >= 0)
+            {
+                if (DateTime.Compare(dt, end) <= 0)
+                    return true;
+            }
+            return false;
+        }
     }
 }

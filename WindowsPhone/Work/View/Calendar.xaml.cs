@@ -29,8 +29,9 @@ namespace GrappBox.View
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
         private CalendarViewModel viewModel
-            { get {return (CalendarViewModel)this.DataContext; }
-}
+        {
+            get {return (CalendarViewModel)this.DataContext; }
+        }
         public Calendar()
         {
             this.DataContext = new ViewModel.CalendarViewModel();
@@ -42,10 +43,12 @@ namespace GrappBox.View
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-
+            this.Loaded += Calendar_Loaded;
+        }
+        private void Calendar_Loaded(object sender, RoutedEventArgs e)
+        {
             MonthPivot.SelectedIndex = viewModel.CurrentMonth - 1;
         }
-
         private async void MonthPivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Pivot p = sender as Pivot;
@@ -54,9 +57,8 @@ namespace GrappBox.View
             cm.Events = plan.Events;
             cm.Tasks = plan.Tasks;
             viewModel.NotifyPropertyChanged("MonthList");
-            viewModel.NotifyPropertyChanged("Events");
+            viewModel.NotifyPropertyChanged("CurrentYear");
         }
-
         //Required for navigation
         #region NavigationHelper
         public NavigationHelper NavigationHelper
@@ -71,22 +73,19 @@ namespace GrappBox.View
         {
 
         }
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedTo(e);
-
-            CalendarModel cm = viewModel.MonthList[viewModel.CurrentMonth - 1];
-            Planning plan = await viewModel.UpdateMonth();
-            cm.Events = plan.Events;
-            cm.Tasks = plan.Tasks;
-            viewModel.NotifyPropertyChanged("MonthList");
-            viewModel.NotifyPropertyChanged("Events");
         }
-
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedFrom(e);
         }
         #endregion
+        private void DayGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CalendarModel cm = this.MonthPivot.SelectedItem as CalendarModel;
+            cm.Events = new System.Collections.ObjectModel.ObservableCollection<Event>(cm.Events.Where<Event>(Event => Event.IsinRange(viewModel.CurrentDateTime.DateTimeAccess) == true));
+        }
     }
 }

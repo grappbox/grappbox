@@ -1,4 +1,5 @@
-﻿using GrappBox.View;
+﻿using GrappBox.Ressources;
+using GrappBox.View;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -61,7 +62,10 @@ namespace GrappBox
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-
+            if (SettingsManager.OptionExist("ProjectIdChoosen") == true)
+                SettingsManager.setOption("ProjectIdChoosen", -1);
+            if (SettingsManager.OptionExist("ProjectNameChoosen") == true)
+                SettingsManager.setOption("ProjectNameChoosen", null);
             StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
             statusBar.BackgroundColor = (Color)App.Current.Resources["RedGrappBox"];
             statusBar.ForegroundColor = (Color)App.Current.Resources["LightWhiteGrappBox"];

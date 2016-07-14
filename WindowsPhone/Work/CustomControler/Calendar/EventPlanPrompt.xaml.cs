@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrappBox.Ressources;
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -8,26 +9,18 @@ namespace GrappBox.CustomControler
     {
         public static readonly DependencyProperty EventConfirmedProperty =
             DependencyProperty.Register("IsEventConfirmed", typeof(bool), typeof(EventPlanPrompt), null);
-        public static readonly DependencyProperty TitleProperty =
-            DependencyProperty.Register("Title", typeof(string), typeof(EventPlanPrompt), null);
-        public static readonly DependencyProperty DescriptionProperty =
-            DependencyProperty.Register("Description", typeof(string), typeof(EventPlanPrompt), null);
+        public static readonly DependencyProperty CurrentDateTimeProperty =
+            DependencyProperty.Register("CurrentDateTime", typeof(MyDateTime), typeof(EventPlanPrompt), null);
         public static readonly DependencyProperty IsOpenedProperty =
             DependencyProperty.Register("IsOpened", typeof(bool), typeof(EventPlanPrompt), null);
-        public static readonly DependencyProperty BeginDateProperty =
-            DependencyProperty.Register("BeginDate", typeof(DateTime), typeof(EventPlanPrompt), null);
-        public static readonly DependencyProperty EndDateProperty =
-            DependencyProperty.Register("EndDate", typeof(DateTime), typeof(EventPlanPrompt), null);
 
         public string Title
         {
-            get { return (string)GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
+            get { return title.Text; }
         }
         public string Description
         {
-            get { return (string)GetValue(DescriptionProperty); }
-            set { SetValue(DescriptionProperty, value); }
+            get { return description.Text; }
         }
 
         public bool IsEventConfirmed
@@ -42,26 +35,26 @@ namespace GrappBox.CustomControler
         }
         public DateTime BeginDate
         {
-            get { return (DateTime)GetValue(BeginDateProperty); }
-            set { SetValue(BeginDateProperty, value); }
+            get { return new DateTime(beginDate.Date.Year, beginDate.Date.Month, beginDate.Date.Day, beginHour.Time.Hours, beginHour.Time.Minutes, 0); ; }
         }
         public DateTime EndDate
         {
-            get { return (DateTime)GetValue(EndDateProperty); }
-            set { SetValue(EndDateProperty, value); }
+            get { return new DateTime(endDate.Date.Year, endDate.Date.Month, endDate.Date.Day, endHour.Time.Hours, endHour.Time.Minutes, 0); }
         }
 
         private void ConfirmText_Click(object sender, RoutedEventArgs e)
         {
-            Title = title.Text;
-            title.Text = "";
-            Description = description.Text;
-            description.Text = "";
-            BeginDate = new DateTime(beginDate.Date.Year, beginDate.Date.Month, beginDate.Date.Day, beginHour.Time.Hours, beginHour.Time.Minutes, 0);
-            EndDate = new DateTime(endDate.Date.Year, endDate.Date.Month, endDate.Date.Day, endHour.Time.Hours, endHour.Time.Minutes, 0);
             IsEventConfirmed = true;
-            IsEventConfirmed = false;
             IsOpened = false;
+        }
+        public void Clear()
+        {
+            title.Text = "";
+            description.Text = "";
+            beginDate.Date = DateTime.Now;
+            endDate.Date = DateTime.Now;
+            beginHour.Time = DateTime.Now.TimeOfDay;
+            endHour.Time = DateTime.Now.TimeOfDay.Add(new TimeSpan(1,0,0));
         }
         private void CancelText_Click(object sender, RoutedEventArgs e)
         {

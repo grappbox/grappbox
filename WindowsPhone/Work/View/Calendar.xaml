@@ -11,29 +11,41 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarButton Icon="Add">Add Event</AppBarButton>
+            <AppBarToggleButton x:Name="AddEventButton" Icon="Add">Add Event</AppBarToggleButton>
         </CommandBar>
     </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Calendar">
-        <Grid VerticalAlignment="Stretch" Background="RoyalBlue">
+        <Grid VerticalAlignment="Stretch">
             <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}">
                 <Pivot.ItemTemplate>
                     <DataTemplate>
-                        <Grid Background="Violet" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <GridView ItemsSource="{Binding DaysList}" Background="Beige">
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock" >
+                                    <Setter Property="FontSize" Value="16" />
+                                </Style>
+                            </Grid.Resources>
+                            <TextBlock Grid.Row="0" Text="{Binding ElementName=MonthPivot, Path=DataContext.CurrentYear}" FontSize="20" HorizontalAlignment="Center" />
+                            <GridView Grid.Row="1" x:Name="DayGrid" ItemsSource="{Binding DaysList}" Background="Beige" SelectedIndex="{Binding CurrentDayIndex, Mode=TwoWay}"
+                                      SelectionMode="Single" ItemContainerStyle="{StaticResource GridViewItemCustom}" SelectionChanged="DayGrid_SelectionChanged">
                                 <GridView.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding }" FontFamily="Roboto" FontSize="20²"/>
                                     </DataTemplate>
                                 </GridView.ItemTemplate>
+                                <GridView.Resources>
+                                    <SolidColorBrush x:Key="SystemColors.HighlightBrushKey" Color="Gray"/>
+                                </GridView.Resources>
                             </GridView>
-                            <ScrollViewer Grid.Row="1" VerticalAlignment="Stretch" Background="AliceBlue">
-                                <StackPanel ScrollViewer.VerticalScrollMode="Enabled" Background="Green">
-                                    <ListView ItemsSource="{Binding Events}" HorizontalAlignment="Stretch">
+                            <ScrollViewer Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                <StackPanel ScrollViewer.VerticalScrollMode="Enabled" HorizontalAlignment="Stretch">
+                                    <TextBlock Text="Events" HorizontalAlignment="Center" FontSize="16" />
+                                    <ListView x:Name="EventsListView" ItemsSource="{Binding Events}" HorizontalAlignment="Stretch" Visibility="{Binding ListEventsEmpty}">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Vertical">
@@ -41,7 +53,7 @@
                                                     <TextBlock Text="{Binding Description}" />
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding BeginDate, Converter={StaticResource DateTimeToStringConverter}}" />
-                                                        <TextBlock Text="{Binding EndDate, Converter={StaticResource DateTimeToStringConverter}}" />
+                                                        <TextBlock Text="{Binding EndDate, Converter={StaticResource DateTimeToStringConverter}}" HorizontalAlignment="Right" />
                                                     </StackPanel>
                                                 </StackPanel>
                                             </DataTemplate>
@@ -56,15 +68,19 @@
                                             </Style>
                                         </ListView.ItemContainerStyle>
                                     </ListView>
-                                    <ListView ItemsSource="{Binding Tasks}" HorizontalAlignment="Stretch">
+                                    <TextBlock x:Name="EventsListViewEmpty" Text="No Events" Visibility="{Binding EventsEmpty}" />
+                                    <TextBlock Text="Tasks" HorizontalAlignment="Center" FontSize="16" />
+                                    <ListView x:Name="TasksListView" ItemsSource="{Binding Tasks}" HorizontalAlignment="Stretch" Visibility="{Binding ListTasksEmpty}">
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Vertical">
                                                     <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
                                                     <TextBlock Text="{Binding Description}" />
                                                     <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Started at: "/>
                                                         <TextBlock Text="{Binding StartedAt, Converter={StaticResource DateTimeToStringConverter}}" />
-                                                        <TextBlock Text="{Binding DueDate, Converter={StaticResource DateTimeToStringConverter}}" />
+                                                        <TextBlock Text="Due date at: "/>
+                                                        <TextBlock Text="{Binding DueDate, Converter={StaticResource DateTimeToStringConverter}}" HorizontalAlignment="Right"/>
                                                     </StackPanel>
                                                 </StackPanel>
                                             </DataTemplate>
@@ -79,6 +95,7 @@
                                             </Style>
                                         </ListView.ItemContainerStyle>
                                     </ListView>
+                                    <TextBlock x:Name="TasksListViewEmpty" Text="No Tasks" Visibility="{Binding TasksEmpty}" />
                                 </StackPanel>
                             </ScrollViewer>
                         </Grid>
@@ -91,6 +108,7 @@
                 </Pivot.HeaderTemplate>
                 <Pivot.ItemContainerStyle>
                     <Style TargetType="PivotItem">
+                        <Setter Property="Background" Value="{StaticResource BackgroundGrayBrush}" />
                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
                         <Setter Property="VerticalAlignment" Value="Stretch" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -98,11 +116,11 @@
                     </Style>
                 </Pivot.ItemContainerStyle>
             </Pivot>
-            <!--<Popup x:Name="TextPopup" IsOpen="{Binding EventPromptOpened , Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalOffset="-50">
+            <Popup x:Name="TextPopup" IsOpen="{Binding ElementName=AddEventButton, Path=IsChecked, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalOffset="-50" HorizontalOffset="-50">
                 <Grid x:Name="TextPopupGrid" Background="#FFB3B3B3">
-                    <CustomControl:EventPlanPrompt x:Name="PromptPan" IsEventConfirmed="{Binding EventPromptConfirmed, Mode=TwoWay}" IsOpened="{Binding EventPromptOpened, Mode=TwoWay}" Title="{Binding EventPromptTitle, Mode=TwoWay}" Description="{Binding EventPromptDescription , Mode=TwoWay}" BeginDate="{Binding EventPromptBeginDate, Mode=TwoWay}" EndDate="{Binding EventPromptEndDate, Mode=TwoWay}"/>
+                    <CustomControl:EventPlanPrompt x:Name="PromptPan" IsEventConfirmed="{Binding EventPromptConfirmed, Mode=TwoWay}" IsOpened="{Binding ElementName=TextPopup, Path=IsOpen, Mode=TwoWay}"/>
                 </Grid>
-            </Popup>-->
+            </Popup>
         </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>

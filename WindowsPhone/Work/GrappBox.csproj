@@ -27,7 +27,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_PHONE_APP;DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;WINDOWS_PHONE_APP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -157,6 +157,7 @@
     <Compile Include="Model\Whiteboard\WhiteBoardListModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteboardObject.cs" />
+    <Compile Include="Ressources\MyDateTime.cs" />
     <Compile Include="Ressources\NavigationHelper.cs" />
     <Compile Include="Ressources\RelayCommand.cs" />
     <Compile Include="Ressources\SettingsManager.cs" />

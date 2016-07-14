@@ -220,7 +220,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         {
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
             foreach (StackPanel b in buttons)
-                b.Visibility = id == 0 ? Visibility.Collapsed : Visibility.Visible;
+                b.Visibility = id == -1 ? Visibility.Collapsed : Visibility.Visible;
             projectName.Text = SettingsManager.getOption<string>("ProjectNameChoosen") ?? "";
         }
 
@@ -299,6 +299,10 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         private async void logout()
         {
+            if (SettingsManager.OptionExist("ProjectIdChoosen") == true)
+                SettingsManager.setOption("ProjectIdChoosen", -1);
+            if (SettingsManager.OptionExist("ProjectNameChoosen") == true)
+                SettingsManager.setOption("ProjectNameChoosen", null);
             ApiCommunication api = ApiCommunication.GetInstance();
             object[] token = { User.GetUser().Token };
             HttpResponseMessage res = await api.Get(token, "accountadministration/logout");
