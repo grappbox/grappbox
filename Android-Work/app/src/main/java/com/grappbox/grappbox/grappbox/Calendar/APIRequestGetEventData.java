@@ -2,6 +2,7 @@ package com.grappbox.grappbox.grappbox.Calendar;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
+import android.util.EventLog;
 import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
@@ -21,10 +22,10 @@ import java.util.concurrent.TimeoutException;
  */
 public class APIRequestGetEventData  extends AsyncTask<String, Void, String> {
 
-    private EventDetailFragment _context;
+    private EventDetailActivity _context;
     private int _idEvent;
 
-    APIRequestGetEventData(EventDetailFragment context, int idEvent)
+    APIRequestGetEventData(EventDetailActivity context, int idEvent)
     {
         _context = context;
         _idEvent = idEvent;

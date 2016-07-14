@@ -20,9 +20,9 @@ import java.util.Vector;
  */
 public class APIRequestGetEventType extends AsyncTask<String, Void, String> {
 
-    private EventDetailFragment _context;
+    private EventDetailActivity _context;
 
-    APIRequestGetEventType(EventDetailFragment context)
+    APIRequestGetEventType(EventDetailActivity context)
     {
         _context = context;
     }

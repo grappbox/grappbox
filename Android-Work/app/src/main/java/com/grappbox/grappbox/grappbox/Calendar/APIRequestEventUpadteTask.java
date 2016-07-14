@@ -17,10 +17,10 @@ import java.io.IOException;
  */
 public class APIRequestEventUpadteTask extends AsyncTask<String, Void, String> {
 
-    private EventDetailFragment _context;
+    private EventDetailActivity _context;
     private int _idEvent;
 
-    APIRequestEventUpadteTask(EventDetailFragment context, int idEvent)
+    APIRequestEventUpadteTask(EventDetailActivity context, int idEvent)
     {
         _context = context;
         _idEvent = idEvent;
@@ -32,10 +32,10 @@ public class APIRequestEventUpadteTask extends AsyncTask<String, Void, String> {
         super.onPostExecute(result);
         if (result != null) {
             CharSequence text = "Event information correctly update";
-            Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
         } else {
             CharSequence text = "An Error Occured.";
-            Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
         }
         APIRequestGetEventData refresh = new APIRequestGetEventData(_context, _idEvent);
         refresh.execute();

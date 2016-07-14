@@ -19,9 +19,9 @@ import java.io.IOException;
  */
 public class APIRequestAddEvent extends AsyncTask<String, Void, String> {
 
-    private AddEventFragment _context;
+    private AddEventActivity _context;
 
-    APIRequestAddEvent(AddEventFragment context)
+    APIRequestAddEvent(AddEventActivity context)
     {
         _context = context;
     }
@@ -31,10 +31,11 @@ public class APIRequestAddEvent extends AsyncTask<String, Void, String> {
     {
         super.onPostExecute(result);
         if (result != null){
-            AgendaFragment agendaFragment = new AgendaFragment();
-            _context.getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();
+            _context.finish();
+/*            AgendaFragment agendaFragment = new AgendaFragment();
+            _context.getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();*/
         } else {
-            Context context = _context.getContext();
+            Context context = _context;
             CharSequence text = "An error occured during the event creation";
             Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
         }

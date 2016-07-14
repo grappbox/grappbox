@@ -19,12 +19,12 @@ import java.io.IOException;
  */
 public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
 
-    private EventDetailFragment _context;
+    private EventDetailActivity _context;
     private Dialog              _dialog;
     private int                 _idEvent;
     private int                 _idUser;
 
-    APIRequestEventAddUser(EventDetailFragment context, int idEvent, Dialog dialog)
+    APIRequestEventAddUser(EventDetailActivity context, int idEvent, Dialog dialog)
     {
         _context = context;
         _dialog = dialog;
@@ -38,12 +38,12 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
         if (result != null) {
             _dialog.dismiss();
             CharSequence text = "Successful user add";
-            Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
             APIRequestGetEventData refresh = new APIRequestGetEventData(_context, _idEvent);
             refresh.execute();
         } else {
             CharSequence text = "An Error Occured. Cannot add user to this event";
-            Toast.makeText(_context.getContext(), text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
         }
     }
 
