@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSelectedProjectChange(String projectID) {
         NavigationView nv = (NavigationView) findViewById(R.id.nav_view);
-        if (nv == null)
+        if (nv == null || projectID == null)
             return;
         nv.getMenu().clear();
         nv.inflateMenu(projectID.isEmpty() ? R.menu.activity_main_drawer_no_project : R.menu.activity_main_drawer);
@@ -283,6 +283,19 @@ public class MainActivity extends AppCompatActivity
             }
         }, this);
         task.execute();
+        ProjectSettingsActivity.GetProjectInfosTask getInfos = new ProjectSettingsActivity.GetProjectInfosTask(this, new ProjectSettingsActivity.GetProjectInfosTask.ProjectInfosListener() {
+            @Override
+            public void onDataFetched(JSONObject json) {
+                if (json == null)
+                    return;
+                try {
+                    SessionAdapter.getInstance().setCurrentSelectedProjectInfos(new ProjectModel(json));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        getInfos.execute();
     }
     //SessionAdapter.SessionListener END
     private AccessModel parseAuthorizations(JSONObject data, String projectID) throws JSONException {

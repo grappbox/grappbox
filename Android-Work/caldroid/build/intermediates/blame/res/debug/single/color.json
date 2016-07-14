@@ -4,7 +4,15 @@
         "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\color\\cell_text_color_dark.xml"
     },
     {
+        "merged": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\debug\\color\\cell_text_color.xml",
+        "source": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\color\\cell_text_color.xml"
+    },
+    {
         "merged": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\debug\\color\\cell_text_color.xml",
         "source": "C:\\Users\\tan_f\\Documents\\GitHub\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\color\\cell_text_color.xml"
+    },
+    {
+        "merged": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\debug\\color\\cell_text_color_dark.xml",
+        "source": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\color\\cell_text_color_dark.xml"
     }
 ]

@@ -795,5 +795,802 @@
                 }
             }
         ]
+    },
+    {
+        "outputFile": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\build\\intermediates\\res\\merged\\debug\\values\\values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 59,
+                    "endOffset": 110
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 9,
+                        "startColumn": 4,
+                        "startOffset": 454,
+                        "endColumn": 59,
+                        "endOffset": 509
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 115,
+                    "endColumn": 60,
+                    "endOffset": 171
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 141,
+                        "endColumn": 60,
+                        "endOffset": 197
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 176,
+                    "endColumn": 60,
+                    "endOffset": 232
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 6,
+                        "startColumn": 4,
+                        "startOffset": 266,
+                        "endColumn": 60,
+                        "endOffset": 322
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 237,
+                    "endColumn": 61,
+                    "endOffset": 294
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 7,
+                        "startColumn": 4,
+                        "startOffset": 328,
+                        "endColumn": 61,
+                        "endOffset": 385
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 299,
+                    "endColumn": 61,
+                    "endOffset": 356
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 203,
+                        "endColumn": 61,
+                        "endOffset": 260
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 7,
+                    "startColumn": 4,
+                    "startOffset": 361,
+                    "endColumn": 61,
+                    "endOffset": 418
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 391,
+                        "endColumn": 61,
+                        "endOffset": 448
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 8,
+                    "startColumn": 4,
+                    "startOffset": 423,
+                    "endColumn": 61,
+                    "endOffset": 480
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 78,
+                        "endColumn": 61,
+                        "endOffset": 135
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 9,
+                    "startColumn": 4,
+                    "startOffset": 485,
+                    "endColumn": 62,
+                    "endOffset": 543
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\attrs.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 515,
+                        "endColumn": 62,
+                        "endOffset": 573
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 548,
+                    "endColumn": 43,
+                    "endOffset": 587
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 18,
+                        "startColumn": 4,
+                        "startOffset": 770,
+                        "endColumn": 43,
+                        "endOffset": 809
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 592,
+                    "endColumn": 43,
+                    "endOffset": 631
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 19,
+                        "startColumn": 4,
+                        "startOffset": 815,
+                        "endColumn": 43,
+                        "endOffset": 854
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 636,
+                    "endColumn": 48,
+                    "endOffset": 680
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 109,
+                        "endColumn": 48,
+                        "endOffset": 153
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 685,
+                    "endColumn": 51,
+                    "endOffset": 732
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 9,
+                        "startColumn": 4,
+                        "startOffset": 354,
+                        "endColumn": 51,
+                        "endOffset": 401
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 737,
+                    "endColumn": 44,
+                    "endOffset": 777
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 8,
+                        "startColumn": 4,
+                        "startOffset": 308,
+                        "endColumn": 44,
+                        "endOffset": 348
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 782,
+                    "endColumn": 59,
+                    "endOffset": 837
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 14,
+                        "startColumn": 4,
+                        "startOffset": 603,
+                        "endColumn": 59,
+                        "endOffset": 658
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 842,
+                    "endColumn": 60,
+                    "endOffset": 898
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 12,
+                        "startColumn": 4,
+                        "startOffset": 501,
+                        "endColumn": 60,
+                        "endOffset": 557
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 903,
+                    "endColumn": 52,
+                    "endOffset": 951
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 20,
+                        "startColumn": 4,
+                        "startOffset": 860,
+                        "endColumn": 52,
+                        "endOffset": 908
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 956,
+                    "endColumn": 52,
+                    "endOffset": 1004
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 7,
+                        "startColumn": 4,
+                        "startOffset": 254,
+                        "endColumn": 52,
+                        "endOffset": 302
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 19,
+                    "startColumn": 4,
+                    "startOffset": 1009,
+                    "endColumn": 51,
+                    "endOffset": 1056
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 407,
+                        "endColumn": 51,
+                        "endOffset": 454
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 20,
+                    "startColumn": 4,
+                    "startOffset": 1061,
+                    "endColumn": 53,
+                    "endOffset": 1110
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 16,
+                        "startColumn": 4,
+                        "startOffset": 713,
+                        "endColumn": 53,
+                        "endOffset": 762
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 21,
+                    "startColumn": 4,
+                    "startOffset": 1115,
+                    "endColumn": 56,
+                    "endOffset": 1167
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 5,
+                        "startColumn": 4,
+                        "startOffset": 159,
+                        "endColumn": 56,
+                        "endOffset": 211
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 1172,
+                    "endColumn": 48,
+                    "endOffset": 1216
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\color.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 59,
+                        "endColumn": 48,
+                        "endOffset": 103
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 25,
+                    "startColumn": 4,
+                    "startOffset": 1611,
+                    "endColumn": 53,
+                    "endOffset": 1660
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\strings.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 19,
+                        "endColumn": 53,
+                        "endOffset": 68
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 26,
+                    "startColumn": 4,
+                    "startOffset": 1665,
+                    "endLine": 35,
+                    "endColumn": 12,
+                    "endOffset": 2388
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 57,
+                        "endLine": 11,
+                        "endColumn": 12,
+                        "endOffset": 789
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 36,
+                    "startColumn": 4,
+                    "startOffset": 2393,
+                    "endLine": 39,
+                    "endColumn": 12,
+                    "endOffset": 2556
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 19,
+                        "startColumn": 4,
+                        "startOffset": 1064,
+                        "endLine": 22,
+                        "endColumn": 12,
+                        "endOffset": 1230
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 40,
+                    "startColumn": 4,
+                    "startOffset": 2561,
+                    "endLine": 44,
+                    "endColumn": 12,
+                    "endOffset": 2816
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 797,
+                        "endLine": 17,
+                        "endColumn": 12,
+                        "endOffset": 1056
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 45,
+                    "startColumn": 4,
+                    "startOffset": 2821,
+                    "endLine": 51,
+                    "endColumn": 12,
+                    "endOffset": 3154
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 54,
+                        "startColumn": 4,
+                        "startOffset": 2657,
+                        "endLine": 60,
+                        "endColumn": 12,
+                        "endOffset": 2996
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 52,
+                    "startColumn": 4,
+                    "startOffset": 3159,
+                    "endLine": 58,
+                    "endColumn": 12,
+                    "endOffset": 3678
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 77,
+                        "startColumn": 4,
+                        "startOffset": 3593,
+                        "endLine": 83,
+                        "endColumn": 12,
+                        "endOffset": 4118
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 59,
+                    "startColumn": 4,
+                    "startOffset": 3683,
+                    "endLine": 61,
+                    "endColumn": 12,
+                    "endOffset": 3816
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 85,
+                        "startColumn": 4,
+                        "startOffset": 4126,
+                        "endLine": 87,
+                        "endColumn": 12,
+                        "endOffset": 4261
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 62,
+                    "startColumn": 4,
+                    "startOffset": 3821,
+                    "endLine": 65,
+                    "endColumn": 12,
+                    "endOffset": 4045
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 97,
+                        "startColumn": 4,
+                        "startOffset": 4610,
+                        "endLine": 100,
+                        "endColumn": 12,
+                        "endOffset": 4837
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 66,
+                    "startColumn": 4,
+                    "startOffset": 4050,
+                    "endLine": 68,
+                    "endColumn": 12,
+                    "endOffset": 4213
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 93,
+                        "startColumn": 4,
+                        "startOffset": 4437,
+                        "endLine": 95,
+                        "endColumn": 12,
+                        "endOffset": 4602
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 69,
+                    "startColumn": 4,
+                    "startOffset": 4218,
+                    "endLine": 71,
+                    "endColumn": 12,
+                    "endOffset": 4376
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 89,
+                        "startColumn": 4,
+                        "startOffset": 4269,
+                        "endLine": 91,
+                        "endColumn": 12,
+                        "endOffset": 4429
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 72,
+                    "startColumn": 4,
+                    "startOffset": 4381,
+                    "endLine": 74,
+                    "endColumn": 12,
+                    "endOffset": 4519
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 102,
+                        "startColumn": 4,
+                        "startOffset": 4845,
+                        "endLine": 104,
+                        "endColumn": 12,
+                        "endOffset": 4985
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 75,
+                    "startColumn": 4,
+                    "startOffset": 4524,
+                    "endColumn": 82,
+                    "endOffset": 4602
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 106,
+                        "startColumn": 4,
+                        "startOffset": 4993,
+                        "endColumn": 83,
+                        "endOffset": 5072
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 76,
+                    "startColumn": 4,
+                    "startOffset": 4607,
+                    "endLine": 84,
+                    "endColumn": 12,
+                    "endOffset": 5071
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 44,
+                        "startColumn": 4,
+                        "startOffset": 2177,
+                        "endLine": 52,
+                        "endColumn": 12,
+                        "endOffset": 2649
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 85,
+                    "startColumn": 4,
+                    "startOffset": 5076,
+                    "endLine": 88,
+                    "endColumn": 12,
+                    "endOffset": 5297
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 24,
+                        "startColumn": 4,
+                        "startOffset": 1238,
+                        "endLine": 27,
+                        "endColumn": 12,
+                        "endOffset": 1462
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 89,
+                    "startColumn": 4,
+                    "startOffset": 5302,
+                    "endLine": 97,
+                    "endColumn": 12,
+                    "endOffset": 5758
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 34,
+                        "startColumn": 4,
+                        "startOffset": 1705,
+                        "endLine": 42,
+                        "endColumn": 12,
+                        "endOffset": 2169
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 98,
+                    "startColumn": 4,
+                    "startOffset": 5763,
+                    "endLine": 100,
+                    "endColumn": 12,
+                    "endOffset": 5893
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 62,
+                        "startColumn": 4,
+                        "startOffset": 3004,
+                        "endLine": 64,
+                        "endColumn": 12,
+                        "endOffset": 3136
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 101,
+                    "startColumn": 4,
+                    "startOffset": 5898,
+                    "endLine": 104,
+                    "endColumn": 12,
+                    "endOffset": 6122
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 29,
+                        "startColumn": 4,
+                        "startOffset": 1470,
+                        "endLine": 32,
+                        "endColumn": 12,
+                        "endOffset": 1697
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 105,
+                    "startColumn": 4,
+                    "startOffset": 6127,
+                    "endColumn": 74,
+                    "endOffset": 6197
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 66,
+                        "startColumn": 4,
+                        "startOffset": 3144,
+                        "endColumn": 75,
+                        "endOffset": 3215
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 106,
+                    "startColumn": 4,
+                    "startOffset": 6202,
+                    "endLine": 112,
+                    "endColumn": 12,
+                    "endOffset": 6532
+                },
+                "from": {
+                    "file": "D:\\Perso\\Documents\\EIP\\Grappbox\\Android-Work\\caldroid\\src\\main\\res\\values\\styles.xml",
+                    "position": {
+                        "startLine": 68,
+                        "startColumn": 4,
+                        "startOffset": 3223,
+                        "endLine": 74,
+                        "endColumn": 12,
+                        "endOffset": 3559
+                    }
+                }
+            }
+        ]
     }
 ]

@@ -40,25 +40,48 @@ public class ProjectModel implements Serializable {
 
     public ProjectModel(JSONObject data) throws JSONException {
         byte[] blob = null;//Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
-
-        id = data.getString("project_id");
-        name = data.getString("project_name");
-        description = data.getString("project_description");
-        phone = data.getString("project_phone");
-        company = data.getString("project_company");
-        Log.v("Logo data", data.getString("project_logo"));
+        
+        if (data.has("project_id"))
+            id = data.getString("project_id");
+        if (data.has("project_name"))
+            name = data.getString("project_name");
+        else if (data.has("name"))
+            name = data.getString("name");
+        if (data.has("project_description"))
+            description = data.getString("project_description");
+        else if (data.has("description"))
+            description = data.getString("description");
+        if (data.has("project_phone"))
+            phone = data.getString("project_phone");
+        else if (data.has("phone"))
+            phone = data.getString("phone");
+        if (data.has("project_company"))
+            company = data.getString("project_company");
+        else if (data.has("company"))
+            company = data.getString("company");
         logo = null;//Base64.decode(data.getString("project_logo"), Base64.DEFAULT);
-        contact_mail = data.getString("contact_mail");
-        facebookURL = data.getString("facebook");
-        twitterURL = data.getString("twitter");
-        bugs = data.getString("number_bugs");
-        tasks = data.getString("number_tasks");
-        messages = data.getString("number_messages");
-        JSONObject date = data.isNull("delete_at") ? null : data.getJSONObject("deleted_at");
-        if (date != null)
-            Log.e("WATCH", date.toString());
+        if (data.has("contact_mail"))
+            contact_mail = data.getString("contact_mail");
+        if (data.has("facebook"))
+            facebookURL = data.getString("facebook");
+        if (data.has("twitter"))
+            twitterURL = data.getString("twitter");
+        if (data.has("number_bugs"))
+            bugs = data.getString("number_bugs");
+        if (data.has("number_tasks"))
+            tasks = data.getString("number_tasks");
+        if (data.has("number_messages"))
+            messages = data.getString("number_messages");
+        if (data.has("delete_at"))
+        {
+            JSONObject date = data.isNull("delete_at") ? null : data.getJSONObject("deleted_at");
+            if (date != null)
+                Log.e("WATCH", date.toString());
 
-        deletedAt = (date == null || date.isNull("date") ? null : date.getString("date"));
+            deletedAt = (date == null || date.isNull("date") ? null : date.getString("date"));
+        }
+        else
+            deletedAt = null;
     }
 
     public boolean isValid()
@@ -71,7 +94,7 @@ public class ProjectModel implements Serializable {
     }
 
     public boolean isDeleted() {
-        return (deletedAt != null);
+        return (deletedAt != null && !deletedAt.isEmpty());
     }
 
     public void setDeletedAt(String date)
