@@ -37,6 +37,7 @@ public class EventDetailActivity extends EventActivity {
 
     private int                 _idEvent;
     private int                 _projectId;
+    private String              _projecTypeEvent;
     private Vector<String>      _mailList = new Vector<String>();
     private EventDetailActivity _context = this;
     private String              _eventIcon;
@@ -53,6 +54,7 @@ public class EventDetailActivity extends EventActivity {
     private Spinner             _eventTypes;
     private NonScrollListView   _eventListUser;
     private ContentValues       _eventProjectId = new ContentValues();
+    private ContentValues       _eventListTypes = new ContentValues();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,27 +126,11 @@ public class EventDetailActivity extends EventActivity {
         }
         _eventProjectSpinner = (Spinner) findViewById(R.id.event_project);
         _eventTypes = (Spinner) findViewById(R.id.event_type);
-        ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter.createFromResource(this, R.array.event_types_list_default, android.R.layout.simple_spinner_dropdown_item);
-        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        _eventTypes.setAdapter(eventTypeAdapter);
-        _eventTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final String newType = getResources().getStringArray(R.array.event_types_list_default)[1];
-                if (_eventTypes.getSelectedItem().toString().equals(newType)){
-                    AlertDialog.Builder build = new AlertDialog.Builder(_context);
-                    build.setTitle("Create new type");
-                    build.show();
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         APIRequestGetEventData event = new APIRequestGetEventData(this, _idEvent);
         event.execute();
+        APIRequestGetEventType getEventType = new APIRequestGetEventType(this);
+        getEventType.execute();
     }
 
     @Override
@@ -180,6 +166,53 @@ public class EventDetailActivity extends EventActivity {
         dataAdater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _eventProjectSpinner.setAdapter(dataAdater);
         _eventProjectSpinner.setSelection(pos);
+    }
+
+    @Override
+    public void fillEventListSpinner(List<ContentValues> eventTypes)
+    {
+        int pos = 0;
+        List<String> list = new ArrayList<>();
+        Iterator<ContentValues> it = eventTypes.iterator();
+        list.add("Nothing");
+
+        _eventListTypes.put("Nothing", "-1");
+        while (it.hasNext())
+        {
+            ContentValues item = it.next();
+            String eventTypesName = item.get("name").toString();
+            list.add(eventTypesName);
+            _eventListTypes.put(eventTypesName, item.get("id").toString());
+
+        }
+        for (int i = 0; i < eventTypes.size(); ++i)
+        {
+            ContentValues item = eventTypes.get(i);
+            if (item.get("name").toString().equals(_projecTypeEvent))
+                pos = i + 1;
+        }
+        list.add("New type");
+        _eventListTypes.put("New type", "-2");
+        ArrayAdapter<String> eventTypeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list);
+        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _eventTypes.setAdapter(eventTypeAdapter);
+        _eventTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                final String newType = getResources().getStringArray(R.array.event_types_list_default)[1];
+                if (_eventTypes.getSelectedItem().toString().equals(newType)){
+/*                    AlertDialog.Builder build = new AlertDialog.Builder(_context);
+                    build.setTitle("Create new type");
+                    build.show();*/
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        _eventTypes.setSelection(pos);
     }
 
     private void addUserToEvent()
@@ -231,10 +264,36 @@ public class EventDetailActivity extends EventActivity {
 
     private void sendUpadteRequestToAPI()
     {
+
+        String typesEvent = _eventListTypes.get(_eventTypes.getSelectedItem().toString()).toString();
+
+        if (_eventTitle.getText().toString().equals(""))
+        {
+            AlertDialog.Builder build = new AlertDialog.Builder(_context);
+            build.setTitle("Event Title");
+            build.setMessage("Put a title for the event");
+            build.show();
+            return ;
+        }
+
+        if (typesEvent.equals("-1") || typesEvent.equals("-2")){
+            AlertDialog.Builder build = new AlertDialog.Builder(_context);
+            build.setTitle("Event Type");
+            build.setMessage("Select the type of the event");
+            build.show();
+            return ;
+        }
+
         String beginDate = _eventBeginDateDay.getText().toString() + " " + _eventBeginDateHour.getText().toString() + ":00";
         String endDate = _eventEndDateDay.getText().toString() + " " + _eventEndDateHour.getText().toString() + ":00";
         APIRequestEventUpadteTask updateEvent = new APIRequestEventUpadteTask(this, _idEvent);
-        updateEvent.execute(_eventProjectId.get(_eventProjectSpinner.getSelectedItem().toString()).toString(), _eventTitle.getText().toString(), _eventDescription.getText().toString(), _eventIcon, beginDate, endDate);
+        updateEvent.execute(_eventProjectId.get(_eventProjectSpinner.getSelectedItem().toString()).toString(),
+                _eventTitle.getText().toString(),
+                _eventDescription.getText().toString(),
+                _eventIcon,
+                beginDate,
+                endDate,
+                typesEvent);
     }
 
     public void fillContentData(ContentValues event, List<ContentValues> userList)
@@ -257,6 +316,7 @@ public class EventDetailActivity extends EventActivity {
             _eventEndDateDay.setText(dayFormat.format(endDate.getTime()));
             _eventEndDateHour.setText(hourFormat.format(endDate.getTime()));
             _eventIcon = event.get("icon").toString();
+            _projecTypeEvent = event.get("type").toString();
 
             _mailList.clear();
             ArrayList<HashMap<String, String>> listUser = new ArrayList<HashMap<String, String>>();

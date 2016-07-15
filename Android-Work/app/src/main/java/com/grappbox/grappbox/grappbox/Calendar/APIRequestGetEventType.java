@@ -20,9 +20,10 @@ import java.util.Vector;
  */
 public class APIRequestGetEventType extends AsyncTask<String, Void, String> {
 
-    private EventDetailActivity _context;
+    private final static String PATH = "event/gettypes/";
+    private EventActivity _context;
 
-    APIRequestGetEventType(EventDetailActivity context)
+    APIRequestGetEventType(EventActivity context)
     {
         _context = context;
     }
@@ -31,8 +32,28 @@ public class APIRequestGetEventType extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result)
     {
         super.onPostExecute(result);
-        if (result != null)
-            Log.v("GetEventType :", result);
+        if (result != null) {
+            try {
+
+                List<ContentValues> eventTypes = new Vector<ContentValues>();
+                JSONObject obj = new JSONObject(result).getJSONObject("data");
+                JSONArray array = obj.getJSONArray("array");
+
+                for (int i = 0; i < array.length(); ++i){
+                    JSONObject project = array.getJSONObject(i);
+                    ContentValues eventData = new ContentValues();
+
+                    eventData.put("id", project.getString("id"));
+                    eventData.put("name", project.getString("name"));
+                    eventTypes.add(eventData);
+                }
+                _context.fillEventListSpinner(eventTypes);
+
+                Log.v("GetEventType :", result);
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -42,7 +63,7 @@ public class APIRequestGetEventType extends AsyncTask<String, Void, String> {
         Integer APIResponse;
 
         try {
-            APIConnectAdapter.getInstance().startConnection("event/getTypes/" + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN), "V0.2");
+            APIConnectAdapter.getInstance().startConnection(PATH + SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
             APIConnectAdapter.getInstance().setRequestConnection("GET");
 
 

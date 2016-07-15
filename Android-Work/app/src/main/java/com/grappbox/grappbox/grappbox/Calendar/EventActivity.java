@@ -15,4 +15,9 @@ public class EventActivity extends AppCompatActivity {
 
     }
 
+    public void fillEventListSpinner(List<ContentValues> eventTypes)
+    {
+
+    }
+
 }
