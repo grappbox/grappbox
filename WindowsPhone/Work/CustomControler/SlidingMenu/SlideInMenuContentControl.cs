@@ -25,6 +25,7 @@ namespace GrappBox.CustomControler.SlidingMenu
     [TemplatePart(Name = ElementMenuBar, Type = typeof(Grid))]
     [TemplatePart(Name = ElementDisableContentOverlay, Type = typeof(Border))]
     [TemplatePart(Name = ElementMenuButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementDashboardListButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementDashboardButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementWhiteboardButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementUserSettingsButton, Type = typeof(Button))]
@@ -61,6 +62,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementAvatar = "Avatar";
 
         private const string ElementDashboardButton = "DashboardButton";
+        private const string ElementDashboardListButton = "DashboardListButton";
         private const string ElementWhiteboardButton = "WhiteboardButton";
         private const string ElementUserSettingsButton = "UserSettingsButton";
         private const string ElementProjectSettingsButton = "ProjectSettingsButton";
@@ -82,6 +84,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private Border disableContentOverlay;
         private Button menuButton;
         private Button dashboardButton;
+        private Button dashboardListButton;
         private Button whiteboardButton;
         private Button userSettingsButton;
         private Button projectSettingsButton;
@@ -119,6 +122,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             disableContentOverlay = GetTemplateChild(ElementDisableContentOverlay) as Border;
             menuButton = GetTemplateChild(ElementMenuButton) as Button;
             dashboardButton = GetTemplateChild(ElementDashboardButton) as Button;
+            dashboardListButton = GetTemplateChild(ElementDashboardListButton) as Button;
             whiteboardButton = GetTemplateChild(ElementWhiteboardButton) as Button;
             userSettingsButton = GetTemplateChild(ElementUserSettingsButton) as Button;
             projectSettingsButton = GetTemplateChild(ElementProjectSettingsButton) as Button;
@@ -153,6 +157,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 
             menuButton.Click += MenuButton_Click; ;
             dashboardButton.Tapped += DashboardButton_Tapped;
+            dashboardListButton.Tapped += DashboardListButton_Tapped;
             whiteboardButton.Tapped += WhiteboardButton_Tapped;
             userSettingsButton.Tapped += UserSettingsButton_Tapped;
             projectSettingsButton.Tapped += ProjectSettingsButton_Tapped;
@@ -225,6 +230,16 @@ namespace GrappBox.CustomControler.SlidingMenu
         }
 
         private async void DashboardButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (SettingsManager.getOption<int>("ProjectIdChoosen") > 0)
+            {
+                DisplayContent();
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    frame.Navigate(typeof(DashBoardView)));
+            }
+        }
+
+        private async void DashboardListButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             DisplayContent();
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

@@ -23,7 +23,14 @@
                                         <ImageBrush x:Name="Avatar" Stretch="Uniform" ImageSource="ms-appx:///Assets/user.png"/>
                                     </Ellipse.Fill>
                                 </Ellipse>
-                                <TextBlock Name="ProjectName" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20"/>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="3*"/>
+                                        <RowDefinition Height="7*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Name="ProjectName" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" Padding="2" FontSize="20"/>
+                                    <Button Grid.Row="1" MinHeight="55" Height="55" Width="150" MinWidth="150" x:Name="DashboardListButton" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="Change Project" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
                             </StackPanel>
                             <StackPanel Grid.Row="1">
                                 <StackPanel.Resources>
