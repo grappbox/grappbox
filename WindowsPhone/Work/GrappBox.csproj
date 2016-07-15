@@ -148,7 +148,7 @@
     <Compile Include="Model\Whiteboard\ObjectModel.cs" />
     <Compile Include="Model\Whiteboard\PullModel.cs" />
     <Compile Include="Model\Whiteboard\ShapeControler.cs" />
-    <Compile Include="Model\Calendar\Task.cs" />
+    <Compile Include="Model\Calendar\PlanningTask.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Model\ProjectSettings\Users.cs" />
@@ -157,6 +157,7 @@
     <Compile Include="Model\Whiteboard\WhiteBoardListModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteboardObject.cs" />
+    <Compile Include="Ressources\ExceptionExtension.cs" />
     <Compile Include="Ressources\MyDateTime.cs" />
     <Compile Include="Ressources\NavigationHelper.cs" />
     <Compile Include="Ressources\RelayCommand.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="ViewModel\CloudViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
+    <Compile Include="ViewModel\TasksViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -174,8 +176,8 @@
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
-    <Compile Include="View\AssignTask.xaml.cs">
-      <DependentUpon>AssignTask.xaml</DependentUpon>
+    <Compile Include="View\TasksView.xaml.cs">
+      <DependentUpon>TasksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\BugtrackerView.xaml.cs">
       <DependentUpon>BugtrackerView.xaml</DependentUpon>
@@ -268,6 +270,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomControler\SlidingMenu\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomControler\Whiteboard\BrushPan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -300,11 +306,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomControler\SlidingMenu\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -314,7 +315,7 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="View\AssignTask.xaml">
+    <Page Include="View\TasksView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

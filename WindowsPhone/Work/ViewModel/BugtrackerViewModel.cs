@@ -44,7 +44,7 @@ namespace GrappBox.ViewModel
         #region Get Api
         public async System.Threading.Tasks.Task getOpenTickets()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "bugtracker/gettickets");
             if (res.IsSuccessStatusCode)
@@ -60,7 +60,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getClosedTickets()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "bugtracker/getclosedtickets");
             if (res.IsSuccessStatusCode)
@@ -81,7 +81,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getTagList()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "bugtracker/getprojecttags");
             if (res.IsSuccessStatusCode)
@@ -97,7 +97,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getComments()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _model.Id };
             HttpResponseMessage res = await api.Get(token, "bugtracker/getcomments");
             if (res.IsSuccessStatusCode)
@@ -113,7 +113,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getUsers()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "projects/getusertoproject");
             if (res.IsSuccessStatusCode)
@@ -131,7 +131,7 @@ namespace GrappBox.ViewModel
         #region Put Api
         public async System.Threading.Tasks.Task reopenTicket()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
             HttpResponseMessage res = await api.Put(props, "bugtracker/reopenticket/" + User.GetUser().Token + "/" + _closeSelect.Id);
             if (res.IsSuccessStatusCode)
@@ -150,7 +150,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task editBug()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -184,7 +184,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task editComment(BugtrackerModel comment)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -222,7 +222,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task editTag()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -257,7 +257,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task assignTag(IdNameModel tag)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -286,7 +286,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task setParticipants()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             List<int> items = new List<int>();
@@ -346,7 +346,7 @@ namespace GrappBox.ViewModel
         #region Post API
         public async System.Threading.Tasks.Task addBug()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -373,7 +373,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task addComment(string title, string description)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -397,7 +397,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task addTag(string name)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -422,7 +422,7 @@ namespace GrappBox.ViewModel
         #region Delete Api
         public async System.Threading.Tasks.Task closeTicket()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, _openSelect.Id };
             HttpResponseMessage res = await api.Delete(token, "bugtracker/closeticket");
             if (res.IsSuccessStatusCode)
@@ -441,7 +441,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task deleteComment(BugtrackerModel comment)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, comment.Id };
             HttpResponseMessage res = await api.Delete(token, "bugtracker/closeticket");
             if (res.IsSuccessStatusCode)
@@ -457,7 +457,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task deleteTag()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, _tagSelect.Id };
             HttpResponseMessage res = await api.Delete(token, "bugtracker/deletetag");
             if (res.IsSuccessStatusCode)
@@ -474,7 +474,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task removeAssignTag(IdNameModel tag)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, _model.Id, tag.Id };
             HttpResponseMessage res = await api.Delete(token, "bugtracker/removetag");
             if (res.IsSuccessStatusCode)

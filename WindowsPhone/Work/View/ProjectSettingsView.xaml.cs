@@ -45,16 +45,9 @@ namespace GrappBox.View
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
-
-        static private ProjectSettingsView instance = null;
-        static public ProjectSettingsView GetInstance()
-        {
-            return instance;
-        }
         public ProjectSettingsView()
         {
             this.InitializeComponent();
-            instance = this;
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
 

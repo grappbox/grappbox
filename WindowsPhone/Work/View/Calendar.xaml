@@ -103,7 +103,7 @@
                 </Pivot.ItemTemplate>
                 <Pivot.HeaderTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding MonthName}" />
+                        <TextBlock Text="{Binding MonthName}" FontSize="18" />
                     </DataTemplate>
                 </Pivot.HeaderTemplate>
                 <Pivot.ItemContainerStyle>

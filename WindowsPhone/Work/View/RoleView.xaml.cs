@@ -32,16 +32,10 @@ namespace GrappBox.View
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
 
-        static private RoleView instance = null;
-        static public RoleView GetInstance()
-        {
-            return instance;
-        }
         public RoleView()
         {
             this.InitializeComponent();
             this.DataContext = vm;
-            instance = this;
 
             //Required for navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;

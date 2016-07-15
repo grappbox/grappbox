@@ -53,7 +53,7 @@ namespace GrappBox
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("login", loginBlock.Text);
             props.Add("password", pwdBlock.Password);

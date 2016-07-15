@@ -37,7 +37,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task updateAPI(string password = null, string oldPassword = null)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             if (model.Firstname != null && model.Firstname != "")
@@ -87,7 +87,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getAPI()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token };
             HttpResponseMessage res = await api.Get(token, "user/basicinformations");
             Debug.WriteLine(await res.Content.ReadAsStringAsync());

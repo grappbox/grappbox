@@ -138,7 +138,7 @@ namespace GrappBox.Model
         public async System.Threading.Tasks.Task getProjectLogo()
         {
             LogoModel logoMod = null;
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "projects/getprojectlogo");
             if (res.IsSuccessStatusCode)
@@ -158,17 +158,8 @@ namespace GrappBox.Model
             string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
             Logo = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
         }
-
-
-        static private ProjectSettingsModel instance = null;
-
-        static public ProjectSettingsModel GetInstance()
-        {
-            return instance;
-        }
         public ProjectSettingsModel()
         {
-            instance = this;
             _name = "";
             _description = "";
             _phone = "";

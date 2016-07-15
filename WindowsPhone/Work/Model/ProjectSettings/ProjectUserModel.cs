@@ -33,16 +33,5 @@ namespace GrappBox.Model
             get { return _lastname; }
             set { _lastname = value; }
         }
-
-        static private ProjectUserModel instance = null;
-
-        static public ProjectUserModel GetInstance()
-        {
-            return instance;
-        }
-        public ProjectUserModel()
-        {
-            instance = this;
-        }
     }
 }

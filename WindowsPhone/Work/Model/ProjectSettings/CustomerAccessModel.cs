@@ -41,16 +41,5 @@ namespace GrappBox.Model
             get { return _creationDate; }
             set { _creationDate = value; }
         }
-
-        static private CustomerAccessModel instance = null;
-
-        static public CustomerAccessModel GetInstance()
-        {
-            return instance;
-        }
-        public CustomerAccessModel()
-        {
-            instance = this;
-        }
     }
 }

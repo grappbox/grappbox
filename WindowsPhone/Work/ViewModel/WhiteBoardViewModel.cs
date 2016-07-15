@@ -137,7 +137,7 @@ namespace GrappBox.ViewModel
         #region API
         public async System.Threading.Tasks.Task OpenWhiteboard(int whiteboardId)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, whiteboardId };
             HttpResponseMessage res = await api.Get(token, "whiteboard/open");
             if (res.IsSuccessStatusCode)
@@ -155,7 +155,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task pullDraw()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -177,7 +177,7 @@ namespace GrappBox.ViewModel
 
         public async Task<WhiteboardObject> pushDraw(ObjectModel om)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("token", User.GetUser().Token);
             props.Add("modification", "add");
@@ -199,7 +199,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task<int> deleteObject(Position p)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("token", User.GetUser().Token);
             props.Add("whiteboardId", model.Id);

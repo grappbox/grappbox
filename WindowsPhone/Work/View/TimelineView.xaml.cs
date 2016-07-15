@@ -35,16 +35,9 @@ namespace GrappBox.View
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
-
-        static private TimelineView instance = null;
-        static public TimelineView GetInstance()
-        {
-            return instance;
-        }
         public TimelineView()
         {
             this.InitializeComponent();
-            instance = this;
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
 
@@ -57,58 +50,21 @@ namespace GrappBox.View
 
         //Required for navigation
         #region NavigationHelper
-        /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
-        /// </summary>
         public NavigationHelper NavigationHelper
         {
             get { return this.navigationHelper; }
         }
-
-        /// <summary>
-        /// Populates the page with content passed during navigation. Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="NavigationHelper"/>.
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session. The state will be null the first time a page is visited.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
 
         }
-
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache. Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/>.</param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
 
         }
-
-        /// <summary>
-        /// The methods provided in this section are simply used to allow
-        /// NavigationHelper to respond to the page's navigation methods.
-        /// <para>
-        /// Page specific logic should be placed in event handlers for the  
-        /// <see cref="NavigationHelper.LoadState"/>
-        /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
-        /// in addition to page state preserved during an earlier session.
-        /// </para>
-        /// </summary>
-        /// <param name="e">Provides data for navigation methods and event
-        /// handlers that cannot cancel the navigation request.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            bool result = true;
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
             
@@ -123,12 +79,25 @@ namespace GrappBox.View
             vm.MessageSelected = null;
             MessageTitle.Text = "";
             Message.Text = "";
-            await vm.getTimelines();
-            await vm.getCustomerMessages();
-            await vm.getTeamMessages();
-
+            result = await vm.getTimelines();
+            if (result == false)
+            {
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+                this.navigationHelper.GoBack();
+            }
+            result = await vm.getCustomerMessages();
+            if (result == false)
+            {
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+                this.navigationHelper.GoBack();
+            }
+            result = await vm.getTeamMessages();
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
+            if (result == false)
+                this.navigationHelper.GoBack();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

@@ -97,16 +97,5 @@ namespace GrappBox.Model
             get { return _cloud; }
             set { _cloud = value; }
         }
-
-        static private ProjectRoleModel instance = null;
-
-        static public ProjectRoleModel GetInstance()
-        {
-            return instance;
-        }
-        public ProjectRoleModel()
-        {
-            instance = this;
-        }
     }
 }

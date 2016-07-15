@@ -50,7 +50,7 @@ namespace GrappBox.ViewModel
         #region CustomerAccess
         public async System.Threading.Tasks.Task addCustomerAccess(string name)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -72,7 +72,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task regenerateCustomerAccess()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -94,7 +94,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getCustomerAccesses()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "projects/getcustomeraccessbyproject");
             if (res.IsSuccessStatusCode)
@@ -113,7 +113,7 @@ namespace GrappBox.ViewModel
         {
             if (_customerSelected != null)
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
 
                 object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _customerSelected.Id };
                 HttpResponseMessage res = await api.Delete(token, "projects/delcustomeraccess");
@@ -152,7 +152,7 @@ namespace GrappBox.ViewModel
         #region ProjectRole
         public async System.Threading.Tasks.Task addRole()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -184,7 +184,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task updateRole()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -238,7 +238,7 @@ namespace GrappBox.ViewModel
             }
             else
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
                 object[] token = { User.GetUser().Token, id };
                 HttpResponseMessage res = await api.Get(token, "roles/getusersforrole");
                 if (res.IsSuccessStatusCode)
@@ -261,7 +261,7 @@ namespace GrappBox.ViewModel
         {
             if (_userNonAssignSelected != null)
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
                 Dictionary<string, object> props = new Dictionary<string, object>();
 
                 props.Add("token", User.GetUser().Token);
@@ -289,7 +289,7 @@ namespace GrappBox.ViewModel
         {
             if (_userAssignSelected != null)
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
 
                 object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _userAssignSelected.Id, _role.Id };
                 HttpResponseMessage res = await api.Delete(token, "roles/delpersonrole");
@@ -330,7 +330,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getRoles()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "roles/getprojectroles");
             if (res.IsSuccessStatusCode)
@@ -349,7 +349,7 @@ namespace GrappBox.ViewModel
         {
             if (_roleSelected != null)
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
 
                 object[] token = { User.GetUser().Token, _roleSelected.Id };
                 HttpResponseMessage res = await api.Delete(token, "roles/delprojectroles");
@@ -562,7 +562,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task updateProjectSettings(string oldPassword = null, string newPassword = null)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -616,7 +616,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task createProject(string password)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             SettingsManager.setOption("ProjectIdChoosen", 0);
@@ -686,7 +686,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getProjectSettings()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "projects/getinformations");
             if (res.IsSuccessStatusCode)
@@ -703,7 +703,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task deleteProject()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Delete(token, "projects/delproject");
             if (res.IsSuccessStatusCode)
@@ -726,7 +726,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task retrieveProject()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "projects/retrieveproject");
             if (res.IsSuccessStatusCode)
@@ -920,7 +920,7 @@ namespace GrappBox.ViewModel
         #region ProjectUser
         public async System.Threading.Tasks.Task addProjectUser(string email)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -943,7 +943,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getProjectUsers()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "projects/getusertoproject");
             if (res.IsSuccessStatusCode)
@@ -962,7 +962,7 @@ namespace GrappBox.ViewModel
         {
             if (_userSelected != null)
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
 
                 object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _userSelected.Id };
                 HttpResponseMessage res = await api.Delete(token, "projects/removeusertoproject");

@@ -39,16 +39,9 @@ namespace GrappBox.View
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
-
-        static private CloudView instance = null;
-        static public CloudView GetInstance()
-        {
-            return instance;
-        }
         public CloudView()
         {
             this.InitializeComponent();
-            instance = this;
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
 

@@ -5,28 +5,37 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.ViewManagement;
 using Windows.Web.Http;
-using Windows.Web.Http.Filters;
 
 namespace GrappBox.ApiCom
 {
     //This class is a singleton
     class ApiCommunication
     {
+        #region Private members
         private const string baseAdress = "http://api.grappbox.com/app_dev.php/";
         private const string version = "V0.2/";
         private const string baseUrl = baseAdress + version;
-        public Uri RequestUri(string requestUrl)
+        #endregion
+        #region Singleton instantiation
+
+        private static volatile ApiCommunication instance;
+        private static object syncRoot = new Object();
+        public static ApiCommunication Instance
         {
-            Uri reqUri = new Uri(baseUrl + requestUrl);
-            return reqUri;
-        }
-        private static ApiCommunication instance = null;
-        public static ApiCommunication GetInstance()
-        {
-            //This ternary condition return the instance of the Singleton
-            return instance == null ? new ApiCommunication() : instance;
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new ApiCommunication();
+                    }
+                }
+
+                return instance;
+            }
         }
         private HttpClient webclient;
         private ApiCommunication()
@@ -34,6 +43,13 @@ namespace GrappBox.ApiCom
             webclient = new HttpClient();
             webclient.DefaultRequestHeaders.Accept.Clear();
             webclient.DefaultRequestHeaders.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/json"));
+        }
+        #endregion
+        #region Utils
+        public Uri RequestUri(string requestUrl)
+        {
+            Uri reqUri = new Uri(baseUrl + requestUrl);
+            return reqUri;
         }
         public T DeserializeJson<T>(string json)
         {
@@ -46,6 +62,26 @@ namespace GrappBox.ApiCom
             data = JObject.Parse(data).GetValue("array").ToString();
             return JsonConvert.DeserializeObject<T>(data);
         }
+        public string GetErrorMessage(string jsonTxt)
+        {
+            if (jsonTxt == "")
+                return ("No internet connection");
+            string message = "Undeterminate Error";
+            try
+            {
+                JObject info = (JObject)JObject.Parse(jsonTxt).GetValue("info");
+                message = info.GetValue("return_message").ToString();
+                string[] split = message.Split('-');
+                message = split[2];
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return message;
+        }
+        #endregion
+        #region Requests
         public async Task<HttpResponseMessage> Post(Dictionary<string, object> properties, string url)
         {
             JObject post = new JObject();
@@ -56,13 +92,15 @@ namespace GrappBox.ApiCom
             }
             post.Add("data", JToken.FromObject(data));
             HttpStringContent sc = new HttpStringContent(post.ToString());
-            Windows.Web.Http.HttpResponseMessage res = null;
-            try {
-                 res = await webclient.PostAsync(RequestUri(url), sc);
-            }
-            catch (Exception e)
+            HttpResponseMessage res = null;
+            try
             {
-                Debug.WriteLine(e.Message);
+                res = await webclient.PostAsync(RequestUri(url), sc);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
             }
             return res;
         }
@@ -76,42 +114,60 @@ namespace GrappBox.ApiCom
             }
             put.Add("data", JToken.FromObject(data));
             HttpStringContent sc = new HttpStringContent(put.ToString(), Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json");
-            Debug.WriteLine("JsonContent {0}", await sc.ReadAsStringAsync());
-            HttpResponseMessage res = await webclient.PutAsync(RequestUri(url), sc);
+            HttpResponseMessage res = null;
+            try
+            {
+                res = await webclient.PutAsync(RequestUri(url), sc);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
             return res;
         }
         public async Task<HttpResponseMessage> Get(object[] values, string url)
         {
-            StringBuilder get = new StringBuilder("/");
-            for (int i = 0; i < values.Length; ++i)
+            HttpResponseMessage res = null;
+            try
             {
-                get.Append(values[i]);
-                if (i + 1 < values.Length)
-                    get.Append("/");
+                StringBuilder get = new StringBuilder("/");
+                for (int i = 0; i < values.Length; ++i)
+                {
+                    get.Append(values[i]);
+                    if (i + 1 < values.Length)
+                        get.Append("/");
+                }
+                res = await webclient.GetAsync(RequestUri(url + get));
             }
-            HttpResponseMessage res = await webclient.GetAsync(RequestUri(url + get));
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
             return res;
         }
         public async Task<HttpResponseMessage> Delete(object[] values, string url)
         {
-            StringBuilder del = new StringBuilder("/");
-            for (int i = 0; i < values.Length; ++i)
+            HttpResponseMessage res = null;
+            try
             {
-                del.Append(values[i]);
-                if (i + 1 < values.Length)
-                    del.Append("/");
+                StringBuilder del = new StringBuilder("/");
+                for (int i = 0; i < values.Length; ++i)
+                {
+                    del.Append(values[i]);
+                    if (i + 1 < values.Length)
+                        del.Append("/");
+                }
+                res = await webclient.DeleteAsync(RequestUri(url + del));
             }
-            HttpResponseMessage res = await webclient.DeleteAsync(RequestUri(url + del));
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return null;
+            }
             return res;
         }
-        public string GetErrorMessage(string jsonTxt)
-        {
-            if (jsonTxt == "")
-                return ("no internet connection");
-            JObject info = (JObject)JObject.Parse(jsonTxt).GetValue("info");
-            string message = info.GetValue("return_message").ToString();
-            string[] split = message.Split('-');
-            return split[2];
-        }
+        #endregion
     }
 }

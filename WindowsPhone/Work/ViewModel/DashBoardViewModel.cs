@@ -41,7 +41,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getTeam()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
             object[] token = { User.GetUser().Token, id};
             HttpResponseMessage res = await api.Get(token, "dashboard/getteamoccupation");
@@ -64,7 +64,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task getNextMeetings()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "dashboard/getnextmeetings");
             if (res.IsSuccessStatusCode)

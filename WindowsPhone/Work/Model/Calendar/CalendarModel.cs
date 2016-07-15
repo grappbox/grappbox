@@ -126,8 +126,8 @@ namespace GrappBox.Model
             get { return _events; }
             set { _events = value;  NotifyPropertyChanged("Events"); UpdateLists(); }
         }
-        private ObservableCollection<Model.Task> _tasks;
-        public ObservableCollection<Model.Task> Tasks
+        private ObservableCollection<Model.PlanningTask> _tasks;
+        public ObservableCollection<Model.PlanningTask> Tasks
         {
             get { return _tasks; }
             set { _tasks = value; NotifyPropertyChanged("Tasks"); UpdateLists(); }

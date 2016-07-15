@@ -89,7 +89,7 @@ namespace GrappBox.ViewModel
         #region ApiGetters
         public async Task<Planning> GetMonthPlanning(DateTime month)
         {
-            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
+            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.Instance;
             object[] token = { ApiCom.User.GetUser().Token, month.ToString("yyyy-MM-dd") };
             HttpResponseMessage res = await api.Get(token, "planning/getmonth");
             string resString = await res.Content.ReadAsStringAsync();
@@ -97,7 +97,7 @@ namespace GrappBox.ViewModel
         }
         public async Task<Planning> GetDayPlanning(DateTime day)
         {
-            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.GetInstance();
+            ApiCom.ApiCommunication api = ApiCom.ApiCommunication.Instance;
             object[] token = { ApiCom.User.GetUser().Token, day.ToString("yyyy-MM-dd") };
             HttpResponseMessage res = await api.Get(token, "planning/getday");
             string resString = await res.Content.ReadAsStringAsync();
@@ -113,7 +113,7 @@ namespace GrappBox.ViewModel
             dict.Add("typeId", 1);
             dict.Add("begin", evt.BeginDate.date);
             dict.Add("end", evt.EndDate.date);
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             await api.Post(dict, "event/postevent");
         }
         #endregion

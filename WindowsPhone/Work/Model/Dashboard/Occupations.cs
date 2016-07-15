@@ -105,7 +105,7 @@ namespace GrappBox.Model
         public async System.Threading.Tasks.Task getProjectLogo()
         {
             LogoModel logoMod = null;
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { ApiCom.User.GetUser().Token, User.Id };
             HttpResponseMessage res = await api.Get(token, "user/getuseravatar");
             if (res.IsSuccessStatusCode)

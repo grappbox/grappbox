@@ -21,11 +21,13 @@ namespace GrappBox.ViewModel
             set { _projectList = value; NotifyPropertyChanged("ProjectList"); }
         }
 
-        public async System.Threading.Tasks.Task getProjectList()
+        public async Task<bool> getProjectList()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token };
             HttpResponseMessage res = await api.Get(token, "dashboard/getprojectsglobalprogress");
+            if (res == null)
+                return false;
             if (res.IsSuccessStatusCode)
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
@@ -35,7 +37,9 @@ namespace GrappBox.ViewModel
             {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
+                return false;
             }
+            return true;
         }
         public async System.Threading.Tasks.Task getProjectsLogo()
         {

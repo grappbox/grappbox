@@ -62,7 +62,7 @@ namespace GrappBox.Model
         private string logoDateFmt;
         private string logoImgFmt;
         #endregion
-        public async System.Threading.Tasks.Task LogoUpdate()
+        public async Task LogoUpdate()
         {
             logoDateFmt = "LogoDate_" + Id.ToString();
             logoImgFmt = "LogoImg_" + Id.ToString();
@@ -81,25 +81,29 @@ namespace GrappBox.Model
                 await getProjectLogo();
             }
         }
-        public async System.Threading.Tasks.Task getProjectLogo()
+        public async Task<bool> getProjectLogo()
         {
             LogoModel logoMod = null;
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, Id };
             HttpResponseMessage res = await api.Get(token, "projects/getprojectlogo");
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-                logoMod = api.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
+                logoMod = api.DeserializeJson<LogoModel>(json);
                 await BytesToImage.StoreImage(logoMod.Logo, logoImgFmt);
-                Debug.WriteLine(logoImgFmt);
             }
             else
             {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                Debug.WriteLine(api.GetErrorMessage(json));
+                return false;
             }
+            return true;
         }
 
-        public async System.Threading.Tasks.Task SetLogo()
+        public async Task SetLogo()
         {
             string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
             Logo = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);

@@ -39,46 +39,59 @@ namespace GrappBox.ViewModel
         }
 
         #region API
-        public async System.Threading.Tasks.Task getTeamMessages()
+        public async Task<bool> getTeamMessages()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, _Team.Id };
             HttpResponseMessage res = await api.Get(token, "timeline/getmessages");
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
                 _TeamMessages = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("TeamList");
             }
             else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
+                return false;
             }
+            return true;
         }
 
-        public async System.Threading.Tasks.Task getCustomerMessages()
+        public async Task<bool> getCustomerMessages()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, _Customer.Id };
             HttpResponseMessage res = await api.Get(token, "timeline/getmessages");
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-                _CustomerMessages = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(await res.Content.ReadAsStringAsync());
+                _CustomerMessages = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(json);
                 NotifyPropertyChanged("CustomerList");
             }
             else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
+                return false;
             }
+            return true;
         }
 
-        public async System.Threading.Tasks.Task getTimelines()
+        public async Task<bool> getTimelines()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "timeline/gettimelines");
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-                _Timelines = api.DeserializeArrayJson<ObservableCollection<TimelineListModel>>(await res.Content.ReadAsStringAsync());
+                _Timelines = api.DeserializeArrayJson<ObservableCollection<TimelineListModel>>(json);
                 foreach (var item in _Timelines)
                 {
                     if (item.TypeName == "customerTimeline")
@@ -95,32 +108,40 @@ namespace GrappBox.ViewModel
                 NotifyPropertyChanged("Timelines");
             }
             else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                string error = api.GetErrorMessage(json);
+                MessageDialog msgbox = new MessageDialog(error);
                 await msgbox.ShowAsync();
+                return false;
             }
+            return true;
         }
 
-        public async System.Threading.Tasks.Task getComments(int timelineId, int messageId)
+        public async Task<bool> getComments(int timelineId, int messageId)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, timelineId, messageId };
             HttpResponseMessage res = await api.Get(token, "timeline/getcomments");
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
                 if (_Comments != null && _Comments.Count != 0)
                     _Comments.Clear();
-                _Comments = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(await res.Content.ReadAsStringAsync());
+                _Comments = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(json);
                 NotifyPropertyChanged("Comments");
             }
             else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
+                return false;
             }
+            return true;
         }
 
-        public async System.Threading.Tasks.Task postMessage(int timelineId, string title, string message, int commentedId = 0)
+        public async Task<bool> postMessage(int timelineId, string title, string message, int commentedId = 0)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -129,6 +150,8 @@ namespace GrappBox.ViewModel
             if (commentedId != 0)
                 props.Add("commentedId", commentedId);
             HttpResponseMessage res = await api.Post(props, "timeline/postmessage/" + timelineId);
+            if (res == null)
+                return false;
             if (res.IsSuccessStatusCode)
             {
                 if (commentedId != 0)
@@ -150,18 +173,22 @@ namespace GrappBox.ViewModel
             else {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
+                return false;
             }
             props.Clear();
+            return true;
         }
 
-        public async System.Threading.Tasks.Task removeMessage(TimelineModel message)
+        public async Task<bool> removeMessage(TimelineModel message)
         {
             if (_messageSelected != null)
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
 
                 object[] token = { User.GetUser().Token, message.TimelineId, message.Id };
                 HttpResponseMessage res = await api.Delete(token, "timeline/archivemessage");
+                if (res == null)
+                    return false;
                 if (res.IsSuccessStatusCode)
                 {
                     _CustomerMessages.Remove(message);
@@ -179,13 +206,16 @@ namespace GrappBox.ViewModel
                 else {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
+                    return false;
                 }
+                return true;
             }
+            return false;
         }
 
-        public async System.Threading.Tasks.Task updateMessage(TimelineModel message)
+        public async Task<bool> updateMessage(TimelineModel message)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("token", User.GetUser().Token);
@@ -193,6 +223,9 @@ namespace GrappBox.ViewModel
             props.Add("title", message.Title);
             props.Add("message", message.Message);
             HttpResponseMessage res = await api.Put(props, "timeline/editmessage/" + message.TimelineId);
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
                 if (message.ParentId == 0)
@@ -207,18 +240,20 @@ namespace GrappBox.ViewModel
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = api.GetErrorMessage(json);
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
-                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                await Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
             else {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
+                return false;
             }
             props.Clear();
+            return true;
         }
         #endregion
 

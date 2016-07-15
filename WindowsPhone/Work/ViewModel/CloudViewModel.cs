@@ -80,7 +80,7 @@ namespace GrappBox.ViewModel
         #region GET
         public async System.Threading.Tasks.Task getLS(string passwordSafe = "titi")
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             transformFullPathToPath();
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _path };
             HttpResponseMessage res;
@@ -106,7 +106,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task downloadFile(string passwordSafe = null)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             transformFullPathToPath();
             object[] token = { _path, User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res;
@@ -167,7 +167,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task downloadFileSecure(string password, string passwordSafe = null)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             transformFullPathToPath();
             object[] token = { _path, User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), password };
             HttpResponseMessage res;
@@ -193,7 +193,7 @@ namespace GrappBox.ViewModel
         #region POST
         public async System.Threading.Tasks.Task createDir(string passwordSafe = null)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
             transformFullPathToPathWithSlash();
 
@@ -217,7 +217,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task uploadFile(string fileName, string password = null, string passwordSafe = null)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
             transformFullPathToPathWithSlash();
 
@@ -257,7 +257,7 @@ namespace GrappBox.ViewModel
         {
             if (_currentChunk < _chunkNumber && _fileData!= null)
             {
-                ApiCommunication api = ApiCommunication.GetInstance();
+                ApiCommunication api = ApiCommunication.Instance;
                 Dictionary<string, object> props = new Dictionary<string, object>();
                 string data = null;
 
@@ -317,7 +317,7 @@ namespace GrappBox.ViewModel
         #region DELETE
         public async System.Threading.Tasks.Task closeStream()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _streamId };
             HttpResponseMessage res = await api.Delete(token, "cloud/stream");
             if (res.IsSuccessStatusCode)
@@ -336,7 +336,7 @@ namespace GrappBox.ViewModel
 
         public async System.Threading.Tasks.Task deleteFile(string password = null, string passwordSafe = null)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             transformFullPathToPath();
             List<object> token = new List<object>();
             token.Add(User.GetUser().Token);

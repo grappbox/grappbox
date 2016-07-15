@@ -13,6 +13,6 @@ namespace GrappBox.Model
         [JsonProperty("events")]
         public ObservableCollection<Event> Events { get; set; }
         [JsonProperty("tasks")]
-        public ObservableCollection<Task> Tasks { get; set; }
+        public ObservableCollection<PlanningTask> Tasks { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace GrappBox.Model
 {
 
-    class Task
+    class PlanningTask
     {
         [JsonProperty("id")]
         public int Id { get; set; }

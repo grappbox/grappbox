@@ -41,16 +41,5 @@ namespace GrappBox.Model
             get { return _userNonAssigned; }
             set { _userNonAssigned = value; }
         }
-
-        static private RoleUserModel instance = null;
-
-        static public RoleUserModel GetInstance()
-        {
-            return instance;
-        }
-        public RoleUserModel()
-        {
-            instance = this;
-        }
     }
 }

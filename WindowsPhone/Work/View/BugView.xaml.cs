@@ -32,17 +32,10 @@ namespace GrappBox.View
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
-
-        static private BugView instance = null;
-        static public BugView GetInstance()
-        {
-            return instance;
-        }
         public BugView()
         {
             this.InitializeComponent();
             this.DataContext = vm;
-            instance = this;
 
             //Required for navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;

@@ -34,7 +34,7 @@ namespace GrappBox.ViewModel
         {}
         public async System.Threading.Tasks.Task GetWhiteboards()
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
             object[] token = { User.GetUser().Token, id };
             HttpResponseMessage res = await api.Get(token, "whiteboard/list");
@@ -51,7 +51,7 @@ namespace GrappBox.ViewModel
         }
         public async System.Threading.Tasks.Task CreateWhiteboard(string name)
         {
-            ApiCommunication api = ApiCommunication.GetInstance();
+            ApiCommunication api = ApiCommunication.Instance;
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("token", User.GetUser().Token);
