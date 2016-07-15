@@ -2,6 +2,7 @@ package com.grappbox.grappbox.grappbox.Cloud;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -105,8 +106,12 @@ public class DownloadFileSecuredTask extends AsyncTask<String, Void, String> {
             connection.setRequestMethod("GET");
             connection.setInstanceFollowRedirects(false);
             String resultString = getInputStream(connection);
+            Log.e("FileSecured", resultString);
             if (resultString.startsWith("{"))
-                Toast.makeText(_context, "The password you tried is incorrect for this file, or you don't have the rights to access to this part", Toast.LENGTH_LONG).show();
+            {
+                return null;
+            }
+
             URL nurl = connection.getURL();
             if (nurl.toString() == url.toString())
                 return null;

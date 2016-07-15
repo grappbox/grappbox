@@ -93,10 +93,10 @@ public class DeleteFileSecureTask extends AsyncTask<String, Void, String> {
         try {
             json = new JSONObject(s);
             info = json.getJSONObject("info");
-            assert info != null;
-            if (!info.getString("return_code").startsWith("1."))
+
+            if (info == null || !info.getString("return_code").startsWith("1."))
             {
-                if (info.getString("return_code").equals("3.7.9"))
+                if (info == null || info.getString("return_code").equals("3.9.9"))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
 
@@ -117,7 +117,7 @@ public class DeleteFileSecureTask extends AsyncTask<String, Void, String> {
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(_adapter.getContext());
 
-                    builder.setMessage(_adapter.getContext().getString(R.string.problem_grappbox_server) + _adapter.getContext().getString(R.string.error_code_head) + info.getString("return_code"));
+                    builder.setMessage(_adapter.getContext().getString(R.string.problem_grappbox_server) + _adapter.getContext().getString(R.string.error_code_head) + info.getString("return_code") + " - " + info.getString("return_message"));
                     builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

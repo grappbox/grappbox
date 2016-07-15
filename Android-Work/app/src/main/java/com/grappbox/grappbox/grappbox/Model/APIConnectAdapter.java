@@ -30,7 +30,7 @@ public class APIConnectAdapter  {
 
     private static APIConnectAdapter _instance = null;
 
-    public static final String _APIUrlBase = "http://beta.api.grappbox.com/app_dev.php/";
+    public static final String _APIUrlBase = "http://api.grappbox.com/app_dev.php/";
     public static final String _APIBaseVersion = "V0.2";
 
     String _APIVersion = _APIBaseVersion;
