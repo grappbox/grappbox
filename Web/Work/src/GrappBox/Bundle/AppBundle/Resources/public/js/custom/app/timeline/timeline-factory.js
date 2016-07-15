@@ -25,7 +25,7 @@ app.factory("timelineFactory", function() {
   // Clear message data and load state
   var _clear = function() {
   	isMessageLoaded = false;
-  	messageData = "";
+  	messageData = { title: "", message: "" };
   };
 
   // Routine definition
