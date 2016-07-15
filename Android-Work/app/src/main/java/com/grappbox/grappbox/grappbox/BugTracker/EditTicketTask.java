@@ -46,6 +46,7 @@ public class EditTicketTask extends AsyncTask<String, Void, String> {
             data.put("description", description);
             data.put("stateId", 1);
             data.put("stateName", "");
+            data.put("clientOrigin", false);
             json.put("data", data);
             _api.startConnection("bugtracker/editticket");
             _api.setRequestConnection("PUT");

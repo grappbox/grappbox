@@ -97,36 +97,36 @@ public class EditBugActivityFragment extends LoadingFragment {
                     });
 
                     task.execute(_bug.GetId(), title.getText().toString(), description.getText().toString());
-                    Button btn_close;
-                    btn_close = (Button) v.findViewById(R.id.btn_save);
+
+                }
+            });
+
+            if (_bug.IsClosed()) {
+                btn_close.setText("Re Open Ticket");
+                btn_close.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorGrappboxGreen));
+            }
+            btn_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     if (_bug.IsClosed()) {
-                        btn_close.setText("Re Open Ticket");
-                        btn_close.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorGrappboxGreen));
-                    }
-                    btn_close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (_bug.IsClosed()) {
-                                CloseBugTask task = new CloseBugTask(getActivity(), new OnTaskListener() {
-                                    @Override
-                                    public void OnTaskEnd(boolean isErrorOccured, String... params) {
-                                        if (!isErrorOccured)
-                                            getActivity().onBackPressed();
-                                    }
-                                });
-                                task.execute(_bug.GetId());
-                            } else {
-                                ReopenTicketTask task = new ReopenTicketTask(getActivity(), new OnTaskListener() {
-                                    @Override
-                                    public void OnTaskEnd(boolean isErrorOccured, String... params) {
-                                        if (!isErrorOccured)
-                                            getActivity();
-                                    }
-                                });
-                                task.execute(_bug.GetId());
+                        ReopenTicketTask task = new ReopenTicketTask(getActivity(), new OnTaskListener() {
+                            @Override
+                            public void OnTaskEnd(boolean isErrorOccured, String... params) {
+                                if (!isErrorOccured)
+                                    getActivity().onBackPressed();
                             }
-                        }
-                    });
+                        });
+                        task.execute(_bug.GetId());
+                    } else {
+                        CloseBugTask task = new CloseBugTask(getActivity(), new OnTaskListener() {
+                            @Override
+                            public void OnTaskEnd(boolean isErrorOccured, String... params) {
+                                if (!isErrorOccured)
+                                    getActivity().onBackPressed();
+                            }
+                        });
+                        task.execute(_bug.GetId());
+                    }
                 }
             });
         }
@@ -189,8 +189,11 @@ public class EditBugActivityFragment extends LoadingFragment {
         btn_assignee.setOnClickListener(assigneeListener);
         btn_category.setOnClickListener(categoryListener);
         btn_comments.setOnClickListener(commentListener);
+
         return v;
     }
+
+
 
     private class OnAssigneeClickListener implements View.OnClickListener
     {

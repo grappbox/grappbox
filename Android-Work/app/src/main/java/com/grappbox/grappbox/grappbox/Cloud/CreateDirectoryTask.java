@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 /**
  * Created by wieser_m on 19/01/2016.
@@ -120,6 +121,26 @@ public class CreateDirectoryTask extends AsyncTask<String, Void, String> {
             item.set_filename(_filename);
             item.set_type(FileItem.EFileType.DIR);
             _adapter.add(item);
+            _adapter.sort(new Comparator<FileItem>() {
+                @Override
+                public int compare(FileItem lhs, FileItem rhs) {
+                    int ret = 0;
+                    if (lhs.get_type() == rhs.get_type())
+                    {
+                        if (lhs.get_filename().equals("Safe"))
+                            return -1;
+                        else if (rhs.get_filename().equals("Safe"))
+                            return 1;
+                        return lhs.get_filename().compareTo(rhs.get_filename());
+                    }
+
+                    else if (lhs.get_type() == FileItem.EFileType.DIR && rhs.get_type() == FileItem.EFileType.BACK)
+                        return 1;
+                    else if (lhs.get_type() == FileItem.EFileType.DIR)
+                        return -1;
+                    return 1;
+                }
+            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
