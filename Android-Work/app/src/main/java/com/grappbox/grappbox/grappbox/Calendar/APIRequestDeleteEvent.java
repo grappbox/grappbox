@@ -18,13 +18,11 @@ public class APIRequestDeleteEvent extends AsyncTask<String, Void, String> {
 
     private EventDetailActivity _context;
     private int _idEvent;
-    private Dialog _dialog;
 
-    APIRequestDeleteEvent(EventDetailActivity context, int idEvent, Dialog deleteDialog)
+    APIRequestDeleteEvent(EventDetailActivity context, int idEvent)
     {
         _context = context;
         _idEvent = idEvent;
-        _dialog = deleteDialog;
     }
 
     @Override
@@ -35,7 +33,7 @@ public class APIRequestDeleteEvent extends AsyncTask<String, Void, String> {
             _context.finish();
             CharSequence text = "Event correctly delete";
             Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
-            _dialog.dismiss();
+            _context.finish();
 /*            AgendaFragment agendaFragment = new AgendaFragment();
             _context.getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();*/
         } else {

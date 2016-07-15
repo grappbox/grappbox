@@ -16,7 +16,7 @@ import java.util.List;
 public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<ContentValues>> {
 
     private final static String _PATH = "dashboard/getprojectsglobalprogress/";
-    private SwipeRefreshLayout _swiper;
+    private SwipeRefreshLayout _swiper = null;
     private GlobalProgressFragment _context;
 
     APIRequestGlobalProgress(GlobalProgressFragment context)
@@ -30,6 +30,8 @@ public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<Conte
         if (result != null) {
             _context.createContentView(result);
         }
+        if (_swiper != null)
+            _swiper.setRefreshing(false);
     }
 
     public void SetRefreshSwiper(SwipeRefreshLayout swiper)
@@ -50,7 +52,6 @@ public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<Conte
 
             resultAPI = APIConnectAdapter.getInstance().getInputSream();
             APIResponse = APIConnectAdapter.getInstance().getResponseCode();
-            Log.v("JSON Response", String.valueOf(APIResponse));
             if (APIResponse == 200) {
                 Log.v("JSON Content", resultAPI);
                 contentAPI = APIConnectAdapter.getInstance().getListGlobalProgress(resultAPI);

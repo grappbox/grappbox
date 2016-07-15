@@ -20,15 +20,15 @@ import java.io.IOException;
 public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
 
     private EventDetailActivity _context;
-    private Dialog              _dialog;
+    private boolean             _isAdd;
     private int                 _idEvent;
     private int                 _idUser;
 
-    APIRequestEventAddUser(EventDetailActivity context, int idEvent, Dialog dialog)
+    APIRequestEventAddUser(EventDetailActivity context, int idEvent, boolean isAdd)
     {
         _context = context;
-        _dialog = dialog;
         _idEvent = idEvent;
+        _isAdd = isAdd;
     }
 
     @Override
@@ -36,8 +36,11 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
     {
         super.onPostExecute(result);
         if (result != null) {
-            _dialog.dismiss();
-            CharSequence text = "Successful user add";
+            CharSequence text = "";
+            if (_isAdd)
+                text = "Successful participant add";
+            else
+                text = "Participant remove correctly";
             Toast.makeText(_context, text, Toast.LENGTH_SHORT).show();
             APIRequestGetEventData refresh = new APIRequestGetEventData(_context, _idEvent);
             refresh.execute();
@@ -75,7 +78,10 @@ public class APIRequestEventAddUser extends AsyncTask<String, Void, String> {
 
                 JSONParam.put("token", SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_TOKEN));
                 JSONParam.put("eventId", _idEvent);
-                ArrayToAdd.put(_idUser);
+                if(_isAdd)
+                    ArrayToAdd.put(_idUser);
+                else
+                    ArrayToRemove.put(_idUser);
                 JSONParam.put("toAdd", ArrayToAdd);
                 JSONParam.put("toRemove", ArrayToRemove);
                 JSONData.put("data", JSONParam);

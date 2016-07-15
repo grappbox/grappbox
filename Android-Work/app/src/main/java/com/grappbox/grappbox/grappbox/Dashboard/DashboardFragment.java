@@ -55,20 +55,20 @@ public class DashboardFragment extends Fragment {
 
         List<Fragment> fragment = new Vector<Fragment>();
         fragment.add(Fragment.instantiate(getActivity(), TeamOccupationFragment.class.getName()));
-//        fragment.add(Fragment.instantiate(getActivity(), NextMeetingFragment.class.getName()));
-//        fragment.add(Fragment.instantiate(getActivity(), GlobalProgressFragment.class.getName()));
+        fragment.add(Fragment.instantiate(getActivity(), NextMeetingFragment.class.getName()));
+        fragment.add(Fragment.instantiate(getActivity(), GlobalProgressFragment.class.getName()));
 
         _SectionPagerAdapter = new SectionsPagerAdapter(super.getChildFragmentManager(), fragment);
-        _configTabButton = (ImageButton) rootView.findViewById(R.id.configTabButton);
+        //_configTabButton = (ImageButton) rootView.findViewById(R.id.configTabButton);
         _SectionPagerAdapter.AddTabTitle("Team Occupation");
-//        _SectionPagerAdapter.AddTabTitle("Next Meeting");
-//        _SectionPagerAdapter.AddTabTitle("Global Progress");
+        _SectionPagerAdapter.AddTabTitle("Next Meeting");
+        _SectionPagerAdapter.AddTabTitle("Global Progress");
         _viewPager = (ViewPager)rootView.findViewById(R.id.pager);
         _viewPager.setAdapter(_SectionPagerAdapter);
         _tabLayout = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
         _tabLayout.setupWithViewPager(_viewPager);
 
-        _configTabButton.setOnClickListener(new View.OnClickListener() {
+        /*_configTabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -130,7 +130,7 @@ public class DashboardFragment extends Fragment {
                 });
                 builder.show();
             }
-        });
+        });*/
 
         return rootView;
     }

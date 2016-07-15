@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     private final MainActivity _currentActivity = this;
     private Toolbar _toolbar;
+    private Fragment        _fragment = null;
     private FragmentManager _fragmentManager;
     private ActionBarDrawerToggle _actionBarDrawerToggle;
     private DrawerLayout _Drawer;
@@ -99,13 +100,12 @@ public class MainActivity extends AppCompatActivity
 
     private void refreshCurrentFragment()
     {
-        Fragment frg = null;
-        frg = getSupportFragmentManager().findFragmentByTag("Your_Fragment_TAG");
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.detach(frg);
-        ft.attach(frg);
-        ft.commit();
-
+        if (_fragment != null) {
+            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.detach(_fragment);
+            ft.attach(_fragment);
+            ft.commit();
+        }
     }
 
     private void OnHeaderClicked(View header)
@@ -177,8 +177,6 @@ public class MainActivity extends AppCompatActivity
                 {
                     Intent intent = new Intent(getBaseContext(), CreateProjectPreferenceActivity.class);
                     startActivityForResult(intent, REFRESH_AFTER_PROJECT_CREATION);
-//                    startActivity(intent);
-
                     return false;
                 }
             });
@@ -255,6 +253,7 @@ public class MainActivity extends AppCompatActivity
             {
                 CloudExplorerFragment fragment = new CloudExplorerFragment();
                 fragment.setPath(cloudPath);
+                _fragment = fragment;
                 _fragmentManager = getSupportFragmentManager();
                 _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                 return;
@@ -263,7 +262,8 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             _fragmentManager = getSupportFragmentManager();
             _fragmentManager.addOnBackStackChangedListener(this);
-            _fragmentManager.beginTransaction().replace(R.id.content_frame, new DashboardProjectListFragment(), DashboardFragment.TAG).commit();
+            _fragment = new DashboardProjectListFragment();
+            _fragmentManager.beginTransaction().replace(R.id.content_frame, _fragment, DashboardFragment.TAG).commit();
         }
         SessionAdapter.getInstance().addEventSeeker(this);
         onSelectedProjectChange(SessionAdapter.getInstance().getCurrentSelectedProject());
@@ -453,45 +453,44 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        Fragment fragment = null;
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         switch (id){
 
             case R.id.nav_dashboard:
                 if (SessionAdapter.getInstance().getCurrentSelectedProject().equals("")) {
-                    fragment = new DashboardProjectListFragment();
+                    _fragment = new DashboardProjectListFragment();
                 } else {
-                    fragment = new DashboardFragment();
+                    _fragment = new DashboardFragment();
                 }
                 break;
 
             case R.id.nav_whiteboard:
-                fragment = new WhiteboardListFragment();
+                _fragment = new WhiteboardListFragment();
                 break;
 
             case R.id.nav_calendar:
-                fragment = new AgendaFragment();
+                _fragment = new AgendaFragment();
                 break;
 
             case R.id.nav_Timeline:
-                fragment = new TimelineFragment();
+                _fragment = new TimelineFragment();
                 break;
 
             case R.id.nav_Cloud:
-                fragment = new CloudExplorerFragment();
+                _fragment = new CloudExplorerFragment();
                 break;
 
             case R.id.nav_Bugtracker:
-                fragment = new BugTrackerFragment();
+                _fragment = new BugTrackerFragment();
                 break;
 
             case R.id.nav_Gantt:
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                fragment = new GanttFragment();
+                _fragment = new GanttFragment();
                 break;
 
             case R.id.nav_tasks:
-                fragment = new TaskFragment();
+                _fragment = new TaskFragment();
                 break;
 
             default:
@@ -503,8 +502,8 @@ public class MainActivity extends AppCompatActivity
             _fragmentManager.addOnBackStackChangedListener(this);
         }
 
-        if (fragment != null)
-                _fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack("").commit();
+        if (_fragment != null)
+                _fragmentManager.beginTransaction().replace(R.id.content_frame, _fragment).addToBackStack("").commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -530,11 +529,11 @@ public class MainActivity extends AppCompatActivity
     public void onBackStackChanged() {
         if (_fragmentManager == null)
             _fragmentManager = getSupportFragmentManager();
-        Fragment fragment = _fragmentManager.findFragmentById(R.id.content_frame);
-        if (fragment == null)
+        _fragment = _fragmentManager.findFragmentById(R.id.content_frame);
+        if (_fragment == null)
             return;
-        if (_toolbarTitleHandler.containsKey(fragment.getClass().getName()))
-            _toolbarTitleHandler.get(fragment.getClass().getName()).run();
+        if (_toolbarTitleHandler.containsKey(_fragment.getClass().getName()))
+            _toolbarTitleHandler.get(_fragment.getClass().getName()).run();
         else
             changeToolbarTitle(getString(R.string.app_name));
     }

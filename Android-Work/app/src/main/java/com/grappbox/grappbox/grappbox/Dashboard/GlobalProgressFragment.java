@@ -38,11 +38,11 @@ public class GlobalProgressFragment extends LoadingFragment {
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_global_progress, container, false);
         _swiper = (SwipeRefreshLayout) _view.findViewById(R.id.pull_refresher);
+        startLoading(_view, R.id.loader, _swiper);
         if (_value == null) {
             _projectList = (ListView)_view.findViewById(R.id.list_global_progress);
             APIRequestGlobalProgress api = new APIRequestGlobalProgress(_context);
             api.execute();
-            startLoading(_view, R.id.loader, _swiper);
         } else {
             createContentView(_value);
         }
@@ -54,6 +54,7 @@ public class GlobalProgressFragment extends LoadingFragment {
                 api.execute();
             }
         };
+        _swiper.setOnRefreshListener(_refresher);
         return _view;
     }
 

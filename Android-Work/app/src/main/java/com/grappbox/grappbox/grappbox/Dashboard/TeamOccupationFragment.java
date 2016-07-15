@@ -21,6 +21,7 @@ import java.util.List;
 public class TeamOccupationFragment extends LoadingFragment {
 
     private List<ContentValues> _value = null;
+    private TeamOccupationFragment  _context = this;
     private View                _view;
     private SwipeRefreshLayout _swiper;
     public SwipeRefreshLayout.OnRefreshListener _refresher;
@@ -36,6 +37,7 @@ public class TeamOccupationFragment extends LoadingFragment {
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_team_occupation, container, false);
         _swiper = (SwipeRefreshLayout) _view.findViewById(R.id.pull_refresher);
+        startLoading(_view, R.id.loader, _swiper);
         if (_value != null) {
             createContentView(_value);
         } else {
@@ -44,6 +46,15 @@ public class TeamOccupationFragment extends LoadingFragment {
             startLoading(_view, R.id.loader, _swiper);
         }
 
+        _refresher = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                APIRequestTeamOccupation api = new APIRequestTeamOccupation(_context);
+                api.SetRefreshSwiper(_swiper);
+                api.execute();
+            }
+        };
+        _swiper.setOnRefreshListener(_refresher);
         return _view;
     }
 

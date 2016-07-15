@@ -3,6 +3,7 @@ package com.grappbox.grappbox.grappbox.Dashboard;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.grappbox.grappbox.grappbox.Model.LoadingFragment;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.text.ParseException;
@@ -20,10 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class NextMeetingFragment extends Fragment {
+public class NextMeetingFragment extends LoadingFragment {
 
     private View _view;
+    private NextMeetingFragment _context = this;
     private List<ContentValues> _value = null;
+    private SwipeRefreshLayout _swiper;
+    public SwipeRefreshLayout.OnRefreshListener _refresher;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle)
@@ -35,12 +40,23 @@ public class NextMeetingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_next_meeting, container, false);
+        _swiper = (SwipeRefreshLayout) _view.findViewById(R.id.pull_refresher);
+        startLoading(_view, R.id.loader, _swiper);
         if (_value == null) {
             APIRequestNextMeeting api = new APIRequestNextMeeting(this);
             api.execute();
         } else {
             createContentView(_value);
         }
+        _refresher = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                APIRequestNextMeeting api = new APIRequestNextMeeting(_context);
+                api.SetRefreshSwiper(_swiper);
+                api.execute();
+            }
+        };
+        _swiper.setOnRefreshListener(_refresher);
         return _view;
     }
 
@@ -83,6 +99,11 @@ public class NextMeetingFragment extends Fragment {
                 new String[] {"meeting_title", "meeting_subject", "date_meeting_start", "date_meeting_start_hour", "date_meeting_end", "date_meeting_end_hour", "logo_project_image_meeting"},
                 new int[] {R.id.meeting_title, R.id.meeting_subject, R.id.date_meeting_start, R.id.date_meeting_start_hour, R.id.date_meeting_end, R.id.date_meeting_end_hour, R.id.logo_project_image_metting});
         TeamList.setAdapter(meetingAdapter);
+    }
+
+    public void stopLoading()
+    {
+        endLoading();
     }
 
 }

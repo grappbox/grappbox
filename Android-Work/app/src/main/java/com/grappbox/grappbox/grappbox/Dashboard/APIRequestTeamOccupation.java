@@ -2,6 +2,7 @@ package com.grappbox.grappbox.grappbox.Dashboard;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
@@ -18,10 +19,16 @@ import java.util.Vector;
 class APIRequestTeamOccupation extends AsyncTask<String, Void, String> {
 
     TeamOccupationFragment _context;
+    SwipeRefreshLayout      _swiper;
 
     APIRequestTeamOccupation(TeamOccupationFragment context)
     {
         _context = context;
+    }
+
+    public void SetRefreshSwiper(SwipeRefreshLayout swiper)
+    {
+        _swiper = swiper;
     }
 
     @Override
@@ -48,6 +55,8 @@ class APIRequestTeamOccupation extends AsyncTask<String, Void, String> {
             } catch (JSONException e){
                 e.printStackTrace();
             }
+            if (_swiper != null)
+            _swiper.setRefreshing(false);
         }
     }
 

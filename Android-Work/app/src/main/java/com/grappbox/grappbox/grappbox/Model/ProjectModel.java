@@ -8,6 +8,8 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.grappbox.grappbox.grappbox.Project.APIRequestGetProjectLogo;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

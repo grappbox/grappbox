@@ -32,8 +32,6 @@ public class APIRequestAddEvent extends AsyncTask<String, Void, String> {
         super.onPostExecute(result);
         if (result != null){
             _context.finish();
-/*            AgendaFragment agendaFragment = new AgendaFragment();
-            _context.getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();*/
         } else {
             Context context = _context;
             CharSequence text = "An error occured during the event creation";
