@@ -122,16 +122,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <li id="general-title" role="presentation" class="col-md-2 col-xs-12 active">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#general-content', '#general-title')">General</a>
             </li>
-            <li id="users-title" role="presentation" class="col-md-2 col-xs-12" data-ng-if="!data.project.deleted_at">
+            <li id="users-title" role="presentation" class="col-md-2 col-xs-12" data-ng-if="!data.project.deleted_at && data.message == '_valid' && data.userRights">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#users-content', '#users-title')">Users</a>
             </li>
-            <li id="roles-title" role="presentation" class="col-md-2 col-xs-12" data-ng-if="!data.project.deleted_at">
+            <li id="roles-title" role="presentation" class="col-md-2 col-xs-12" data-ng-if="!data.project.deleted_at && data.message == '_valid' && data.userRights">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#roles-content', '#roles-title')">Roles</a>
             </li>
-            <li id="customers-title" role="presentation" class="col-md-3 col-xs-12" data-ng-if="!data.project.deleted_at">
+            <li id="customers-title" role="presentation" class="col-md-3 col-xs-12" data-ng-if="!data.project.deleted_at && data.message == '_valid' && data.userRights">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#customers-content', '#customers-title')">Customers acccess</a>
             </li>
-            <li id="danger-title" role="presentation" class="col-md-3 col-xs-12" data-ng-if="!data.project.deleted_at">
+            <li id="danger-title" role="presentation" class="col-md-3 col-xs-12" data-ng-if="!data.project.deleted_at && data.message == '_valid' && data.userRights == 2">
               <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#danger-content', '#danger-title')">Danger zone</a>
             </li>
           </ul>
@@ -144,492 +144,546 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="(!data.onLoad && !data.project_error)">
-                <form class="form-horizontal" novalidate>
-                  <fieldset>
-                    <div class="form-group" data-ng-if="data.project.deleted_at">
-                      <div class="centered">
-                        <a class="btn btn-raised btn-danger" title="Retrieve This project" data-ng-click="retrieveProject()">Retrieve Project</a>
+              <div data-ng-if="!data.onLoad">
+                <div data-ng-if="data.message == '_valid'">
+                  <form class="form-horizontal" novalidate>
+                    <fieldset>
+                      <div class="form-group" data-ng-if="data.project.deleted_at">
+                        <div class="centered">
+                          <a class="btn btn-raised btn-danger" title="Retrieve This project" data-ng-click="retrieveProject()">Retrieve Project</a>
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="name" class="col-md-1 control-label">Name</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.name" id="name" placeholder="Name">
+                      <div class="form-group">
+                        <label for="name" class="col-md-1 control-label">Name</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.name" id="name" placeholder="Name">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="description" class="col-md-1 control-label">Description</label>
-                      <div class="col-md-11">
-                        <textarea data-ng-disabled="!data.editMode || data.project.deleted_at" class="form-control" rows="3" data-ng-model="data.project.description" id="description" placeholder="Description"></textarea>
+                      <div class="form-group">
+                        <label for="description" class="col-md-1 control-label">Description</label>
+                        <div class="col-md-11">
+                          <textarea data-ng-disabled="!data.editMode || data.project.deleted_at" class="form-control" rows="3" data-ng-model="data.project.description" id="description" placeholder="Description"></textarea>
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="logo" class="col-md-1 control-label">Logo</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="file" class="form-control" data-ng-model="data.project.logo" id="logo" placeholder="Browse">
+                      <div class="form-group">
+                        <label for="logo" class="col-md-1 control-label">Logo</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="file" class="form-control" data-ng-model="data.project.logo" id="logo" placeholder="Browse">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="company" class="col-md-1 control-label">Company</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.company" id="company" placeholder="Company">
+                      <div class="form-group">
+                        <label for="company" class="col-md-1 control-label">Company</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.company" id="company" placeholder="Company">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="email" class="col-md-1 control-label">Email</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="email" class="form-control" data-ng-model="data.project.contact_mail" id="email" placeholder="Email">
+                      <div class="form-group">
+                        <label for="email" class="col-md-1 control-label">Email</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="email" class="form-control" data-ng-model="data.project.contact_mail" id="email" placeholder="Email">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="phone" class="col-md-1 control-label">Phone</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="phone" class="form-control" data-ng-model="data.project.phone" id="phone" placeholder="+000 00 000 0000">
+                      <div class="form-group">
+                        <label for="phone" class="col-md-1 control-label">Phone</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="phone" class="form-control" data-ng-model="data.project.phone" id="phone" placeholder="+000 00 000 0000">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="facebook" class="col-md-1 control-label">Facebook</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.facebook" id="facebook" placeholder="Link">
+                      <div class="form-group">
+                        <label for="facebook" class="col-md-1 control-label">Facebook</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.facebook" id="facebook" placeholder="Link">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="twitter" class="col-md-1 control-label">Twitter</label>
-                      <div class="col-md-11">
-                        <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.twitter" id="twitter" placeholder="Link">
+                      <div class="form-group">
+                        <label for="twitter" class="col-md-1 control-label">Twitter</label>
+                        <div class="col-md-11">
+                          <input data-ng-disabled="!data.editMode || data.project.deleted_at" type="text" class="form-control" data-ng-model="data.project.twitter" id="twitter" placeholder="Link">
+                        </div>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-md-offset-10" data-ng-if="!data.editMode && data.canEdit && !data.project.deleted_at">
-                        <a class="btn" data-ng-click="project_switchEditMode()">Edit</a>
+                      <div class="form-group">
+                        <div class="col-md-offset-10" data-ng-if="!data.editMode && data.userRights >= 2 && !data.project.deleted_at">
+                          <a class="btn" data-ng-click="project_switchEditMode()">Edit</a>
+                        </div>
+                        <div class="col-md-offset-9" data-ng-if="data.editMode && data.userRights >= 2 && !data.project.deleted_at">
+                          <a class="btn" data-ng-click="project_switchEditMode()">Cancel</a>
+                          <a class="btn btn-default" data-ng-click="updateProject(data.project)">Update</a>
+                        </div>
                       </div>
-                      <div class="col-md-offset-9" data-ng-if="data.editMode && data.canEdit && !data.project.deleted_at">
-                        <a class="btn" data-ng-click="project_switchEditMode()">Cancel</a>
-                        <a class="btn btn-default" data-ng-click="updateProject(data.project)">Update</a>
-                      </div>
-                    </div>
-                  </fieldset>
-                </form>
-              </div>
-              <div data-ng-if="!data.onLoad && data.project_error">
-                <div class="centered">
-                  <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                    </fieldset>
+                  </form>
+                </div>
+                <div data-ng-if="data.message == '_empty'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-frown-o"></i>This project doesn't exist.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the settings of this project.</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- project edition: users -->
             <div role="tabpanel" class="tab-pane" id="users-content">
-              <div data-ng-if="data.onLoad">
+              <div data-ng-if="data.onLoad || data.usersLoad">
                 <div class="spinner section">
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="!data.usersLoad && !data.users_error && data.canEdit && !data.project.deleted_at">
-                <div class="col-md-12">
-                  <h4>Add a user</h4>
-                </div>
-                <div class="col-md-12">
-                  <form class="form-horizontal">
-                    <fieldset>
-                      <div class="form-group">
-                        <label for="newUser" class="col-md-1 control-label">Email</label>
-                        <div class="col-md-9">
-                          <input type="email" class="form-control" data-ng-model="new_user" id="newUser" placeholder="New user's email">
-                        </div>
-                        <div class="col-md-1">
-                          <button type="submit" class="btn btn-default" data-ng-click="addUser(new_user)">Add</button>
-                        </div>
+              <div data-ng-if="!data.onLoad && !data.usersLoad">
+                <div data-ng-if="data.users_message == '_valid'">
+                  <div data-ng-if="data.userRights && !data.project.deleted_at">
+                    <div class="col-md-12" data-ng-if="data.userRights >= 2">
+                      <h4>Add a user</h4>
+                    </div>
+                    <div class="col-md-12" data-ng-if="data.userRights >= 2">
+                      <form class="form-horizontal">
+                        <fieldset>
+                          <div class="form-group">
+                            <label for="newUser" class="col-md-1 control-label">Email</label>
+                            <div class="col-md-9">
+                              <input type="email" class="form-control" data-ng-model="new_user" id="newUser" placeholder="New user's email">
+                            </div>
+                            <div class="col-md-1">
+                              <button type="submit" class="btn btn-default" data-ng-click="addUser(new_user)">Add</button>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                    <div class="col-md-12">
+                      <h4>Registered users</h4>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered">
+                          <thead>
+                            <tr>
+                              <th class="col-md-2 col-xs-12">Name</th>
+                              <th class="col-md-8 col-xs-12">Role</th>
+                              <th class="col-md-2 col-xs-12" data-ng-if="data.userRights >= 2">Deletion</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr data-ng-repeat="user in data.users">
+                              <td class="col-md-2 col-xs-12 ellipsis">{[{ user.firstname + " " + user.lastname }]}</td>
+                              <td class="col-md-8 col-xs-12">
+                                <div class="col-md-9 col-xs-12">
+                                  <form class="form-horizontal" novalidate>
+                                    <fieldset>
+                                      <div class="form-group">
+                                        <select class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="user.role" data-ng-options="role.id as role.name for role in data.roles"></select>
+                                      </div>
+                                    </fieldset>
+                                  </form>
+                                </div>
+                                <div class="col-md-3 col-xs-12">
+                                  <a href="" class="btn" data-ng-if="data.userRights >= 2" data-ng-click="assignRoleToUser(user)">Update</a>
+                                </div>
+                              </td>
+                              <td class="col-md-2 col-xs-12" data-ng-if="data.userRights >= 2">
+                                <a href="" class="btn btn-default" data-ng-click="removeUser(user)">Delete</a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-                    </fieldset>
-                  </form>
-                </div>
-                <div class="col-md-12">
-                  <h4>Registered users</h4>
-                </div>
-                <div class="col-md-12">
-                  <div class="table-responsive">
-                    <table class="table table-striped table-hover table-bordered">
-                      <thead>
-                        <tr>
-                          <th class="col-md-2 col-xs-12">Name</th>
-                          <th class="col-md-8 col-xs-12">Role</th>
-                          <th class="col-md-2 col-xs-12">Deletion</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr data-ng-repeat="user in data.users">
-                          <td class="col-md-2 col-xs-12 ellipsis">{[{ user.firstname + " " + user.lastname }]}</td>
-                          <td class="col-md-8 col-xs-12">
-                            <div class="col-md-9 col-xs-12">
-                              <form class="form-horizontal" novalidate>
-                                <fieldset>
-                                  <div class="form-group">
-                                    <select class="form-control" data-ng-disabled="!data.canEdit" data-ng-model="user.role" data-ng-options="role.id as role.name for role in data.roles"></select>
-                                  </div>
-                                </fieldset>
-                              </form>
-                            </div>
-                            <div class="col-md-3 col-xs-12">
-                              <a href="" class="btn" data-ng-if="data.canEdit" data-ng-click="assignRoleToUser(user)">Update</a>
-                            </div>
-                          </td>
-                          <td class="col-md-2 col-xs-12">
-                            <a href="" class="btn btn-default" data-ng-if="data.canEdit" data-ng-click="removeUser(user)">Delete</a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div data-ng-if="!data.usersLoad && data.users_error">
-                <div class="centered">
-                  <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                <div data-ng-if="data.users_message == '_empty'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-frown-o"></i>Impossible to get project users.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.users_message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.users_message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the settings of this project.</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- project edition: roles -->
             <div role="tabpanel" class="tab-pane" id="roles-content">
-              <div data-ng-if="data.rolesLoad">
+              <div data-ng-if="data.onLoad || data.rolesLoad">
                 <div class="spinner section">
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="!data.rolesLoad && !data.roles_error && data.canEdit && !data.project.deleted_at">
-                <div class="col-md-12">
-                  <h4>Create a new role</h4>
-                </div>
-                <div class="col-md-12">
-                  <form class="form-horizontal" novalidate>
-                    <fieldset>
-                      <div class="form-group">
-                        <label for="newRole" class="col-md-1 control-label">Name</label>
-                        <div class="col-md-10">
-                          <input class="form-control" type="text" data-ng-model="new_role.name" id="newRole" placeholder="Role name">
-                        </div>
+              <div data-ng-if="!data.onLoad && !data.rolesLoad">
+                <div data-ng-if="data.roles_message == '_valid'">
+                  <div data-ng-if="data.userRights && !data.project.deleted_at">
+                    <div class="col-md-12" data-ng-if="data.userRights >= 2">
+                      <h4>Create a new role</h4>
+                    </div>
+                    <div class="col-md-12" data-ng-if="data.userRights >= 2">
+                      <form class="form-horizontal" novalidate>
+                        <fieldset>
+                          <div class="form-group">
+                            <label for="newRole" class="col-md-1 control-label">Name</label>
+                            <div class="col-md-10">
+                              <input class="form-control" type="text" data-ng-model="new_role.name" id="newRole" placeholder="Role name">
+                            </div>
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                    <div class="col-md-12" data-ng-if="data.userRights >= 2">
+                      <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered">
+                          <tbody>
+                            <tr>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="team-timeline" class="col-md-1 control-label">Team timeline</label>
+                                      <div class="col-md-11">
+                                        <select name="team-timeline" class="form-control" data-ng-model="new_role.team_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="customer-timeline" class="col-md-1 control-label">Customer timeline</label>
+                                      <div class="col-md-11">
+                                        <select name="customer-timeline" class="form-control" data-ng-model="new_role.customer_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="gantt" class="col-md-1 control-label">Gantt</label>
+                                      <div class="col-md-11">
+                                        <select name="gantt" class="form-control" data-ng-model="new_role.gantt" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="whiteboard" class="col-md-1 control-label">Whiteboard</label>
+                                      <div class="col-md-11">
+                                        <select name="whiteboard" class="form-control" data-ng-model="new_role.whiteboard" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="bugtracker" class="col-md-1 control-label">Bugtracker</label>
+                                      <div class="col-md-11">
+                                        <select name="bugtracker" class="form-control" data-ng-model="new_role.bugtracker" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="event" class="col-md-1 control-label">Event</label>
+                                      <div class="col-md-11">
+                                        <select name="event" class="form-control" data-ng-model="new_role.event" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="task" class="col-md-1 control-label">Task</label>
+                                      <div class="col-md-11">
+                                        <select name="task" class="form-control" data-ng-model="new_role.task" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="project-settings" class="col-md-1 control-label">Project settings</label>
+                                      <div class="col-md-11">
+                                        <select name="project-settings" class="form-control" data-ng-model="new_role.project_settings" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                              <td class="col-md-4">
+                                <form class="form-horizontal" novalidate>
+                                  <fieldset>
+                                    <div class="form-group no-margin">
+                                      <label for="cloud" class="col-md-1 control-label">Cloud</label>
+                                      <div class="col-md-11">
+                                        <select name="cloud" class="form-control" data-ng-model="new_role.cloud" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      </div>
+                                    </div>
+                                  </fieldset>
+                                </form>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-                    </fieldset>
-                  </form>
-                </div>
-                <div class="col-md-12">
-                  <div class="table-responsive">
-                    <table class="table table-striped table-hover table-bordered">
-                      <tbody>
-                        <tr>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="team-timeline" class="col-md-1 control-label">Team timeline</label>
-                                  <div class="col-md-11">
-                                    <select name="team-timeline" class="form-control" data-ng-model="new_role.team_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                    </div>
+                    <div class="col-md-2 col-md-offset-10" data-ng-if="data.userRights >= 2">
+                      <button type="submit" class="btn btn-default" data-ng-click="createRole(new_role)">Create</button>
+                    </div>
+                    <div class="col-md-12">
+                      <h4>Registered roles</h4>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="panel panel-default" data-ng-repeat="role in data.roles">
+                        <div class="panel-heading">{[{ role.name }]}</div>
+                        <div class="panel-body">
+                          <div class="col-md-12">
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="team-timeline" class="control-label">Team timeline</label>
+                                    <div class="">
+                                      <select name="team-timeline" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.team_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="customer-timeline" class="col-md-1 control-label">Customer timeline</label>
-                                  <div class="col-md-11">
-                                    <select name="customer-timeline" class="form-control" data-ng-model="new_role.customer_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="customer-timeline" class="control-label">Customer timeline</label>
+                                    <div class="">
+                                      <select name="customer-timeline" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.customer_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="gantt" class="col-md-1 control-label">Gantt</label>
-                                  <div class="col-md-11">
-                                    <select name="gantt" class="form-control" data-ng-model="new_role.gantt" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="gantt" class="control-label">Gantt</label>
+                                    <div class="">
+                                      <select name="gantt" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.gantt" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="whiteboard" class="col-md-1 control-label">Whiteboard</label>
-                                  <div class="col-md-11">
-                                    <select name="whiteboard" class="form-control" data-ng-model="new_role.whiteboard" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="whiteboard" class="control-label">Whiteboard</label>
+                                    <div class="">
+                                      <select name="whiteboard" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.whiteboard" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="bugtracker" class="col-md-1 control-label">Bugtracker</label>
-                                  <div class="col-md-11">
-                                    <select name="bugtracker" class="form-control" data-ng-model="new_role.bugtracker" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="bugtracker" class="control-label">Bugtracker</label>
+                                    <div class="">
+                                      <select name="bugtracker" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.bugtracker" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="event" class="col-md-1 control-label">Event</label>
-                                  <div class="col-md-11">
-                                    <select name="event" class="form-control" data-ng-model="new_role.event" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="event" class="control-label">Event</label>
+                                    <div class="">
+                                      <select name="event" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.event" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="task" class="col-md-1 control-label">Task</label>
-                                  <div class="col-md-11">
-                                    <select name="task" class="form-control" data-ng-model="new_role.task" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="task" class="control-label">Task</label>
+                                    <div class="">
+                                      <select name="task" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.task" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="project-settings" class="col-md-1 control-label">Project settings</label>
-                                  <div class="col-md-11">
-                                    <select name="project-settings" class="form-control" data-ng-model="new_role.project_settings" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="project-settings" class="control-label">Project settings</label>
+                                    <div class="">
+                                      <select name="project-settings" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.project_settings" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                          <td class="col-md-4">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group no-margin">
-                                  <label for="cloud" class="col-md-1 control-label">Cloud</label>
-                                  <div class="col-md-11">
-                                    <select name="cloud" class="form-control" data-ng-model="new_role.cloud" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                </fieldset>
+                              </form>
+                            </div>
+                            <div class="col-md-4">
+                              <form class="form-horizontal" novalidate>
+                                <fieldset>
+                                  <div class="form-group no-margin">
+                                    <label for="cloud" class="control-label">Cloud</label>
+                                    <div class="">
+                                      <select name="cloud" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.cloud" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                    </div>
                                   </div>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="col-md-2 col-md-offset-10">
-                  <button type="submit" class="btn btn-default" data-ng-click="createRole(new_role)">Create</button>
-                </div>
-                <div class="col-md-12">
-                  <h4>Registered roles</h4>
-                </div>
-                <div class="col-md-12">
-                  <div class="panel panel-default" data-ng-repeat="role in data.roles">
-                    <div class="panel-heading">{[{ role.name }]}</div>
-                    <div class="panel-body">
-                      <div class="col-md-12">
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="team-timeline" class="control-label">Team timeline</label>
-                                <div class="">
-                                  <select name="team-timeline" class="form-control" data-ng-model="role.team_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
+                                </fieldset>
+                              </form>
+                            </div>
+                          </div>
+                          <div class="col-md-3 col-md-offset-9" data-ng-if="data.userRights >= 2">
+                            <a href="" class="btn btn-default" data-ng-click="deleteRole(role)">Delete</a>
+                            <a href="" class="btn" data-ng-click="editRole(role)">Update</a>
+                          </div>
                         </div>
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="customer-timeline" class="control-label">Customer timeline</label>
-                                <div class="">
-                                  <select name="customer-timeline" class="form-control" data-ng-model="role.customer_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="gantt" class="control-label">Gantt</label>
-                                <div class="">
-                                  <select name="gantt" class="form-control" data-ng-model="role.gantt" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="whiteboard" class="control-label">Whiteboard</label>
-                                <div class="">
-                                  <select name="whiteboard" class="form-control" data-ng-model="role.whiteboard" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="bugtracker" class="control-label">Bugtracker</label>
-                                <div class="">
-                                  <select name="bugtracker" class="form-control" data-ng-model="role.bugtracker" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="event" class="control-label">Event</label>
-                                <div class="">
-                                  <select name="event" class="form-control" data-ng-model="role.event" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="task" class="control-label">Task</label>
-                                <div class="">
-                                  <select name="task" class="form-control" data-ng-model="role.task" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="project-settings" class="control-label">Project settings</label>
-                                <div class="">
-                                  <select name="project-settings" class="form-control" data-ng-model="role.project_settings" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                        <div class="col-md-4">
-                          <form class="form-horizontal" novalidate>
-                            <fieldset>
-                              <div class="form-group no-margin">
-                                <label for="cloud" class="control-label">Cloud</label>
-                                <div class="">
-                                  <select name="cloud" class="form-control" data-ng-model="role.cloud" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
-                                </div>
-                              </div>
-                            </fieldset>
-                          </form>
-                        </div>
-                      </div>
-                      <div class="col-md-3 col-md-offset-9">
-                        <a href="" class="btn btn-default" data-ng-click="deleteRole(role)">Delete</a>
-                        <a href="" class="btn" data-ng-click="editRole(role)">Update</a>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div data-ng-if="!data.usersLoad && data.roles_error">
-                <div class="centered">
-                  <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                <div data-ng-if="data.roles_message == '_empty'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-frown-o"></i>Impossible to get project roles.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.roles_message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.roles_message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the settings of this project.</p>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- project edition: customers -->
             <div role="tabpanel" class="tab-pane" id="customers-content">
-              <div data-ng-if="data.customersLoad">
+              <div data-ng-if="data.onLoad || data.customersLoad">
                 <div class="spinner section">
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="!data.customersLoad && !data.customers_error && data.canEdit && !data.project.deleted_at">
-                <div class="col-md-12">
-                  <h4>Add a customer access</h4>
-                </div>
-                <div class="col-md-12">
-                  <form class="form-horizontal">
-                    <fieldset>
-                      <div class="form-group">
-                        <label for="newCustomer" class="col-md-1 control-label">Name</label>
-                        <div class="col-md-9">
-                          <input type="text" class="form-control" data-ng-model="new_customer.name" id="newCustomer" placeholder="Customer access name">
-                        </div>
-                        <div class="col-md-1">
-                          <button type="submit" class="btn btn-default" data-ng-click="createCustomersAccess(new_customer)">Add</button>
-                        </div>
+              <div data-ng-if="!data.onLoad && !data.customersLoad">
+                <div data-ng-if="data.customers_message == '_valid'">
+                  <div data-ng-if="data.userRights && !data.project.deleted_at">
+                    <div class="col-md-12" data-ng-if="data.userRights >= 2">
+                      <h4>Add a customer access</h4>
+                    </div>
+                    <div class="col-md-12" data-ng-if="data.userRights >= 2">
+                      <form class="form-horizontal">
+                        <fieldset>
+                          <div class="form-group">
+                            <label for="newCustomer" class="col-md-1 control-label">Name</label>
+                            <div class="col-md-9">
+                              <input type="text" class="form-control" data-ng-model="new_customer.name" id="newCustomer" placeholder="Customer access name">
+                            </div>
+                            <div class="col-md-1">
+                              <button type="submit" class="btn btn-default" data-ng-click="createCustomersAccess(new_customer)">Add</button>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                    <div class="col-md-12">
+                      <h4>Registered customer accesses</h4>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered">
+                          <thead>
+                            <tr>
+                              <th class="col-md-2 col-xs-12">Name</th>
+                              <th class="col-md-8 col-xs-12">Token</th>
+                              <th class="col-md-2 col-xs-12" data-ng-if="data.userRights >= 2">Deletion</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr data-ng-repeat="customer in data.customers">
+                              <td class="col-md-2 col-xs-12 ellipsis">{[{ customer.name }]}</td>
+                              <td class="col-md-8 col-xs-12 ellipsis">{[{ customer.customer_token }]}</td>
+                              <td class="col-md-2 col-xs-12" data-ng-if="data.userRights >= 2">
+                                <a href="" class="btn btn-default" data-ng-click="deleteCustomerAccess(customer)">Delete</a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-                    </fieldset>
-                  </form>
-                </div>
-                <div class="col-md-12">
-                  <h4>Registered customer accesses</h4>
-                </div>
-                <div class="col-md-12">
-                  <div class="table-responsive">
-                    <table class="table table-striped table-hover table-bordered">
-                      <thead>
-                        <tr>
-                          <th class="col-md-2 col-xs-12">Name</th>
-                          <th class="col-md-8 col-xs-12">Token</th>
-                          <th class="col-md-2 col-xs-12">Deletion</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr data-ng-repeat="customer in data.customers">
-                          <td class="col-md-2 col-xs-12 ellipsis">{[{ customer.name }]}</td>
-                          <td class="col-md-8 col-xs-12 ellipsis">{[{ customer.customer_token }]}</td>
-                          <td class="col-md-2 col-xs-12">
-                            <a href="" class="btn btn-default" data-ng-click="deleteCustomerAccess(customer)">Delete</a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div data-ng-if="!data.customersLoad && data.customers_error">
-                <div class="centered">
-                  <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+                <div data-ng-if="data.customers_message == '_empty'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-frown-o"></i>Impossible to get project customers access.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.customers_message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.customers_message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the settings of this project.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -641,51 +695,70 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
-              <div data-ng-if="(!data.onLoad && !data.project_error && !data.project.deleted_at)">
-                <div class="col-md-12">
-                  <h4>Cloud Password</h4>
-                </div>
-                <div class="col-md-12">
-                  <form class="form-horizontal" novalidate>
-                    <fieldset>
-                      <div class="form-group">
-                        <label for="oldPassword" class="col-md-1 control-label">Actual password</label>
-                        <div class="col-md-11">
-                          <input type="password" class="form-control" data-ng-model="data.project.old_password" id="oldPassword" placeholder="Actual Password">
-                        </div>
+              <div data-ng-if="!data.onLoad">
+                <div data-ng-if="data.message == '_valid'">
+                  <div data-ng-if="!data.project.deleted_at">
+                    <div class="col-md-12">
+                      <h4>Cloud Password</h4>
+                    </div>
+                    <div class="col-md-12">
+                      <form class="form-horizontal" novalidate>
+                        <fieldset>
+                          <div class="form-group">
+                            <label for="oldPassword" class="col-md-1 control-label">Actual password</label>
+                            <div class="col-md-11">
+                              <input type="password" class="form-control" data-ng-model="data.project.old_password" id="oldPassword" placeholder="Actual Password">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="password" class="col-md-1 control-label">New password</label>
+                            <div class="col-md-11">
+                              <input type="password" class="form-control" data-ng-model="data.project.password" id="password" placeholder="New Password">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="passwordConfirm" class="col-md-1 control-label">Confirmation</label>
+                            <div class="col-md-11">
+                              <input type="password" class="form-control" data-ng-model="data.project.confirm_password" id="passwordConfirm" placeholder="New Password">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <div class="centered">
+                              <p>Click on the <b>"Update"</b> button to validate the password changement.<br><b>Be sure to remember your new password !</b></p>
+                              <a class="btn btn-raised btn-danger" title="Update Cloud password" data-ng-click="updatePassword(data.project)">Update</a>
+                            </div>
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                    <div class="col-md-12">
+                      <h4>Project deletion</h4>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="centered">
+                        <p>Click on the <b>"Delete"</b> button to delete your project.<br><b>Every information related to this project will be deleted after the retrieving period !</b></p>
+                        <a class="btn btn-raised btn-danger" title="Delete project" data-ng-click="action.onDeleteProject()">Delete projet</a>
                       </div>
-                      <div class="form-group">
-                        <label for="password" class="col-md-1 control-label">New password</label>
-                        <div class="col-md-11">
-                          <input type="password" class="form-control" data-ng-model="data.project.password" id="password" placeholder="New Password">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="passwordConfirm" class="col-md-1 control-label">Confirmation</label>
-                        <div class="col-md-11">
-                          <input type="password" class="form-control" data-ng-model="data.project.confirm_password" id="passwordConfirm" placeholder="New Password">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="centered">
-                          <p>Click on the <b>"Update"</b> button to validate the password changement.<br><b>Be sure to remember your new password !</b></p>
-                          <a class="btn btn-raised btn-danger" title="Update Cloud password" data-ng-click="updatePassword(data.project)">Update</a>
-                        </div>
-                      </div>
-                    </fieldset>
-                  </form>
-                </div>
-                <div class="col-md-12">
-                  <h4>Project deletion</h4>
-                </div>
-                <div class="col-md-12">
-                  <div class="centered">
-                    <p>Click on the <b>"Delete"</b> button to delete your project.<br><b>Every information related to this project will be deleted after the retrieving period !</b></p>
-                    <a class="btn btn-raised btn-danger" title="Delete project" data-ng-click="action.onDeleteProject()">Delete projet</a>
+                    </div>
                   </div>
                 </div>
-
+                <div data-ng-if="data.message == '_empty'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-frown-o"></i>Impossible to get this project.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the settings of this project.</p>
+                  </div>
+                </div>
               </div>
+
               <div data-ng-if="!data.onLoad && data.project_error">
                 <div class="centered">
                   <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
