@@ -19,7 +19,7 @@ namespace GrappBox.View
             this.InitializeComponent();
             this.DataContext = new GenericDashboardViewModel();
 
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
             this.navigationHelper = new NavigationHelper(this);
         }
 
@@ -42,12 +42,9 @@ namespace GrappBox.View
         {
             ListView lv = sender as ListView;
             ProjectListModel plm = lv.SelectedItem as ProjectListModel;
-            if (plm != null)
-            {
-                SettingsManager.setOption("ProjectIdChoosen", plm.Id);
-                SettingsManager.setOption("ProjectNameChoosen", plm.Name);
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
-            }
+            SettingsManager.setOption("ProjectIdChoosen", plm.Id);
+            SettingsManager.setOption("ProjectNameChoosen", plm.Name);
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
         }
 
         private async void CreateProject_Click(object sender, RoutedEventArgs e)

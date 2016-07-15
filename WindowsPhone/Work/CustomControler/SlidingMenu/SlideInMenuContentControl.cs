@@ -223,7 +223,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         void UpdateMenu()
         {
-            int id = SettingsManager.getOption<int>("ProjectIdChoosen");
+            int id = SettingsManager.getOption("ProjectIdChoosen");
             Debug.WriteLine("id = {0}", id);
             foreach (StackPanel b in buttons)
                 b.Visibility = id == -1 ? Visibility.Collapsed : Visibility.Visible;
@@ -232,7 +232,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 
         private async void DashboardButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (SettingsManager.getOption<int>("ProjectIdChoosen") > 0)
+            if (SettingsManager.getOption("ProjectIdChoosen") > 0)
             {
                 DisplayContent();
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

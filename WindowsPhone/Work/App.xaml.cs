@@ -64,6 +64,7 @@ namespace GrappBox
 #endif
             if (SettingsManager.OptionExist("ProjectIdChoosen") == true)
                 SettingsManager.setOption("ProjectIdChoosen", -1);
+            Debug.WriteLine("ID = {0}", SettingsManager.getOption("ProjectIdChoosen"));
             if (SettingsManager.OptionExist("ProjectNameChoosen") == true)
                 SettingsManager.setOption("ProjectNameChoosen", null);
             StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
