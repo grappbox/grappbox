@@ -107,7 +107,6 @@ namespace GrappBox.Model
         {
             string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
             Logo = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
-            Debug.WriteLine(logoImgFmt);
         }
     }
 }

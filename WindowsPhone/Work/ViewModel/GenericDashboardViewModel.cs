@@ -30,7 +30,6 @@ namespace GrappBox.ViewModel
                 return false;
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 ProjectList = api.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(await res.Content.ReadAsStringAsync());
             }
             else
