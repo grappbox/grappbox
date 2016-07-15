@@ -435,7 +435,8 @@ public class DrawingView extends View {
                     path.setFillType(Path.FillType.EVEN_ODD);
                     drawDiamond(startx, starty, endx, endy, path);
                 } else if (form.getAsString("type").equals("LINE")) {
-                    drawLine(startx, starty, endx, endy);
+                    path.moveTo(startx, starty);
+                    path.lineTo(endx, endy);
                 } else if (form.getAsString("type").equals("HANDWRITE")) {
                     _DrawPaint.setStyle(Paint.Style.STROKE);
                     _DrawPaint.setStrokeJoin(Paint.Join.ROUND);
@@ -581,6 +582,7 @@ public class DrawingView extends View {
 
         _ShapeType = shapeType;
         _DrawPath.reset();
+        invalidate();
     }
 
     public void setBrushSize(int pos)
