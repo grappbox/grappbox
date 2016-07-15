@@ -58,9 +58,10 @@ public class APIRequestAddEvent extends AsyncTask<String, Void, String> {
             JSONParam.put("title", param[1]);
             JSONParam.put("description", param[2]);
             JSONParam.put("icon", "");
-            JSONParam.put("typeId", 1);
             JSONParam.put("begin", param[3]);
             JSONParam.put("end", param[4]);
+            JSONParam.put("typeId", Integer.parseInt(param[5]));
+
             JSONData.put("data", JSONParam);
             Log.v("JSON", JSONData.toString());
 

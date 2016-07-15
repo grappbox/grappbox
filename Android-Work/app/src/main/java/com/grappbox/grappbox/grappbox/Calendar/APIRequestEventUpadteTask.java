@@ -61,9 +61,9 @@ public class APIRequestEventUpadteTask extends AsyncTask<String, Void, String> {
             JSONParam.put("title", param[1]);
             JSONParam.put("description", param[2]);
             JSONParam.put("icon", param[3]);
-            JSONParam.put("typeId", 1);
             JSONParam.put("begin", param[4]);
             JSONParam.put("end", param[5]);
+            JSONParam.put("typeId", param[6]);
             JSONData.put("data", JSONParam);
             Log.v("JSON", JSONData.toString());
 

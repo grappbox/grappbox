@@ -103,11 +103,25 @@ public class DashboardRVAdapter extends RecyclerView.Adapter<DashboardRVAdapter.
 
     @Override
     public void onBindViewHolder(ProjectViewHolder projectViewHolder, int i){
+        String company = "no data found";
+        String desc = "no data found";
+        String mail = "no data found";
+        String str;
+
         projectViewHolder.bind(_projects.get(i), _eventListener);
         projectViewHolder._projectName.setText(_projects.get(i).getName());
-        projectViewHolder._projectCompany.setText(_projects.get(i).getCompany());
-        projectViewHolder._projectDesc.setText(_projects.get(i).getDescription());
-        projectViewHolder._projectMail.setText(_projects.get(i).getContact_mail());
+        str =_projects.get(i).getCompany();
+        if (!str.equals("null") && !str.equals(""))
+            company = str;
+        str = _projects.get(i).getDescription();
+        if (!str.equals("null") && !str.equals(""))
+            desc = str;
+        str = _projects.get(i).getContact_mail();
+        if (!str.equals("null") && !str.equals(""))
+            mail = str;
+        projectViewHolder._projectCompany.setText(company);
+        projectViewHolder._projectDesc.setText(desc);
+        projectViewHolder._projectMail.setText(mail);
         projectViewHolder._projectBug.setText(_projects.get(i).getBugs());
         projectViewHolder._projectTask.setText(_projects.get(i).getTasks());
         projectViewHolder._projectMessage.setText(_projects.get(i).getMessages());

@@ -36,6 +36,7 @@ public class AddEventActivity extends EventActivity {
     private Spinner _eventProjectSpinner;
     private Spinner     _eventTypes;
     private ContentValues _eventProjectId = new ContentValues();
+    private ContentValues _eventListTypes = new ContentValues();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,29 +52,13 @@ public class AddEventActivity extends EventActivity {
         _eventSendButton = (Button) findViewById(R.id.create_event_button);
         _eventProjectSpinner = (Spinner) findViewById(R.id.event_project);
         _eventTypes = (Spinner) findViewById(R.id.event_type);
-        ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter.createFromResource(this, R.array.event_types_list_default, android.R.layout.simple_spinner_dropdown_item);
-        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        _eventTypes.setAdapter(eventTypeAdapter);
-        _eventTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                final String newType = getResources().getStringArray(R.array.event_types_list_default)[1];
-                if (_eventTypes.getSelectedItem().toString().equals(newType)){
-                    AlertDialog.Builder build = new AlertDialog.Builder(_context);
-                    build.setTitle("Create new type");
-                    build.show();
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
         initDateValue();
         setListener();
         APIrequestGetUserProject getProject = new APIrequestGetUserProject(this);
         getProject.execute();
+        APIRequestGetEventType getEventType = new APIRequestGetEventType(this);
+        getEventType.execute();
     }
 
     @Override
@@ -95,6 +80,44 @@ public class AddEventActivity extends EventActivity {
         ArrayAdapter<String> dataAdater = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list);
         dataAdater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _eventProjectSpinner.setAdapter(dataAdater);
+    }
+
+    @Override
+    public void fillEventListSpinner(List<ContentValues> eventTypes)
+    {
+        List<String> list = new ArrayList<>();
+        Iterator<ContentValues> it = eventTypes.iterator();
+        list.add("Nothing");
+
+        _eventListTypes.put("Nothing", "-1");
+        while (it.hasNext())
+        {
+            ContentValues item = it.next();
+            String eventTypesName = item.get("name").toString();
+            list.add(eventTypesName);
+            _eventListTypes.put(eventTypesName, item.get("id").toString());
+        }
+        list.add("New type");
+        _eventListTypes.put("New type", "-2");
+        ArrayAdapter<String> eventTypeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list);
+        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _eventTypes.setAdapter(eventTypeAdapter);
+        _eventTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                final String newType = getResources().getStringArray(R.array.event_types_list_default)[1];
+                if (_eventTypes.getSelectedItem().toString().equals(newType)){
+/*                    AlertDialog.Builder build = new AlertDialog.Builder(_context);
+                    build.setTitle("Create new type");
+                    build.show();*/
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void initDateValue()
@@ -144,10 +167,33 @@ public class AddEventActivity extends EventActivity {
 
     private void addEvent()
     {
+        String typesEvent = _eventListTypes.get(_eventTypes.getSelectedItem().toString()).toString();
+
+        if (_eventTitle.getText().toString().equals(""))
+        {
+            AlertDialog.Builder build = new AlertDialog.Builder(_context);
+            build.setTitle("Event Title");
+            build.setMessage("Put a title for the event");
+            build.show();
+            return ;
+        }
+
+        if (typesEvent.equals("-1") || typesEvent.equals("-2")){
+            AlertDialog.Builder build = new AlertDialog.Builder(_context);
+            build.setTitle("Event Type");
+            build.setMessage("Select the type of the event");
+            build.show();
+            return ;
+        }
         String beginDate = _eventBeginDateDay.getText().toString() + " " + _eventBeginDateHour.getText().toString() + ":00";
         String endDate = _eventEndDateDay.getText().toString() + " " + _eventEndDateHour.getText().toString() + ":00";
 
         APIRequestAddEvent event = new APIRequestAddEvent(this);
-        event.execute(_eventProjectId.get(_eventProjectSpinner.getSelectedItem().toString()).toString(), _eventTitle.getText().toString(), _eventDescription.getText().toString(), beginDate, endDate);
+        event.execute(_eventProjectId.get(_eventProjectSpinner.getSelectedItem().toString()).toString(),
+                _eventTitle.getText().toString(),
+                _eventDescription.getText().toString(),
+                beginDate,
+                endDate,
+                typesEvent);
     }
 }
