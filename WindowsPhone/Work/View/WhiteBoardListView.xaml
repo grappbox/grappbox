@@ -14,13 +14,19 @@
             <AppBarButton Icon="Add" Click="AppBarButton_Click">Add whiteboard</AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
-    <slideMenu:SlideInMenuContentControl PageTitle="Whiteboard">
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Whiteboard">
         <Grid>
-            <ListView ItemsSource="{Binding Whiteboards}" Background="{StaticResource BackgroundGrayBrush}" SelectionChanged="ListView_SelectionChanged" SelectionMode="Single">
+            <ListView Name="WhiteboardList" ItemsSource="{Binding Whiteboards}" Background="{StaticResource BackgroundGrayBrush}" SelectionChanged="ListView_SelectionChanged" SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border Padding="10" Background="White">
-                            <StackPanel>
+                            
+                            <StackPanel  Holding="Grid_Holding">
+                                <FlyoutBase.AttachedFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Text="Delete" Click="MenuFlyoutItem_DeleteClick"/>
+                                    </MenuFlyout>
+                                </FlyoutBase.AttachedFlyout>
                                 <StackPanel.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="14"/>
@@ -46,9 +52,20 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
-            <!--<Popup x:Name="Popup" IsOpen="{Binding ElementName=WhiteboardNameInput, Path=IsOpen, Mode=TwoWay}" >
-                <customControl:InputPopUp x:Name="WhiteboardNameInput" />
-            </Popup>-->
+            <Popup Name="CreateWhiteboardPopUp" Visibility="Collapsed" IsOpen="True" Loaded="CreateWhiteboardPopUp_Loaded">
+                <StackPanel Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">
+                    <TextBlock Text="Create whiteboard" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" Margin="15"/>
+                    <TextBox Name="WhiteboardName" PlaceholderText="Name" Margin="15"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Cancel" Grid.Column="0" Click="Cancel_Click" HorizontalAlignment="Center" Width="90" Height="50" MinWidth="80" MinHeight="60" Margin="10"/>
+                        <Button Content="Create" Grid.Column="1" Click="CreateWhiteboard_Click" HorizontalAlignment="Center" Width="90" Height="50" MinWidth="80" MinHeight="60" Margin="10"/>
+                    </Grid>
+                </StackPanel>
+            </Popup>
         </Grid>
     </slideMenu:SlideInMenuContentControl>
 </Page>

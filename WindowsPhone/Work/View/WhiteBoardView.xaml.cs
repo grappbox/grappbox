@@ -79,7 +79,7 @@ namespace GrappBox.View
 
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-            //pullTimer.Stop();
+            pullTimer.Stop();
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -94,11 +94,11 @@ namespace GrappBox.View
                 {
                     this.drawingCanvas.AddNewElement(wo);
                 }
-            }/*
+            }
             pullTimer = new DispatcherTimer();
-            pullTimer.Interval = new TimeSpan(0, 0, 10);
+            pullTimer.Interval = new TimeSpan(0, 0, 2);
             pullTimer.Tick += PullTimer_Tick;
-            pullTimer.Start();*/
+            pullTimer.Start();
         }
 
         private void PullTimer_Tick(object sender, object e)
@@ -160,7 +160,6 @@ namespace GrappBox.View
             }
             WhiteboardPopUp.IsOpen = false;
             WhiteboardPopUp.Child = null;
-            Debug.WriteLine(wbvm.FillColor.Color.ToString());
         }
 
         private async void ColorBtn_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -197,7 +196,6 @@ namespace GrappBox.View
             }
             WhiteboardPopUp.IsOpen = false;
             WhiteboardPopUp.Child = null;
-            Debug.WriteLine(wbvm.FillColor.Color.ToString());
         }
 
         private async void ToolsButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
@@ -235,7 +233,6 @@ namespace GrappBox.View
             ToolsButtonIcon.UriSource = new Uri(buttonsBinding[tp.SelectedImage]);
             WhiteboardPopUp.IsOpen = false;
             WhiteboardPopUp.Child = null;
-            Debug.WriteLine(wbvm.CurrentTool);
         }
         private async void BrushSizeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -271,7 +268,6 @@ namespace GrappBox.View
             wbvm.StrokeThickness = bp.SelectedThickness;
             WhiteboardPopUp.IsOpen = false;
             WhiteboardPopUp.Child = null;
-            Debug.WriteLine(wbvm.StrokeThickness);
         }
 
         private async void drawingCanvas_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)

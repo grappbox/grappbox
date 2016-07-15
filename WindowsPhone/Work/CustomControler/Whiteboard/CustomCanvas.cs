@@ -91,6 +91,7 @@ namespace GrappBox.CustomControler
             }
             this.Children.RemoveAt(toDel.Index);
             this.ObjectList.Remove(toDel);
+            index--;
             return true;
         }
 

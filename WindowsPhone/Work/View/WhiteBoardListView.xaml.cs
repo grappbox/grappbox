@@ -63,6 +63,9 @@ namespace GrappBox.View
         {
             this.navigationHelper.OnNavigatedTo(e);
             WhiteBoardListViewModel tmp = this.DataContext as WhiteBoardListViewModel;
+            CreateWhiteboardPopUp.Visibility = Visibility.Collapsed;
+            CreateWhiteboardPopUp.IsOpen = true;
+            WhiteboardName.Text = "";
             await tmp.GetWhiteboards();
         }
 
@@ -73,14 +76,10 @@ namespace GrappBox.View
         #endregion
 
 
-        private async void AppBarButton_Click(object sender, RoutedEventArgs e)
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            //Popup.IsOpen = true;
-            //WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
-            //if (WhiteboardNameInput.ShowDialog() == true)
-            //{
-            //    await wblm.CreateWhiteboard(WhiteboardNameInput.ResultText);
-            //}
+            CreateWhiteboardPopUp.Visibility = Visibility.Visible;
+            WhiteboardList.IsEnabled = false;
         }
 
         private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -91,6 +90,45 @@ namespace GrappBox.View
             WhiteBoardListModel wblm = lv.SelectedItem as WhiteBoardListModel;
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 Frame.Navigate(typeof(WhiteBoardView), wblm.Id));
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            CreateWhiteboardPopUp.Visibility = Visibility.Collapsed;
+            WhiteboardList.IsEnabled = true;
+        }
+
+        private async void CreateWhiteboard_Click(object sender, RoutedEventArgs e)
+        {
+            WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
+            if (WhiteboardName.Text != "")
+            {
+                await wblm.CreateWhiteboard(WhiteboardName.Text);
+                CreateWhiteboardPopUp.Visibility = Visibility.Collapsed;
+                WhiteboardList.IsEnabled = true;
+                WhiteboardName.Text = "";
+            }
+        }
+
+        private void CreateWhiteboardPopUp_Loaded(object sender, RoutedEventArgs e)
+        {
+            CreateWhiteboardPopUp.VerticalOffset = (slideInMenuContentControl.ActualHeight - CreateWhiteboardPopUp.ActualHeight) / 2;
+        }
+
+        private async void MenuFlyoutItem_DeleteClick(object sender, RoutedEventArgs e)
+        {
+            WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
+            await wblm.DeleteWhiteboard();
+        }
+
+        private void Grid_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            FrameworkElement senderElement = sender as FrameworkElement;
+
+            FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
+            flyoutBase.ShowAt(senderElement);
+            WhiteBoardListViewModel wblm = this.DataContext as WhiteBoardListViewModel;
+            wblm.ObjectSelect = (sender as StackPanel).DataContext as WhiteBoardListModel;
         }
     }
 }

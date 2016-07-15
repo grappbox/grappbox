@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Popups;
 
 namespace GrappBox.ViewModel
 {
@@ -22,6 +23,8 @@ namespace GrappBox.ViewModel
             get { return _whiteboards; }
             set { _whiteboards = value;  NotifyPropertyChanged("Whiteboards"); }
         }
+
+        public WhiteBoardListModel ObjectSelect { get; set; }
         public WhiteBoardListViewModel()
         {
         }
@@ -40,7 +43,6 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, "whiteboard/list");
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 Whiteboards = api.DeserializeArrayJson<ObservableCollection<WhiteBoardListModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("Whiteboards");
             }
@@ -55,18 +57,39 @@ namespace GrappBox.ViewModel
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("token", User.GetUser().Token);
-            props.Add("projectId", User.GetUser().Token);
-            props.Add("whiteboardName", User.GetUser().Token);
+            props.Add("projectId", id);
+            props.Add("whiteboardName", name);
             HttpResponseMessage res = await api.Post(props, "whiteboard/new");
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 WhiteBoardListModel wlm = api.DeserializeJson<WhiteBoardListModel>(await res.Content.ReadAsStringAsync());
                 Whiteboards.Add(wlm);
             }
             else
             {
                 Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+            }
+        }
+
+        public async System.Threading.Tasks.Task DeleteWhiteboard()
+        {
+            if (ObjectSelect != null)
+            {
+                ApiCommunication api = ApiCommunication.Instance;
+
+                object[] token = { User.GetUser().Token, ObjectSelect.Id };
+                HttpResponseMessage res = await api.Delete(token, "whiteboard/delete");
+                if (res.IsSuccessStatusCode)
+                {
+                    _whiteboards.Remove(ObjectSelect);
+                    NotifyPropertyChanged("Whiteboards");
+                    ObjectSelect = null;
+                }
+                else
+                {
+                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                    await msgbox.ShowAsync();
+                }
             }
         }
     }

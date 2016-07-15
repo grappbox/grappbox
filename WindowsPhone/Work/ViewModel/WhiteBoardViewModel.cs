@@ -142,7 +142,6 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, "whiteboard/open");
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 model = api.DeserializeJson<WhiteBoardModel>(await res.Content.ReadAsStringAsync());
                 ObjectsList = model.Object;
                 LastUpdate = DateTime.Now;
@@ -161,11 +160,9 @@ namespace GrappBox.ViewModel
             props.Add("token", User.GetUser().Token);
             props.Add("lastUpdate", LastUpdate);
             HttpResponseMessage res = await api.Post(props, "whiteboard/pulldraw/" + model.Id);
-            Debug.WriteLine(await res.Content.ReadAsStringAsync());
             if (res.IsSuccessStatusCode)
             {
                 PullModel = api.DeserializeJson<PullModel>(await res.Content.ReadAsStringAsync());
-
             }
             else
             {
@@ -185,7 +182,6 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Put(props, "whiteboard/pushdraw/" + model.Id);
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
                 return tmp;
             }
@@ -208,16 +204,12 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Put(props, "whiteboard/deleteobject");
             if (res.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 WhiteboardObject tmp = api.DeserializeJson<WhiteboardObject>(await res.Content.ReadAsStringAsync());
-                Debug.WriteLine("ObjectId= {0}", tmp.Id);
                 return tmp.Id;
             }
             else
             {
                 Debug.WriteLine("Failed => {0}",await res.Content.ReadAsStringAsync());
-                //MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                //await msgbox.ShowAsync();
             }
             return -1;
         }
