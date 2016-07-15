@@ -19,7 +19,7 @@ namespace GrappBox.Model.Whiteboard
         public string Background { get; set; }
 
         [JsonProperty("lineweight")]
-        public int LineWeight { get; set; }
+        public double LineWeight { get; set; }
 
         [JsonProperty("positionStart")]
         public Position PositionStart { get; set; }
