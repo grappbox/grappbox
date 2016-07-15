@@ -1,5 +1,6 @@
 #include "API/SDataManager.h"
 #include "CloudController.h"
+#include <QDesktopServices>
 #include <QDebug>
 #include <QtMath>
 #include <QStandardPaths>
@@ -168,6 +169,7 @@ void CloudController::createDirectory(QString dirName)
 
 void CloudController::enterDirectory(QString dirName, QString password)
 {
+    _OldPath = _Path;
     if (_Path == "/")
         _Path += dirName;
     else
@@ -179,6 +181,7 @@ void CloudController::enterDirectory(QString dirName, QString password)
 
 void CloudController::goBack()
 {
+    _OldPath = _Path;
     int i = _Path.size() - 1;
     while (_Path[i] != '/')
     {
@@ -193,6 +196,7 @@ void CloudController::goBack()
 
 void CloudController::goToDirectoryIndex(int index)
 {
+    _OldPath = _Path;
     int i = 0;
     int tmpIndex = 0;
     while (i < _Path.size())
@@ -396,6 +400,11 @@ void CloudController::downloadFile(QString file, QString password)
     END_REQUEST;
 }
 
+void CloudController::openFile(QString file)
+{
+    QDesktopServices::openUrl(file);
+}
+
 QQmlListProperty<FileData> CloudController::directories()
 {
     return QQmlListProperty<FileData>(this, _Directories);
@@ -438,9 +447,14 @@ void CloudController::OnLSSuccess(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
+    qDebug() << info["return_code"];
     if (info["return_code"].toString() == "3.4.9" || info["return_code"].toString() == "3.9.9")
     {
         _PasswordSafe = "";
+        _Path = _OldPath;
+        _IsLoading = false;
+        emit pathChanged();
+        emit isLoadingChanged();
         emit directoryFailedLoad();
         return;
     }
@@ -465,7 +479,7 @@ void CloudController::OnLSSuccess(int id, QByteArray array)
 void CloudController::OnLSFailed(int id, QByteArray array)
 {
 	Q_UNUSED(id)
-	Q_UNUSED(array)
+    Q_UNUSED(array)
     _IsLoading = false;
     emit isLoadingChanged();
     emit directoryFailedLoad();
@@ -518,7 +532,43 @@ void CloudController::OnSendChunkFailed(int id, QByteArray array)
 {
 	Q_UNUSED(id)
 	Q_UNUSED(array)
-
+    qDebug() << "Hello";
+    SInfoManager::GetManager()->error("Cloud", "Unable to send file. Please check your access to the cloud or try again later.");
+    _CurrentTransit->setProgress(100);
+    _PendingFiles.removeAll(_CurrentTransit);
+    if (_PendingFiles.size() != 0)
+        _CurrentTransit = *_PendingFiles.begin();
+    else
+        return;
+    _CurrentTransit->setIsWaiting(false);
+    if (_CurrentFile)
+        delete _CurrentFile;
+    if (_CurrentStream)
+        delete _CurrentStream;
+    _CurrentFile = new QFile(_CurrentTransit->url().toLocalFile());
+    _CurrentStream = new QDataStream(_CurrentFile);
+    if (!_CurrentFile->open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Unable to open file !";
+    }
+    else
+    {
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnOpenStreamSuccess");
+            SET_ON_FAIL("OnOpenStreamFailed");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(PROJECT);
+            ADD_FIELD("path", _Path);
+            ADD_FIELD("filename", _CurrentTransit->url().fileName());
+            if (_CurrentTransit->password() != "")
+                ADD_FIELD("password", _CurrentTransit->password());
+            POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
+            GENERATE_JSON_DEBUG;
+        }
+        END_REQUEST;
+    }
 }
 
 void CloudController::OnOpenStreamSuccess(int id, QByteArray array)
@@ -536,12 +586,49 @@ void CloudController::OnOpenStreamFailed(int id, QByteArray array)
 {
 	Q_UNUSED(id)
 	Q_UNUSED(array)
+    SInfoManager::GetManager()->error("Cloud", "Unable to send file. Please check your access to the cloud or try again later.");
+    _CurrentTransit->setProgress(100);
+    _PendingFiles.removeAll(_CurrentTransit);
+    if (_PendingFiles.size() != 0)
+        _CurrentTransit = *_PendingFiles.begin();
+    else
+        return;
+    _CurrentTransit->setIsWaiting(false);
+    if (_CurrentFile)
+        delete _CurrentFile;
+    if (_CurrentStream)
+        delete _CurrentStream;
+    _CurrentFile = new QFile(_CurrentTransit->url().toLocalFile());
+    _CurrentStream = new QDataStream(_CurrentFile);
+    if (!_CurrentFile->open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Unable to open file !";
+    }
+    else
+    {
+        BEGIN_REQUEST;
+        {
+            SET_CALL_OBJECT(this);
+            SET_ON_DONE("OnOpenStreamSuccess");
+            SET_ON_FAIL("OnOpenStreamFailed");
+            ADD_URL_FIELD(USER_TOKEN);
+            ADD_URL_FIELD(PROJECT);
+            ADD_FIELD("path", _Path);
+            ADD_FIELD("filename", _CurrentTransit->url().fileName());
+            if (_CurrentTransit->password() != "")
+                ADD_FIELD("password", _CurrentTransit->password());
+            POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
+            GENERATE_JSON_DEBUG;
+        }
+        END_REQUEST;
+    }
 }
 
 void CloudController::OnCloseStreamSuccess(int id, QByteArray array)
 {
 	Q_UNUSED(id)
 	Q_UNUSED(array)
+    _CurrentTransit->setProgress(100);
     _PendingFiles.removeAll(_CurrentTransit);
     if (_PendingFiles.size() == 0)
     {
@@ -621,10 +708,10 @@ void CloudController::OnDownloadEnd()
     FileDownloader *downloader = static_cast<FileDownloader*>(QObject::sender());
     if (downloader != nullptr && _CurrentDownload.contains(downloader))
     {
+        _CurrentDownload[downloader]->setProgress(100);
         QString pathFile = pathDownload + "/" + _CurrentDownload[downloader]->fileName();
         QFileInfo info(pathFile);
         int i = 1;
-        qDebug() << pathFile;
         while (info.exists())
         {
             pathFile = info.dir().path() + "/" + info.baseName() + "(" + QVariant(i).toString() + ")." + info.completeSuffix();
@@ -643,6 +730,7 @@ void CloudController::OnDownloadEnd()
             QByteArray array = downloader->DownloadedData();
             stream.writeRawData(array.data(), array.size());
             file.close();
+            _CurrentDownload[downloader]->setUrl(pathFile);
         }
     }
 }
@@ -657,7 +745,6 @@ void CloudController::OnDownloadProgress(float value)
     FileDownloader *downloader = static_cast<FileDownloader*>(QObject::sender());
     if (downloader != nullptr && _CurrentDownload.contains(downloader))
     {
-        qDebug() << "Set progress to " << value;
         _CurrentDownload[downloader]->setProgress(value);
     }
 }

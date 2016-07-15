@@ -33,7 +33,7 @@ void ProjectSettingsModel::loadInformation()
     emit isLoadingChanged(m_isLoading != 0);
 }
 
-void ProjectSettingsModel::modifyInformation(QString title, QString description, QString company, QString email, QString phone, QString facebook, QString twitter)
+void ProjectSettingsModel::modifyInformation(QString title, QString description, QString company, QString email, QString phone, QString facebook, QString twitter, QString avatar)
 {
     BEGIN_REQUEST_ADV(this, "onModifyInformationDone", "onModifyInformationFail");
     {
@@ -47,6 +47,8 @@ void ProjectSettingsModel::modifyInformation(QString title, QString description,
         ADD_FIELD("facebook", facebook);
         ADD_FIELD("email", email);
         ADD_FIELD("twitter", twitter);
+        if (avatar != "")
+            ADD_FIELD("logo", avatar);
         PUT(API::DP_PROJECT, API::PUTR_EDIT_PROJECT);
     }
     END_REQUEST;

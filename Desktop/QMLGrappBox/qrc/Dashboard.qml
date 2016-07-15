@@ -90,7 +90,7 @@ Item {
                 id: elements
                 model: dashboardModel.projectList
                 delegate: Item {
-                    width: 400
+                    width: 300
                     height: 180
                     View {
                         anchors.fill: parent
@@ -141,6 +141,10 @@ Item {
                             avatarDate: modelData.avatarDate
 
                             fillMode: Image.PreserveAspectFit
+
+                            onSourceChanged: {
+                                console.log("Source changed : ", source)
+                            }
                         }
 
                         ColumnLayout {

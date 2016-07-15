@@ -455,7 +455,7 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 
 int API::DataConnectorOnline::Request(RequestType type, DataPart part, int request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
 {
-	Q_UNUSED(part)
+    qDebug() << "[API][REQUEST][" << part << "] " << type;
     QNetworkReply *reply = nullptr;
 	switch (type)
 	{

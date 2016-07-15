@@ -72,12 +72,17 @@ public:
     double progress();
     TransitType uploadType();
     bool isWaiting();
-    QUrl url();
+    Q_INVOKABLE QUrl url();
     QString password();
 
     void setIsWaiting(bool value);
     void setProgress(double value);
     void setPassword(QString password);
+
+    Q_INVOKABLE void setUrl(QString url)
+    {
+        _FileName = url;
+    }
 
 private:
     QUrl _FileName;
@@ -111,6 +116,7 @@ public:
     Q_INVOKABLE void sendFile(QUrl file, QString password);
     Q_INVOKABLE void deleteFile(QString file, QString password = "");
     Q_INVOKABLE void downloadFile(QString file, QString password = "");
+    Q_INVOKABLE void openFile(QString file);
 
     QQmlListProperty<FileData> directories();
     QQmlListProperty<FileData> files();
@@ -161,6 +167,7 @@ private:
     QList<FileDataTransit*> _PendingFiles;
     QMap<QString, QString> _PasswordSaving;
     QString _Path;
+    QString _OldPath;
     QString _PasswordSafe;
     bool _IsLoading;
     bool _DownloadPending;

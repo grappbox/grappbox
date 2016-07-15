@@ -561,3 +561,34 @@ void TimelineModel::loadTimelines()
     }
     END_REQUEST;
 }
+
+void TimelineModel::addTicket(QString title, QString message)
+{
+    BEGIN_REQUEST_ADV(this, "OnAddTicketDone", "OnAddTicketFail");
+    {
+        EPURE_WARNING_INDEX
+        ADD_FIELD("token", USER_TOKEN);
+        ADD_FIELD("projectId", PROJECT);
+        ADD_FIELD("title", title);
+        ADD_FIELD("description", message);
+        ADD_FIELD("stateId", 1);
+        ADD_FIELD("stateName", "To Do");
+        ADD_FIELD("clientOrigin", false);
+        POST(API::DP_BUGTRACKER, API::PR_CREATE_BUG);
+    }
+    END_REQUEST;
+}
+
+void TimelineModel::OnAddTicketDone(int id, QByteArray data)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(data)
+    SInfoManager::GetManager()->info("The message has been added to the bug tracker.");
+}
+
+void TimelineModel::OnAddTicketFail(int id, QByteArray data)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(data)
+    SInfoManager::GetManager()->emitError("Timeline", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
+}

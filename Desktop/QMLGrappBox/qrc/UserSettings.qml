@@ -20,6 +20,26 @@ Item {
         user = SDataManager.user
     }
 
+    FileDialog {
+        id: importFile
+        modality: Qt.WindowModal
+        title: "Please choose an image"
+        folder: shortcuts.home
+        selectExisting: true
+        selectMultiple: false
+        selectFolder: false
+        nameFilters: ["Image files (*.jpeg *.jpg *.png)"]
+        selectedNameFilter: "Image files (*.jpeg *.jpg *.png)"
+
+        onAccepted: {
+            avatarProject.avatarId = DataImageProvider.loadNewDataImage(fileUrl)
+        }
+        onRejected: {
+            visible = false
+        }
+        visible: false
+    }
+
     Dialog {
         id: alertAccess
         width: Units.dp(300)
@@ -41,24 +61,6 @@ Item {
         onUserChangedSuccess: {
             userSettingsForm.parent.info("User correctly modified.")
             userSettingsForm.parent.returnPage()
-        }
-    }
-
-    Dialog {
-        id: datePickerDialog
-        hasActions: true
-        contentMargins: 0
-        floatingActions: true
-
-        DatePicker {
-            id: datePicker
-            frameVisible: false
-            dayAreaBottomMargin : Units.dp(48)
-            isLandscape: true
-        }
-
-        onAccepted: {
-            user.birthday = datePicker.selectedDate
         }
     }
 
@@ -123,6 +125,7 @@ Item {
                             placeholderText: "First name"
                             floatingLabel: true
                             text: user.firstName
+                            hasError: text == ""
                             onTextChanged: {
                                 user.firstName = text
                             }
@@ -133,6 +136,7 @@ Item {
                             placeholderText: "Last name"
                             floatingLabel: true
                             text: user.lastName
+                            hasError: text == ""
                             onTextChanged: {
                                 user.lastName = text
                             }
@@ -151,13 +155,102 @@ Item {
                         name: "social/cake"
                     }
 
-                    content: Button {
-                        anchors.left: parent.left
-                        text: user.birthday.toDateString()
-                        elevation: 1
+                    content: Row {
+                        id: dateRow
+                        height: dayText.height
+                        property date birthdayDate: isNaN(user.birthday.getTime()) ? new Date(1970, 0, 1) : user.birthday
 
-                        onClicked: {
-                            datePickerDialog.show()
+                        function updateDate() {
+                            if (dayText.hasError || monthText.hasError || yearText.hasError || dayText.text == "" || monthText.text == "" || yearText.text == "")
+                                return
+                            user.birthday = new Date(parseInt(yearText.text), parseInt(monthText.text) - 1, parseInt(dayText.text))
+                            console.log(user.birthday)
+                            console.log(parseInt(yearText.text))
+                            console.log(parseInt(monthText.text))
+                            console.log(parseInt(dayText.text))
+                        }
+
+                        Component.onCompleted: {
+                            dayText.text = (dateRow.birthdayDate.getDate()).toString()
+                            monthText.text = (dateRow.birthdayDate.getMonth()).toString()
+                            yearText.text = (dateRow.birthdayDate.getFullYear()).toString()
+                        }
+
+                        TextField {
+                            id: dayText
+                            width: Units.dp(64)
+
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            validator: IntValidator{}
+
+                            onTextChanged: {
+                                dateRow.updateDate()
+                            }
+
+                            Component.onCompleted: {
+                                hasError = Qt.binding(function() {
+                                    var item = new Date(parseInt(yearText.text), parseInt(monthText.text) - 1, 0).getDate()
+                                    if (parseInt(text) > item)
+                                        return true
+                                    return parseInt(text) === 0
+                                })
+                            }
+                        }
+
+                        Item {
+                            width: Units.dp(8)
+                        }
+
+                        Label {
+                            text: "/"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Item {
+                            width: Units.dp(8)
+                        }
+
+                        TextField {
+                            id: monthText
+
+                            width: Units.dp(64)
+
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            validator: IntValidator{}
+
+                            onTextChanged: {
+                                dateRow.updateDate()
+                            }
+
+                            hasError: parseInt(text) > 12 || parseInt(text) === 0
+                        }
+
+                        Item {
+                            width: Units.dp(8)
+                        }
+
+                        Label {
+                            text: "/"
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
+
+                        Item {
+                            width: Units.dp(8)
+                        }
+
+                        TextField {
+                            id: yearText
+
+                            width: Units.dp(64)
+
+                            inputMethodHints: Qt.ImhDigitsOnly
+                            validator: IntValidator{}
+
+                            onTextChanged: {
+                                dateRow.updateDate()
+                            }
+
+                            hasError: parseInt(text) > new Date().getFullYear() || parseInt(text) < 1901
                         }
                     }
                 }
@@ -205,6 +298,9 @@ Item {
                         floatingLabel: true
                         enabled: false
                         text: user.mail
+                        onTextChanged: {
+                            user.mail = text
+                        }
                     }
                 }
 
@@ -300,6 +396,58 @@ Item {
                         text: user.viadeo
                         onTextChanged: {
                             user.viadeo = text
+                        }
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: Units.dp(8)
+                }
+
+                Label {
+                    id: avatarTitle
+
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        margins: Units.dp(16)
+                    }
+
+                    style: "title"
+                    text: "Avatar"
+                }
+
+                Row {
+                    height: avatarProject.height
+
+                    spacing: Units.dp(16)
+
+                    ImageAsync {
+                        id: avatarProject
+
+                        width: Units.dp(128)
+                        height: Units.dp(128)
+
+                        function idChanged(id) {
+                            if (id >= 0 && avatarId.indexOf("tmp#") == -1)
+                            {
+                                avatarId = "user#" + id
+                                avatarDate = user.id
+                            }
+                        }
+
+                        Component.onCompleted: {
+                            user.id.connect(idChanged)
+                        }
+                    }
+
+                    Button {
+                        text: "Modify avatar"
+                        elevation: 1
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        onClicked: {
+                            importFile.open()
                         }
                     }
                 }
@@ -402,9 +550,25 @@ Item {
 
                     Button {
                         text: "Save"
+                        enabled: email.text != "" && userFirstName.text != "" && userLastName.text != "" && !labelConfirmError.visible
                         textColor: Theme.primaryColor
                         onClicked: {
-                            userModel.setUserModel(user, "", "")
+                            var avatar = "";
+                            if (avatarProject.avatarId.indexOf("tmp#") != -1)
+                            {
+                                avatar = DataImageProvider.get64BasedImage(avatarProject.avatarId)
+                                DataImageProvider.replaceImageFromTmp(avatarProject.avatarId, "user#" + user.id)
+                            }
+
+                            var oldPasswordVal = ""
+                            var newPasswordVal = ""
+                            if (confirmNewPassword.text != "")
+                            {
+                                oldPasswordVal = previousPassword.text
+                                newPasswordVal = newPassword.text
+                            }
+                            dateRow.updateDate()
+                            userModel.setUserModel(user, oldPasswordVal, newPasswordVal, avatar)
                         }
                     }
                 }

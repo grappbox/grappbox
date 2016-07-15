@@ -1,6 +1,7 @@
 #include <QStandardPaths>
 #include <QDebug>
 #include <QDir>
+#include <QBuffer>
 #include "DataImageProvider.h"
 
 static DataImageProvider *__INSTANCE__DataImageProvider = nullptr;
@@ -22,7 +23,6 @@ DataImageProvider::DataImageProvider() : QQuickImageProvider(QQuickImageProvider
 
 void DataImageProvider::callAPI(QString id, QDateTime time)
 {
-    qDebug() << "2";
     bool isProject = id.contains("project#");
     DataImage *dataImg;
     if (_Pixmap.contains(id))
@@ -34,7 +34,6 @@ void DataImageProvider::callAPI(QString id, QDateTime time)
     dataImg->isWaiting = true;
     dataImg->time = time;
     _Pixmap[id] = dataImg;
-    qDebug() << id;
     BEGIN_REQUEST_ADV(this, isProject ? "onLogoProjectDone" : "onAvatarUserDone", isProject ? "onLogoProjectFail" : "onAvatarUserFail");
     {
         ADD_URL_FIELD(USER_TOKEN);
@@ -56,6 +55,11 @@ QPixmap DataImageProvider::requestPixmap(const QString &id, QSize *size, const Q
     QPixmap ret;
     if (_Pixmap.contains(id))
         ret = _Pixmap[id]->pixmap;
+    else if (id.contains("tmp#"))
+    {
+        int i = QVariant(id.split("#")[1]).toInt();
+        ret = *_TmpImage[i];
+    }
     else
         ret = id.contains("user") ? _AvatarDefault : _ImageDefault;
     if (size)
@@ -67,6 +71,8 @@ QPixmap DataImageProvider::requestPixmap(const QString &id, QSize *size, const Q
 
 bool DataImageProvider::isDataIdLoaded(QString id, QDateTime time)
 {
+    if (id.contains("tmp#"))
+        return true;
     if (_Pixmap.contains(id))
     {
         DataImage *item = _Pixmap[id];
@@ -88,8 +94,43 @@ bool DataImageProvider::isDataIdLoaded(QString id, QDateTime time)
     return false;
 }
 
+QString DataImageProvider::loadNewDataImage(QString url)
+{
+    url = url.mid(8, url.size() - 8);
+    _TmpImage.push_back(new QPixmap(url));
+    qDebug() << *_TmpImage[0] << " : " << url;
+    return "tmp#" + QVariant(_TmpImage.size() - 1).toString();
+}
+
+QString DataImageProvider::get64BasedImage(QString url)
+{
+    QPixmap ret;
+    if (url.contains("tmp#"))
+    {
+        ret = *_TmpImage[QVariant(url.split("#")[1]).toInt()];
+    }
+    else if (_Pixmap.contains(url))
+    {
+        ret = _Pixmap[url]->pixmap;
+    }
+    qDebug() << ret;
+
+    QBuffer encodedImage;
+    ret.save(&encodedImage, "PNG");
+
+    return QString(encodedImage.buffer().toBase64().toStdString().c_str());
+}
+
+void DataImageProvider::replaceImageFromTmp(QString tmp, QString idImage)
+{
+    DataImage *image = _Pixmap[idImage];
+    image->pixmap = *_TmpImage[QVariant(tmp.split("#")[1]).toInt()];
+}
+
 void DataImageProvider::loadDataFromId(QString id, QDateTime time)
 {
+    if (!id.contains("user#") && !id.contains("project#"))
+        return;
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
     if (!QDir(path).exists())
         QDir().mkdir(path);
@@ -100,7 +141,7 @@ void DataImageProvider::loadDataFromId(QString id, QDateTime time)
     if (!QDir(pathUsers).exists())
         QDir().mkdir(pathUsers);
     QString realPath = id.contains("user") ? pathUsers : pathProject;
-    qDebug() << "1";
+    qDebug() << "Load data from " << id;
     if (!QDir(realPath + "/" + id).exists())
         callAPI(id, time);
     else
@@ -118,8 +159,13 @@ void DataImageProvider::loadDataFromId(QString id, QDateTime time)
                 data->isLoaded = true;
                 data->isWaiting = false;
                 data->pixmap = map;
+                qDebug() << "For id #" << id << " : " << map;
                 emit changed(id);
             }
+        }
+        else
+        {
+            callAPI(id, time);
         }
     }
 }
@@ -188,6 +234,7 @@ void DataImageProvider::onLogoProjectDone(int id, QByteArray data)
     QImage img = QImage::fromData(dataimg);
     QPixmap pix = QPixmap::fromImage(img);
 
+    qDebug() << "Pix Project = " << pix;
     bool hasToSave = true;
     if (pix.isNull())
     {

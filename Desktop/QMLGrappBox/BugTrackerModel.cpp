@@ -23,6 +23,7 @@ void BugTrackerModel::loadClosedTickets()
         ADD_URL_FIELD(USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_BUGTRACKER, API::GR_BUG_CLOSED);
+        GENERATE_JSON_DEBUG;
     }
     END_REQUEST;
 }

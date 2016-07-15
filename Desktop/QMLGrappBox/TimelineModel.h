@@ -243,6 +243,7 @@ public:
     Q_INVOKABLE void deleteMessageTimeline(int id, int parentId = -1);
     Q_INVOKABLE void editMessageTimeline(int parentId, int id, QString title, QString message);
     Q_INVOKABLE void loadTimelines();
+    Q_INVOKABLE void addTicket(QString title, QString message);
 
 signals:
 
@@ -320,6 +321,8 @@ public slots:
     void OnTimelineEditMessageFail(int id, QByteArray data);
     void OnGetTimelineDone(int id, QByteArray data);
     void OnGetTimelineFail(int id, QByteArray data);
+    void OnAddTicketDone(int id, QByteArray data);
+    void OnAddTicketFail(int id, QByteArray data);
 
 
 };

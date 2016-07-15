@@ -22,7 +22,7 @@ void UserModel::getUserModel()
     emit isLoadingChanged(true);
 }
 
-void UserModel::setUserModel(UserData *user, QString oldPassword, QString newPassword)
+void UserModel::setUserModel(UserData *user, QString oldPassword, QString newPassword, QString avatar)
 {
     BEGIN_REQUEST;
     {
@@ -38,6 +38,8 @@ void UserModel::setUserModel(UserData *user, QString oldPassword, QString newPas
             // Add here the old password.
             ADD_FIELD("password", newPassword);
         }
+        if (avatar != "")
+            ADD_FIELD("avatar", avatar);
         ADD_FIELD("phone", user->phone());
         ADD_FIELD("country", user->country());
         ADD_FIELD("linkedin", user->linkedin());
@@ -68,6 +70,7 @@ void UserModel::onGetUserDone(int id, QByteArray data)
     user->setFirstName(obj["firstname"].toString());
     user->setLastName(obj["lastname"].toString());
     user->setBirthday(JSON_TO_DATE(obj["birthday"].toString()));
+    qDebug() << user->birthday();
     user->setMail(obj["mail"].toString());
     user->setPhone(obj["phone"].toString());
     user->setCountry(obj["country"].toString());

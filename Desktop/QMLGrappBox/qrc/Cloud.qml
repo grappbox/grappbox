@@ -63,6 +63,7 @@ Item {
             }
             if (state == "ACCESS")
                 controller.enterDirectory(fileName, filePassword.text)
+            filePassword.text = ""
         }
     }
 
@@ -174,7 +175,7 @@ Item {
         color: Theme.primaryDarkColor
         Row {
             anchors.fill: parent
-            anchors.right: typeViewIcon.left
+            //anchors.right: parent.left
             anchors.leftMargin: Units.dp(8)
             anchors.rightMargin: Units.dp(8)
             spacing: 8
@@ -236,7 +237,7 @@ Item {
                 }
             }
         }
-        IconButton {
+        /*IconButton {
             id: typeViewIcon
 
             anchors.right: parent.right
@@ -245,7 +246,7 @@ Item {
             height: toolBarHeight.height
             color: Theme.dark.iconColor
             onClicked: cloudPage.isList = !cloudPage.isList
-        }
+        }*/
     }
 
 
@@ -380,6 +381,7 @@ Item {
                             onDoubleClicked: {
                                 if (controller.path == "/" && modelData.fileName == "Safe")
                                 {
+                                    console.log("SAFE")
                                     getPasswordDownloadFile.state = "ACCESS"
                                     getPasswordDownloadFile.isDirectory = true
                                     getPasswordDownloadFile.isSafe = true
@@ -432,144 +434,149 @@ Item {
 
     // Download / Upload view
     View {
-        id: uploadBar
+        id: downloadItem
         visible: true
 
+        height: isOpen ? 332 : headerDownload.height
         width: 350
-        height: 332
 
         radius: 5
         elevation: 1
+
+        property bool isOpen: true
+
+        Behavior on height {
+            NumberAnimation { duration: 200 }
+        }
 
         anchors {
             right: parent.right
             bottom: parent.bottom
         }
 
+        Rectangle {
+            id: headerDownload
+            color: Theme.primaryDarkColor
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+            }
+            height: 32
 
+            IconButton {
 
-        anchors.rightMargin: 16
-        anchors.bottomMargin: 16
+                anchors.right: parent.right
+                anchors.rightMargin: Units.dp(16)
+                anchors.verticalCenter: parent.verticalCenter
 
-        Item {
-            id: downloadItem
-            anchors.fill: parent
+                id: open
+                iconName: downloadItem.isOpen ? "navigation/arrow_drop_up" : "navigation/arrow_drop_down"
 
-            Rectangle {
-                id: headerDownload
-                color: Theme.primaryDarkColor
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    top: parent.top
-                }
-                height: 32
-
-                IconButton {
-                    id: open
+                onClicked: {
+                    downloadItem.isOpen = !downloadItem.isOpen
                 }
             }
+        }
 
-            Item {
+        Flickable {
+            id: downloadPage
 
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: headerDownload.bottom
+            anchors.bottom: parent.bottom
 
+            clip: true
+            contentHeight: Math.max(layoutDownloadPage.height, height)
 
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    top: headerDownload.bottom
-                    bottom: parent.bottom
-                }
+            Column {
 
-                Flickable {
-                    id: downloadPage
+                id: layoutDownloadPage
+                anchors.left: parent.left
+                anchors.right: parent.right
 
-                    anchors.fill: parent
+                Repeater {
+                    model: controller.uploadingFiles
+                    delegate: ListItem.Standard {
+                        id: transitDrawUp
+                        text: modelData.fileName
 
-                    clip: true
-                    contentHeight: Math.max(layoutDownloadPage.height, height)
+                        anchors.right: parent.right
+                        anchors.left: parent.left
 
-                    Column {
+                        textColor: Theme.light.textColor
 
-                        id: layoutDownloadPage
+                        secondaryItem:
+                            ProgressCircle {
+                                indeterminate: modelData.isWaiting
+                                minimumValue: 0
+                                maximumValue: 100
+                                value: modelData.progress
+                                width: transitDrawUp.height
+                                height: transitDrawUp.height
 
-                        Repeater {
-                            model: controller.uploadingFiles
-                            delegate: ListItem.Standard {
-                                id: transitDrawUp
-                                text: modelData.fileName
-
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-
-                                textColor: Theme.light.textColor
-
-                                secondaryItem:
-                                    ProgressCircle {
-                                        indeterminate: modelData.isWaiting
-                                        minimumValue: 0
-                                        maximumValue: 100
-                                        value: modelData.progress
-                                        width: transitDrawUp.height
-                                        height: transitDrawUp.height
-
-                                        Label {
-                                        visible: !modelData.isWaiting
-                                        anchors.centerIn: parent
-                                        text: Math.round(modelData.progress) + "%"
-                                        color: Theme.light.textColor
-                                    }
-                                    }
-                                action: Icon {
+                                Label {
+                                    visible: !modelData.isWaiting
                                     anchors.centerIn: parent
-                                    name: "file/file_upload"
-                                    size: Units.dp(32)
-                                    color: Theme.light.iconColor
+                                    text: Math.round(modelData.progress) + "%"
+                                    color: Theme.light.textColor
                                 }
                             }
-                        }
 
-                        Repeater {
-                            model: controller.downloadingFiles
-                            delegate: ListItem.Standard {
-                                id: transitDrawDow
-                                text: modelData.fileName
-
-                                anchors.right: parent.right
-                                anchors.left: parent.left
-
-                                textColor: Theme.light.textColor
-
-                                secondaryItem: ProgressCircle {
-                                    indeterminate: modelData.isWaiting
-                                    minimumValue: 0
-                                    maximumValue: 100
-                                    value: modelData.progress
-                                    width: transitDrawDow.height
-                                    height: transitDrawDow.height
-
-                                    Label {
-                                        visible: !modelData.isWaiting
-                                        anchors.centerIn: parent
-                                        text: Math.round(modelData.progress) + "%"
-                                        color: Theme.light.textColor
-                                    }
-                                }
-
-                                action: Icon {
-                                    anchors.centerIn: parent
-                                    name: "file/file_download"
-                                    size: Units.dp(32)
-                                    color: Theme.light.iconColor
-                                }
-                            }
+                        action: Icon {
+                            anchors.centerIn: parent
+                            name: "file/file_upload"
+                            size: Units.dp(32)
+                            color: Theme.light.iconColor
                         }
                     }
                 }
-                Scrollbar {
-                    flickableItem: downloadPage
+
+                Repeater {
+                    model: controller.downloadingFiles
+                    delegate: ListItem.Standard {
+                        id: transitDrawDow
+                        text: modelData.fileName
+
+                        anchors.right: parent.right
+                        anchors.left: parent.left
+
+                        textColor: Theme.light.textColor
+
+                        secondaryItem: ProgressCircle {
+                            indeterminate: modelData.isWaiting
+                            minimumValue: 0
+                            maximumValue: 100
+                            value: modelData.progress
+                            width: transitDrawDow.height
+                            height: transitDrawDow.height
+
+                            Label {
+                                visible: !modelData.isWaiting
+                                anchors.centerIn: parent
+                                text: Math.round(modelData.progress) + "%"
+                                color: Theme.light.textColor
+                            }
+                        }
+
+                        onClicked: {
+                            controller.openFile(modelData.url())
+                        }
+
+                        action: Icon {
+                            anchors.centerIn: parent
+                            name: "file/file_download"
+                            size: Units.dp(32)
+                            color: Theme.light.iconColor
+                        }
+                    }
                 }
             }
+        }
+
+        Scrollbar {
+            flickableItem: downloadPage
         }
     }
 

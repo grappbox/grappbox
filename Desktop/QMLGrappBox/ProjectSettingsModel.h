@@ -204,7 +204,7 @@ public:
     explicit ProjectSettingsModel(QObject *parent = 0);
 
     Q_INVOKABLE void loadInformation();
-    Q_INVOKABLE void modifyInformation(QString title, QString description, QString company, QString email, QString phone, QString facebook, QString twitter);
+    Q_INVOKABLE void modifyInformation(QString title, QString description, QString company, QString email, QString phone, QString facebook, QString twitter, QString avatar);
     Q_INVOKABLE void addUser(QString users);
     Q_INVOKABLE void deleteUser(int idUser);
     Q_INVOKABLE void changeRoleUser(int idUser, int idRole, int oldIdRole);

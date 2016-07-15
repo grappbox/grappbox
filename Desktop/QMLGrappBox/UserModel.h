@@ -18,7 +18,7 @@ public:
     }
 
     Q_INVOKABLE void getUserModel();
-    Q_INVOKABLE void setUserModel(UserData *user, QString oldPassword = "", QString newPassword = "");
+    Q_INVOKABLE void setUserModel(UserData *user, QString oldPassword = "", QString newPassword = "", QString avatar = "");
 
     bool isLoading();
 

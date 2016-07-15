@@ -34,6 +34,9 @@ public:
 
 public:
     Q_INVOKABLE bool isDataIdLoaded(QString id, QDateTime time);
+    Q_INVOKABLE QString loadNewDataImage(QString url);
+    Q_INVOKABLE QString get64BasedImage(QString url);
+    Q_INVOKABLE void replaceImageFromTmp(QString tmp, QString idImage);
     void loadDataFromId(QString id, QDateTime time);
 
 signals:
@@ -55,6 +58,7 @@ private:
     QMap<QString, DataImage*> _Pixmap;
     QMap<int, QString> _LoadingImages;
     QMap<int, QDateTime> _LoadingTimes;
+    QList<QPixmap*> _TmpImage;
 };
 
 #endif // DATAIMAGEPROVIDER_H

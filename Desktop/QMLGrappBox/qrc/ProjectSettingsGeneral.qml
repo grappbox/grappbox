@@ -13,6 +13,26 @@ Column {
     anchors.margins: Units.dp(16)
     property ProjectSettingsModel projectSettingsModel
 
+    FileDialog {
+        id: importFile
+        modality: Qt.WindowModal
+        title: "Please choose an image"
+        folder: shortcuts.home
+        selectExisting: true
+        selectMultiple: false
+        selectFolder: false
+        nameFilters: ["Image files (*.jpeg *.jpg *.png)"]
+        selectedNameFilter: "Image files (*.jpeg *.jpg *.png)"
+
+        onAccepted: {
+            avatarProject.avatarId = DataImageProvider.loadNewDataImage(fileUrl)
+        }
+        onRejected: {
+            visible = false
+        }
+        visible: false
+    }
+
     TextField {
         id: name
         placeholderText: "Name"
@@ -41,18 +61,33 @@ Column {
 
         spacing: Units.dp(16)
 
-        Image {
+        ImageAsync {
             id: avatarProject
 
-            source: Qt.resolvedUrl("qrc:/icons/icons/default-avatar.min.png")
             width: Units.dp(128)
             height: Units.dp(128)
+
+            function idChanged(id) {
+                if (id >= 0 && avatarId.indexOf("tmp#") == -1)
+                {
+                    avatarId = "project#" + id
+                    avatarDate = projectSettingsModel.project.avatarDate
+                }
+            }
+
+            Component.onCompleted: {
+                projectSettingsModel.idProjectChanged.connect(idChanged)
+            }
         }
 
         Button {
             text: "Modify avatar"
             elevation: 1
             anchors.verticalCenter: parent.verticalCenter
+
+            onClicked: {
+                importFile.open()
+            }
         }
     }
 
@@ -80,7 +115,7 @@ Column {
         Component.onCompleted: {
             hasError = Qt.binding(function() {
                 var mailValidator = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return !mailValidator.test(email.text)
+                return email.text != "" && !mailValidator.test(email.text)
             })
         }
     }
@@ -160,7 +195,14 @@ Column {
             enabled: !formError
 
             onClicked: {
-                projectSettingsModel.modifyInformation(name.text, description.text, company.text, email.text, phone.text, facebook.text, twitter.text)
+                var avatar = "";
+                if (avatarProject.avatarId.indexOf("tmp#") != -1)
+                {
+                    avatar = DataImageProvider.get64BasedImage(avatarProject.avatarId)
+                    DataImageProvider.replaceImageFromTmp(avatarProject.avatarId, "project#" + projectSettingsModel.idProject)
+                }
+
+                projectSettingsModel.modifyInformation(name.text, description.text, company.text, email.text, phone.text, facebook.text, twitter.text, avatar)
             }
         }
     }

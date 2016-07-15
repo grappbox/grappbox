@@ -13,7 +13,8 @@ Item {
     property alias title: titleLabel.text
     property alias description: descriptionLabel.text
     property alias information: infoLabel.text
-    property alias iconSource: iconMiddle.source
+    property alias avatarId: iconMiddle.avatarId
+    property alias avatarDate: iconMiddle.avatarDate
     property bool large: true
     property double animationTime: 100
 
@@ -64,7 +65,7 @@ Item {
             source: Qt.resolvedUrl("qrc:/images/qrc/images/circle.png");
             anchors.fill: parent
             anchors.margins: iconMiddle.anchors.margins
-            averageColor: "red"
+            averageColor: Theme.accentColor
         }
 
         ColorOverlay {
@@ -73,8 +74,11 @@ Item {
             color: Theme.primaryColor
         }
 
-        CircleImage {
+        CircleImageAsync {
             id: iconMiddle
+
+            source: "image://api/user#default"
+
             anchors.fill: parent
             anchors.margins: Units.dp(4)
         }

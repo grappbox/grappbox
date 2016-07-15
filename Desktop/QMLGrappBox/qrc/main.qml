@@ -250,8 +250,8 @@ Item {
     ApplicationWindow {
         id: demo
 
-        minimumWidth: Units.dp(500)
-        minimumHeight: Units.dp(300)
+        minimumWidth: Units.dp(600)
+        minimumHeight: Units.dp(480)
 
         title: SDataManager.hasProject ? "GrappBox - " + SDataManager.project.name : "GrappBox"
         visible: !loginPage.visible && controller.isLoged
@@ -283,6 +283,8 @@ Item {
 
         property string previousSelectedComponent: ""
         property string selectedComponent: ""
+
+        property bool navOpen
 
         property var arguments
         property string loadPageName
@@ -348,144 +350,11 @@ Item {
 
             ]
 
-            backAction: navDrawer.action
+            backAction: Action {
+                iconName: "navigation/menu"
 
-            NavigationDrawer {
-                id: navDrawer
-                anchors.topMargin: Units.dp(48)
-                showing: false
-                overlayColor: "transparent"
-                dismissOnTap: demo.width < Units.dp(1100)
-
-                Flickable {
-                    anchors.fill: parent
-
-                    contentHeight: Math.max(content.implicitHeight, height)
-
-                    Column {
-                        id: content
-                        anchors.fill: parent
-
-                        Rectangle {
-
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            height: infoMenuColumn.implicitHeight
-
-                            color: "#bdbdbd"
-
-                            IconButton {
-                                iconName: "hardware/keyboard_backspace"
-                                onClicked: {
-                                    navDrawer.close()
-                                }
-                                anchors.right: parent.right
-                                anchors.top: parent.top
-                                anchors.margins: Units.dp(20)
-                            }
-
-                            Column {
-
-                                id: infoMenuColumn
-
-                                anchors.left: parent.left
-                                anchors.right: parent.right
-                                anchors.top: parent.top
-                                anchors.leftMargin: Units.dp(20)
-
-                                Item {
-                                    width: parent.width
-                                    height: Units.dp(20)
-                                }
-
-                                CircleImageAsync {
-                                    height: Units.dp(90)
-                                    width: height
-
-                                    function onIdChanged(id) {
-                                        if (id === -1)
-                                            return
-                                        avatarDate = SDataManager.user.avatarDate
-                                        avatarId = "user#" + SDataManager.user.id
-                                    }
-
-                                    Component.onCompleted: {
-                                        SDataManager.user.idChanged.connect(onIdChanged)
-                                    }
-                                }
-
-                                Item {
-                                    width: parent.width
-                                    height: Units.dp(20)
-                                }
-
-                                Label {
-                                    text: SDataManager.user.lastName + " " + SDataManager.user.firstName
-                                    style: "body1"
-                                }
-
-                                Item {
-                                    width: parent.width
-                                    height: Units.dp(8)
-                                }
-
-                                Label {
-                                    text: SDataManager.user.mail
-                                    style: "body1"
-                                }
-
-                                Item {
-                                    width: parent.width
-                                    height: Units.dp(8)
-                                }
-
-                                Label {
-                                    text: SDataManager.hasProject ? SDataManager.project.name : "No project selected"
-                                    style: "body2"
-                                }
-
-                                Item {
-                                    width: parent.width
-                                    height: Units.dp(8)
-                                }
-
-                                Button {
-                                    text: "Change"
-                                    visible: SDataManager.hasProject
-                                    elevation: 1
-                                    onClicked: {
-                                        SDataManager.changeProject()
-                                        demo.selectedComponent = "Dashboard"
-                                    }
-                                }
-
-                                Item {
-                                    width: parent.width
-                                    height: Units.dp(8)
-                                }
-                            }
-                        }
-
-                        Repeater {
-                            model: demo.sectionTitles
-                            delegate: ListItem.Standard {
-
-                                action: Icon {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    name: demo.sectionIcon[index]
-                                }
-
-                                text: modelData
-                                selected: modelData == demo.selectedComponent
-                                visible: SDataManager.hasProject || index <= 1
-                                onClicked: {
-                                    demo.previousSelectedComponent = demo.selectedComponent
-                                    demo.selectedComponent = modelData
-                                    navDrawer.close()
-                                }
-                            }
-                        }
-                    }
+                onTriggered: {
+                    demo.navOpen = !demo.navOpen
                 }
             }
 
@@ -511,14 +380,169 @@ Item {
 
             Item {
 
+                View {
+                    id: content
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.leftMargin: demo.navOpen ? 0 : -width
+
+                    elevation: 1
+
+                    Behavior on anchors.leftMargin {
+                        NumberAnimation { duration: 200 }
+                    }
+
+                    width: Units.dp(300)
+
+                    Flickable {
+                        id: flickableNavDrawer
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: rectInfo.bottom
+                        anchors.bottom: parent.bottom
+
+                        contentHeight: Math.max(parent.height - rectInfo.height, columnFunction.implicitHeight)
+
+                        Column {
+                            id: columnFunction
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+
+                            Repeater {
+                                model: demo.sectionTitles
+                                delegate: ListItem.Standard {
+
+                                    action: Icon {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        name: demo.sectionIcon[index]
+                                    }
+
+                                    text: modelData
+                                    selected: modelData == demo.selectedComponent
+                                    visible: SDataManager.hasProject || index <= 1
+                                    onClicked: {
+                                        demo.previousSelectedComponent = demo.selectedComponent
+                                        demo.selectedComponent = modelData
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        id: rectInfo
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        height: infoMenuColumn.implicitHeight
+
+                        color: "#bdbdbd"
+
+                        IconButton {
+                            iconName: "hardware/keyboard_backspace"
+                            onClicked: {
+                                demo.navOpen = false
+                            }
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.margins: Units.dp(20)
+                        }
+
+                        Column {
+
+                            id: infoMenuColumn
+
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.leftMargin: Units.dp(20)
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(20)
+                            }
+
+                            CircleImageAsync {
+                                height: Units.dp(90)
+                                width: height
+
+                                function onIdChanged(id) {
+                                    if (id === -1)
+                                        return
+                                    avatarDate = SDataManager.user.avatarDate
+                                    avatarId = "user#" + SDataManager.user.id
+                                }
+
+                                Component.onCompleted: {
+                                    SDataManager.user.idChanged.connect(onIdChanged)
+                                }
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(20)
+                            }
+
+                            Label {
+                                text: SDataManager.user.lastName + " " + SDataManager.user.firstName
+                                style: "body1"
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+
+                            Label {
+                                text: SDataManager.user.mail
+                                style: "body1"
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+
+                            Label {
+                                text: SDataManager.hasProject ? SDataManager.project.name : "No project selected"
+                                style: "body2"
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+
+                            Button {
+                                text: "Change"
+                                visible: SDataManager.hasProject
+                                elevation: 1
+                                onClicked: {
+                                    SDataManager.changeProject()
+                                    demo.selectedComponent = "Dashboard"
+                                }
+                            }
+
+                            Item {
+                                width: parent.width
+                                height: Units.dp(8)
+                            }
+                        }
+                    }
+
+                    Scrollbar {
+                        flickableItem: flickableNavDrawer
+                    }
+                }
+
                 Flickable {
                     id: flickable
                     anchors {
-                        left: parent.left
+                        left: demo.width < Units.dp(500) ? parent.right : content.right
                         right: parent.right
                         top: parent.top
                         bottom: parent.bottom
-                        //leftMargin: demo.width < Units.dp(1100) ? Units.dp(0) : navDrawer.width - navDrawer.leftMargin
                     }
                     clip: true
                     contentHeight: Math.max(example.implicitHeight + 40, height)

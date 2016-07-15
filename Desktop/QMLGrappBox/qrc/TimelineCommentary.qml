@@ -17,6 +17,7 @@ Item {
     signal editMessages(int parentId, int id, string title, string message)
     signal deleteMessage(int id, int parentId)
     signal addComment(string message)
+    signal makeBug(string title, string message)
 
     Rectangle {
         id: background
@@ -83,11 +84,14 @@ Item {
 
                     height: 48
 
-                    Image {
+                    CircleImageAsync {
                         id: userAvatar
                         width: 48
                         height: 48
-                        source: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
+
+                        avatarId: messageData.associatedUser ? messageData.associatedUser.id : undefined
+                        avatarDate: messageData.associatedUser ? messageData.associatedUser.avatarDate : undefined
+
                         anchors.left: parent.left
                     }
 
@@ -212,6 +216,10 @@ Item {
                         visible: !isEditingMessage && (messageData.associatedUser && messageData.associatedUser.id === SDataManager.user.id)
                         id: convertIntoBugButton
                         iconName: "action/bug_report"
+
+                        onClicked: {
+                            makeBug(messageData.title, messageData.message)
+                        }
                     }
 
                     Button {
@@ -312,13 +320,15 @@ Item {
 
                         property bool onEditComment: false
 
-                        Image {
+                        CircleImageAsync {
                             id: avatarComment
 
                             anchors.left: parent.left
                             anchors.top: parent.top
 
-                            source: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
+                            avatarId: modelData.associatedUser.id
+                            avatarDate: modelData.associatedUser.avatarDate
+
                             height: Units.dp(48)
                             width: Units.dp(48)
                         }

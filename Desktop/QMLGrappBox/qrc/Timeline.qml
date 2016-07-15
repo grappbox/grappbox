@@ -133,7 +133,8 @@ Item {
                     title: modelData.title
                     description: modelData.message
                     information: "By " + modelData.associatedUser.firstName + " - " + Qt.formatDateTime(modelData.lastEdit, "dddd, MMMM dd - hh:mm AP")
-                    iconSource: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
+                    avatarId: modelData.associatedUser.id
+                    avatarDate: modelData.associatedUser.avatarDate
                     onRight: index % 2 == 0
                     large: parent.width >= 1170
 
@@ -212,7 +213,8 @@ Item {
                     title: modelData.title
                     description: modelData.message
                     information: "By " + modelData.associatedUser.firstName + " - " + Qt.formatDateTime(modelData.lastEdit, "dddd, MMMM dd - hh:mm AP")
-                    iconSource: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
+                    avatarId: modelData.associatedUser.id
+                    avatarDate: modelData.associatedUser.avatarDate
                     onRight: index % 2 == 0
                     large: parent.width >= 1170
 
@@ -294,6 +296,10 @@ Item {
 
         onAddComment: {
             modelTimeline.addMessageTimeline(messageData.id, message)
+        }
+
+        onMakeBug: {
+            modelTimeline.addTicket(title, message)
         }
     }
 

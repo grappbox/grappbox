@@ -9,6 +9,8 @@ import GrappBoxController 1.0
 import QtQuick.Controls.Styles 1.3 as Styles
 
 Column {
+    id: ticketColumn
+
     anchors.fill: parent
     anchors.margins: Units.dp(16)
 
@@ -211,11 +213,13 @@ Column {
         anchors.right: parent.right
         height: columnMainMessage.implicitHeight
 
-        Image {
-            source: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
+        CircleImageAsync {
             width: Units.dp(48)
             height: Units.dp(48)
             Layout.alignment: Qt.AlignTop
+
+            avatarId: ticketColumn.ticket != undefined ? "user#" + ticketColumn.ticket.creator.id : undefined
+            avatarDate: ticketColumn.ticket != undefined ? ticketColumn.ticket.creator.avatarDate : undefined
         }
 
         Item {
@@ -554,15 +558,17 @@ Column {
 
             property bool onEditComment: false
 
-            Image {
+            CircleImageAsync {
                 id: avatarComment
 
                 anchors.left: parent.left
                 anchors.top: parent.top
 
-                source: Qt.resolvedUrl("qrc:/icons/icons/linkedin-box.svg")
                 height: Units.dp(48)
                 width: Units.dp(48)
+
+                avatarId: "user#" + modelData.user.id
+                avatarDate: modelData.user.avatarDate
             }
 
             Column {
