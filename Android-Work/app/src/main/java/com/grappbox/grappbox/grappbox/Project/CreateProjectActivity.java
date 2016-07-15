@@ -65,7 +65,7 @@ public class CreateProjectActivity extends AppCompatActivity {
             builder.show();
             return ;
         }
-        APIRequestCreateProject api = new APIRequestCreateProject(this);
-        api.execute(title, safePassword, desc, phone, company, facebook, twitter, mail);
+/*        APIRequestCreateProject api = new APIRequestCreateProject(this);
+        api.execute(title, safePassword, desc, phone, company, facebook, twitter, mail);*/
     }
 }

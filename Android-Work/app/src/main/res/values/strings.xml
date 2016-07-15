@@ -212,6 +212,7 @@
     <string name="yes_answer">Yes</string>
     <string name="no_answer">No</string>
     <string name="title_activity_create_project">CreateProjectActivity</string>
+    <string name="category_confirm_project_creation">Confirm creation</string>
 
     <string name="project_create_title">Project creation</string>
     <string name="project_create_title_hint">Your project title</string>

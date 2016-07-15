@@ -52,11 +52,13 @@
         android:title="@string/catefory_profile_user_security"
         android:key="pref_category_profile_security">
 
-        <EditTextPreference
-            android:key="pref_password"
-            android:inputType="textPassword"
-            android:title="password"
-            android:summary="Password connexion"/>
+            <com.grappbox.grappbox.grappbox.Model.UserPasswordPreference
+                android:key="pref_password"
+                android:title="@string/password_label"
+                android:dialogTitle="@string/password_label"
+                android:positiveButtonText="@string/positive_response"
+                android:negativeButtonText="@string/negative_response"
+                android:dialogLayout="@layout/layout_set_password"/>
 
     </PreferenceCategory>
 

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
+import com.grappbox.grappbox.grappbox.Model.UserPasswordPreference;
 import com.grappbox.grappbox.grappbox.R;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class UserProfilePreferenceFragment extends PreferenceFragment implements
     private EditTextPreference  _linkedinLink;
     private EditTextPreference  _viadeoLink;
     private EditTextPreference  _twitterLink;
-    private EditTextPreference  _password;
+    private UserPasswordPreference  _password;
     private ListPreference      _country;
     private boolean             _preferenceSet = false;
     private ContentValues       _preferenceKeyProfile = new ContentValues();
@@ -72,31 +73,7 @@ public class UserProfilePreferenceFragment extends PreferenceFragment implements
                 _country.setValueIndex(i);
         }
         _country.setEntryValues(charCountries);
-        _password = (EditTextPreference) findPreference("pref_password");
-        _password.setDefaultValue(SessionAdapter.getInstance().getUserData(SessionAdapter.KEY_PASSWORD));
-        _password.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                AlertDialog.Builder confirmDialog = new AlertDialog.Builder(getActivity());
-                confirmDialog.setTitle("New Password");
-                LayoutInflater inflater = getActivity().getLayoutInflater();
-                confirmDialog.setView(inflater.inflate(R.layout.dialog_change_password, null));
-                confirmDialog.setPositiveButton(R.string.confirm_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                confirmDialog.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                confirmDialog.show();
-                return true;
-            }
-        });
+        _password = (UserPasswordPreference) findPreference("pref_password");
         _preferenceKeyProfile.put("pref_first_name", "firstname");
         _preferenceKeyProfile.put("pref_last_name", "lastname");
         _preferenceKeyProfile.put("pref_phone_number_user", "phone");
@@ -129,13 +106,7 @@ public class UserProfilePreferenceFragment extends PreferenceFragment implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
         if (_preferenceSet){
-            Log.v("Prefernce key", key);
-            Log.v("Prefernce value", sharedPreferences.getString(key, null));
-            if (key.equals("pref_password")) {
-                AlertDialog.Builder confirmDialog = new AlertDialog.Builder(getActivity());
-                confirmDialog.setTitle("Confirm your newPassword");
-                confirmDialog.show();
-            } else {
+            if (!key.equals("pref_password")) {
                 _progress.show();
                 APIRequestSetUserProfile api = new APIRequestSetUserProfile(this);
                 api.execute(_preferenceKeyProfile.getAsString(key), sharedPreferences.getString(key, null));

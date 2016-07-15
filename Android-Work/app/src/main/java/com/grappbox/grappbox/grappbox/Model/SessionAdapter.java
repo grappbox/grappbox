@@ -121,6 +121,8 @@ public class SessionAdapter {
         return _pref.getString(KEY_PASSWORD, null);
     }
 
+    public void setPassword(String newPassword){ _editor.putString(KEY_PASSWORD, newPassword);}
+
     public String getLogin()
     {
         return _pref.getString(KEY_LOGIN, null);
