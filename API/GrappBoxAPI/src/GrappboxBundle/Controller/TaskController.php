@@ -407,9 +407,8 @@ class TaskController extends RolesAndTokenVerificationController
 				$startedAt = new \Datetime($content->started_at->date);
 			$task->setStartedAt($startedAt);
 		}
-		else
-		{
-			$task->setStartedAt(date_create("0000-00-00 00:00:00"));
+		else {
+			$task->setStartedAt(null);
 		}
 
 		if (array_key_exists('finished_at', $content))
