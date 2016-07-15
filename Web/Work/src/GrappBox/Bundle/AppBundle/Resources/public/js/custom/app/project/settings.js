@@ -91,7 +91,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   var content= "";
 
   // Scope variables initialization
-  $scope.data = { onLoad: true, customersLoad: true, usersLoad: true, project: { }, customers: { }, isValid: false, canEdit: true, editMode: false };
+  $scope.data = { onLoad: true, project: { }, customers: { }, message: "_invalid", users_message: "_invalid", roles_message: "_invalid", customers_message:"_invalid", userRights: false, editMode: false };
   $scope.projectID = $routeParams.project_id;
   $scope.action = { deleteProject: "" };
 
@@ -143,7 +143,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         $location.path("/settings/" + $scope.projectID);
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to update project. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "6.2.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
       }, $scope);
       $scope.editMode = false;
   };
@@ -193,7 +207,22 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         $route.reload();
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to retrieve project. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "6.5.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "Unable to retrieve project. Please try again.", delay: 5000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "Unable to retrieve project. Please try again.", delay: 5000 });
+        }
+
       }, $scope);
   };
 
@@ -223,7 +252,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         $location.path("/settings/" + $scope.projectID);
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to update password. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "6.2.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
+        }
       }, $scope);
   }
 
@@ -254,7 +297,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
                 break;
 
                 default:
-                Notification.error({ title: "Project", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                Notification.error({ title: "Project", message: "An error occurred. Please try again.", delay: 3000 });
                 break;
               }
             }
@@ -269,35 +312,53 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     if ($scope.projectID != 0) {
       $scope.data.project_new = false;
 
-      // $http.get($rootScope.api.url + "/roles/getuserroleforpart/" + $rootScope.user.token + "/" + $scope.user.id + "/" + $scope.projectID + "/project_settings")
-      //   .then(function successCallback(response) {
-      //     $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value > 1 ? true : false);
-      //   },
-      //   function errorCallback(response) {
-      //     $scope.data.canEdit = false;
-      //   });
-
       $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.projectID)
         .then(function successCallback(response) {
-          $scope.data.project_error = false;
           $scope.data.project = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+          $scope.data.message = (response.data.info && response.data.info.return_code == "1.6.1" ? "_valid" : "_empty");
           $scope.data.onLoad = false;
         },
         function errorCallback(response) {
-          $scope.data.project_error = true;
           $scope.data.project = null;
           $scope.data.onLoad = false;
+
+          if (response.data.info && response.data.info.return_code)
+            switch(response.data.info.return_code) {
+              case "6.3.3":
+              $rootScope.onUserTokenError();
+              break;
+
+              case "6.3.9":
+              $scope.data.message = "_denied";
+              break;
+
+              default:
+              $scope.data.message = "_invalid";
+              break;
+            }
         });
 
-      getRoles(true);
-      getCustomers();
+        getRoles(true);
+        getCustomers();
+        getRights();
     }
     else {
       $scope.data.project_new = true;
       $scope.data.onLoad = false;
-      $scope.data.project_error = false;
+      $scope.data.message = "_valid";
     }
   };
+
+  var getRights = function() {
+
+    $http.get($rootScope.api.url + "/roles/getuserroleforpart/" + $rootScope.user.token + "/" + $scope.user.id + "/" + $scope.projectID + "/project_settings")
+      .then(function successCallback(response) {
+        $scope.data.userRights = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value ? response.data.data.value : false);
+      },
+      function errorCallback(response) {
+        $scope.data.userRights = false;
+      });
+  }
 
 
   // ------------------------------------------------------
@@ -305,18 +366,33 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   // ------------------------------------------------------
 
   var getCustomers = function() {
+
     $scope.data.customersLoad = true;
 
     $http.get($rootScope.api.url + "/projects/getcustomeraccessbyproject/" + $rootScope.user.token + "/" + $scope.projectID)
       .then(function successCallback(response) {
-        $scope.data.customers_error = false;
         $scope.data.customers = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+        $scope.data.customers_message = (response.data.info && response.data.info.return_code == "1.6.1" ? "_valid" : "_empty");
         $scope.data.customersLoad = false;
       },
       function errorCallback(response) {
-        $scope.data.customers_error = true;
         $scope.data.customers = null;
         $scope.data.customersLoad = false;
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "6.8.3":
+            $rootScope.onUserTokenError();
+            break;
+
+            case "6.8.9":
+            $scope.data.customers_message = "_denied";
+            break;
+
+            default:
+            $scope.data.customers_message = "_invalid";
+            break;
+          }
       });
   };
 
@@ -335,7 +411,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         getCustomers();
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to create customer access. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "6.6.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
       }, $scope);
   };
 
@@ -347,7 +437,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         getCustomers();
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to delete customer access. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "6.9.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
       }, $scope);
   };
 
@@ -357,11 +461,12 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   // ------------------------------------------------------
 
   var getUsersRoles = function() {
+
     for (var i = 0; i < ($scope.data.roles).length; i++) {
       $http.get($rootScope.api.url + "/roles/getusersforrole/" + $rootScope.user.token + "/" + $scope.data.roles[i].id)
         .then(function successCallback(response) {
-          $scope.data.users_error = false;
           $scope.data.usersroles = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : {});
+          $scope.data.users_message = (response.data.info && response.data.info.return_code == "1.13.1" ? "_valid" : "_empty");
           for (var x = 0; x < ($scope.data.users).length; x++) {
             for (var y = 0; y < ($scope.data.usersroles.users_assigned).length; y++) {
               if ($scope.data.usersroles.users_assigned[y].id == $scope.data.users[x].id)
@@ -373,25 +478,53 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           }
         },
         function errorCallback(response) {
-          $scope.data.users_error = true;
+          if (response.data.info && response.data.info.return_code)
+            switch(response.data.info.return_code) {
+              case "13.10.3":
+              $rootScope.onUserTokenError();
+              break;
+
+              case "13.10.9":
+              $scope.data.message = "_denied";
+              break;
+
+              default:
+              $scope.data.message = "_invalid";
+              break;
+            }
         });
     }
   };
 
   var getUsers = function() {
+
     $scope.data.usersLoad = true;
 
     $http.get($rootScope.api.url + "/projects/getusertoproject/" + $rootScope.user.token + "/" + $scope.projectID)
       .then(function successCallback(response) {
-        $scope.data.users_error = false;
         $scope.data.users = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+        $scope.data.users_message = (response.data.info && response.data.info.return_code == "1.6.1" ? "_valid" : "_empty");
         getUsersRoles();
         $scope.data.usersLoad = false;
       },
       function errorCallback(response) {
-        $scope.data.users_error = true;
         $scope.data.users = null;
         $scope.data.usersLoad = false;
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "6.12.3":
+            $rootScope.onUserTokenError();
+            break;
+
+            case "6.12.9":
+            $scope.data.message = "_denied";
+            break;
+
+            default:
+            $scope.data.message = "_invalid";
+            break;
+          }
       });
   };
 
@@ -407,7 +540,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         Notification.success({ message: "User added", delay: 5000 });
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to add user. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "6.10.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
       }, $scope);
   };
 
@@ -419,7 +566,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         Notification.success({ message: "User removed", delay: 5000 });
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to remove user. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "6.11.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
       }, $scope);
   };
 
@@ -448,7 +609,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         },
         function errorCallback(response) {
           getUsersRoles();
-          Notification.warning({ message: "Unable to change user role. Please try again.", delay: 5000 });
+          if (response.data.info.return_code) {
+            switch(response.data.info.return_code) {
+
+              case "13.5.9":
+              Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+              break;
+
+              default:
+              Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+              break;
+            }
+          }
+          else {
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          }
         }, $scope);
     }
     else {
@@ -463,7 +638,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         },
         function errorCallback(response) {
           getUsersRoles();
-          Notification.warning({ message: "Unable to change user role. Please try again.", delay: 5000 });
+          if (response.data.info.return_code) {
+            switch(response.data.info.return_code) {
+
+              case "13.5.9":
+              Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+              break;
+
+              default:
+              Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+              break;
+            }
+          }
+          else {
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          }
         }, $scope);
     }
   };
@@ -486,18 +675,35 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   var getRoles = function(getUserFct) {
+
+    $scope.data.rolesLoad = true;
+
     $http.get($rootScope.api.url + "/roles/getprojectroles/" + $rootScope.user.token + "/" + $scope.projectID)
       .then(function successCallback(response) {
-        $scope.data.roles_error = false;
         $scope.data.roles = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+        $scope.data.roles_message = (response.data.info && response.data.info.return_code == "1.13.1" ? "_valid" : "_empty");
         if (getUserFct)
           getUsers();
         $scope.data.rolesLoad = false;
       },
       function errorCallback(response) {
-        $scope.data.roles_error = true;
         $scope.data.roles = null;
         $scope.data.rolesLoad = false;
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "13.4.3":
+            $rootScope.onUserTokenError();
+            break;
+
+            case "13.4.9":
+            $scope.data.roles_message = "_denied";
+            break;
+
+            default:
+            $scope.data.roles_message = "_invalid";
+            break;
+          }
       });
   };
 
@@ -527,7 +733,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         // TODO recharge role list for users
       },
       function errorCallback(response) {
-          Notification.warning({ message: "Unable to edit role. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "13.3.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
       // TODO check error -> do switch
       });
   };
@@ -556,7 +776,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         // TODO recharge role list for users
       },
       function errorCallback(response) {
-          Notification.warning({ message: "Unable to create role. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "13.1.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
       // TODO check error -> do switch
       });
   };
@@ -571,7 +805,21 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         getRoles();
       },
       function errorCallback(response) {
-          Notification.warning({ message: "Unable to delete role. Please try again.", delay: 5000 });
+        if (response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+
+            case "13.2.9":
+            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            break;
+
+            default:
+            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            break;
+          }
+        }
+        else {
+          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+        }
         // TODO check error -> do switch
       });
   };
