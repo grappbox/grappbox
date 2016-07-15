@@ -54,6 +54,7 @@ public class GlobalProgressFragment extends LoadingFragment {
                 api.execute();
             }
         };
+        _swiper.setOnRefreshListener(_refresher);
         return _view;
     }
 

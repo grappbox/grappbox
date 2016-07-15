@@ -2,6 +2,7 @@ package com.grappbox.grappbox.grappbox.Dashboard;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
@@ -16,10 +17,16 @@ public class APIRequestNextMeeting extends AsyncTask<String, Void, List<ContentV
 
     private final static String _PATH = "dashboard/getnextmeetings/";
     NextMeetingFragment _context;
+    SwipeRefreshLayout _swiper;
 
     APIRequestNextMeeting(NextMeetingFragment context)
     {
         _context = context;
+    }
+
+    public void SetRefreshSwiper(SwipeRefreshLayout swiper)
+    {
+        _swiper = swiper;
     }
 
     @Override
@@ -28,6 +35,8 @@ public class APIRequestNextMeeting extends AsyncTask<String, Void, List<ContentV
         super.onPostExecute(result);
         if (result != null)
             _context.createContentView(result);
+        if (_swiper != null)
+            _swiper.setRefreshing(false);
     }
 
     @Override

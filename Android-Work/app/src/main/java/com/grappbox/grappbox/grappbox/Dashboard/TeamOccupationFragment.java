@@ -21,6 +21,7 @@ import java.util.List;
 public class TeamOccupationFragment extends LoadingFragment {
 
     private List<ContentValues> _value = null;
+    private TeamOccupationFragment  _context = this;
     private View                _view;
     private SwipeRefreshLayout _swiper;
     public SwipeRefreshLayout.OnRefreshListener _refresher;
@@ -44,6 +45,15 @@ public class TeamOccupationFragment extends LoadingFragment {
             startLoading(_view, R.id.loader, _swiper);
         }
 
+        _refresher = new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                APIRequestTeamOccupation api = new APIRequestTeamOccupation(_context);
+                api.SetRefreshSwiper(_swiper);
+                api.execute();
+            }
+        };
+        _swiper.setOnRefreshListener(_refresher);
         return _view;
     }
 
