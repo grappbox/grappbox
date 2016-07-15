@@ -9,7 +9,7 @@
 * APP bugtracker page
 *
 */
-app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$route', '$location', function($rootScope, $scope, $routeParams, $http, Notification, $route, $location) {
+app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$route', '$location', 'timelineFactory', function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, timelineFactory) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
@@ -50,11 +50,17 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       });
   }
   else {
-    $scope.data.ticket = null;
+    if (timelineFactory.isMessageLoaded())
+    {
+      var data = timelineFactory.getMessageData();
+      $scope.data.ticket = {"title": data.title, "description": data.message };
+      timelineFactory.clear();
+    }
+    else {
+      $scope.data.ticket = null;
+    }
     $scope.data.bugtracker_new = true;
     $scope.data.onLoad = false;
-    //$scope.data.tags = [];
-    //$scope.data.users = [];
     $scope.data.message = "_valid";
     $scope.data.onLoad = false;
   }
