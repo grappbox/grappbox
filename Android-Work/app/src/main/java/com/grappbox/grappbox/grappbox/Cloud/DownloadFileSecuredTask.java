@@ -9,12 +9,16 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.grappbox.grappbox.grappbox.Model.APIConnectAdapter;
 import com.grappbox.grappbox.grappbox.Model.SessionAdapter;
 import com.grappbox.grappbox.grappbox.R;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -55,6 +59,26 @@ public class DownloadFileSecuredTask extends AsyncTask<String, Void, String> {
         super.onPostExecute(s);
     }
 
+    private String getInputStream(HttpURLConnection urlConnection) throws IOException {
+        InputStream inputStream = urlConnection.getInputStream();
+        StringBuffer buffer = new StringBuffer();
+        String res;
+        if (inputStream == null) {
+            res = "";
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            buffer.append(line);
+        }
+
+        if (buffer.length() == 0) {
+            res = null;
+        }
+        res = buffer.toString();
+        return res;
+    }
+
     @Override
     protected String doInBackground(String... params) {
         if (params.length < 4)
@@ -75,12 +99,14 @@ public class DownloadFileSecuredTask extends AsyncTask<String, Void, String> {
         if (cloudPath.startsWith(",,"))
             cloudPath = cloudPath.substring(1);
         try {
-            URL url = new URL("http://api.grappbox.com/app_dev.php/V0.2/cloud/filesecured/" + cloudPath + "/" + token + "/" + projectId + "/" + password + (safePassword.equals("") ? "" : "/" + safePassword));
+            URL url = new URL( APIConnectAdapter._APIUrlBase + APIConnectAdapter._APIBaseVersion + "/cloud/filesecured/" + cloudPath + "/" + token + "/" + projectId + "/" + password + (safePassword.equals("") ? "" : "/" + safePassword));
             Log.e("URL", url.toString());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setInstanceFollowRedirects(false);
-            connection.getInputStream();
+            String resultString = getInputStream(connection);
+            if (resultString.startsWith("{"))
+                Toast.makeText(_context, "The password you tried is incorrect for this file, or you don't have the rights to access to this part", Toast.LENGTH_LONG).show();
             URL nurl = connection.getURL();
             if (nurl.toString() == url.toString())
                 return null;

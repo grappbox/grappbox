@@ -86,6 +86,15 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == REFRESH_AFTER_PROJECT_CREATION && resultCode == Activity.RESULT_OK){
             refreshCurrentFragment();
         }
+        else
+        {
+            if (_fragmentManager == null)
+                _fragmentManager = getSupportFragmentManager();
+            Fragment fragment = _fragmentManager.findFragmentById(R.id.content_frame);
+            if (fragment == null)
+                return;
+            fragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void refreshCurrentFragment()

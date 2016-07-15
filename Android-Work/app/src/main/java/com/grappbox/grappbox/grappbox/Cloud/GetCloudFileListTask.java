@@ -70,9 +70,11 @@ public class GetCloudFileListTask extends AsyncTask<String, Void, String> {
         _askedPath = path;
         path = path.replace('/', ',');
         path = path.replace(' ', '|');
+        if (path.isEmpty())
+            cancel(true);
         try {
             api.setVersion("V0.2");
-            api.startConnection("cloud/list/" + token + "/" + String.valueOf(projectId) + "/" + path + (passwordSafe == "" ? "" : "/" + passwordSafe));
+            api.startConnection("cloud/list/" + token + "/" + String.valueOf(projectId) + "/" + path + (passwordSafe.isEmpty() ? "" : "/" + passwordSafe));
             api.setRequestConnection("GET");
 
             return api.getInputSream();

@@ -62,9 +62,11 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
         _path = "/";
     }
 
-    public void setPath(String path)
+    public void setPath(String path, boolean... haveToSync)
     {
         _path = path;
+        if (haveToSync.length > 0 && !haveToSync[0])
+            return;
         synchronizeBreacrumb();
     }
 
@@ -77,6 +79,7 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
         super.onCreate(savedInstanceState);
 
         _childrenContext = this;
+        _safePassword = "";
     }
     public void setSafePassword(String password)
     {
@@ -86,6 +89,8 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
     public void resetPath()
     {
         setPath("/");
+        GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
+        task.execute(_path, _safePassword);
     }
 
     private void handleSafe(GetCloudFileListTask currentTask)
@@ -108,6 +113,7 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
 
                 _safePassword = passview.getText().toString();
                 _currentLSTask.execute(_path, _safePassword);
+                synchronizeBreacrumb();
                 _currentLSTask = null;
             }
         });
@@ -136,10 +142,19 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
         List<String> list = new ArrayList<>();
         String[] path = _path.split("/");
         Collections.addAll(list, path);
+        if (list.size() < 1)
+        {
+            setPath("/");
+            GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
+            task.execute(_path, _safePassword);
+            return;
+        }
 
         list.remove(list.size() - 1);
         _tabs.removeTabAt(_tabs.getTabCount() - 1);
         setPath(TextUtils.join("/", list.toArray()));
+        GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
+        task.execute(_path, _safePassword);
     }
 
     public void createDirectory()
@@ -239,7 +254,7 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, MainActivity.PICK_DOCUMENT_FROM_SYSTEM);
+        getActivity().startActivityForResult(intent, MainActivity.PICK_DOCUMENT_FROM_SYSTEM);
 
     }
 
@@ -248,7 +263,7 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(intent, MainActivity.PICK_DOCUMENT_SECURED_FROM_SYSTEM);
+        getActivity().startActivityForResult(intent, MainActivity.PICK_DOCUMENT_SECURED_FROM_SYSTEM);
     }
 
     public void onRefreshEnd()
@@ -309,6 +324,11 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
                 list.performItemClick(_adapter.getView(position, convertView, parent), position, list.getItemIdAtPosition(position));
             }
 
+            @Override
+            public void onLongClick(FileItem item, int position, View convertView, ViewGroup parent) {
+                //list.getOnItemLongClickListener().onItemLongClick(list, _adapter.getView(position, convertView, parent),position, list.getItemIdAtPosition(position));
+            }
+
         });
         GetCloudFileListTask task = new GetCloudFileListTask(this, adapter);
         task.SetListener(new GetCloudFileListTask.CloudFileListListener() {
@@ -324,7 +344,7 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
                 refreshTask.execute(_path, _safePassword);
             }
         });
-        if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
+        if (_path.startsWith(_APISafeDirectoryPath) && _safePassword.isEmpty())
             handleSafe(task);
         else
             task.execute(_path, _safePassword);
@@ -378,7 +398,7 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
                 if (clickedItem.get_type() == FileItem.EFileType.BACK)
                 {
                     goToParent();
-                    if (_path == "")
+                    if (_path.isEmpty())
                         resetPath();
                     GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
                     if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
@@ -388,14 +408,17 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
                 }
                 else if (clickedItem.get_type() == FileItem.EFileType.DIR) {
                     if (_path == "/")
-                        setPath(_path + clickedItem.get_filename());
+                        setPath(_path + clickedItem.get_filename(), false);
                     else
-                        setPath(_path + "/" + clickedItem.get_filename());
+                        setPath(_path + "/" + clickedItem.get_filename(), false);
                     GetCloudFileListTask task = new GetCloudFileListTask(_childrenContext, _adapter);
-                    if (_path.startsWith(_APISafeDirectoryPath) && _safePassword == "")
+                    if (_path.startsWith(_APISafeDirectoryPath) && _safePassword.isEmpty())
                         handleSafe(task);
-                    else
+                    else{
                         task.execute(_path, _safePassword);
+                        synchronizeBreacrumb();
+                    }
+
                 } else {
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
                     dialogBuilder.setItems(R.array.cloudExplorer_fileAction, new DialogInterface.OnClickListener() {
@@ -503,6 +526,8 @@ public class CloudExplorerFragment extends LoadingFragment implements TabLayout.
     public void synchronizeBreacrumb()
     {
         String[] pathArray = _path.split("/");
+        if (_tabs == null)
+            return;
         int tabCount = _tabs.getTabCount();
 
         if (pathArray.length < tabCount)

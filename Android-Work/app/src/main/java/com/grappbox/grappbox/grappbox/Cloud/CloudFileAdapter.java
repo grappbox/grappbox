@@ -29,6 +29,7 @@ public class CloudFileAdapter extends ArrayAdapter<FileItem> {
     public interface CloudAdapterListener{
         void onInfoButtonClicked(FileItem item);
         void onOtherClick(FileItem item, int position, View convertView, ViewGroup parent);
+        void onLongClick(FileItem item, int position, View convertView, ViewGroup parent);
     }
 
     private CloudAdapterListener _listener;
@@ -68,6 +69,16 @@ public class CloudFileAdapter extends ArrayAdapter<FileItem> {
                             _listener.onOtherClick(file, position, convertView, parent);
                     }
                 });
+                if (file.get_type().equals(FileItem.EFileType.DIR))
+                    name.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            if (_listener != null)
+                                _listener.onLongClick(file, position, convertView, parent);
+                            return false;
+                        }
+                    });
+
             }
             if (img != null)
             {
@@ -84,16 +95,30 @@ public class CloudFileAdapter extends ArrayAdapter<FileItem> {
                             _listener.onOtherClick(file, position, convertView, parent);
                     }
                 });
+                if (file.get_type().equals(FileItem.EFileType.DIR))
+                    img.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            if (_listener != null)
+                                _listener.onLongClick(file, position, convertView, parent);
+                            return false;
+                        }
+                    });
             }
             if (infos != null)
             {
                 if (file.get_type() == FileItem.EFileType.BACK || file.get_type() == FileItem.EFileType.DIR)
                 {
-                    infos.setVisibility(GONE);
+                    Log.e("TEST", file.get_filename() + "::" + file.get_type().name());
+                    infos.setVisibility(View.GONE);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 5);
                     img.setLayoutParams(params);
                 }
-
+                else {
+                    infos.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 3);
+                    img.setLayoutParams(params);
+                }
                 infos.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.github.tibolte.agendacalendarview.utils.Utils;
 import com.grappbox.grappbox.grappbox.MainActivity;
@@ -348,7 +349,6 @@ public class UploadFileTask {
                             return null;
                         }
 
-
                         try {
                             json = new JSONObject(s);
                             JSONObject info = json.getJSONObject("info");
@@ -368,6 +368,8 @@ public class UploadFileTask {
                         }
                     } catch (JSONException | IOException e) {
                         e.printStackTrace();
+
+//                        Toast.makeText(_adapter.getContext(), "The upload failed", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return _uploadAPI.get(_id).getInputSream();
