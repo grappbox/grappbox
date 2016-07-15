@@ -62,7 +62,7 @@ angular.module('GrappBox.controllers')
                 else
                     $scope.userAssignedOnRole = false;
                 if (data.data.users_non_assigned.length == 0)
-                    $scope.userNonAssignedOnRole = "All users of the project are assigned to this role."
+                    $scope.userNonAssignedOnRole = "All users are assigned to this role."
                 else
                     $scope.userNonAssignedOnRole = false;
                 console.log(data);
