@@ -67,7 +67,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".Project.CreateProjectPreferenceActivity"
+            android:name=".Project.CreateProjectActivity"
             android:label="@string/title_activity_create_project"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

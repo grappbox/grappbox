@@ -37,6 +37,7 @@ public class TeamOccupationFragment extends LoadingFragment {
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_team_occupation, container, false);
         _swiper = (SwipeRefreshLayout) _view.findViewById(R.id.pull_refresher);
+        startLoading(_view, R.id.loader, _swiper);
         if (_value != null) {
             createContentView(_value);
         } else {

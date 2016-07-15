@@ -52,7 +52,6 @@ public class APIRequestGlobalProgress extends AsyncTask<String, Void, List<Conte
 
             resultAPI = APIConnectAdapter.getInstance().getInputSream();
             APIResponse = APIConnectAdapter.getInstance().getResponseCode();
-            Log.v("JSON Response", String.valueOf(APIResponse));
             if (APIResponse == 200) {
                 Log.v("JSON Content", resultAPI);
                 contentAPI = APIConnectAdapter.getInstance().getListGlobalProgress(resultAPI);

@@ -126,9 +126,9 @@
     <string name="event_title_hint">Title event</string>
     <string name="event_description">Description</string>
     <string name="event_description_hint">Event description</string>
-    <string name="event_begin_date">Begin date:</string>
+    <string name="event_begin_date">From:</string>
     <string name="event_type_label">Event type</string>
-    <string name="event_end_date">End date:</string>
+    <string name="event_end_date">To:</string>
     <string name="event_button_update">Update event information</string>
     <string name="event_button_add_user">Add user</string>
     <string name="event_delete_title_label">Are you sure you want to delete this event ?</string>

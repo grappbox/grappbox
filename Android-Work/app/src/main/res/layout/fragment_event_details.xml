@@ -9,52 +9,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event_header"
-        android:textSize="30sp"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:textColor="#c0392b"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event_title"
-        android:textSize="20sp"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"/>
-
     <EditText
         android:id="@+id/event_title"
         android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/event_title_hint"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/event_description"
-        android:textSize="20sp"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
-        android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"/>
+        android:hint="@string/event_title_hint"/>
 
     <EditText
         android:id="@+id/event_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
         android:lines="4"
         android:hint="@string/event_description_hint"/>
 
@@ -66,12 +36,12 @@
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"/>
+        android:paddingBottom="5dip" />
 
     <Spinner
         android:id="@+id/event_project"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -83,12 +53,12 @@
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"/>
+        android:paddingBottom="5dip" />
 
     <Spinner
         android:id="@+id/event_type"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -100,9 +70,7 @@
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"/>
+        android:paddingBottom="5dip" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -147,9 +115,7 @@
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="5dip"
-        android:paddingBottom="5dip"
-        android:textColor="#000"
-        android:textStyle="bold"/>
+        android:paddingBottom="5dip" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -207,8 +173,7 @@
         android:textSize="30sp"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
-        android:textColor="#c0392b"
-        android:textStyle="bold"/>
+        android:textColor="#c0392b"/>
 
     <com.grappbox.grappbox.grappbox.NonScrollListView
         android:id="@+id/event_list_user"
@@ -239,8 +204,7 @@
         android:textSize="30sp"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
-        android:textColor="#c0392b"
-        android:textStyle="bold"/>
+        android:textColor="#c0392b"/>
 
     <Button
         android:id="@+id/event_delete"

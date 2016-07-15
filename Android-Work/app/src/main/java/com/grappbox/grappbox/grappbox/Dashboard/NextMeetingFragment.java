@@ -41,6 +41,7 @@ public class NextMeetingFragment extends LoadingFragment {
                              Bundle savedInstanceState) {
         _view = inflater.inflate(R.layout.fragment_next_meeting, container, false);
         _swiper = (SwipeRefreshLayout) _view.findViewById(R.id.pull_refresher);
+        startLoading(_view, R.id.loader, _swiper);
         if (_value == null) {
             APIRequestNextMeeting api = new APIRequestNextMeeting(this);
             api.execute();
@@ -98,6 +99,11 @@ public class NextMeetingFragment extends LoadingFragment {
                 new String[] {"meeting_title", "meeting_subject", "date_meeting_start", "date_meeting_start_hour", "date_meeting_end", "date_meeting_end_hour", "logo_project_image_meeting"},
                 new int[] {R.id.meeting_title, R.id.meeting_subject, R.id.date_meeting_start, R.id.date_meeting_start_hour, R.id.date_meeting_end, R.id.date_meeting_end_hour, R.id.logo_project_image_metting});
         TeamList.setAdapter(meetingAdapter);
+    }
+
+    public void stopLoading()
+    {
+        endLoading();
     }
 
 }

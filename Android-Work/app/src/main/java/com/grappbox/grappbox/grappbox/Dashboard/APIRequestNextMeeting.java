@@ -37,6 +37,7 @@ public class APIRequestNextMeeting extends AsyncTask<String, Void, List<ContentV
             _context.createContentView(result);
         if (_swiper != null)
             _swiper.setRefreshing(false);
+        _context.stopLoading();
     }
 
     @Override
