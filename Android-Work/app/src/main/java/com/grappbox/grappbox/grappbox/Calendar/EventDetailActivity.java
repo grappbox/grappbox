@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +28,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by tan_f on 13/07/2016.
@@ -34,7 +37,8 @@ public class EventDetailActivity extends EventActivity {
 
     private int                 _idEvent;
     private int                 _projectId;
-    private Context             _context = this;
+    private Vector<String>      _mailList = new Vector<String>();
+    private EventDetailActivity _context = this;
     private String              _eventIcon;
     private EditText            _eventTitle;
     private EditText            _eventDescription;
@@ -100,19 +104,24 @@ public class EventDetailActivity extends EventActivity {
         }
         _eventListUser = (NonScrollListView) findViewById(R.id.event_list_user);
         _eventUpdateData = (Button) findViewById(R.id.event_update_data);
-        _eventUpdateData.setOnClickListener((View v) -> {
+        if (_eventUpdateData != null) {
+            _eventUpdateData.setOnClickListener((View v) -> {
+                sendUpadteRequestToAPI();
 
-            sendUpadteRequestToAPI();
-
-        });
+            });
+        }
         _eventAddUserEvent = (Button) findViewById(R.id.event_add_user);
-        _eventAddUserEvent.setOnClickListener((View v) -> {
-            addUserToEvent();
-        });
+        if (_eventAddUserEvent != null) {
+            _eventAddUserEvent.setOnClickListener((View v) -> {
+                addUserToEvent();
+            });
+        }
         _eventDeleteEventButton = (Button) findViewById(R.id.event_delete);
-        _eventDeleteEventButton.setOnClickListener((View v) -> {
-            deleteEvent();
-        });
+        if (_eventDeleteEventButton != null) {
+            _eventDeleteEventButton.setOnClickListener((View v) -> {
+                deleteEvent();
+            });
+        }
         _eventProjectSpinner = (Spinner) findViewById(R.id.event_project);
         _eventTypes = (Spinner) findViewById(R.id.event_type);
         ArrayAdapter<CharSequence> eventTypeAdapter = ArrayAdapter.createFromResource(this, R.array.event_types_list_default, android.R.layout.simple_spinner_dropdown_item);
@@ -176,46 +185,48 @@ public class EventDetailActivity extends EventActivity {
     private void addUserToEvent()
     {
         AlertDialog.Builder addUser = new AlertDialog.Builder(this);
-        addUser.setMessage("");
+        addUser.setTitle("Add User : ");
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_add_user_by_mail, null);
+        addUser.setView(view);
+        addUser.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                EditText mail =  (EditText)view.findViewById(R.id.mail_user);
 
-
-        /*
-        final Dialog eventAddUserDialog = new Dialog(getActivity());
-        eventAddUserDialog.setTitle("Add User : ");
-        eventAddUserDialog.setContentView(R.layout.dialog_event_add_user);
-        final EditText userMail = (EditText)eventAddUserDialog.findViewById(R.id.event_user_mail);
-        Button confirmChangePass = (Button)eventAddUserDialog.findViewById(R.id.event_confirm_add_user);
-        confirmChangePass.setOnClickListener((View v)-> {
-
-            APIRequestEventAddUser addUser = new APIRequestEventAddUser(this, _idEvent, eventAddUserDialog);
-            addUser.execute(userMail.getText().toString());
-
+                APIRequestEventAddUser addUser = new APIRequestEventAddUser(_context, _idEvent, true);
+                addUser.execute(mail.getText().toString());
+            }
         });
-        Button cancelChangePass = (Button)eventAddUserDialog.findViewById(R.id.event_cancel_add_user);
-        cancelChangePass.setOnClickListener((View v) -> {
-                userMail.setText("");
-            eventAddUserDialog.dismiss();
+        addUser.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
         });
-        eventAddUserDialog.show();*/
+        addUser.show();
     }
 
     private void deleteEvent()
     {
-        final Dialog eventDelete = new Dialog(this);
-        eventDelete.setTitle("Warning ! Delete Event : ");
-        eventDelete.setContentView(R.layout.dialog_event_delete);
-        Button confirmChangePass = (Button)eventDelete.findViewById(R.id.event_confirm_delete);
-        confirmChangePass.setOnClickListener((View v)-> {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Event : ");
+        builder.setMessage("Are you sure you want to delete this event ?");
+        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-            APIRequestDeleteEvent addUser = new APIRequestDeleteEvent(this, _idEvent, eventDelete);
-            addUser.execute();
+                APIRequestDeleteEvent deleteEvent = new APIRequestDeleteEvent(_context, _idEvent);
+                deleteEvent.execute();
+            }
+        });
+        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
         });
-        Button cancelChangePass = (Button)eventDelete.findViewById(R.id.event_cancel_delete);
-        cancelChangePass.setOnClickListener((View v) -> {
-            eventDelete.dismiss();
-        });
-        eventDelete.show();
+        builder.show();
     }
 
     private void sendUpadteRequestToAPI()
@@ -247,12 +258,14 @@ public class EventDetailActivity extends EventActivity {
             _eventEndDateHour.setText(hourFormat.format(endDate.getTime()));
             _eventIcon = event.get("icon").toString();
 
+            _mailList.clear();
             ArrayList<HashMap<String, String>> listUser = new ArrayList<HashMap<String, String>>();
             for (ContentValues user : userList)
             {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("event_list_profile_username", user.get("name").toString());
                 map.put("event_list_profile_email", user.get("email").toString());
+                _mailList.add(user.get("email").toString());
                 listUser.add(map);
             }
 
@@ -260,6 +273,41 @@ public class EventDetailActivity extends EventActivity {
                     new String[] {"event_list_profile_username", "event_list_profile_email"},
                     new int[] {R.id.event_list_profile_username, R.id.event_list_profile_email});
             _eventListUser.setAdapter(eventUserListAdapter);
+            _eventListUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String mail = _mailList.get(position);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+                    builder.setTitle("Remove event participant : ");
+
+                    Log.v("_mailList.size", String.valueOf(_mailList.size()));
+                    if (_mailList.size() <= 1){
+                        builder.setMessage("Event need a minimum of 1 participant");
+                        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                    } else {
+                        builder.setMessage("Are you sure you want to remove " + mail + " of this event ?");
+                        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                APIRequestEventAddUser addUser = new APIRequestEventAddUser(_context, _idEvent, false);
+                                addUser.execute(mail);
+                            }
+                        });
+                        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                    }
+                    builder.show();
+                }
+            });
         } catch (ParseException p)
         {
             Log.e("Date parse", "Parsing error");

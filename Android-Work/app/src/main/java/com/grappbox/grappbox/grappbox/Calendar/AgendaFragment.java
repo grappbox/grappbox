@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -109,18 +110,19 @@ public class AgendaFragment extends LoadingFragment implements CalendarPickerCon
             Intent intent = new Intent(this.getActivity(), EventDetailActivity.class);
             intent.putExtra("idEvent", (int)event.getId());
             startActivityForResult(intent, EVENT_DETAIL);
-//            startActivity(intent);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
-        if ((requestCode == ADD_EVENT_RESULT || requestCode == EVENT_DETAIL)){
-            AgendaFragment agendaFragment = new AgendaFragment();
-            getFragmentManager().beginTransaction().remove(this).commit();
-            getFragmentManager().beginTransaction().replace(R.id.content_frame, agendaFragment).commit();
-        }
+        Log.v("Cal", "Result");
+        Fragment frg;
+        frg = getFragmentManager().findFragmentById(R.id.content_frame);
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commit();
 
     }
 

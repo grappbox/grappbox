@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity
 
     private void refreshCurrentFragment()
     {
-        Fragment frg = null;
-        frg = getSupportFragmentManager().findFragmentByTag("Your_Fragment_TAG");
+        Fragment frg;
+        frg = getSupportFragmentManager().findFragmentById(R.id.content_frame);
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.detach(frg);
         ft.attach(frg);
