@@ -9,8 +9,8 @@
 * APP whiteboard page content
 *
 */
-app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canvasFactory", "objectFactory", "$http", "$location", "Notification", "$q", "moment", "$interval",
-    function($rootScope, $scope, $route, canvasFactory, objectFactory, $http, $location, Notification, $q, moment, $interval) {
+app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canvasFactory", "objectFactory", "$http", "$location", "Notification", "$q", "moment", "$interval", "$filter",
+    function($rootScope, $scope, $route, canvasFactory, objectFactory, $http, $location, Notification, $q, moment, $interval, $filter) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -18,15 +18,15 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   $scope.view = { onLoad: true, valid: false, authorized: false };
   $scope.data = { id: $route.current.params.id, project_id: $route.current.params.project_id, name: "", creator: "" };
   $scope.whiteboard = { canvas: {}, objects: [], points: [], fullscreen: false, wrapper: "" };
-  $scope.pull = { date: "", add: {}, delete: {}, interval: "", time: 3 };
-  $scope.push = { date: "", add: {}, delete: {} };
+  $scope.pull = { date: "", add: {}, delete: {}, interval: "", time: 2 };
+  $scope.push = { date: "" };
   $scope.action = { resetTool: "", toggleFullscreen: "" };
 
   $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
-  $scope.text = { value: "", italic: false, bold: false, font: { label: "24 pt", value: "24" } };
+  $scope.text = { value: "", italic: false, bold: false, size: { label: "24 pt", value: "24" } };
 
   $scope.colors = [
-    { name: "-None-", value: "none" },
+    { name: "-None-", value: null },
     { name: "Red", value: "#F44336" },
     { name: "Pink", value: "#E91E63" },
     { name: "Purple", value: "#9C27B0" },
@@ -54,7 +54,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
     { name: "Black", value: "#000000" }
   ];
 
-  $scope.fonts = [
+  $scope.size = [
     { label: "8 pt", value: "8" },
     { label: "9 pt", value: "9" },
     { label: "10 pt", value: "10" },
@@ -71,7 +71,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
     { label: "96 pt", value: "96" }
   ];
 
-  $scope.sizes = [
+  $scope.thickness = [
     { label: "0.5 pt", value: "0.5" },
     { label: "1 pt", value: "1" },
     { label: "1.5 pt", value: "1.5" },
@@ -84,9 +84,9 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
 
   $scope.selected = {
     color: { name: "Black", value: "#000000" },
-    fill: { name: "-None-", value: "none" },
-    size: { label: "1 pt", value: "1" },
-    tool: "none"
+    background: { name: "-None-", value: null },
+    thickness: { label: "1 pt", value: "1" },
+    tool: null
   };
 
 
@@ -115,7 +115,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
     $scope.whiteboard.canvas = document.getElementById("whiteboard-canvas");
     canvasFactory.setCanvas($scope.whiteboard.canvas);
     canvasFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
-    canvasFactory.setCanvasBuffer();
+    canvasFactory.clearCanvasBuffer();
   };
 
   // Routine definition (setup)
@@ -123,37 +123,47 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   var _setMouseHandlers = function() {
     // Canvas default callback: mouse pressed
     $scope.whiteboard.canvas.onmousedown = function(event) {
-      $scope.mouse.pressed = true;
-      $scope.mouse.start.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
-      $scope.mouse.start.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
-      $scope.mouse.end.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
-      $scope.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
-      $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
-      _renderObject(objectFactory.setRenderObject($scope));
+      if ($scope.selected.tool) {
+        $scope.mouse.pressed = true;
+        $scope.mouse.start.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+        $scope.mouse.start.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+        $scope.mouse.end.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+        $scope.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+        $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
+        if ($scope.selected.tool != "eraser")
+          _renderObject(objectFactory.setRenderObject(0, $scope));
+      }
     };
 
     // Canvas default callback: mouse drag
     $scope.whiteboard.canvas.onmousemove = function(event) {
-      if ($scope.mouse.pressed) {
-        var last = $scope.whiteboard.points[$scope.whiteboard.points.length - 1];
-        $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
-        $scope.mouse.end.x = last.x;
-        $scope.mouse.end.y = last.y;
-        _renderObject(objectFactory.setRenderObject($scope));
+      if ($scope.selected.tool) {
+        if ($scope.mouse.pressed) {
+          var last = $scope.whiteboard.points[$scope.whiteboard.points.length - 1];
+          $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
+          $scope.mouse.end.x = last.x;
+          $scope.mouse.end.y = last.y;
+          _renderObject(objectFactory.setRenderObject(0, $scope));
+        }
       }
     };
 
     // Canvas default callback: mouse release
     $scope.whiteboard.canvas.onmouseup = function() {
-      canvasFactory.addToCanvasBuffer(objectFactory.setRenderObject($scope));
-      _push(objectFactory.setRenderObjectToAPI($scope));
-
-      $scope.mouse.pressed = false;
-      $scope.whiteboard.points = [];
-      $scope.mouse.start.x = 0;
-      $scope.mouse.start.y = 0;
-      $scope.mouse.end.x = 0;
-      $scope.mouse.start.y = 0;
+      if ($scope.selected.tool) {
+        if ($scope.selected.tool != "eraser") {
+          canvasFactory.addToCanvasBuffer(objectFactory.setRenderObject(0, $scope));
+          _push(objectFactory.convertToAPIObject($scope));
+        }
+        else
+          _erase($scope);
+        $scope.mouse.pressed = false;
+        $scope.whiteboard.points = [];
+        $scope.mouse.start.x = 0;
+        $scope.mouse.start.y = 0;
+        $scope.mouse.end.x = 0;
+        $scope.mouse.start.y = 0;
+      }
     };
   };
 
@@ -162,7 +172,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   /* ==================== ROUTINES (LOCAL) ==================== */
   
   // Routine definition (local)
-  // Render/display canvas data using canvasFactory (from Web canvas)
+  // Render/display canvas data using canvasFactory
   var _renderObject = function(data) {
     if (data.tool === "line" || data.tool === "rectangle" || data.tool === "diamond" || data.tool === "ellipse")
       canvasFactory.renderCanvasBuffer();
@@ -182,22 +192,24 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             _setCanvas();
             _setMouseHandlers();
 
-            $scope.data.objects = (response.data.data.content ? response.data.data.content : null);
             $scope.data.name = response.data.data.name;
             $scope.data.creator = response.data.data.user.firstname + " " + response.data.data.user.lastname;
             $scope.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
             moment($scope.pull.date).subtract($scope.pull.time, 'seconds');
 
-            angular.forEach($scope.data.objects, function(value, key) {
-              var data = objectFactory.setRenderObjectFromAPI(value.object);
+            if (response.data.data.content)
+            angular.forEach(response.data.data.content, function(value, key) {
+              var data = objectFactory.convertToLocalObject(value.id, value.object);
+              this.whiteboard.objects.push(data);
               canvasFactory.addToCanvasBuffer(data);
               canvasFactory.renderObject(data);
-            });
+            }, $scope);
+
             deferred.resolve();
             break;
 
             default:
-            $scope.whiteboards.list = null;
+            $scope.whiteboards.objects = null;
             $scope.view.valid = false;
             $scope.view.onLoad = false;
             $scope.view.authorized = true;
@@ -206,7 +218,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
           }
         }
         else {
-          $scope.whiteboards.list = null;
+          $scope.whiteboards.objects = null;
           $scope.view.valid = false;
           $scope.view.onLoad = false;
           $scope.view.authorized = true;
@@ -223,7 +235,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             break;
 
             case "10.3.9":
-            $scope.whiteboards.list = null;
+            $scope.whiteboards.objects = null;
             $scope.view.valid = false;
             $scope.view.onLoad = false;
             $scope.view.authorized = false;
@@ -237,7 +249,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             break;
 
             default:
-            $scope.whiteboards.list = null;
+            $scope.whiteboards.objects = null;
             $scope.view.valid = false;
             $scope.view.onLoad = false;
             $scope.view.authorized = true;
@@ -246,7 +258,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
           }
         }
         else {
-          $scope.whiteboards.list = null;
+          $scope.whiteboards.objects = null;
           $scope.view.valid = false;
           $scope.view.onLoad = false;
           $scope.view.authorized = true;
@@ -273,17 +285,15 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             moment($scope.pull.date).subtract($scope.pull.time, 'seconds');
 
             angular.forEach($scope.pull.add, function(value, key) {
-              var data = objectFactory.setRenderObjectFromAPI(value.object);
+              var data = objectFactory.convertToLocalObject(value.id, value.object);
+              $scope.whiteboard.objects.push(data);
               canvasFactory.addToCanvasBuffer(data);
               canvasFactory.renderObject(data);
-              $scope.whiteboard.objects.push(data);
             });
-            // TEMP
-            // PULL-DELETE
             break;
 
             default:
-            $scope.whiteboards.list = null;
+            $scope.whiteboards.objects = null;
             $scope.view.valid = false;
             $scope.view.onLoad = false;
             $scope.view.authorized = true;
@@ -291,7 +301,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
           }
         }
         else {
-          $scope.whiteboards.list = null;
+          $scope.whiteboards.objects = null;
           $scope.view.valid = false;
           $scope.view.onLoad = false;
           $scope.view.authorized = true;
@@ -305,7 +315,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             break;
 
             case "10.5.9":
-            $scope.whiteboards.list = null;
+            $scope.whiteboards.objects = null;
             $scope.view.valid = false;
             $scope.view.onLoad = false;
             $scope.view.authorized = false;
@@ -317,7 +327,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             break;
 
             default:
-            $scope.whiteboards.list = null;
+            $scope.whiteboards.objects = null;
             $scope.view.valid = false;
             $scope.view.onLoad = false;
             $scope.view.authorized = true;
@@ -325,7 +335,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
           }
         }
         else {
-          $scope.whiteboards.list = null;
+          $scope.whiteboards.objects = null;
           $scope.view.valid = false;
           $scope.view.onLoad = false;
           $scope.view.authorized = true;
@@ -337,13 +347,67 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   // Routine definition (local)
   // Push whiteboard modifications
   var _push = function(object) {
-    $http.put($rootScope.api.url + "/whiteboard/pushdraw/" + $scope.data.id,
-      { data: { token: $rootScope.user.token, object: object }}).then(
-      function onWhiteboardPushSuccess(response) {
+    if (object)
+      $http.put($rootScope.api.url + "/whiteboard/pushdraw/" + $scope.data.id,
+        { data: { token: $rootScope.user.token, object: object }}).then(
+        function onWhiteboardPushSuccess(response) {
+          if (response.data.info) {
+            switch(response.data.info.return_code) {
+              case "1.10.1":
+              var data = objectFactory.convertToLocalObject(response.data.data.id, response.data.data.object);
+              $scope.whiteboard.objects.push(data);
+              canvasFactory.addToCanvasBuffer(data);
+              canvasFactory.renderObject(data);            
+              break;
+
+              default:
+              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              break;
+            }
+          }
+          else
+            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+        },
+        function onWhiteboardPushFail(response) {
+          if (response.data.info) {
+            switch(response.data.info.return_code) {
+              case "10.4.3":
+              $rootScope.onUserTokenError();
+              break;
+
+              case "10.4.9":
+              Notification.error({ title: "Whiteboard", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+              break;
+
+              default:
+              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              break;
+            }
+          }
+          else
+            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+        }
+      );
+  };
+
+  // Routine definition (local)
+  // Erase object
+  var _erase = function(scope) {
+    $http.put($rootScope.api.url + "/whiteboard/deleteobject",
+      { data: { token: $rootScope.user.token, whiteboardId:  $scope.data.id, radius: 30, center: { x: (scope.mouse.start.x + scope.mouse.end.x) / 2, y: (scope.mouse.start.y + scope.mouse.end.y) / 2 }}}).then(
+      function onWhiteboardEraseSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "1.10.1":
-            $scope.whiteboard.objects.push(objectFactory.setRenderObjectToStore(response.data.data.object.id, object));
+            for (i = 0; i < $scope.whiteboard.objects.length; ++i)
+              if ($scope.whiteboard.objects[i].id == response.data.data.id || $scope.whiteboard.objects[i].id == 0 || $scope.whiteboard.objects[i].with <= 0 || $scope.whiteboard.objects[i].height <= 0) {
+                $scope.whiteboard.objects.splice(i, 1);
+                canvasFactory.setCanvasBuffer($scope.whiteboard.objects);
+                canvasFactory.renderCanvasBuffer();
+              }
+            break;
+
+            case "1.10.3":
             break;
 
             default:
@@ -354,7 +418,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
         else
           Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
       },
-      function onWhiteboardPushFail(response) {
+      function onWhiteboardEraseFail(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "10.4.3":
@@ -377,12 +441,11 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   };
 
 
-
   /* ==================== SCOPE ROUTINES ==================== */
 
   // "Deselect" button handler
   $scope.action.resetTool = function() {
-    $scope.selected.tool = "none";
+    $scope.selected.tool = null;
     $scope.text.italic = false;
     $scope.text.bold = false;
   };

@@ -21,6 +21,13 @@
 /* ==================== GENERAL LAYOUT ==================== */
 /* ======================================================== */
 
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+}
+
 body { overflow-x: hidden; }
 body.modal-open { overflow: hidden; }
 
@@ -335,6 +342,7 @@ section:last-child { margin: 30px 0 60px 0; }
 #whiteboard .well.fullscreen { margin: 0 -15px; }
 #whiteboard .well.fullscreen .canvas-wrapper { max-height: 80vh; }
 #whiteboard .action { padding: 10px 0; background: #bdbdbd; }
+#whiteboard .action .divider { height: 50px; width: 2px; background: #333; float: left; border-radius: 5px; margin: 1px 5px 0 5px; }
 #whiteboard .action .form-group { display: inline; margin: 0; padding: 0; }
 #whiteboard .action .form-group label { font-size: inherit; line-height: inherit; width: auto; margin: 1px; padding: 10px; color: #333; cursor: pointer;  }
 #whiteboard .action .form-group input[type="text"],

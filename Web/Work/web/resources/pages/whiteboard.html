@@ -34,47 +34,54 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div class="col-lg-12 col-md-12 col-xs-12 action">
                 <div class="col-lg-12 col-md-12 col-xs-12">
                   <div class="form-group">
-                    <label for="pencil" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'pencil' ? 'active' : '' }]}">
+                    <label title="Pencil (free-hand)" for="pencil" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'pencil' ? 'active' : '' }]}">
                       <i class="material-icons">mode_edit</i>
                       <input type="radio" data-ng-model="selected.tool" id="pencil" value="pencil">
                     </label>
                   </div>
                   <div class="form-group">
-                    <label for="line" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'line' ? 'active' : '' }]}">
+                    <label title="Line" for="line" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'line' ? 'active' : '' }]}">
                       <i class="material-icons">remove</i>
                       <input type="radio" data-ng-model="selected.tool" id="line" value="line">
                     </label>
                   </div>
                   <div class="form-group">
-                    <label for="rectangle" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'rectangle' ? 'active' : '' }]}">
+                    <label title="Rectangle and square" for="rectangle" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'rectangle' ? 'active' : '' }]}">
                       <i class="material-icons">crop_square</i>
                       <input type="radio" data-ng-model="selected.tool" id="rectangle" value="rectangle">
                     </label>
                   </div>        
                   <div class="form-group">
-                    <label for="diamond" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'diamond' ? 'active' : '' }]}">
+                    <label title="Diamond" for="diamond" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'diamond' ? 'active' : '' }]}">
                       <i class="material-icons diamond">crop_square</i>
                       <input type="radio" data-ng-model="selected.tool" id="diamond" value="diamond">
                     </label>
                   </div>
                   <div class="form-group">
-                    <label for="ellipse" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'ellipse' ? 'active' : '' }]}">
+                    <label title="Ellipse and circle" for="ellipse" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'ellipse' ? 'active' : '' }]}">
                       <i class="material-icons">radio_button_unchecked</i>
                       <input type="radio" data-ng-model="selected.tool" id="ellipse" value="ellipse">
                     </label>
                   </div>
                   <div class="form-group">
-                    <label for="reset" class="col-md-1 col-xs-1">
+                    <label title="Eraser" for="eraser" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'eraser' ? 'active' : '' }]}">
+                      <i class="material-icons">delete</i>
+                      <input type="radio" data-ng-model="selected.tool" id="eraser" value="eraser">
+                    </label>
+                  </div>                  
+                  <div class="divider"></div>
+                  <div class="form-group">
+                    <label title="Reset selection" for="reset" class="col-md-1 col-xs-1">
                       <i class="material-icons">block</i>
                       <input type=radio data-ng-click="action.resetTool()" id="reset" value="reset"></input>
                     </label>
                   </div>
                   <div class="form-group">
-                    <label for="fullscreen" class="col-md-1 col-xs-1" data-ng-if="!whiteboard.fullscreen">
+                    <label title="Enter fullscreen mode" for="fullscreen" class="col-md-1 col-xs-1" data-ng-if="!whiteboard.fullscreen">
                       <i class="material-icons">fullscreen</i>
                       <input type="radio" data-ng-click="action.toggleFullscreen()" id="fullscreen" value="fullscreen"></input>
                     </label>
-                    <label for="fullscreen-exit" class="col-md-1 col-xs-1 active" data-ng-if="whiteboard.fullscreen">
+                    <label title="Exit fullscreen mode" for="fullscreen-exit" class="col-md-1 col-xs-1 active" data-ng-if="whiteboard.fullscreen">
                       <i class="material-icons">fullscreen_exit</i>
                       <input type="radio" data-ng-click="action.toggleFullscreen()" id="fullscreen-exit" value="fullscreen-exit"></input>
                     </label>
@@ -82,16 +89,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <div class="col-lg-12 col-md-12 col-xs-12">
                   <div class="form-group">
-                    <label for="draw" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">color_lens</i></label>
-                    <select id="draw" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.color"></select>
+                    <label for="color" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">color_lens</i></label>
+                    <select id="color" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.color"></select>
                   </div>
                   <div class="form-group">
-                    <label for="fill" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_color_fill</i></label>
-                    <select id="fill" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.fill"></select>
+                    <label for="background" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_color_fill</i></label>
+                    <select id="background" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.background"></select>
                   </div>
                   <div class="form-group">
-                    <label for="width" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_line_spacing</i></label>
-                    <select id="width" class="col-md-2 col-xs-12" data-ng-options="size.label for size in sizes track by size.value" data-ng-model="selected.size"></select>
+                    <label for="thickness" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_line_spacing</i></label>
+                    <select id="thickness" class="col-md-2 col-xs-12" data-ng-options="thickness.label for thickness in thickness track by thickness.value" data-ng-model="selected.thickness"></select>
                   </div>
                 </div>
                 <div class="col-lg-12 col-md-12 col-xs-12">
@@ -117,8 +124,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </label>
                   </div>
                   <div class="form-group">
-                    <label for="font" class="col-md-1 col-xs-12 control-label no-select"><i class="material-icons">format_size</i></label>
-                    <select id="font" class="col-md-2 col-xs-12" data-ng-options="font.label for font in fonts track by font.value" data-ng-model="text.font"></select>
+                    <label for="size" class="col-md-1 col-xs-12 control-label no-select"><i class="material-icons">format_size</i></label>
+                    <select id="size" class="col-md-2 col-xs-12" data-ng-options="size.label for size in size track by size.value" data-ng-model="text.size"></select>
                   </div>                  
                 </div>
               </div>

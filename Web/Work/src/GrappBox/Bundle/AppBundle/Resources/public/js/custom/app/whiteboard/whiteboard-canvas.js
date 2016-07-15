@@ -25,10 +25,10 @@ app.factory("canvasFactory", function() {
   // Routine definition
   // Free-hand draw rendering
   var _renderPencil = function(data) {
-    if (data.color != "none") {
+    if (data.color) {
       canvasContext.beginPath();
       canvasContext.strokeStyle = data.color;
-      canvasContext.lineWidth = data.size;
+      canvasContext.lineWidth = data.thickness;
       canvasContext.lineCap = "round";
       canvasContext.moveTo(data.points[0].x, data.points[0].y);
 
@@ -42,13 +42,13 @@ app.factory("canvasFactory", function() {
   // Routine definition
   // Line rendering
   var _renderLine = function(data) {
-    if (data.color != "none") {
+    if (data.color) {
       canvasContext.beginPath();
       canvasContext.strokeStyle = data.color;
-      canvasContext.lineWidth = data.size;
+      canvasContext.lineWidth = data.thickness;
       canvasContext.lineCap = "round";
-      canvasContext.moveTo(data.start_x, data.start_y);
-      canvasContext.lineTo(data.end_x, data.end_y);
+      canvasContext.moveTo(data.start.x, data.start.y);
+      canvasContext.lineTo(data.end.x, data.end.y);
       canvasContext.stroke();
     }
   };
@@ -57,15 +57,15 @@ app.factory("canvasFactory", function() {
   // Rectangle rendering
   var _renderRectangle = function(data) {
     canvasContext.beginPath();
-    canvasContext.rect(data.start_x, data.start_y, data.width, data.height);
+    canvasContext.rect(data.start.x, data.start.y, data.width, data.height);
 
-    if (data.color != "none") {
-      canvasContext.lineWidth = data.size;
+    if (data.color) {
+      canvasContext.lineWidth = data.thickness;
       canvasContext.strokeStyle = data.color;
       canvasContext.stroke();
     }
-    if (data.fill != "none") {
-      canvasContext.fillStyle = data.fill;
+    if (data.background) {
+      canvasContext.fillStyle = data.background;
       canvasContext.fill();
     }
   };
@@ -74,19 +74,19 @@ app.factory("canvasFactory", function() {
   // Diamond rendering
   var _renderDiamond = function(data) {
     canvasContext.beginPath();
-    canvasContext.moveTo(data.start_x, data.start_y + (data.height / 2));
-    canvasContext.lineTo(data.start_x + (data.width / 2), data.start_y);
-    canvasContext.lineTo(data.end_x, data.start_y + (data.height / 2));
-    canvasContext.lineTo(data.start_x + (data.width / 2), data.end_y);
+    canvasContext.moveTo(data.start.x, data.start.y + (data.height / 2));
+    canvasContext.lineTo(data.start.x + (data.width / 2), data.start.y);
+    canvasContext.lineTo(data.end.x, data.start.y + (data.height / 2));
+    canvasContext.lineTo(data.start.x + (data.width / 2), data.end.y);
     canvasContext.closePath();
 
-    if (data.color != "none") {
-      canvasContext.lineWidth = data.size;
+    if (data.color) {
+      canvasContext.lineWidth = data.thickness;
       canvasContext.strokeStyle = data.color;
       canvasContext.stroke();
     }
-    if (data.fill != "none") {
-      canvasContext.fillStyle = data.fill;
+    if (data.background) {
+      canvasContext.fillStyle = data.background;
       canvasContext.fill();
     }
   };
@@ -95,15 +95,15 @@ app.factory("canvasFactory", function() {
   // Ellipse rendering
   var _renderEllipse = function(data) {
     canvasContext.beginPath();
-    canvasContext.ellipse(data.start_x + data.radius_x, data.start_y + data.radius_y, data.radius_x, data.radius_y, 0, 0, Math.PI * 2);
+    canvasContext.ellipse(data.start.x + data.radius.x, data.start.y + data.radius.y, data.radius.x, data.radius.y, 0, 0, Math.PI * 2);
 
-    if (data.color != "none") {
-      canvasContext.lineWidth = data.size;
+    if (data.color) {
+      canvasContext.lineWidth = data.thickness;
       canvasContext.strokeStyle = data.color;
       canvasContext.stroke();
     }
-    if (data.fill != "none") {
-      canvasContext.fillStyle = data.fill;
+    if (data.background) {
+      canvasContext.fillStyle = data.background;
       canvasContext.fill();
     }
   };
@@ -111,11 +111,11 @@ app.factory("canvasFactory", function() {
   // Routine definition
   // Text rendering
   var _renderText = function(data) {
-    if (data.color != "none") {
+    if (data.color) {
       canvasContext.beginPath();
-      canvasContext.font = (data.italic ? "italic " : "") + (data.bold ? "bold " : "") + data.font;
+      canvasContext.font = (data.italic ? "italic " : "") + (data.bold ? "bold " : "") + data.size;
       canvasContext.fillStyle = data.color;
-      canvasContext.fillText(data.value, data.start_x, data.start_y);
+      canvasContext.fillText(data.value, data.start.x, data.start.y);
       canvasContext.stroke();
     }
   };
@@ -160,20 +160,28 @@ app.factory("canvasFactory", function() {
 
   // Give access to built-in routines
   return {
-    setCanvas: function(data) {
-      canvas = data;
+    setCanvas: function(newCanvas) {
+      canvas = newCanvas;
     },
 
-    setCanvasContext: function(data) {
-      canvasContext = data;
+    setCanvasContext: function(newCanvasContext) {
+      canvasContext = newCanvasContext;
     },
 
-    setCanvasBuffer: function(data) {
-      canvasBuffer = [];
+    setCanvasBuffer: function(newCanvasBuffer) {
+      canvasBuffer = newCanvasBuffer;
+    },
+
+    getCanvasBuffer: function() {
+      return canvasBuffer;
     },
 
     addToCanvasBuffer: function(data) {
     	canvasBuffer.push(data);
+    },
+
+    clearCanvasBuffer: function() {
+      canvasBuffer = [];
     },
 
     renderCanvasBuffer: function() {

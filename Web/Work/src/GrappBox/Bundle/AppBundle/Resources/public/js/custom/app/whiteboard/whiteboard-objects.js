@@ -11,69 +11,69 @@
 */
 app.factory("objectFactory", function() {
 
-	/* ==================== ROUTINES (TO WEB CANVAS) ==================== */
+	/* ==================== ROUTINES (LOCAL OBJECT) ==================== */
 
 	// Routine definition
-	// Create new pencil render object (from Web canvas)
-	var _newPencil = function(size, color, points) {
-	  return { tool: "pencil", size: Number(size), color: (!color ? "none" : color), points: points };
+	// Create new pencil render object
+	var _newPencil = function(id, color, thickness, points) {
+	  return { id: id, tool: "pencil", color: color, thickness: Number(thickness), points: points };
 	};
 
 	// Routine definition
-	// Create new line render object (from Web canvas)
-	var _newLine = function(size, color, start_x, start_y, end_x, end_y) {
-	  return { tool: "line", size: Number(size), color: (!color ? "none" : color), start_x: start_x, start_y: start_y, end_x: end_x, end_y: end_y };
+	// Create new line render object
+	var _newLine = function(id, color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { id: id, tool: "line", color: color, background: background, thickness: Number(thickness), start: { x: start_x, y: start_y }, end: { x: end_x, y: end_y } };
 	};
 
 	// Routine definition
-	// Create new rectangle render object (from Web canvas)
-	var _newRectange = function(size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { tool: "rectangle", size: Number(size), color: (!color ? "none" : color), fill: (!fill ? "none" : fill), start_x: start_x, start_y: start_y, height: end_y - start_y, width: end_x - start_x };
+	// Create new rectangle render object
+	var _newRectange = function(id, color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { id: id, tool: "rectangle", color: color, background: background, thickness: Number(thickness), start: { x: start_x, y: start_y }, end: { x: end_x, y: end_y }, height: end_y - start_y, width: end_x - start_x };
 	};
 
 	// Routine definition
-	// Create new diamond render object (from Web canvas)
-	var _newDiamond = function(size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { tool: "diamond", size: Number(size), color: (!color ? "none" : color), fill: (!fill ? "none" : fill), start_x: start_x, start_y: start_y, end_x: end_x, end_y: end_y, height: end_y - start_y, width: end_x - start_x };
+	// Create new diamond render object
+	var _newDiamond = function(id, color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { id: id, tool: "diamond", color: color, background: background, thickness: Number(thickness), start: { x: start_x, y: start_y }, end: { x: end_x, y: end_y }, height: end_y - start_y, width: end_x - start_x };
 	};
 
 	// Routine definition
-	// Create new ellipse render object (from Web canvas)
-	var _newEllipse = function(size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { tool: "ellipse", size: Number(size), color: (!color ? "none" : color), fill: (!fill ? "none" : fill), start_x: start_x, start_y: start_y, radius_x: (Math.abs((end_x - start_x) / 2)), radius_y: (Math.abs((end_y - start_y)  / 2)) };
+	// Create new ellipse render object
+	var _newEllipse = function(id, color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { id: id, tool: "ellipse", color: color, background: background, thickness: Number(thickness), start: { x: start_x, y: start_y }, end: { x: end_x, y: end_y }, radius: { x: Math.abs((end_x - start_x) / 2), y: Math.abs((end_y - start_y)  / 2) } };
 	};
 
 	// Routine definition
-	// Create new text render object (from Web canvas)
-	var _newText = function(font, italic, bold, value, start_x, start_y, color) {
-	  return { tool: "text", font: font + "pt Roboto", italic: italic, bold: bold, value: value, start_x: start_x, start_y: start_y, color: (!color ? "none" : color) };
+	// Create new text render object
+	var _newText = function(id, color, start_x, start_y, end_x, end_y, value, italic, bold, size) {
+	  return { id: id, tool: "text", color: color, start: { x: start_x, y: start_y }, end: { x: end_x, y: end_y }, value: value, italic: italic, bold: bold, size: size + "pt Roboto" };
 	};
 
 	// Routine definition
-	// Create/compile canvas data to render (from Web canvas)
-	var _setRenderObject = function(scope) {
+	// Compile canvas data into a local render object
+	var _setRenderObject = function(id, scope) {
 		var data = {};
 
 	  switch (scope.selected.tool) {
 	    case "pencil":
-	    data = _newPencil(scope.selected.size.value, scope.selected.color.value, scope.whiteboard.points);
+	    data = _newPencil(id, scope.selected.color.value, scope.selected.thickness.value, scope.whiteboard.points);
 	    break;
 
 	    case "line":
-	    data = _newLine(scope.selected.size.value, scope.selected.color.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newLine(id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
 	    break;
 
 	    case "rectangle":
-	    data = _newRectange(scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newRectange(id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
 	    break;
 
 	    case "diamond":
-	    data = _newDiamond(scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newDiamond(id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
 	    break;
 
 	    case "ellipse":
 	    data = _newEllipse(
-	    	scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value,
+	    	id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value,
 	      (scope.mouse.start.x < scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
 	      (scope.mouse.start.y < scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y),
 	      (scope.mouse.start.x > scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
@@ -81,7 +81,7 @@ app.factory("objectFactory", function() {
 	    break;
 
 	    case "text":
-	    data = _newText(scope.text.font.value, scope.text.italic, scope.text.bold, scope.text.value, scope.mouse.start.x, scope.mouse.start.y, scope.selected.color.value);
+	    data = _newText(id, scope.selected.color.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y, scope.text.value, scope.text.italic, scope.text.bold, scope.text.size.value);
 	    break;
 
 	    default:
@@ -94,38 +94,33 @@ app.factory("objectFactory", function() {
 
 
 
-	/* ==================== ROUTINES (FROM API) ==================== */
+	/* ==================== ROUTINES (TO LOCAL OBJECT) ==================== */
 
 	// Routine definition
-	// Create/compile canvas data to render (from API)
-	var _setRenderObjectFromAPI = function(object) {
+	// Convert an API render object to a local render object
+	var _convertToLocalObject = function(id, object) {
 		var data = {};
 
 	  switch (object.type) {
 	    case "HANDWRITE":
-	    data = _newPencil(object.lineweight, object.color, object.points);
+	    data = _newPencil(id, object.color, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y, object.points);
 	    break;
 
 	    case "LINE":
-	    data = _newLine(object.lineweight, object.color, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+	    data = _newLine(id, object.color, object.background, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
 	    break;
 
 	    case "RECTANGLE":
-	    data = _newRectange(object.lineweight, object.color, object.background, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+	    data = _newRectange(id, object.color, object.background, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
 	    break;
 
 	    case "DIAMOND":
-	    data = _newDiamond(
-	      object.lineweight, object.color, object.background,
-	      (object.positionStart.x < object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
-	      (object.positionStart.y < object.positionEnd.y ? object.positionStart.y : object.positionEnd.y),
-	      (object.positionStart.x > object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
-	      (object.positionStart.y > object.positionEnd.y ? object.positionStart.y : object.positionEnd.y));
+	    data = _newDiamond(id, object.color, object.background, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
 	    break;
 
 	    case "ELLIPSE":
 	    data = _newEllipse(
-	      object.lineweight, object.color, object.background,
+	    	id, object.color, object.background, object.lineweight,
 	      (object.positionStart.x < object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
 	      (object.positionStart.y < object.positionEnd.y ? object.positionStart.y : object.positionEnd.y),
 	      (object.positionStart.x > object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
@@ -133,7 +128,7 @@ app.factory("objectFactory", function() {
 	    break;
 
 	    case "TEXT":
-	    data = _newText(object.size, object.isItalic, object.isBold, object.text, object.positionStart.x, object.positionStart.y, object.color);
+	    data = _newText(id, object.color, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y, object.text, object.isItalic, object.isBold, object.size);
 	    break;
 
 	    default:
@@ -146,72 +141,78 @@ app.factory("objectFactory", function() {
 
 
 
-	/* ==================== ROUTINES (TO API) ==================== */
+	/* ==================== ROUTINES (API OBJECT) ==================== */
 
 	// Routine definition
 	// Convert pencil render object to API draw object
-	var _newPencilToAPI = function(size, color, points) {
-	  return { type: "HANDWRITE", lineweight: Number(size), color: color, points: points };
+	var _newPencil_API = function(color, thickness, points) {
+	  return { type: "HANDWRITE", lineweight: Number(thickness), color: color, points: points };
 	};
 
 	// Routine definition
 	// Convert line render object to API draw object
-	var _newLineToAPI = function(size, color, start_x, start_y, end_x, end_y) {
-	  return { type: "LINE", lineweight: Number(size), color: color, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
+	var _newLine_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { type: "LINE", lineweight: Number(thickness), color: color, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
 	};
 
 	// Routine definition
 	// Convert rectangle render object to API draw object
-	var _newRectangeToAPI = function(size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { type: "RECTANGLE", lineweight: Number(size), color: color, background: (fill == "none" ? null : fill), positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
+	var _newRectange_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { type: "RECTANGLE", lineweight: Number(thickness), color: color, background: background, positionStart: { x: Math.abs(start_x), y: Math.abs(start_y) }, positionEnd: { x: Math.abs(end_x), y: Math.abs(end_y) } };
 	};
 
 	// Routine definition
 	// Convert diamond render object to API draw object
-	var _newDiamondToAPI = function(size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { type: "DIAMOND", lineweight: Number(size), color: color, background: (fill == "none" ? null : fill), positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
+	var _newDiamond_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { type: "DIAMOND", lineweight: Number(thickness), color: color, background: background, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
 	};
 
 	// Routine definition
 	// Convert ellipse render object to API draw object
-	var _newEllipseToAPI = function(size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { type: "ELLIPSE", lineweight: Number(size), color: color, background: (fill == "none" ? null : fill), positionStart: { x: start_x, y: start_y },  positionEnd: { x: end_x, y: end_y }, radius: { x: (Math.abs((end_x - start_x) / 2)), y: (Math.abs((end_y - start_y)  / 2)) } };
+	var _newEllipse_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
+	  return { type: "ELLIPSE", lineweight: Number(thickness), color: color, background: background, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y },
+	  				 radius: { x: (Math.abs((end_x - start_x) / 2) != 0 ? Math.abs((end_x - start_x) / 2) : 1), y: (Math.abs((end_y - start_y)  / 2) != 0 ? Math.abs((end_y - start_y)  / 2) : 1) } };
 	};
 
 	// Routine definition
 	// Convert text render object to API draw object
-	var _newTextToAPI = function(font, italic, bold, value, start_x, start_y, color) {
-	  return { type: "TEXT", size: font, isItalic: italic, isBold: bold, text: value, positionStart: { x: start_x, y: start_y }, color: color };
+	var _newText_API = function(color, start_x, start_y, end_x, end_y, value, italic, bold, size) {
+	  return { type: "TEXT", size: size, isItalic: italic, isBold: bold, text: value, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y }, color: color };
 	};
 
 	// Routine definition
 	// Convert/compile canvas data to render (to API)
-	var _setRenderObjectToAPI = function(scope) {
+	var _convertToAPIObject = function(scope) {
 		var data = {};
 
 	  switch (scope.selected.tool) {
 	    case "pencil":
-	    data = _newPencilToAPI(scope.selected.size.value, scope.selected.color.value, scope.whiteboard.points);
+	    data = _newPencil_API(scope.selected.color.value, scope.selected.thickness.value, scope.whiteboard.points);
 	    break;
 
 	    case "line":
-	    data = _newLineToAPI(scope.selected.size.value, scope.selected.color.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newLine_API(scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
 	    break;
 
 	    case "rectangle":
-	    data = _newRectangeToAPI(scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newRectange_API(scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
 	    break;
 
 	    case "diamond":
-	    data = _newDiamondToAPI(scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newDiamond_API(scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
 	    break;
 
 	    case "ellipse":
-	    data = _newEllipseToAPI(scope.selected.size.value, scope.selected.color.value, scope.selected.fill.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newEllipse_API(
+	    	scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value,
+	      (scope.mouse.start.x < scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
+	      (scope.mouse.start.y < scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y),
+	      (scope.mouse.start.x > scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
+	      (scope.mouse.start.y > scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y));
 	    break;
 
 	    case "text":
-	    data = _newTextToAPI(scope.text.font.value, scope.text.italic, scope.text.bold, scope.text.value, scope.mouse.start.x, scope.mouse.start.y, scope.selected.color.value);
+	    data = _newText_API(scope.selected.color.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y, scope.text.value, scope.text.italic, scope.text.bold, scope.text.size.value);
 	    break;
 
 	    default:
@@ -222,113 +223,22 @@ app.factory("objectFactory", function() {
 	  return data;
 	};
 
-
-
-	/* ==================== ROUTINES (TO STORE) ==================== */
-
-	// Routine definition
-	// Convert new pencil render object (to storage)
-	var _newPencilToStore = function(id, size, color, points) {
-	  return { tool: "pencil", size: Number(size), color: (!color ? "none" : color), points: points };
-	};
-
-	// Routine definition
-	// Convert new line render object (to storage)
-	var _newLineToStore = function(id, size, color, start_x, start_y, end_x, end_y) {
-	  return { tool: "line", size: Number(size), color: (!color ? "none" : color), start_x: start_x, start_y: start_y, end_x: end_x, end_y: end_y };
-	};
-
-	// Routine definition
-	// Convert new rectangle render object (to storage)
-	var _newRectangeToStore = function(id, size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { tool: "rectangle", size: Number(size), color: (!color ? "none" : color), fill: (!fill ? "none" : fill), start_x: start_x, start_y: start_y, height: end_y - start_y, width: end_x - start_x };
-	};
-
-	// Routine definition
-	// Convert new diamond render object (to storage)
-	var _newDiamondToStore = function(id, size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { tool: "diamond", size: Number(size), color: (!color ? "none" : color), fill: (!fill ? "none" : fill), start_x: start_x, start_y: start_y, end_x: end_x, end_y: end_y, height: end_y - start_y, width: end_x - start_x };
-	};
-
-	// Routine definition
-	// Convert new ellipse render object (to storage)
-	var _newEllipseToStore = function(id, size, color, fill, start_x, start_y, end_x, end_y) {
-	  return { tool: "ellipse", size: Number(size), color: (!color ? "none" : color), fill: (!fill ? "none" : fill), start_x: start_x, start_y: start_y, radius_x: (Math.abs((end_x - start_x) / 2)), radius_y: (Math.abs((end_y - start_y)  / 2)) };
-	};
-
-	// Routine definition
-	// Convert new text render object (to storage)
-	var _newTextToStore = function(id, font, italic, bold, value, start_x, start_y, color) {
-	  return { tool: "text", font: font + "pt Roboto", italic: italic, bold: bold, value: value, start_x: start_x, start_y: start_y, color: (!color ? "none" : color) };
-	};
-
-	// Routine definition
-	// Create/compile canvas data to render (from API)
-	var _setRenderObjectToStore = function(id, object) {
-		var data = {};
-
-	  switch (object.type) {
-	    case "HANDWRITE":
-	    data = _newPencilToStore(id, object.lineweight, object.color, object.points);
-	    break;
-
-	    case "LINE":
-	    data = _newLineToStore(id, object.lineweight, object.color, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
-	    break;
-
-	    case "RECTANGLE":
-	    data = _newRectangeToStore(id, object.lineweight, object.color, object.background, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
-	    break;
-
-	    case "DIAMOND":
-	    data = _newDiamondToStore(
-	    	id, object.lineweight, object.color, object.background,
-	      (object.positionStart.x < object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
-	      (object.positionStart.y < object.positionEnd.y ? object.positionStart.y : object.positionEnd.y),
-	      (object.positionStart.x > object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
-	      (object.positionStart.y > object.positionEnd.y ? object.positionStart.y : object.positionEnd.y));
-	    break;
-
-	    case "ELLIPSE":
-	    data = _newEllipseToStore(
-	    	id, object.lineweight, object.color, object.background,
-	      (object.positionStart.x < object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
-	      (object.positionStart.y < object.positionEnd.y ? object.positionStart.y : object.positionEnd.y),
-	      (object.positionStart.x > object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
-	      (object.positionStart.y > object.positionEnd.y ? object.positionStart.y : object.positionEnd.y));
-	    break;
-
-	    case "TEXT":
-	    data = _newTextToStore(id, object.size, object.isItalic, object.isBold, object.text, object.positionStart.x, object.positionStart.y, object.color);
-	    break;
-
-	    default:
-	    data = {};
-	    break;
-	  }
-
-	  return data;
-	};
 
 
 	/* ==================== EXECUTION ==================== */
 
   // Give access to built-in routines
   return {
-    setRenderObject: function(data) {
-      return _setRenderObject(data);
+    setRenderObject: function(id, scope) {
+      return _setRenderObject(id, scope);
     },
 
-    setRenderObjectFromAPI: function(data) {
-      return _setRenderObjectFromAPI(data);
+    convertToLocalObject: function(id, object) {
+      return _convertToLocalObject(id, object);
     },
 
-    setRenderObjectToAPI: function(data) {
-    	return _setRenderObjectToAPI(data);
-    },
-
-    setRenderObjectToStore: function(id, data) {
-    	return _setRenderObjectToStore(id, data);
+    convertToAPIObject: function(scope) {
+    	return _convertToAPIObject(scope);
     }
   };
 
