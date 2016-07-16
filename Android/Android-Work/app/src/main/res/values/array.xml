@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- CLOUD ARRAYS -->
+    <string-array name="cloudExplorer_fileAction">
+        <item>Download file</item>
+        <item>Delete file</item>
+    </string-array>
+    <string-array name="cloudExplorer_dirAction">
+        <item>Delete folder</item>
+    </string-array>
+
+    <!-- PROJECT PREFERENCES ARRAYS -->
+    <string-array name="dialog_customer_access_pref_choices">
+        <item>Copy to clipboard</item>
+        <item>Renew access</item>
+        <item>Delete access</item>
+    </string-array>
+    <string-array name="dialog_customer_access_pref_choices_enum">
+        <item>copy_clipboard</item>
+        <item>renew_access</item>
+        <item>delete_access</item>
+    </string-array>
+
+    <string-array name="dialog_add_team_member_pref_choices">
+        <item>Manage roles</item>
+        <item>Delete user\'s project access</item>
+    </string-array>
+    <string-array name="dialog_add_team_member_pref_choices_enum">
+        <item>manage_roles</item>
+        <item>delete_access</item>
+    </string-array>
+
+    <string-array name="list_roles_opt">
+        <item>no_access</item>
+        <item>read_only</item>
+        <item>read_write</item>
+    </string-array>
+    <string-array name="list_roles_opt_string">
+        <item>No access</item>
+        <item>Read only</item>
+        <item>Read and write</item>
+    </string-array>
+
+    <string-array name="dialog_roles_choice_opt_str">
+        <item>Manage role access</item>
+        <item>Delete role</item>
+    </string-array>
+    <string-array name="dialog_roles_choice_opt">
+        <item>manage_role</item>
+        <item>delete_role</item>
+    </string-array>
+
+    <!-- BUGTRACKER ARRAYS -->
+    <string-array name="bugtracker_list_tabs">
+        <item>Open</item>
+        <item>Closed</item>
+        <item>Yours</item>
+    </string-array>
+    <string-array name="bugtracker_comment_choice_universal">
+        <item>action_edit</item>
+        <item>action_delete</item>
+    </string-array>
+    <string-array name="bugtracker_comment_choice">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
+
+    <!-- WHITEBOARD ARRAYS -->
+    <string-array name="whiteboard_action">
+        <item>Open whiteboard</item>
+        <item>Delete whiteboard</item>
+    </string-array>
+
+    <!-- Task Arrays -->
+    <string-array name="task_dependencies_universal">
+        <item>start_start</item>
+        <item>start_end</item>
+        <item>end_end</item>
+        <item>end_start</item>
+    </string-array>
+    <string-array name="task_dependencies_en">
+        <item>Start to Start</item>
+        <item>Start to End</item>
+        <item>End to End</item>
+        <item>End to Start</item>
+    </string-array>
+
+    <!-- Edit Message Timeline Arrays -->
+
+    <string-array name="edit_message_timeline">
+        <item>Edit content</item>
+        <item>Convert to bugtracker</item>
+    </string-array>
+
+</resources>

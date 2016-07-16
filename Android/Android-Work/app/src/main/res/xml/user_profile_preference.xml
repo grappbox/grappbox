@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/catefory_profile_user"
+        android:key="pref_category_profile">
+
+        <EditTextPreference
+            android:key="pref_first_name"
+            android:title="First name"
+            android:defaultValue="true"
+            android:summary="First name"/>
+
+        <EditTextPreference
+            android:key="pref_last_name"
+            android:title="Last name"
+            android:defaultValue="true"
+            android:summary="First name"/>
+
+        <EditTextPreference
+            android:key="pref_phone_number_user"
+            android:title="Phone number"
+            android:inputType="phone"
+            android:summary="Enter your phone number"/>
+
+        <ListPreference
+            android:key="pref_country"
+            android:title="Country"
+            android:summary="Select your country"
+            android:dialogTitle="Select your country"/>
+
+        <EditTextPreference
+            android:key="pref_linkedin"
+            android:title="Linkedin"
+            android:defaultValue="true"
+            android:summary="Your linkedin link"/>
+
+        <EditTextPreference
+            android:key="pref_viadeo"
+            android:title="Viadeo"
+            android:defaultValue="true"
+            android:summary="Your viadeo link"/>
+
+        <EditTextPreference
+            android:key="pref_twitter"
+            android:title="Twitter"
+            android:defaultValue="true"
+            android:summary="Your twitter link"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/catefory_profile_user_security"
+        android:key="pref_category_profile_security">
+
+            <com.grappbox.grappbox.grappbox.Model.UserPasswordPreference
+                android:key="pref_password"
+                android:title="@string/password_label"
+                android:dialogTitle="@string/password_label"
+                android:positiveButtonText="@string/positive_response"
+                android:negativeButtonText="@string/negative_response"
+                android:dialogLayout="@layout/layout_set_password"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFCCCCCC"
+    android:orientation="vertical"
+    tools:context=".Whiteboard.WhiteboardActivity" >
+
+    <TextView
+        android:id="@+id/whiteboard_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Whiteboard"
+        android:textSize="30sp"
+        android:paddingLeft="10dip"
+        android:textColor="#c0392b"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"/>
+
+    <com.grappbox.grappbox.grappbox.Whiteboard.DrawingView
+        android:id="@+id/drawing"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_weight="1"
+        android:background="#FFFFFF"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/color_btn"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="icon_color"
+            android:src="@drawable/painter"
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/color_border_btn"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:src="@drawable/square"
+            android:contentDescription="icon_color_border"
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/draw_btn"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="test"
+            android:src="@drawable/edit"
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/erase_btn"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Erase button"
+            android:src="@drawable/eraser"
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
+
+        <ImageButton
+            android:id="@+id/move_btn"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2"
+            android:contentDescription="Erase button"
+            android:src="@drawable/arrows"
+            android:clickable="true"
+            android:scaleType="fitCenter"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
