@@ -30,6 +30,10 @@ namespace GrappBox.ApiCom
         public DateModel AvatarDate{ get; set; }
 
         public BitmapImage Avatar { get; set; }
+        public string FullName
+        {
+            get { return Firstname + " " + Lastname; }
+        }
 
         #region FormatedStrings
         private string logoDateFmt;

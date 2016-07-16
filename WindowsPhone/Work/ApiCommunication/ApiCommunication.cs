@@ -91,6 +91,7 @@ namespace GrappBox.ApiCom
                 data.Add(it.Key, JToken.FromObject(it.Value));
             }
             post.Add("data", JToken.FromObject(data));
+            Debug.WriteLine(post.ToString());
             HttpStringContent sc = new HttpStringContent(post.ToString());
             HttpResponseMessage res = null;
             try

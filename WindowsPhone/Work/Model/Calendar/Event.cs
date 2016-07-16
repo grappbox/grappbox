@@ -8,7 +8,7 @@ using GrappBox.Model.Global;
 
 namespace GrappBox.Model
 {
-    class Event
+    public class Event
     {
         [JsonProperty("id")]
         public int Id { get; set; }

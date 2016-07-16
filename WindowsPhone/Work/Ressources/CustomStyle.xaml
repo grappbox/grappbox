@@ -507,19 +507,19 @@
                                            Stroke="{ThemeResource ListViewItemFocusBorderThemeBrush}" />
                                     <Rectangle x:Name="SelectionBackground"
                                            Margin="4"
-                                           Fill="{ThemeResource ListViewItemSelectedBackgroundThemeBrush}"
+                                           Fill="{StaticResource RedGrappBoxBrush}"
                                            Opacity="0" />
                                     <Border x:Name="ContentBorder"
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{TemplateBinding BorderBrush}"
                                         BorderThickness="{TemplateBinding BorderThickness}"
-                                        Margin="4">
+                                        Margin="0">
                                         <Grid>
                                             <ContentPresenter x:Name="contentPresenter"
                                                           ContentTransitions="{TemplateBinding ContentTransitions}"
                                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                          Margin="{TemplateBinding Padding}" />
+                                                          Margin="0" />
                                             <!-- The 'Xg' text simulates the amount of space one line of text will occupy.
                                              In the DataPlaceholder state, the Content is not loaded yet so we
                                              approximate the size of the item using placeholder text. -->
@@ -542,9 +542,9 @@
                                     <Rectangle x:Name="SelectedBorder"
                                            IsHitTestVisible="False"
                                            Opacity="0"
-                                           Stroke="{ThemeResource ListViewItemSelectedBackgroundThemeBrush}"
+                                           Stroke="{StaticResource BlackGrappboxBrush}"
                                            StrokeThickness="{ThemeResource GridViewItemSelectedBorderThemeThickness}"
-                                           Margin="4"/>
+                                           Margin="0"/>
                                     <TextBlock x:Name="MultiArrangeOverlayText"
                                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}"
                                            Foreground="{ThemeResource ListViewItemDragForegroundThemeBrush}"

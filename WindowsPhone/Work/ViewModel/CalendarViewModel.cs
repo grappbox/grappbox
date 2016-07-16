@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using GrappBox.Ressources;
+using Windows.UI.Popups;
 
 namespace GrappBox.ViewModel
 {
@@ -91,30 +92,46 @@ namespace GrappBox.ViewModel
         {
             ApiCom.ApiCommunication api = ApiCom.ApiCommunication.Instance;
             object[] token = { ApiCom.User.GetUser().Token, month.ToString("yyyy-MM-dd") };
-            HttpResponseMessage res = await api.Get(token, "planning/getmonth");
+            HttpResponseMessage res = null;
+            res = await api.Get(token, "planning/getmonth");
+            if (res == null)
+                return null;
             string resString = await res.Content.ReadAsStringAsync();
-            return api.DeserializeArrayJson<Planning>(resString);
+            Planning plan = null;
+            try
+            {
+                plan = api.DeserializeArrayJson<Planning>(resString);
+            }
+            catch (Exception ex)
+            {
+                MessageDialog msgDialog = new MessageDialog(ex.Message);
+                await msgDialog.ShowAsync();
+                return null;
+            }
+            return plan;
         }
         public async Task<Planning> GetDayPlanning(DateTime day)
         {
             ApiCom.ApiCommunication api = ApiCom.ApiCommunication.Instance;
             object[] token = { ApiCom.User.GetUser().Token, day.ToString("yyyy-MM-dd") };
-            HttpResponseMessage res = await api.Get(token, "planning/getday");
+            HttpResponseMessage res = null;
+            res = await api.Get(token, "planning/getday");
+            if (res == null)
+                return null;
             string resString = await res.Content.ReadAsStringAsync();
-            return api.DeserializeArrayJson<Planning>(resString);
-        }
-        public async void AddEvent(Event evt)
-        {
-            Dictionary<string, object> dict = new Dictionary<string, object>();
-            dict.Add("token", User.GetUser().Token);
-            dict.Add("title", evt.Title);
-            dict.Add("description", evt.Description);
-            dict.Add("icon", "");
-            dict.Add("typeId", 1);
-            dict.Add("begin", evt.BeginDate.date);
-            dict.Add("end", evt.EndDate.date);
-            ApiCommunication api = ApiCommunication.Instance;
-            await api.Post(dict, "event/postevent");
+            Debug.WriteLine(resString);
+            Planning plan = null;
+            try
+            {
+                plan = api.DeserializeArrayJson<Planning>(resString);
+            }
+            catch (Exception ex)
+            {
+                MessageDialog msgDialog = new MessageDialog(ex.Message);
+                await  msgDialog.ShowAsync();
+                return null;
+            }
+            return plan;
         }
         #endregion
     }

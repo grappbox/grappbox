@@ -178,6 +178,9 @@
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
+    <Compile Include="View\CreateEventView.xaml.cs">
+      <DependentUpon>CreateEventView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TasksListView.xaml.cs">
       <DependentUpon>TasksListView.xaml</DependentUpon>
     </Compile>
@@ -319,6 +322,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="View\CreateEventView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TasksListView.xaml">
       <SubType>Designer</SubType>

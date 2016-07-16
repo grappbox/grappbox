@@ -41,7 +41,7 @@ namespace GrappBox.Model.Global
         public static DateModel DateTimeToDateModel(DateTime dt)
         {
             DateModel dm = new DateModel();
-            dm.date = dt.ToString("yyyy-MM-dd HH-mm-ss");
+            dm.date = dt.ToString("yyyy-MM-dd HH:mm:ss");
             dm.timezone_type = 3;
             dm.timezone = "Europe / Paris";
             Debug.WriteLine(dm.date);

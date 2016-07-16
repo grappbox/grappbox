@@ -287,6 +287,12 @@ namespace GrappBox.View
                     }
                 }
             }
+            else if (wbvm.CurrentTool == WhiteboardTool.TEXT)
+            {
+                WhiteBoardText wbt = new WhiteBoardText();
+                WhiteboardPopUp.Child = wbt;
+                WhiteboardPopUp.
+            }
         }
     }
 }

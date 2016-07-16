@@ -16,7 +16,7 @@ using Windows.Web.Http;
 
 namespace GrappBox.Model
 {
-    class ProjectListModel : ViewModelBase
+    public class ProjectListModel : ViewModelBase
     {
         [JsonProperty("project_id")]
         public int Id { get; set; }

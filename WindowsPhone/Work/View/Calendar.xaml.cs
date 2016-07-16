@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -30,7 +31,7 @@ namespace GrappBox.View
         private readonly NavigationHelper navigationHelper;
         private CalendarViewModel viewModel
         {
-            get {return (CalendarViewModel)this.DataContext; }
+            get { return (CalendarViewModel)this.DataContext; }
         }
         public Calendar()
         {
@@ -82,10 +83,20 @@ namespace GrappBox.View
             this.navigationHelper.OnNavigatedFrom(e);
         }
         #endregion
-        private void DayGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void DayGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CalendarModel cm = this.MonthPivot.SelectedItem as CalendarModel;
-            cm.Events = new System.Collections.ObjectModel.ObservableCollection<Event>(cm.Events.Where<Event>(Event => Event.IsinRange(viewModel.CurrentDateTime.DateTimeAccess) == true));
+            Debug.WriteLine(cm.Events.Count);
+            Planning plan = await viewModel.GetDayPlanning(viewModel.CurrentDateTime.DateTimeAccess);
+            if (plan != null)
+            {
+                cm.Events = plan.Events;
+            }
+        }
+
+        private async void AddEventButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(CreateEventView)));
         }
     }
 }

@@ -11,116 +11,112 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.BottomAppBar>
         <CommandBar>
-            <AppBarToggleButton x:Name="AddEventButton" Icon="Add">Add Event</AppBarToggleButton>
+            <AppBarButton x:Name="AddEventButton" Icon="Add" Click="AddEventButton_Click">Add Event</AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
     <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Calendar">
-        <Grid VerticalAlignment="Stretch">
-            <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}">
-                <Pivot.ItemTemplate>
-                    <DataTemplate>
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.Resources>
+        <Pivot x:Name="MonthPivot" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" ItemsSource="{Binding MonthList}" Style="{StaticResource DefaultPivotStyle}" SelectedIndex="{Binding MonthIndex, Mode=TwoWay}">
+            <Pivot.ItemTemplate>
+                <DataTemplate>
+                    <ScrollViewer VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <StackPanel ScrollViewer.VerticalScrollMode="Enabled" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <StackPanel.Resources>
                                 <Style TargetType="TextBlock" >
                                     <Setter Property="FontSize" Value="16" />
                                 </Style>
-                            </Grid.Resources>
-                            <TextBlock Grid.Row="0" Text="{Binding ElementName=MonthPivot, Path=DataContext.CurrentYear}" FontSize="20" HorizontalAlignment="Center" />
-                            <GridView Grid.Row="1" x:Name="DayGrid" ItemsSource="{Binding DaysList}" Background="Beige" SelectedIndex="{Binding CurrentDayIndex, Mode=TwoWay}"
+                            </StackPanel.Resources>
+                            <TextBlock Text="{Binding ElementName=MonthPivot, Path=DataContext.CurrentYear}" FontSize="20" HorizontalAlignment="Center" />
+                            <GridView x:Name="DayGrid" ItemsSource="{Binding DaysList}" Background="Beige" SelectedIndex="{Binding CurrentDayIndex, Mode=TwoWay}"
                                       SelectionMode="Single" ItemContainerStyle="{StaticResource GridViewItemCustom}" SelectionChanged="DayGrid_SelectionChanged">
                                 <GridView.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding }" FontFamily="Roboto" FontSize="20²"/>
+                                        <TextBlock Text="{Binding }" FontFamily="Roboto" FontSize="16"/>
                                     </DataTemplate>
                                 </GridView.ItemTemplate>
                                 <GridView.Resources>
                                     <SolidColorBrush x:Key="SystemColors.HighlightBrushKey" Color="Gray"/>
                                 </GridView.Resources>
                             </GridView>
-                            <ScrollViewer Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                <StackPanel ScrollViewer.VerticalScrollMode="Enabled" HorizontalAlignment="Stretch">
-                                    <TextBlock Text="Events" HorizontalAlignment="Center" FontSize="16" />
-                                    <ListView x:Name="EventsListView" ItemsSource="{Binding Events}" HorizontalAlignment="Stretch" Visibility="{Binding ListEventsEmpty}">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Vertical">
-                                                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
-                                                    <TextBlock Text="{Binding Description}" />
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding BeginDate, Converter={StaticResource DateTimeToStringConverter}}" />
-                                                        <TextBlock Text="{Binding EndDate, Converter={StaticResource DateTimeToStringConverter}}" HorizontalAlignment="Right" />
-                                                    </StackPanel>
+                            <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                <TextBlock Text="Events" HorizontalAlignment="Center" FontSize="16" />
+                                <ListView x:Name="EventsListView" ItemsSource="{Binding Events}" HorizontalAlignment="Stretch" Visibility="{Binding ListEventsEmpty}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
+                                                <TextBlock Text="{Binding Description}" />
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="/Assets/alarm_add.png" Height="24" Width="24" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding BeginDate, Converter={StaticResource DateTimeToStringConverter}}" VerticalAlignment="Center" />
                                                 </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                        <ListView.ItemContainerStyle>
-                                            <Style TargetType="ListViewItem">
-                                                <Setter Property="Background" Value="White" />
-                                                <Setter Property="Padding" Value="15" />
-                                                <Setter Property="Margin" Value="15" />
-                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                            </Style>
-                                        </ListView.ItemContainerStyle>
-                                    </ListView>
-                                    <TextBlock x:Name="EventsListViewEmpty" Text="No Events" Visibility="{Binding EventsEmpty}" />
-                                    <TextBlock Text="Tasks" HorizontalAlignment="Center" FontSize="16" />
-                                    <ListView x:Name="TasksListView" ItemsSource="{Binding Tasks}" HorizontalAlignment="Stretch" Visibility="{Binding ListTasksEmpty}">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Vertical">
-                                                    <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
-                                                    <TextBlock Text="{Binding Description}" />
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="Started at: "/>
-                                                        <TextBlock Text="{Binding StartedAt, Converter={StaticResource DateTimeToStringConverter}}" />
-                                                        <TextBlock Text="Due date at: "/>
-                                                        <TextBlock Text="{Binding DueDate, Converter={StaticResource DateTimeToStringConverter}}" HorizontalAlignment="Right"/>
-                                                    </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="/Assets/alarm_on.png" Height="24" Width="24" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding EndDate, Converter={StaticResource DateTimeToStringConverter}}" VerticalAlignment="Center" />
                                                 </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                        <ListView.ItemContainerStyle>
-                                            <Style TargetType="ListViewItem">
-                                                <Setter Property="Background" Value="White" />
-                                                <Setter Property="Padding" Value="15" />
-                                                <Setter Property="Margin" Value="15" />
-                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                            </Style>
-                                        </ListView.ItemContainerStyle>
-                                    </ListView>
-                                    <TextBlock x:Name="TasksListViewEmpty" Text="No Tasks" Visibility="{Binding TasksEmpty}" />
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
-                    </DataTemplate>
-                </Pivot.ItemTemplate>
-                <Pivot.HeaderTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding MonthName}" FontSize="18" />
-                    </DataTemplate>
-                </Pivot.HeaderTemplate>
-                <Pivot.ItemContainerStyle>
-                    <Style TargetType="PivotItem">
-                        <Setter Property="Background" Value="{StaticResource BackgroundGrayBrush}" />
-                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                        <Setter Property="VerticalAlignment" Value="Stretch" />
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="HorizontalAlignment" Value="Stretch" />
-                    </Style>
-                </Pivot.ItemContainerStyle>
-            </Pivot>
-            <Popup x:Name="TextPopup" IsOpen="{Binding ElementName=AddEventButton, Path=IsChecked, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalOffset="-50" HorizontalOffset="-50">
-                <Grid x:Name="TextPopupGrid" Background="#FFB3B3B3">
-                    <CustomControl:EventPlanPrompt x:Name="PromptPan" IsEventConfirmed="{Binding EventPromptConfirmed, Mode=TwoWay}" IsOpened="{Binding ElementName=TextPopup, Path=IsOpen, Mode=TwoWay}"/>
-                </Grid>
-            </Popup>
-        </Grid>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Background" Value="White" />
+                                            <Setter Property="Padding" Value="15" />
+                                            <Setter Property="Margin" Value="15" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
+                                <TextBlock x:Name="EventsListViewEmpty" Text="No Events" Visibility="{Binding EventsEmpty}" />
+                                <TextBlock Text="Tasks" HorizontalAlignment="Center" FontSize="16" />
+                                <ListView x:Name="TasksListView" ItemsSource="{Binding Tasks}" HorizontalAlignment="Stretch" Visibility="{Binding ListTasksEmpty}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" />
+                                                <TextBlock Text="{Binding Description}" />
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="/Assets/alarm_add.png" Height="24" Width="24" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Started at: " VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding StartedAt, Converter={StaticResource DateTimeToStringConverter}}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Image Source="/Assets/alarm_on.png" Height="24" Width="24" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Due date at: " VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding DueDate, Converter={StaticResource DateTimeToStringConverter}}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="Background" Value="White" />
+                                            <Setter Property="Padding" Value="15" />
+                                            <Setter Property="Margin" Value="15" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                </ListView>
+                                <TextBlock x:Name="TasksListViewEmpty" Text="No Tasks" Visibility="{Binding TasksEmpty}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DataTemplate>
+            </Pivot.ItemTemplate>
+            <Pivot.HeaderTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding MonthName}" FontSize="20" />
+                </DataTemplate>
+            </Pivot.HeaderTemplate>
+            <Pivot.ItemContainerStyle>
+                <Style TargetType="PivotItem">
+                    <Setter Property="Background" Value="{StaticResource BackgroundGrayBrush}" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </Pivot.ItemContainerStyle>
+        </Pivot>
     </slideMenu:SlideInMenuContentControl>
 </Page>

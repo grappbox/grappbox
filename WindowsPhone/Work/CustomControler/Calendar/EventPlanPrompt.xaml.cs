@@ -41,7 +41,6 @@ namespace GrappBox.CustomControler
         {
             get { return new DateTime(endDate.Date.Year, endDate.Date.Month, endDate.Date.Day, endHour.Time.Hours, endHour.Time.Minutes, 0); }
         }
-
         private void ConfirmText_Click(object sender, RoutedEventArgs e)
         {
             IsEventConfirmed = true;

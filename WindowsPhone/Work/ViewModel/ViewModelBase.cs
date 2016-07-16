@@ -414,7 +414,7 @@ namespace GrappBox.ViewModel
         }
     }
     #endregion Converter
-    abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged(string property)

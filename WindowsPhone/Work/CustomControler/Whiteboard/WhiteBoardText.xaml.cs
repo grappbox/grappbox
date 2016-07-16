@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -30,13 +32,12 @@ namespace GrappBox.CustomControler
             DependencyProperty.Register("IsBold", typeof(bool), typeof(WhiteBoardText), null);
         public static readonly DependencyProperty IsItalicProperty =
             DependencyProperty.Register("IsItalic", typeof(bool), typeof(WhiteBoardText), null);
-   /*     public static readonly DependencyProperty FontSizeProperty =
-            DependencyProperty.Register("FontSizeProp", typeof(int), typeof(WhiteBoardText), null);
-        public int FontSizeProp
+        private double _fontSizeProp;
+        public double FontSizeProp
         {
-            get { return (int)GetValue(FontSizeProperty); }
-            set { SetValue(FontSizeProperty, value); }
-        }*/
+            get { return _fontSizeProp; }
+            set { _fontSizeProp = value; }
+        }
         public bool IsItalic
         {
             get { return (bool)GetValue(IsItalicProperty); }
@@ -71,6 +72,7 @@ namespace GrappBox.CustomControler
 
         private void ConfirmText_Click(object sender, RoutedEventArgs e)
         {
+            FontSizeProp = (double)fontSize.SelectedValue;
             TextEntered = textBlock.Text;
             textBlock.Text = "";
             IsTextConfirmed = true;
@@ -93,6 +95,14 @@ namespace GrappBox.CustomControler
                 ConfirmText.IsEnabled = false;
             else
                 ConfirmText.IsEnabled = true;
+        }
+        public async Task<bool> WaitForSelect(CancellationToken tok)
+        {
+            await Task.Run(() =>
+            {
+                while (IsTextConfirmed != true) { }
+            }, tok);
+            return IsTextConfirmed;
         }
     }
 }

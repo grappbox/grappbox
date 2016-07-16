@@ -268,7 +268,7 @@ namespace GrappBox.View
             else
             {
                 await vm.createProject(password.Password);
-                if (SettingsManager.getOption<int>("ProjectIdChoosen") != 0)
+                if (SettingsManager.getOption("ProjectIdChoosen") != -1)
                 {
                     UpdatePassword.Visibility = Visibility.Visible;
                     NewPassword.Visibility = Visibility.Collapsed;
