@@ -1,0 +1,174 @@
+<!-- This file is subject to the terms and conditions defined in file 'LICENSE.txt',
+which is part of the GRAPPBOX source code package.
+COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
+
+<section id="bugtrackerList">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="well">
+        <!-- grappbox.data : tickets list -->
+        <div data-ng-if="data.onLoad">
+          <div class="spinner section">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle>
+            </svg>
+          </div>
+        </div>
+        <div data-ng-if="!data.onLoad">
+          <div data-ng-if="data.message == '_valid'">
+            <div class="row">
+              <div class="centered">
+                <a href="" title="Open tickets" class="btn btn-default" ng-click="getOpenTickets()">
+                  <i class="fa fa-list fa-fw"></i> Open Tickets</a>
+                <a href="" title="Closed tickets" class="btn btn-default" ng_click="getClosedTickets()">
+                  <i class="fa fa-list fa-fw"></i> Closed Tickets</a>
+                <!-- <a href="" title="User tickets" class="btn btn-default" ng_click="getUserTickets()">
+                  <i class="fa fa-list fa-fw"></i> User Tickets</a> -->
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="centered">
+                <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
+              </div>
+            </div>
+            <div class="row">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="col-lg-4"><i class="fa fa-ticket"></i> Title</th>
+                    <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                    <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                    <th class="col-lg-2"><i class="fa fa-calendar"></i> Creation date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="bugtracker in data.tickets" data-ng-dblclick="openTicket(projectId, bugtracker.id)" title="Open the ticket details">
+                    <td>{[{ bugtracker.title }]}</td>
+                    <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
+                    <td>{[{ formatUsersinString(bugtracker.users) }]}</td>
+                    <td>{[{ formatObjectDate(bugtracker.createdAt.date) }]}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div data-ng-if="data.message == '_empty'">
+            <div class="row">
+              <div class="centered">
+                <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="data-wrapper error">
+                <p><i class="fa fa-frown-o"></i>There is no issue for this project.</p>
+              </div>
+            </div>
+          </div>
+          <div data-ng-if="data.message == '_invalid'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+            </div>
+          </div>
+          <div data-ng-if="data.message == '_denied'">
+            <div class="data-wrapper error">
+              <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--
+<div class="view view-content" id="bugtracker-list-view" ng-controller="bugtrackerListController">
+
+  <section class="app-section" id="bugtracker-help">
+    <div class="container app-container">
+      <div class="row">
+        <div class="col-lg-12">
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="app-section" id="bugtracker-list">
+    <div class="container">
+      <div class=" section section-heading">
+        <a href="" title="Open tickets" class="btn-default btn-access" ng-click="getOpenTickets()">
+          <i class="fa fa-list fa-fw"></i>Open Tickets</a>
+        <a href="" title="Closed tickets" class="btn-default btn-access" ng_click="getClosedTickets()">
+          <i class="fa fa-list fa-fw"></i>Closed Tickets</a>
+      </div>
+      <div class="row">
+        <div ng-show="data.onLoad">
+          <div class="loading-content section"><div></div></div>
+        </div>
+        <div ng-repeat="project in data.projects" class="each-object" ng-show="!data.onLoad">
+          <div class="col-lg-12">
+
+            <div class="section-heading">
+              <h3><i class="fa fa-folder-o"></i>"{[{ project.name }]}"</h3>
+            </div>
+            <div class="section-content">
+              <div id="all-bugtracker-data" class="col-lg-12">
+                <div ng-show="data.projectsBugtracker_onLoad[project.name]">
+                  <div class="loading-content section"><div></div></div>
+                </div>
+                <div ng-show="!data.projectsBugtracker_onLoad[project.name]">
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_valid'">
+                    <div class="">
+                      <a href="bugtracker/{[{ project.project_id }]}/0" title="Create new ticket" class="btn-default btn-access">
+                        <i class="fa fa-plus fa-fw"></i>Create new ticket</a>
+                    </div>
+                    <div class="ticket-list">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th class="col-lg-4"><i class="fa fa-ticket"></i>Title</th>
+                            <th class="col-lg-3"><i class="fa fa-tags"></i>Tags</th>
+                            <th class="col-lg-3"><i class="fa fa-user"></i>Assigned user(s)</th>
+                            <th class="col-lg-2"><i class="fa fa-calendar"></i>Creation date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="bugtracker in data.projectsBugtracker_content[project.name]" ng-click="openTicket(project.project_id, bugtracker.id)">
+                            <td>{[{ bugtracker.title }]}</td>
+                            <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
+                            <td>{[{ formatUsersinString(bugtracker.users) }]}</td>
+                            <td>{[{ formatObjectDate(bugtracker.createdAt.date) }]}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_empty'">
+                    <div class="error">
+                      <p><a href="bugtracker/{[{ project.project_id }]}/0" title="Create new ticket" class="btn-default btn-access"><i class="fa fa-plus fa-fw"></i>Create new ticket</a></p>
+                      <p><i class="fa fa-frown-o"></i>There is no bug ticket for this project.</p>
+                    </div>
+                  </div>
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_denied'">
+                    <div class="error">
+                      <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+                    </div>
+                  </div>
+                  <div ng-if="data.projectsBugtracker_message[project.name] == '_invalid'">
+                    <div class="error">
+                      <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div> -->
