@@ -22,7 +22,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   $scope.push = { date: "" };
   $scope.action = { resetTool: "", toggleFullscreen: "" };
 
-  $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false, follower: { "left": 0, "top": 0 } };
+  $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
   $scope.text = { value: "", italic: false, bold: false, size: { label: "24 pt", value: "24" } };
 
   $scope.colors = [
@@ -489,10 +489,6 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
     }
   };
 
-  // "On mouse move" event handler
-  $scope.action.updateFollower = function(event) {
-    $scope.mouse.follower = { "left": event.offsetX - 25, "top": event.offsetY - 25 };
-  };
 
 
   /* ==================== EXECUTION ==================== */

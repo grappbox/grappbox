@@ -334,7 +334,6 @@ section:last-child { margin: 30px 0 60px 0; }
   #whiteboard .well.fullscreen { overflow: scroll!important; }
 }
 
-.follower.active { position: absolute; height: 60px; width: 60px; border-radius: 50%; background: #333; opacity: 0.5; }
 .canvas-wrapper { overflow: scroll; max-height: 65vh; padding: 0; }
 .canvas-wrapper canvas { background: #fff; cursor: move; }
 .canvas-wrapper canvas.edit { cursor: crosshair; }
