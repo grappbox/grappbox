@@ -1,0 +1,101 @@
+QMainWindow
+{
+    background-color: #ffffff;
+}
+
+QMainWindow#Login
+{
+    background-color: #424242;
+}
+
+QLineEdit
+{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #7f8c8d;
+    border-radius: 5px;
+}
+
+QLineEdit:focus
+{
+    border-color: #2980b9;
+} 
+
+QTextEdit
+{
+    border-style: solid;
+    border-width: 1px;
+    border-color: #7f8c8d;
+    border-radius: 5px;
+}
+
+QLabel
+{
+	color: #000000;
+}
+
+QLabel#Strong
+{
+	font-size: 16px;
+	font-weight: bold;
+}
+
+QLabel#title
+{
+	font-size: 24px;
+	font-weight: bold;
+}
+
+QTextEdit:focus
+{
+    border-color: #2980b9;
+}
+
+QPushButton#menu
+{
+    border-style: none;
+    background-color: #f0f3f7;
+    color: black;
+}
+
+QPushButton#menu-selected
+{
+	background-color: #f4f6f9;
+	border-style: none;
+	border-right-style: solid;
+	border-width: 4px;
+	border-color: #af2d2e;
+    color: black;
+    font-weight: bold;
+}
+
+QPushButton
+{
+	padding: 6px 12px;
+	margin-bottom: 0;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	color: #ECF0F1;
+	background-color: #595959;
+}
+
+QPushButton:hover
+{
+	color: #ECF0F1;
+	background-color: #3c3b3b;
+	border-color: #8c8c8c;
+}
+
+QPushButton:pressed
+{
+	color: #ECF0F1;
+	background-color: #a6a6a6;
+	border-color: #2C3E50;
+}

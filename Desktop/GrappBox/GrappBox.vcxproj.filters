@@ -1,0 +1,1010 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Distribution Files">
+      <UniqueIdentifier>{B83CAF91-C7BF-462F-B76C-EA11631F866C}</UniqueIdentifier>
+      <Extensions>*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Distribution Files">
+      <UniqueIdentifier>{B83CAF91-C7BF-462F-B76C-EA11631F866C}</UniqueIdentifier>
+      <Extensions>*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{62213daa-8a06-442b-b522-10b72de4a93a}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{aacea3ca-fe4c-4e11-8631-e585fb9d9d4e}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files\Body">
+      <UniqueIdentifier>{b0a78d4b-0997-470f-b341-a8965dbb510b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\API">
+      <UniqueIdentifier>{3c37a6d0-7e68-456b-aead-eb234a43caa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{f0d71a66-db7f-4076-8843-dbfd1ea1295f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\Calendar">
+      <UniqueIdentifier>{e719a819-75b0-4eac-af13-9b793833f525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\Whiteboard">
+      <UniqueIdentifier>{47d401ba-bc7f-4083-beb1-ae36ea1f21ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\Timeline">
+      <UniqueIdentifier>{2d834c97-4e56-4325-93b4-492227a1c860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\BugTracker">
+      <UniqueIdentifier>{8fa5e17f-a5d9-4715-b508-f22d0150e00a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\Dashboard">
+      <UniqueIdentifier>{7db3193b-f596-426d-87ba-93d19a7bea27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\ProjectSettings">
+      <UniqueIdentifier>{99ac3d60-3bee-402e-be4c-5845a82205fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\UsersSettings">
+      <UniqueIdentifier>{c18376c1-dc1c-44d2-a0ce-8693ffbd303b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\BugTracker\Body">
+      <UniqueIdentifier>{113dbc69-4aab-42be-88f5-36e2f9dc655f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Body\Common">
+      <UniqueIdentifier>{f4ed672e-9917-42c7-97b9-f200c8429b26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MainApplication">
+      <UniqueIdentifier>{71a2d108-5d16-4b3c-885a-5a572c1c38af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body">
+      <UniqueIdentifier>{f0524221-4368-4765-981b-851d2694d162}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\API">
+      <UniqueIdentifier>{1cd0cbb3-1a4b-4b4f-9021-82a92d2fb118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MainApplication">
+      <UniqueIdentifier>{35926f2d-356d-40c4-b563-f3948907946b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{0635ac9c-59e8-4431-9a74-fea5fed41c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\Calendar">
+      <UniqueIdentifier>{c5b61872-88e1-4fd5-bec9-31a7b954c6b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\BugTracker">
+      <UniqueIdentifier>{0c0b7485-9dd7-494a-8125-c29ca99c6414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\Dashboard">
+      <UniqueIdentifier>{bb9c3580-a75a-4d67-8a9c-e555fc67370b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\Common">
+      <UniqueIdentifier>{37325638-0373-4c45-a4e0-f26baf5e1023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\UsersSettings">
+      <UniqueIdentifier>{5d1b520c-b5f0-4298-94b6-2ec321f8b1c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\ProjectSettings">
+      <UniqueIdentifier>{bd179871-9e61-4114-b2e0-dd073ba480de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\Timeline">
+      <UniqueIdentifier>{87f5e3dd-685c-4935-896e-a42e9afa4273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\Whiteboard">
+      <UniqueIdentifier>{2fb3fbbd-70b8-443d-a374-dfc9182201d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Body\BugTracker\Body">
+      <UniqueIdentifier>{9731fe19-0cc7-4b7d-8aa8-13ab9b797d34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Images">
+      <UniqueIdentifier>{e5514b6d-069c-4686-ad62-a9ece5ebb690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Css">
+      <UniqueIdentifier>{747bdf43-ce3b-43ce-94f6-e9e175cadeed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Fonts">
+      <UniqueIdentifier>{175b70bc-dcb6-4955-a61f-9e82cf69b678}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyBugCreation.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyBugCreation.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyBugList.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyBugList.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyBugTracker.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyBugTracker.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyBugVisualize.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyBugVisualize.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyCalendar.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyCalendar.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyDashboard.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyDashboard.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyProjectSettings.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyProjectSettings.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyTimeline.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyTimeline.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyUserSettings.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyUserSettings.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyWhiteboard.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyWhiteboard.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BodyWhiteboardWritingText.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BodyWhiteboardWritingText.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugCheckableLabel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugCheckableLabel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugListElement.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugListElement.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugListTitleWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugListTitleWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugViewAssigneeWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugViewAssigneeWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugViewCategoryWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugViewCategoryWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugViewPreviewWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugViewPreviewWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugViewStatusBar.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugViewStatusBar.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_BugViewTitleWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_BugViewTitleWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CalendarEvent.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CalendarEvent.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CalendarEventForm.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CalendarEventForm.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CalendarEventMonth.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CalendarEventMonth.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CanvasTimeline.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CanvasTimeline.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_ConversationTimeline.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_ConversationTimeline.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CreateNewCustomerAccessWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CreateNewCustomerAccessWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CreateNewRole.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CreateNewRole.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CustomerAccessSettings.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CustomerAccessSettings.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_DashboardGlobalProgress.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_DashboardGlobalProgress.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_DashboardMeeting.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_DashboardMeeting.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_DashboardMember.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_DashboardMember.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_DataConnectorOnline.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_DataConnectorOnline.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_ImageUploadWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_ImageUploadWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_InfoPushButton.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_InfoPushButton.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_InviteUserWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_InviteUserWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_LineTimeline.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_LineTimeline.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_LoginWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_LoginWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_MainWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_MainWindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_MessageTimeLine.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_MessageTimeLine.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_ProfilMainInformation.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_ProfilMainInformation.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_PushButtonImage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_PushButtonImage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_RoleTableWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_RoleTableWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_SliderMenu.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_SliderMenu.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_UserRoleCheckbox.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_UserRoleCheckbox.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_WhiteboardButtonChoice.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_WhiteboardButtonChoice.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_WhiteboardGraphicsView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_WhiteboardGraphicsView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_whiteboardcanvas.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_whiteboardcanvas.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_finalressources.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_temporaryressources.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyBugTracker.cpp">
+      <Filter>Source Files\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyCalendar.cpp">
+      <Filter>Source Files\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyDashboard.cpp">
+      <Filter>Source Files\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyProjectSettings.cpp">
+      <Filter>Source Files\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyTimeline.cpp">
+      <Filter>Source Files\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyUserSettings.cpp">
+      <Filter>Source Files\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="BodyWhiteboard.cpp">
+      <Filter>Source Files\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugCheckableLabel.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugEntity.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugListElement.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugListTitleWidget.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugTagEntity.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugUser.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugViewAssigneeWidget.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugViewCategoryWidget.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugViewPreviewWidget.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugViewStatusBar.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BugTracker\BugViewTitleWidget.cpp">
+      <Filter>Source Files\Body\BugTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyBugVisualize.cpp">
+      <Filter>Source Files\Body\BugTracker\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyBugCreation.cpp">
+      <Filter>Source Files\Body\BugTracker\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\BodyBugList.cpp">
+      <Filter>Source Files\Body\BugTracker\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="BodyWhiteboardWritingText.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Calendar\CalendarEvent.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Calendar\CalendarEventForm.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Calendar\CalendarEventMonth.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Calendar\CalendarView.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="CalendarViewDay.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Calendar\CalendarViewMonth.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Calendar\CalendarViewWeek.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Timeline\CanvasTimeline.cpp">
+      <Filter>Source Files\Body\Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Timeline\ConversationTimeline.cpp">
+      <Filter>Source Files\Body\Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\CreateNewCustomerAccessWindow.cpp">
+      <Filter>Source Files\Body\ProjectSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\CreateNewRole.cpp">
+      <Filter>Source Files\Body\ProjectSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\CustomerAccessSettings.cpp">
+      <Filter>Source Files\Body\ProjectSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="customgraphicsdiamonditem.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomGraphicsHandWriteItem.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Dashboard\DashboardMember.cpp">
+      <Filter>Source Files\Body\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Dashboard\DashboardGlobalProgress.cpp">
+      <Filter>Source Files\Body\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Dashboard\DashboardInformation.cpp">
+      <Filter>Source Files\Body\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Dashboard\DashboardMeeting.cpp">
+      <Filter>Source Files\Body\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="API\DataConnectorOnline.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\ImageUploadWidget.cpp">
+      <Filter>Source Files\Body\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\InfoPushButton.cpp">
+      <Filter>Source Files\Body\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\InviteUserWindow.cpp">
+      <Filter>Source Files\Body\ProjectSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Timeline\LineTimeline.cpp">
+      <Filter>Source Files\Body\Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginWindow.cpp">
+      <Filter>Source Files\MainApplication</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files\MainApplication</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Timeline\MessageTimeLine.cpp">
+      <Filter>Source Files\Body\Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfilMainInformation.cpp">
+      <Filter>Source Files\Body\UsersSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="WidgetCommon\PushButtonImage.cpp">
+      <Filter>Source Files\Body\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\RoleTableWidget.cpp">
+      <Filter>Source Files\Body\ProjectSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="API\SDataManager.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="SFontLoader.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SliderMenu.cpp">
+      <Filter>Source Files\MainApplication</Filter>
+    </ClCompile>
+    <ClCompile Include="Body\Settings\UserRoleCheckbox.cpp">
+      <Filter>Source Files\Body\ProjectSettings</Filter>
+    </ClCompile>
+    <ClCompile Include="WhiteboardButtonChoice.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="whiteboardcanvas.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="WhiteboardGraphicsView.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CalendarView.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CalendarView.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ListAddRemoveSelection.cpp">
+      <Filter>Source Files\Body\Calendar</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_ListAddRemoveSelection.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_ListAddRemoveSelection.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="SStyleLoader.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_CreateWhiteboardDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_CreateWhiteboardDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateWhiteboardDialog.cpp">
+      <Filter>Source Files\Body\Whiteboard</Filter>
+    </ClCompile>
+    <ClCompile Include="FlowLayout.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SDebugWindow.cpp">
+      <Filter>Header Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_SDebugWindow.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Body\BodyBugTracker.h">
+      <Filter>Header Files\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyUserSettings.h">
+      <Filter>Header Files\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyProjectSettings.h">
+      <Filter>Header Files\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\UserRoleCheckbox.h">
+      <Filter>Header Files\Body\ProjectSettings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\RoleTableWidget.h">
+      <Filter>Header Files\Body\ProjectSettings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\InviteUserWindow.h">
+      <Filter>Header Files\Body\ProjectSettings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\CustomerAccessSettings.h">
+      <Filter>Header Files\Body\ProjectSettings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\CreateNewRole.h">
+      <Filter>Header Files\Body\ProjectSettings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\CreateNewCustomerAccessWindow.h">
+      <Filter>Header Files\Body\ProjectSettings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ProfilMainInformation.h">
+      <Filter>Header Files\Body\UsersSettings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugCheckableLabel.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugListElement.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugListTitleWidget.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugViewAssigneeWidget.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugViewCategoryWidget.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugViewPreviewWidget.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugViewStatusBar.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyBugVisualize.h">
+      <Filter>Header Files\Body\BugTracker\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyBugCreation.h">
+      <Filter>Header Files\Body\BugTracker\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyBugList.h">
+      <Filter>Header Files\Body\BugTracker\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\ImageUploadWidget.h">
+      <Filter>Header Files\Body\Common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyCalendar.h">
+      <Filter>Header Files\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyDashboard.h">
+      <Filter>Header Files\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BodyTimeline.h">
+      <Filter>Header Files\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BodyWhiteboard.h">
+      <Filter>Header Files\Body</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BodyWhiteboardWritingText.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\BugTracker\BugViewTitleWidget.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Dashboard\DashboardMember.h">
+      <Filter>Header Files\Body\Dashboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Dashboard\DashboardGlobalProgress.h">
+      <Filter>Header Files\Body\Dashboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Dashboard\DashboardMeeting.h">
+      <Filter>Header Files\Body\Dashboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Calendar\CalendarEvent.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Calendar\CalendarEventForm.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </CustomBuild>
+    <ClInclude Include="CalendarViewDay.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </ClInclude>
+    <ClInclude Include="Body\Calendar\CalendarViewMonth.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </ClInclude>
+    <CustomBuild Include="Body\Timeline\CanvasTimeline.h">
+      <Filter>Header Files\Body\Timeline</Filter>
+    </CustomBuild>
+    <ClInclude Include="API\IDataConnector.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="Body\BugTracker\IBugPage.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </ClInclude>
+    <CustomBuild Include="LoginWindow.h">
+      <Filter>Header Files\MainApplication</Filter>
+    </CustomBuild>
+    <ClInclude Include="SFontLoader.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="WidgetCommon\utils.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <CustomBuild Include="Body\Calendar\CalendarView.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ListAddRemoveSelection.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CreateWhiteboardDialog.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SDebugWindow.h">
+      <Filter>Source Files\Utils</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Ressources\ConfigurationFiles\WhiteboardColors.xml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <CustomBuild Include="finalressources.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="temporaryressources.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <None Include="Ressources\Icon\Accept.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\allyriane_launois.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\GlobalProgressIcon\Bug.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\Calendar.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Mask\CircleMaskMemberPicture.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\ClientMeeting.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\Clock.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Delete.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\DropDown.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Edit.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\frederic_tan.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Projects\GameSphere.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\leo_nadeau.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Loading.gif">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Loading2.gif">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Logout-Icon.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\marc_wieser.jpeg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\MeetingDefault.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\GlobalProgressIcon\Message.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Message.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Notification.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\Other.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\pierre_feytout.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\pierre_hofman.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\ProjectDefault.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Return.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\roland_hemmer.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\Settings.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\SettingsIcon.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\GlobalProgressIcon\Task.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\MeetingIcon\TeamMeeting.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Title.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\UserDefault.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Temporary\Profils\valentin_mougenot.jpg">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\Icon\V-CardIcon.png">
+      <Filter>Resource Files\Images</Filter>
+    </None>
+    <None Include="Ressources\ConfigurationFiles\Base.css">
+      <Filter>Resource Files\Css</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Bold.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-BoldItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-ExtraBold.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-ExtraBoldItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Italic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Light.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-LightItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Regular.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-Semibold.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+    <None Include="Ressources\Font\OpenSans-SemiboldItalic.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BaseStyle.css">
+      <Filter>Distribution Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Body\BugTracker\BugEntity.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </ClInclude>
+    <ClInclude Include="Body\BugTracker\BugTagEntity.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </ClInclude>
+    <ClInclude Include="Body\BugTracker\BugUser.h">
+      <Filter>Header Files\Body\BugTracker</Filter>
+    </ClInclude>
+    <ClInclude Include="Body\Dashboard\DashboardInformation.h">
+      <Filter>Header Files\Body\Dashboard</Filter>
+    </ClInclude>
+    <ClInclude Include="Body\Calendar\CalendarViewWeek.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomGraphicsHandWriteItem.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </ClInclude>
+    <ClInclude Include="customgraphicsdiamonditem.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </ClInclude>
+    <ClInclude Include="API\SDataManager.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="SStyleLoader.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlowLayout.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="IBodyContener.h">
+      <Filter>Header Files\MainApplication</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Body\Calendar\CalendarEventMonth.h">
+      <Filter>Header Files\Body\Calendar</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Timeline\ConversationTimeline.h">
+      <Filter>Header Files\Body\Timeline</Filter>
+    </CustomBuild>
+    <CustomBuild Include="API\DataConnectorOnline.h">
+      <Filter>Header Files\API</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Settings\InfoPushButton.h">
+      <Filter>Header Files\Body\Common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Timeline\LineTimeline.h">
+      <Filter>Header Files\Body\Timeline</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body\Timeline\MessageTimeLine.h">
+      <Filter>Header Files\Body\Timeline</Filter>
+    </CustomBuild>
+    <CustomBuild Include="WhiteboardGraphicsView.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="WhiteboardButtonChoice.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="whiteboardcanvas.h">
+      <Filter>Header Files\Body\Whiteboard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="WidgetCommon\PushButtonImage.h">
+      <Filter>Header Files\Body\Common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MainWindow.h">
+      <Filter>Header Files\MainApplication</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SliderMenu.h">
+      <Filter>Header Files\MainApplication</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GrappBox.rc" />
+  </ItemGroup>
+</Project>

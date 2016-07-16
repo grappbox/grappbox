@@ -1,0 +1,7 @@
+BugListElement#Pair{
+    background-color : #F6F6F6;
+}
+
+BugListElement#Odd{
+    background-color : #F0F0F0;
+}

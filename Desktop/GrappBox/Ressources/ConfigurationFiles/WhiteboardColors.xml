@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<root>
+    <Color name="Black"  hexa="#000000" />
+    <Color name="Translucent"  hexa="#00000000" />
+    <Color name="White"  hexa="#FFFFFF" />
+    <Color name="Grey 20%"  hexa="#EEEEEE" />
+    <Color name="Grey 40%"  hexa="#BDBDBD" />
+    <Color name="Grey 60%"  hexa="#757575" />
+    <Color name="Grey 80%"  hexa="#424242" />
+    <Color name="Red"  hexa="#F44336" />
+    <Color name="Pink"  hexa="#E91E63" />
+    <Color name="Purple"  hexa="#9C27B0" />
+    <Color name="Deep Purple"  hexa="#673AB7" />
+    <Color name="Indigo"  hexa="#3F51B5" />
+    <Color name="Blue"  hexa="#2196F3" />
+    <Color name="Light Blue"  hexa="#03A9F4" />
+    <Color name="Cyan"  hexa="#00BCD4" />
+    <Color name="Teal"  hexa="#009688" />
+    <Color name="Green"  hexa="#4CAF50" />
+    <Color name="Light Green"  hexa="#8BC34A" />
+    <Color name="Lime"  hexa="#CDDC39" />
+    <Color name="Yellow"  hexa="#FFEB3B" />
+    <Color name="Amber"  hexa="#FFC107" />
+    <Color name="Orange"  hexa="#FF9800" />
+    <Color name="Deep Orange"  hexa="#FF5722" />
+    <Color name="Brown"  hexa="#795548" />
+    <Color name="Blue Grey"  hexa="#607D8B" />
+</root>

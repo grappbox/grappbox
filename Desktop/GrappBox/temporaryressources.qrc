@@ -1,0 +1,27 @@
+<RCC>
+    <qresource lang="FR" prefix="/Temporary/Profils">
+        <file>Ressources/Temporary/Profils/allyriane_launois.jpg</file>
+        <file>Ressources/Temporary/Profils/frederic_tan.jpg</file>
+        <file>Ressources/Temporary/Profils/leo_nadeau.jpg</file>
+        <file>Ressources/Temporary/Profils/marc_wieser.jpeg</file>
+        <file>Ressources/Temporary/Profils/pierre_feytout.jpg</file>
+        <file>Ressources/Temporary/Profils/pierre_hofman.jpg</file>
+        <file>Ressources/Temporary/Profils/roland_hemmer.jpg</file>
+        <file>Ressources/Temporary/Profils/valentin_mougenot.jpg</file>
+    </qresource>
+    <qresource prefix="/Temporary/MeetingType">
+        <file>Ressources/Temporary/MeetingIcon/ClientMeeting.png</file>
+        <file>Ressources/Temporary/MeetingIcon/Other.png</file>
+        <file>Ressources/Temporary/MeetingIcon/TeamMeeting.png</file>
+        <file>Ressources/Temporary/MeetingIcon/Calendar.png</file>
+        <file>Ressources/Temporary/MeetingIcon/Clock.png</file>
+    </qresource>
+    <qresource prefix="/Temporary/Project">
+        <file>Ressources/Temporary/Projects/GameSphere.png</file>
+    </qresource>
+    <qresource prefix="/Temporary/GlobalProgressType">
+        <file>Ressources/Temporary/GlobalProgressIcon/Bug.png</file>
+        <file>Ressources/Temporary/GlobalProgressIcon/Message.png</file>
+        <file>Ressources/Temporary/GlobalProgressIcon/Task.png</file>
+    </qresource>
+</RCC>

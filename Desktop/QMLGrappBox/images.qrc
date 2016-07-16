@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/Logo">
+        <file>Title.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icons/facebook-box.svg</file>
+        <file>icons/twitter-box.svg</file>
+        <file>icons/viadeo-logo.svg</file>
+        <file>icons/linkedin-box.svg</file>
+        <file>icons/default-avatar.min.png</file>
+        <file>icons/default-logo.min.png</file>
+    </qresource>
+</RCC>
