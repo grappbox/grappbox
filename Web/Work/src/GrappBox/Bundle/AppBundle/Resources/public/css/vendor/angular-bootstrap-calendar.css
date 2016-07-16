@@ -1,6 +1,6 @@
 /**
  * angular-bootstrap-calendar - A pure AngularJS bootstrap themed responsive calendar that can display events and has views for year, month, week and day
- * @version v0.19.4
+ * @version v0.21.5
  * @link https://github.com/mattlewis92/angular-bootstrap-calendar
  * @license MIT
  */
@@ -234,6 +234,25 @@
 .cal-week-box .cal-day-panel {
   border: 0px !important;
 }
+.cal-week-box:not(.cal-day-box) .cal-row-fluid {
+  margin-bottom: 2px;
+}
+.cal-week-box:not(.cal-day-box) .cal-row-fluid:hover,
+.cal-week-box:not(.cal-day-box) [class*="cal-cell"]:hover {
+  background-color: inherit !important;
+}
+.cal-week-box:not(.cal-day-box) [data-event-class] {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.cal-week-box:not(.cal-day-box) .border-left-rounded {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.cal-week-box:not(.cal-day-box) .border-right-rounded {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
 .cal-week-box.cal-day-box .cal-row-head {
   padding-left: 60px;
 }
@@ -260,6 +279,12 @@
 .cal-day-box .cal-day-hour-part .cal-day-hour-part-spacer {
   height: 30px;
   display: inline-block;
+}
+.cal-day-box .cal-day-hour-part:hover {
+  background-color: #ededed;
+}
+.cal-day-box .cal-day-hour-part-selected {
+  background-color: #e1e1e1;
 }
 .cal-day-box .cal-day-hour .day-highlight {
   height: 30px;

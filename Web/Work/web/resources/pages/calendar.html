@@ -1,141 +1,232 @@
-<!-- This file is subject to the terms and conditions defined in file 'LICENSE.txt',
+<!-- This file is subject to the terms and conditions defined in file "LICENSE.txt",
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<div class="panel panel-warning">
-  <div class="panel-heading">Warning</div>
+<!-- calendar: information -->
+<div class="panel panel-default">
+  <div class="panel-heading">View and organize your meetings.</div>
   <div class="panel-body">
-    <p>This section is under construction.</p>
+    <p>
+      Each GrappBox account comes with a <strong>fully-equipped calendar</strong>, allowing you to easily organize all your meetings and appointments.<br>Use the navigation controls to switch between days, weeks, months and even years view. You can add an event with the <strong>"Add"</strong> button.
+    </p>
   </div>
 </div>
 
-<div class="view view-content" id="calendar-view" data-ng-controller="calendarController as vm">
+<!-- calendar: new event fixed button -->
+<section>
+  <a href="" class="btn btn-danger btn-fab btn-fixed" title="Create a new event" data-ng-click="action.onNewEvent()" data-ng-if="view.authorized"><i class="material-icons">add</i></a>
+</section>
 
-  <section class="app-section" id="calendar">
-    <div class="container app-container">
-      <div class="row">
-        <div class="col-lg-12">
-          <!-- grappbox.data : calendar -->
-          <div class="section-heading">
-            <h2>View your calendar</h2>
-            <p>Use the calendar controls to switch between day, week and month view. Clic on any day to add an event, or view the day's events if any.<br>All your changes are submitted automatically.</p>
-          </div>
-          <div class="section-content" data-ng-show="content.onLoad">
-            <div class="loading-content section"><div></div></div>
-          </div>
-          <div class="section-content list" data-ng-show="!content.onLoad">
-            <div id="all-calendar-data">
-              <div class="row data-title">
-                <div class="col-md-12"><i class="fa fa-calendar"></i>{[{ view.title }]}</div>
-              </div>
-              <div class="row data-actions">
-                <div class="col-md-1">
-                  <a href="" data-ng-model="view.mode" uib-btn-radio="'day'">Day</a>
-                </div>
-                <div class="col-md-1">
-                  <a href="" data-ng-model="view.mode" uib-btn-radio="'week'">Week</a>
-                </div>
-                <div class="col-md-1">
-                  <a href="" data-ng-model="view.mode" uib-btn-radio="'month'">Month</a>
-                </div>
-                <div class="col-md-1">
-                  <a href="" data-ng-model="view.mode" uib-btn-radio="'year'">Year</a>
-                </div>
-                <div class="col-md-1"></div>
-                <div class="col-md-1 right-offset">
-                  <a href="" mwl-date-modifier date="view.date" decrement="view.mode" data-ng-click="method.onRefresh()"><i class="fa fa-arrow-left"></i>Previous</a>
-                </div>
-                <div class="col-md-1">
-                  <a href="" mwl-date-modifier date="view.date" set-to-today data-ng-click="method.onRefresh()">Today</a>
-                </div>
-                <div class="col-md-1 left-offset">
-                  <a href="" mwl-date-modifier date="view.date" increment="view.mode" data-ng-click="method.onRefresh()">Next<i class="fa fa-arrow-right"></i></a>
-                </div>
-                <div class="col-md-1"></div>
-                <div class="col-md-3">
-                  <a href="" class="create-event" data-ng-click="method.onEventCreate()"><i class="fa fa-plus"></i>Create</a>                  
-                </div>
+<!-- calendar: navigation and view -->
+<section id="calendar">
+  <div class="row">
+    <div class="col-lg-12">
+      <div data-ng-if="view.onLoad">
+        <div class="spinner section">
+          <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+        </div>
+      </div>
+      <div data-ng-if="!view.onLoad">
+        <div data-ng-if="view.authorized">
+          <div data-ng-if="view.valid">
+            <div class="well">
+              <!-- calendar: navigation -->
+              <h3 class="col-md-12 col-xs-12 head">{[{ calendar.title }]}</h3>
+              <div class="col-md-12 col-xs-12 action">
+                <ul>
+                  <li><a href="" class="btn {[{ calendar.mode == 'day' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'day'">Day</a></li>
+                  <li><a href="" class="btn {[{ calendar.mode == 'week' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'week'">Week</a></li>
+                  <li><a href="" class="btn {[{ calendar.mode == 'month' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'month'">Month</a></li>
+                  <li><a href="" class="btn {[{ calendar.mode == 'year' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'year'">Year</a></li>
+                  <li>
+                    <a href="" class="btn btn-info" mwl-date-modifier date="calendar.date" decrement="calendar.mode" data-ng-click="action.onRefreshView()"><i class="material-icons">keyboard_arrow_left</i>Previous</a>
+                  </li>
+                  <li>
+                    <a href="" class="btn" mwl-date-modifier date="calendar.date" set-to-today data-ng-click="action.onRefreshView()">Today</a>
+                  </li>
+                  <li>
+                    <a href="" class="btn btn-info" mwl-date-modifier date="calendar.date" increment="calendar.mode" data-ng-click="action.onRefreshView()">Next<i class="material-icons">keyboard_arrow_right</i></a>
+                  </li>
+                </ul>
               </div>
 
-              <mwl-calendar
-                events="calendar.events"
-                view="view.mode"
-                view-title="view.title"
-                view-date="view.date"
-                edit-event-html="'<i class=\'fa fa-pencil\'></i>'"
-                delete-event-html="'<i class=\'fa fa-times\'></i>'"
-                on-event-click="method.onEventEdit(calendarEvent)"
-                on-edit-event-click="method.onEventEdit(calendarEvent)"
-                on-delete-event-click="method.onEventDelete(calendarEvent)"
-                cell-is-open="view.isCellOpen"
-                day-view-start="00:00"
-                day-view-end="23:00"
-                day-view-split="30">
-              </mwl-calendar>
-            
+              <!-- calendar: navigation -->
+              <div class="calendar-wrapper">
+                <mwl-calendar
+                  events="data.events"
+                  view="calendar.mode"
+                  view-title="calendar.title"
+                  view-date="calendar.date"
+                  edit-event-html="'<i class=\'material-icons\'>mode_edit</i>'"
+                  delete-event-html="'<i class=\'material-icons\'>clear</i>'"
+                  on-event-click="action.onEditEvent(calendarEvent)"
+                  on-edit-event-click="action.onEditEvent(calendarEvent)"
+                  on-delete-event-click="action.onDeleteEvent(calendarEvent)"
+                  cell-is-open="calendar.isCellOpen"
+                  day-view-start="00:00"
+                  day-view-end="23:00"
+                  day-view-split="30">
+                </mwl-calendar>
+              </div>
+            </div>
+          </div>
+          <div data-ng-if="!view.onLoad && !view.valid">
+            <div class="well centered">
+              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
             </div>
           </div>
         </div>
-      </div>
+        <div data-ng-if="!view.authorized">
+          <div class="well centered">
+            <p><i class="material-icons">block</i><br>You don't have sufficient rights to perform this operation.</p>
+          </div>
+        </div>
+      </div>          
     </div>
-  </section>
-
-  <div>
-    <script type="text/ng-template" id="modal_eventUpdate.html">
-      <div class="modal-header">
-        <h3 class="modal-title">Event creation/edition</h3>
-      </div>
-      <div class="modal-body">
-        <p>Please enter new details of your event.</p>
-        <div class="form-group">
-          <label for="modal_newTitle">Title</label>
-          <input type="text" data-ng-model="update.newTitle" id="modal_newTitle" autofocus>
-        </div>
-        <div class="form-group">
-          <label for="modal_newTitle">Description</label>
-          <textarea rows="4" cols="50" data-ng-model="update.newDescription" id="modal_newDescription"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="modal_newBeginDate">Begin date</label>
-          <input type="datetime-local" data-ng-model="update.newBeginDate" id="modal_newBeginDate">
-        </div>
-        <div class="form-group">
-          <label for="modal_newEndDate">End date</label>
-          <input type="datetime-local" data-ng-model="update.newEndDate" id="modal_newEndDate">
-        </div>
-        <div class="form-group">
-          <label for="modal_newType">Event type</label>
-          <select id="modal_newType" data-ng-options="type.name for type in events.types track by type.id" data-ng-model="update.newType"></select>
-        </div>
-        <div class="form-group">
-          <label for="modal_newProject">Project</label>
-          <select id="modal_newProject" data-ng-options="project.name for project in projects track by project.id" data-ng-model="update.newProject" data-ng-change="method.onProjectUpdate(update.newProject)"></select>
-        </div>
-        <div class="form-group" ng-if="update.newProject && update.newProject.id">
-          <label for="modal_newMembers">Members</label>
-          <select id="modal_newMembers" multiple="true" data-ng-options="member.name for member in members track by member.name" data-ng-model="update.newMembers"></select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-default btn-submit" data-ng-click="method.onConfirm()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" class="btn-default btn-access" data-ng-click="method.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
-      </div>
-    </script>
   </div>
+</section>
 
-  <div>
-    <script type="text/ng-template" id="modal_eventDeletion.html">
-      <div class="modal-header">
-        <h3 class="modal-title">Event deletion</h3>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to delete this event?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-default btn-submit" data-ng-click="method.onConfirm()"><i class="fa fa-check"></i>OK</button>
-        <button type="button" class="btn-default btn-access" data-ng-click="method.onCancel()"><i class="fa fa-ban"></i>Cancel</button>
-      </div>
-    </script>
-  </div>
+<!-- calendar: event creation modal -->
+<div>
+  <script type="text/ng-template" id="modal_createNewEvent.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventCreation()">×</button>
+      <h4 class="modal-title">Event creation</h4>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
+            <label for="new-event-title" class="col-md-1 control-label">Title</label>
+            <div class="col-md-11">
+              <input type="text" class="form-control" id="new-event-title" data-ng-model="new.title" placeholder="Title">
+            </div>
+          </div>
+          <div class="form-group {[{ error.description ? 'has-error' : '' }]}">
+            <label for="new-event-description" class="col-md-1 control-label">Description</label>
+            <div class="col-md-11">
+              <textarea rows="4" class="form-control" id="new-event-description" data-ng-model="new.description" placeholder="Description"></textarea>
+            </div>
+          </div>
+          <div class="form-group {[{ error.date_begin ? 'has-error' : '' }]}">
+            <label for="new-event-begin-date" class="col-md-1 control-label">Begin date</label>
+            <div class="col-md-11">
+              <input type="datetime-local" class="form-control" id="new-event-begin-date" data-ng-model="new.date.begin" placeholder="Begin date">
+            </div>
+          </div>
+          <div class="form-group {[{ error.date_end ? 'has-error' : '' }]}">
+            <label for="new-event-end-date" class="col-md-1 control-label">End date</label>
+            <div class="col-md-11">
+              <input type="datetime-local" class="form-control" id="new-event-end-date" data-ng-model="new.date.end" placeholder="End date">
+            </div>
+          </div>
+          <div class="form-group {[{ error.type ? 'has-error' : '' }]}">
+            <label for="new-event-type" class="col-md-1 control-label">Event type</label>
+            <div class="col-md-11">
+              <select class="form-control" id="new-event-type" data-ng-options="type.name for type in data.types track by type.id" data-ng-model="new.type"></select>
+            </div>
+          </div>
+          <div class="form-group {[{ error.project ? 'has-error' : '' }]}">
+            <label for="new-event-project" class="col-md-1 control-label">Project</label>
+            <div class="col-md-11">
+              <select class="form-control" id="new-event-project" data-ng-options="project.name for project in data.projects track by project.id" data-ng-model="new.project" data-ng-change="action.onProjectChange(new.project.id)"></select>
+            </div>
+          </div> 
+          <div class="form-group {[{ error.members ? 'has-error' : '' }]}">
+            <label for="new-event-members" class="col-md-1 control-label">Members</label>
+            <div class="col-md-11">
+              <div class="multi-select">
+                <select class="form-control" id="new-event-members" multiple="true" data-ng-options="member.name for member in current.members track by member.name" data-ng-model="new.members"></select>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmEventCreation()">Create</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelEventCreation()">Cancel</button>
+    </div>
+  </script>
+</div>
 
+<!-- calendar: event edition modal -->
+<div>
+  <script type="text/ng-template" id="modal_editEvent.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventEdition()">×</button>
+      <h4 class="modal-title">Event creation</h4>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
+            <label for="edit-event-title" class="col-md-1 control-label">Title</label>
+            <div class="col-md-11">
+              <input type="text" class="form-control" id="edit-event-title" data-ng-model="edit.title" placeholder="Title">
+            </div>
+          </div>
+          <div class="form-group {[{ error.description ? 'has-error' : '' }]}">
+            <label for="edit-event-description" class="col-md-1 control-label">Description</label>
+            <div class="col-md-11">
+              <textarea rows="4" class="form-control" id="edit-event-description" data-ng-model="edit.description" placeholder="Description"></textarea>
+            </div>
+          </div>
+          <div class="form-group {[{ error.date_begin ? 'has-error' : '' }]}">
+            <label for="edit-event-begin-date" class="col-md-1 control-label">Begin date</label>
+            <div class="col-md-11">
+              <input type="datetime-local" class="form-control" id="edit-event-begin-date" data-ng-model="edit.date.begin" placeholder="Begin date">
+            </div>
+          </div>
+          <div class="form-group {[{ error.date_end ? 'has-error' : '' }]}">
+            <label for="edit-event-end-date" class="col-md-1 control-label">End date</label>
+            <div class="col-md-11">
+              <input type="datetime-local" class="form-control" id="edit-event-end-date" data-ng-model="edit.date.end" placeholder="End date">
+            </div>
+          </div>
+          <div class="form-group {[{ error.type ? 'has-error' : '' }]}">
+            <label for="edit-event-type" class="col-md-1 control-label">Event type</label>
+            <div class="col-md-11">
+              <select class="form-control" id="edit-event-type" data-ng-options="type.name for type in data.types track by type.id" data-ng-model="edit.type"></select>
+            </div>
+          </div>
+          <div class="form-group {[{ error.project ? 'has-error' : '' }]}">
+            <label for="edit-event-project" class="col-md-1 control-label">Project</label>
+            <div class="col-md-11">
+              <select class="form-control" id="edit-event-project" data-ng-options="project.name for project in data.projects track by project.id" data-ng-model="edit.project" data-ng-change="action.onProjectChange(edit.project.id)"></select>
+            </div>
+          </div> 
+          <div class="form-group {[{ error.members ? 'has-error' : '' }]}">
+            <label for="edit-event-members" class="col-md-1 control-label">Members</label>
+            <div class="col-md-11">
+              <div class="multi-select">
+                <select class="form-control" id="edit-event-members" multiple="true" data-ng-options="member.name for member in current.members track by member.name" data-ng-model="edit.members"></select>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmEventEdition()">Update</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelEventEdition()">Cancel</button>
+    </div>
+  </script>
+</div>
+
+<!-- calendar: event deletion modal -->
+<div>
+  <script type="text/ng-template" id="modal_deleteEvent.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventDeletion()">×</button>
+      <h4 class="modal-title">Event deletion</h4>
+    </div>
+    <div class="modal-body">
+    <p>Are you sure you want to delete this event?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmEventDeletion()">Yes</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelEventDeletion()">No</button>
+    </div>
+  </script>
 </div>
