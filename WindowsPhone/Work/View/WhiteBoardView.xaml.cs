@@ -96,7 +96,7 @@ namespace GrappBox.View
                 }
             }
             pullTimer = new DispatcherTimer();
-            pullTimer.Interval = new TimeSpan(0, 0, 2);
+            pullTimer.Interval = new TimeSpan(0, 0, 5);
             pullTimer.Tick += PullTimer_Tick;
             pullTimer.Start();
         }
@@ -116,7 +116,8 @@ namespace GrappBox.View
             await wbvm.pullDraw();
             foreach (WhiteboardObject item in wbvm.PullModel.addObjects)
             {
-                this.drawingCanvas.AddNewElement(item);
+                if (wbvm.CheckIfInList(item) == false)
+                    this.drawingCanvas.AddNewElement(item);
             }
             foreach (WhiteboardObject item in wbvm.PullModel.delObjects)
             {

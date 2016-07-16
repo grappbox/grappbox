@@ -81,16 +81,33 @@ namespace GrappBox.CustomControler
             }
             ++index;
         }
-
         public bool DeleteElement(int id)
         {
-            ShapeControler toDel = this.ObjectList.FirstOrDefault(item => item.Id == id);
+            ShapeControler toDel;
+            try
+            {
+                toDel = this.ObjectList.First(item => item.Id == id);
+            }
+            catch
+            {
+                return false;
+            }
             if (toDel == null)
             {
                 return false;
             }
-            this.Children.RemoveAt(toDel.Index);
-            this.ObjectList.Remove(toDel);
+            if (toDel.Index > Children.Count)
+                return false;
+            try
+            {
+                this.Children.RemoveAt(toDel.Index);
+                this.ObjectList.Remove(toDel);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine("Exception at DeleteElement => {0}", ex.Message);
+                return false;
+            }
             index--;
             return true;
         }
