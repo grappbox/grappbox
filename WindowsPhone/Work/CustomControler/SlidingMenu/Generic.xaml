@@ -63,6 +63,11 @@
                                     <Button Style="{StaticResource LeftMenuButton}" x:Name="BugtrackerButton" MinHeight="33" Content="Bugtracker" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
                                 </StackPanel>
 
+                                <StackPanel x:Name="TaskPanel" Orientation="Horizontal">
+                                    <Image Source="/Assets/task_begin.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
+                                    <Button Style="{StaticResource LeftMenuButton}" x:Name="TaskButton" MinHeight="33" Content="Tasks" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                                </StackPanel>
+
                                 <StackPanel x:Name="WhiteboardPanel" Orientation="Horizontal">
                                     <Image HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24" Source="/Assets/whiteboard.png"/>
                                     <Button Style="{StaticResource LeftMenuButton}" x:Name="WhiteboardButton" MinHeight="33" Content="Whiteboard" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>

@@ -31,6 +31,7 @@ namespace GrappBox.CustomControler.SlidingMenu
     [TemplatePart(Name = ElementUserSettingsButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementProjectSettingsButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementBugtrackerButton, Type = typeof(Button))]
+    [TemplatePart(Name = ElementTaskButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementTimelineButton, Type = typeof(Button))]
     //[TemplatePart(Name = ElementCloudButton, Type = typeof(Button))]
     [TemplatePart(Name = ElementCalendarButton, Type = typeof(Button))]
@@ -67,6 +68,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private const string ElementUserSettingsButton = "UserSettingsButton";
         private const string ElementProjectSettingsButton = "ProjectSettingsButton";
         private const string ElementBugtrackerButton = "BugtrackerButton";
+        private const string ElementTaskButton = "TaskButton";
         private const string ElementTimelineButton = "TimelineButton";
        // private const string ElementCloudButton = "CloudButton";
         private const string ElementCalendarButton = "CalendarButton";
@@ -76,6 +78,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         //private const string ElementCloudPanel = "CloudPanel";
         private const string ElementTimelinePanel = "TimelinePanel";
         private const string ElementBugtrackerPanel = "BugtrackerPanel";
+        private const string ElementTaskPanel = "TaskPanel";
         private const string ElementWhiteboardPanel = "WhiteboardPanel";
         private const string ElementProjectSettingsPanel = "ProjectSettingsPanel";
 
@@ -89,6 +92,7 @@ namespace GrappBox.CustomControler.SlidingMenu
         private Button userSettingsButton;
         private Button projectSettingsButton;
         private Button bugtrackerButton;
+        private Button taskButton;
         private Button timelineButton;
         //private Button cloudButton;
         private Button calendarButton;
@@ -127,6 +131,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             userSettingsButton = GetTemplateChild(ElementUserSettingsButton) as Button;
             projectSettingsButton = GetTemplateChild(ElementProjectSettingsButton) as Button;
             bugtrackerButton = GetTemplateChild(ElementBugtrackerButton) as Button;
+            taskButton = GetTemplateChild(ElementTaskButton) as Button;
             timelineButton = GetTemplateChild(ElementTimelineButton) as Button;
             //cloudButton = GetTemplateChild(ElementCloudButton) as Button;
             calendarButton = GetTemplateChild(ElementCalendarButton) as Button;
@@ -147,6 +152,7 @@ namespace GrappBox.CustomControler.SlidingMenu
 
             buttons = new List<StackPanel>();
             buttons.Add(GetTemplateChild(ElementBugtrackerPanel) as StackPanel);
+            buttons.Add(GetTemplateChild(ElementTaskPanel) as StackPanel);
             //buttons.Add(GetTemplateChild(ElementCloudPanel) as StackPanel);
             buttons.Add(GetTemplateChild(ElementTimelinePanel) as StackPanel);
             buttons.Add(GetTemplateChild(ElementProjectSettingsPanel) as StackPanel);
@@ -162,6 +168,7 @@ namespace GrappBox.CustomControler.SlidingMenu
             userSettingsButton.Tapped += UserSettingsButton_Tapped;
             projectSettingsButton.Tapped += ProjectSettingsButton_Tapped;
             bugtrackerButton.Tapped += BugtrackerButton_Tapped;
+            taskButton.Tapped += TaskButton_Tapped;
             timelineButton.Tapped += TimelineButton_Tapped;
             //cloudButton.Tapped += CloudButton_Tapped;
             calendarButton.Tapped += CalendarButton_Tapped;
@@ -273,6 +280,13 @@ namespace GrappBox.CustomControler.SlidingMenu
             DisplayContent();
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 frame.Navigate(typeof(BugtrackerView)));
+        }
+
+        private async void TaskButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DisplayContent();
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                frame.Navigate(typeof(TasksListView)));
         }
 
         private async void TimelineButton_Tapped(object sender, TappedRoutedEventArgs e)

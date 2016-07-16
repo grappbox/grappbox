@@ -33,5 +33,8 @@ namespace GrappBox.Model
             get { return _lastname; }
             set { _lastname = value; }
         }
+
+        [JsonProperty("percent")]
+        public int Percent { get; set; }
     }
 }

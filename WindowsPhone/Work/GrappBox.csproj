@@ -130,6 +130,8 @@
     <Compile Include="Model\Global\LogoModel.cs" />
     <Compile Include="Model\Global\Position.cs" />
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
+    <Compile Include="Model\Tasks\IdTitleName.cs" />
+    <Compile Include="Model\Tasks\TaskModel.cs" />
     <Compile Include="Model\Whiteboard\CustomShapes.cs" />
     <Compile Include="Model\Dashboard\DashBoardModel.cs" />
     <Compile Include="Model\Global\DateModel.cs" />
@@ -176,6 +178,9 @@
     <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
+    <Compile Include="View\TasksListView.xaml.cs">
+      <DependentUpon>TasksListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TasksView.xaml.cs">
       <DependentUpon>TasksView.xaml</DependentUpon>
     </Compile>
@@ -314,6 +319,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="View\TasksListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TasksView.xaml">
       <SubType>Designer</SubType>

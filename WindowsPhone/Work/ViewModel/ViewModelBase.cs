@@ -92,12 +92,16 @@ namespace GrappBox.ViewModel
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            DateModel dm = (DateModel)value;
-            String date = dm.date.Split(' ')[0];
-            String hour = dm.date.Split(' ')[1];
-            hour = hour.Remove(hour.LastIndexOf(':'));
-            String final = "On " + date + " At " + hour;
-            return final;
+            if (value != null)
+            {
+                DateModel dm = (DateModel)value;
+                String date = dm.date.Split(' ')[0];
+                String hour = dm.date.Split(' ')[1];
+                hour = hour.Remove(hour.LastIndexOf(':'));
+                String final = "On " + date + " At " + hour;
+                return final;
+            }
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
