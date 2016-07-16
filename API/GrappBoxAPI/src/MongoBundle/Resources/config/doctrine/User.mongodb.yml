@@ -1,0 +1,103 @@
+MongoBundle\Document\User:
+    type: document
+    db: symfony_database
+    collection: users
+    repositoryClass: MongoBundle\Document\UserRepository
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        firstname:
+            type: string
+            length: 255
+        lastname:
+            type: string
+            length: 255
+        birthday:
+            type: date
+            nullable: TRUE
+        avatar:
+            type: string
+            nullable: TRUE
+        avatarDate:
+            type: date
+            nullable: TRUE
+        password:
+            type: string
+            length: 255
+        email:
+            type: string
+            length: 255
+            unique: TRUE
+        phone:
+            type: string
+            length: 255
+            nullable: TRUE
+        country:
+            type: string
+            length: 255
+            nullable: TRUE
+        linkedin:
+            type: string
+            length: 255
+            nullable: TRUE
+        viadeo:
+            type: string
+            length: 255
+            nullable: TRUE
+        twitter:
+            type: string
+            length: 255
+            nullable: TRUE
+        token:
+          type: string
+          length: 255
+          nullable: TRUE
+        tokenValidity:
+          type: date
+          nullable: TRUE
+    referenceMany:
+        projects:
+          targetDocument: Project
+          mappedBy: users
+        events:
+          targetDocument: Event
+          mappedBy: users
+        bug_creator:
+          targetDocument: Bug
+          mappedBy: creator
+        message_creator:
+          targetDocument: TimelineMessage
+          mappedBy: creator
+        event_creator:
+          targetDocument: Event
+          mappedBy: creator_user
+        project_creator:
+          targetDocument: Project
+          mappedBy: creator_user
+        gantt_creator:
+          targetDocument: Gantt
+          mappedBy: creator_user
+        gantt_updator:
+          targetDocument: Gantt
+          mappedBy: updator_id
+        notifications:
+          targetDocument: Notification
+          mappedBy: user
+          cascade: [remove]
+        devices:
+          targetDocument: Devices
+          mappedBy: user
+          cascade: [remove]
+        task_creator:
+          targetDocument: Task
+          mappedBy: creator_user
+        colors:
+          targetDocument: Color
+          mappedBy: user
+          cascade: [remove]
+        ressources:
+          targetDocument: Ressources
+          mappedBy: user
+    lifecycleCallbacks: {  }

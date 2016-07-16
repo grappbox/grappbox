@@ -1,0 +1,28 @@
+MongoBundle\Document\Setting:
+    type: document
+    db: symfony_database
+    collection: settings
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        userId:
+            type: int
+            name: user_id
+        bugAlert:
+            type: int
+            name: bug_alert
+        eventAlert:
+            type: int
+            name: event_alert
+        assignAlert:
+            type: int
+            name: assign_alert
+        lateAlert:
+            type: int
+            name: late_alert
+        alertFrequency:
+            type: int
+            name: alert_frequency
+    lifecycleCallbacks: {  }

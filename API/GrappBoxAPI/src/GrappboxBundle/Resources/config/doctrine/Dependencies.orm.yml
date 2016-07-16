@@ -1,0 +1,29 @@
+GrappboxBundle\Entity\Dependencies:
+    type: entity
+    table: dependencies
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+      name:
+        type: string
+        length: 255
+    manyToOne:
+        dependence_task:
+          targetEntity: Task
+          inversedBy: task_depended
+          cascade: [refresh, persist]
+          joinColumn:
+            name: dependence
+            referencedColumnName: id
+        task:
+          targetEntity: Task
+          inversedBy: dependence
+          cascade: [refresh, persist]
+          joinColumn:
+            name: task
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

@@ -1,0 +1,70 @@
+GrappboxBundle\Entity\Event:
+    type: entity
+    repositoryClass: GrappboxBundle\Entity\EventRepository
+    table: events
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        title:
+            type: string
+            length: 255
+        description:
+            type: text
+            nullable: TRUE
+        icon:
+            type: text
+            nullable: TRUE
+        beginDate:
+            type: datetime
+            column: begin_date
+        endDate:
+            type: datetime
+            column: end_date
+        createdAt:
+            type: datetime
+            column: created_at
+        editedAt:
+            type: datetime
+            column: edited_at
+            nullable: TRUE
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: TRUE
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: events
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+            nullable: TRUE
+        eventtypes:
+          targetEntity: EventType
+          inversedBy: events
+          joinColumn:
+            name: type_id
+            referencedColumnName: id
+        creator_user:
+          targetEntity: User
+          inveredBy: event_creator
+          joinColumn:
+            name: creator_id
+            referencedColumnName: id
+    manyToMany:
+        users:
+          targetEntity: User
+          inversedBy: events
+          joinTable:
+            name: events_user
+            joinColumns:
+              event_id:
+                referencedColumnName: id
+            inverseJoinColumns:
+              user_id:
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

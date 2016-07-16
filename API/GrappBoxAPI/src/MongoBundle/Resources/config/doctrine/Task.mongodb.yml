@@ -1,0 +1,77 @@
+MongoBundle\Document\Task:
+    type: document
+    db: symfony_database
+    collection: tasks
+    repositoryClass: MongoBundle\Document\TaskRepository
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        title:
+            type: string
+            length: 255
+        description:
+            type: string
+            nullable: TRUE
+        color:
+          type: string
+          length: 255
+          nullable: TRUE
+        dueDate:
+            type: date
+            name: due_date
+            nullable: TRUE
+        startedAt:
+            type: date
+            name: started_at
+        finishedAt:
+            type: date
+            name: finished_at
+            nullable: TRUE
+        createdAt:
+            type: date
+            name: created_at
+        deletedAt:
+            type: date
+            name: deleted_at
+            nullable: TRUE
+        isMilestone:
+          type: boolean
+          name: is_milestone
+        isContainer:
+          type: boolean
+          name: is_container
+        advance:
+          type: int
+          nullable: FALSE
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: tasks
+        creator_user:
+          targetDocument: User
+          inveredBy: task_creator
+        container:
+          targetDocument: Task
+          inversedBy: tasks_container
+    referenceMany:
+        tags:
+          targetDocument: Tag
+          inversedBy: tasks
+        ressources:
+          targetDocument: Ressources
+          mappedBy: task
+          cascade: [remove]
+        dependence:
+          targetDocument: Dependencies
+          mappedBy: task
+          cascade: [remove, refresh ]
+        task_depended:
+          targetDocument: Dependencies
+          mappedBy: dependence_task
+          cascade: [remove, refresh ]
+        tasks_container:
+          targetDocument: Task
+          mappedBy: container
+    lifecycleCallbacks: {  }

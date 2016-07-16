@@ -1,0 +1,47 @@
+GrappboxBundle\Entity\TimelineMessage:
+    type: entity
+    table: timeline_messages
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        timelineId:
+            type: integer
+            column: timeline_id
+        title:
+            type: string
+            length: 255
+        message:
+            type: text
+        parentId:
+            type: integer
+            column: parent_id
+            nullable: TRUE
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: TRUE
+        editedAt:
+            type: datetime
+            column: edited_at
+            nullable: TRUE
+    manyToOne:
+        timelines:
+          targetEntity: Timeline
+          inversedBy: timelineMessages
+          joinColumn:
+            name: timeline_id
+            referencedColumnName: id
+        creator:
+          targetEntity: User
+          inverserdBy: message_creator
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

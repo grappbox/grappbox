@@ -1,0 +1,52 @@
+MongoBundle\Document\Bug:
+    type: document
+    db: symfony_database
+    collection: bugs
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        parentId:
+            type: int
+            name: parent_id
+            nullable: TRUE
+        title:
+            type: string
+            length: 255
+        description:
+            type: string
+            nullable: TRUE
+        stateId:
+            type: int
+            name: state_id
+            nullable: TRUE
+        createdAt:
+            type: date
+            name: created_at
+        editedAt:
+            type: date
+            name: edited_at
+            nullable: TRUE
+        deletedAt:
+            type: date
+            name: deleted_at
+            nullable: TRUE
+        clientOrigin:
+            type: boolean
+            name: client_origin
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: bugs
+        creator:
+          targetDocument: User
+          inverserdBy: bug_creator
+    referenceMany:
+        users:
+          targetDocument: User
+          inversedBy: bugs
+        tags:
+          targetDocument: Tag
+          inversedBy: bugs
+    lifecycleCallbacks: {  }

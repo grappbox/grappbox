@@ -1,0 +1,21 @@
+MongoBundle\Document\StatBugsTagsRepartition:
+    type: document
+    db: symfony_database
+    collection: statBugsTagsRepartition
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        name:
+            type: string
+            length: 255
+        value:
+            type: int
+        percentage:
+            type: float
+    referenceOne:
+        projects:
+          targetDocument: Project
+          inversedBy: statBugsTagsRepartition
+    lifecycleCallbacks: {  }

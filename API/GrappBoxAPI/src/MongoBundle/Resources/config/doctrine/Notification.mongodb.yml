@@ -1,0 +1,29 @@
+MongoBundle\Document\Notification:
+    type: document
+    db: symfony_database
+    collection: notifications
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        type:
+            type: string
+            length: 255
+            name: type
+        targetId:
+            type: int
+            name: target_id
+        message:
+            type: string
+        createdAt:
+            type: date
+            name: created_at
+        isRead:
+            type: boolean
+            name: isRead
+    referenceOne:
+            user:
+              targetDocument: User
+              inversedBy: notifications
+    lifecycleCallbacks: {  }

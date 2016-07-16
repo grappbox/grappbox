@@ -1,0 +1,26 @@
+GrappboxBundle\Entity\Ressources:
+    type: entity
+    table: ressources
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+      resource:
+        type: integer
+    manyToOne:
+        task:
+          targetEntity: Task
+          inversedBy: ressources
+          joinColumn:
+            name: task_id
+            referencedColumnName: id
+        user:
+          targetEntity: User
+          inversedBy: ressources
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

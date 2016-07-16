@@ -1,0 +1,25 @@
+GrappboxBundle\Entity\StatBugsTagsRepartition:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        value:
+            type: integer
+        percentage:
+            type: float
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: StatBugsTagsRepartition
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

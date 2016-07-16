@@ -1,0 +1,17 @@
+MongoBundle\Document\EventType:
+    type: document
+    db: symfony_database
+    collection: event_types
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        name:
+            type: string
+            length: 255
+    referenceMany:
+        events:
+          targetDocument: Event
+          mappedBy: events
+    lifecycleCallbacks: {  }
