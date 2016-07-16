@@ -131,7 +131,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
               <!-- whiteboard: canvas -->
               <div class="col-lg-12 col-md-12 col-xs-12 canvas-wrapper">
-                <canvas class="{[{ selected.tool != 'none' ? 'edit' : '' }]}" id="whiteboard-canvas" height="2160px" width="4096px"></canvas>
+                <canvas class="{[{ selected.tool ? 'edit' : '' }]}" id="whiteboard-canvas" data-ng-mousemove="action.updateFollower($event)" height="2160px" width="4096px"></canvas>
+                <div class="follower {[{ selected.tool == 'eraser' ? 'active' : '' }]}" data-ng-style="mouse.follower"></div>
               </div>
               <div class="clearfix"></div>
             </div>

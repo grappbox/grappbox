@@ -164,16 +164,16 @@ app.factory("canvasFactory", function() {
       canvas = newCanvas;
     },
 
+    clearCanvas: function() {
+      canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    },
+
     setCanvasContext: function(newCanvasContext) {
       canvasContext = newCanvasContext;
     },
 
     setCanvasBuffer: function(newCanvasBuffer) {
       canvasBuffer = newCanvasBuffer;
-    },
-
-    getCanvasBuffer: function() {
-      return canvasBuffer;
     },
 
     addToCanvasBuffer: function(data) {

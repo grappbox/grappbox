@@ -22,7 +22,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   $scope.push = { date: "" };
   $scope.action = { resetTool: "", toggleFullscreen: "" };
 
-  $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
+  $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false, follower: { "left": 0, "top": 0 } };
   $scope.text = { value: "", italic: false, bold: false, size: { label: "24 pt", value: "24" } };
 
   $scope.colors = [
@@ -143,7 +143,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
           $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
           $scope.mouse.end.x = last.x;
           $scope.mouse.end.y = last.y;
-          _renderObject(objectFactory.setRenderObject(0, $scope));
+          if ($scope.selected.tool != "eraser")
+            _renderObject(objectFactory.setRenderObject(0, $scope));
         }
       }
     };
@@ -191,6 +192,10 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             case "1.10.1":
             _setCanvas();
             _setMouseHandlers();
+
+            $scope.whiteboard.objects = [];
+            canvasFactory.clearCanvasBuffer();
+            canvasFactory.clearCanvas();
 
             $scope.data.name = response.data.data.name;
             $scope.data.creator = response.data.data.user.firstname + " " + response.data.data.user.lastname;
@@ -290,6 +295,14 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
               canvasFactory.addToCanvasBuffer(data);
               canvasFactory.renderObject(data);
             });
+            angular.forEach($scope.pull.delete, function(value, key) {
+              for (i = 0; i < $scope.whiteboard.objects.length; ++i)
+                if ($scope.whiteboard.objects[i].id == value.id || $scope.whiteboard.objects[i].id == 0 || $scope.whiteboard.objects[i].with <= 0 || $scope.whiteboard.objects[i].height <= 0) {
+                  $scope.whiteboard.objects.splice(i, 1);
+                  canvasFactory.setCanvasBuffer($scope.whiteboard.objects);
+                  canvasFactory.renderCanvasBuffer();
+                }
+            });            
             break;
 
             default:
@@ -476,6 +489,10 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
     }
   };
 
+  // "On mouse move" event handler
+  $scope.action.updateFollower = function(event) {
+    $scope.mouse.follower = { "left": event.offsetX - 25, "top": event.offsetY - 25 };
+  };
 
 
   /* ==================== EXECUTION ==================== */
