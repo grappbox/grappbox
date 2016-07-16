@@ -1,0 +1,31 @@
+﻿<!--
+    Summary: Create ticket on bugtracker view
+-->
+
+<ion-view>
+    <ion-nav-title class="item-text-wrap">Create Ticket</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <form name="createTicket_form">
+            <ion-input class="item item-input">
+                <ion-label>Title</ion-label>
+                <input type="text"
+                       placeholder="Bug when I..."
+                       name="createTicket_title"
+                       ng-model="ticket.title" required/>
+            </ion-input>
+            <ion-input class="item item-input">
+                <ion-label>Description</ion-label>
+                <textarea name="createTicket_description"
+                          rows="6"
+                          placeholder="Here is exactly how I can reproduce the bug, and where it is"
+                          ng-model="ticket.description" required>
+                </textarea>
+            </ion-input>
+            <button ng-disabled="createTicket_form.$invalid"
+                    class="button button-block button-positive"
+                    ng-click="CreateTicket()">
+                Add
+            </button>
+        </form>
+    </ion-content>
+</ion-view>

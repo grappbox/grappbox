@@ -1,0 +1,214 @@
+﻿<!--
+    Summary: Page bringing the two timelines together
+-->
+
+<ion-view>
+    <ion-nav-title class="item-text-wrap">Timelines</ion-nav-title>
+    <ion-tabs class="tabs-positive tabs-striped">
+        <!-- TEAM tab -->
+        <ion-tab title="Team" class="gb-tab">
+            <!-- Tab 1 content -->
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshTeamTimeline()">
+                    </ion-refresher>
+
+                    <!-- New message button -->
+                    <button class="button button-block button-positive"
+                            ui-sref="app.createMessage({projectId: projectId, timelineId: timelineIds[0]})">
+                        New message
+                    </button>
+                    <ion-item ng-show="noMessageTeam">{{noMessageTeam}}</ion-item>
+                    <div class="list card"
+                         ng-repeat="message in lastMessagesTeam"
+                         ng-show="!noMessageTeam">
+                        <div class="item item-avatar">
+                            <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" />
+                            <h2>{{ message.creator.fullname }}</h2>
+                            <p>Created: {{ message.createdAt.date }}<br>
+                            <span ng-show="message.editedAt">Edited: {{ message.editedAt.date }}</span></p>
+                        </div>
+                        <div class="item item-body">
+                            <!--- Message -->
+                            <!-- Message title -->
+                            <input ng-readonly="message.creator.id != userConnectedId"
+                                   type="text"
+                                   placeholder="Title"
+                                   ng-model="message.title" />
+                            <!-- Message body -->
+                            <textarea ng-readonly="message.creator.id != userConnectedId"
+                                      rows="5"
+                                      ng-model="message.message"></textarea>
+                            <div class="button-bar" ng-show="message.creator.id == userConnectedId">
+                                <!-- Delete button if message is by user connected only -->
+                                <a class="button button-block icon ion-ios-trash button-small button-assertive"
+                                   ng-click="PopupDeleteMessage(message)">
+                                </a>
+                                <!-- Edit button if message is by user connected only -->
+                                <a class="button button-block icon ion-edit button-small button-positive"
+                                   ng-click="EditMessage(message)">
+                                </a>
+                                <!-- Transform message into bug -->
+                                <a class="button button-block icon ion-bug button-small button-positive"
+                                   ui-sref="app.createTicket({projectId: projectId, message: message})">
+                                </a>
+                            </div>
+                            <!-- Comments -->
+                            <p class="subdued">
+                                <a ng-click="GetCommentsOnTimeline(message); showLeaveComment = !showLeaveComment">{{ message.nbComment }} Comment(s)</a>
+                            </p>
+                            <!-- Show comments -->
+                            <ion-item ng-show="comments[0] != null && showLeaveComment"
+                                      ng-repeat="com in comments">
+                                <textarea rows="5"
+                                          ng-readonly="com.creator.id != userConnectedId"
+                                          ng-model="com.message"></textarea>
+                                <p>By {{ com.creator.fullname }}<br>
+                                Created: {{ com.createdAt.date }}<br>
+                                <span ng-show="com.editedAt">Edited: {{ com.editedAt.date }}</span></p>
+                                <div class="button-bar" ng-show="com.creator.id == userConnectedId">
+                                    <!-- Delete button if comment is by user connected only -->
+                                    <a class="button button-block icon ion-ios-trash button-small button-assertive"
+                                       ng-click="ArchiveComment(com, message)">
+                                    </a>
+                                    <!-- Edit button if comment is by user connected only -->
+                                    <a class="button button-block icon ion-edit button-small button-positive"
+                                       ng-click="EditCommentOnTimeline(com)">
+                                    </a>
+                                </div>
+                            </ion-item>
+                            <!-- Show leave a comment if user clicked on Get comments -->
+                            <div ng-show="showLeaveComment">
+                                <!-- Leave a comment -->
+                                <ion-item>
+                                    <textarea rows="5"
+                                              placeholder="Leave a comment"
+                                              ng-model="comment.message"></textarea>
+                                </ion-item>
+                                <!-- Comment button -->
+                                <a class="button button-block button-positive"
+                                   ng-click="PostComment(message)">
+                                    Comment
+                                </a>
+                                <!-- Show an arrow up to hide comments -->
+                                <p ng-click="showLeaveComment = !showLeaveComment" align="center"><i class="icon ion-ios-arrow-up"></i></p>
+                            </div>
+                        </div>
+                        <div class="item-divider"></div>
+                    </div>
+                    <!-- Button "More" messages -->
+                    <button ng-hide="lastMessagesTeam[0] == null"
+                            class="button button-block button-positive"
+                            ng-click="GetLastMessagesTeam()">
+                        More
+                    </button>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+
+        <!-- CUSTOMER tab -->
+        <ion-tab title="Customer" class="gb-tab">
+            <!-- Tab 2 content -->
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshCustomerTimeline()">
+                    </ion-refresher>
+
+                    <!-- New message button -->
+                    <button class="button button-block button-positive"
+                            ui-sref="app.createMessage({projectId: projectId, timelineId: timelineIds[1]})">
+                        New message
+                    </button>
+
+                    <ion-item ng-show="noMessageCustomer">{{noMessageCustomer}}</ion-item>
+                    <div class="list card"
+                         ng-repeat="message in lastMessagesCustomer"
+                         ng-show="!noMessageCustomer">
+                        <div class="item item-avatar">
+                            <img src="mcfly.jpg">
+                            <h2>{{ message.creator.fullname }}</h2>
+                            <p>Created: {{ message.createdAt.date }}<br>
+                            <span ng-show="message.editedAt">Edited: {{ message.editedAt.date }}</span></p>
+                        </div>
+                        <div class="item item-body">
+                            <!--- Message -->
+                            <!-- Message title -->
+                            <input ng-readonly="message.creator.id != userConnectedId"
+                                   type="text"
+                                   placeholder="Title"
+                                   ng-model="message.title" />
+                            <!-- Message body -->
+                            <textarea ng-readonly="message.creator.id != userConnectedId"
+                                      rows="5"
+                                      ng-model="message.message"></textarea>
+                            <div class="button-bar" ng-show="message.creator.id == userConnectedId">
+                                <!-- Delete button if message is by user connected only -->
+                                <a class="button button-block icon ion-ios-trash button-small button-assertive"
+                                   ng-click="PopupDeleteMessage(message)">
+                                </a>
+                                <!-- Edit button if message is by user connected only -->
+                                <a class="button button-block icon ion-edit button-small button-positive"
+                                   ng-click="EditMessage(message)">
+                                </a>
+                                <!-- Transform message into bug -->
+                                <a class="button button-block icon ion-bug button-small button-positive"
+                                   ui-sref="app.createTicket({projectId: projectId, message: message})">
+                                </a>
+                            </div>
+                            <!-- Comments -->
+                            <p class="subdued">
+                                <a ng-click="GetCommentsOnTimeline(message); showLeaveCommentCustomer = !showLeaveCommentCustomer">{{ message.nbComment }} Comment(s)</a>
+                            </p>
+                            <ion-item ng-show="comments[0] != null && showLeaveCommentCustomer"
+                                      ng-repeat="com in comments">
+                                <textarea rows="5"
+                                          ng-readonly="com.creator.id != userConnectedId"
+                                          ng-model="com.message"></textarea>
+                                <p>By {{ com.creator.fullname }}<br>
+                                Created: {{ com.createdAt.date }}<br>
+                                <span ng-show="com.editedAt">Edited: {{ com.editedAt.date }}</span></p>
+                                <div class="button-bar" ng-show="com.creator.id == userConnectedId">
+                                    <!-- Delete button if comment is by user connected only -->
+                                    <a class="button button-block icon ion-ios-trash button-small button-assertive"
+                                       ng-click="ArchiveComment(com, message)">
+                                    </a>
+                                    <!-- Edit button if comment is by user connected only -->
+                                    <a class="button button-block icon ion-edit button-small button-positive"
+                                       ng-click="EditCommentOnTimeline(com)">
+                                    </a>
+                                </div>
+                            </ion-item>
+                            <!-- Show leave a comment if user clicked on Get comments -->
+                            <div ng-show="showLeaveCommentCustomer">
+                                <!-- Leave a comment -->
+                                <ion-item>
+                                    <textarea rows="5"
+                                              placeholder="Leave a comment"
+                                              ng-model="comment.message"></textarea>
+                                </ion-item>
+                                <!-- Comment button -->
+                                <a class="button button-block button-positive"
+                                   ng-click="PostComment(message)">
+                                    Comment
+                                </a>
+                                <!-- Show an arrow up to hide comments -->
+                                <p ng-click="showLeaveCommentCustomer = !showLeaveCommentCustomer" align="center"><i class="icon ion-ios-arrow-up"></i></p>
+                            </div>
+                        </div>
+                        <div class="item-divider"></div>
+                    </div>
+                    <!-- Button "More" messages -->
+                    <button ng-hide="lastMessagesCustomer[0] == null"
+                            class="button button-block button-positive"
+                            ng-click="GetLastMessagesCustomer()">
+                        More
+                    </button>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+    </ion-tabs>
+</ion-view>

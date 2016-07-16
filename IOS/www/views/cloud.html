@@ -1,0 +1,102 @@
+﻿<!--
+    Summary: Single project view
+-->
+
+<ion-view>
+    <ion-nav-title>Cloud</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Cloud LS -->
+        <div class="button-bar">
+            <!-- Go back button -->
+            <a ng-show="path"
+               ng-click="GoBack()"
+               class="button icon ion-ios-arrow-thin-left button-positive">
+            </a>
+            <!-- New folder button -->
+            <a class="button ion-ios-folder button-positive"
+               ng-click="dirModal.show()">
+            </a>
+            <!-- Upload file button -->
+            <input type="file"
+                   id="fileUploadId"
+                   style="display: none;"
+                   data-ng-model="fileUpload"
+                   ng-change="showAskPasswordChoicePopup(fileUpload)"
+                   base-sixty-four-input />
+            <a class="button icon ion-ios-cloud-upload button-positive"
+               onclick="document.getElementById('fileUploadId').click();">
+            </a>
+        </div>
+        <!-- FOLDERS -->
+        <div class="item item-divider"> Folders</div>
+        <ion-list can-swipe="true">
+            <ion-item ng-show="noFileOrDir">{{noFileOrDir}}</ion-item>
+            <ion-item ng-repeat="dir in cloudData"
+                      ng-show="dir.type == 'dir'"
+                      ng-click="checkSafe(dir.is_secured, dir.filename)">
+                <h2 class="icon ion-ios-folder">&nbsp;<span ng-class="dir.is_secured ? 'icon ion-ios-locked' : ''"></span>&nbsp;{{ dir.filename }}</h2>
+                <ion-option-button class="button-assertive"
+                                   ng-click="deleteFileOrFolder(dir.filename)">
+                    Delete
+                </ion-option-button>
+            </ion-item>
+        </ion-list>
+        <!-- FILES -->
+        <div class="item item-divider"> Files</div>
+        <ion-list can-swipe="true">
+            <ion-item ng-show="noFileOrDir">{{noFileOrDir}}</ion-item>
+            <ion-item ng-repeat="file in cloudData"
+                      ng-show="file.type == 'file'"
+                      ng-click="checkFileProtected(file.is_secured, file.filename)">
+                <h2 class="icon ion-document">&nbsp;<span ng-class="file.is_secured ? 'icon ion-ios-locked' : ''"></span>&nbsp; {{ file.filename }}</h2>
+                <ion-option-button class="button-assertive"
+                                   ng-click="checkDeleteFile(file.filename, file.is_secured)">
+                    Delete
+                </ion-option-button>
+            </ion-item>
+        </ion-list>
+        <div ng-show="downloadProgress">
+            <p>Download:</p>
+            <progress max="100" value="{{downloadProgress}}"></progress>
+            <span class="progressLabel">{{downloadProgress}}%</span>
+        </div>
+        <div ng-show="uploadProgress">
+            <p>Upload:</p>
+            <progress max="100" value="{{uploadProgress}}"></progress>
+            <span class="progressLabel">{{uploadProgress}}%</span>
+        </div>
+    </ion-content>
+</ion-view>
+
+<!-- Create dir modal -->
+<script id="createDirModal.html" type="text/ng-template">
+    <ion-modal-view>
+        <ion-header-bar class="bar-dark">
+            <h1 class="title">Add folder</h1>
+            <button class="button button-clear button-primary"
+                    ng-click="dirModal.hide()">
+                Cancel
+            </button>
+        </ion-header-bar>
+        <ion-content>
+            <form name="createDirectory_form">
+                <ion-input class="item item-input">
+                    <ion-label>Name</ion-label>
+                    <input type="text"
+                           placeholder="My folder name"
+                           name="createDirectory_title"
+                           ng-model="dir.dirName" />
+                </ion-input>
+                <button class="button button-block button-positive"
+                        ng-click="CloudCreateDir()">
+                    Create
+                </button>
+            </form>
+        </ion-content>
+    </ion-modal-view>
+</script>

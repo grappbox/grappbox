@@ -1,0 +1,87 @@
+﻿<!--
+    Summary: The rooting page in which all views will be updated.
+    Link to scripts are done here
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--<meta http-equiv="Content-Security-Policy" />-->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">-->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval': https://*.gstatic.com https://*.googleapis.com style-src 'self' 'unsafe-inline'; media-src *">-->
+    <meta http-equiv="Content-Security-Policy" content="default-src *; font-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' 'unsafe-eval' *; media-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src 'self' data: 'unsafe-inline' 'unsafe-eval' *;">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>GrappBox</title>
+
+    <!-- CSS -->
+    <link href="css/ionic.css" rel="stylesheet" /> <!-- Ionic CSS -->
+    <link href="css/angular-gantt.css" rel="stylesheet" /> <!-- Angular-Gantt CSS -->
+    <link href="css/angular-ui-tree.min.css" rel="stylesheet" /> <!-- Angular-ui-tree dependancy for Angular-Gantt plugin 'tree' -->
+    <link href="css/angular-gantt-plugins.css" rel="stylesheet" /> <!-- Angular-Gantt plugin (table, tree...) -->
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto' type='text/css'> <!-- Roboto Font -->
+    <!--<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">-->
+    <link href="css/index.css" rel="stylesheet" /> <!-- My CSS-->
+
+    <!-- Libraries -->
+    <script src="scripts/lib/ionic.bundle.js"></script> <!-- Ionic encapsulates Angular.js -->
+    <script src="scripts/lib/angular-resource.js"></script> <!-- Angular's ngResource are used for the RESTful API -->
+    <script src="scripts/lib/moment-with-locales.js"></script> <!-- Moment.js used in angular-moment and for all dates & localization dates in GrappBox -->
+    <script src="scripts/lib/angular-moment.min.js"></script> <!-- Angular-moment.js used in angular-gantt -->
+    <script src="scripts/lib/angular-gantt.js"></script> <!-- Angular-gantt -->
+    <script src="scripts/lib/jsPlumb-2.0.6.js"></script> <!-- Jsplumb.js For dependencies in gantt-dependencies in plugins -->
+    <script src="scripts/lib/angular-ui-tree.min.js"></script> <!-- Angular-ui-tree used in angular-gantt-plugin -->
+    <script src="scripts/lib/angular-gantt-plugins.js"></script> <!-- Angular-gantt-plugin include all plugins for the gantt (like table or tree) -->
+    <script src="scripts/lib/ng-cordova.js"></script> <!-- ngCordova to access native functions on phone -->
+    <script src="scripts/lib/fabric.js"></script> <!-- fabric.js is a library used for the whiteboard -->
+    <script src="scripts/lib/angular-base64-upload.js"></script> <!-- angular-base-64-upload.js for binding file from HTML5 input type file to scope variable -->
+
+    <!-- API -->
+    <script src="scripts/api.js"></script>
+
+    <!-- Application configuration -->
+    <script src="scripts/app.js"></script>
+
+    <!-- Directives -->
+    <script src="scripts/directives/directives.js"></script>
+
+    <!-- Factories -->
+    <script src="scripts/factories/factories.js"></script>
+
+    <!-- Controllers -->
+    <script src="scripts/controllers/mainController.js"></script><!-- We use a main controller to avoid issues -->
+    <script src="scripts/controllers/authController.js"></script>
+    <script src="scripts/controllers/menuController.js"></script>
+    <script src="scripts/controllers/projectController.js"></script>
+    <script src="scripts/controllers/projectsController.js"></script>
+    <script src="scripts/controllers/createProjectController.js"></script>
+    <script src="scripts/controllers/editProjectController.js"></script>
+    <script src="scripts/controllers/rolesController.js"></script>
+    <script src="scripts/controllers/usersOnRoleController.js"></script>
+    <script src="scripts/controllers/dashboardController.js"></script>
+    <script src="scripts/controllers/timelinesController.js"></script>
+    <script src="scripts/controllers/createMessageController.js"></script>
+    <script src="scripts/controllers/whiteboardController.js"></script>
+    <script src="scripts/controllers/whiteboardsController.js"></script>
+    <script src="scripts/controllers/profileController.js"></script>
+    <script src="scripts/controllers/editProfileController.js"></script>
+    <script src="scripts/controllers/userController.js"></script>
+    <script src="scripts/controllers/bugtrackerController.js"></script>
+    <script src="scripts/controllers/createTicketController.js"></script>
+    <script src="scripts/controllers/ticketController.js"></script>
+    <script src="scripts/controllers/editTicketController.js"></script>
+    <script src="scripts/controllers/tagsController.js"></script>
+    <script src="scripts/controllers/editTagController.js"></script>
+    <script src="scripts/controllers/cloudController.js"></script>
+    <script src="scripts/controllers/tasksController.js"></script>
+    <script src="scripts/controllers/calendarController.js"></script>
+</head>
+<body ng-app="GrappBox" class="fullscreen"> <!-- class="fullscreen" is used to prevent header height for iOS6 (iPhone 5) -->
+    
+    <ion-nav-view></ion-nav-view> <!-- All GrappBox's views will be updated here -->
+
+    <script src="cordova.js"></script>
+    <script src="scripts/platformOverrides.js"></script>
+    <script src="scripts/index.js"></script>
+</body>
+</html>

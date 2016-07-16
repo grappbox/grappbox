@@ -1,0 +1,118 @@
+﻿<!--Summary: Abstract page menu for all other pages
+
+    Good representation of the application format:
+
+    index.html:
+    <ion-nav-view>
+
+    app.html: (abstract)
+    |-----------------------<ion-side-menus------------------------|
+    |   <ion-side-menu>            <ion-side-menu-content>         |
+    |--------------------------------------------------------------|
+    |       <header>     |   <ion-nav-back-button> <ion-nav-bar>   |
+    |--------------------|-----------------------------------------|
+    |    <ion-side-menu> |                         <ion-nav-view>  |
+    |    <ion-content>   |                                         |
+    |    (Menu Items)    |                                         |
+    |--------------------|-----------------------------------------|
+
+    Other views:
+    |--------------------|-----------------------------------------|
+    |                    |                         <ion-view>      |
+    |                    |                         <ion-content>   | /!\ All views inherit from app.html
+    |                    |                         (View Content)  |
+    |--------------------------------------------------------------|
+
+-->
+
+<ion-side-menus enable-menu-with-back-views="false">
+
+    <!-- MENU WITH PROJECT SELECTED -->
+    <ion-side-menu ng-show="hasProject == true" side="left">
+        <ion-content>
+            <ion-list>
+                <!-- Display user picture & name -->
+                <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
+                    <img ng-if="userAvatar.avatar" id="projectLogo" ng-src="data:image/png;base64, {{userAvatar.avatar}}" />
+                    <img ng-if="!userAvatar.avatar" id="projectLogo" ng-src="./images/noavatar.png" />
+                    <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
+                    <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>
+                    <p style="font-size: 0.8em; overflow:visible">{{ userDatas.email }}</p>
+                </ion-item>
+            </ion-list>
+            <div class="button-bar">
+                <a menu-close class="button icon button-icon ion-ios-settings" ui-sref="app.project({projectId: projectId})"></a>
+                <a menu-close class="button icon button-icon ion-card" ui-sref="app.profile"></a>
+                <a menu-close class="button icon button-icon ion-power" ng-click="logout()"></a>
+            </div>
+            <ion-list>
+                <!-- List of all links in menu if one is selected -->
+                <ion-item nav-clear menu-close ui-sref="app.projects">Projects</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.dashboard({projectId: projectId})">Dashboard</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.calendar({projectId: projectId})">Calendar</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.cloud({projectId: projectId})">Cloud</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.timelines({projectId: projectId})">Timelines</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.bugtracker({projectId: projectId})">BugTracker</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.whiteboards({projectId: projectId})">Whiteboards</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.tasks({projectId: projectId})">Tasks</ion-item>
+                <div class="item item-divider"></div>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.profile">Profile</ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+
+    <!-- SPECIAL MENU WITHOUT PROJECT -->
+    <ion-side-menu ng-show="hasProject == false" side="left">
+        <ion-content>
+            <ion-list>
+                <!-- Display user picture & name -->
+                <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
+                    <img ng-if="userAvatar.avatar" id="projectLogo" ng-src="data:image/png;base64, {{userAvatar.avatar}}" />
+                    <img ng-if="!userAvatar.avatar" id="projectLogo" ng-src="./images/noavatar.png" />
+                    <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
+                    <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>
+                    <p style="font-size: 0.8em; overflow:visible">{{ userDatas.email }}</p>
+                </ion-item>
+            </ion-list>
+            <div class="button-bar">
+                <!--<a class="button icon button-icon ion-ios-settings" style="background-color:grey"></a>-->
+                <a menu-close class="button icon button-icon ion-card" ui-sref="app.profile"></a>
+                <a menu-close class="button icon button-icon ion-power" ng-click="logout()"></a>
+            </div>
+            <ion-list>
+                <!-- List of all links in menu if no one is selected -->
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.projects">Projects</ion-item>
+                <!--<ion-item nav-clear style="background-color:grey">Dashboard</ion-item>
+                <ion-item nav-clear style="background-color:grey">BugTracker</ion-item>-->
+                <ion-item nav-clear ui-sref="app.calendar">Calendar</ion-item>
+                <!--<ion-item nav-clear style="background-color:grey">Cloud</ion-item>
+                <ion-item nav-clear style="background-color:grey">Tasks</ion-item>
+                <ion-item nav-clear style="background-color:grey">Timelines</ion-item>
+                <ion-item nav-clear style="background-color:grey">Whiteboards</ion-item>-->
+                <div class="item item-divider"></div>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.profile">Profile</ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+
+    <!-- VIEW CONTENT HERE -->
+    <!-- Contains buttons on the top bar also, because they never change so we can inherit -->
+    <ion-side-menu-content edge-drag-threshold="true">
+        <!-- Make the possibility to swipe -->
+        <ion-nav-bar class="bar-dark nav-title-slide-ios7 gb-nav-bar">
+            <ion-nav-back-button class="button-clear"></ion-nav-back-button><!-- Configuration of back-button in app.js -->
+            <ion-nav-buttons side="left">
+                <!-- Menu button on top left -->
+                <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+            </ion-nav-buttons>
+            <ion-nav-buttons side="right">
+                <!-- Notification button & Settings button on top right -->
+                <ion-nav-button class="button button-icon button-clear ion-android-notifications-none"></ion-nav-button>
+                <ion-nav-button class="button button-icon ion-ios-settings"></ion-nav-button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <!-- On this line, "menuList" allows to proceed inheritance, see in app.js -->
+        <ion-nav-view name="menuList" animation="slide-left-right"></ion-nav-view>
+    </ion-side-menu-content>
+
+</ion-side-menus>

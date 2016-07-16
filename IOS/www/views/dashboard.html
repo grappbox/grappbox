@@ -1,0 +1,101 @@
+﻿<!--
+    Summary: Here is the main page alias the Dashboard
+-->
+
+<ion-view>
+    <!--<ion-nav-buttons side="left">-->
+    <!-- Menu button on top left -->
+    <!--<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+    </ion-nav-buttons>-->
+    <ion-nav-title>Dashboard</ion-nav-title>
+    <ion-tabs class="tabs-positive tabs-striped">
+
+        <!-- Team Occupation -->
+        <ion-tab title="Teams" class="gb-tab">
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshTeamOccupation()">
+                    </ion-refresher>
+                    <div class="item item-divider">
+                        Team Occupation
+                    </div>
+                    <div class="list">
+                        <ion-item ng-show="noTeam">{{noTeam}}</ion-item>
+                        <a ng-show="!noTeam" class="item item-avatar"
+                           ng-repeat="teamOccupation in teamOccupationTab"
+                           ui-sref="app.tasks({projectId: projectId})">
+                            <!--ui-sref="app.user({userId: teamOccupation.user.id})"-->
+                            <img ng-if="findUserAvatar(teamOccupation.user.id)" id="userAvatar" ng-src="data:image/png;base64, {{findUserAvatar(teamOccupation.user.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="!findUserAvatar(teamOccupation.user.id)" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <h2>{{ teamOccupation.user.firstname }} {{ teamOccupation.user.lastname }}</h2>
+                            <h3>{{ teamOccupation.occupation }}</h3>
+                            <h3>Tasks begun: {{ teamOccupation.number_of_tasks_begun }}</h3>
+                            <h3>Ongoing Tasks: {{ teamOccupation.number_of_ongoing_tasks }}</h3>
+                        </a>
+                    </div>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+
+        <!-- Next Meeting -->
+        <ion-tab title="Meetings" class="gb-tab">
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshNextMeetings()">
+                    </ion-refresher>
+                    <div class="item item-divider">Next Meetings</div>
+                    <ion-list>
+                        <ion-item ng-show="noMeeting">{{noMeeting}}</ion-item>
+                        <ion-item ng-show="!noMeeting" class="item-body">
+                            <a class="item item-thumbnail-left"
+                               ng-repeat="nextMeeting in nextMeetingsTab"
+                               ui-sref="app.calendar({projectId: projectId})">
+                                <img data-ng-src="data:image/png;base64, {{nextMeeting.projects.logo}}" />
+                                <h2>{{ nextMeeting.type }}: {{ nextMeeting.title }}</h2>
+                                <p><strong>Project: </strong> {{ nextMeeting.projects.name }}</p>
+                                <p>"{{ nextMeeting.description }}"</p>
+                                <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.begin_date.date }}</p>
+                                <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.end_date.date }}</p>
+                            </a>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+
+        <!-- Progress -->
+        <ion-tab title="Progress" class="gb-tab">
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshGlobalProgress()">
+                    </ion-refresher>
+                    <div class="item item-divider">
+                        Progress
+                    </div>
+                    <div class="list">
+                        <ion-item ng-show="noProject">{{noProject}}</ion-item>
+                        <a class="item item-thumbnail-left"
+                           ng-repeat="globalProgress in globalProgressTab"
+                           ng-show="!noProject && globalProgress.project_id == projectId"
+                           ui-sref="app.project({projectId: globalProgress.project_id})">
+                            <!--<img data-ng-src="data:image/png;base64, {{globalProgress.project_logo}}" />-->
+                            <!--<img ng-src="data:image/png;base64, {{ globalProgress.project_logo ? globalProgress.project_logo : './images/noproject.png' }}" />-->
+                            <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="!projectLogo.logo" id="projectLogo" ng-src="./images/noproject.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <h2 style="color:black">{{ globalProgress.project_name }}</h2><br />
+                            <p style="color:black" class="icon-left ion-ios-list-outline"> {{ globalProgress.number_finished_tasks }} / {{ globalProgress.number_ongoing_tasks }} task(s) done</p>
+                            <p style="color:black" class="icon-left ion-ios-email-outline"> {{ globalProgress.number_messages ? globalProgress.number_messages : 0}} message(s)</p>
+                            <p style="color:black" class="icon-left ion-bug"> {{ globalProgress.number_bugs }} problems</p>
+                        </a>
+                    </div>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+    </ion-tabs>
+</ion-view>

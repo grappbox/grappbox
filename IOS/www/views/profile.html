@@ -1,0 +1,94 @@
+﻿<!--
+    Summary: User view
+-->
+
+<ion-view>
+    <ion-nav-title class="item-text-wrap">Profile</ion-nav-title>
+    <ion-content overflow-scroll="false">
+
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <div class="item item-divider">Personal information</div>
+        <ion-list>
+            <ion-item class="item-body">
+                <!--<img class="full-image" ng-src="#" />-->
+                <!--<img ng-src="{{ userAvatar.avatar }} ? 'data:image/png;base64, {{userAvatar.avatar}}' : './images/noavatar.png' }}" />-->
+                <img ng-if="userAvatar.avatar" id="userAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                <img ng-if="!userAvatar.avatar" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;"/>
+                <p ng-show="profileInfo.firstname"><strong>First Name: </strong> {{ profileInfo.firstname }}</p>
+                <p ng-show="profileInfo.lastname"><strong>Last Name: </strong> {{ profileInfo.lastname }}</p>
+                <p ng-show="profileInfo.birthday"><strong>Birthday: </strong> {{ profileInfo.birthday | date: "MM-dd-yyyy" }}</p>
+                <p ng-show="profileInfo.phone"><strong>Phone: </strong> {{ profileInfo.phone }}</p>
+                <p ng-show="profileInfo.email"><strong>Email: </strong> {{ profileInfo.email }}</p>
+                <p ng-show="profileInfo.country"><strong>Country: </strong> {{ profileInfo.country }}</p>
+                <p ng-show="profileInfo.linkedIn"><strong>LinkedIn: </strong> {{ profileInfo.linkedIn }}</p>
+                <p ng-show="profileInfo.twitter"><strong>Twitter: </strong> {{ profileInfo.twitter }}</p>
+                <p ng-show="profileInfo.viadeo"><strong>Viadeo: </strong> {{ profileInfo.viadeo }}</p>
+                <a class="button button-block button-positive"
+                   ui-sref="app.editProfile">
+                    Edit
+                </a>
+            </ion-item>
+        </ion-list>
+
+        <!-- Projects list -->
+        <!--<div class="item item-divider">My projects list</div>
+        <ion-list>
+            <ion-item ng-show="noProject">{{noProject}}</ion-item>
+            <ion-item ng-show="!noProject"
+                      class="item-icon-right"
+                      ng-repeat="project in projectsTab"
+                      ui-sref="app.project({projectId: project.project_id})">
+                <h2>{{ project.name }}</h2>
+            </ion-item>
+        </ion-list>-->
+
+        <!-- Next meetings -->
+        <!--<div class="item item-divider">Next Meetings</div>
+        <ion-list>
+            <ion-item ng-show="noMeeting"></ion-item>
+            <ion-item ng-show="!noMeeting" class="item-body">
+                <a class="item item-thumbnail-left"
+                   ng-repeat="nextMeeting in nextMeetingsTab"
+                   ui-sref="app.nextMeeting({nextMeetingId: nextMeeting.user_id})">
+                    <img ng-src="{{ nextMeeting.projects.logo }}" />
+                    <h2>{{ nextMeeting.type }}: {{ nextMeeting.title }}</h2>
+                    <p><strong>Project: </strong> {{ nextMeeting.projects.name }}</p>
+                    <p>"{{ nextMeeting.description }}"</p>
+                    <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.begin_date.date }}</p>
+                    <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.end_date.date }}</p>
+                </a>
+            </ion-item>
+        </ion-list>-->
+
+        <!-- Current and next tasks -->
+        <!--<div class="item item-divider">Current task</div>
+        <ion-list>
+            <ion-item class="item-body">
+                <ion-item ng-show="noCurrentTask">{{noCurrentTask}}</ion-item>
+                <ion-item ng-show="!noCurrentTask"
+                          ng-repeat="currentTask in currentTasksTab"
+                          ui-sref="app.gantt({projectId: currentTask.project_id, taskId: currentTask.id})">
+                    <h2>{{ currentTask.title }}</h2>
+                    <p><strong>Project: </strong> {{ currentTask.project_name }}</p>
+                    <p><strong>Description: </strong> {{ currentTask.description }}</p>
+                    <p><strong>Due: </strong> {{ currentTask.due_date.date }}</p>
+                </ion-item>
+            </ion-item>
+        </ion-list>-->
+
+        <!-- Roles of the user currently connected on different projects -->
+        <!--<div class="item item-divider">My roles</div>
+        <ion-list>
+            <ion-item ng-show="noRole">{{noRole}}</ion-item>
+            <ion-item ng-show="!noRole"
+                      ng-repeat="role in userConnectedRoles"
+                      ui-sref="app.project({projectId: role.project.id})">
+                {{ role.role.name }} on {{ role.project.name }}
+            </ion-item>
+        </ion-list>-->
+    </ion-content>
+</ion-view>

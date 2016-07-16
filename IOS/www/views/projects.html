@@ -1,0 +1,42 @@
+﻿<!--
+    Summary: This page lists all projects and allows to add / remove any
+    This page also contains the spcial menu (no project selected yet)
+-->
+
+<ion-view>
+    <ion-nav-title>Projects</ion-nav-title>
+    <ion-content>
+
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Projects list -->
+        <div class="item item-divider">My projects list</div>
+        <ion-item ng-show="noProject">{{noProject}}</ion-item>
+        <ion-list ng-show="!noProject" class="card">
+            <ion-item class="item item-thumbnail-left"
+                      ng-repeat="project in projectsTab">
+                <img ng-if="project.logo" id="projectLogo" ng-src="data:image/png;base64, {{project.logo}}" />
+                <img ng-if="!project.logo" id="projectLogo" ng-src="./images/noproject.png" />
+                <h2>{{ project.name }}</h2><br />
+                <div class="button-bar">
+                    <!-- Edit project button -->
+                    <a class="button button-positive"
+                       ui-sref="app.project({projectId: project.project_id})">
+                        Edit
+                    </a>
+                    <!-- Open project button -->
+                    <a class="button button-positive"
+                       ui-sref="app.dashboard({projectId: project.project_id})">
+                        Open
+                    </a>
+                </div>
+            </ion-item>
+        </ion-list>
+        <a class="button button-block button-positive" ui-sref="app.createProject">
+            +
+        </a>
+    </ion-content>
+</ion-view>

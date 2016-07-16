@@ -1,0 +1,50 @@
+﻿<!--
+    Summary: tags on bugtracker view
+-->
+
+<ion-view>
+    <ion-nav-title>Tags</ion-nav-title>
+    <ion-content overflow-scroll="false">
+
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Tags list -->
+        <div class="item item-divider">Tags available</div>
+        <ion-list>
+            <ion-item ng-show="noTag">{{noTag}}</ion-item>
+            <ion-item ng-show="!noTag"
+                      ng-repeat="tag in tagsOnProject"
+                      ui-sref="app.editTag({tagId: tag.id, projectId: projectId})">
+                {{ tag.name }}
+                <ion-option-button class="button-assertive"
+                                   ng-click="DeleteTagFromProject(tag.id);">
+                    Delete
+                </ion-option-button>
+            </ion-item>
+        </ion-list>
+
+        <!-- Create tag -->
+        <div class="item item-divider">Create tag</div>
+        <div>
+            <form name="createTag_form">
+                <ion-input class="item item-input">
+                    <ion-label>Name</ion-label>
+                    <input type="text"
+                           placeholder="My Tag's title"
+                           name="createTag_name"
+                           ng-model="createTag.name" required />
+                </ion-input>
+
+                <!-- Create tag button -->
+                <button ng-disabled="createTag_form.$invalid"
+                        class="button button-block button-positive"
+                        ng-click="CreateTag()">
+                    Create
+                </button>
+            </form>
+        </div>
+    </ion-content>
+</ion-view>

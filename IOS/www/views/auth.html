@@ -1,0 +1,28 @@
+﻿<!--
+    Summary: Authentification view
+-->
+
+<ion-view cache-view="false">
+    <ion-content overflow-scroll="false">
+        <div style="vertical-align:auto;">
+            <img ng-src="./images/grappbox-logo_gray.png" class="full-image" style="width:200px; height:200px; display:block; margin:auto; margin-top: 15px; margin-bottom: 5px }"><br /> <!--width: 100%; height: auto;-->
+            <form name="auth_form">
+                <div class="list">
+                    <ion-input class="item item-input">
+                        <i class="icon icon-person"></i>
+                        <ion-label>Email</ion-label>
+                        <input type="text" placeholder="Email" name="user_email" ng-model="user.email" required />
+                    </ion-input>
+                    <ion-input class="item item-input">
+                        <i class="icon icon-person"></i>
+                        <ion-label>Password</ion-label>
+                        <input type="password" placeholder="Password" name="user_password" ng-model="user.password" required />
+                    </ion-input>
+                </div>
+                <a class="button button-block button-positive" ng-disabled="auth_form.$invalid" ng-click="login()">
+                    Log In
+                </a>
+            </form>
+        </div>
+    </ion-content>
+</ion-view>

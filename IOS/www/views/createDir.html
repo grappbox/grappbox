@@ -1,0 +1,23 @@
+﻿<!--
+    Summary: Create directory on cloud view
+-->
+
+<ion-view>
+    <ion-nav-title class="item-text-wrap">Create Dir</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <form name="createDirectory_form">
+            <ion-input class="item item-input">
+                <ion-label>Title</ion-label>
+                <input type="text"
+                       placeholder="Bug when I..."
+                       name="createDirectory_title"
+                       ng-model="dirName" required/>
+            </ion-input>
+            <button ng-disabled="createDirectory_form.$invalid"
+                    class="button button-block button-positive"
+                    ng-click="CreateDir()">
+                Create
+            </button>
+        </form>
+    </ion-content>
+</ion-view>
