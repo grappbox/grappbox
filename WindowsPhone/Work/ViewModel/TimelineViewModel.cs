@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using GrappBox.Model.Global;
 
 namespace GrappBox.ViewModel
 {
@@ -52,7 +53,8 @@ namespace GrappBox.ViewModel
                 _TeamMessages = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("TeamList");
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
                 return false;
@@ -73,7 +75,8 @@ namespace GrappBox.ViewModel
                 _CustomerMessages = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(json);
                 NotifyPropertyChanged("CustomerList");
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
                 return false;
@@ -107,7 +110,8 @@ namespace GrappBox.ViewModel
                 }
                 NotifyPropertyChanged("Timelines");
             }
-            else {
+            else
+            {
                 string error = api.GetErrorMessage(json);
                 MessageDialog msgbox = new MessageDialog(error);
                 await msgbox.ShowAsync();
@@ -131,7 +135,8 @@ namespace GrappBox.ViewModel
                 _Comments = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(json);
                 NotifyPropertyChanged("Comments");
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
                 return false;
@@ -170,7 +175,8 @@ namespace GrappBox.ViewModel
                     }
                 }
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
                 return false;
@@ -203,7 +209,8 @@ namespace GrappBox.ViewModel
                     NotifyPropertyChanged("TeamList");
                     NotifyPropertyChanged("CommentList");
                 }
-                else {
+                else
+                {
                     MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                     return false;
@@ -247,7 +254,8 @@ namespace GrappBox.ViewModel
                 await Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
                 return false;
@@ -346,12 +354,26 @@ namespace GrappBox.ViewModel
 
         public DateTime CreationDate
         {
-            get { if (_messageSelected == null) return DateTime.Today; DateTime name = DateTime.Parse(_messageSelected.CreatedAt.date); if (name != null) { return name; } else return DateTime.Today; }
+            get
+            {
+                if (_messageSelected == null)
+                    return DateTime.Today;
+                DateTime name;
+                DateTimeFormator.DateModelToDateTime(_messageSelected.CreatedAt, out name);
+                return name;
+            }
         }
 
         public DateTime EditionDate
         {
-            get { if (_messageSelected == null) return DateTime.Today; DateTime name = DateTime.Parse(_messageSelected.EditedAt.date); if (name != null) { return name; } else return DateTime.Today; }
+            get
+            {
+                if (_messageSelected == null)
+                    return DateTime.Today;
+                DateTime name;
+                DateTimeFormator.DateModelToDateTime(_messageSelected.EditedAt, out name);
+                return name;
+            }
         }
         #endregion
 

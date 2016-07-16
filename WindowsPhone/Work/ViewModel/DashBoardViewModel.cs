@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
 using GrappBox.Model;
 using GrappBox.ApiCom;
 using Windows.Web.Http;
 using System.Diagnostics;
 using GrappBox.Ressources;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace GrappBox.ViewModel
 {
@@ -26,20 +26,20 @@ namespace GrappBox.ViewModel
             instance = this;
         }
 
-        public async System.Threading.Tasks.Task InitialiseAsync()
+        public async Task InitialiseAsync()
         {
             await this.getTeam();
             await this.getNextMeetings();
         }
 
-        public async System.Threading.Tasks.Task getUserLogo(Occupations model)
+        public async Task getUserLogo(Occupations model)
         {
             await model.LogoUpdate();
             await model.SetLogo();
             NotifyPropertyChanged("Avatar");
         }
 
-        public async System.Threading.Tasks.Task getTeam()
+        public async Task getTeam()
         {
             ApiCommunication api = ApiCommunication.Instance;
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
@@ -61,20 +61,39 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async System.Threading.Tasks.Task getNextMeetings()
+        public async Task<bool> getNextMeetings()
         {
             ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
             HttpResponseMessage res = await api.Get(token, "dashboard/getnextmeetings");
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-                MeetingList = api.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(await res.Content.ReadAsStringAsync());
-                NotifyPropertyChanged("MeetingList");
+                ObservableCollection<MeetingDashBoard> tmp;
+                try
+                {
+                    tmp = api.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(json);
+                }
+                catch(ArgumentException aEx)
+                {
+                    Debug.WriteLine("Argument Exception on Name {0} because of paramName {1}", aEx.Source, aEx.ParamName);
+                    return false;
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine("DashBoard.getNextMeetings: {0}", ex.Message);
+                    return false;
+                }
+                MeetingList = tmp;
             }
             else
             {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                Debug.WriteLine(api.GetErrorMessage(json));
+                return false;
             }
+            return true;
         }
         private ObservableCollection<Occupations> _occupationList;
         public ObservableCollection<Occupations> OccupationList

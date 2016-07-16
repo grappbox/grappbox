@@ -18,19 +18,24 @@ namespace GrappBox.Model.Global
         #region Pivate const
         private const string c_abridgedMonthName = "MMM";
         #endregion
-        public static DateTime DateModelToDateTime(DateModel model)
-        {
-            DateTime dt = DateTime.Parse(model.date, CultureInfo.CurrentCulture);
-            return dt;
-        }
         public static bool DateModelToDateTime(DateModel model, out DateTime dt)
         {
-            if (model == null)
+            try
             {
+                dt = DateTime.Parse(model.date, CultureInfo.CurrentCulture);
+            }
+            catch(ArgumentException aEx)
+            {
+                Debug.WriteLine("Exception in DateModelToDateTime =>\nArgument Exception on Name {0} because of paramName {1}", aEx.Source, aEx.ParamName);
                 dt = new DateTime();
                 return false;
             }
-            dt = DateTime.Parse(model.date, CultureInfo.CurrentCulture);
+            catch (FormatException fEx)
+            {
+                Debug.WriteLine("Exception in DateModelToDateTime =>\n{0}", fEx.Message);
+                dt = new DateTime();
+                return false;
+            }
             return true;
         }
         public static DateModel DateTimeToDateModel(DateTime dt)

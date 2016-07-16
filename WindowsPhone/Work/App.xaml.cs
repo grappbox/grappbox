@@ -45,6 +45,7 @@ namespace GrappBox
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            Debug.WriteLine("ExceptionStackTrace {0}", e.Exception.StackTrace);
             e.Handled = true;
         }
 

@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using GrappBox.Model;
-using GrappBox.CustomControler;
 using System.Collections.ObjectModel;
 using GrappBox.Model.Whiteboard;
 using GrappBox.ApiCom;
@@ -135,7 +133,7 @@ namespace GrappBox.ViewModel
         public ObservableCollection<WhiteboardObject> ObjectsList { get; set; }
 
         #region API
-        public async System.Threading.Tasks.Task OpenWhiteboard(int whiteboardId)
+        public async Task OpenWhiteboard(int whiteboardId)
         {
             ApiCommunication api = ApiCommunication.Instance;
             object[] token = { User.GetUser().Token, whiteboardId };
@@ -152,7 +150,7 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public async System.Threading.Tasks.Task pullDraw()
+        public async Task pullDraw()
         {
             ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -193,7 +191,7 @@ namespace GrappBox.ViewModel
             return null;
         }
 
-        public async System.Threading.Tasks.Task<int> deleteObject(Position p)
+        public async Task<int> deleteObject(Position p)
         {
             ApiCommunication api = ApiCommunication.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -214,5 +212,9 @@ namespace GrappBox.ViewModel
             return -1;
         }
         #endregion API
+        public bool CheckIfInList(WhiteboardObject wo)
+        {
+            return this.ObjectsList.Contains(wo);
+        }
     }
 }

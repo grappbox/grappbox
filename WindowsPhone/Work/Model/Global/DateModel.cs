@@ -14,7 +14,9 @@ namespace GrappBox.Model
         public string timezone { get; set; }
         public static implicit operator DateTime(DateModel dm)
         {
-            return DateTimeFormator.DateModelToDateTime(dm);
+            DateTime dt;
+            DateTimeFormator.DateModelToDateTime(dm, out dt);
+            return dt;
         }
     }
 }

@@ -34,8 +34,15 @@ namespace GrappBox.Model
         public DateModel DeletedAt { get; set; }
         public bool IsinRange(DateTime dt)
         {
-            DateTime begin = DateTimeFormator.DateModelToDateTime(BeginDate);
-            DateTime end = DateTimeFormator.DateModelToDateTime(EndDate);
+            bool test;
+            DateTime begin;
+            test = DateTimeFormator.DateModelToDateTime(BeginDate, out begin);
+            if (test == false)
+                return false;
+            DateTime end;
+            test = DateTimeFormator.DateModelToDateTime(EndDate, out end);
+            if (test == false)
+                return false;
             if (DateTime.Compare(dt, begin) >= 0)
             {
                 if (DateTime.Compare(dt, end) <= 0)
