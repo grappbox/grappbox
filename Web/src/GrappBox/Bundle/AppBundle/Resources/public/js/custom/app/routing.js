@@ -144,7 +144,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 	.when("/calendar", {
 		title: "Calendar",
 		templateUrl : "../resources/pages/calendar.html",
-		controller  : "calendarController",
+		controller  : null,
 		caseInsensitiveMatch : true,
 		homepage: false
 	})

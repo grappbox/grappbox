@@ -383,6 +383,8 @@ section:last-child { margin: 30px 0 60px 0; }
 #calendar .badge-important { background: #c0392b; }
 #calendar #cal-week-box { display: none; }
 #calendar .cal-row-fluid:hover { background: none; }
+#calendar .cal-week-box [data-event-class] { height: 60px; text-align: center; font-size: 14px; }
+#calendar .cal-week-box [data-event-class] a { display: block; text-align: center; margin: 0; }
 
 .multi-select { overflow-y: scroll; border-bottom: 1px solid #d2d2d2; }
 .multi-select select { background: none!important; }
@@ -398,9 +400,6 @@ section:last-child { margin: 30px 0 60px 0; }
 /* ============================================================ */
 /* ============================================================ */
 /* ============================================================ */
-
-/* ==================== SECTION: CALENDAR ==================== */
-
 
 /* ==================== SECTION: CLOUD ==================== */
 

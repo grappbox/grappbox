@@ -25,10 +25,19 @@ app.config(["calendarConfig", function(calendarConfig) {
 * APP calendar page
 *
 */
-app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment", "Notification", "$uibModal",
-    function($rootScope, $scope, $http, moment, Notification, $uibModal) {
+app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "moment", "Notification", "$uibModal",
+    function($rootScope, $scope, $q, $http, moment, Notification, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
+
+  // Third-party library variables initialization
+  var vm = this;
+  
+  vm.date = new Date();
+  vm.title = "";
+  vm.mode = "month";
+  vm.cellOpen = true;
+  vm.events = [];
 
   // Scope variables initialization
   $scope.view = { onLoad: true, valid: false, authorized: false };
@@ -36,11 +45,10 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
 
   $scope.data = { events: [], tasks: [], projects: [], types: [], members: [] };
   $scope.action = { onRefreshView: "", onNewEvent: "", onEditEvent: "", onDeleteEvent: "", onProjectChange: "" };
-  $scope.calendar = { title: "", mode: "month", date: new Date(), isCellOpen: true };
-
   $scope.new = { title: "", description: "", date: { begin: "", end: "" }, type: [], project: [], members: [] };
   $scope.edit = { title: "", description: "", date: { begin: "", end: "" }, type: [], project: [], members: [] };
   $scope.current = { project_id: "", members: [] };
+
 
 
   /* ==================== ROUTINES (LOCAL) ==================== */
@@ -48,6 +56,8 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
   // Routine definition
   // Get project team members
   var _getTeamMembers = function(project_id) {
+    var deferred = $q.defer();
+
     $http.get($rootScope.api.url + "/projects/getusertoproject/" + $rootScope.user.token + "/" + project_id).then(
       function onGetTeamMembersSuccess(response) {
         if (response.data.info) {
@@ -55,124 +65,159 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
             case "1.6.1":
             for (var i = 0; i < response.data.data.array.length; ++i)
               $scope.data.members.push({ project_id: project_id, members: { id: response.data.data.array[i].id, name: response.data.data.array[i].firstname + " " + response.data.data.array[i].lastname } });
+            deferred.resolve();
             break;
 
             case "1.6.3":
+            deferred.resolve();
             break;
 
             default:
             Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            deferred.reject();
             break;
           }
         }
-        else
+        else {
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          deferred.reject();
+        }
       },
       function onGetTeamMembersFail(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "6.12.3":
+            deferred.reject();
             $rootScope.onUserTokenError();
             break;
 
             case "6.12.9":
             Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+            $scope.view.authorized = false;
+            deferred.reject();
             break;
 
             default:
             Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            deferred.reject();
             break;
           }
         }
-        else
+        else {
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          deferred.reject();
+        }
       }
-    );    
+    );
+    return deferred.promise;
   };
 
   // Routine definition
   // Get user projects
   var _getUserProjects = function() {
+    var deferred = $q.defer();
+
     $http.get($rootScope.api.url + "/user/getprojects/" + $rootScope.user.token).then(
       function onGetProjectsSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "1.7.1":
             $scope.data.projects = response.data.data.array;
-            for (var i = 0; i < $scope.data.projects.length; ++i) {
+            for (var i = 0; i < $scope.data.projects.length; ++i)
               _getTeamMembers($scope.data.projects[i].id);
-            }
+            deferred.resolve();
             break;
 
             case "1.7.3":
             $scope.data.projects = [];
+            deferred.resolve();
             break;
 
             default:
             Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            deferred.reject();
             break;
           }
         }
-        else
+        else {
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          deferred.reject();
+        }
       },
       function onGetProjectsFail(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "7.7.3":
             $rootScope.onUserTokenError();
+            deferred.reject();
             break;
 
             default:
             Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            deferred.reject();
             break;
           }
         }
-        else
+        else {
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          deferred.reject();
+        }
       }
     );
+    return deferred.promise;
   };
 
   // Routine definition
   // Get event types
   var _getEventTypes = function() {
+    var deferred = $q.defer();
+
     $http.get($rootScope.api.url + "/event/gettypes/" + $rootScope.user.token).then(
       function onGetTypesSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "1.5.1":
             $scope.data.types = response.data.data.array;
+            deferred.resolve();
             break;
 
             case "1.5.3":
             $scope.data.types = [];
+            deferred.resolve();
             break;
 
             default:
             Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            deferred.reject();
             break;
           }
         }
-        else
+        else {
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          deferred.reject();
+        }
       },
       function onGetTypesFail(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "5.1.3":
+            deferred.reject();
             $rootScope.onUserTokenError();
             break;
 
             default:
+            deferred.reject();            
             Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
             break;
           }
         }
-        else
+        else {
+          deferred.reject();          
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+        }
       }
     );
+    return deferred.promise;
   };
 
   // Routine definition
@@ -194,11 +239,11 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
             case "1.5.1":
             var events = response.data.data.array.events;
             var tasks = response.data.data.array.tasks;
-            $scope.data.events = [];
+            vm.events = [];
 
             if (events && events.length)
-              for (var i = 0; i < events.length; ++i) {
-                $scope.data.events.push({
+              for (var i = 0; i < events.length; ++i)
+                vm.events.push({
                   id: events[i].id,
                   projectId: (events[i].projectId ? events[i].projectId : null),
                   projectName: (events[i].projectId ? $scope.data.projects[_getProjectIndex(events[i].projectId)].name : null),
@@ -211,7 +256,6 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
                   draggable: false,
                   resizable: false
                 });
-              }
             break;
 
             case "1.5.3":
@@ -223,8 +267,9 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
             break;
           }
         }
-        else
+        else {
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+        }
       },
       function onGetPlanningFail(response) {
         if (response.data.info) {
@@ -238,8 +283,9 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
             break;
           }
         }
-        else
+        else {
           Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+        }
       }
     );
   };
@@ -250,24 +296,36 @@ app.controller("calendarController", ["$rootScope", "$scope", "$http", "moment",
 
   $scope.view.authorized = true;
   $scope.view.valid = true;
-  $scope.view.onLoad = false;
 
-  _getUserProjects();
-  _getEventTypes();
+  var userProjects_promise = _getUserProjects();
+  userProjects_promise.then(
+    function onGetUserProjectSuccess() {
+      var eventTypes_promise = _getEventTypes();
+      eventTypes_promise.then(
+        function onGetEventTypesSuccess() {
+          $scope.view.onLoad = false;
 
+          /* ==================== REFRESH OBJECT (EVENT) ==================== */
 
+          // "Previous/Today/Next" button handler
+          $scope.action.onRefreshView = function() {
+            _getUserPlanning((vm.mode == "year" ? "month" : vm.mode), moment($scope.view.date).startOf("month").format("YYYY-MM-DD"));
+          };
 
-  /* ==================== REFRESH OBJECT (EVENT) ==================== */
-
-  // "Previous/Today/Next" button handler
-  $scope.action.onRefreshView = function() {
-    _getUserPlanning(($scope.calendar.mode == "year" ? "month" : $scope.calendar.mode), moment($scope.view.date).startOf("month").format("YYYY-MM-DD"));
-  };
-
-  // Calendar mode (day/week/month/year) change watch
-  $scope.$watch("calendar.mode", function() {
-    $scope.action.onRefreshView();
-  });
+          // Calendar mode (day/week/month/year) change watch
+          $scope.$watch("vm.mode", function() {
+            $scope.action.onRefreshView();
+          });
+        },
+        function onGetEventTypesFail() {
+          $scope.view.valid = false;
+        }
+      ),
+      function onGetUserProjectFail() {
+        $scope.view.valid = false;
+      }
+    }
+  );
 
 
 

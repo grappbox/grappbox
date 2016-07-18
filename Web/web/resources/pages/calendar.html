@@ -18,7 +18,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 </section>
 
 <!-- calendar: navigation and view -->
-<section id="calendar">
+<section id="calendar" data-ng-controller="calendarController as vm">
   <div class="row">
     <div class="col-lg-12">
       <div data-ng-if="view.onLoad">
@@ -31,21 +31,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div data-ng-if="view.valid">
             <div class="well">
               <!-- calendar: navigation -->
-              <h3 class="col-md-12 col-xs-12 head">{[{ calendar.title }]}</h3>
+              <h3 class="col-md-12 col-xs-12 head">{[{ vm.title }]}</h3>
               <div class="col-md-12 col-xs-12 action">
                 <ul>
-                  <li><a href="" class="btn {[{ calendar.mode == 'day' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'day'">Day</a></li>
-                  <li><a href="" class="btn {[{ calendar.mode == 'week' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'week'">Week</a></li>
-                  <li><a href="" class="btn {[{ calendar.mode == 'month' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'month'">Month</a></li>
-                  <li><a href="" class="btn {[{ calendar.mode == 'year' ? 'btn-default active' : '' }]}" data-ng-model="calendar.mode" uib-btn-radio="'year'">Year</a></li>
+                  <li><a href="" class="btn {[{ vm.mode == 'day' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'day'">Day</a></li>
+                  <li><a href="" class="btn {[{ vm.mode == 'week' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'week'">Week</a></li>
+                  <li><a href="" class="btn {[{ vm.mode == 'month' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'month'">Month</a></li>
+                  <li><a href="" class="btn {[{ vm.mode == 'year' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'year'">Year</a></li>
                   <li>
-                    <a href="" class="btn btn-info" mwl-date-modifier date="calendar.date" decrement="calendar.mode" data-ng-click="action.onRefreshView()"><i class="material-icons">keyboard_arrow_left</i>Previous</a>
+                    <a href="" class="btn btn-info" mwl-date-modifier date="vm.date" decrement="vm.mode" data-ng-click="action.onRefreshView()"><i class="material-icons">keyboard_arrow_left</i>Previous</a>
                   </li>
                   <li>
-                    <a href="" class="btn" mwl-date-modifier date="calendar.date" set-to-today data-ng-click="action.onRefreshView()">Today</a>
+                    <a href="" class="btn" mwl-date-modifier date="vm.date" set-to-today data-ng-click="action.onRefreshView()">Today</a>
                   </li>
                   <li>
-                    <a href="" class="btn btn-info" mwl-date-modifier date="calendar.date" increment="calendar.mode" data-ng-click="action.onRefreshView()">Next<i class="material-icons">keyboard_arrow_right</i></a>
+                    <a href="" class="btn btn-info" mwl-date-modifier date="vm.date" increment="vm.mode" data-ng-click="action.onRefreshView()">Next<i class="material-icons">keyboard_arrow_right</i></a>
                   </li>
                 </ul>
               </div>
@@ -53,16 +53,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <!-- calendar: navigation -->
               <div class="calendar-wrapper">
                 <mwl-calendar
-                  events="data.events"
-                  view="calendar.mode"
-                  view-title="calendar.title"
-                  view-date="calendar.date"
+                  events="vm.events"
+                  view="vm.mode"
+                  view-title="vm.title"
+                  view-date="vm.date"
                   edit-event-html="'<a class=\'btn\'>Edit</a>'"
                   delete-event-html="'<a class=\'btn btn-default\'>Delete</a>'"
                   on-event-click="action.onEditEvent(calendarEvent)"
                   on-edit-event-click="action.onEditEvent(calendarEvent)"
                   on-delete-event-click="action.onDeleteEvent(calendarEvent)"
-                  cell-is-open="calendar.isCellOpen"
+                  cell-is-open="vm.cellOpen"
                   day-view-start="00:00"
                   day-view-end="23:00"
                   day-view-split="30">
@@ -155,7 +155,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <script type="text/ng-template" id="modal_editEvent.html">
     <div class="modal-header">
       <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventEdition()">×</button>
-      <h4 class="modal-title">Event creation</h4>
+      <h4 class="modal-title">Event edition</h4>
     </div>
     <div class="modal-body">
       <form class="form-horizontal">
