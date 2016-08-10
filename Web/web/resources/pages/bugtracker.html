@@ -233,7 +233,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
               <div class="col-md-4 col-md-offset-8" data-ng-if="!data.ticket.deletedAt">
                 <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Edit</button>
-                <button type="submit" class="btn btn-default" data-ng-click="deleteTicket(data.ticket)">Close</button>
+                <button type="submit" class="btn btn-default" data-ng-click="closeTicket(data.ticket)">Close</button>
               </div>
               <div class="col-md-4 col-md-offset-8" data-ng-if="data.ticket.deletedAt">
                 <button type="submit" class="btn btn-default" data-ng-click="reopenTicket(data.ticket)">Reopen</button>

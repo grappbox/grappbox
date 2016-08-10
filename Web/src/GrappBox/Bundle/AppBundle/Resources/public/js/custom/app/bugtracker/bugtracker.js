@@ -154,20 +154,20 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         context.http.post(context.rootScope.api.url + '/bugtracker/tagcreation', data)
           .then(function successCallback(response) {
               tag.id = (response.data.data.id);
+
+              var data = {"data": {"token": context.rootScope.user.token, "bugId": context.scope.ticketID, "tagId": tag.id}};
+              context.http.put(context.rootScope.api.url + '/bugtracker/assigntag', data)
+                .then(function successCallback(response) {
+
+                },
+                function errorCallback(resposne) {
+                    Notification.warning({ message: 'Unable to assign tag: ' + tag.name + '. Please try again.', delay: 5000 });
+                });
           },
           function errorCallback(resposne) {
               Notification.warning({ message: 'Unable to create tag: ' + tag.name + '. Please try again.', delay: 5000 });
           });
       }
-
-      var data = {"data": {"token": context.rootScope.user.token, "bugId": context.scope.ticketID, "tagId": tag.id}};
-      context.http.put(context.rootScope.api.url + '/bugtracker/assigntag', data)
-        .then(function successCallback(response) {
-
-        },
-        function errorCallback(resposne) {
-            Notification.warning({ message: 'Unable to assign tag: ' + tag.name + '. Please try again.', delay: 5000 });
-        });
     }, context);
 
     angular.forEach($scope.data.tagToRemove, function(tag) {
@@ -255,7 +255,8 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
                 "title": ticket.title,
                 "description": ticket.description,
                 "stateId": 1,
-                "stateName": ""
+                "stateName": "",
+                "clientOrigin": false
                 };
     var data = {"data": elem};
 
@@ -283,7 +284,9 @@ app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', 
                 "title": ticket.title,
                 "description": ticket.description,
                 "stateId": 1,
-                "stateName": ""};
+                "stateName": "",
+                "clientOrigin": false
+              };
     var data = {"data": elem};
 
     Notification.info({ message: 'Saving ticket...', delay: 5000 });
