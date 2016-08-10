@@ -52,13 +52,13 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
     // Get all closed tickets of the project
     $http.get($rootScope.api.url + '/bugtracker/getclosedtickets/' + $rootScope.user.token + '/' + $scope.projectId)
       .then(function projectsReceived(response) {
-        $scope.data.tickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
-        $scope.data.message = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
-        $scope.data.onLoad = false;
+        $scope.data.closedTickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+        $scope.data.closedMessage = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
+        $scope.data.closedOnLoad = false;
       },
       function projectsNotReceived(response) {
-        $scope.data.tickets = null;
-        $scope.data.onLoad = false;
+        $scope.data.closedTickets = null;
+        $scope.data.closedOnLoad = false;
 
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
@@ -67,16 +67,48 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
             break;
 
             case "4.22.9":
-            $scope.data.message = "_denied";
+            $scope.data.closedMessage = "_denied";
             break;
 
             default:
-            $scope.data.message = "_invalid";
+            $scope.data.closedMessage = "_invalid";
             break;
           }
 
       });
   };
+  getClosedTicketsContent();
+
+  var getUserTicketsContent = function() {
+    // Get all user tickets of the project
+    $http.get($rootScope.api.url + '/bugtracker/getticketsbyuser/' + $rootScope.user.token + '/' + $scope.projectId + '/' + $rootScope.user.id)
+      .then(function projectsReceived(response) {
+        $scope.data.userTickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+        $scope.data.userMessage = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
+        $scope.data.userOnLoad = false;
+      },
+      function projectsNotReceived(response) {
+        $scope.data.userTickets = null;
+        $scope.data.userOnLoad = false;
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "4.22.3":
+            $rootScope.onUserTokenError();
+            break;
+
+            case "4.22.9":
+            $scope.data.userMessage = "_denied";
+            break;
+
+            default:
+            $scope.data.userMessage = "_invalid";
+            break;
+          }
+
+      });
+  };
+  getUserTicketsContent();
 
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {
@@ -108,11 +140,45 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
   };
 
   $scope.getOpenTickets = function() {
-    getOpenTicketsContent();
+    $("#closed-tickets")[0].classList.remove("active");
+    $("#closed-tickets-list")[0].classList.remove("active");
+    $("#your-tickets")[0].classList.remove("active");
+    $("#your-tickets-list")[0].classList.remove("active");
+
+    $("#open-tickets")[0].classList.add("active");
+    $("#open-tickets-list")[0].classList.add("active");
+
+    //$scope.data.onLoad = true;
+    //getOpenTicketsContent();
+    //$scope.data.onLoad = true;
   };
 
   $scope.getClosedTickets = function() {
-    getClosedTicketsContent();
+    $("#open-tickets")[0].classList.remove("active");
+    $("#open-tickets-list")[0].classList.remove("active");
+    $("#your-tickets")[0].classList.remove("active");
+    $("#your-tickets-list")[0].classList.remove("active");
+
+    $("#closed-tickets")[0].classList.add("active");
+    $("#closed-tickets-list")[0].classList.add("active");
+
+    //$scope.data.onLoad = true;
+    //getClosedTicketsContent();
+    //$scope.data.onLoad = true;
+  };
+
+  $scope.getUserTickets = function() {
+    $("#open-tickets")[0].classList.remove("active");
+    $("#open-tickets-list")[0].classList.remove("active");
+    $("#closed-tickets")[0].classList.remove("active");
+    $("#closed-tickets-list")[0].classList.remove("active");
+
+    $("#your-tickets")[0].classList.add("active");
+    $("#your-tickets-list")[0].classList.add("active");
+
+    //$scope.data.onLoad = true;
+    //getUserTicketsContent();
+    //$scope.data.onLoad = false;
   };
 
   $scope.openTicket = function(project, ticket){

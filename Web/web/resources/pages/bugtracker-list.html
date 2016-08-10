@@ -5,9 +5,190 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <section id="bugtrackerList">
   <div class="row">
     <div class="col-lg-12">
+      <div data-ng-if="!data.onLoad && data.message == '_valid'" class="row">
+        <div class="centered">
+          <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
+        </div>
+      </div>
       <div class="well">
         <!-- grappbox.data : tickets list -->
-        <div data-ng-if="data.onLoad">
+        <div id="tab-pannel">
+          <ul class="nav nav-tabs" role="tablist">
+            <li id="open-tickets" role="openTickets" class="col-md-2 col-xs-12 active">
+              <a href="" role="tab" data-toggle="tab" data-ng-click="getOpenTickets()">Open Tickets</a>
+            </li>
+            <li id="closed-tickets" role="closedTickets" class="col-md-2 col-xs-12">
+              <a href="" role="tab" data-toggle="tab" data-ng-click="getClosedTickets()">Closed Tickets</a>
+            </li>
+            <li id="your-tickets" role="yourTickets" class="col-md-2 col-xs-12">
+              <a href="" role="tab" data-toggle="tab" data-ng-click="getUserTickets()">Your Tickets</a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" role="tabpanel" id="open-tickets-list">
+              <div data-ng-if="data.onLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="!data.onLoad">
+                <div data-ng-if="data.message == '_valid'">
+                  <div class="row">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th class="col-lg-4"><i class="fa fa-ticket"></i> Title</th>
+                          <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                          <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                          <th class="col-lg-2"><i class="fa fa-calendar"></i> Creation date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="bugtracker in data.tickets" data-ng-dblclick="openTicket(projectId, bugtracker.id)" title="Open the ticket details">
+                          <td>{[{ bugtracker.title }]}</td>
+                          <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
+                          <td>{[{ formatUsersinString(bugtracker.users) }]}</td>
+                          <td>{[{ formatObjectDate(bugtracker.createdAt.date) }]}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_empty'">
+                  <div class="row">
+                    <div class="centered">
+                      <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no issue for this project.</p>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane active" role="tabpanel" id="closed-tickets-list">
+              <div data-ng-if="data.closedOnLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="!data.closedOnLoad">
+                <div data-ng-if="data.closedMessage == '_valid'">
+                  <div class="row">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th class="col-lg-4"><i class="fa fa-ticket"></i> Title</th>
+                          <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                          <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                          <th class="col-lg-2"><i class="fa fa-calendar"></i> Creation date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="bugtracker in data.closedTickets" data-ng-dblclick="openTicket(projectId, bugtracker.id)" title="Open the ticket details">
+                          <td>{[{ bugtracker.title }]}</td>
+                          <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
+                          <td>{[{ formatUsersinString(bugtracker.users) }]}</td>
+                          <td>{[{ formatObjectDate(bugtracker.createdAt.date) }]}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div data-ng-if="data.closedMessage == '_empty'">
+                  <div class="row">
+                    <div class="centered">
+                      <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no issue for this project.</p>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="data.closedMessage == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.closedMessage == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane active" role="tabpanel" id="your-tickets-list">
+              <div data-ng-if="data.userOnLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="!data.userOnLoad">
+                <div data-ng-if="data.userMessage == '_valid'">
+                  <div class="row">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th class="col-lg-4"><i class="fa fa-ticket"></i> Title</th>
+                          <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                          <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                          <th class="col-lg-2"><i class="fa fa-calendar"></i> Creation date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="bugtracker in data.userTickets" data-ng-dblclick="openTicket(projectId, bugtracker.id)" title="Open the ticket details">
+                          <td>{[{ bugtracker.title }]}</td>
+                          <td>{[{ formatTagsinString(bugtracker.tags) }]}</td>
+                          <td>{[{ formatUsersinString(bugtracker.users) }]}</td>
+                          <td>{[{ formatObjectDate(bugtracker.createdAt.date) }]}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div data-ng-if="data.userMessage == '_empty'">
+                  <div class="row">
+                    <div class="centered">
+                      <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no issue for this project.</p>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="data.userMessage == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.userMessage == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div data-ng-if="data.onLoad">
           <div class="spinner section">
             <svg class="circular" viewBox="25 25 50 50">
               <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle>
@@ -16,22 +197,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
         <div data-ng-if="!data.onLoad">
           <div data-ng-if="data.message == '_valid'">
-            <div class="row">
-              <div class="centered">
-                <a href="" title="Open tickets" class="btn btn-default" ng-click="getOpenTickets()">
-                  <i class="fa fa-list fa-fw"></i> Open Tickets</a>
-                <a href="" title="Closed tickets" class="btn btn-default" ng_click="getClosedTickets()">
-                  <i class="fa fa-list fa-fw"></i> Closed Tickets</a>
-                <!-- <a href="" title="User tickets" class="btn btn-default" ng_click="getUserTickets()">
-                  <i class="fa fa-list fa-fw"></i> User Tickets</a> -->
-              </div>
-
-            </div>
-            <div class="row">
-              <div class="centered">
-                <a href="{[{'bugtracker/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the bug creation page">Create a new ticket</a>
-              </div>
-            </div>
             <div class="row">
               <table class="table table-hover">
                 <thead>
@@ -75,7 +240,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
