@@ -5,7 +5,7 @@
 <ion-view>
     <ion-nav-title>{{whiteboardName}}</ion-nav-title>
 
-    <ion-scroll overflow-scroll="false" zooming="true" direction="xy" locking="false" style="width: 100%; height: 100%" class="has-header">
+    <ion-scroll overflow-scroll="false" zooming="true" direction="xy" locking="false" scrollbar-x="false" scrollbar-y="false" style="width: 100%; height: 100%" class="has-header">
         <canvas id="canvasWhiteboard"></canvas>
     </ion-scroll>
 
@@ -53,7 +53,7 @@
             <!-- "changeBrushColor" allows to send the good color to be picked after the previous assigned color -->
             <button class="button button-icon ion-record"
                     ng-repeat="colorDisplayed in colorTab"
-                    style="color: {{colorDisplayed.colorHex}}; font-size: 36.5px"
+                    style="font-size: 36.5px; color: {{colorDisplayed.colorHex}};"
                     ng-click="changeBrushColor(colorDisplayed.colorHex)"></button>
             <button class="button button-icon ion-android-cancel"
                     style="font-size: 36.5px"
@@ -72,7 +72,7 @@
         <ion-content>
             <!-- Rectangle Filled -->
             <button class="button button-icon ion-stop"
-                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    style="font-size: 36.5px; color: {{brushcolor == 'transparent' || "#FFFFFF" ? "#000000" : brushcolor}};"
                     ng-click="drawRect()"></button>
 
             <!-- Rectangle empty -->
@@ -81,7 +81,7 @@
                     ng-click="drawRect(true)"></button>-->
             <!-- Ellipse filled -->
             <button class="button button-icon ion-record"
-                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    style="font-size: 36.5px; color: {{brushcolor == 'transparent' || "#FFFFFF" ? "#000000" : brushcolor}};"
                     ng-click="drawEllipse()"></button>
 
             <!-- Ellipse empty-->
@@ -90,7 +90,7 @@
                     ng-click="drawEllipse(true)"></button>-->
             <!-- Diamond filled -->
             <button class="button button-icon ion-ios-play"
-                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    style="font-size: 36.5px; color: {{brushcolor == 'transparent' || "#FFFFFF" ? "#000000" : brushcolor}};"
                     ng-click="drawDiamond()"></button>
 
             <!-- Diamond empty -->
@@ -99,7 +99,7 @@
                     ng-click="drawDiamond(true)"></button>-->
             <!-- Line -->
             <button class="button button-icon ion-minus-round"
-                    style="color: {{brushcolor}}; font-size: 36.5px"
+                    style="font-size: 36.5px; color: {{brushcolor == 'transparent' || "#FFFFFF" ? "#000000" : brushcolor}};"
                     ng-click="drawLine()"></button>
 
             <!-- Border or not -->

@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Projects, Toast, Roles) {
+.controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Projects, Toast, Roles, Users) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -16,6 +16,31 @@ angular.module('GrappBox.controllers')
     }
 
     $scope.projectId = $stateParams.projectId;
+
+    /*
+    ** Get project logo
+    ** Method: GET
+    */
+    $scope.projectLogo = {};
+    $scope.GetProjectLogo = function () {
+        //$rootScope.showLoading();
+        Projects.Logo().get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get project logo successful !');
+                $scope.projectLogo.logo = data.data.logo;
+            })
+            .catch(function (error) {
+                console.error('Get project logo failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetProjectLogo();
 
     /*
     ** Get project information
@@ -31,8 +56,6 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get project info successful !');
                 $scope.projectInfo = data.data;
-                console.log("LOGO = ");
-                console.log(data.data.logo);
             })
             .catch(function (error) {
                 console.error('Get project info failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -94,7 +117,8 @@ angular.module('GrappBox.controllers')
                 console.log('Add user to project successful !');
                 Toast.show("User added");
                 $scope.noUser = false;
-                $scope.GetUsersOnProject;
+                $scope.userToAdd = {};
+                $scope.GetUsersOnProject();
             })
             .catch(function (error) {
                 console.error('Add user to project failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -105,42 +129,6 @@ angular.module('GrappBox.controllers')
                 $scope.$broadcast('scroll.refreshComplete');
                 //$rootScope.hideLoading();
             })
-    }
-
-    // Member action sheet
-    $scope.showMemberActionSheet = function (user_id) {
-        $scope.user_id = user_id;
-        // Show the action sheet
-        $ionicActionSheet.show({
-            buttons: [{ text: 'Member information' }],
-            destructiveText: 'Remove from project',
-            titleText: 'Member action',
-            cancelText: 'Cancel',
-            buttonClicked: function (index) {
-                $state.go('app.user', { userId: $scope.user_id });
-                return true;
-            },
-            destructiveButtonClicked: function () {
-                $scope.PopupRemoveUserFromProject();
-                return true;
-            }
-        });
-    }
-
-    // Remove confirm popup for removing member from current project
-    $scope.PopupRemoveUserFromProject = function () {
-        var confirmPopup = $ionicPopup.confirm({
-            title: 'Delete user from project',
-            template: 'Are you sure you want to remove this user from project ?'
-        })
-        .then(function (res) {
-            if (res) {
-                $scope.RemoveUserFromProject();
-                console.log("Chose to remove member");
-            } else {
-                console.log("Chose to keep member");
-            }
-        })
     }
 
     /*
@@ -223,6 +211,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Generate a customer access successful !');
                 Toast.show("Access generated");
+                $scope.customerAccessToAdd = {};
                 $scope.noCustomer = false;
             })
             .then(function () {
@@ -239,35 +228,32 @@ angular.module('GrappBox.controllers')
             })
     }
 
-    // Customer access action sheet
-    $scope.customerAccessToDelete = {};
-    $scope.showCustomerActionSheet = function (customer_id) {
-        $scope.customer_id = customer_id;
-        // Show the action sheet
-        $ionicActionSheet.show({
-            destructiveText: 'Delete this access',
-            titleText: 'Access action',
-            cancelText: 'Cancel',
-            destructiveButtonClicked: function () {
-                $scope.PopupDeleteCustomerAccess();
-                return true;
-            }
-        });
-    }
-
-    // Remove confirm popup for removing member from current project
-    $scope.PopupDeleteCustomerAccess = function () {
-        var confirmPopup = $ionicPopup.confirm({
-            title: 'Delete access from project',
-            template: 'Are you sure you want to delete this customer access from project ?'
+    /*
+    ** Regenerate client access
+    ** Method: DELETE then GET
+    */
+    $scope.deleteCustomerAccessBeforeRegenInfo = {};
+    $scope.DeleteCustomerAccessBeforeRegen = function (customerName) {
+        //$rootScope.showLoading();
+        Projects.DeleteCustomerAccess().delete({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId,
+            customerAccessId: $scope.customer_id
+        }).$promise
+        .then(function (data) {
+            console.log('Delete customer access from project before regenerating successful !');
+            Toast.show("Customer access deleted");
+            $scope.deleteCustomerAccessBeforeRegenInfo = data.data;
+            $scope.customerAccessToAdd.accessName = customerName;
+            $scope.GenerateAccess();
         })
-        .then(function (res) {
-            if (res) {
-                $scope.DeleteCustomerAccess();
-                console.log("Chose to delete access");
-            } else {
-                console.log("Chose to keep access");
-            }
+        .catch(function (error) {
+            console.error('Delete customer access from project before regenerating failed ! Reason: ' + error.status + ' ' + error.statusText);
+            console.error(error);
+        })
+        .finally(function () {
+            $scope.$broadcast('scroll.refreshComplete');
+            //$rootScope.hideLoading();
         })
     }
 
@@ -297,23 +283,6 @@ angular.module('GrappBox.controllers')
         .finally(function () {
             $scope.$broadcast('scroll.refreshComplete');
             //$rootScope.hideLoading();
-        })
-    }
-
-    // Remove confirm popup for deleting project
-    $scope.PopupDeleteProject = function () {
-        var confirmPopup = $ionicPopup.confirm({
-            title: 'Delete project',
-            template: 'Are you sure you want to delete this project ? ' +
-                      'It will take 7 days to delete. You still can undo under 7 days.'
-        })
-        .then(function (res) {
-            if (res) {
-                $scope.DeleteProject();
-                console.log("Chose to delete project");
-            } else {
-                console.log("Chose to keep project");
-            }
         })
     }
 
@@ -404,5 +373,139 @@ angular.module('GrappBox.controllers')
             })
     }
     $scope.GetProjectRoles();
+
+    /*
+    ** Get users avatars
+    ** Method: GET
+    */
+    $scope.usersAvatars = {};
+    $scope.GetUsersAvatars = function () {
+        //$rootScope.showLoading();
+        Users.Avatars().get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get members avatars successful !');
+                $scope.usersAvatars = data.data.array;
+                console.log(data);
+            })
+            .catch(function (error) {
+                console.error('Get members avatars failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetUsersAvatars();
+
+    // Find user avatar
+    $scope.findUserAvatar = function (id) {
+        for (var i = 0; i < $scope.usersAvatars.length; i++) {
+            if ($scope.usersAvatars[i].userId === id) {
+                return $scope.usersAvatars[i].avatar;
+            }
+        }
+    }
+
+    /*
+    ** ACTION SHEETS
+    */
+
+    // Member action sheet
+    $scope.showMemberActionSheet = function (user_id) {
+        $scope.user_id = user_id;
+        // Show the action sheet
+        $ionicActionSheet.show({
+            buttons: [{ text: 'Member information' }],
+            destructiveText: 'Remove from project',
+            titleText: 'Member action',
+            cancelText: 'Cancel',
+            buttonClicked: function (index) {
+                $state.go('app.user', { userId: $scope.user_id });
+                return true;
+            },
+            destructiveButtonClicked: function () {
+                $scope.PopupRemoveUserFromProject();
+                return true;
+            }
+        });
+    }
+
+    // Customer access action sheet
+    $scope.customerAccessToDelete = {};
+    $scope.showCustomerActionSheet = function (customer_id, customer_name) {
+        $scope.customer_id = customer_id;
+        // Show the action sheet
+        $ionicActionSheet.show({
+            buttons: [{ text: 'Regenerate access' }],
+            destructiveText: 'Delete this access',
+            titleText: 'Access action',
+            cancelText: 'Cancel',
+            buttonClicked: function (index) {
+                $scope.DeleteCustomerAccessBeforeRegen(customer_name);
+                return true;
+            },
+            destructiveButtonClicked: function () {
+                $scope.PopupDeleteCustomerAccess();
+                return true;
+            }
+        });
+    }
+
+    /*
+    ** POPUPS
+    */
+
+    // Remove confirm popup for removing member from current project
+    $scope.PopupRemoveUserFromProject = function () {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Delete user from project',
+            template: 'Are you sure you want to remove this user from project ?'
+        })
+        .then(function (res) {
+            if (res) {
+                $scope.RemoveUserFromProject();
+                console.log("Chose to remove member");
+            } else {
+                console.log("Chose to keep member");
+            }
+        })
+    }
+
+    // Remove confirm popup for removing customer access from current project
+    $scope.PopupDeleteCustomerAccess = function () {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Delete access from project',
+            template: 'Are you sure you want to delete this customer access from project ?'
+        })
+        .then(function (res) {
+            if (res) {
+                $scope.DeleteCustomerAccess();
+                console.log("Chose to delete access");
+            } else {
+                console.log("Chose to keep access");
+            }
+        })
+    }
+
+    // Remove confirm popup for deleting project
+    $scope.PopupDeleteProject = function () {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Delete project',
+            template: 'Are you sure you want to delete this project ? ' +
+                      'It will take 7 days to delete. You still can undo under 7 days.'
+        })
+        .then(function (res) {
+            if (res) {
+                $scope.DeleteProject();
+                console.log("Chose to delete project");
+            } else {
+                console.log("Chose to keep project");
+            }
+        })
+    }
 })
 

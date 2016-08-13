@@ -17,40 +17,13 @@ angular.module('GrappBox.controllers')
     $scope.roleId = $stateParams.roleId;
     $scope.role = $stateParams.role;
 
-    // Conversion to boolean so ion-checkbox display well in HTML
-    $scope.role.team_timeline = Boolean($scope.role.team_timeline);
-    $scope.role.customer_timeline = Boolean($scope.role.customer_timeline);
-    $scope.role.gantt = Boolean($scope.role.gantt);
-    $scope.role.whiteboard = Boolean($scope.role.whiteboard);
-    $scope.role.bugtracker = Boolean($scope.role.bugtracker);
-    $scope.role.event = Boolean($scope.role.event);
-    $scope.role.task = Boolean($scope.role.task);
-    $scope.role.project_settings = Boolean($scope.role.project_settings);
-    $scope.role.cloud = Boolean($scope.role.cloud);
-
-    // Remove confirm popup for deleting role
-    $scope.PopupDeleteRole = function () {
-        var confirmPopup = $ionicPopup.confirm({
-            title: 'Delete Role',
-            template: 'Are you sure you want to delete this role ?'
-        })
-        .then(function (res) {
-            if (res) {
-                $scope.DeleteProjectRole();
-                console.log("Chose to delete role");
-            } else {
-                console.log("Chose to keep role");
-            }
-        })
-    }
-
     /*
     ** Delete role
     ** Method: DELETE
     */
     $scope.deleteRoleData = {};
     $scope.DeleteProjectRole = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Roles.Delete().delete({
             token: $rootScope.userDatas.token,
             id: $scope.roleId
@@ -66,7 +39,7 @@ angular.module('GrappBox.controllers')
             Toast.show("Role delete error");
         })
         .finally(function () {
-            $rootScope.hideLoading();
+            //$rootScope.hideLoading();
         })
     }
 
@@ -89,7 +62,7 @@ angular.module('GrappBox.controllers')
                 else
                     $scope.userAssignedOnRole = false;
                 if (data.data.users_non_assigned.length == 0)
-                    $scope.userNonAssignedOnRole = "All users of the project are assigned to this role."
+                    $scope.userNonAssignedOnRole = "All users are assigned to this role."
                 else
                     $scope.userNonAssignedOnRole = false;
                 console.log(data);
@@ -112,7 +85,7 @@ angular.module('GrappBox.controllers')
     $scope.userAssignedData = {};
     $scope.userToAdd = {};
     $scope.AssignToRole = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         console.log($scope.userToAdd.userId);
         Roles.Assign().save({
             data: {
@@ -136,44 +109,8 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
-    }
-
-    // Member action sheet
-    $scope.showMemberActionSheet = function (user_id) {
-        $scope.user_id = user_id;
-        // Show the action sheet
-        $ionicActionSheet.show({
-            buttons: [{ text: 'Member information' }],
-            destructiveText: 'Remove from role',
-            titleText: 'Member action',
-            cancelText: 'Cancel',
-            buttonClicked: function (index) {
-                $state.go('app.user', { userId: $scope.user_id });
-                return true;
-            },
-            destructiveButtonClicked: function () {
-                $scope.PopupRemoveUserFromRole();
-                return true;
-            }
-        });
-    }
-
-    // Remove confirm popup for removing member from current role
-    $scope.PopupRemoveUserFromRole = function () {
-        var confirmPopup = $ionicPopup.confirm({
-            title: 'Delete user from role',
-            template: 'Are you sure you want to remove this user from this role ?'
-        })
-        .then(function (res) {
-            if (res) {
-                $scope.RemoveUserFromRole();
-                console.log("Chose to remove member");
-            } else {
-                console.log("Chose to keep member");
-            }
-        })
     }
 
     /*
@@ -182,7 +119,7 @@ angular.module('GrappBox.controllers')
     */
     $userRemoveRoleData = {};
     $scope.RemoveUserFromRole = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Roles.RemoveUser().delete({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
@@ -202,7 +139,7 @@ angular.module('GrappBox.controllers')
         })
         .finally(function () {
             $scope.$broadcast('scroll.refreshComplete');
-            $rootScope.hideLoading();
+            //$rootScope.hideLoading();
         })
     }
 
@@ -212,7 +149,7 @@ angular.module('GrappBox.controllers')
     */
     $scope.updatedRoleData = {};
     $scope.UpdateProjectRole = function () {
-        $rootScope.showLoading();
+        //$rootScope.showLoading();
         Roles.Update().update({
             data: {
                 token: $rootScope.userDatas.token,
@@ -242,7 +179,67 @@ angular.module('GrappBox.controllers')
                 console.error(error);
             })
             .finally(function () {
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
+    }
+
+    /*
+    ** ACTION SHEETS
+    */
+
+    // Member action sheet
+    $scope.showMemberActionSheet = function (user_id) {
+        $scope.user_id = user_id;
+        // Show the action sheet
+        $ionicActionSheet.show({
+            buttons: [{ text: 'Member information' }],
+            destructiveText: 'Remove from role',
+            titleText: 'Member action',
+            cancelText: 'Cancel',
+            buttonClicked: function (index) {
+                $state.go('app.user', { userId: $scope.user_id });
+                return true;
+            },
+            destructiveButtonClicked: function () {
+                $scope.PopupRemoveUserFromRole();
+                return true;
+            }
+        });
+    }
+
+    /*
+    ** POPUPS
+    */
+
+    // Remove confirm popup for deleting role
+    $scope.PopupDeleteRole = function () {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Delete Role',
+            template: 'Are you sure you want to delete this role ?'
+        })
+        .then(function (res) {
+            if (res) {
+                $scope.DeleteProjectRole();
+                console.log("Chose to delete role");
+            } else {
+                console.log("Chose to keep role");
+            }
+        })
+    }
+
+    // Remove confirm popup for removing member from current role
+    $scope.PopupRemoveUserFromRole = function () {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Delete user from role',
+            template: 'Are you sure you want to remove this user from this role ?'
+        })
+        .then(function (res) {
+            if (res) {
+                $scope.RemoveUserFromRole();
+                console.log("Chose to remove member");
+            } else {
+                console.log("Chose to keep member");
+            }
+        })
     }
 })

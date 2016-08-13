@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Dashboard, Users) {
+.controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Dashboard, Users, Projects) {
     
     $scope.doRefreshTeamOccupation = function () {
         $scope.GetTeamOccupation();
@@ -92,7 +92,9 @@ angular.module('GrappBox.controllers')
     /*$scope.globalProgressTab = {};
     $scope.GetGlobalProgress = function () {
         $rootScope.showLoading();
-        Dashboard.GlobalProgress().get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.GlobalProgress().get({
+            token: $rootScope.userDatas.token
+        }).$promise
             .then(function (data) {
                 console.log('Get global progress list successful !');
                 console.log(data.data);
@@ -136,4 +138,39 @@ angular.module('GrappBox.controllers')
             })
     }
     $scope.GetUsersAvatars();
+
+    // Find user avatar
+    $scope.findUserAvatar = function (id) {
+        for (var i = 0; i < $scope.usersAvatars.length; i++) {
+            if ($scope.usersAvatars[i].userId === id) {
+                return $scope.usersAvatars[i].avatar;
+            }
+        }
+    }
+
+    /*
+    ** Get project logo
+    ** Method: GET
+    */
+    $scope.projectLogo = {};
+    $scope.GetProjectLogo = function () {
+        //$rootScope.showLoading();
+        Projects.Logo().get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get project logo successful !');
+                $scope.projectLogo.logo = data.data.logo;
+            })
+            .catch(function (error) {
+                console.error('Get project logo failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetProjectLogo();
+
 })

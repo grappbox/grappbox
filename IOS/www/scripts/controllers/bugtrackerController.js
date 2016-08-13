@@ -10,9 +10,7 @@ angular.module('GrappBox.controllers')
     $scope.limitMax = 25;
 
     $scope.offsetOpen = 0;
-    $scope.limitOpen = 25;
     $scope.offsetClosed = 0;
-    $scope.limitClosed = 25;
 
     $scope.lastOpenTickets = [];
     $scope.lastClosedTickets = [];
@@ -21,9 +19,7 @@ angular.module('GrappBox.controllers')
     $scope.doRefreshOpenTickets = function () {
         $scope.lastOpenTickets = [];
         $scope.offsetOpen = 0;
-        $scope.limitOpen = 25;
-        $scope.offsetClosed = 0;
-        $scope.limitClosed = 25;
+        //$scope.offsetClosed = 0;
 
         $scope.GetLastOpenTickets();
         console.log("View refreshed !");
@@ -31,10 +27,8 @@ angular.module('GrappBox.controllers')
 
     $scope.doRefreshClosedTickets = function () {
         $scope.lastClosedTickets = [];
-        $scope.offsetOpen = 0;
-        $scope.limitOpen = 25;
+        //$scope.offsetOpen = 0;
         $scope.offsetClosed = 0;
-        $scope.limitClosed = 25;
 
         $scope.GetLastClosedTickets();
         console.log("View refreshed !");
@@ -47,13 +41,14 @@ angular.module('GrappBox.controllers')
     ** Get last open ticket information from :offset to :limit
     ** Method: GET
     */
-    $scope.GetLastOpenTickets = function () {
-        //$rootScope.showLoading();
+    $scope.GetLastOpenTickets = function (isMore) {
+        if (isMore)
+            $rootScope.showLoading();
         Bugtracker.GetLastOpenTickets().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
             offset: $scope.offsetOpen,
-            limit: $scope.limitOpen
+            limit: $scope.limitMax
         }).$promise
             .then(function (data) {
                 console.log('Get last open tickets info successful !');
@@ -61,9 +56,15 @@ angular.module('GrappBox.controllers')
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastOpenTickets.push(data.data.array[i]);
                     }
+                    if (data.data.array.length < $scope.offsetMax) {
+                        $scope.offsetOpen += data.data.array.length;
+                    }
+                    else {
+                        $scope.offsetOpen += $scope.offsetMax;
+                    }
                     $scope.noOpenTicket = false;
-                    $scope.offsetOpen += $scope.offsetMax;
-                    $scope.limitOpen += $scope.limitMax;
+                    //$scope.limitOpen += $scope.limitMax;
+                    console.log(data.data.array);
                 }
                 else
                     $scope.noOpenTicket = "There are no ticket.";
@@ -73,7 +74,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                //$rootScope.hideLoading();
+                $rootScope.hideLoading();
             })
     }
     $scope.GetLastOpenTickets();
@@ -82,13 +83,14 @@ angular.module('GrappBox.controllers')
     ** Get last closed ticket information from :offset to :limit
     ** Method: GET
     */
-    $scope.GetLastClosedTickets = function () {
-        //$rootScope.showLoading();
+    $scope.GetLastClosedTickets = function (isMore) {
+        if (isMore)
+            $rootScope.showLoading();
         Bugtracker.GetLastClosedTickets().get({
             id: $scope.projectId,
             token: $rootScope.userDatas.token,
             offset: $scope.offsetClosed,
-            limit: $scope.limitClosed
+            limit: $scope.limitMax
         }).$promise
             .then(function (data) {
                 console.log('Get last closed tickets info successful !');
@@ -96,9 +98,16 @@ angular.module('GrappBox.controllers')
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastClosedTickets.push(data.data.array[i]);
                     }
+                    console.log("data.data.array.length = " + data.data.array.length);
+                    if (data.data.array.length < $scope.offsetMax) {
+                        $scope.offsetClosed += data.data.array.length;
+                    }
+                    else {
+                        $scope.offsetClosed += $scope.offsetMax;
+                    }
                     $scope.noClosedTicket = false;
-                    $scope.offsetClosed += $scope.offsetMax;
-                    $scope.limitClosed += $scope.limitMax;
+                    //$scope.offsetClosed += $scope.offsetMax;
+                    //$scope.limitClosed += $scope.limitMax;
                 }
                 else
                     $scope.noClosedTicket = "There are no ticket.";
@@ -108,7 +117,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                //$rootScope.hideLoading();
+                $rootScope.hideLoading();
             })
     }
     $scope.GetLastClosedTickets();

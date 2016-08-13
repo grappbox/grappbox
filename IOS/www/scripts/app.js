@@ -3,7 +3,7 @@
     Every pages mentionned here are stocked in Templates folder
 */
 
-angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
+angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'ui.rCalendar', 'ngAnimate', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
 
 // on starting
 .run(function ($ionicPlatform, $rootScope, $ionicLoading) {
@@ -31,6 +31,25 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
     $rootScope.hideLoading = function () {
         $ionicLoading.hide();
     };
+
+    $rootScope.isBase64 = function (str) {
+        try {
+            window.atob(str);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    $rootScope.dropUnchangedFields = function (data, headerGetter) {
+
+        var newData = angular.copy(data);
+        for (key in newData.data) {
+            if (!newData.data[key] && key != "logo")
+                delete newData.data[key];
+        }
+        return angular.toJson(newData);
+
+    }
 })
 
 .config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
@@ -241,7 +260,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
                 templateUrl: "views/bugtracker.html",
                 controller: 'BugtrackerCtrl'
             }
-        }
+        },
+        cache: false
     })
 
     // create ticket view
@@ -365,17 +385,6 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'GrappBox.contr
             'menuList': {
                 templateUrl: "views/tasks.html",
                 controller: 'TasksCtrl'
-            }
-        }
-    })
-
-        // TESTTTT
-    .state('app.test', {
-        url: "/projects/:projectId/tasks/test",
-        views: {
-            'menuList': {
-                templateUrl: "views/test.html",
-                controller: 'TestCtrl'
             }
         }
     })

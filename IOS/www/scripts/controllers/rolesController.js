@@ -48,10 +48,19 @@ angular.module('GrappBox.controllers')
     ** Add new role on project
     ** Method: POST
     */
-    $scope.roleType = {};
+    $scope.roleType = {
+        teamTimeline: 0,
+        customerTimeline: 0,
+        gantt: 0,
+        whiteboard: 0,
+        bugtracker: 0,
+        event: 0,
+        task: 0,
+        projectSettings: 0,
+        cloud: 0
+    }
     $scope.AddNewRole = function () {
         //$rootScope.showLoading();
-        console.log($scope.roleType.teamTimeline);
         Roles.Add().save({
             data: {
                 token: $rootScope.userDatas.token,

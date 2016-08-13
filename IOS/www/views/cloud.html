@@ -39,7 +39,7 @@
             <ion-item ng-repeat="dir in cloudData"
                       ng-show="dir.type == 'dir'"
                       ng-click="checkSafe(dir.is_secured, dir.filename)">
-                <h2 class="icon ion-ios-folder"> {{ dir.filename }}</h2>
+                <h2 class="icon ion-ios-folder">&nbsp;<span ng-class="dir.is_secured ? 'icon ion-ios-locked' : ''"></span>&nbsp;{{ dir.filename }}</h2>
                 <ion-option-button class="button-assertive"
                                    ng-click="deleteFileOrFolder(dir.filename)">
                     Delete
@@ -53,15 +53,23 @@
             <ion-item ng-repeat="file in cloudData"
                       ng-show="file.type == 'file'"
                       ng-click="checkFileProtected(file.is_secured, file.filename)">
-                <h2 class="icon ion-document"> {{ file.filename }}</h2>
+                <h2 class="icon ion-document">&nbsp;<span ng-class="file.is_secured ? 'icon ion-ios-locked' : ''"></span>&nbsp; {{ file.filename }}</h2>
                 <ion-option-button class="button-assertive"
                                    ng-click="checkDeleteFile(file.filename, file.is_secured)">
                     Delete
                 </ion-option-button>
             </ion-item>
         </ion-list>
-        <!--<progress max="100" value="{{downloadProgress}}"></progress>
-        <progress max="100" value="{{uploadProgress}}"></progress>-->
+        <div ng-show="downloadProgress">
+            <p>Download:</p>
+            <progress max="100" value="{{downloadProgress}}"></progress>
+            <span class="progressLabel">{{downloadProgress}}%</span>
+        </div>
+        <div ng-show="uploadProgress">
+            <p>Upload:</p>
+            <progress max="100" value="{{uploadProgress}}"></progress>
+            <span class="progressLabel">{{uploadProgress}}%</span>
+        </div>
     </ion-content>
 </ion-view>
 

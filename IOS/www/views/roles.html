@@ -22,12 +22,68 @@
         </ion-list>
 
         <div class="item item-divider">Add a role</div>
-        <ion-list>
-            <ion-item class="item-input">
-                <ion-label class="input-label">Role name: </ion-label>
-                <input type="text" ng-model="roleType.name" placeholder="Your role name">
-            </ion-item>
-            <ion-checkbox ng-model="roleType.teamTimeline" ng-init="roleType.teamTimeline=false">Team Timeline</ion-checkbox>
+        <form name="form_roleType">
+            <ion-list>
+                <ion-item class="item-input">
+                    <ion-label class="input-label">Role name: </ion-label>
+                    <input type="text" ng-model="roleType.name" placeholder="Your role name" required>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Team Timeline</h2>
+                    <ion-radio name="teamTimeline" ng-model="roleType.teamTimeline" ng-value="0">None</ion-radio>
+                    <ion-radio name="teamTimeline" ng-model="roleType.teamTimeline" ng-value="1">Read</ion-radio>
+                    <ion-radio name="teamTimeline" ng-model="roleType.teamTimeline" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Customer Timeline</h2>
+                    <ion-radio name="customerTimeline" ng-model="roleType.customerTimeline" ng-value="0">None</ion-radio>
+                    <ion-radio name="customerTimeline" ng-model="roleType.customerTimeline" ng-value="1">Read</ion-radio>
+                    <ion-radio name="customerTimeline" ng-model="roleType.customerTimeline" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Gantt</h2>
+                    <ion-radio name="gantt" ng-model="roleType.gantt" ng-value="0">None</ion-radio>
+                    <ion-radio name="gantt" ng-model="roleType.gantt" ng-value="1">Read</ion-radio>
+                    <ion-radio name="gantt" ng-model="roleType.gantt" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Whiteboard</h2>
+                    <ion-radio name="whiteboard" ng-model="roleType.whiteboard" ng-value="0">None</ion-radio>
+                    <ion-radio name="whiteboard" ng-model="roleType.whiteboard" ng-value="1">Read</ion-radio>
+                    <ion-radio name="whiteboard" ng-model="roleType.whiteboard" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">BugTracker</h2>
+                    <ion-radio name="bugtracker" ng-model="roleType.bugtracker" ng-value="0">None</ion-radio>
+                    <ion-radio name="bugtracker" ng-model="roleType.bugtracker" ng-value="1">Read</ion-radio>
+                    <ion-radio name="bugtracker" ng-model="roleType.bugtracker" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Event</h2>
+                    <ion-radio name="event" ng-model="roleType.event" ng-value="0">None</ion-radio>
+                    <ion-radio name="event" ng-model="roleType.event" ng-value="1">Read</ion-radio>
+                    <ion-radio name="event" ng-model="roleType.event" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Tasks</h2>
+                    <ion-radio name="task" ng-model="roleType.task" ng-value="0">None</ion-radio>
+                    <ion-radio name="task" ng-model="roleType.task" ng-value="1">Read</ion-radio>
+                    <ion-radio name="task" ng-model="roleType.task" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Project Settings</h2>
+                    <ion-radio name="projectSettings" ng-model="roleType.projectSettings" ng-value="0">None</ion-radio>
+                    <ion-radio name="projectSettings" ng-model="roleType.projectSettings" ng-value="1">Read</ion-radio>
+                    <ion-radio name="projectSettings" ng-model="roleType.projectSettings" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Cloud</h2>
+                    <ion-radio name="cloud" ng-model="roleType.cloud" ng-value="0">None</ion-radio>
+                    <ion-radio name="cloud" ng-model="roleType.cloud" ng-value="1">Read</ion-radio>
+                    <ion-radio name="cloud" ng-model="roleType.cloud" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+
+                <!--<ion-checkbox ng-model="roleType.teamTimeline" ng-init="roleType.teamTimeline=false">Team Timeline</ion-checkbox>
             <ion-checkbox ng-model="roleType.customerTimeline" ng-init="roleType.customerTimeline=false">Customer Timeline</ion-checkbox>
             <ion-checkbox ng-model="roleType.gantt" ng-init="roleType.gantt=false">Gantt</ion-checkbox>
             <ion-checkbox ng-model="roleType.whiteboard" ng-init="roleType.whiteboard=false">Whiteboard</ion-checkbox>
@@ -35,12 +91,14 @@
             <ion-checkbox ng-model="roleType.event" ng-init="roleType.event=false">Event</ion-checkbox>
             <ion-checkbox ng-model="roleType.task" ng-init="roleType.task=false">Task</ion-checkbox>
             <ion-checkbox ng-model="roleType.projectSettings" ng-init="roleType.projectSettings=false">Project settings</ion-checkbox>
-            <ion-checkbox ng-model="roleType.cloud" ng-init="roleType.cloud=false">Cloud</ion-checkbox>
-        </ion-list>
-        <!-- Add a role on project -->
-        <button class="button button-block button-positive"
-                ng-click="AddNewRole()">
-            Add
-        </button>
+            <ion-checkbox ng-model="roleType.cloud" ng-init="roleType.cloud=false">Cloud</ion-checkbox>-->
+            </ion-list>
+            <!-- Add a role on project -->
+            <button ng-disabled="form_roleType.$invalid"
+                    class="button button-block button-positive"
+                    ng-click="AddNewRole()">
+                Add
+            </button>
+        </form>
     </ion-content>
 </ion-view>

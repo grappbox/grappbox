@@ -6,7 +6,7 @@
     <ion-nav-title class="item-text-wrap">Timelines</ion-nav-title>
     <ion-tabs class="tabs-positive tabs-striped">
         <!-- TEAM tab -->
-        <ion-tab title="Team">
+        <ion-tab title="Team" class="gb-tab">
             <!-- Tab 1 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
@@ -23,7 +23,7 @@
                     <ion-item ng-show="noMessageTeam">{{noMessageTeam}}</ion-item>
                     <div class="list card"
                          ng-repeat="message in lastMessagesTeam"
-                         ng-show="!noMessageTeam">
+                         ng-if="message.deletedAt === null"><!-- ng-show="!noMessageTeam" -->
                         <div class="item item-avatar">
                             <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" />
                             <h2>{{ message.creator.fullname }}</h2>
@@ -99,9 +99,8 @@
                         <div class="item-divider"></div>
                     </div>
                     <!-- Button "More" messages -->
-                    <button ng-hide="lastMessagesTeam[0] == null"
-                            class="button button-block button-positive"
-                            ng-click="GetLastMessagesTeam()">
+                    <button class="button button-block button-positive"
+                            ng-click="GetLastMessagesTeam(true)">
                         More
                     </button>
                 </ion-content>
@@ -109,7 +108,7 @@
         </ion-tab>
 
         <!-- CUSTOMER tab -->
-        <ion-tab title="Customer">
+        <ion-tab title="Customer" class="gb-tab">
             <!-- Tab 2 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
@@ -127,7 +126,7 @@
                     <ion-item ng-show="noMessageCustomer">{{noMessageCustomer}}</ion-item>
                     <div class="list card"
                          ng-repeat="message in lastMessagesCustomer"
-                         ng-show="!noMessageCustomer">
+                         ng-if="message.deletedAt === null"> <!-- ng-show="!noMessageCustomer" -->
                         <div class="item item-avatar">
                             <img src="mcfly.jpg">
                             <h2>{{ message.creator.fullname }}</h2>
@@ -202,9 +201,8 @@
                         <div class="item-divider"></div>
                     </div>
                     <!-- Button "More" messages -->
-                    <button ng-hide="lastMessagesCustomer[0] == null"
-                            class="button button-block button-positive"
-                            ng-click="GetLastMessagesCustomer()">
+                    <button class="button button-block button-positive"
+                            ng-click="GetLastMessagesCustomer(true)">
                         More
                     </button>
                 </ion-content>

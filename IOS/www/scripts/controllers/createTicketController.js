@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CreateTicketCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Bugtracker) {
+.controller('CreateTicketCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Bugtracker) {
     $scope.ticket = {};
     $scope.message = $stateParams.message;
     if ($scope.message != null) {
@@ -25,7 +25,8 @@ angular.module('GrappBox.controllers')
                 title: $scope.ticket.title,
                 description: $scope.ticket.description,
                 stateId: 1,
-                stateName: "Open"
+                stateName: "Open",
+                clientOrigin: false
             }
         }).$promise
             .then(function (data) {

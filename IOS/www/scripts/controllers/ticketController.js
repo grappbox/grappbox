@@ -120,6 +120,7 @@ angular.module('GrappBox.controllers')
                 console.log('Reopen ticket successful !');
                 Toast.show("Ticket reopen");
                 $scope.reopenTicketData = data.data;
+                $scope.GetTicketInfo();
             })
             .catch(function (error) {
                 console.error('Reopen ticket failed ! Reason: ' + error.status + ' ' + error.statusText);

@@ -4,7 +4,18 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">Tasks</ion-nav-title>
-    <ion-content overflow-scroll="false">
-        This section is under construction.
+    <ion-content scroll="false" class="main-content">
+        <button class="button" ng-disabled="isToday()" ng-click="today()">Today</button>
+        <button class="button" ng-click="changeMode('month')">M</button>
+        <button class="button" ng-click="changeMode('week')">W</button>
+        <button class="button" ng-click="changeMode('day')">D</button>
+        <button class="button" ng-click="loadEvents()">Load Events</button>
+        <calendar ng-model="calendar.currentDate" calendar-mode="calendar.mode" event-source="calendar.eventSource"
+                  range-changed="reloadSource(startTime, endTime)"
+                  event-selected="onEventSelected(event)" title-changed="onViewTitleChanged(title)"
+                  time-selected="onTimeSelected(selectedTime, events)" step="30"></calendar>
     </ion-content>
+    <!--<ion-content overflow-scroll="false">
+        This section is under construction.
+    </ion-content>-->
 </ion-view>

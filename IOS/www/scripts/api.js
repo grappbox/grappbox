@@ -61,7 +61,7 @@ angular.module('GrappBox.api', ['ngResource'])
         // Edit Project
         Edit: function () {
             return $resource($rootScope.API + 'projects/updateinformations', null, {
-                'update': { method: 'PUT' }
+                'update': { method: 'PUT', transformRequest: $rootScope.dropUnchangedFields }
             });
         },
         // Delete project after 7 days
@@ -90,11 +90,15 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Generate a customer access on project
         GenCustomerAccess: function () {
-            return $resource($rootScope.API + 'projects/getcustomeraccessbyproject/:token/:projectId', { token: "@token", projectId: "@projectId" });
+            return $resource($rootScope.API + 'projects/generatecustomeraccess', { token: "@token", projectId: "@projectId", name: "@name" });
         },
         // Delete a customer access
         DeleteCustomerAccess: function () {
             return $resource($rootScope.API + 'projects/delcustomeraccess/:token/:projectId/:customerAccessId', { token: "@token", projectId: "@projectId", customerAccessId: "@customerAccessId" });
+        },
+        // Get logo
+        Logo: function () {
+            return $resource($rootScope.API + 'projects/getprojectlogo/:token/:projectId', { token: "@token", projectId: "@projectId" });
         }
     }
 })
@@ -114,8 +118,8 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Edit profile
         EditProfile: function () {
-            return $resource($rootScope.API + 'user/basicinformations/:token', { token: $rootScope.userDatas.token }, {
-                'update': { method: 'PUT' }
+            return $resource($rootScope.API + 'user/basicinformations/:token', { token: "@token" }, {
+                'update': { method: 'PUT', transformRequest: $rootScope.dropUnchangedFields }
             });
         },
         // Get current tasks

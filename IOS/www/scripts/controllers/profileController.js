@@ -9,9 +9,9 @@ angular.module('GrappBox.controllers')
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetProfileInfo();
-        $scope.GetNextMeetings();
-        $scope.GetProjects();
-        $scope.GetCurrentTasks();
+        //$scope.GetNextMeetings();
+        //$scope.GetProjects();
+        //$scope.GetCurrentTasks();
         console.log("View refreshed !");
     }
 
@@ -28,6 +28,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get profile info successful !');
                 $scope.profileInfo = data.data;
+                console.log(data.data);
             })
             .catch(function (error) {
                 console.error('Get profile info failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -38,6 +39,32 @@ angular.module('GrappBox.controllers')
             })
     }
     $scope.GetProfileInfo();
+
+    /*
+    ** Get user avatar
+    ** Method: GET
+    */
+    $scope.userAvatar = {};
+    $scope.GetUserAvatar = function () {
+        //$rootScope.showLoading();
+        Users.Avatar().get({
+            token: $rootScope.userDatas.token,
+            userId: $rootScope.userDatas.id
+        }).$promise
+            .then(function (data) {
+                console.log('Get user connected avatar successful !');
+                $scope.userAvatar = data.data;
+                console.log(data.data);
+            })
+            .catch(function (error) {
+                console.error('Get user connected avatar failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetUserAvatar();
 
     /*
     ** Get Projects

@@ -5,8 +5,8 @@
 <ion-view>
     <ion-nav-title class="item-text-wrap">BugTracker</ion-nav-title>
     <ion-tabs class="tabs-positive tabs-striped">
-
-        <ion-tab title="Open">
+        <!-- OPEN tickets tab -->
+        <ion-tab title="Open" class="gb-tab">
             <!-- Tab 1 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
@@ -29,10 +29,10 @@
 
                     <!-- Open ticket list -->
                     <ion-list>
-                        <ion-item ng-show="noOpenTicket">{{noOpenTicket}}</ion-item>
-                        <ion-item ng-show="!noOpenTicket" ng-repeat="ticket in lastOpenTickets"
+                        <!--<ion-item ng-show="noOpenTicket">{{noOpenTicket}}</ion-item>-->
+                        <ion-item ng-repeat="ticket in lastOpenTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
-                                  ng-if="ticket.deletedAt === null">
+                                  ng-if="ticket.deletedAt === null"> <!-- ng-show="!noOpenTicket"  -->
                             <h2 style="text-align:center">{{ticket.title}}</h2>
                             <p>
                                 By {{ticket.creator.fullname}}<br />
@@ -41,12 +41,12 @@
                             </p>
                             <!-- Show tags if they are there -->
                             <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
-                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced">{{ tag.name }}</button>
+                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button>
                         </ion-item>
                     </ion-list>
                     <!-- Button "More" open tickets -->
                     <button class="button button-block button-positive"
-                            ng-click="GetLastOpenTickets()">
+                            ng-click="GetLastOpenTickets(true)">
                         More
                     </button>
                 </ion-content>
@@ -54,7 +54,8 @@
 
         </ion-tab>
 
-        <ion-tab title="Closed">
+        <!-- CLOSED tickets tab -->
+        <ion-tab title="Closed" class="gb-tab">
             <!-- Tab 2 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
@@ -65,28 +66,33 @@
 
                     <!-- Closed ticket list -->
                     <ion-list>
-                        <ion-item ng-show="noClosedTicket">{{noClosedTicket}}</ion-item>
-                        <ion-item ng-show="!noClosedTicket" ng-repeat="ticket in lastClosedTickets"
-                                  ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})">
-                            {{ticket.title}}<br />
+                        <!--<ion-item ng-show="noClosedTicket">{{noClosedTicket}}</ion-item>-->
+                        <ion-item ng-repeat="ticket in lastClosedTickets"
+                                  ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
+                                  ng-if="ticket.deletedAt !== null"> <!-- ng-show="!noClosedTicket" -->
+                            <h2 style="text-align:center">{{ticket.title}}</h2>
                             <p>
                                 By {{ticket.creator.fullname}}<br />
                                 Created: {{ticket.createdAt.date}}<br />
                                 <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt.date}}</span>
                             </p>
+                            <!-- Show tags if they are there -->
+                            <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
+                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button>
                         </ion-item>
                     </ion-list>
 
                     <!-- Button "More" closed tickets -->
                     <button class="button button-block button-positive"
-                            ng-click="GetLastClosedTickets()">
+                            ng-click="GetLastClosedTickets(true)">
                         More
                     </button>
                 </ion-content>
             </ion-pane>
         </ion-tab>
 
-        <ion-tab title="Yours">
+        <!-- YOURS tickets tab -->
+        <ion-tab title="Yours" class="gb-tab">
             <!-- Tab 3 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
@@ -97,22 +103,25 @@
 
                     <!-- User connected tickets and open tickets list -->
                     <ion-list>
-                        <ion-item ng-show="noOpenTicket">{{noOpenTicket}}</ion-item>
-                        <ion-item ng-show="!noOpenTicket" ng-repeat="ticket in lastOpenTickets"
+                        <!--<ion-item ng-show="noOpenTicket">{{noOpenTicket}}</ion-item>-->
+                        <ion-item ng-repeat="ticket in lastOpenTickets"
                                   ui-sref="app.ticket({projectId: projectId, ticketId: ticket.id})"
-                                  ng-if="ticket.creator.id == userDatas.id">
-                            {{ticket.title}}<br />
+                                  ng-if="ticket.creator.id == userDatas.id"><!-- ng-show="!noOpenTicket" -->
+                            <h2 style="text-align:center">{{ticket.title}}</h2>
                             <p>
                                 By {{ticket.creator.fullname}}<br />
                                 Created: {{ticket.createdAt.date}}<br />
                                 <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt.date}}</span>
                             </p>
+                            <!-- Show tags if they are there -->
+                            <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
+                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button>
                         </ion-item>
                     </ion-list>
 
                     <!-- Button "More" user connected and open tickets -->
                     <button class="button button-block button-positive"
-                            ng-click="GetLastOpenTickets()">
+                            ng-click="GetLastOpenTickets(true)">
                         More
                     </button>
                 </ion-content>

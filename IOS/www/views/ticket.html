@@ -18,10 +18,10 @@
             <h2>{{ticket.title}}</h2>
 
             <!-- Tags on ticket -->
-            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced">{{ tag.name }}</button><br />
+            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
 
             <!-- Users on ticket -->
-            <button ng-repeat="user in ticket.users" class="button button-small button-calm">{{ user.name }}</button><br /><br />
+            <button ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.name }}</button><br /><br />
 
             <!-- Ticket's description, creator's name -->
             <textarea ng-readonly="true"

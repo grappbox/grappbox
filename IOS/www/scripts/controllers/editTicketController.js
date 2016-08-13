@@ -106,7 +106,8 @@ angular.module('GrappBox.controllers')
                 title: $scope.ticket.title,
                 description: $scope.ticket.description,
                 stateId: $scope.ticket.state.id,
-                stateName: $scope.ticket.state.name
+                stateName: $scope.ticket.state.name,
+                clientOrigin: false
             }
         }).$promise
             .then(function (data) {

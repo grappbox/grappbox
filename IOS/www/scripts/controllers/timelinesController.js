@@ -9,9 +9,7 @@ angular.module('GrappBox.controllers')
     $scope.limitMax = 25;
 
     $scope.offsetTeam = 0;
-    $scope.limitTeam = 25;
     $scope.offsetCustomer = 0;
-    $scope.limitCustomer = 25;
 
     $scope.lastMessagesTeam = [];
     $scope.lastMessagesCustomer = [];
@@ -20,9 +18,7 @@ angular.module('GrappBox.controllers')
     $scope.doRefreshTeamTimeline = function () {
         $scope.lastMessagesTeam = [];
         $scope.offsetTeam = 0;
-        $scope.limitTeam = 25;
         $scope.offsetCustomer = 0;
-        $scope.limitCustomer = 25;
 
         $scope.GetLastMessagesTeam();
         console.log("View refreshed !");
@@ -31,9 +27,7 @@ angular.module('GrappBox.controllers')
     $scope.doRefreshCustomerTimeline = function () {
         $scope.lastMessagesCustomer = [];
         $scope.offsetTeam = 0;
-        $scope.limitTeam = 25;
         $scope.offsetCustomer = 0;
-        $scope.limitCustomer = 25;
 
         $scope.GetLastMessagesCustomer();
         console.log("View refreshed !");
@@ -78,23 +72,30 @@ angular.module('GrappBox.controllers')
     ** Get last messages team information from :offset to :limit
     ** Method: GET
     */
-    $scope.GetLastMessagesTeam = function () {
-        //$rootScope.showLoading();
+    $scope.GetLastMessagesTeam = function (isMore) {
+        if (isMore)
+            $rootScope.showLoading();
         Timeline.LastMessages().get({
             id: $scope.timelineIds[0],
             token: $rootScope.userDatas.token,
             offset: $scope.offsetTeam,
-            limit: $scope.limitTeam
+            limit: $scope.limitMax
         }).$promise
             .then(function (data) {
                 console.log('Get last messages team info successful !');
                 if (data.data.array[0] != null) {
-                    $scope.noMessageTeam = false;
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastMessagesTeam.push(data.data.array[i]);
                     }
-                    $scope.offsetTeam += $scope.offsetMax;
-                    $scope.limitTeam += $scope.limitMax;
+                    if (data.data.array.length < $scope.offsetMax) {
+                        $scope.offsetTeam += data.data.array.length;
+                    }
+                    else {
+                        $scope.offsetTeam += $scope.offsetMax;
+                    }
+                    $scope.noMessageTeam = false;
+                    //$scope.offsetTeam += $scope.offsetMax;
+                    //$scope.limitTeam += $scope.limitMax;
                 }
                 else
                     $scope.noMessageTeam = "There is no message in team timeline."
@@ -106,7 +107,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                //$rootScope.hideLoading();
+                $rootScope.hideLoading();
             })
     }
 
@@ -114,23 +115,30 @@ angular.module('GrappBox.controllers')
     ** Get last messages customer information from :offset to :limit
     ** Method: GET
     */
-    $scope.GetLastMessagesCustomer = function () {
-        //$rootScope.showLoading();
+    $scope.GetLastMessagesCustomer = function (isMore) {
+        if (isMore)
+            $rootScope.showLoading();
         Timeline.LastMessages().get({
             id: $scope.timelineIds[1],
             token: $rootScope.userDatas.token,
             offset: $scope.offsetCustomer,
-            limit: $scope.limitCustomer
+            limit: $scope.limitMax
         }).$promise
             .then(function (data) {
                 console.log('Get last messages customer info successful !');
                 if (data.data.array[0] != null) {
-                    $scope.noMessageCustomer = false;
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastMessagesCustomer.push(data.data.array[i]);
                     }
-                    $scope.offsetCustomer += $scope.offsetMax;
-                    $scope.limitCustomer += $scope.limitMax;
+                    if (data.data.array.length < $scope.offsetMax) {
+                        $scope.offsetCustomer += data.data.array.length;
+                    }
+                    else {
+                        $scope.offsetCustomer += $scope.offsetMax;
+                    }
+                    $scope.noMessageCustomer = false;
+                    //$scope.offsetCustomer += $scope.offsetMax;
+                    //$scope.limitCustomer += $scope.limitMax;
                 }
                 else
                     $scope.noMessageCustomer = "There is no message in customer timeline."
@@ -141,7 +149,7 @@ angular.module('GrappBox.controllers')
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
-                //$rootScope.hideLoading();
+                $rootScope.hideLoading();
             })
     }
 

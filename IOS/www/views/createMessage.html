@@ -11,16 +11,17 @@
                 <input type="text"
                        placeholder="Where to go if I want to..."
                        name="createMessage_title"
-                       ng-model="message.title" />
+                       ng-model="message.title" required/>
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Message</ion-label>
                 <textarea name="createMessage_description"
                           rows="5"
                           placeholder="Hello, I have a question..."
-                          ng-model="message.message"></textarea>
+                          ng-model="message.message" required></textarea>
             </ion-input>
-            <button class="button button-block button-positive"
+            <button ng-disabled="createMessage_form.$invalid"
+                    class="button button-block button-positive"
                     ng-click="PostMessage()">
                 Create
             </button>
