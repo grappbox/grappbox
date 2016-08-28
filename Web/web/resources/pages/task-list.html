@@ -17,59 +17,234 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-12">
       <div class="well">
         <!-- grappbox.data : tasks list -->
-        <div data-ng-if="data.onLoad">
-          <div class="spinner section">
-            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
-          </div>
-        </div>
-        <div data-ng-if="!data.onLoad">
-          <div data-ng-if="data.message == '_valid'">
-            <div class="row">
-              <div class="centered">
-                <a href="{[{'tasks/' + projectID + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+        <div id="tab-pannel">
+          <ul class="nav nav-tabs" role="tablist">
+            <li id="task-todo" role="taskTodo" class="col-md-2 col-xs-12 active">
+              <a href="" role="tab" data-toggle="tab" data-ng-click="displayTasks('todo')"> To do</a>
+            </li>
+            <li id="task-doing" role="taskDoing" class="col-md-2 col-xs-12">
+              <a href="" role="tab" data-toggle="tab" data-ng-click="displayTasks('doing')"> Doing</a>
+            </li>
+            <li id="task-done" role="taskDone" class="col-md-2 col-xs-12">
+              <a href="" role="tab" data-toggle="tab" data-ng-click="displayTasks('done')"> Done</a>
+            </li>
+            <li id="task-user" role="taskUser" class="col-md-2 col-xs-12">
+              <a href="" role="tab" data-toggle="tab" data-ng-click="displayTasks('user')"> Your tasks</a>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" role="tabpanel" id="task-todo-list">
+              <div data-ng-if="data.onLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="!data.onLoad">
+                <div data-ng-if="data.message == '_valid'">
+                  <div class="row">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th class="col-lg-4"><i class="fa fa-tasks"></i> Title</th>
+                          <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                          <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                          <th class="col-lg-2"><i class="fa fa-bell"></i> Due date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="task in data.tasks | filter: filterTodo" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                          <td>{[{ task.title }]}</td>
+                          <td>{[{ formatTagsinString(task.tags) }]}</td>
+                          <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
+                          <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_empty'">
+                  <div class="row">
+                    <div class="centered">
+                      <a href="{[{'task/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="row">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th class="col-lg-4"><i class="fa fa-tasks"></i> Title</th>
-                    <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
-                    <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
-                    <th class="col-lg-2"><i class="fa fa-bell"></i> Due date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="task in data.tasks" ng-click="openTask(projectID, task.id)" title="Go the task page">
-                    <td>{[{ task.title }]}</td>
-                    <td>{[{ formatTagsinString(task.tags) }]}</td>
-                    <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
-                    <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div data-ng-if="data.message == '_empty'">
-            <div class="row">
-              <div class="centered">
-                <a href="{[{'tasks/' + projectID + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+            <div class="tab-pane" role="tabpanel" id="task-doing-list">
+              <div data-ng-if="data.onLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="!data.onLoad">
+                <div data-ng-if="data.message == '_valid'">
+                  <div class="row">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th class="col-lg-4"><i class="fa fa-tasks"></i> Title</th>
+                          <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                          <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                          <th class="col-lg-2"><i class="fa fa-bell"></i> Due date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="task in data.tasks | filter: filterDoing" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                          <td>{[{ task.title }]}</td>
+                          <td>{[{ formatTagsinString(task.tags) }]}</td>
+                          <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
+                          <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_empty'">
+                  <div class="row">
+                    <div class="centered">
+                      <a href="{[{'task/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="row">
-              <div class="data-wrapper error">
-                <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+            <div class="tab-pane" role="tabpanel" id="task-done-list">
+              <div data-ng-if="data.onLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="!data.onLoad">
+                <div data-ng-if="data.message == '_valid'">
+                  <div class="row">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th class="col-lg-4"><i class="fa fa-tasks"></i> Title</th>
+                          <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                          <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                          <th class="col-lg-2"><i class="fa fa-bell"></i> Due date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="task in data.tasks | filter: filterDone" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                          <td>{[{ task.title }]}</td>
+                          <td>{[{ formatTagsinString(task.tags) }]}</td>
+                          <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
+                          <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_empty'">
+                  <div class="row">
+                    <div class="centered">
+                      <a href="{[{'task/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div data-ng-if="data.message == '_invalid'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-            </div>
-          </div>
-          <div data-ng-if="data.message == '_denied'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+            <div class="tab-pane" role="tabpanel" id="task-user-list">
+              <div data-ng-if="data.onLoad">
+                <div class="spinner section">
+                  <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+                </div>
+              </div>
+              <div data-ng-if="!data.onLoad">
+                <div data-ng-if="data.message == '_valid'">
+                  <div class="row">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th class="col-lg-4"><i class="fa fa-tasks"></i> Title</th>
+                          <th class="col-lg-3"><i class="fa fa-tags"></i> Tags</th>
+                          <th class="col-lg-3"><i class="fa fa-user"></i> Assigned user(s)</th>
+                          <th class="col-lg-2"><i class="fa fa-bell"></i> Due date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="task in data.tasks | filter: filterUser" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                          <td>{[{ task.title }]}</td>
+                          <td>{[{ formatTagsinString(task.tags) }]}</td>
+                          <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
+                          <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_empty'">
+                  <div class="row">
+                    <div class="centered">
+                      <a href="{[{'task/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="data-wrapper error">
+                      <p><i class="fa fa-frown-o"></i>There is no task for this project.</p>
+                    </div>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_invalid'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+                  </div>
+                </div>
+                <div data-ng-if="data.message == '_denied'">
+                  <div class="data-wrapper error">
+                    <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

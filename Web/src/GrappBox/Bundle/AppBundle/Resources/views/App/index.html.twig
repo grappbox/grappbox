@@ -151,13 +151,12 @@
 									<a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ app.routeList['/bugtracker'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ app.iconList['/bugtracker'] ? app.iconList['/bugtracker'] : 'clear' }]}</i>Bugtracker</a>
 								</li>
-<!-- BETA -->
-<!-- 								<li data-ng-if="project.set">
+								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks and gantt section" class="btn {[{ app.routeList['/tasks'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ app.iconList['/tasks'] ? app.iconList['/tasks'] : 'clear' }]}</i>
 										Tasks
 									</a>
-								</li> -->
+								</li>
 								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ app.routeList['/whiteboard'] ? 'active' : '' }]}">
 										<i class="material-icons">{[{ app.iconList['/whiteboard'] ? app.iconList['/whiteboard'] : 'clear' }]}</i>Whiteboard</a>

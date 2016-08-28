@@ -9,7 +9,7 @@
 * APP task page list (one per project)
 *
 */
-app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$location", function($rootScope, $scope, $routeParams, $http, Notification, $location) {
+app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$location", "$filter", function($rootScope, $scope, $routeParams, $http, Notification, $location, $filter) {
 
   var content = "";
 
@@ -80,8 +80,83 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
     $location.path("/tasks/" + project + "/" + task);
   };
 
-}]);
+  $scope.displayTasks = function(type) {
+    switch (type) {
+      case 'todo':
+        $("#task-doing")[0].classList.remove("active");
+        $("#task-doing-list")[0].classList.remove("active");
+        $("#task-done")[0].classList.remove("active");
+        $("#task-done-list")[0].classList.remove("active");
+        $("#task-user")[0].classList.remove("active");
+        $("#task-user-list")[0].classList.remove("active");
 
+        $("#task-todo")[0].classList.add("active");
+        $("#task-todo-list")[0].classList.add("active");
+        break;
+      case 'doing':
+        $("#task-todo")[0].classList.remove("active");
+        $("#task-todo-list")[0].classList.remove("active");
+        $("#task-done")[0].classList.remove("active");
+        $("#task-done-list")[0].classList.remove("active");
+        $("#task-user")[0].classList.remove("active");
+        $("#task-user-list")[0].classList.remove("active");
+
+        $("#task-doing")[0].classList.add("active");
+        $("#task-doing-list")[0].classList.add("active");
+        break;
+      case 'done':
+        $("#task-doing")[0].classList.remove("active");
+        $("#task-doing-list")[0].classList.remove("active");
+        $("#task-todo")[0].classList.remove("active");
+        $("#task-todo-list")[0].classList.remove("active");
+        $("#task-user")[0].classList.remove("active");
+        $("#task-user-list")[0].classList.remove("active");
+
+        $("#task-done")[0].classList.add("active");
+        $("#task-done-list")[0].classList.add("active");
+        break;
+      case 'user':
+        $("#task-doing")[0].classList.remove("active");
+        $("#task-doing-list")[0].classList.remove("active");
+        $("#task-done")[0].classList.remove("active");
+        $("#task-done-list")[0].classList.remove("active");
+        $("#task-todo")[0].classList.remove("active");
+        $("#task-todo-list")[0].classList.remove("active");
+
+        $("#task-user")[0].classList.add("active");
+        $("#task-user-list")[0].classList.add("active");
+        break;
+      default:
+        $("#task-doing")[0].classList.remove("active");
+        $("#task-doing-list")[0].classList.remove("active");
+        $("#task-done")[0].classList.remove("active");
+        $("#task-done-list")[0].classList.remove("active");
+        $("#task-user")[0].classList.remove("active");
+        $("#task-user-list")[0].classList.remove("active");
+
+        $("#task-todo")[0].classList.add("active");
+        $("#task-todo-list")[0].classList.add("active");
+        break;
+    }
+  };
+
+  $scope.filterTodo = function (item) {
+      return !item.started_at;
+  };
+
+  $scope.filterDoing = function (item) {
+      return item.started_at && !item.finished_at;
+  };
+
+  $scope.filterDone = function (item) {
+      return item.finished_at;
+  };
+
+  $scope.filterUser = function (item) {
+      return $filter('filter')(item.users_assigned, {id: $rootScope.user.id})[0];
+  };
+
+}]);
 
 
 /**
