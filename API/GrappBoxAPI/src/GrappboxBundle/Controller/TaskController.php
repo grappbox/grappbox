@@ -76,7 +76,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} title Title of the task
 	* @apiParam {String} description Description of the task
 	* @apiParam {String} [color] Color of the task
-	* @apiParam {Date | Datetime} due_date Due date of the task
+	* @apiParam {Datetime} due_date Due date of the task
 	* @apiParam {Boolean} is_milestone If true, set the task to a milestone. If is_container is true, then set is_containre to false.
 	* @apiParam {Boolean} is_container If true, set the task as a container. If is_milestone is true, then set is_milestone to false.
 	* @apiParam {Int[]} [tasksAdd] Array of tasks id to add. To set all the tasks contains in the container (is_container must be true for that)
@@ -84,8 +84,8 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Object[]} [dependencies] Array of infos on the dependencies
 	* @apiParam {String} dependencies.name name of the dependence, it should be: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
 	* @apiParam {Number} dependencies.id Id of the task the new task dependes on
-	* @apiParam {Date | Datetime} [started_at] Date of start of the task
-	* @apiParam {Date | Datetime} [finished_at] Date of finish of the task
+	* @apiParam {Datetime} [started_at] Date of start of the task
+	* @apiParam {Datetime} [finished_at] Date of finish of the task
 	* @apiParam {Number} [advance] Advance percent of the task
 	*
 	* @apiParamExample {json} Request-Full-Example:
