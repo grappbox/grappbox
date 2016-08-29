@@ -941,7 +941,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
 				}
 			}
-			$task->setDueDate($newDate);
+			//$task->setDueDate($newDate);
 		}
 		if (array_key_exists('started_at', $content))
 		{
@@ -980,7 +980,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 			}
-			$task->setStartedAt($newDate);
+			//$task->setStartedAt($newDate);
 		}
 
 		if (array_key_exists('finished_at', $content))
