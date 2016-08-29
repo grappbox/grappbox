@@ -13,6 +13,7 @@ use GrappboxBundle\Entity\Tag;
 use GrappboxBundle\Entity\Dependencies;
 use GrappboxBundle\Entity\Ressources;
 use GrappboxBundle\Entity\Contains;
+use Datetime;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -75,7 +76,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} title Title of the task
 	* @apiParam {String} description Description of the task
 	* @apiParam {String} [color] Color of the task
-	* @apiParam {Datetime} due_date Due date of the task
+	* @apiParam {Date | Datetime} due_date Due date of the task
 	* @apiParam {Boolean} is_milestone If true, set the task to a milestone. If is_container is true, then set is_containre to false.
 	* @apiParam {Boolean} is_container If true, set the task as a container. If is_milestone is true, then set is_milestone to false.
 	* @apiParam {Int[]} [tasksAdd] Array of tasks id to add. To set all the tasks contains in the container (is_container must be true for that)
@@ -83,8 +84,8 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Object[]} [dependencies] Array of infos on the dependencies
 	* @apiParam {String} dependencies.name name of the dependence, it should be: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
 	* @apiParam {Number} dependencies.id Id of the task the new task dependes on
-	* @apiParam {Datetime} [started_at] Date of start of the task
-	* @apiParam {Datetime} [finished_at] Date of finish of the task
+	* @apiParam {Date | Datetime} [started_at] Date of start of the task
+	* @apiParam {Date | Datetime} [finished_at] Date of finish of the task
 	* @apiParam {Number} [advance] Advance percent of the task
 	*
 	* @apiParamExample {json} Request-Full-Example:
@@ -95,12 +96,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
 	*			"color": "#25D5C2",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-16 19:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-16 19:00:00",
 	*			"is_milstone": false,
 	*			"is_container": true,
 	*			"tasksAdd": [1, 50, 13],
@@ -116,18 +112,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"id": 3
 	*				}
 	*			],
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-15 10:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at":
-	*			{
-	*				"date":"2015-10-16 13:26:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"started_at": "2015-10-15 10:00:00",
+	*			"finished_at": "2015-10-16 13:26:00",
 	*			"advance": 20
 	*		}
 	*	}
@@ -139,12 +125,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-16 19:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-16 19:00:00",
 	*			"is_milestone": true,
 	*			"is_container": false
 	*		}
@@ -157,21 +138,11 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-16 19:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-16 19:00:00",
 	*			"is_milestone": false,
 	*			"is_container": true,
 	*			"tasksAdd": [1, 50, 13],
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-15 10:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
+	*			"started_at":"2015-10-15 10:00:00"
 	*		}
 	*	}
 	*
@@ -389,36 +360,33 @@ class TaskController extends RolesAndTokenVerificationController
 		$task->setProjects($project);
 		$task->setCreatedAt(new \Datetime);
 		$task->setCreatorUser($user);
+		$task->setDueDate(new DateTime($content->due_date));
 
 		if (array_key_exists('color', $content))
 			$task->setColor($content->color);
 
-		if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
-			$dueDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
-		else
-			$dueDate = new \Datetime($content->due_date->date);
-		$task->setDueDate($dueDate);
-
 		if (array_key_exists('started_at', $content))
-		{
-			if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "")
-				$startedAt = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
-			else
-				$startedAt = new \Datetime($content->started_at->date);
-			$task->setStartedAt($startedAt);
-		}
-		else {
-			$task->setStartedAt(null);
-		}
+			$task->setStartedAt(new DateTime($content->started_at));
+		// else {
+		// 	$task->setStartedAt(null);
+		// }
 
 		if (array_key_exists('finished_at', $content))
-		{
-			if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
-				$finishedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
-			else
-				$finishedAt = new \Datetime($content->finished_at->date);
-			$task->setFinishedAt($finishedAt);
-		}
+			$task->setFinishedAt(new DateTime($content->finished_at));
+		// else {
+		// 	$task->setFinishedAt(null);
+		// }
+
+
+		// WHY ???
+		// if (array_key_exists('finished_at', $content))
+		// {
+		// 	if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
+		// 		$finishedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
+		// 	else
+		// 		$finishedAt = new \Datetime($content->finished_at->date);
+		// 	$task->setFinishedAt($finishedAt);
+		// }
 
 		if (array_key_exists('advance', $content))
 		{
@@ -920,7 +888,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "12.2.4",
-	*			"return_message": "Task - taskcreation - Bad Parameter: dependencies"
+	*			"return_message": "Task - taskupdate - Bad Parameter: dependencies"
 	*		}
 	*	}
 	*/
