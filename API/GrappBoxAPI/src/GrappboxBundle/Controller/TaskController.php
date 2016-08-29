@@ -1000,7 +1000,7 @@ class TaskController extends RolesAndTokenVerificationController
 				$content->advance = 100;
 			else if ($content->advance < 0)
 				$content->advance = 0;
-			$content->setAdvance($content->advance);
+			$task->setAdvance($content->advance);
 		}
 
 		if (array_key_exists('dependencies', $content))
