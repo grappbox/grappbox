@@ -589,11 +589,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"title": "User management",
 	*			"description": "User: creation, uptade and delete",
 	*			"color": "#25D86A",
-	*			"due_date": {
-	*				"date":"2015-10-10 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-10 11:00:00",
 	*			"is_container": true,
 	*			"tasksAdd": [1, 50, 13],
 	*			"tasksRemove": [3],
@@ -609,16 +605,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*				}
 	*			],
 	*			"dependenciesRemove": [6, 9],
-	*			"started_at": {
-	*				"date":"2015-10-10 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at": {
-	*				"date":"2015-10-15 18:23:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"started_at": "2015-10-10 12:00:00",
+	*			"finished_at": "2015-10-15 18:23:00",
 	*			"advance" : 30
 	*		}
 	*	}
@@ -636,16 +624,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"token": "13135",
 	*			"taskId": 10,
-	*			"started_at": {
-	*				"date":"2015-10-10 12:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at": {
-	*				"date":"2015-10-15 18:23:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
+	*			"started_at": "2015-10-10 12:00:00",
+	*			"finished_at": "2015-10-15 18:23:00"
 	*		}
 	*	}
 	*
@@ -926,23 +906,24 @@ class TaskController extends RolesAndTokenVerificationController
 			$task->setColor($content->color);
 		if (array_key_exists('due_date', $content))
 		{
-			$dueDate = $task->getDueDate();
-			$newDate;
-			$diff;
-			if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
-			{
-				$newDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
-				if ($dueDate != null)
-					$diff = date_diff($dueDate, $newDate);
-				$dueDate = $newDate;
-			}
-			else
-			{
-				$newDate = new \Datetime($content->due_date->date);
-				if ($dueDate != null)
-					$diff = date_diff($dueDate, $newDate);
-				$dueDate = $newDate;
-			}
+			$task->setDueDate(new Datetime($content->due_date));
+			// $dueDate = $task->getDueDate();
+			// $newDate;
+			// $diff;
+			// if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
+			// {
+			// 	$newDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
+			// 	if ($dueDate != null)
+			// 		$diff = date_diff($dueDate, $newDate);
+			// 	$dueDate = $newDate;
+			// }
+			// else
+			// {
+			// 	$newDate = new \Datetime($content->due_date->date);
+			// 	if ($dueDate != null)
+			// 		$diff = date_diff($dueDate, $newDate);
+			// 	$dueDate = $newDate;
+			// }
 
 			foreach ($taskDep as $td) {
 				if ($td->getName() == "fs")
@@ -964,23 +945,24 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists('started_at', $content))
 		{
-			$startedAt = $task->getStartedAt();
-			$newDate;
-			$diff;
-			if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "")
-			{
-				$newDate = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
-				if ($startedAt != null)
-					$diff = date_diff($startedAt, $newDate);
-				$startedAt = $newDate;
-			}
-			else
-			{
-				$newDate = new \Datetime($content->started_at->date);
-				if ($startedAt != null)
-					$diff = date_diff($startedAt, $newDate);
-				$startedAt = $newDate;
-			}
+			$task->setStartedAt(new Datetime($content->started_at));
+			// $startedAt = $task->getStartedAt();
+			// $newDate;
+			// $diff;
+			// if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "")
+			// {
+			// 	$newDate = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
+			// 	if ($startedAt != null)
+			// 		$diff = date_diff($startedAt, $newDate);
+			// 	$startedAt = $newDate;
+			// }
+			// else
+			// {
+			// 	$newDate = new \Datetime($content->started_at->date);
+			// 	if ($startedAt != null)
+			// 		$diff = date_diff($startedAt, $newDate);
+			// 	$startedAt = $newDate;
+			// }
 
 			foreach ($taskDep as $td) {
 				if ($td->getName() == "ss")
@@ -1000,14 +982,18 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 			$task->setStartedAt($newDate);
 		}
+
 		if (array_key_exists('finished_at', $content))
 		{
-			if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
-				$deletedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
-			else
-				$deletedAt = new \Datetime($content->finished_at->date);
-			$task->setFinishedAt($deletedAt);
+			$task->setFinishedAt(new Datetime($content->finished_at));
+
+			// if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
+			// 	$deletedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
+			// else
+			// 	$deletedAt = new \Datetime($content->finished_at->date);
+			// $task->setFinishedAt($deletedAt);
 		}
+
 		if (array_key_exists('advance', $content))
 		{
 			if($content->advance > 100)
@@ -1016,6 +1002,7 @@ class TaskController extends RolesAndTokenVerificationController
 				$content->advance = 0;
 			$content->setAdvance($content->advance);
 		}
+
 		if (array_key_exists('dependencies', $content))
 		{
 			$dependencies = $content->dependencies;
