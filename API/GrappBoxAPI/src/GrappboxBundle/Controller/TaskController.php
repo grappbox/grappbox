@@ -906,15 +906,15 @@ class TaskController extends RolesAndTokenVerificationController
 			$task->setColor($content->color);
 		if (array_key_exists('due_date', $content))
 		{
-			$task->setDueDate(new Datetime($content->due_date));
-			// $dueDate = $task->getDueDate();
+			//$task->setDueDate(new Datetime($content->due_date));
+			$dueDate = $task->getDueDate();
 			// $newDate;
 			// $diff;
 			// if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
 			// {
-			// 	$newDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
-			// 	if ($dueDate != null)
-			// 		$diff = date_diff($dueDate, $newDate);
+				$newDate = new Datetime($content->due_date);
+				if ($dueDate != null)
+					$diff = date_diff($dueDate, $newDate);
 			// 	$dueDate = $newDate;
 			// }
 			// else
@@ -941,20 +941,20 @@ class TaskController extends RolesAndTokenVerificationController
 					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
 				}
 			}
-			//$task->setDueDate($newDate);
+			$task->setDueDate($newDate);
 		}
 		if (array_key_exists('started_at', $content))
 		{
-			$task->setStartedAt(new Datetime($content->started_at));
-			// $startedAt = $task->getStartedAt();
-			// $newDate;
+			//$task->setStartedAt(new Datetime($content->started_at));
+			$startedAt = $task->getStartedAt();
+			//$newDate;
 			// $diff;
 			// if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "")
 			// {
-			// 	$newDate = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
-			// 	if ($startedAt != null)
-			// 		$diff = date_diff($startedAt, $newDate);
-			// 	$startedAt = $newDate;
+			 	$newDate = new Datetime($content->started_at);
+				if ($startedAt != null)
+					$diff = date_diff($startedAt, $newDate);
+				$startedAt = $newDate;
 			// }
 			// else
 			// {
@@ -980,7 +980,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 			}
-			//$task->setStartedAt($newDate);
+			$task->setStartedAt($newDate);
 		}
 
 		if (array_key_exists('finished_at', $content))
