@@ -1465,8 +1465,8 @@ class TaskController extends RolesAndTokenVerificationController
 		$depArray = array();
 		foreach ($dependencies as $d) {
 			$dname = $d->getName();
-			$did = $d->getDependence()->getId();
-			$dtitle = $d->getDependence()->getTitle();
+			$did = $d->getDependenceTask()->getId();
+			$dtitle = $d->getDependenceTask()->getTitle();
 
 			$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
 		}
