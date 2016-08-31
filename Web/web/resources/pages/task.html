@@ -56,59 +56,63 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <input type="text" class="form-control" data-ng-model="data.task.title" id="title" placeholder="Title">
                 </div>
               </div>
+
               <div class="form-group">
                 <label for="description" class="col-md-1 control-label">Description</label>
                 <div class="col-md-11">
                   <textarea class="form-control" rows="3" data-ng-model="data.task.description" id="description" placeholder="Description"></textarea>
                 </div>
               </div>
+
+              <div class="form-group">
+                <label for="color" class="col-md-1 control-label">Color</label>
+                <div class="col-md-11">
+                  <input type="color" class="form-control" data-ng-model="data.task.color" id="color">
+                </div>
+              </div>
+
+              <!-- OBJECT TYPE SELECTION -->
               <div class="form-group">
                 <label class="col-md-1 control-label">Object type</label>
                 <div class="col-md-11">
                   <div class="col-md-3">
-                    <label><input type="radio" name="task_type" id="regular" value="regular" checked="" data-ng-model="data.task.task_type"> Regular task</label>
+                    <label><input type="radio" name="task_type" id="regular" value="regular" data-ng-model="data.task.type"> Regular task</label>
                   </div>
                   <div class="col-md-3 col-md-offset-1">
-                    <label><input type="radio" name="task_type" id="milestone" value="milestone" data-ng-model="data.task.task_type"> Milestone</label>
+                    <label><input type="radio" name="task_type" id="milestone" value="milestone" data-ng-model="data.task.type"> Milestone</label>
                   </div>
                   <div class="col-md-3 col-md-offset-1">
-                    <label><input type="radio" name="task_type" id="container" value="container" data-ng-model="data.task.task_type"> Container</label>
+                    <label><input type="radio" name="task_type" id="container" value="container" data-ng-model="data.task.type"> Container</label>
                   </div>
                 </div>
               </div>
 
               <!-- TASK CREATION -->
-              <div class="form-group" data-ng-if="data.task.task_type == 'regular'">
+              <div class="form-group" data-ng-if="data.task.type == 'regular'">
                 <label for="start_date" class="col-md-1 control-label">Starting Date</label>
                 <div class="col-md-11">
                   <input type="date" class="form-control" data-ng-model="data.task.started_at" id="start_date">
                 </div>
               </div>
-              <div class="form-group" data-ng-if="data.task.task_type == 'regular'">
+
+              <div class="form-group" data-ng-if="data.task.type == 'regular'">
                 <label for="due_date" class="col-md-1 control-label">Due Date</label>
                 <div class="col-md-11">
                   <input type="date" class="form-control" data-ng-model="data.task.due_date" id="due_date">
                 </div>
               </div>
-              <!-- <div class="form-group" data-ng-if="data.task.task_type == 'regular'">
+
+              <!-- <div class="form-group" data-ng-if="data.task.type == 'regular'">
                 <label for="progress" class="col-md-1 control-label">Progress</label>
                 <div class="col-md-11">
-                  <select id="progress" class="form-control" data-ng-model="data.task.progress">
-                    <option value="0">0 %</option>
-                    <option value="10">10 %</option>
-                    <option value="20">20 %</option>
-                    <option value="30">30 %</option>
-                    <option value="40">40 %</option>
-                    <option value="50">50 %</option>
-                    <option value="60">60 %</option>
-                    <option value="70">70 %</option>
-                    <option value="80">80 %</option>
-                    <option value="90">90 %</option>
-                    <option value="100">100 %</option>
+                  <select id="progress" class="form-control" data-ng-model="data.task.advance">
+                    <option value="" selected>None</option>
+                    <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
                   </select>
                 </div>
               </div> -->
-              <div class="form-group" data-ng-if="data.task.task_type == 'regular'">
+
+              <div class="form-group" data-ng-if="data.task.type == 'regular'">
                 <label for="tags" class="col-md-1 control-label">Tag(s)</label>
                 <div class="col-md-11">
                   <tags-input ng-model="tags"
@@ -121,110 +125,94 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <span class="help-block">Use ',' to separate tags</span>
               </div>
-              <div class="form-group" data-ng-if="data.task.task_type == 'regular'">
-                <label for="color" class="col-md-1 control-label">Color</label>
-                <div class="col-md-11">
-                  <input type="color" class="form-control" data-ng-model="data.task.color" id="color">
-                </div>
-              </div>
-              <div class="form-group" data-ng-if="data.task.task_type == 'regular'">
-                <label for="users" class="col-md-1 control-label">Assign a user</label>
-                <div class="col-md-11">
-                  <tags-input ng-model="users"
-                              display-property="name"
-                              placeholder="Assign a user"
-                              replace-spaces-with-dashes="false"
-                              add-from-autocomplete-only="true"
-                              on-tag-added="userAdded($tag)">
-                    <auto-complete source="usersList"></auto-complete>
-                  </tags-input>
-                </div>
-              </div>
 
-              <div class="form-group" data-ng-if="data.task.task_type == 'regular'">
-                <div class="table-responsive">
-                  <table class="table table-striped table-hover table-bordered">
-                    <thead>
-                      <tr>
-                        <th class="col-md-4 col-xs-12">Name</th>
-                        <th class="col-md-4 col-xs-12">Charge</th>
-                        <th class="col-md-2 col-xs-12" >Deletion</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr data-ng-repeat="user in data.task.users_assigned">
-                        <td class="col-md-4 col-xs-12 ellipsis">{[{ user.firstname + " " + user.lastname }]}</td>
-                        <td class="col-md-4 col-xs-12">
-                          <div class="col-md-9 col-xs-12">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group">
-                                  <select class="form-control" data-ng-model="user.percent"></select>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </div>
-                          <div class="col-md-3 col-xs-12">
-                            <a href="" class="btn" data-ng-click="assignRoleToUser(user)">Update</a>
-                          </div>
-                        </td>
-                        <td class="col-md-2 col-xs-12">
-                          <a href="" class="btn btn-default" data-ng-click="userRemoved(user)">Remove</a>
-                        </td>
-                      </tr>
-                      <tr data-ng-repeat="user in data.users">
-                        <td class="col-md-4 col-xs-12 ellipsis">{[{ user.first_name + " " + user.last_name }]}</td>
-                        <td class="col-md-4 col-xs-12">
-                          <div class="col-md-9 col-xs-12">
-                            <form class="form-horizontal" novalidate>
-                              <fieldset>
-                                <div class="form-group">
-                                  <select class="form-control" data-ng-model="user.percent"></select>
-                                </div>
-                              </fieldset>
-                            </form>
-                          </div>
-                          <div class="col-md-3 col-xs-12">
-                            <a href="" class="btn" data-ng-click="assignRoleToUser(user)">Update</a>
-                          </div>
-                        </td>
-                        <td class="col-md-2 col-xs-12">
-                          <a href="" class="btn btn-default" data-ng-click="userRemoved(user)">Remove</a>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <h3 data-ng-if="data.task.type == 'regular'">Assigned Users</h3>
+              <div class="form-group" data-ng-if="data.task.type == 'regular'">
+                <label for="users" class="col-md-1 control-label">Add a user</label>
+                <div class="col-md-4">
+                  <select class="form-control" id="users" name="users" data-ng-model="user">
+                    <option value="" disabled selected>Select a user</option>
+                    <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{user.name}]}</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <select class="form-control" data-ng-model="user_percent" id="workcharge">
+                    <option value="" disabled selected>Select user's work charge</option>
+                    <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
+                  </select>
+                </div>
+                <div class="col-md-1">
+                  <a href="" class="btn btn-default" data-ng-click="addUser(user, user_percent)">Add</a>
                 </div>
               </div>
-
+              <div class="form-group" data-ng-if="data.task.type == 'regular'" data-ng-repeat="user in data.task.users_assigned">
+                <div class="col-md-4 col-md-offset-1">
+                  <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
+                </div>
+                <div class="col-md-4">
+                  <select class="form-control" data-ng-model="user.percent" convert-to-number>
+                    <option value="" disabled selected>Select user's work charge</option>
+                    <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
+                  </select>
+                </div>
+                <div class="col-md-1 col-xs-6">
+                  <a href="" class="btn btn-default" data-ng-click="updateUser(user)">Update</a>
+                </div>
+                <div class="col-md-1 col-xs-6">
+                  <a href="" class="btn btn-default" data-ng-click="removeUser(user)">Remove</a>
+                </div>
+              </div>
 
               <!-- CONTAINER CREATION -->
-              <div class="form-group" data-ng-if="data.task.task_type == 'container'">
-                <label for="dependencies" class="col-md-1 control-label">Dependencies</label>
-                <div class="col-md-11">
-                  <tags-input ng-model="tasks"
-                              display-property="name"
-                              placeholder="Add task in the container"
-                              replace-spaces-with-dashes="false"
-                              add-from-autocomplete-only="true"
-                              on-tag-added="taskAdded($tag)"
-                              on-tag-removed="tasksRemoved($tag)">
-                    <auto-complete source="tasksList"></auto-complete>
-                  </tags-input>
-                </div>
-              </div>
+              <!-- TODO add tasks inside the container -->
 
               <!-- MILESTONE CREATION-->
-              <div class="form-group" data-ng-if="data.task.task_type == 'milestone'">
+              <div class="form-group" data-ng-if="data.task.type == 'milestone'">
                 <label for="milestone_date" class="col-md-1 control-label">Date</label>
                 <div class="col-md-11">
                   <input type="date" class="form-control" data-ng-model="data.task.due_date" id="milestone_date">
                 </div>
               </div>
 
+              <!-- NOT CONTAINER CREATION -->
+              <h3 data-ng-if="data.task.type != 'container'">Dependencies</h3>
+              <div class="form-group" data-ng-if="data.task.type != 'container'">
+                <label for="tasks" class="col-md-1 control-label">Add a dependency</label>
+                <div class="col-md-4">
+                  <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
+                    <option value="" disabled selected>Select a task</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
+                    <option value="" disabled selected>Select a type of dependency</option>
+                  </select>
+                </div>
+                <div class="col-md-1">
+                  <a href="" class="btn btn-default" data-ng-click="addDependency(new_dependency, dependency_type)">Add</a>
+                </div>
+              </div>
+              <div class="form-group" data-ng-if="data.task.type != 'container'" data-ng-repeat="dependency in data.task.dependencies">
+                <div class="col-md-4 col-md-offset-1">
+                  <h4>{[{ dependency.title }]}</h4>
+                </div>
+                <div class="col-md-4">
+                  <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList">
+                    <option value="" disabled selected>Select a type of dependencies</option>
+                  </select>
+                </div>
+                <div class="col-md-1 col-xs-6">
+                  <a href="" class="btn btn-default" data-ng-click="updateDependency(dependency)">Update</a>
+                </div>
+                <div class="col-md-1 col-xs-6">
+                  <a href="" class="btn btn-default" data-ng-click="removeDependency(dependency)">Remove</a>
+                </div>
+              </div>
+
+              <!-- VALIDATE BUTTON -->
               <div class="form-group">
-                <div class="col-md-2 col-md-offset-10">
-                  <button type="submit" class="btn btn-default" data-ng-click="createTask(data.task)">Create</button>
+                <div class="col-md-1 col-md-offset-10 col-xs-6">
+                  <button type="submit" class="btn btn-default" data-ng-click="createTask(data.task)">CREATE</button>
                 </div>
               </div>
             </fieldset>
@@ -255,12 +243,22 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <input type="text" class="form-control" data-ng-model="data.toUpdate.title" id="title" placeholder="Title">
                   </div>
                 </div>
+
                 <div class="form-group">
                   <label for="description" class="col-md-1 control-label">Description</label>
                   <div class="col-md-11">
                     <textarea class="form-control" rows="3" data-ng-model="data.toUpdate.description" id="description" placeholder="Description"></textarea>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label for="color" class="col-md-1 control-label">Color</label>
+                  <div class="col-md-11">
+                    <input type="color" class="form-control" data-ng-model="data.toUpdate.color" id="color">
+                  </div>
+                </div>
+
+                <!-- OBJECT TYPE SELECTION -->
                 <div class="form-group">
                   <label class="col-md-1 control-label">Object type</label>
                   <div class="col-md-11">
@@ -283,25 +281,28 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <input type="date" class="form-control" data-ng-model="data.toUpdate.started_at" id="start_date">
                   </div>
                 </div>
+
                 <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'">
                   <label for="due_date" class="col-md-1 control-label">Due Date</label>
                   <div class="col-md-11">
                     <input type="date" class="form-control" data-ng-model="data.toUpdate.due_date" id="due_date">
                   </div>
                 </div>
+
                 <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'">
                   <label for="progress" class="col-md-1 control-label">Progress</label>
                   <div class="col-md-11">
-                    <select id="progress" class="form-control" data-ng-model="data.toUpdate.progress">
-                      <option value="-1">None</option>
+                    <select id="progress" class="form-control" data-ng-model="data.toUpdate.advance" convert-to-number>
+                      <option value="">None</option>
                       <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
                     </select>
                   </div>
                 </div>
+
                 <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'">
                   <label for="tags" class="col-md-1 control-label">Tag(s)</label>
                   <div class="col-md-11">
-                    <tags-input ng-model="tags"
+                    <tags-input ng-model="data.task.tags"
                                 display-property="name"
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
@@ -311,33 +312,26 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </div>
                   <span class="help-block">Use ',' to separate tags</span>
                 </div>
-                <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'">
-                  <label for="color" class="col-md-1 control-label">Color</label>
-                  <div class="col-md-11">
-                    <input type="color" class="form-control" data-ng-model="data.task.color" id="color">
-                  </div>
-                </div>
 
-                <h3>Assigned Users</h3>
+                <h3 data-ng-if="data.toUpdate.type == 'regular'">Assigned Users</h3>
                 <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'">
                   <label for="users" class="col-md-1 control-label">Add a user</label>
                   <div class="col-md-4">
-                    <select class="form-control" name="users">
+                    <select class="form-control" name="users" data-ng-model="new_user">
                       <option value="" disabled selected>Select a user</option>
-                      <option data-ng-repeat="user in usersList">{[{user.name}]}</option>
+                      <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{user.name}]}</option>
                     </select>
                   </div>
                   <div class="col-md-4">
-                    <select class="form-control" data-ng-model="user.percent">
+                    <select class="form-control" data-ng-model="user_percent">
                       <option value="" disabled selected>Select user's work charge</option>
                       <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
                     </select>
                   </div>
                   <div class="col-md-1">
-                    <a href="" class="btn btn-default" data-ng-click="userAdded(user)">Add</a>
+                    <a href="" class="btn btn-default" data-ng-click="addUser(new_user, user_percent)">Add</a>
                   </div>
                 </div>
-
                 <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'" data-ng-repeat="user in data.task.users_assigned">
                   <div class="col-md-4 col-md-offset-1">
                     <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
@@ -348,77 +342,68 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
                     </select>
                   </div>
-                  <div class="col-md-1">
+                  <div class="col-md-1 col-xs-6">
                     <a href="" class="btn btn-default" data-ng-click="updateUser(user)">Update</a>
                   </div>
-                  <div class="col-md-1">
-                    <a href="" class="btn btn-default" data-ng-click="removeUserRemove(user)">Remove</a>
+                  <div class="col-md-1 col-xs-6">
+                    <a href="" class="btn btn-default" data-ng-click="removeUser(user)">Remove</a>
                   </div>
                 </div>
 
-                <h3>Dependencies</h3>
-                <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'">
+
+                <!-- CONTAINER EDITION -->
+                <!-- TODO add tasks inside the container -->
+
+                <!-- MILESTONE EDITION-->
+                <div class="form-group" data-ng-if="data.toUpdate.type == 'milestone'">
+                  <label for="milestone_date" class="col-md-1 control-label">Date</label>
+                  <div class="col-md-11">
+                    <input type="date" class="form-control" data-ng-model="data.toUpdate.due_date" id="milestone_date">
+                  </div>
+                </div>
+
+                <!-- NOT CONTAINER EDITION -->
+                <h3 data-ng-if="data.toUpdate.type != 'container'">Dependencies</h3>
+                <div class="form-group" data-ng-if="data.toUpdate.type != 'container'">
                   <label for="tasks" class="col-md-1 control-label">Add a dependency</label>
                   <div class="col-md-4">
-                    <select class="form-control" name="tasks" data-ng-model="new_dependency.id" data-ng-options="task.id as task.name for task in tasksList">
+                    <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
                       <option value="" disabled selected>Select a task</option>
                     </select>
                   </div>
                   <div class="col-md-4">
-                    <select class="form-control" data-ng-model="new_dependency.type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
+                    <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
                       <option value="" disabled selected>Select a type of dependency</option>
                     </select>
                   </div>
                   <div class="col-md-1">
-                    <a href="" class="btn btn-default" data-ng-click="addDependency(new_dependency)">Add</a>
+                    <a href="" class="btn btn-default" data-ng-click="addDependency(new_dependency, dependency_type)">Add</a>
                   </div>
                 </div>
-                <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'" data-ng-repeat="dependency in data.task.dependencies">
+                <div class="form-group" data-ng-if="data.toUpdate.type != 'container'" data-ng-repeat="dependency in data.task.dependencies">
                   <div class="col-md-4 col-md-offset-1">
-                    <h4>{[{ dependency.name }]}</h4>
+                    <h4>{[{ dependency.title }]}</h4>
                   </div>
                   <div class="col-md-4">
                     <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList">
                       <option value="" disabled selected>Select a type of dependencies</option>
                     </select>
                   </div>
-                  <div class="col-md-1">
+                  <div class="col-md-1 col-xs-6">
                     <a href="" class="btn btn-default" data-ng-click="updateDependency(dependency)">Update</a>
                   </div>
-                  <div class="col-md-1">
+                  <div class="col-md-1 col-xs-6">
                     <a href="" class="btn btn-default" data-ng-click="removeDependency(dependency)">Remove</a>
-                  </div>
-                </div>
-
-                <!-- CONTAINER EDITION -->
-                <div class="form-group" data-ng-if="data.toUpdate.type == 'container'">
-                  <label for="dependencies" class="col-md-1 control-label">Dependencies</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="tasks"
-                                display-property="name"
-                                placeholder="Add task in the container"
-                                replace-spaces-with-dashes="false"
-                                add-from-autocomplete-only="true"
-                                on-tag-added="taskAdded($tag)"
-                                on-tag-removed="tasksRemoved($tag)">
-                      <auto-complete source="tasksList"></auto-complete>
-                    </tags-input>
-                  </div>
-                </div>
-
-                <!-- MILESTONE EDITION-->
-                <div class="form-group" data-ng-if="data.toUpdate.type == 'milestone'">
-                  <label for="milestone_date" class="col-md-1 control-label">Date</label>
-                  <div class="col-md-11">
-                    <input type="date" class="form-control" data-ng-model="data.task.due_date.date" id="milestone_date">
                   </div>
                 </div>
 
                 <!-- VALIDATE BUTTON -->
                 <div class="form-group">
-                  <div class="col-md-3 col-md-offset-9">
-                    <button type="submit" class="btn btn-default" data-ng-click="editTask(data.task)">EDIT</button>
+                  <div class="col-md-1 col-md-offset-9 col-xs-6">
                     <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">CANCEL</button>
+                  </div>
+                  <div class="col-md-1 col-xs-6">
+                    <button type="submit" class="btn btn-default" data-ng-click="editTask(data.task)">EDIT</button>
                   </div>
                 </div>
               </fieldset>
@@ -458,34 +443,46 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="!data.onLoad">
           <div data-ng-if="data.message == '_valid'">
             <fieldset>
-              <div class="col-md-12">
-                <h1>{[{data.task.title}]}</h1>
+              <div id="task-header">
+                <div class="col-md-1">
+                  <div class="color-marker" style="background-color: {[{data.task.color}]}"></div>
+                </div>
+                <div class="col-md-11">
+                  <h1>{[{data.task.title}]}</h1>
+                  <p>{[{data.task.description}]}</p>
+                </div>
               </div>
-              <div class="{[{data.task.started_at ? 'col-md-4' : 'col-md-4'}]}">
+
+
+              <div class="col-md-12">
+                <h4>Progress {[{data.task.advance + ' %'}]}</h4>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-info" style="width: {[{data.task.advance}]}%"></div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <h4>Starting date</h4>
+                <p>{[{ data.task.started_at ? formatObjectDate(data.task.started_at.date) : "N/A" }]}</p>
+              </div>
+              <div class="col-md-4">
                 <h4>Due date</h4>
                 <p>{[{ formatObjectDate(data.task.due_date.date) }]}</p>
               </div>
-              <div ng-if="data.task.started_at" class="{[{data.task.started_at ? 'col-md-4' : 'col-md-4'}]}">
-                <h4>Starting date</h4>
-                <p>{[{ formatObjectDate(data.task.started_at.date) }]}</p>
-              </div>
-              <div ng-if="data.task.finished_at" class="{[{data.task.started_at ? 'col-md-4' : 'col-md-4'}]}">
+              <div class="col-md-4" data-ng-if="data.task.finished_at">
                 <h4>Finishing date</h4>
                 <p>{[{ formatObjectDate(data.task.finished_at.date) }]}</p>
               </div>
-              <div class="col-md-12">
-                <h4>Description</h4>
-                <p>{[{ data.task.description}]}</p>
-              </div>
+
               <div class="col-md-12">
                 <h4>Tag(s)</h4>
-                <div class="panel panel-default col-md-2" ng-repeat="tag in data.task.tags">
+                <div class="panel panel-default col-md-3" ng-repeat="tag in data.task.tags">
                   <div class="panel-body">{[{tag.name}]}</div>
                 </div>
                 <div class="col-md-12" data-ng-if="!((data.task.tags).length)">
                   <div class="">No tag</div>
                 </div>
               </div>
+
               <div class="col-md-12">
                 <h4>Assigned user(s)</h4>
                 <div class="panel panel-default col-md-3" ng-repeat="user in data.task.users_assigned">
@@ -495,25 +492,32 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div class="">No Assigned user </div>
                 </div>
               </div>
+
               <div class="col-md-12">
                 <h4>Dependencies</h4>
-                <div class="panel panel-default col-md-3" ng-repeat="dependency in data.task.dependencies">
-                  <div class="panel-body">{[{dependency.title + " ()" + dependencyToString(dependency.name) }]}</div>
+                <div class="panel panel-default col-md-6" ng-repeat="dependency in data.task.dependencies">
+                  <div class="panel-body">{[{dependency.title + " (" + dependencyToString(dependency.name) + ")" }]}</div>
                 </div>
                 <div class="col-md-12" data-ng-if="!((data.task.dependencies).length)">
                   <div class="">No dependency</div>
                 </div>
               </div>
-              <div class="col-md-4 col-md-offset-8" data-ng-if="!data.task.finished_at">
-                <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
-                <button type="submit" class="btn btn-default" data-ng-if="!data.task.started_at" data-ng-click="startTask(data.task)">Start</button>
-                <button type="submit" class="btn btn-default" data-ng-if="data.task.started_at" data-ng-click="finishTask(data.task)">Finished</button>
+
+              <div class="col-md-1 col-md-offset-8 col-xs-6" data-ng-if="!data.task.finished_at">
+                <button type="submit" class="btn btn-default" data-ng-if="data.task.started_at" data-ng-click="finishTask()">Finished</button>
               </div>
-              <div class="col-md-4 col-md-offset-8" data-ng-if="data.task.finished_at">
-                <button type="submit" class="btn btn-default" data-ng-click="UnfinishedTask(data.task)">Unfinished</button>
-                <!-- <button type="submit" class="btn btn-default" data-ng-click="archiveTask(data.task)">Archive</button> -->
+              <div class="col-md-1 col-md-offset-9 col-xs-6" data-ng-if="data.task.finished_at">
+                <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
+              </div>
+              <div class="col-md-1 col-xs-6" data-ng-if="!data.task.finished_at">
+                <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
+              </div>
+
+              <div class="col-md-1 col-xs-6">
+                <button type="submit" class="btn btn-default" data-ng-click="deleteTask(data.task)">Delete</button>
               </div>
             </fieldset>
+
           </div>
           <div data-ng-if="data.message == '_empty'">
             <div class="data-wrapper error">

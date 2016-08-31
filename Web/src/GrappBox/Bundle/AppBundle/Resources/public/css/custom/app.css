@@ -378,7 +378,7 @@ section:last-child { margin: 30px 0 60px 0; }
 #calendar .event-item-edit a,
 #calendar .event-item-delete a { margin: 0; }
 #calendar span[data-cal-date] { opacity: 1; }
-#calendar .cal-day-weekend span[data-cal-date] { color: #c0392b; } 
+#calendar .cal-day-weekend span[data-cal-date] { color: #c0392b; }
 #calendar .cal-month-day .cal-events-num { margin: 15px 0 0 10px; height: 25px; width: 25px; border-radius: 50%; padding: 6px; }
 #calendar .badge-important { background: #c0392b; }
 #calendar #cal-week-box { display: none; }
@@ -443,3 +443,17 @@ section:last-child { margin: 30px 0 60px 0; }
 #cloud-content .each-object-data { border-bottom: 1px solid #e0e0e0; padding: 5px 10px; margin: 0; }
 #cloud-content .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
 #cloud-content .each-object-data .object-type { margin: 0 -10px 0 10px; }
+
+
+/* =========================================================== */
+/* ============== GENERAL FOR ALL TAGS-INPUT ================= */
+/* =========================================================== */
+tags-input .tags { border: none; border-radius: 0; box-shadow: none; border-bottom: 1px solid #d2d2d2}
+tags-input .tags .tag-item {background: #bdbdbd; border: 1px solid #bdbdbd; border-radius: 0; }
+
+
+/* =========================================================== */
+/* ==================== SECTION: TASK ==================== */
+/* =========================================================== */
+#taskheader { margin-bottom: 5%;padding-bottom: 5%; display: inline}
+.color-marker { background: rgba(0, 0, 0, 0.25); border-radius: 100%; text-align: center; line-height: 56px; font-size: 20px; color: white; width: 56px; height: 56px; margin-left: auto; margin-right: auto; margin-top: 10px; }

@@ -53,7 +53,6 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                              {key: "ff", name: "finish to finish"},
                              {key: "ss", name: "start to start"}];
 
-  $scope.defaultColor = "";
 
   // Get the task informations
   var getTask = function() {
@@ -89,7 +88,10 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       $scope.data.task_new = true;
       $scope.data.message = '_valid';
       $scope.data.task = [];
-      $scope.data.task.task_type = "regular";
+      $scope.data.task.type = "regular";
+      $scope.data.task.color = "#44BBFF";
+      $scope.data.task.users_assigned = [];
+      $scope.data.task.dependencies = [];
       $scope.data.onLoad = false;
     }
   };
@@ -152,12 +154,13 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   $scope.data.editMode["task"] = false;
 
   var setEditableContent = function(){
-    $scope.data.toUpdate.title = ($scope.data.task.title && $scope.data.task.title != "" ? $scope.data.task.title : null);
-    $scope.data.toUpdate.description = ($scope.data.task.description && $scope.data.task.description != "" ? $scope.data.task.description : null);
+    $scope.data.toUpdate.title = $scope.data.task.title;
+    $scope.data.toUpdate.description = $scope.data.task.description;
+    $scope.data.toUpdate.color = $scope.data.task.color;
     $scope.data.toUpdate.type = ($scope.data.task.type && $scope.data.task.type != "" ? $scope.data.task.type : "regular");
     $scope.data.toUpdate.started_at = ($scope.data.task.started_at ? new Date($scope.data.task.started_at.date) : null);
     $scope.data.toUpdate.due_date = ($scope.data.task.due_date ? new Date($scope.data.task.due_date.date) : null);
-    $scope.data.toUpdate.progress = ($scope.data.task.progress && $scope.data.task.progress != "" ? $scope.data.task.progress : "-1");
+    $scope.data.toUpdate.advance = $scope.data.task.advance;
   };
 
   $scope.task_switchEditMode = function(elem) {
@@ -219,77 +222,191 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
 
     angular.forEach($scope.tagToAdd, function(tag) {
       if (!tag.id) {
-        var data = {"data": {"token": context.rootScope.user.token, "projectId": context.scope.projectID, "name": tag.name}};
-        context.http.post(context.rootScope.api.url + "/tasks/tagcreation", data)
+        var data = {"data": {"token": $rootScope.user.token, "projectId": $scope.projectID, "name": tag.name}};
+        $http.post($rootScope.api.url + "/tasks/tagcreation", data)
           .then(function successCallback(response) {
               tag.id = (response.data.data.id);
           },
-          function errorCallback(resposne) {
+          function errorCallback(response) {
               Notification.warning({ message: "Unable to create tag: " + tag.name + ". Please try again.", delay: 5000 });
           });
       }
 
-      var data = {"data": {"token": context.rootScope.user.token, "bugId": context.scope.taskID, "tagId": tag.id}};
-      context.http.put(context.rootScope.api.url + "/tasks/assigntag", data)
+      var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "tagId": tag.id}};
+      $http.put($rootScope.api.url + "/tasks/assigntagtotask", data)
         .then(function successCallback(response) {
 
         },
         function errorCallback(resposne) {
             Notification.warning({ message: "Unable to assign tag: " + tag.name + ". Please try again.", delay: 5000 });
         });
-    }, context);
+    });
 
     angular.forEach($scope.tagToRemove, function(tag) {
-      context.http.delete(context.rootScope.api.url + "/tasks/removetag/" + context.rootScope.user.token + "/" + context.scope.taskID + "/" + tag.id)
+      $http.delete($rootScope.api.url + "/tasks/removetagtotask/" + $rootScope.user.token + "/" + $scope.taskID + "/" + tag.id)
         .then(function successCallback(response) {
 
         },
-        function errorCallback(resposne) {
+        function errorCallback(response) {
             Notification.warning({ message: "Unable to remove tag: " + tag.name + ". Please try again.", delay: 5000 });
         });
-    }, context);
+    });
   };
 
   //-----------------USERS ASSIGNATION--------------------//
-  var addUser = function(assign_user) {
-    var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "userId": assign_user.id, "percent": assign_user.percent}};
+  $scope.addUser = function(assign_user, workcharge) {
+    if (assign_user == "")
+      return;
+    else if (workcharge == "") {
+      Notification.warning({ message: "You must select a workcharge before adding the user.", delay: 5000 });
+    }
+
+    var user = JSON.parse(assign_user);
+
+    if ($scope.data.task_new) {
+      var index = -1;
+      for (var i = 0; i < $scope.data.task.users_assigned.length && index < 0; i++) {
+        if ($scope.data.task.users_assigned[i].id == user.user_id)
+          index = i;
+      }
+      if (index >= 0) {
+        Notification.warning({ message: "User already assigned.", delay: 5000 });
+        return;
+      }
+      $scope.data.task.users_assigned.push({id: user.user_id, firstname: user.first_name, lastname: user.last_name, percent: workcharge});
+      return;
+    }
+
+    var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "userId": user.user_id, "percent": workcharge}};
 
     $http.put($rootScope.api.url + "/tasks/assignusertotask", data)
       .then(function successCallback(response) {
+          getTask();
           Notification.success({ message: "User added", delay: 5000 });
       },
-      function errorCallback(resposne) {
+      function errorCallback(response) {
           Notification.warning({ message: "Unable to add user. Please try again.", delay: 5000 });
       });
   };
 
-  var updateUser = function(assign_user) {
+  $scope.updateUser = function(assign_user) {
     return ;
   };
 
-  var removeUser = function(assign_user) {
-    $http.delete($rootScope.api.url + "/tasks/removeusertotask/"+$rootScope.user.token+'/'+$scope.taskID+'/'+assign_user.id, data)
+  $scope.removeUser = function(assign_user) {
+    if ($scope.data.task_new) {
+      var index = -1;
+      for (var i = 0; i < $scope.data.task.users_assigned.length && index < 0; i++) {
+        if ($scope.data.task.users_assigned[i].id == assign_user.id)
+          index = i;
+      }
+
+      if (index >= 0) {
+        $scope.data.task.users_assigned.splice(index, 1);
+        //getTask();
+      }
+      return;
+    }
+
+    $http.delete($rootScope.api.url + "/tasks/removeusertotask/"+$rootScope.user.token+'/'+$scope.taskID+'/'+assign_user.id)
       .then(function successCallback(response) {
           Notification.success({ message: "User removed", delay: 5000 });
+          getTask();
       },
       function errorCallback(resposne) {
           Notification.warning({ message: "Unable to remove user. Please try again.", delay: 5000 });
       });
   };
 
+  var assignUsers = function(task) {
+    angular.forEach(task.users_assigned, function(value, key) {
+      var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "userId": value.id, "percent": value.percent}};
+
+      $http.put($rootScope.api.url + "/tasks/assignusertotask", data)
+        .then(function successCallback(response) {
+
+        },
+        function errorCallback(resposne) {
+            Notification.warning({ message: "Unable to add user. Please try again.", delay: 5000 });
+        });
+    });
+  };
+
   //-----------------DEPENDENCIES ASSIGNATION--------------------//
-  var addDependency = function(dependency) {
-    return ;
+  $scope.addDependency = function(dep, type) {
+    if (dep == "")
+      return;
+    else if (type == "") {
+      Notification.warning({ message: "You must select a type of dependency before adding the dependency.", delay: 5000 });
+    }
+
+    if ($scope.data.task_new) {
+      var index = -1;
+      for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
+        if ($scope.data.task.dependencies[i].id == dep.id)
+          index = i;
+      }
+      if (index >= 0) {
+        Notification.warning({ message: "Dependency already existing.", delay: 5000 });
+        return;
+      }
+      $scope.data.task.dependencies.push({id: dep.id, name: type, title: dep.title});
+      return;
+    }
+
+    var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "dependencies": [{"id": dep.id, "name": type}]}};
+
+    $http.put($rootScope.api.url + "/tasks/taskupdate", data)
+      .then(function successCallback(response) {
+          getTask();
+          Notification.success({ message: "Dependency added", delay: 5000 });
+      },
+      function errorCallback(response) {
+          Notification.warning({ message: "Unable to add dependency. Please try again.", delay: 5000 });
+      });
   };
 
-  var updateDependency = function(dependency) {
-    return ;
+  $scope.updateDependency = function(dep) {
+    // var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "dependencies": [{"id": dep.id, "name": dep.name}]}};
+    //
+    // $http.put($rootScope.api.url + "/tasks/taskupdate", data)
+    //   .then(function successCallback(response) {
+    //       getTask();
+    //       Notification.success({ message: "Dependency updated", delay: 5000 });
+    //   },
+    //   function errorCallback(response) {
+    //       Notification.warning({ message: "Unable to update dependency. Please try again.", delay: 5000 });
+    //   });
+    return;
   };
 
-  var removeDependency = function(dependency) {
-    return ;
-  };
+  $scope.removeDependency = function(dependency) {
+    if ($scope.data.task_new) {
+      var index = -1;
+      for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
+        if ($scope.data.task.dependencies[i].id == dependency.id)
+          index = i;
+      }
 
+      if (index >= 0) {
+        $scope.data.task.dependencies.splice(index, 1);
+        //getTask();
+      }
+      return;
+    }
+
+    var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "dependenciesRemove": [dependency.id]}};
+
+    $http.put($rootScope.api.url + "/tasks/taskupdate", data)
+      .then(function successCallback(response) {
+          getTask();
+          Notification.success({ message: "Dependency removed", delay: 5000 });
+      },
+      function errorCallback(response) {
+          Notification.warning({ message: "Unable to remove dependency. Please try again.", delay: 5000 });
+      });
+
+  };
 
   // ------------------------------------------------------
   //                    TASK
@@ -302,31 +419,31 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 "title": task.title,
                 "description": task.description,
                 "color": task.color,
-                "due_date": task.due_date,
+                "due_date": new Date(task.due_date),
                 "is_milestone": false,
                 "is_container": false
                 };
     if (task.type == "container") {
       elem['is_container'] = true;
-      elem['tasksAdd'] = [];
+      //elem['tasksAdd'] = [];
     }
     if (task.type == "milestone") {
       elem['is_milestone'] = true;
-      elem['dependencies'] = [];
+      elem['dependencies'] = task.dependencies;
     }
     if (task.type == "regular") {
-      elem['dependencies'] = [];
+      elem['dependencies'] = task.dependencies;
     }
 
     var data = {"data": elem};
 
-    $http.post($rootScope.api.url + "/tasks/posttask", data)
+    $http.post($rootScope.api.url + "/tasks/taskcreation", data)
       .then(function successCallback(response) {
-        $scope.taskID = $scope.task.id;
         $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+        $scope.taskID = $scope.data.task.id;
         $scope.data.message = '_valid';
         memorizeTags();
-        // TODO : update user assignment
+        assignUsers(task);
         Notification.success({ message: "Task posted", delay: 5000 });
         $location.path("/tasks/" + $scope.projectID + "/" + $scope.taskID);
       },
@@ -336,37 +453,66 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   };
 
   $scope.editTask = function(task) {
+    Notification.info({ message: "Saving task...", delay: 5000 });
+
     var elem = {"token": $rootScope.user.token,
-                "projectId": $scope.projectID,
-                "title": task.title,
-                "description": task.description,
-                //"color": task.color,
-                "due_date": task.due_date,
-                "is_milestone": task.is_milestone,
-                "is_container": task.is_container//,
-                //"tasksAdd": task.tasksAdd,
-                //"tasksRemove": task.tasksRemove,
-                //"dependencies": task.dependencies,
-                //"started_at": task.started_at,
-                //"finished_at": task.finished_at,
-                //"advance": task.advance
+                "taskId": $scope.taskID,
+                "title": $scope.data.toUpdate.title,
+                "description": $scope.data.toUpdate.description,
+                "color": $scope.data.toUpdate.color,
+                "due_date": new Date($scope.data.toUpdate.due_date),
+                "is_milestone": false,
+                "is_container": false,
+                "advance": $scope.data.toUpdate.advance
                 };
+    if ($scope.data.toUpdate.started_at)
+      elem['started_at'] = new Date($scope.data.toUpdate.started_at);
+
+    if (task.type == "container") {
+      elem['is_container'] = true;
+      //elem['tasksAdd'] = [];
+    }
+    if (task.type == "milestone") {
+      elem['is_milestone'] = true;
+      //elem['dependencies'] = [];
+    }
+    if (task.type == "regular") {
+      //elem['dependencies'] = [];
+    }
+    if ($scope.data.toUpdate.advance == 100)
+      elem['finished_at'] = new Date('now');
+    else if ($scope.data.toUpdate.advance < 100 && $scope.data.task.finished_at)
+      elem['finished_at'] = null;
+
     var data = {"data": elem};
 
-    Notification.info({ message: "Saving task...", delay: 5000 });
-    $http.put($rootScope.api.url + "/tasks/edittask", data)
+    $http.put($rootScope.api.url + "/tasks/taskupdate", data)
       .then(function successCallback(response) {
+        memorizeTags();
+        $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
         Notification.success({ message: "Task saved", delay: 5000 });
-        //memorizeTags();
-        //memorizeUsers();
       },
       function errorCallback(response) {
         Notification.warning({ message: "Unable to save task. Please try again.", delay: 5000 });
       });
-      $scope.editMode["task"] = false;
+      $scope.data.editMode["task"] = false;
   };
 
-  $scope.archiveTask = function() {
+  $scope.finishTask = function() {
+    var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "advance": 100, "finished_at": new Date('now')}};
+
+    $http.put($rootScope.api.url + "/tasks/taskupdate", data)
+      .then(function successCallback(response) {
+        memorizeTags();
+        $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+        Notification.success({ message: "Task saved", delay: 5000 });
+      },
+      function errorCallback(response) {
+        Notification.warning({ message: "Unable to save task. Please try again.", delay: 5000 });
+      });
+  };
+
+  $scope.deleteTask = function() {
     Notification.info({ message: "Closing task ...", delay: 5000 });
     $http.delete($rootScope.api.url + "/tasks/closetask/" + $rootScope.user.token + "/" + $scope.ticketID)
       .then(function successCallback(response) {
