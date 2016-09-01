@@ -13,7 +13,7 @@ namespace GrappBox.ApiCom
     class ApiCommunication
     {
         #region Private members
-        private const string baseAdress = "http://beta.api.grappbox.com/app_dev.php/";
+        private const string baseAdress = "http://api.grappbox.com/app_dev.php/";
         private const string version = "V0.2/";
         private const string baseUrl = baseAdress + version;
         #endregion
