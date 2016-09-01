@@ -3,10 +3,10 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- grappbox.data: task creation information -->
 <div>
   <p><a href="tasks/{[{ projectID }]}" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a></p>
 </div>
+<!-- grappbox.data: task creation information -->
 <div data-ng-if="data.task_new">
   <div class="panel panel-default">
     <div class="panel-heading">Create your task</div>
@@ -449,28 +449,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <div class="col-md-11">
                   <h1>{[{data.task.title}]}</h1>
+                  <h4 data-ng-if="!data.task.is_milestone && !data.task.is_container">from {[{ data.task.started_at ? formatObjectDate(data.task.started_at.date) : "N/A" }]} to {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
+                  <h4 data-ng-if="data.task.is_milestone">at {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
                   <p>{[{data.task.description}]}</p>
                 </div>
               </div>
 
-
               <div class="col-md-12">
-                <h4>Progress {[{data.task.advance + ' %'}]}</h4>
+                <h4>Progress {[{data.task.advance + ' %'}]}<span data-ng-if="data.task.finished_at"> (finished at {[{ formatObjectDate(data.task.finished_at.date) }]})</span></h4>
                 <div class="progress">
                   <div class="progress-bar progress-bar-info" style="width: {[{data.task.advance}]}%"></div>
                 </div>
-              </div>
-              <div class="col-md-4">
-                <h4>Starting date</h4>
-                <p>{[{ data.task.started_at ? formatObjectDate(data.task.started_at.date) : "N/A" }]}</p>
-              </div>
-              <div class="col-md-4">
-                <h4>Due date</h4>
-                <p>{[{ formatObjectDate(data.task.due_date.date) }]}</p>
-              </div>
-              <div class="col-md-4" data-ng-if="data.task.finished_at">
-                <h4>Finishing date</h4>
-                <p>{[{ formatObjectDate(data.task.finished_at.date) }]}</p>
               </div>
 
               <div class="col-md-12">

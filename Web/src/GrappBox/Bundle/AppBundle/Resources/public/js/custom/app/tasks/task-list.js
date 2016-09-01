@@ -45,7 +45,6 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
 
     });
 
-
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {
     return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
@@ -80,6 +79,7 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
     $location.path("/tasks/" + project + "/" + task);
   };
 
+  /*-------------------------TAB FILTERS AND SWITCH ----------------------*/
   $scope.displayTasks = function(type) {
     switch (type) {
       case 'todo':
@@ -155,6 +155,10 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
   $scope.filterUser = function (item) {
       return $filter('filter')(item.users_assigned, {id: $rootScope.user.id})[0];
   };
+
+  /*============================================================================*/
+  /*                                GANTT                                       */
+  /*============================================================================*/
 
 }]);
 

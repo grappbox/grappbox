@@ -61,6 +61,7 @@
 		'@AppBundle/Resources/public/js/custom/app/bugtracker/bugtracker.js'
 		'@AppBundle/Resources/public/js/custom/app/tasks/task.js'
 		'@AppBundle/Resources/public/js/custom/app/tasks/task-list.js'
+		'@AppBundle/Resources/public/js/custom/app/gantt/gantt.js'
 		'@AppBundle/Resources/public/js/custom/app/calendar/calendar.js'
 		'@AppBundle/Resources/public/js/custom/app/cloud/cloud-list.js'
 		'@AppBundle/Resources/public/js/custom/app/cloud/cloud.js'
@@ -152,10 +153,12 @@
 										<i class="material-icons">{[{ app.iconList['/bugtracker'] ? app.iconList['/bugtracker'] : 'clear' }]}</i>Bugtracker</a>
 								</li>
 								<li data-ng-if="project.set">
-									<a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks and gantt section" class="btn {[{ app.routeList['/tasks'] ? 'active' : '' }]}">
-										<i class="material-icons">{[{ app.iconList['/tasks'] ? app.iconList['/tasks'] : 'clear' }]}</i>
-										Tasks
-									</a>
+									<a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ app.routeList['/tasks'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/tasks'] ? app.iconList['/tasks'] : 'clear' }]}</i>Tasks</a>
+								</li>
+								<li data-ng-if="project.set">
+									<a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ app.routeList['/gantt'] ? 'active' : '' }]}">
+										<i class="material-icons">{[{ app.iconList['/gantt'] ? app.iconList['/gantt'] : 'clear' }]}</i>Gantt</a>
 								</li>
 								<li data-ng-if="project.set">
 									<a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ app.routeList['/whiteboard'] ? 'active' : '' }]}">

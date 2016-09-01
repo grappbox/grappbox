@@ -113,7 +113,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		controller  : "bugtrackerListController",
 		caseInsensitiveMatch : true,
 		homepage: false,
-		resolve: { factory: isProjectAccessible }		
+		resolve: { factory: isProjectAccessible }
 	})
 	.when("/bugtracker/:project_id/:id", {
 		title: "Bugtracker",
@@ -122,6 +122,15 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		caseInsensitiveMatch : true,
 		homepage: false,
 		resolve: { factory: isBugtrackerAccessible }
+	})
+  // Gantt-related pages
+  .when("/gantt/:project_id", {
+		title: "Gantt",
+		templateUrl : "../resources/pages/gantt.html",
+		controller  : "ganttController",
+		caseInsensitiveMatch : true,
+		homepage: false,
+		resolve: { factory: isProjectAccessible }
 	})
   // Task-related pages
 	.when("/tasks/:project_id", {

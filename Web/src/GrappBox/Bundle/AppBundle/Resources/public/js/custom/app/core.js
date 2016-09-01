@@ -86,6 +86,7 @@ app.controller("grappboxController", ["$rootScope", "$scope", "localStorageServi
     "/timeline": false,
     "/whiteboard": false,
     "/tasks": false,
+    "/gantt":false,
     "/logout": false
   };
 
@@ -100,6 +101,7 @@ app.controller("grappboxController", ["$rootScope", "$scope", "localStorageServi
     "/timeline": "forum",
     "/whiteboard": "create",
     "/tasks": "view_list",
+    "/gantt": "sort",
     "/logout": "exit_to_app"
   };
 
@@ -144,7 +146,7 @@ app.directive("sidebarDirective", function() {
     link: function(scope, element, attr) {
       scope.$watch(attr.sidebarDirective, function(value) {
         if (value) {
-          element.addClass("open"); 
+          element.addClass("open");
           return ;
         }
         element.removeClass("open");

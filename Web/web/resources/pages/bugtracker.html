@@ -1,11 +1,12 @@
+
 <!-- This file is subject to the terms and conditions defined in file 'LICENSE.txt',
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- grappbox.data: bug ticket creation information -->
 <div>
   <p><a href="bugtracker/{[{ projectID }]}" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a></p>
 </div>
+<!-- grappbox.data: bug ticket creation information -->
 <div data-ng-if="data.bugtracker_new">
   <div class="panel panel-default">
     <div class="panel-heading">Create your ticket</div>
@@ -88,8 +89,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
               <div class="form-group">
-                <div class="col-md-2 col-md-offset-10">
-                  <button type="submit" class="btn btn-default" data-ng-click="createTicket(data.ticket)">Create</button>
+                <div class="col-md-1 col-md-offset-10 col-xs-6">
+                  <button type="submit" class="btn btn-default" data-ng-click="createTicket(data.ticket)">CREATE</button>
                 </div>
               </div>
             </fieldset>
@@ -152,10 +153,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </tags-input>
                   </div>
                 </div>
+
                 <div class="form-group">
-                  <div class="col-md-4 col-md-offset-8">
-                    <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Cancel</button>
-                    <button type="submit" class="btn btn-default" data-ng-click="editTicket(data.ticket)">Update</button>
+                  <div class="col-md-1 col-md-offset-9 col-xs-6">
+                    <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">CANCEL</button>
+                  </div>
+                  <div class="col-md-1 col-xs-6">
+                    <button type="submit" class="btn btn-default" data-ng-click="editTicket(data.ticket)">EDIT</button>
                   </div>
                 </div>
               </fieldset>
@@ -195,25 +199,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="!data.onLoad">
           <div data-ng-if="data.message == '_valid'">
             <fieldset>
-              <div class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                <h4>Author</h4>
-                <p>{[{data.ticket.creator.fullname}]}</p>
-              </div>
-              <div class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                <h4>Creation date</h4>
-                <p>{[{ formatObjectDate(data.ticket.createdAt.date) }]}</p>
-              </div>
-              <div ng-if="data.ticket.editedAt" class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                <h4>Last edition date</h4>
-                <p>{[{ formatObjectDate(data.ticket.editedAt.date) }]}</p>
-              </div>
-              <div ng-if="data.ticket.deletedAt" class="{[{data.ticket.deletedAt ? 'col-md-3' : 'col-md-4'}]}">
-                <h4>Deletion date</h4>
-                <p>{[{ formatObjectDate(data.ticket.deletedAt.date) }]}</p>
-              </div>
               <div class="col-md-12">
-                <h4>Description</h4>
-                <p>{[{ data.ticket.description}]}</p>
+                <h1>{[{data.ticket.title}]}</h1>
+                <h4>by {[{data.ticket.creator.fullname}]} - posted at {[{ formatObjectDate(data.ticket.createdAt.date) }]}<span data-ng-if="data.ticket.editedAt">, last edit at {[{ formatObjectDate(data.ticket.editedAt.date) }]}</span>
+                  <span data-ng-if="data.ticket.deletedAt">, closed at {[{ formatObjectDate(data.ticket.deletedAt.date) }]}</span>
+                </h4>
+                <p>{[{data.ticket.description}]}</p>
               </div>
               <div class="col-md-12">
                 <h4>Tag(s)</h4>
@@ -227,11 +218,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div class="panel-body">{[{user.name}]}</div>
                 </div>
               </div>
-              <div class="col-md-4 col-md-offset-8" data-ng-if="!data.ticket.deletedAt">
+              <div class="col-md-1 col-md-offset-9" data-ng-if="!data.ticket.deletedAt">
                 <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Edit</button>
+              </div>
+              <div class="col-md-1" data-ng-if="!data.ticket.deletedAt">
                 <button type="submit" class="btn btn-default" data-ng-click="closeTicket(data.ticket)">Close</button>
               </div>
-              <div class="col-md-4 col-md-offset-8" data-ng-if="data.ticket.deletedAt">
+              <div class="col-md-1 col-md-offset-9" data-ng-if="data.ticket.deletedAt">
                 <button type="submit" class="btn btn-default" data-ng-click="reopenTicket(data.ticket)">Reopen</button>
               </div>
             </fieldset>
