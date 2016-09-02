@@ -173,6 +173,7 @@ namespace GrappBox.ViewModel
                 _projectRoleModel.Clear();
                 await getRoles();
                 _role = _projectRoleModel.Last();
+                await getUsersAssigned(_role.Id);
             }
             else
             {

@@ -129,6 +129,11 @@ namespace GrappBox.View
             retypePassword.Password = "";
             UserMail.Text = "";
             CustomerName.Text = "";
+            isNew = false;
+            User.IsEnabled = true;
+            CustomerAccess.IsEnabled = true;
+            Roles.IsEnabled = true;
+            DeleteDate.Visibility = Visibility.Collapsed;
 
             this.navigationHelper.OnNavigatedTo(e);
             if (e.Parameter == null)
@@ -260,6 +265,8 @@ namespace GrappBox.View
                     else
                     {
                         await vm.updateProjectSettings(oldPassword.Password, newPassword.Password);
+                        newPassword.Password = "";
+                        retypePassword.Password = "";
                         newPassword.BorderBrush = new SolidColorBrush();
                         retypePassword.BorderBrush = new SolidColorBrush();
                     }
@@ -289,6 +296,7 @@ namespace GrappBox.View
             LoadingBar.Visibility = Visibility.Visible;
 
             await vm.addProjectUser(UserMail.Text);
+            UserMail.Text = "";
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
@@ -433,7 +441,10 @@ namespace GrappBox.View
                     exist = true;
             }
             if (CustomerName.Text != "" && CustomerName.Text != null && exist == false)
+            {
                 await vm.addCustomerAccess(CustomerName.Text);
+                CustomerName.Text = "";
+            }
             else
             {
                 if (CustomerName.Text == "" && CustomerName.Text == null)

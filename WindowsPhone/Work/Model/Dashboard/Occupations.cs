@@ -111,8 +111,11 @@ namespace GrappBox.Model
             if (res.IsSuccessStatusCode)
             {
                 logoMod = api.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
-                Avatar = BytesToImage.String64ToImage(logoMod.Avatar);
-                await BytesToImage.StoreImage(logoMod.Avatar, logoImgFmt);
+                if (logoMod.Avatar != null)
+                {
+                    Avatar = BytesToImage.String64ToImage(logoMod.Avatar);
+                    await BytesToImage.StoreImage(logoMod.Avatar, logoImgFmt);
+                }
             }
             else
             {
