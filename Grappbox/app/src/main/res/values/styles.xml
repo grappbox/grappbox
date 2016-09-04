@@ -1,0 +1,70 @@
+<resources>
+    <!-- Base application theme -->
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/GrappBlackMedium</item>
+        <item name="colorPrimaryDark">@color/GrappBlackMedium</item>
+        <item name="colorAccent">@color/GrappRed</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Dashboard application theme. -->
+    <style name="DashboardTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappRed</item>
+        <item name="colorPrimaryDark">@color/GrappBlackMedium</item>
+        <item name="colorAccent">@color/GrappRed</item>
+    </style>
+
+    <!-- Action Bar styling -->
+    <style name="BaseTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="BaseTheme.AppBarOverlay.Icon" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="displayOptions">useLogo</item>
+        <item name="logo">@mipmap/ic_launcher</item>
+    </style>
+
+    <style name="BaseTheme.AppBarOverlay.IconAndText" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="displayOptions">useLogo|showTitle</item>
+        <item name="logo">@mipmap/ic_launcher</item>
+    </style>
+
+    <!-- System text input layout styling -->
+    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">?attr/colorAccent</item>
+    </style>
+
+    <style name="BaseTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Toolbar">
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimaryDark</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- Action Button Styling -->
+    <style name="ActionButton">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+    </style>
+
+    <style name="EmphasisTextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="SubHeadTextView" parent="TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+    </style>
+
+    <style name="TitleTextView" parent="TextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+</resources>

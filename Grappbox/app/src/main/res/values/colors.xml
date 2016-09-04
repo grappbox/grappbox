@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Define grappbox color palette -->
+    <color name="GrappRed">#FC575E</color>
+    <color name="GrappBlue">#44BBFF</color>
+    <color name="GrappPurple">#9E58DC</color>
+    <color name="GrappOrange">#FF9F55</color>
+    <color name="GrappGreen">#27AE60</color>
+    <color name="GrappYellow">#F1C40F</color>
+
+    <!-- Define grappbox grayscale -->
+    <color name="GrappBlackDark">#000000</color>
+    <color name="GrappBlackMedium">#333333</color>
+    <color name="GrappBlackLight">#666666</color>
+    <color name="GrappGrayDark">#BDBDBD</color>
+    <color name="GrappGrayMedium">#CCCCCC</color>
+    <color name="GrappGrayLight">#E0E0E0</color>
+    <color name="GrappWhiteDark">#F0F0F0</color>
+    <color name="GrappWhiteMedium">#FAFAFA</color>
+    <color name="GrappWhiteLight">#FFFFFF</color>
+
+</resources>

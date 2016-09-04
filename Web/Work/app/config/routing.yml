@@ -1,3 +1,0 @@
-app_home:
-    resource: "@AppBundle/Resources/config/routing.yml"
-    prefix:   /
