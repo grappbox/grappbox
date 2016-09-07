@@ -2,13 +2,17 @@ package com.grappbox.grappbox;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Parcel;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +21,7 @@ import android.widget.EditText;
 
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
+import com.grappbox.grappbox.sync.GrappboxSyncAdapter;
 
 import java.util.Calendar;
 
@@ -41,9 +46,10 @@ public class AddAcountActivityFragment extends Fragment {
             throw new IllegalArgumentException();
         mMail = (EditText) v.findViewById(R.id.input_login);
         mPassword = (EditText) v.findViewById(R.id.input_password);
-        mTILMail = (TextInputLayout) mMail.getParent();
-        mTILPassword = (TextInputLayout) mPassword.getParent();
+        mTILMail = (TextInputLayout) v.findViewById(R.id.til_login);
+        mTILPassword = (TextInputLayout) v.findViewById(R.id.til_password);
         mAddAccount = (Button) v.findViewById(R.id.btn_add_account);
+        mReceiver = new LoginReceiver(new Handler(), getActivity());
 
         mAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +87,7 @@ public class AddAcountActivityFragment extends Fragment {
                 Intent launchLoginService = new Intent(getActivity(), GrappboxJustInTimeService.class);
                 launchLoginService.setAction(GrappboxJustInTimeService.ACTION_LOGIN);
                 launchLoginService.putExtra(GrappboxJustInTimeService.EXTRA_MAIL, mMail.getText().toString());
-                launchLoginService.putExtra(GrappboxJustInTimeService.EXTRA_CRYPTED_PASSWORD, Utils.Security.cryptString(mMail.getText().toString()));
+                launchLoginService.putExtra(GrappboxJustInTimeService.EXTRA_CRYPTED_PASSWORD, Utils.Security.cryptString(mPassword.getText().toString()));
                 launchLoginService.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mReceiver);
                 getActivity().startService(launchLoginService);
             }
@@ -89,35 +95,39 @@ public class AddAcountActivityFragment extends Fragment {
         return v;
     }
 
-    public class LoginReceiver extends ResultReceiver{
-        public Creator<ResultReceiver> CREATOR;
 
-        public LoginReceiver(Handler handler) {
-            super(handler);
-        }
+}
 
-        @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            super.onReceiveResult(resultCode, resultData);
-            if (getParentFragment().getActivity() instanceof AddAccountActivity) {
-                Bundle response = new Bundle();
-                Bundle extraData = new Bundle();
-                Calendar expiration = Calendar.getInstance();
-                expiration.add(Calendar.DATE, 1);
+@SuppressLint("ParcelCreator")
+class LoginReceiver extends ResultReceiver{
+    private Activity mContext;
 
-                response.putString(AccountManager.KEY_ACCOUNT_NAME, resultData.getString(GrappboxJustInTimeService.EXTRA_MAIL));
-                response.putString(AccountManager.KEY_ACCOUNT_TYPE, getString(R.string.sync_account_type));
-                extraData.putString(GrappboxJustInTimeService.EXTRA_API_TOKEN, resultData.getString(GrappboxJustInTimeService.EXTRA_API_TOKEN));
-                extraData.putString(Session.ACCOUNT_EXPIRATION_TOKEN, String.valueOf(expiration.getTimeInMillis()));
+    public LoginReceiver(Handler handler, Activity context) {
+        super(handler);
+        mContext = context;
+    }
 
-                AccountManager am = AccountManager.get(getParentFragment().getActivity());
-                Account newAccount = new Account(resultData.getString(GrappboxJustInTimeService.EXTRA_MAIL), getString(R.string.sync_account_type));
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle resultData) {
+        super.onReceiveResult(resultCode, resultData);
+        if (mContext instanceof AddAccountActivity) {
+            Bundle response = new Bundle();
+            Bundle extraData = new Bundle();
+            Calendar expiration = Calendar.getInstance();
+            expiration.add(Calendar.DATE, 1);
 
-                am.addAccountExplicitly(newAccount, resultData.getString(GrappboxJustInTimeService.EXTRA_CRYPTED_PASSWORD), extraData);
+            response.putString(AccountManager.KEY_ACCOUNT_NAME, resultData.getString(GrappboxJustInTimeService.EXTRA_MAIL));
+            response.putString(AccountManager.KEY_ACCOUNT_TYPE, mContext.getString(R.string.sync_account_type));
+            extraData.putString(GrappboxJustInTimeService.EXTRA_API_TOKEN, resultData.getString(GrappboxJustInTimeService.EXTRA_API_TOKEN));
+            extraData.putString(Session.ACCOUNT_EXPIRATION_TOKEN, String.valueOf(expiration.getTimeInMillis()));
 
-                ((AddAccountActivity) getParentFragment().getActivity()).setResponse(resultData);
-                getParentFragment().getActivity().finish();
-            }
+            AccountManager am = AccountManager.get(mContext);
+            Account newAccount = new Account(resultData.getString(AccountManager.KEY_ACCOUNT_NAME), resultData.getString(AccountManager.KEY_ACCOUNT_TYPE));
+
+            am.addAccountExplicitly(newAccount, resultData.getString(GrappboxJustInTimeService.EXTRA_CRYPTED_PASSWORD), extraData);
+            GrappboxSyncAdapter.onAccountAdded(newAccount, mContext);
+            ((AddAccountActivity) mContext).setResponse(resultData);
+            mContext.finish();
         }
     }
 }

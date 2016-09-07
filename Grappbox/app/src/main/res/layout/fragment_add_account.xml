@@ -25,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+            android:id="@+id/til_login">
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,7 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+            app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+            android:id="@+id/til_password">
             <android.support.design.widget.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

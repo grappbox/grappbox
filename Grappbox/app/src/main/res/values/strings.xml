@@ -30,4 +30,7 @@
     <string name="error_network_disconnected">Network disconnected, please active network</string>
     <string name="error_account_already_registered">This account is already synchronized</string>
     <string name="error_operation_canceled">Operation canceled</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

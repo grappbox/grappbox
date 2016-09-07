@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 
 import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.R;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,6 +40,8 @@ import java.util.Calendar;
 /**
  * Created by marcw on 30/08/2016.
  */
+
+//TODO : Support multiple account synchronisation
 public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String LOG_TAG = GrappboxSyncAdapter.class.getSimpleName();
     private static final String[] accountsProjection = {
@@ -109,6 +113,37 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         return token.isEmpty() ? null : token;
     }
 
+    private Pair<Integer, Integer> syncProjectInfos(String apiToken, String apiID) throws IOException, JSONException {
+        //synchronize project's list
+        HttpURLConnection connection = null;
+        String returnedJson = null;
+
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/getprojectsglobalprogress/" + apiToken);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+
+            if (returnedJson == null || returnedJson.isEmpty())
+                return null;
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json))
+                return null;
+            JSONArray projects = json.getJSONObject("data").getJSONArray("array");
+            for (int i = 0; i < projects.length(); ++i) {
+                if (!projects.getJSONObject(i).getString("project_id").equals(apiID))
+                    continue;
+                JSONObject current = projects.getJSONObject(i);
+                return new Pair<>(current.getInt("number_bugs"), current.getInt("number_ongoing_tasks"));
+            }
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+        return null;
+    }
+
     public void syncProjects(String apiToken)
     {
         //synchronize project's list
@@ -172,6 +207,11 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                     projectValue.putNull(ProjectEntry.COLUMN_DATE_DELETED_UTC);
                 else
                     projectValue.put(ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(dateDeletion.getString("date")).getTime());
+                Pair<Integer, Integer> infosCount = syncProjectInfos(apiToken, project.getString("id"));
+                if (infosCount != null) {
+                    projectValue.put(ProjectEntry.COLUMN_COUNT_BUG, infosCount.first);
+                    projectValue.put(ProjectEntry.COLUMN_COUNT_TASK, infosCount.second);
+                }
                 projectValues[i] = projectValue;
             }
             getContext().getContentResolver().bulkInsert(ProjectEntry.CONTENT_URI, projectValues);
@@ -459,7 +499,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private static void onAccountAdded(Account newAccount, Context context) {
+    public static void onAccountAdded(Account newAccount, Context context) {
         GrappboxSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
         syncNow(newAccount, context);

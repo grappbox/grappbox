@@ -108,10 +108,11 @@ public class GrappboxJustInTimeService extends IntentService {
             data.put("login",mail);
             data.put("password", password);
             json.put("data", data);
+            Log.e("TEST", json.toString());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
-            connection.connect();
             Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson == null || returnedJson.isEmpty()){
                 if (responseObserver != null)

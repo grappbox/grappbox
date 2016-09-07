@@ -174,7 +174,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + BugTagEntry.COLUMN_LOCAL_BUG_ID + ") REFERENCES " + BugEntry.TABLE_NAME + " (" + BugEntry._ID + "), " +
                 " FOREIGN KEY (" + BugTagEntry.COLUMN_LOCAL_TAG_ID + ") REFERENCES " + TagEntry.TABLE_NAME + " (" + TagEntry._ID + "));";
 
-        final String SQL_CREATE_BUG_ASSIGNATION_TABLE = "CREATE TABLE " + BugTagEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_BUG_ASSIGNATION_TABLE = "CREATE TABLE " + BugAssignationEntry.TABLE_NAME + " (" +
                 BugAssignationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 BugAssignationEntry.COLUMN_LOCAL_BUG_ID + " INTEGER NOT NULL, " +
                 BugAssignationEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +

@@ -83,7 +83,7 @@ public class Utils {
         public static void sendJsonOverConnection(HttpURLConnection connection, JSONObject json) throws IOException {
             DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 
-            writer.writeBytes(URLEncoder.encode(json.toString(), "UTF-8"));
+            writer.write(json.toString().getBytes("UTF-8"));
             writer.flush();
             writer.close();
         }
