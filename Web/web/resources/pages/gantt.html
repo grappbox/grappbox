@@ -3,6 +3,7 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <section id="gantt">
+
   <div data-ng-if="data.onLoad">
     <div class="spinner section">
       <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
@@ -11,6 +12,28 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div data-ng-if="!data.onLoad">
     <div data-ng-if="data.message == '_valid'">
       <textarea name="name" rows="8" cols="40">{[{data.tasks}]}</textarea>
+      <form novalidate>
+        <div class="col-md-12">
+          <h4>Date Scale</h4>
+          <div class="form-group">
+            <label for="fromDate" class="col-md-1">From</label>
+            <div class="col-md-4">
+              <input class="form-control" type="date" name="fromDate" data-ng-model="data.options.fromDate">
+            </div>
+            <label for="toDate" class="col-md-1">To</label>
+            <div class="col-md-4">
+              <input class="form-control" type="date" name="toDate" data-ng-model="data.options.toDate">
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div gantt data="data.gantt" from-date="data.options.fromDate" to-date="data.options.toDate">
+        <gantt-tooltips></gantt-tooltips>
+        <gantt-tree></gantt-tree>
+        <gantt-groups></gantt-groups>
+        <gantt-progress></gantt-progress>
+      </div>
     </div>
     <div data-ng-if="data.message == '_empty'">
       <div class="data-wrapper error">

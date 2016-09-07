@@ -21,7 +21,13 @@ var app = angular.module("grappbox", [
   "ui.bootstrap",
   "ui-notification",
   "LocalStorageModule",
-  "angularBootstrapMaterial"
+  "angularBootstrapMaterial",
+  "gantt",
+  "gantt.tooltips",
+  "ui.tree",
+  "gantt.tree",
+  "gantt.groups",
+  "gantt.progress"
 ]);
 
 
