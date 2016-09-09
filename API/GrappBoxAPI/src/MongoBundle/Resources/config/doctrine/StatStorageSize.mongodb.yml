@@ -10,7 +10,7 @@ MongoBundle\Document\StatStorageSize:
         value:
             type: int
     referenceOne:
-        projects:
+        project:
           targetDocument: Project
           inversedBy: statStorageSize
     lifecycleCallbacks: {  }

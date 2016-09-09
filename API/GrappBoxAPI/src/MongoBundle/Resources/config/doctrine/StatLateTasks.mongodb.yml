@@ -20,7 +20,7 @@ MongoBundle\Document\StatLateTasks:
         ontimeTasks:
             type: int
     referenceOne:
-        projects:
+        project:
           targetDocument: Project
           inversedBy: statLateTasks
     lifecycleCallbacks: {  }

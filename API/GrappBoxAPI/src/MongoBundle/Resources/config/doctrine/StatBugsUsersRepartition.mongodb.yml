@@ -15,7 +15,7 @@ MongoBundle\Document\StatBugsUsersRepartition:
         percentage:
             type: float
     referenceOne:
-        projects:
+        project:
           targetDocument: Project
           inversedBy: statBugsUsersRepartition
     lifecycleCallbacks: {  }

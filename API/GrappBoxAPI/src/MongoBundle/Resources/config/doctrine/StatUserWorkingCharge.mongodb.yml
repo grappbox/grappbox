@@ -13,7 +13,7 @@ MongoBundle\Document\StatUserWorkingCharge:
         charge:
             type: int
     referenceOne:
-        projects:
+        project:
           targetDocument: Project
           inversedBy: statUserWorkingCharge
     lifecycleCallbacks: {  }

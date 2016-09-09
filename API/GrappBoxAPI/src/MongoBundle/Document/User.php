@@ -147,6 +147,11 @@ class User implements UserInterface
     protected $colors;
 
     /**
+     * @var MongoBundle\Document\Devices
+     */
+    protected $devices;
+
+    /**
      * Constructor
     */
     public function __construct()

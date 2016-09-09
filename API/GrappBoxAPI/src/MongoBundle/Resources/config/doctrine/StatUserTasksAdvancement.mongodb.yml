@@ -19,7 +19,7 @@ MongoBundle\Document\StatUserTasksAdvancement:
         tasksLate:
             type: int
     referenceOne:
-        projects:
+        project:
           targetDocument: Project
           inversedBy: statUserTasksAdvancement
     lifecycleCallbacks: {  }

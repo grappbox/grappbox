@@ -9,12 +9,12 @@ MongoBundle\Document\StatBugsEvolution:
             strategy: AUTO
         date:
             type: date
-        createBugs:
+        createdBugs:
             type: int
         closedBugs:
             type: date
     referenceOne:
-        projects:
+        project:
           targetDocument: Project
           inversedBy: statBugsEvolution
     lifecycleCallbacks: {  }

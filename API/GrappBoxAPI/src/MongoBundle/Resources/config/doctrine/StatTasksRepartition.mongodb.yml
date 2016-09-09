@@ -18,7 +18,7 @@ MongoBundle\Document\StatTasksRepartition:
         percentage:
             type: int
     referenceOne:
-        projects:
+        project:
           targetDocument: Project
           inversedBy: statTasksRepartition
     lifecycleCallbacks: {  }
