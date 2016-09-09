@@ -5,7 +5,3 @@ mongo:
 grappbox:
     resource: "@GrappboxBundle/Resources/config/routing.yml"
     prefix:   /V0.2/
-
-api:
-    resource: "@APIBundle/Resources/config/routing.yml"
-    prefix:   /V0.11/
