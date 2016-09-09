@@ -1,0 +1,27 @@
+SQLBundle\Entity\Devices:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        type:
+            type: string
+            length: 255
+        token:
+            type: string
+            length: 255
+    manyToOne:
+        user:
+          targetEntity: User
+          inversedBy: devices
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

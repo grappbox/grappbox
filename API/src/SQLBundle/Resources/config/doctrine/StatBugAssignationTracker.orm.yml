@@ -1,0 +1,22 @@
+SQLBundle\Entity\StatBugAssignationTracker:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        assignedBugs:
+            type: integer
+        unassignedBugs:
+            type: integer
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: StatBugAssignationTracker
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

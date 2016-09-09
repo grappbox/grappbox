@@ -1,0 +1,30 @@
+SQLBundle\Entity\WhiteboardObject:
+    type: entity
+    table: whiteboard_objects
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        whiteboardId:
+            type: integer
+            column: whiteboard_id
+        object:
+            type: text
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: TRUE
+    manyToOne:
+        whiteboard:
+          targetEntity: Whiteboard
+          inversedBy: objects
+          joinColumn:
+            name: whiteboard_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

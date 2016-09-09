@@ -1,0 +1,25 @@
+SQLBundle\Entity\StatBugsUsersRepartition:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        user:
+            type: string
+            length: 255
+        value:
+            type: integer
+        percentage:
+            type: float
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: StatBugsUsersRepartition
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

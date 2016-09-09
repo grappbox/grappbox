@@ -1,0 +1,75 @@
+SQLBundle\Entity\Bug:
+    type: entity
+    table: bugs
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        parentId:
+            type: integer
+            column: parent_id
+            nullable: TRUE
+        title:
+            type: string
+            length: 255
+        description:
+            type: text
+            nullable: TRUE
+        stateId:
+            type: integer
+            column: state_id
+            nullable: TRUE
+        createdAt:
+            type: datetime
+            column: created_at
+        editedAt:
+            type: datetime
+            column: edited_at
+            nullable: TRUE
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: TRUE
+        clientOrigin:
+            type: boolean
+            column: client_origin
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: bugs
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+        creator:
+          targetEntity: User
+          inverserdBy: bug_creator
+          joinColumn:
+            name: creator_id
+            referencedColumnName: id
+    manyToMany:
+        users:
+          targetEntity: User
+          inversedBy: bugs
+          joinTable:
+            name: bugs_user
+            joinColumns:
+              bug_id:
+                referencedColumnName: id
+            inverseJoinColumns:
+              user_id:
+                referencedColumnName: id
+        tags:
+          targetEntity: Tag
+          inversedBy: bugs
+          joinTable:
+            name: bug_tags
+            joinColumns:
+              bug_id:
+                referencedColumnName: id
+            inverseJoinColumns:
+              tag_id:
+                referencedColumnName: id
+    lifecycleCallbacks: {  }

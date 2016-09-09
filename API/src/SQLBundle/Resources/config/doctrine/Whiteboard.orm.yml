@@ -1,0 +1,48 @@
+SQLBundle\Entity\Whiteboard:
+    type: entity
+    table: whiteboards
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 255
+        updatedAt:
+            type: datetime
+            column: updated_at
+        createdAt:
+            type: datetime
+            column: created_at
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: TRUE
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: whiteboards
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+        creator_user:
+          targetEntity: User
+          inversedBy: whiteboard_creator
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+        updator_user:
+          targetEntity: User
+          inversedBy: whiteboard_updator
+          joinColumn:
+            name: updator_id
+            referencedColumnName: id
+    oneToMany:
+        objects:
+          targetEntity: WhiteboardObject
+          mappedBy: whiteboard
+          cascade: [remove]
+    lifecycleCallbacks: {  }

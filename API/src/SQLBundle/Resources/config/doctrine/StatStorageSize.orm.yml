@@ -1,0 +1,20 @@
+SQLBundle\Entity\StatStorageSize:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        value:
+            type: integer
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: StatStorageSize
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

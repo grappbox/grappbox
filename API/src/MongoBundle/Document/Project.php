@@ -891,7 +891,7 @@ class Project
     /**
      * Remove statLateTasks
      *
-     * @param \GrappboxBundle\Entity\StatLateTasks $statLateTasks
+     * @param \MongoBundle\Entity\StatLateTasks $statLateTasks
      */
     public function removeStatLateTasks(\MongoBundle\Document\StatLateTasks $statLateTasks)
     {

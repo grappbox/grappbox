@@ -1,0 +1,30 @@
+SQLBundle\Entity\CloudTransfer:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        filename:
+            type: string
+            length: 255
+        path:
+            type: text
+            column: path
+        creationDate:
+            type: datetime
+            column: creation_date
+        deletionDate:
+            type: datetime
+            column: deletion_date
+            nullable: TRUE
+        password:
+            type: text
+            nullable: TRUE
+        creator_id:
+            type: integer
+            column: creator_id
+    lifecycleCallbacks: {  }

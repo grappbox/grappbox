@@ -3,5 +3,5 @@ mongo:
     prefix:   /mongo/
 
 grappbox:
-    resource: "@GrappboxBundle/Resources/config/routing.yml"
+    resource: "@SQLBundle/Resources/config/routing.yml"
     prefix:   /V0.2/

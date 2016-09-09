@@ -860,7 +860,7 @@ class User implements UserInterface
     /**
      * Remove ressources
      *
-     * @param \GrappboxBundle\Entity\Ressources $ressources
+     * @param \MongoBundle\Entity\Ressources $ressources
      */
     public function removeRessource(\MongoBundle\Document\Ressources $ressources)
     {

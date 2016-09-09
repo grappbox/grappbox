@@ -5,11 +5,11 @@ parameters:
 
 services:
   service_cloud:
-    class: GrappboxBundle\Controller\CloudController
+    class: SQLBundle\Controller\CloudController
     calls:
             - [setContainer, ["@service_container"]]
   service_stat:
-    class: GrappboxBundle\Controller\StatisticController
+    class: SQLBundle\Controller\StatisticController
     calls:
             - [setContainer, ["@service_container"]]
 #    service_name:

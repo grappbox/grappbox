@@ -1,0 +1,20 @@
+SQLBundle\Entity\ProjectUserRole:
+    type: entity
+    table: project_user_role
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        projectId:
+            type: integer
+            column: project_id
+        userId:
+            type: integer
+            column: user_id
+        roleId:
+            type: integer
+            column: role_id
+    lifecycleCallbacks: {  }

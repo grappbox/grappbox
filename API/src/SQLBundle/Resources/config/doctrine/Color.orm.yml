@@ -1,0 +1,27 @@
+SQLBundle\Entity\Color:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        color:
+            type: string
+            length: 255
+    manyToOne:
+        user:
+          targetEntity: User
+          inversedBy: colors
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+        project:
+          targetEntity: Project
+          inversedBy: colors
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

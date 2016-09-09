@@ -125,10 +125,10 @@ class StatBugsEvolution
     /**
      * Set project
      *
-     * @param \GrappboxBundle\Entity\Project $project
+     * @param \MongoBundle\Entity\Project $project
      * @return Project
      */
-    public function setProject(\GrappboxBundle\Entity\Project $project = null)
+    public function setProject(\MongoBundle\Entity\Project $project = null)
     {
         $this->project = $project;
 
@@ -138,7 +138,7 @@ class StatBugsEvolution
     /**
      * Get project
      *
-     * @return \GrappboxBundle\Entity\Project
+     * @return \MongoBundle\Entity\Project
      */
     public function getProject()
     {

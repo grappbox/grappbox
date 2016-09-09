@@ -392,9 +392,9 @@ class Task
     /**
      * Add ressources
      *
-     * @param \GrappboxBundle\Entity\Ressources $ressources
+     * @param \MongoBundle\Entity\Ressources $ressources
      */
-    public function addRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    public function addRessource(\MongoBundle\Entity\Ressources $ressources)
     {
         $this->ressources[] = $ressources;
     }
@@ -402,9 +402,9 @@ class Task
     /**
      * Remove ressources
      *
-     * @param \GrappboxBundle\Entity\Ressources $ressources
+     * @param \MongoBundle\Entity\Ressources $ressources
      */
-    public function removeRessource(\GrappboxBundle\Entity\Ressources $ressources)
+    public function removeRessource(\MongoBundle\Entity\Ressources $ressources)
     {
         $this->ressources->removeElement($ressources);
     }

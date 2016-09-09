@@ -1,0 +1,29 @@
+SQLBundle\Entity\StatUserTasksAdvancement:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        user:
+            type: string
+            length: 255
+        tasksToDo:
+            type: integer
+        tasksDoing:
+            type: integer
+        tasksDone:
+            type: integer
+        tasksLate:
+            type: integer
+    manyToOne:
+        project:
+          targetEntity: Project
+          inversedBy: StatUserTasksAdvancement
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

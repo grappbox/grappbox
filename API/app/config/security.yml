@@ -12,7 +12,7 @@ security:
         #     property: email
 
     encoders:
-      GrappboxBundle\Entity\User:
+      SQLBundle\Entity\User:
         algorithm: bcrypt
       MongoBundle\Document\User:
         algorithm: bcrypt
