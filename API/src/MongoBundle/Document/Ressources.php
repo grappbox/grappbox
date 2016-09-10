@@ -59,7 +59,7 @@ class Ressources
      * @param MongoBundle\Document\Task $task
      * @return self
      */
-    public function setTask(\MongoBundle\Document\Task $task = null)
+    public function setTask( $task = null)
     {
         $this->task = $task;
 
@@ -82,7 +82,7 @@ class Ressources
      * @param MongoBundle\Document\User $user
      * @return self
      */
-    public function setUser(\MongoBundle\Document\User $user)
+    public function setUser( $user)
     {
         $this->user = $user;
 

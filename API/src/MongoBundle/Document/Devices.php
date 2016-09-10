@@ -117,7 +117,7 @@ class Devices
      * @param MongoBundle\Document\User $user
      * @return self
      */
-    public function setUser(\MongoBundle\Document\User $user)
+    public function setUser( $user)
     {
         $this->user = $user;
         return $this;

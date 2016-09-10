@@ -114,7 +114,7 @@ class Gantt
      * @param MongoBundle\Document\Project $projects
      * @return self
      */
-    public function setProjects(\MongoBundle\Document\Project $projects)
+    public function setProjects( $projects)
     {
         $this->projects = $projects;
         return $this;
@@ -136,7 +136,7 @@ class Gantt
      * @param MongoBundle\Document\User $creatorUser
      * @return self
      */
-    public function setCreatorUser(\MongoBundle\Document\User $creatorUser)
+    public function setCreatorUser( $creatorUser)
     {
         $this->creator_user = $creatorUser;
         return $this;
@@ -158,7 +158,7 @@ class Gantt
      * @param MongoBundle\Document\User $updatorUser
      * @return self
      */
-    public function setUpdatorUser(\MongoBundle\Document\User $updatorUser)
+    public function setUpdatorUser( $updatorUser)
     {
         $this->updator_user = $updatorUser;
         return $this;

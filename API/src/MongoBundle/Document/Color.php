@@ -67,7 +67,7 @@ class Color
      * @param MongoBundle\Document\User  $user
      * @return self
      */
-    public function setUser(\MongoBundle\Document\User $user = null)
+    public function setUser( $user = null)
     {
         $this->user = $user;
 
@@ -90,7 +90,7 @@ class Color
      * @param MongoBundle\Document\Project $project
      * @return self
      */
-    public function setProject(\MongoBundle\Document\Project $project)
+    public function setProject( $project)
     {
         $this->project = $project;
 

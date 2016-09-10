@@ -278,7 +278,7 @@ class TimelineMessage
      * @param MongoBundle\Document\Timeline $timelines
      * @return self
      */
-    public function setTimelines(\MongoBundle\Document\Timeline $timelines)
+    public function setTimelines( $timelines)
     {
         $this->timelines = $timelines;
         return $this;
@@ -300,7 +300,7 @@ class TimelineMessage
      * @param MongoBundle\Document\User $creator
      * @return Bug
      */
-    public function setCreator(\MongoBundle\Document\User $creator)
+    public function setCreator( $creator)
     {
         $this->creator = $creator;
 

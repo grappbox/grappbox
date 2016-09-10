@@ -67,7 +67,7 @@ class EventType
      *
      * @param MongoBundle\Document\Event $event
      */
-    public function addEvent(\MongoBundle\Document\Event $event)
+    public function addEvent( $event)
     {
         $this->events[] = $event;
     }
@@ -77,7 +77,7 @@ class EventType
      *
      * @param MongoBundle\Document\Event $event
      */
-    public function removeEvent(\MongoBundle\Document\Event $event)
+    public function removeEvent( $event)
     {
         $this->events->removeElement($event);
     }

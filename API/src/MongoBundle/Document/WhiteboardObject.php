@@ -129,7 +129,7 @@ class WhiteboardObject
      * @param MongoBundle\Document\Whiteboard $whiteboard
      * @return self
      */
-    public function setWhiteboard(\MongoBundle\Document\Whiteboard $whiteboard)
+    public function setWhiteboard($whiteboard)
     {
         $this->whiteboard = $whiteboard;
         return $this;
