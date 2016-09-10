@@ -297,7 +297,7 @@ class TimelineMessage
     /**
      * Set creator
      *
-     * @param \MongoBundle\Document\User $creator
+     * @param MongoBundle\Document\User $creator
      * @return Bug
      */
     public function setCreator(\MongoBundle\Document\User $creator)

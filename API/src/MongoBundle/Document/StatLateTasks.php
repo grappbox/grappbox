@@ -182,7 +182,7 @@ class StatLateTasks
     /**
      * Set project
      *
-     * @param \MongoBundle\Document\Project $project
+     * @param MongoBundle\Document\Project $project
      * @return Project
      */
     public function setProject(\MongoBundle\Document\Project $project = null)

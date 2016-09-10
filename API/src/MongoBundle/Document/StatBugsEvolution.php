@@ -125,7 +125,7 @@ class StatBugsEvolution
     /**
      * Set project
      *
-     * @param \MongoBundle\Entity\Project $project
+     * @param MongoBundle\Entity\Project $project
      * @return Project
      */
     public function setProject(\MongoBundle\Entity\Project $project = null)

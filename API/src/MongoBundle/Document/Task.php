@@ -392,7 +392,7 @@ class Task
     /**
      * Add ressources
      *
-     * @param \MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Entity\Ressources $ressources
      */
     public function addRessource(\MongoBundle\Entity\Ressources $ressources)
     {
@@ -402,7 +402,7 @@ class Task
     /**
      * Remove ressources
      *
-     * @param \MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Entity\Ressources $ressources
      */
     public function removeRessource(\MongoBundle\Entity\Ressources $ressources)
     {
@@ -432,7 +432,7 @@ class Task
     /**
      * Remove dependence
      *
-     * @param \MongoBundle\Document\Dependencies $dependence
+     * @param MongoBundle\Document\Dependencies $dependence
      */
     public function removeDependence(\MongoBundle\Document\Dependencies $dependence)
     {
@@ -442,7 +442,7 @@ class Task
     /**
      * Get dependence
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getDependence()
     {
@@ -452,7 +452,7 @@ class Task
     /**
      * Add task_depended
      *
-     * @param \MongoBundle\Document\Dependencies $taskDepended
+     * @param MongoBundle\Document\Dependencies $taskDepended
      */
     public function addTaskDepended(\MongoBundle\Document\Dependencies $taskDepended)
     {
@@ -462,7 +462,7 @@ class Task
     /**
      * Remove task_depended
      *
-     * @param \MongoBundle\Document\Dependencies $taskDepended
+     * @param MongoBundle\Document\Dependencies $taskDepended
      */
     public function removeTaskDepended(\MongoBundle\Document\Dependencies $taskDepended)
     {
@@ -482,7 +482,7 @@ class Task
     /**
      * Add tasks_container
      *
-     * @param \MongoBundle\Document\Task $tasksContainer
+     * @param MongoBundle\Document\Task $tasksContainer
      */
     public function addTasksContainer(\MongoBundle\Document\Task $tasksContainer)
     {
@@ -492,7 +492,7 @@ class Task
     /**
      * Remove tasks_container
      *
-     * @param \MongoBundle\Document\Task $tasksContainer
+     * @param MongoBundle\Document\Task $tasksContainer
      */
     public function removeTasksContainer(\MongoBundle\Document\Task $tasksContainer)
     {
@@ -586,7 +586,7 @@ class Task
     /**
      * Set container
      *
-     * @param \MongoBundle\Document\Task $container
+     * @param MongoBundle\Document\Task $container
      * @return self
      */
     public function setContainer(\MongoBundle\Document\Task $container = null)

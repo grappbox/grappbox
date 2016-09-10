@@ -520,7 +520,7 @@ class User implements UserInterface
     /**
      * Add event_creator
      *
-     * @param \MongoBundle\Document\Event $eventCreator
+     * @param MongoBundle\Document\Event $eventCreator
      */
     public function addEventCreator(\MongoBundle\Document\Event $eventCreator)
     {
@@ -530,7 +530,7 @@ class User implements UserInterface
     /**
      * Remove event_creator
      *
-     * @param \MongoBundle\Document\Event $eventCreator
+     * @param MongoBundle\Document\Event $eventCreator
      */
     public function removeEventCreator(\MongoBundle\Document\Event $eventCreator)
     {
@@ -550,7 +550,7 @@ class User implements UserInterface
     /**
      * Add bug_creator
      *
-     * @param \MongoBundle\Document\Bug $bugCreator
+     * @param MongoBundle\Document\Bug $bugCreator
      */
     public function addBugCreator(\MongoBundle\Document\Bug $bugCreator)
     {
@@ -560,7 +560,7 @@ class User implements UserInterface
     /**
      * Remove bug_creator
      *
-     * @param \MongoBundle\Document\Bug $bugCreator
+     * @param MongoBundle\Document\Bug $bugCreator
      */
     public function removeBugCreator(\MongoBundle\Document\Bug $bugCreator)
     {
@@ -581,7 +581,7 @@ class User implements UserInterface
     /**
      * Add message_creator
      *
-     * @param \MongoBundle\Document\TimelineMessage $messageCreator
+     * @param MongoBundle\Document\TimelineMessage $messageCreator
      */
     public function addMessageCreator(\MongoBundle\Document\TimelineMessage $messageCreator)
     {
@@ -590,7 +590,7 @@ class User implements UserInterface
 
     /**
      * Remove message_creator
-     * @param \MongoBundle\Document\TimelineMessage $messageCreator
+     * @param MongoBundle\Document\TimelineMessage $messageCreator
      */
     public function removeMessageCreator(\MongoBundle\Document\TimelineMessage $messageCreator)
     {
@@ -610,7 +610,7 @@ class User implements UserInterface
     /**
      * Add project_creator
      *
-     * @param \MongoBundle\Document\Project $projectCreator
+     * @param MongoBundle\Document\Project $projectCreator
      */
     public function addProjectCreator(\MongoBundle\Document\Project $projectCreator)
     {
@@ -620,7 +620,7 @@ class User implements UserInterface
     /**
      * Remove project_creator
      *
-     * @param \MongoBundle\Document\Project $projectCreator
+     * @param MongoBundle\Document\Project $projectCreator
      */
     public function removeProjectCreator(\MongoBundle\Document\Project $projectCreator)
     {
@@ -640,7 +640,7 @@ class User implements UserInterface
     /**
      * Add gantt_creator
      *
-     * @param \MongoBundle\Document\Gantt $ganttCreator
+     * @param MongoBundle\Document\Gantt $ganttCreator
      */
     public function addGanttCreator(\MongoBundle\Document\Gantt $ganttCreator)
     {
@@ -650,7 +650,7 @@ class User implements UserInterface
     /**
      * Remove gantt_creator
      *
-     * @param \MongoBundle\Document\Gantt $ganttCreator
+     * @param MongoBundle\Document\Gantt $ganttCreator
      */
     public function removeGanttCreator(\MongoBundle\Document\Gantt $ganttCreator)
     {
@@ -670,7 +670,7 @@ class User implements UserInterface
     /**
      * Add gantt_updator
      *
-     * @param \MongoBundle\Document\Gantt $ganttUpdator
+     * @param MongoBundle\Document\Gantt $ganttUpdator
      */
     public function addGanttUpdator(\MongoBundle\Document\Gantt $ganttUpdator)
     {
@@ -680,7 +680,7 @@ class User implements UserInterface
     /**
      * Remove gantt_updator
      *
-     * @param \MongoBundle\Document\Gantt $ganttUpdator
+     * @param MongoBundle\Document\Gantt $ganttUpdator
      */
     public function removeGanttUpdator(\MongoBundle\Document\Gantt $ganttUpdator)
     {
@@ -700,7 +700,7 @@ class User implements UserInterface
     /**
      * Add notifications
      *
-     * @param \MongoBundle\Document\Notification $notifications
+     * @param MongoBundle\Document\Notification $notifications
      */
     public function addNotification(\MongoBundle\Document\Notification $notifications)
     {
@@ -710,7 +710,7 @@ class User implements UserInterface
     /**
      * Remove notifications
      *
-     * @param \MongoBundle\Document\Notification $notifications
+     * @param MongoBundle\Document\Notification $notifications
      */
     public function removeNotification(\MongoBundle\Document\Notification $notifications)
     {
@@ -790,7 +790,7 @@ class User implements UserInterface
     /**
      * Add devices
      *
-     * @param \MongoBundle\Document\Devices $devices
+     * @param MongoBundle\Document\Devices $devices
      */
     public function addDevice(\MongoBundle\Document\Devices $devices)
     {
@@ -800,7 +800,7 @@ class User implements UserInterface
     /**
      * Remove devices
      *
-     * @param \MongoBundle\Document\Devices $devices
+     * @param MongoBundle\Document\Devices $devices
      */
     public function removeDevice(\MongoBundle\Document\Devices $devices)
     {
@@ -820,7 +820,7 @@ class User implements UserInterface
     /**
      * Add colors
      *
-     * @param \MongoBundle\Document\Color $colors
+     * @param MongoBundle\Document\Color $colors
      */
     public function addColor(\MongoBundle\Document\Color $colors)
     {
@@ -830,7 +830,7 @@ class User implements UserInterface
     /**
      * Remove colors
      *
-     * @param \MongoBundle\Document\Color $colors
+     * @param MongoBundle\Document\Color $colors
      */
     public function removeColor(\MongoBundle\Document\Color $colors)
     {
@@ -850,7 +850,7 @@ class User implements UserInterface
     /**
      * Add ressources
      *
-     * @param \MongoBundle\Document\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
     public function addRessource(\MongoBundle\Document\Ressources $ressources)
     {
@@ -860,7 +860,7 @@ class User implements UserInterface
     /**
      * Remove ressources
      *
-     * @param \MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Entity\Ressources $ressources
      */
     public function removeRessource(\MongoBundle\Document\Ressources $ressources)
     {
