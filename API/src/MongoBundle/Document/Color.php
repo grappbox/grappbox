@@ -90,7 +90,7 @@ class Color
      * @param MongoBundle\Document\Project $project
      * @return self
      */
-    public function setProject(MongoBundle\Document\Project $project)
+    public function setProject(\MongoBundle\Document\Project $project)
     {
         $this->project = $project;
 
