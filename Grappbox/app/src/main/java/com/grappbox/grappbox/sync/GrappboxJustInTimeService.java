@@ -22,6 +22,7 @@ import com.grappbox.grappbox.data.GrappboxContract.BugTagEntry;
 import com.grappbox.grappbox.data.GrappboxContract.EventEntry;
 import com.grappbox.grappbox.data.GrappboxContract.EventTypeEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
+import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
 
@@ -75,7 +76,7 @@ public class GrappboxJustInTimeService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_SYNC_USER_DETAIL.equals(action)){
                 Set<String> categories = intent.getCategories();
-                if (categories.size() == 0 || categories.contains(CATEGORY_LOCAL_ID))
+                if (categories == null || categories.size() == 0 || categories.contains(CATEGORY_LOCAL_ID))
                     handleUserDetailSync(intent.getStringExtra(EXTRA_API_TOKEN), intent.getLongExtra(EXTRA_USER_ID, -1));
                 else
                     handleUserDetailSync(intent.getStringExtra(EXTRA_API_TOKEN), intent.getStringExtra(EXTRA_USER_ID));
@@ -256,7 +257,7 @@ public class GrappboxJustInTimeService extends IntentService {
     }
 
     private void handleTimelineMessagesSync(String apiToken, long localTimelineId, int offset, int limit) {
-        Cursor timelineGrappbox = getContentResolver().query(GrappboxContract.TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
+        Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         if (timelineGrappbox == null || !timelineGrappbox.moveToFirst())
             return;
         HttpURLConnection connection = null;
@@ -291,6 +292,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     if (creator == null || !creator.moveToFirst())
                         return;
                 }
+                message.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
                 message.put(TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
                 message.put(TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
                 message.put(TimelineMessageEntry.COLUMN_TITLE, current.getString("title"));
@@ -336,7 +338,7 @@ public class GrappboxJustInTimeService extends IntentService {
         String returnedJson;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/getuserbasicinformations/"+apiToken+"/"+apiUID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/user/getuserbasicinformations/"+apiToken+"/"+apiUID);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");

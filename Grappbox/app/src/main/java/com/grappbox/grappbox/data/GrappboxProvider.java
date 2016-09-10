@@ -305,121 +305,180 @@ public class GrappboxProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder) {
+        Cursor retCursor;
         switch (sUriMatcher.match(uri))
         {
             case PROJECT:
-                return ProjectCursors.query_Project(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = ProjectCursors.query_Project(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case PROJECT_ALL_BY_USER:
-                return ProjectCursors.query_ProjectWithUser(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = ProjectCursors.query_ProjectWithUser(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case PROJECT_ONE_BY_ID:
-                return ProjectCursors.query_ProjectOneById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = ProjectCursors.query_ProjectOneById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case PROJECT_ONE_BY_GRAPPBOX_ID:
-                return ProjectCursors.query_ProjectOneByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = ProjectCursors.query_ProjectOneByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case USER:
-                return UserCursors.query_User(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = UserCursors.query_User(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case USER_BY_ID:
-                return UserCursors.query_UserById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = UserCursors.query_UserById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case USER_BY_GRAPPBOX_ID:
-                return UserCursors.query_UserByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = UserCursors.query_UserByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case USER_BY_EMAIL:
-                return UserCursors.query_UserByEmail(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = UserCursors.query_UserByEmail(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case OCCUPATION:
-                return OccupationCursors.query_Occupation(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = OccupationCursors.query_Occupation(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case OCCUPATION_ALL_BY_GRAPPBOX_PROJECT_ID:
-                return OccupationCursors.query_OccupationAllByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = OccupationCursors.query_OccupationAllByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case OCCUPATION_ALL_BY_PROJECT_ID:
-                return OccupationCursors.query_OccupationAllByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = OccupationCursors.query_OccupationAllByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT:
-                return EventCursors.query_Event(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventCursors.query_Event(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT_BY_ID:
-                return EventCursors.query_EventById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventCursors.query_EventById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT_BY_GRAPPBOX_ID:
-                return EventCursors.query_EventByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventCursors.query_EventByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT_BY_TYPE_ID:
-                return EventCursors.query_EventByTypeId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventCursors.query_EventByTypeId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT_TYPE:
-                return EventTypeCursors.query_EventType(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventTypeCursors.query_EventType(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT_PARTICIPANT:
-                return EventParticipantCursors.query_EventParticipant(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventParticipantCursors.query_EventParticipant(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT_PARTICIPANT_BY_EVENT_ID:
-                return EventParticipantCursors.query_EventParticipantByEventId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventParticipantCursors.query_EventParticipantByEventId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case EVENT_PARTICIPANT_BY_GRAPPBOX_EVENT_ID:
-                return EventParticipantCursors.query_EventParticipantByGrappboxEventId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = EventParticipantCursors.query_EventParticipantByGrappboxEventId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE:
-                return TimelineCursors.query_Timeline(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineCursors.query_Timeline(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_BY_PROJECT_ID:
-                return TimelineCursors.query_TimelineByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineCursors.query_TimelineByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_BY_GRAPPBOX_PROJECT_ID:
-                return TimelineCursors.query_TimelineByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineCursors.query_TimelineByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_BY_GRAPPBOX_ID:
-                return TimelineCursors.query_TimelineByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineCursors.query_TimelineByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_BY_ID:
-                return TimelineCursors.query_TimelineById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineCursors.query_TimelineById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_MESSAGES:
-                return TimelineMessageCursors.query_TimelineMessage(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineMessageCursors.query_TimelineMessage(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_MESSAGES_BY_TIMELINE_ID:
-                return TimelineMessageCursors.query_TimelineMessageByTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineMessageCursors.query_TimelineMessageByTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_MESSAGES_BY_GRAPPBOX_TIMELINE_ID:
-                return TimelineMessageCursors.query_TimelineMessageByGrappboxTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineMessageCursors.query_TimelineMessageByGrappboxTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_MESSAGES_BY_ID:
-                return  TimelineMessageCursors.query_TimelineMessageById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor =  TimelineMessageCursors.query_TimelineMessageById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TIMELINE_MESSAGES_BY_GRAPPBOX_ID:
-                return TimelineMessageCursors.query_TimelineMessageByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TimelineMessageCursors.query_TimelineMessageByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE:
-                return RoleCursors.query_Role(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleCursors.query_Role(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_BY_GRAPPBOX_ID:
-                return RoleCursors.query_RoleByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleCursors.query_RoleByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_BY_ID:
-                return RoleCursors.query_RoleById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleCursors.query_RoleById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_BY_PROJECT_ID:
-                return RoleCursors.query_RoleByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleCursors.query_RoleByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_BY_GRAPPBOX_PROJECT_ID:
-                return RoleCursors.query_RoleByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleCursors.query_RoleByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_ASSIGNATION:
-                return RoleAssignationCursors.query_RoleAssignation(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleAssignationCursors.query_RoleAssignation(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_ASSIGNATION_BY_ROLE_ID:
-                return RoleAssignationCursors.query_RoleAssignationByRoleId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleAssignationCursors.query_RoleAssignationByRoleId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_ASSIGNATION_BY_GRAPPBOX_ROLE_ID:
-                return RoleAssignationCursors.query_RoleAssignationByGrappboxRoleId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleAssignationCursors.query_RoleAssignationByGrappboxRoleId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_ASSIGNATION_BY_USER_ID:
-                return RoleAssignationCursors.query_RoleAssignationByUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleAssignationCursors.query_RoleAssignationByUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_ASSIGNATION_BY_GRAPPBOX_USER_ID:
-                return RoleAssignationCursors.query_RoleAssignationByGrappboxUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleAssignationCursors.query_RoleAssignationByGrappboxUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case ROLE_ASSIGNATION_BY_USER_ID_AND_PROJECT_ID:
-                return RoleAssignationCursors.query_RoleAssignationByUserIdAndProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = RoleAssignationCursors.query_RoleAssignationByUserIdAndProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TAG:
-                return TagCursors.query_Tag(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TagCursors.query_Tag(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TAG_BY_ID:
-                return TagCursors.query_TagById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TagCursors.query_TagById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TAG_BY_GRAPPBOX_ID:
-                return TagCursors.query_TagByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TagCursors.query_TagByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TAG_BY_PROJECT_ID:
-                return TagCursors.query_TagByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TagCursors.query_TagByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case TAG_BY_GRAPPBOX_PROJECT_ID:
-                return TagCursors.query_TagByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = TagCursors.query_TagByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG:
-                return BugCursors.query_Bug(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugCursors.query_Bug(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_BY_ID:
-                return BugCursors.query_BugById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugCursors.query_BugById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_TAG_BY_GRAPPBOX_BUG_ID:
-                return BugTagCursors.query_BugTagByGrappboxBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugTagCursors.query_BugTagByGrappboxBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_ASSIGNATION:
-                return BugAssignationCursors.query_BugAssignation(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugAssignationCursors.query_BugAssignation(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_ASSIGNATION_BY_BUG_ID:
-                return BugAssignationCursors.query_BugAssignationByBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugAssignationCursors.query_BugAssignationByBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_ASSIGNATION_BY_GRAPPBOX_BUG_ID:
-                return BugAssignationCursors.query_BugAssignationByGrappboxBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugAssignationCursors.query_BugAssignationByGrappboxBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_ASSIGNATION_BY_USER_ID:
-                return BugAssignationCursors.query_BugAssignationByUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugAssignationCursors.query_BugAssignationByUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_ASSIGNATION_BY_GRAPPBOX_USER_ID:
-                return BugAssignationCursors.query_BugAssignationByGrappboxUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugAssignationCursors.query_BugAssignationByGrappboxUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case CLOUD:
-                return CloudCursors.query_Cloud(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = CloudCursors.query_Cloud(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case CLOUD_BY_ID:
-                return CloudCursors.query_CloudById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = CloudCursors.query_CloudById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
+        if (getContext() != null && getContext().getContentResolver() != null)
+            retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
     @Nullable

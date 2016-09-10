@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.annotation.NonNull;
 
 import com.grappbox.grappbox.AddAccountActivity;
 import com.grappbox.grappbox.BuildConfig;
+import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.Utils;
 
@@ -90,6 +92,7 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
             answer.putString(AccountManager.KEY_AUTHTOKEN, data.getString("token"));
             am.setUserData(account, GrappboxJustInTimeService.EXTRA_API_TOKEN, data.getString("token"));
             am.setUserData(account, Session.ACCOUNT_EXPIRATION_TOKEN, String.valueOf(cal.getTimeInMillis()));
+
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         } finally {

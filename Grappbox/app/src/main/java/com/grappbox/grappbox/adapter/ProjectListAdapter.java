@@ -47,9 +47,10 @@ public class ProjectListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder = (ViewHolder) view.getTag();
+        String companyName = cursor.getString(cursor.getColumnIndex(ProjectEntry.COLUMN_COMPANY_NAME));
 
         holder.projectName.setText(cursor.getString(cursor.getColumnIndex(ProjectEntry.COLUMN_NAME)));
-        holder.companyName.setText(cursor.getString(cursor.getColumnIndex(ProjectEntry.COLUMN_COMPANY_NAME)));
+        holder.companyName.setText(companyName == null || companyName.isEmpty() ? context.getString(R.string.non_associate_resource) : companyName);
         holder.bugCount.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(ProjectEntry.COLUMN_COUNT_BUG))));
         holder.taskCount.setText(String.valueOf(cursor.getInt(cursor.getColumnIndex(ProjectEntry.COLUMN_COUNT_TASK))));
     }

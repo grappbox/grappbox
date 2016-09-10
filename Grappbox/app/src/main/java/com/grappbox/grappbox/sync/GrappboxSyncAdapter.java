@@ -2,15 +2,21 @@ package com.grappbox.grappbox.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteAbortException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +30,7 @@ import com.grappbox.grappbox.data.GrappboxContract.RolesAssignationEntry;
 import com.grappbox.grappbox.data.GrappboxContract.RolesEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
+import com.grappbox.grappbox.singleton.Session;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,72 +52,16 @@ import java.util.Calendar;
 public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String LOG_TAG = GrappboxSyncAdapter.class.getSimpleName();
     private static final String[] accountsProjection = {
-            UserEntry.COLUMN_TOKEN,
-            UserEntry.COLUMN_TOKEN_EXPIRATION,
-            UserEntry.COLUMN_CONTACT_EMAIL,
-            UserEntry.COLUMN_PASSWORD,
             UserEntry._ID
     };
 
-    private static final int COLUMN_TOKEN = 0;
-    private static final int COLUMN_TOKEN_EXPIRATION = 1;
-    private static final int COLUMN_CONTACT_EMAIL = 2;
-    private static final int COLUMN_PASSWORD = 3;
-    private static final int _ID = 4;
+    private static final int _ID = 0;
 
     private static final int SYNC_INTERVAL = 3600;
     private static final int SYNC_FLEXTIME = SYNC_INTERVAL / 2;
 
     public GrappboxSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
-    }
-
-    public String login(Cursor account) {
-        String token = "";
-        HttpURLConnection connection = null;
-        String returnedJson = null;
-
-        try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/accountadministration/login");
-            //Ask login
-            JSONObject json = new JSONObject();
-            JSONObject data = new JSONObject();
-
-            data.put("login", account.getString(COLUMN_CONTACT_EMAIL));
-            data.put("password", account.getString(COLUMN_PASSWORD));
-            json.put("data", data);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.connect();
-            Utils.JSON.sendJsonOverConnection(connection, json);
-            returnedJson = Utils.JSON.readDataFromConnection(connection);
-            if (returnedJson == null || returnedJson.isEmpty())
-                return null;
-
-            json = new JSONObject(returnedJson);
-            if (Utils.Errors.checkAPIError(json))
-                return null;
-            token = json.getJSONObject("data").getString("token");
-            Calendar expirationToken = Calendar.getInstance();
-            expirationToken.setTimeZone(Utils.Date.grappboxTZ);
-            expirationToken.add(Calendar.DATE, 1);
-
-            ContentValues values = new ContentValues();
-            values.put(UserEntry.COLUMN_TOKEN, token);
-            values.put(UserEntry.COLUMN_TOKEN_EXPIRATION, expirationToken.getTimeInMillis());
-            Uri updateUserUri = UserEntry.buildUserWithLocalIdUri(account.getInt(_ID));
-            getContext().getContentResolver().insert(updateUserUri, values);
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "IOException : ", e);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null)
-                connection.disconnect();
-        }
-
-        return token.isEmpty() ? null : token;
     }
 
     private Pair<Integer, Integer> syncProjectInfos(String apiToken, String apiID) throws IOException, JSONException {
@@ -146,6 +97,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void syncProjects(String apiToken)
     {
+        Log.d(LOG_TAG, "Sync projects started");
         //synchronize project's list
         HttpURLConnection connection = null;
         String returnedJson = null;
@@ -196,13 +148,16 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 projectValue.put(ProjectEntry.COLUMN_COMPANY_NAME, project.getString("company"));
 
                 projectValue.putNull(ProjectEntry.COLUMN_URI_LOGO);
-                JSONObject logoExpiration = project.getJSONObject("logo");
-                projectValue.put(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")).getTime());
+                JSONObject logoExpiration = project.isNull("logo") ? null : project.getJSONObject("logo");
+                if (logoExpiration != null)
+                    projectValue.put(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")).getTime());
+                else
+                    projectValue.putNull(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC);
 
                 projectValue.put(ProjectEntry.COLUMN_CONTACT_EMAIL, project.getString("contact_mail"));
                 projectValue.put(ProjectEntry.COLUMN_SOCIAL_FACEBOOK, project.getString("facebook"));
                 projectValue.put(ProjectEntry.COLUMN_SOCIAL_TWITTER, project.getString("twitter"));
-                JSONObject dateDeletion = project.getJSONObject("deleted_at");
+                JSONObject dateDeletion = project.isNull("deleted_at") ? null : project.getJSONObject("deleted_at");
                 if (dateDeletion == null)
                     projectValue.putNull(ProjectEntry.COLUMN_DATE_DELETED_UTC);
                 else
@@ -225,9 +180,39 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    public long syncAccountUser(String apiToken, Account account) throws IOException, JSONException, OperationApplicationException {
+        Log.d(LOG_TAG, "Sync projects started");
+        final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/user/getidbyemail/" + apiToken + "/" + account.name);
+        HttpURLConnection connection;
+        String returnedJson;
+
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        returnedJson = Utils.JSON.readDataFromConnection(connection);
+
+        if (returnedJson == null || returnedJson.isEmpty())
+            throw new JSONException("No json returned by API");
+        JSONObject json = new JSONObject(returnedJson);
+        if (Utils.Errors.checkAPIError(json))
+            throw new OperationApplicationException("Api returned an error, stoping sync...");
+        JSONObject data = json.getJSONObject("data");
+        ContentValues user = new ContentValues();
+
+        user.put(UserEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
+        user.put(UserEntry.COLUMN_FIRSTNAME, data.getString("firstname"));
+        user.put(UserEntry.COLUMN_LASTNAME, data.getString("lastname"));
+        user.put(UserEntry.COLUMN_CONTACT_EMAIL, account.name);
+        Uri uri = getContext().getContentResolver().insert(UserEntry.CONTENT_URI, user);
+        if (uri == null || uri.getLastPathSegment().isEmpty() || Long.parseLong(uri.getLastPathSegment()) == -1)
+            throw new SQLiteAbortException("Insert account user failed");
+        return (Long.parseLong(uri.getLastPathSegment()));
+    }
+
     public void syncUserList(String apiToken, String apiProjectId) {
+        Log.d(LOG_TAG, "Sync projects started");
         HttpURLConnection connection = null;
-        String returnedJson = null;
+        String returnedJson;
 
         try {
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/projects/getusertoproject/" + apiToken + "/" + apiProjectId);
@@ -267,6 +252,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void syncUsers(String apiToken)
     {
+        Log.d(LOG_TAG, "Sync projects started");
         //synchronize User's list
         final String[] projection = new String[] {ProjectEntry.COLUMN_GRAPPBOX_ID};
         final int GRAPPBOX_ID = 0;
@@ -284,11 +270,12 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             if (allUsers != null && allUsers.moveToFirst()){
                 do {
                     Intent userDetailLaunch = new Intent(getContext(), GrappboxJustInTimeService.class);
+                    userDetailLaunch.addCategory(GrappboxJustInTimeService.CATEGORY_GRAPPBOX_ID);
                     userDetailLaunch.setAction(GrappboxJustInTimeService.ACTION_SYNC_USER_DETAIL);
                     userDetailLaunch.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
                     userDetailLaunch.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, allUsers.getString(0));
 
-                    getContext().startActivity(userDetailLaunch);
+                    getContext().startService(userDetailLaunch);
                 } while (allUsers.moveToNext());
             }
         } finally {
@@ -299,6 +286,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public void syncConnectedUserRole(String apiToken, long uid) {
+        Log.d(LOG_TAG, "Sync projects started");
         HttpURLConnection connection = null;
         String returnedJson = null;
 
@@ -364,6 +352,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void syncBug(String apiToken, long projectId, long uid)
     {
+        Log.d(LOG_TAG, "Sync projects started");
         Intent launchBugSyncing = new Intent(getContext(), GrappboxJustInTimeService.class);
         launchBugSyncing.setAction(GrappboxJustInTimeService.ACTION_SYNC_BUGS);
         launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
@@ -374,6 +363,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void syncTimeline(String apiToken, long projectId)
     {
+        Log.d(LOG_TAG, "Sync projects started");
         //synchronize Timeline's list
         Cursor grappboxProjectIdCursor = getContext().getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(projectId), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         if (grappboxProjectIdCursor == null || !grappboxProjectIdCursor.moveToFirst())
@@ -430,6 +420,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void syncNextMeeting(String apiToken, long projectId)
     {
+        Log.d(LOG_TAG, "Sync projects started");
         //synchronize next meeting's informations
         Intent launchNextMeetingSyncing = new Intent(getContext(), GrappboxJustInTimeService.class);
         launchNextMeetingSyncing.setAction(GrappboxJustInTimeService.ACTION_SYNC_NEXT_MEETINGS);
@@ -440,50 +431,77 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
-        //TODO : check internet connection
-        Cursor registeredAccounts = getContext().getContentResolver().query(UserEntry.CONTENT_URI, accountsProjection, UserEntry.COLUMN_PASSWORD + " IS NOT NULL", null, null);
+        Log.d(LOG_TAG, "Sync Started");
+        if (!Utils.Network.haveInternetConnection(getContext())){
+            Log.d(LOG_TAG, "No internet connection, stop syncing...");
+            return;
+        }
+
+        AccountManager am = AccountManager.get(getContext());
         Calendar today = Calendar.getInstance();
         Calendar dateExpiration = Calendar.getInstance();
+        Cursor accountInfos = null, projectsCursor = null;
+        long uid;
+        try {
+            dateExpiration.setTimeInMillis(Long.parseLong(am.getUserData(account, Session.ACCOUNT_EXPIRATION_TOKEN)));
+            String token = am.getUserData(account, GrappboxJustInTimeService.EXTRA_API_TOKEN);
 
-        if (registeredAccounts == null || !registeredAccounts.moveToFirst())
-            return;
-        do {
-            String tokenExpiration = registeredAccounts.getString(COLUMN_TOKEN_EXPIRATION);
-            String token = "";
-            long uid = registeredAccounts.getLong(_ID);
-            Cursor projectsCursor = null;
-            try {
-                if (tokenExpiration == null || tokenExpiration.isEmpty())
-                    token = login(registeredAccounts);
-                dateExpiration.setTime(DateFormat.getDateTimeInstance().parse(tokenExpiration));
-                if (token.isEmpty() && dateExpiration.getTimeInMillis() <= today.getTimeInMillis() + (3600 * 1000 * 2) || registeredAccounts.getString(COLUMN_TOKEN).isEmpty())
-                    token = login(registeredAccounts);
-                else
-                    token = registeredAccounts.getString(COLUMN_TOKEN);
-                if (token == null)
-                    continue;
-                syncProjects(token);
-                syncUsers(token);
-                syncConnectedUserRole(token, uid);
-
-                projectsCursor =  getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, null, null, null);
-                if (projectsCursor == null || !projectsCursor.moveToFirst())
-                    continue;
-                do {
-                    long projectId = projectsCursor.getLong(0);
-
-                    syncNextMeeting(token, projectId);
-                    syncBug(token, projectId, uid);
-                    syncTimeline(token, projectId);
-                } while (projectsCursor.moveToNext());
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            } finally {
-                if (projectsCursor != null)
-                    projectsCursor.close();
+            //Control token validity and initialize current account details
+            Log.d(LOG_TAG, "Control token validity token = " + token);
+            if (token == null || token.isEmpty() || dateExpiration.getTimeInMillis() <= today.getTimeInMillis() + (3600 * 1000 * 2)){
+                Log.d(LOG_TAG, "Invalid token, retreive it");
+                AccountManagerFuture<Bundle> apiCredentials = am.getAuthToken(account, null, null, true, null, null);
+                if (apiCredentials.getResult().containsKey(AccountManager.KEY_INTENT))
+                    throw new AuthenticatorException("Authenticator need credential input by user, canceling sync...");
+                token = apiCredentials.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+                if (token == null || token.isEmpty())
+                    throw new AuthenticatorException("Returned token is null or empty [token = " + (token == null ? "(null)" : "(empty)") + "]");
+                Log.d(LOG_TAG, "Token retreived : " + token);
+                uid = syncAccountUser(token, account);
+                Log.d(LOG_TAG, "Account user synced UID = " + uid);
+            } else {
+                Log.d(LOG_TAG, "Current token valid, retreiving user detail from db");
+                accountInfos = getContext().getContentResolver().query(UserEntry.CONTENT_URI, accountsProjection, UserEntry.COLUMN_CONTACT_EMAIL + "=?", new String[]{account.name}, null);
+                if (accountInfos == null || !accountInfos.moveToFirst()){
+                    Log.d(LOG_TAG, "user not found in db, registering");
+                    uid = syncAccountUser(token, account);
+                } else {
+                    uid = accountInfos.getLong(_ID);
+                }
+                Log.d(LOG_TAG, "User retreived, UID = " + uid);
             }
-        } while (registeredAccounts.moveToNext());
+            syncProjects(token);
+            Log.d(LOG_TAG, "Projects synced");
+            syncUsers(token);
+            Log.d(LOG_TAG, "Users synced");
+            syncConnectedUserRole(token, uid);
+            Log.d(LOG_TAG, "Connected user role synced");
+            projectsCursor =  getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, null, null, null);
+            if (projectsCursor == null || !projectsCursor.moveToFirst()){
+                Log.e(LOG_TAG, "No projects found in DB!");
+                return;
+            }
+
+            do {
+                long projectId = projectsCursor.getLong(0);
+
+                syncNextMeeting(token, projectId);
+                syncBug(token, projectId, uid);
+                syncTimeline(token, projectId);
+            } while (projectsCursor.moveToNext());
+
+        } catch (IOException | JSONException | OperationApplicationException e) {
+            e.printStackTrace();
+        } catch(AuthenticatorException | OperationCanceledException e) {
+            Log.e(LOG_TAG, "Authenticator failed :" + e.getMessage());
+            e.printStackTrace();
+        } finally{
+            if (accountInfos != null)
+                accountInfos.close();
+            if (projectsCursor != null)
+                projectsCursor.close();
+        }
+        Log.d(LOG_TAG, "Sync ended");
     }
 
     public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
@@ -502,7 +520,6 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     public static void onAccountAdded(Account newAccount, Context context) {
         GrappboxSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
-        syncNow(newAccount, context);
     }
 
     public static Account[] getSyncAccounts(Context context) {
@@ -510,6 +527,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public static void syncNow(Account account, Context context) {
+        Log.d(LOG_TAG, "SyncNow called");
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);

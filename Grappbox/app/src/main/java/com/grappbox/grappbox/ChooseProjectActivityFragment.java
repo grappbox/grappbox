@@ -3,11 +3,13 @@ package com.grappbox.grappbox;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +19,30 @@ import android.widget.ListView;
 
 import com.grappbox.grappbox.adapter.ProjectListAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.GrappboxSyncAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class ChooseProjectActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private CursorAdapter _adapter;
+    private static final String LOG_TAG = ChooseProjectActivityFragment.class.getSimpleName();
+    private static final int PROJECT_LOADER = 0;
 
     public ChooseProjectActivityFragment() {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(PROJECT_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreateView started");
         View v = inflater.inflate(R.layout.fragment_choose_project, container, false);
         ListView projectList = (ListView) v.findViewById(R.id.list_projects);
 

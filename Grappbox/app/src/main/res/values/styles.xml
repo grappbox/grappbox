@@ -32,6 +32,7 @@
     <!-- System text input layout styling -->
     <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
         <item name="android:textColor">?attr/colorAccent</item>
+
     </style>
 
     <style name="BaseTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -64,7 +65,7 @@
     </style>
 
     <style name="TitleTextView" parent="TextView">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 </resources>

@@ -4,6 +4,8 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Parcel;
@@ -13,11 +15,14 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
@@ -40,7 +45,7 @@ public class AddAcountActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_add_account, container, false);
+        final View v = inflater.inflate(R.layout.fragment_add_account, container, false);
         final Intent process = getActivity().getIntent();
         if (process == null)
             throw new IllegalArgumentException();
@@ -50,6 +55,17 @@ public class AddAcountActivityFragment extends Fragment {
         mTILPassword = (TextInputLayout) v.findViewById(R.id.til_password);
         mAddAccount = (Button) v.findViewById(R.id.btn_add_account);
         mReceiver = new LoginReceiver(new Handler(), getActivity());
+
+        mPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                mAddAccount.performClick();
+                imm.hideSoftInputFromInputMethod(mPassword.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+                return true;
+            }
+        });
 
         mAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +86,7 @@ public class AddAcountActivityFragment extends Fragment {
                     return;
                 if (!Utils.Network.haveInternetConnection(getActivity()))
                 {
-                    if (getParentFragment() != null && getParentFragment().getView() != null)
-                        Snackbar.make(getParentFragment().getView(), R.string.error_network_disconnected, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(v, R.string.error_network_disconnected, Snackbar.LENGTH_LONG).show();
                     return;
                 }
                 Account newAccount = new Account(mMail.getText().toString(), getString(R.string.sync_account_type));
@@ -79,8 +94,7 @@ public class AddAcountActivityFragment extends Fragment {
 
                 if (am.getPassword(newAccount) != null){
                     //The account is already synchronized return error
-                    if (getParentFragment() != null && getParentFragment().getView() != null)
-                        Snackbar.make(getParentFragment().getView(), R.string.error_account_already_registered, Snackbar.LENGTH_LONG);
+                    Snackbar.make(v, R.string.error_account_already_registered, Snackbar.LENGTH_LONG);
                     return;
                 }
 
@@ -94,8 +108,6 @@ public class AddAcountActivityFragment extends Fragment {
         });
         return v;
     }
-
-
 }
 
 @SuppressLint("ParcelCreator")

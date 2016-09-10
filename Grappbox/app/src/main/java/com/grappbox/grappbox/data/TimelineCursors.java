@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
@@ -17,10 +18,10 @@ import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 public class TimelineCursors {
     private static final SQLiteQueryBuilder sQueryBuilder;
 
-    private static final String sProjectIdSelection = ProjectEntry.TABLE_NAME + "." + ProjectEntry._ID;
-    private static final String sGrappboxProjectIdSelection = ProjectEntry.TABLE_NAME + "." + ProjectEntry.COLUMN_GRAPPBOX_ID;
-    private static final String sIdSelection = TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID;
-    private static final String sGrappboxIdSelection = TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID;
+    private static final String sProjectIdSelection = ProjectEntry.TABLE_NAME + "." + ProjectEntry._ID + "=?";
+    private static final String sGrappboxProjectIdSelection = ProjectEntry.TABLE_NAME + "." + ProjectEntry.COLUMN_GRAPPBOX_ID + "=?";
+    private static final String sIdSelection = TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID + "=?";
+    private static final String sGrappboxIdSelection = TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID + "=?";
 
     static {
         sQueryBuilder = new SQLiteQueryBuilder();

@@ -29,7 +29,7 @@ public class Utils {
 
     public static class Date {
         public final static SimpleDateFormat grappboxFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        public final static TimeZone grappboxTZ = TimeZone.getTimeZone("Europe/Paris");
+        public final static TimeZone grappboxTZ = TimeZone.getTimeZone("UTC");
         public final static TimeZone phoneTZ = TimeZone.getDefault();
         public final static TimeZone utcTZ = TimeZone.getTimeZone("UTC");
 
