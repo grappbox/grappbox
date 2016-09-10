@@ -68,7 +68,7 @@ class Dependencies
      * @param MongoBundle\Document\Task $dependenceTask
      * @return self
      */
-    public function setDependenceTask(MongoBundle\Document\Task $dependenceTask)
+    public function setDependenceTask($dependenceTask)
     {
         $this->dependence_task = $dependenceTask;
 
@@ -91,7 +91,7 @@ class Dependencies
      * @param MongoBundle\Document\Task $task
      * @return self
      */
-    public function setTask(MongoBundle\Document\Task $task)
+    public function setTask($task)
     {
         $this->task = $task;
 
