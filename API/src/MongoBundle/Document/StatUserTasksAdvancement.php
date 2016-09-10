@@ -186,7 +186,7 @@ class StatUserTasksAdvancement
      * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject(MongoBundle\Document\Project $project = null)
+    public function setProject(\MongoBundle\Document\Project $project = null)
     {
         $this->project = $project;
 
