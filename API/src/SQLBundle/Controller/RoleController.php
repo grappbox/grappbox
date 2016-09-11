@@ -1774,7 +1774,7 @@ class RoleController extends RolesAndTokenVerificationController
 	* @api {get} /V0.3/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get user role for a project
 	* @apiName getRoleByProjectAndUser
 	* @apiGroup Roles
-	* @apiDescription Get uesr role for a given project, if userId not specified assumed reference user is the connected user
+	* @apiDescription Get user role for a given project, if userId not specified assumed reference user is the connected user
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
