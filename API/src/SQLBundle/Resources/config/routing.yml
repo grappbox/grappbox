@@ -213,22 +213,22 @@ v2_bugtracker_reopenTicket:
 # -----------------------------------------------------------------------
 v2_cloud_streamOpenAction:
   path:     cloud/stream/{token}/{idProject}/{safePassword}
-  defaults:   { _controller: SQLBundle:Cloud:openStream, safePassword: null, _format: json}
+  defaults:   { _controller: SQLBundle:Cloud:openStream, safePassword: null, _format: json }
   methods: [POST]
 
 v2_cloud_streamCloseAction:
   path:     cloud/stream/{token}/{projectId}/{streamId}
-  defaults: { _controller: SQLBundle:Cloud:closeStream, _format: json}
+  defaults: { _controller: SQLBundle:Cloud:closeStream, _format: json }
   methods: [DELETE]
 
 v2_cloud_sendFile:
   path:     cloud/file
-  defaults:   { _controller: SQLBundle:Cloud:sendFile , _format: json}
+  defaults:   { _controller: SQLBundle:Cloud:sendFile , _format: json }
   methods: [PUT]
 
 v2_cloud_getList:
     path:       cloud/list/{token}/{idProject}/{path}/{password}
-    defaults:   { _controller: SQLBundle:Cloud:getList,  password: null, _format: json}
+    defaults:   { _controller: SQLBundle:Cloud:getList,  password: null, _format: json }
     methods: [GET]
 
 v2_cloud_getFile:
@@ -248,7 +248,7 @@ v2_cloud_setSafePass:
 
 v2_cloud_delete:
     path:       cloud/file/{token}/{projectId}/{path}/{password}
-    defaults:   { _controller: SQLBundle:Cloud:del, password: null, _format: json}
+    defaults:   { _controller: SQLBundle:Cloud:del, password: null, _format: json }
     methods: [DELETE]
 
 v2_cloud_createDir:
@@ -258,7 +258,7 @@ v2_cloud_createDir:
 
 v2_cloud_delete_secured:
     path:       cloud/filesecured/{token}/{projectId}/{path}/{password}/{safe_password}
-    defaults:   { _controller: SQLBundle:Cloud:delSecured, safe_password: null, _format: json}
+    defaults:   { _controller: SQLBundle:Cloud:delSecured, safe_password: null, _format: json }
     methods: [DELETE]
 
 # v2_cloud_createCloud: #TODO : Delete this route, it's a test route
@@ -518,7 +518,7 @@ v2_planning_getDayPlanning:
 
 v2_planning_getWeekPlanning:
     path:       /planning/getweek/{token}/{date}
-    defaults:   { _controller: SQLBundle:Planning:getWeekPlanning, _format: json}
+    defaults:   { _controller: SQLBundle:Planning:getWeekPlanning, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
         date:   \d+-\d+-\d+
@@ -674,46 +674,46 @@ v2_project_getProjectLogo:
 # -----------------------------------------------------------------------
 v2_role_addProjectRoles:
     path:       roles/addprojectroles
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:addProjectRoles, _format: json }
+    defaults:   { _controller: SQLBundle:Role:addProjectRoles, _format: json }
     methods: [POST]
 
 v2_role_delProjectRoles:
     path:       roles/delprojectroles/{token}/{id}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:delProjectRoles, _format: json }
+    defaults:   { _controller: SQLBundle:Role:delProjectRoles, _format: json }
     requirements:
         id: \d+
     methods: [DELETE]
 
 v2_role_putProjectRoles:
     path:       roles/putprojectroles
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:updateProjectRoles, _format: json }
+    defaults:   { _controller: SQLBundle:Role:updateProjectRoles, _format: json }
     methods: [PUT]
 
 v2_role_getProjectRoles:
     path:       roles/getprojectroles/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:getProjectRoles, _format: json }
+    defaults:   { _controller: SQLBundle:Role:getProjectRoles, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
 
 v2_role_assignPersonToRole:
     path:       roles/assignpersontorole
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:assignPersonToRole, _format: json }
+    defaults:   { _controller: SQLBundle:Role:assignPersonToRole, _format: json }
     methods: [POST]
 
 v2_role_updatePersonRole:
     path:       roles/putpersonrole
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:updatePersonRole, _format: json }
+    defaults:   { _controller: SQLBundle:Role:updatePersonRole, _format: json }
     methods: [PUT]
 
 v2_role_getUserRoles:
     path:       roles/getuserroles/{token}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:getUserRoles, _format: json }
+    defaults:   { _controller: SQLBundle:Role:getUserRoles, _format: json }
     methods: [GET]
 
 v2_role_delPersonRole:
     path:       roles/delpersonrole/{token}/{projectId}/{userId}/{roleId}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:delPersonRole, _format: json }
+    defaults:   { _controller: SQLBundle:Role:delPersonRole, _format: json }
     requirements:
         projectId: \d+
         userId: \d+
@@ -722,7 +722,7 @@ v2_role_delPersonRole:
 
 v2_role_getRoleByProjectAndUser:
     path:       roles/getrolebyprojectanduser/{token}/{projectId}/{userId}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:getRoleByProjectAndUser, _format: json }
+    defaults:   { _controller: SQLBundle:Role:getRoleByProjectAndUser, userId: 0, _format: json }
     requirements:
         projectId: \d+
         userId: \d+
@@ -730,25 +730,14 @@ v2_role_getRoleByProjectAndUser:
 
 v2_role_getUsersForRole:
     path:       roles/getusersforrole/{token}/{roleId}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:getUsersForRole, _format: json }
+    defaults:   { _controller: SQLBundle:Role:getUsersForRole, _format: json }
     requirements:
         roleId: \d+
     methods: [GET]
 
-v2_role_getUserConnectedRolesInformations:
-    path:       roles/getuserrolesinformations/{token}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:getUserConnectedRolesInfos, _format: json }
-    methods: [GET]
-
-v2_role_getUserRolesInformations:
-    path:       roles/getuserrolesinformations/{token}/{userId}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:getUserRolesInfos, _format: json }
-    requirements:
-        roleId: \d+
-    methods: [GET]
 v2_role_getUserRoleForPart:
     path:       roles/getuserroleforpart/{token}/{userId}/{projectId}/{part}
-    defaults:   { _controller: SQLBundle:RolesAndTokenVerification:getUserRoleForPart, _format: json }
+    defaults:   { _controller: SQLBundle:Role:getUserRoleForPart, _format: json }
     requirements:
         userId:     \d+
         projectId:  \d+
