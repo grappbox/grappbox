@@ -583,7 +583,7 @@ class User implements UserInterface
      *
      * @param MongoBundle\Document\TimelineMessage $messageCreator
      */
-    public function addMessageCreator(Message $messageCreator)
+    public function addMessageCreator( $messageCreator)
     {
         $this->message_creator[] = $messageCreator;
     }
@@ -592,7 +592,7 @@ class User implements UserInterface
      * Remove message_creator
      * @param MongoBundle\Document\TimelineMessage $messageCreator
      */
-    public function removeMessageCreator(Message $messageCreator)
+    public function removeMessageCreator( $messageCreator)
     {
         $this->message_creator->removeElement($messageCreator);
     }
