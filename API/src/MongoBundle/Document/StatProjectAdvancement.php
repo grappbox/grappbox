@@ -163,7 +163,7 @@ class StatProjectAdvancement
      * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject(\MongoBundle\Entity\Project $project = null)
+    public function setProject( $project)
     {
         $this->project = $project;
 
