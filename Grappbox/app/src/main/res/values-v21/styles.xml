@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Dashboard application theme. Lolipop compatibility -->
-    <style name="DashboardTheme" parent="BaseTheme">
+    <style name="DashboardTheme" parent="@style/BaseTheme">
         <item name="colorPrimary">@color/GrappBlackMedium</item>
         <item name="colorPrimaryDark">@color/GrappRed</item>
         <item name="colorAccent">@color/GrappRed</item>
@@ -10,7 +10,18 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
+        
     </style>
 
+    <style name="Toolbar.TextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
 
+    </style>
+
+    <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimaryDark</item>
+        <item name="android:textColor">@android:color/white</item>
+
+    </style>
 </resources>

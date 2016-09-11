@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
-import com.grappbox.grappbox.model.UserModel;
 
 /**
  * Created by marcw on 30/08/2016.

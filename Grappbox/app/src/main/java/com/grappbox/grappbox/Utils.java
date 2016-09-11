@@ -1,10 +1,13 @@
 package com.grappbox.grappbox;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.net.ConnectivityManagerCompat;
 import android.util.Base64;
+import android.util.TypedValue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -130,6 +133,19 @@ public class Utils {
 
         public static String decryptString(String cryptedString) {
             return new String(Base64.decode(cryptedString, Base64.DEFAULT));
+        }
+    }
+
+    public static class Color {
+        public static int getThemeAccentColor(Context context){
+            TypedValue typedValue = new TypedValue();
+
+            TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });
+            int color = a.getColor(0, 0);
+
+            a.recycle();
+
+            return color;
         }
     }
 }

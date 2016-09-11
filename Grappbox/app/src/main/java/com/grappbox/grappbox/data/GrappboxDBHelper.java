@@ -59,6 +59,12 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + ProjectEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " UNIQUE (" + ProjectEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
+        final String SQL_CREATE_PROJECT_ACCOUNT_TABLE = "CREATE TABLE " + ProjectAccountEntry.TABLE_NAME + " (" +
+                ProjectAccountEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ProjectAccountEntry.COLUMN_ACCOUNT_NAME + " TEXT NOT NULL, " +
+                ProjectAccountEntry.COLUMN_PROJECT_LOCAL_ID + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + ProjectAccountEntry.COLUMN_PROJECT_LOCAL_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "));";
+
         final String SQL_CREATE_OCCUPATION_TABLE = "CREATE TABLE " + OccupationEntry.TABLE_NAME + " (" +
                 OccupationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 OccupationEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
@@ -192,6 +198,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
 
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
+        db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
         db.execSQL(SQL_CREATE_OCCUPATION_TABLE);
         db.execSQL(SQL_CREATE_EVENT_TYPE_TABLE);
         db.execSQL(SQL_CREATE_EVENT_TABLE);

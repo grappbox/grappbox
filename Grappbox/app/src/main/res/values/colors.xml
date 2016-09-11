@@ -18,5 +18,7 @@
     <color name="GrappWhiteDark">#F0F0F0</color>
     <color name="GrappWhiteMedium">#FAFAFA</color>
     <color name="GrappWhiteLight">#FFFFFF</color>
+    <color name="GrappTransparent">#00000000</color>
+
 
 </resources>

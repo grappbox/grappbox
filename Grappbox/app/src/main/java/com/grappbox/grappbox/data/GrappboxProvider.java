@@ -23,6 +23,7 @@ public class GrappboxProvider extends ContentProvider {
     public static final int PROJECT_ALL_BY_USER = 101;
     public static final int PROJECT_ONE_BY_ID = 102;
     public static final int PROJECT_ONE_BY_GRAPPBOX_ID = 103;
+    public static final int PROJECT_ACCOUNT = 104;
 
     public static final int USER = 110;
     public static final int USER_BY_ID = 111;
@@ -99,9 +100,12 @@ public class GrappboxProvider extends ContentProvider {
 
         //Projects related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_PROJECT, PROJECT); //General URI to specific request or retreive all objects
-        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_PROJECT + "/user/#", PROJECT_ALL_BY_USER);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_PROJECT + "/user/0", PROJECT_ALL_BY_USER);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_PROJECT + "/#", PROJECT_ONE_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_PROJECT + "/*", PROJECT_ONE_BY_GRAPPBOX_ID);
+
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_PROJECT_ACCOUNT, PROJECT_ACCOUNT);
+
 
         //Users related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER, USER);
@@ -205,6 +209,9 @@ public class GrappboxProvider extends ContentProvider {
             case PROJECT_ONE_BY_ID:
             case PROJECT_ONE_BY_GRAPPBOX_ID:
                 return GrappboxContract.ProjectEntry.CONTENT_ITEM_TYPE;
+
+            case PROJECT_ACCOUNT:
+                return GrappboxContract.ProjectEntry.CONTENT_TYPE;
 
             case USER:
                 return GrappboxContract.UserEntry.CONTENT_TYPE;
@@ -319,6 +326,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case PROJECT_ONE_BY_GRAPPBOX_ID:
                 retCursor = ProjectCursors.query_ProjectOneByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case PROJECT_ACCOUNT:
+                retCursor = ProjectCursors.query_ProjectWithAccount(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case USER:
                 retCursor = UserCursors.query_User(uri, projection, selection, args, sortOrder, mOpenHelper);
@@ -492,6 +502,9 @@ public class GrappboxProvider extends ContentProvider {
             case PROJECT:
                 returnedUri = ProjectCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case PROJECT_ACCOUNT:
+                returnedUri = ProjectCursors.insert_account(uri, contentValues, mOpenHelper);
+                break;
             case ROLE:
                 returnedUri = RoleCursors.insert(uri, contentValues, mOpenHelper);
                 break;
@@ -538,7 +551,13 @@ public class GrappboxProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] args) {
-        throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
+        switch (sUriMatcher.match(uri)) {
+            case PROJECT_ACCOUNT:
+                return ProjectCursors.update_account(uri, contentValues, selection, args, mOpenHelper);
+            default:
+                throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
+        }
+
     }
 
     @Override

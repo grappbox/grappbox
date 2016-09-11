@@ -70,9 +70,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DashboardActivity"
+            android:name=".ProjectActivity"
             android:label="@string/title_activity_dashboard"
-            android:theme="@style/BaseTheme">
+            android:theme="@style/DashboardTheme">
 
         </activity>
     </application>

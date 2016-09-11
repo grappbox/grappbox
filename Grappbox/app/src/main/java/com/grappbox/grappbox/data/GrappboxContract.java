@@ -15,6 +15,7 @@ public class GrappboxContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_PROJECT = "project";
+    public static final String PATH_PROJECT_ACCOUNT = "project_account";
     public static final String PATH_USER = "user";
     public static final String PATH_OCCUPATION = "occupation";
     public static final String PATH_EVENT = "event";
@@ -57,6 +58,10 @@ public class GrappboxContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        public static Uri buildWithJoint(){
+            return CONTENT_URI.buildUpon().appendPath("user").appendPath("0").build();
+        }
+
         public static Uri buildProjectWithArgs(HashMap<String, String> args)
         {
             Uri.Builder projectUriBuilder = CONTENT_URI.buildUpon();
@@ -64,6 +69,19 @@ public class GrappboxContract {
             for (String key : args.keySet())
                 projectUriBuilder.appendQueryParameter(key, args.get(key));
             return projectUriBuilder.build();
+        }
+    }
+    public static final class ProjectAccountEntry implements BaseColumns {
+        public static final String TABLE_NAME = "project_account";
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_PROJECT_ACCOUNT).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PROJECT;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PROJECT;
+
+        public static final String COLUMN_PROJECT_LOCAL_ID = "project_id";
+        public static final String COLUMN_ACCOUNT_NAME = "account_name";
+
+        public static Uri buildProjectAccountWithLocalIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 

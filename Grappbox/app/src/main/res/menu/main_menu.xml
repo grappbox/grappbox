@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_dashboard"
+            android:title="@string/title_dashboard" />
+        <item
+            android:id="@+id/nav_calendar"
+            android:icon="@drawable/ic_calendar"
+            android:title="@string/title_calendar" />
+        <item
+            android:id="@+id/nav_cloud"
+            android:icon="@drawable/ic_cloud"
+            android:title="@string/title_cloud" />
+        <item
+            android:id="@+id/nav_timeline"
+            android:icon="@drawable/ic_timeline"
+            android:title="@string/title_timeline" />
+        <item
+            android:id="@+id/nav_bugtracker"
+            android:icon="@drawable/ic_bugtracker"
+            android:title="@string/title_bugtracker" />
+        <item
+            android:id="@+id/nav_tasks"
+            android:icon="@drawable/ic_task"
+            android:title="@string/title_tasks" />
+        <item
+            android:id="@+id/nav_gantt"
+            android:icon="@drawable/ic_gantt"
+            android:title="@string/title_gantt" />
+        <item
+            android:id="@+id/nav_whiteboard"
+            android:icon="@drawable/ic_whiteboard"
+            android:title="@string/title_whiteboard" />
+    </group>
+
+    <item android:title="@string/title_project">
+        <menu>
+            <item
+                android:id="@+id/nav_project_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/title_project_settings" />
+            <item
+                android:id="@+id/nav_change_project"
+                android:icon="@drawable/ic_home"
+                android:title="@string/title_change_project" />
+            <item
+                android:id="@+id/nav_change_account"
+                android:icon="@drawable/default_logo_avatar"
+                android:title="@string/title_change_account" />
+        </menu>
+    </item>
+
+</menu>

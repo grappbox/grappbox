@@ -1,20 +1,4 @@
 <resources>
-    <!-- Base application theme -->
-    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/GrappBlackMedium</item>
-        <item name="colorPrimaryDark">@color/GrappBlackMedium</item>
-        <item name="colorAccent">@color/GrappRed</item>
-
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <!-- Dashboard application theme. -->
-    <style name="DashboardTheme" parent="BaseTheme">
-        <item name="colorPrimary">@color/GrappRed</item>
-        <item name="colorPrimaryDark">@color/GrappBlackMedium</item>
-        <item name="colorAccent">@color/GrappRed</item>
-    </style>
 
     <!-- Action Bar styling -->
     <style name="BaseTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -37,10 +21,16 @@
 
     <style name="BaseTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="Toolbar.TextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+
+    </style>
+
     <style name="Toolbar">
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:background">?attr/colorPrimaryDark</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAppearance">@style/Toolbar.TextAppearance</item>
     </style>
 
     <!-- Action Button Styling -->
@@ -67,5 +57,57 @@
     <style name="TitleTextView" parent="TextView">
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- THEMES -->
+    <!-- Base application theme -->
+    <style name="BaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/GrappBlackMedium</item>
+        <item name="colorPrimaryDark">@color/GrappBlackMedium</item>
+        <item name="colorAccent">@color/GrappRed</item>
+        <item name="toolbarStyle">@style/Toolbar</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- application projects theme. -->
+    <style name="DashboardTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappRed</item>
+        <item name="colorAccent">@color/GrappRed</item>
+    </style>
+
+    <style name="CalendarTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappBlue</item>
+        <item name="colorAccent">@color/GrappBlue</item>
+    </style>
+
+    <style name="CloudTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappYellow</item>
+        <item name="colorAccent">@color/GrappYellow</item>
+    </style>
+
+    <style name="TimelineTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappOrange</item>
+        <item name="colorAccent">@color/GrappOrange</item>
+    </style>
+
+    <style name="BugtrackerTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappPurple</item>
+        <item name="colorAccent">@color/GrappPurple</item>
+    </style>
+
+    <style name="TaskTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappBlue</item>
+        <item name="colorAccent">@color/GrappBlue</item>
+    </style>
+
+    <style name="GanttTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappBlue</item>
+        <item name="colorAccent">@color/GrappBlue</item>
+    </style>
+
+    <style name="WhiteboardTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappGreen</item>
+        <item name="colorAccent">@color/GrappGreen</item>
     </style>
 </resources>
