@@ -1875,10 +1875,10 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($purs === null)
 			return $this->setBadRequest("13.9.4", "Role", "getrolebyprojectanduser", "Bad Parameters");
 
-		$role = $em->getRepository('SQLBundle:Role')->find($purs[0]->getRoleId());
-
 		if (count($purs) == 0)
 			return $this->setNoDataSuccess("1.13.3", "Role", "getrolebyprojectanduser");
+
+		$role = $em->getRepository('SQLBundle:Role')->find($purs[0]->getRoleId());
 
 		return $this->setSuccess("1.13.1", "Role", "getrolebyprojectanduser", "Complete Success", $role->objectToArray());
 	}

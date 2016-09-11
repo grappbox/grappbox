@@ -1298,6 +1298,12 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($isOnProject == false)
 			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: userId");
 
+		$userRoleLink = $em->getRepository('SQLBundle:ProjectUserRole')->findBy(array('projectId'=> $project->getId(), 'userId' => $userId));
+		foreach ($userRoleLink as $key => $userRole) {
+			$em->remove($userRole);
+			$em->flush();
+		}
+
 		$project->removeUser($userToRemove);
 		$em->flush();
 
