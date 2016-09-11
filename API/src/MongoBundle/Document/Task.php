@@ -392,7 +392,7 @@ class Task
     /**
      * Add ressources
      *
-     * @param MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
     public function addRessource($ressources)
     {
@@ -402,7 +402,7 @@ class Task
     /**
      * Remove ressources
      *
-     * @param MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
     public function removeRessource($ressources)
     {

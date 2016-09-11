@@ -860,7 +860,7 @@ class User implements UserInterface
     /**
      * Remove ressources
      *
-     * @param MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
     public function removeRessource( $ressources)
     {

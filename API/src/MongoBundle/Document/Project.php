@@ -891,7 +891,7 @@ class Project
     /**
      * Remove statLateTasks
      *
-     * @param MongoBundle\Entity\StatLateTasks $statLateTasks
+     * @param MongoBundle\Document\StatLateTasks $statLateTasks
      */
     public function removeStatLateTasks( $statLateTasks)
     {
