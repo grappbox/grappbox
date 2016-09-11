@@ -60,7 +60,7 @@ class Timeline
       );
     }
 
-    
+
     /**
      * Get id
      *
@@ -164,7 +164,7 @@ class Timeline
      *
      * @param MongoBundle\Document\TimelineMessage $timelineMessage
      */
-    public function addTimelineMessage(Message $timelineMessage)
+    public function addTimelineMessage($timelineMessage)
     {
         $this->timelineMessages[] = $timelineMessage;
     }
@@ -174,7 +174,7 @@ class Timeline
      *
      * @param MongoBundle\Document\TimelineMessage $timelineMessage
      */
-    public function removeTimelineMessage(Message $timelineMessage)
+    public function removeTimelineMessage($timelineMessage)
     {
         $this->timelineMessages->removeElement($timelineMessage);
     }
