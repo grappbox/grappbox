@@ -294,7 +294,7 @@ class Bug
      * @param MongoBundle\Document\Project $projects
      * @return self
      */
-    public function setProjects(\MongoBundle\Document\Project $projects)
+    public function setProjects( $projects)
     {
         $this->projects = $projects;
         return $this;
@@ -316,7 +316,7 @@ class Bug
      * @param MongoBundle\Document\User $creator
      * @return self
      */
-    public function setCreator(\MongoBundle\Document\User $creator)
+    public function setCreator( $creator)
     {
         $this->creator = $creator;
         return $this;
@@ -337,7 +337,7 @@ class Bug
      *
      * @param MongoBundle\Document\User $user
      */
-    public function addUser(\MongoBundle\Document\User $user)
+    public function addUser( $user)
     {
         $this->users[] = $user;
     }
@@ -347,7 +347,7 @@ class Bug
      *
      * @param MongoBundle\Document\User $user
      */
-    public function removeUser(\MongoBundle\Document\User $user)
+    public function removeUser( $user)
     {
         $this->users->removeElement($user);
     }
@@ -367,7 +367,7 @@ class Bug
      *
      * @param MongoBundle\Document\Tag $tag
      */
-    public function addTag(\MongoBundle\Document\Tag $tag)
+    public function addTag( $tag)
     {
         $this->tags[] = $tag;
     }
@@ -377,7 +377,7 @@ class Bug
      *
      * @param MongoBundle\Document\Tag $tag
      */
-    public function removeTag(\MongoBundle\Document\Tag $tag)
+    public function removeTag( $tag)
     {
         $this->tags->removeElement($tag);
     }

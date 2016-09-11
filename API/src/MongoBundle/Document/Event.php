@@ -277,7 +277,7 @@ class Event
      * @param MongoBundle\Document\Project $projects
      * @return self
      */
-    public function setProjects(\MongoBundle\Document\Project $projects)
+    public function setProjects( $projects)
     {
         $this->projects = $projects;
         return $this;
@@ -299,7 +299,7 @@ class Event
      * @param MongoBundle\Document\EventType $eventtypes
      * @return self
      */
-    public function setEventtypes(\MongoBundle\Document\EventType $eventtypes)
+    public function setEventtypes( $eventtypes)
     {
         $this->eventtypes = $eventtypes;
         return $this;
@@ -321,7 +321,7 @@ class Event
      * @param MongoBundle\Document\User $creatorUser
      * @return self
      */
-    public function setCreatorUser(\MongoBundle\Document\User $creatorUser)
+    public function setCreatorUser( $creatorUser)
     {
         $this->creator_user = $creatorUser;
         return $this;
@@ -342,7 +342,7 @@ class Event
      *
      * @param MongoBundle\Document\User $user
      */
-    public function addUser(\MongoBundle\Document\User $user)
+    public function addUser( $user)
     {
         $this->users[] = $user;
     }
@@ -352,7 +352,7 @@ class Event
      *
      * @param MongoBundle\Document\User $user
      */
-    public function removeUser(\MongoBundle\Document\User $user)
+    public function removeUser( $user)
     {
         $this->users->removeElement($user);
     }

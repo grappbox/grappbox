@@ -472,7 +472,7 @@ class Project
      *
      * @param MongoBundle\Document\Task $task
      */
-    public function addTask(\MongoBundle\Document\Task $task)
+    public function addTask( $task)
     {
         $this->tasks[] = $task;
     }
@@ -482,7 +482,7 @@ class Project
      *
      * @param MongoBundle\Document\Task $task
      */
-    public function removeTask(\MongoBundle\Document\Task $task)
+    public function removeTask( $task)
     {
         $this->tasks->removeElement($task);
     }
@@ -502,7 +502,7 @@ class Project
      *
      * @param MongoBundle\Document\Bug $bug
      */
-    public function addBug(\MongoBundle\Document\Bug $bug)
+    public function addBug( $bug)
     {
         $this->bugs[] = $bug;
     }
@@ -512,7 +512,7 @@ class Project
      *
      * @param MongoBundle\Document\Bug $bug
      */
-    public function removeBug(\MongoBundle\Document\Bug $bug)
+    public function removeBug( $bug)
     {
         $this->bugs->removeElement($bug);
     }
@@ -532,7 +532,7 @@ class Project
      *
      * @param MongoBundle\Document\Timeline $timeline
      */
-    public function addTimeline(\MongoBundle\Document\Timeline $timeline)
+    public function addTimeline( $timeline)
     {
         $this->timelines[] = $timeline;
     }
@@ -542,7 +542,7 @@ class Project
      *
      * @param MongoBundle\Document\Timeline $timeline
      */
-    public function removeTimeline(\MongoBundle\Document\Timeline $timeline)
+    public function removeTimeline( $timeline)
     {
         $this->timelines->removeElement($timeline);
     }
@@ -562,7 +562,7 @@ class Project
      *
      * @param MongoBundle\Document\Event $event
      */
-    public function addEvent(\MongoBundle\Document\Event $event)
+    public function addEvent( $event)
     {
         $this->events[] = $event;
     }
@@ -572,7 +572,7 @@ class Project
      *
      * @param MongoBundle\Document\Event $event
      */
-    public function removeEvent(\MongoBundle\Document\Event $event)
+    public function removeEvent( $event)
     {
         $this->events->removeElement($event);
     }
@@ -592,7 +592,7 @@ class Project
      *
      * @param MongoBundle\Document\Whiteboard $whiteboard
      */
-    public function addWhiteboard(\MongoBundle\Document\Whiteboard $whiteboard)
+    public function addWhiteboard($whiteboard)
     {
         $this->whiteboards[] = $whiteboard;
     }
@@ -602,7 +602,7 @@ class Project
      *
      * @param MongoBundle\Document\Whiteboard $whiteboard
      */
-    public function removeWhiteboard(\MongoBundle\Document\Whiteboard $whiteboard)
+    public function removeWhiteboard($whiteboard)
     {
         $this->whiteboards->removeElement($whiteboard);
     }
@@ -622,7 +622,7 @@ class Project
      *
      * @param MongoBundle\Document\Role $role
      */
-    public function addRole(\MongoBundle\Document\Role $role)
+    public function addRole( $role)
     {
         $this->roles[] = $role;
     }
@@ -632,7 +632,7 @@ class Project
      *
      * @param MongoBundle\Document\Role $role
      */
-    public function removeRole(\MongoBundle\Document\Role $role)
+    public function removeRole( $role)
     {
         $this->roles->removeElement($role);
     }
@@ -652,7 +652,7 @@ class Project
      *
      * @param MongoBundle\Document\Gantt $gantt
      */
-    public function addGantt(\MongoBundle\Document\Gantt $gantt)
+    public function addGantt( $gantt)
     {
         $this->gantts[] = $gantt;
     }
@@ -662,7 +662,7 @@ class Project
      *
      * @param MongoBundle\Document\Gantt $gantt
      */
-    public function removeGantt(\MongoBundle\Document\Gantt $gantt)
+    public function removeGantt( $gantt)
     {
         $this->gantts->removeElement($gantt);
     }
@@ -683,7 +683,7 @@ class Project
      * @param MongoBundle\Document\User $creatorUser
      * @return self
      */
-    public function setCreatorUser(\MongoBundle\Document\User $creatorUser)
+    public function setCreatorUser( $creatorUser)
     {
         $this->creator_user = $creatorUser;
         return $this;
@@ -704,7 +704,7 @@ class Project
      *
      * @param MongoBundle\Document\User $user
      */
-    public function addUser(\MongoBundle\Document\User $user)
+    public function addUser( $user)
     {
         $this->users[] = $user;
     }
@@ -714,7 +714,7 @@ class Project
      *
      * @param MongoBundle\Document\User $user
      */
-    public function removeUser(\MongoBundle\Document\User $user)
+    public function removeUser( $user)
     {
         $this->users->removeElement($user);
     }
@@ -734,7 +734,7 @@ class Project
      *
      * @param MongoBundle\Document\CustomerAccess $customersAccess
      */
-    public function addCustomersAccess(\MongoBundle\Document\CustomerAccess $customersAccess)
+    public function addCustomersAccess( $customersAccess)
     {
         $this->customers_access[] = $customersAccess;
     }
@@ -744,7 +744,7 @@ class Project
      *
      * @param MongoBundle\Document\CustomerAccess $customersAccess
      */
-    public function removeCustomersAccess(\MongoBundle\Document\CustomerAccess $customersAccess)
+    public function removeCustomersAccess( $customersAccess)
     {
         $this->customers_access->removeElement($customersAccess);
     }
@@ -764,7 +764,7 @@ class Project
      *
      * @param MongoBundle\Document\Tag $tag
      */
-    public function addTag(\MongoBundle\Document\Tag $tag)
+    public function addTag( $tag)
     {
         $this->tags[] = $tag;
     }
@@ -774,7 +774,7 @@ class Project
      *
      * @param MongoBundle\Document\Tag $tag
      */
-    public function removeTag(\MongoBundle\Document\Tag $tag)
+    public function removeTag( $tag)
     {
         $this->tags->removeElement($tag);
     }
@@ -817,7 +817,7 @@ class Project
      *
      * @param MongoBundle\Document\Color $colors
      */
-    public function addColor(\MongoBundle\Document\Color $colors)
+    public function addColor( $colors)
     {
         $this->colors[] = $colors;
 
@@ -829,7 +829,7 @@ class Project
      *
      * @param  MongoBundle\Document\Color $colors
      */
-    public function removeColor(\MongoBundle\Document\Color $colors)
+    public function removeColor( $colors)
     {
         $this->colors->removeElement($colors);
     }
@@ -849,7 +849,7 @@ class Project
      *
      * @param MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement
      */
-    public function addStatProjectAdvancement(\MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
+    public function addStatProjectAdvancement( $statProjectAdvancement)
     {
         $this->statProjectAdvancement[] = $statProjectAdvancement;
 
@@ -861,7 +861,7 @@ class Project
      *
      * @param MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement
      */
-    public function removeStatProjectAdvancement(\MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement)
+    public function removeStatProjectAdvancement( $statProjectAdvancement)
     {
         $this->statProjectAdvancement->removeElement($statProjectAdvancement);
     }
@@ -881,7 +881,7 @@ class Project
      *
      * @param MongoBundle\Document\StatLateTasks $statLateTasks
      */
-    public function addStatLateTasks(\MongoBundle\Document\StatLateTasks $statLateTasks)
+    public function addStatLateTasks( $statLateTasks)
     {
         $this->statLateTasks[] = $statLateTasks;
 
@@ -891,9 +891,9 @@ class Project
     /**
      * Remove statLateTasks
      *
-     * @param \MongoBundle\Entity\StatLateTasks $statLateTasks
+     * @param MongoBundle\Document\StatLateTasks $statLateTasks
      */
-    public function removeStatLateTasks(\MongoBundle\Document\StatLateTasks $statLateTasks)
+    public function removeStatLateTasks( $statLateTasks)
     {
         $this->statLateTasks->removeElement($statLateTasks);
     }
@@ -913,7 +913,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsEvolution $statBugsEvolution
      */
-    public function addStatBugsEvolution(\MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
+    public function addStatBugsEvolution( $statBugsEvolution)
     {
         $this->statBugsEvolution[] = $statBugsEvolution;
 
@@ -925,7 +925,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsEvolution $statBugsEvolution
      */
-    public function removeStatBugsEvolution(\MongoBundle\Document\StatBugsEvolution $statBugsEvolution)
+    public function removeStatBugsEvolution( $statBugsEvolution)
     {
         $this->statBugsEvolution->removeElement($statBugsEvolution);
     }
@@ -945,7 +945,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition
      */
-    public function addStatBugsTagsRepartition(\MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
+    public function addStatBugsTagsRepartition( $statBugsTagsRepartition)
     {
         $this->statBugsTagsRepartition[] = $statBugsTagsRepartition;
 
@@ -957,7 +957,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition
      */
-    public function removeStatBugsTagsRepartition(\MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition)
+    public function removeStatBugsTagsRepartition( $statBugsTagsRepartition)
     {
         $this->statBugsTagsRepartition->removeElement($statBugsTagsRepartition);
     }
@@ -977,7 +977,7 @@ class Project
      *
      * @param MongoBundle\Document\tatBugAssignationTracker $statBugAssignationTracker
      */
-    public function addStatBugAssignationTracker(\MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
+    public function addStatBugAssignationTracker( $statBugAssignationTracker)
     {
         $this->statBugAssignationTracker[] = $statBugAssignationTracker;
 
@@ -989,7 +989,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker
      */
-    public function removeStatBugAssignationTracker(\MongoBundle\Document\StatBugAssignationTracker $statBugAssignationTracker)
+    public function removeStatBugAssignationTracker( $statBugAssignationTracker)
     {
         $this->statBugAssignationTracker->removeElement($statBugAssignationTracker);
     }
@@ -1009,7 +1009,7 @@ class Project
      *
      * @param MongoBundle\Document\tatBugsUsersRepartition $statBugsUsersRepartition
      */
-    public function addStatBugsUsersRepartition(\MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
+    public function addStatBugsUsersRepartition( $statBugsUsersRepartition)
     {
         $this->statBugsUsersRepartition[] = $statBugsUsersRepartition;
 
@@ -1021,7 +1021,7 @@ class Project
      *
      * @param MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition
      */
-    public function removeStatBugsUsersRepartition(\MongoBundle\Document\StatBugsUsersRepartition $statBugsUsersRepartition)
+    public function removeStatBugsUsersRepartition( $statBugsUsersRepartition)
     {
         $this->statBugsUsersRepartition->removeElement($statBugsUsersRepartition);
     }
@@ -1041,7 +1041,7 @@ class Project
      *
      * @param MongoBundle\Document\StatTasksRepartition $statTasksRepartition
      */
-    public function addStatTasksRepartition(\MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
+    public function addStatTasksRepartition( $statTasksRepartition)
     {
         $this->statTasksRepartition[] = $statTasksRepartition;
 
@@ -1053,7 +1053,7 @@ class Project
      *
      * @param MongoBundle\Document\StatTasksRepartition $statTasksRepartition
      */
-    public function removeStatTasksRepartition(\MongoBundle\Document\StatTasksRepartition $statTasksRepartition)
+    public function removeStatTasksRepartition( $statTasksRepartition)
     {
         $this->statTasksRepartition->removeElement($statTasksRepartition);
     }
@@ -1073,7 +1073,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge
      */
-    public function addStatUserWorkingCharge(\MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
+    public function addStatUserWorkingCharge( $statUserWorkingCharge)
     {
         $this->statUserWorkingCharge[] = $statUserWorkingCharge;
 
@@ -1085,7 +1085,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge
      */
-    public function removeStatUserWorkingCharge(\MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge)
+    public function removeStatUserWorkingCharge( $statUserWorkingCharge)
     {
         $this->statUserWorkingCharge->removeElement($statUserWorkingCharge);
     }
@@ -1105,7 +1105,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement
      */
-    public function addStatUserTasksAdvancement(\MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
+    public function addStatUserTasksAdvancement( $statUserTasksAdvancement)
     {
         $this->statUserTasksAdvancement[] = $statUserTasksAdvancement;
 
@@ -1117,7 +1117,7 @@ class Project
      *
      * @param MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement
      */
-    public function removeStatUserTasksAdvancement(\MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement)
+    public function removeStatUserTasksAdvancement( $statUserTasksAdvancement)
     {
         $this->statUserTasksAdvancement->removeElement($statUserTasksAdvancement);
     }
@@ -1137,7 +1137,7 @@ class Project
      *
      * @param MongoBundle\Document\StatStorageSize $statStorageSize
      */
-    public function addStatStorageSize(\MongoBundle\Document\StatStorageSize $statStorageSize)
+    public function addStatStorageSize( $statStorageSize)
     {
         $this->statStorageSize[] = $statStorageSize;
 
@@ -1149,7 +1149,7 @@ class Project
      *
      * @param MongoBundle\Document\StatStorageSize $statStorageSize
      */
-    public function removeStatStorageSize(\MongoBundle\Document\StatStorageSize $statStorageSize)
+    public function removeStatStorageSize( $statStorageSize)
     {
         $this->statStorageSize->removeElement($statStorageSize);
     }

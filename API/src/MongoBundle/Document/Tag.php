@@ -78,7 +78,7 @@ class Tag
      * @param MongoBundle\Document\Project $project
      * @return self
      */
-    public function setProject(\MongoBundle\Document\Project $project)
+    public function setProject( $project)
     {
         $this->project = $project;
         return $this;
@@ -99,7 +99,7 @@ class Tag
      *
      * @param MongoBundle\Document\Task $task
      */
-    public function addTask(\MongoBundle\Document\Task $task)
+    public function addTask( $task)
     {
         $this->tasks[] = $task;
     }
@@ -109,7 +109,7 @@ class Tag
      *
      * @param MongoBundle\Document\Task $task
      */
-    public function removeTask(\MongoBundle\Document\Task $task)
+    public function removeTask( $task)
     {
         $this->tasks->removeElement($task);
     }
@@ -129,7 +129,7 @@ class Tag
      *
      * @param MongoBundle\Document\Bug $bug
      */
-    public function addBug(\MongoBundle\Document\Bug $bug)
+    public function addBug( $bug)
     {
         $this->bugs[] = $bug;
     }
@@ -139,7 +139,7 @@ class Tag
      *
      * @param MongoBundle\Document\Bug $bug
      */
-    public function removeBug(\MongoBundle\Document\Bug $bug)
+    public function removeBug( $bug)
     {
         $this->bugs->removeElement($bug);
     }

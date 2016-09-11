@@ -306,7 +306,7 @@ class Role
      * @param MongoBundle\Document\Project $projects
      * @return self
      */
-    public function setProjects(\MongoBundle\Document\Project $projects)
+    public function setProjects( $projects)
     {
         $this->projects = $projects;
         return $this;

@@ -222,7 +222,7 @@ class Whiteboard
      * @param MongoBundle\Document\Project $projects
      * @return self
      */
-    public function setProjects(\MongoBundle\Document\Project $projects)
+    public function setProjects( $projects)
     {
         $this->projects = $projects;
         return $this;
@@ -243,7 +243,7 @@ class Whiteboard
      *
      * @param MongoBundle\Document\WhiteboardObject $object
      */
-    public function addObject(\MongoBundle\Document\WhiteboardObject $object)
+    public function addObject( $object)
     {
         $this->objects[] = $object;
     }
@@ -253,7 +253,7 @@ class Whiteboard
      *
      * @param MongoBundle\Document\WhiteboardObject $object
      */
-    public function removeObject(\MongoBundle\Document\WhiteboardObject $object)
+    public function removeObject( $object)
     {
         $this->objects->removeElement($object);
     }

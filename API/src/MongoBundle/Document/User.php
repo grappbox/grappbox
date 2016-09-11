@@ -520,9 +520,9 @@ class User implements UserInterface
     /**
      * Add event_creator
      *
-     * @param \MongoBundle\Document\Event $eventCreator
+     * @param MongoBundle\Document\Event $eventCreator
      */
-    public function addEventCreator(\MongoBundle\Document\Event $eventCreator)
+    public function addEventCreator( $eventCreator)
     {
         $this->event_creator[] = $eventCreator;
     }
@@ -530,9 +530,9 @@ class User implements UserInterface
     /**
      * Remove event_creator
      *
-     * @param \MongoBundle\Document\Event $eventCreator
+     * @param MongoBundle\Document\Event $eventCreator
      */
-    public function removeEventCreator(\MongoBundle\Document\Event $eventCreator)
+    public function removeEventCreator( $eventCreator)
     {
         $this->event_creator->removeElement($eventCreator);
     }
@@ -550,9 +550,9 @@ class User implements UserInterface
     /**
      * Add bug_creator
      *
-     * @param \MongoBundle\Document\Bug $bugCreator
+     * @param MongoBundle\Document\Bug $bugCreator
      */
-    public function addBugCreator(\MongoBundle\Document\Bug $bugCreator)
+    public function addBugCreator( $bugCreator)
     {
         $this->bug_creator[] = $bugCreator;
     }
@@ -560,9 +560,9 @@ class User implements UserInterface
     /**
      * Remove bug_creator
      *
-     * @param \MongoBundle\Document\Bug $bugCreator
+     * @param MongoBundle\Document\Bug $bugCreator
      */
-    public function removeBugCreator(\MongoBundle\Document\Bug $bugCreator)
+    public function removeBugCreator( $bugCreator)
     {
         $this->bug_creator->removeElement($bugCreator);
     }
@@ -581,18 +581,18 @@ class User implements UserInterface
     /**
      * Add message_creator
      *
-     * @param \MongoBundle\Document\TimelineMessage $messageCreator
+     * @param MongoBundle\Document\TimelineMessage $messageCreator
      */
-    public function addMessageCreator(\MongoBundle\Document\TimelineMessage $messageCreator)
+    public function addMessageCreator( $messageCreator)
     {
         $this->message_creator[] = $messageCreator;
     }
 
     /**
      * Remove message_creator
-     * @param \MongoBundle\Document\TimelineMessage $messageCreator
+     * @param MongoBundle\Document\TimelineMessage $messageCreator
      */
-    public function removeMessageCreator(\MongoBundle\Document\TimelineMessage $messageCreator)
+    public function removeMessageCreator( $messageCreator)
     {
         $this->message_creator->removeElement($messageCreator);
     }
@@ -610,9 +610,9 @@ class User implements UserInterface
     /**
      * Add project_creator
      *
-     * @param \MongoBundle\Document\Project $projectCreator
+     * @param MongoBundle\Document\Project $projectCreator
      */
-    public function addProjectCreator(\MongoBundle\Document\Project $projectCreator)
+    public function addProjectCreator( $projectCreator)
     {
         $this->project_creator[] = $projectCreator;
     }
@@ -620,9 +620,9 @@ class User implements UserInterface
     /**
      * Remove project_creator
      *
-     * @param \MongoBundle\Document\Project $projectCreator
+     * @param MongoBundle\Document\Project $projectCreator
      */
-    public function removeProjectCreator(\MongoBundle\Document\Project $projectCreator)
+    public function removeProjectCreator( $projectCreator)
     {
         $this->project_creator->removeElement($projectCreator);
     }
@@ -640,9 +640,9 @@ class User implements UserInterface
     /**
      * Add gantt_creator
      *
-     * @param \MongoBundle\Document\Gantt $ganttCreator
+     * @param MongoBundle\Document\Gantt $ganttCreator
      */
-    public function addGanttCreator(\MongoBundle\Document\Gantt $ganttCreator)
+    public function addGanttCreator( $ganttCreator)
     {
         $this->gantt_creator[] = $ganttCreator;
     }
@@ -650,9 +650,9 @@ class User implements UserInterface
     /**
      * Remove gantt_creator
      *
-     * @param \MongoBundle\Document\Gantt $ganttCreator
+     * @param MongoBundle\Document\Gantt $ganttCreator
      */
-    public function removeGanttCreator(\MongoBundle\Document\Gantt $ganttCreator)
+    public function removeGanttCreator( $ganttCreator)
     {
         $this->gantt_creator->removeElement($ganttCreator);
     }
@@ -670,9 +670,9 @@ class User implements UserInterface
     /**
      * Add gantt_updator
      *
-     * @param \MongoBundle\Document\Gantt $ganttUpdator
+     * @param MongoBundle\Document\Gantt $ganttUpdator
      */
-    public function addGanttUpdator(\MongoBundle\Document\Gantt $ganttUpdator)
+    public function addGanttUpdator( $ganttUpdator)
     {
         $this->gantt_updator[] = $ganttUpdator;
     }
@@ -680,9 +680,9 @@ class User implements UserInterface
     /**
      * Remove gantt_updator
      *
-     * @param \MongoBundle\Document\Gantt $ganttUpdator
+     * @param MongoBundle\Document\Gantt $ganttUpdator
      */
-    public function removeGanttUpdator(\MongoBundle\Document\Gantt $ganttUpdator)
+    public function removeGanttUpdator( $ganttUpdator)
     {
         $this->gantt_updator->removeElement($ganttUpdator);
     }
@@ -700,9 +700,9 @@ class User implements UserInterface
     /**
      * Add notifications
      *
-     * @param \MongoBundle\Document\Notification $notifications
+     * @param MongoBundle\Document\Notification $notifications
      */
-    public function addNotification(\MongoBundle\Document\Notification $notifications)
+    public function addNotification( $notifications)
     {
         $this->notifications[] = $notifications;
     }
@@ -710,9 +710,9 @@ class User implements UserInterface
     /**
      * Remove notifications
      *
-     * @param \MongoBundle\Document\Notification $notifications
+     * @param MongoBundle\Document\Notification $notifications
      */
-    public function removeNotification(\MongoBundle\Document\Notification $notifications)
+    public function removeNotification( $notifications)
     {
         $this->notifications->removeElement($notifications);
     }
@@ -732,7 +732,7 @@ class User implements UserInterface
      *
      * @param MongoBundle\Document\Project $project
      */
-    public function addProject(\MongoBundle\Document\Project $project)
+    public function addProject( $project)
     {
         $this->projects[] = $project;
     }
@@ -742,7 +742,7 @@ class User implements UserInterface
      *
      * @param MongoBundle\Document\Project $project
      */
-    public function removeProject(\MongoBundle\Document\Project $project)
+    public function removeProject( $project)
     {
         $this->projects->removeElement($project);
     }
@@ -762,7 +762,7 @@ class User implements UserInterface
      *
      * @param MongoBundle\Document\Event $event
      */
-    public function addEvent(\MongoBundle\Document\Event $event)
+    public function addEvent( $event)
     {
         $this->events[] = $event;
     }
@@ -772,7 +772,7 @@ class User implements UserInterface
      *
      * @param MongoBundle\Document\Event $event
      */
-    public function removeEvent(\MongoBundle\Document\Event $event)
+    public function removeEvent( $event)
     {
         $this->events->removeElement($event);
     }
@@ -790,9 +790,9 @@ class User implements UserInterface
     /**
      * Add devices
      *
-     * @param \MongoBundle\Document\Devices $devices
+     * @param MongoBundle\Document\Devices $devices
      */
-    public function addDevice(\MongoBundle\Document\Devices $devices)
+    public function addDevice( $devices)
     {
         $this->devices[] = $devices;
     }
@@ -800,9 +800,9 @@ class User implements UserInterface
     /**
      * Remove devices
      *
-     * @param \MongoBundle\Document\Devices $devices
+     * @param MongoBundle\Document\Devices $devices
      */
-    public function removeDevice(\MongoBundle\Document\Devices $devices)
+    public function removeDevice( $devices)
     {
         $this->devices->removeElement($devices);
     }
@@ -820,9 +820,9 @@ class User implements UserInterface
     /**
      * Add colors
      *
-     * @param \MongoBundle\Document\Color $colors
+     * @param MongoBundle\Document\Color $colors
      */
-    public function addColor(\MongoBundle\Document\Color $colors)
+    public function addColor( $colors)
     {
         $this->colors[] = $colors;
     }
@@ -830,9 +830,9 @@ class User implements UserInterface
     /**
      * Remove colors
      *
-     * @param \MongoBundle\Document\Color $colors
+     * @param MongoBundle\Document\Color $colors
      */
-    public function removeColor(\MongoBundle\Document\Color $colors)
+    public function removeColor( $colors)
     {
         $this->colors->removeElement($colors);
     }
@@ -850,9 +850,9 @@ class User implements UserInterface
     /**
      * Add ressources
      *
-     * @param \MongoBundle\Document\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
-    public function addRessource(\MongoBundle\Document\Ressources $ressources)
+    public function addRessource( $ressources)
     {
         $this->ressources[] = $ressources;
     }
@@ -860,9 +860,9 @@ class User implements UserInterface
     /**
      * Remove ressources
      *
-     * @param \MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
-    public function removeRessource(\MongoBundle\Document\Ressources $ressources)
+    public function removeRessource( $ressources)
     {
         $this->ressources->removeElement($ressources);
     }

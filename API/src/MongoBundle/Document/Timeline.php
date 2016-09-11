@@ -60,7 +60,7 @@ class Timeline
       );
     }
 
-    
+
     /**
      * Get id
      *
@@ -143,7 +143,7 @@ class Timeline
      * @param MongoBundle\Document\Project $projects
      * @return self
      */
-    public function setProjects(\MongoBundle\Document\Project $projects)
+    public function setProjects( $projects)
     {
         $this->projects = $projects;
         return $this;
@@ -164,7 +164,7 @@ class Timeline
      *
      * @param MongoBundle\Document\TimelineMessage $timelineMessage
      */
-    public function addTimelineMessage(\MongoBundle\Document\TimelineMessage $timelineMessage)
+    public function addTimelineMessage($timelineMessage)
     {
         $this->timelineMessages[] = $timelineMessage;
     }
@@ -174,7 +174,7 @@ class Timeline
      *
      * @param MongoBundle\Document\TimelineMessage $timelineMessage
      */
-    public function removeTimelineMessage(\MongoBundle\Document\TimelineMessage $timelineMessage)
+    public function removeTimelineMessage($timelineMessage)
     {
         $this->timelineMessages->removeElement($timelineMessage);
     }

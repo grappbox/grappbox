@@ -125,10 +125,10 @@ class StatBugsEvolution
     /**
      * Set project
      *
-     * @param \MongoBundle\Entity\Project $project
+     * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject(\MongoBundle\Entity\Project $project = null)
+    public function setProject( $project = null)
     {
         $this->project = $project;
 
@@ -138,7 +138,7 @@ class StatBugsEvolution
     /**
      * Get project
      *
-     * @return \MongoBundle\Entity\Project
+     * @return \MongoBundle\Document\Project
      */
     public function getProject()
     {

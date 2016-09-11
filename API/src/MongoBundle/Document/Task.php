@@ -392,9 +392,9 @@ class Task
     /**
      * Add ressources
      *
-     * @param \MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
-    public function addRessource(\MongoBundle\Entity\Ressources $ressources)
+    public function addRessource($ressources)
     {
         $this->ressources[] = $ressources;
     }
@@ -402,9 +402,9 @@ class Task
     /**
      * Remove ressources
      *
-     * @param \MongoBundle\Entity\Ressources $ressources
+     * @param MongoBundle\Document\Ressources $ressources
      */
-    public function removeRessource(\MongoBundle\Entity\Ressources $ressources)
+    public function removeRessource($ressources)
     {
         $this->ressources->removeElement($ressources);
     }
@@ -424,7 +424,7 @@ class Task
      *
      * @param MongoBundle\Document\Dependencies $dependence
      */
-    public function addDependence(\MongoBundle\Document\Dependencies $dependence)
+    public function addDependence( $dependence)
     {
         $this->dependence[] = $dependence;
     }
@@ -432,9 +432,9 @@ class Task
     /**
      * Remove dependence
      *
-     * @param \MongoBundle\Document\Dependencies $dependence
+     * @param MongoBundle\Document\Dependencies $dependence
      */
-    public function removeDependence(\MongoBundle\Document\Dependencies $dependence)
+    public function removeDependence( $dependence)
     {
         $this->dependence->removeElement($dependence);
     }
@@ -442,7 +442,7 @@ class Task
     /**
      * Get dependence
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getDependence()
     {
@@ -452,9 +452,9 @@ class Task
     /**
      * Add task_depended
      *
-     * @param \MongoBundle\Document\Dependencies $taskDepended
+     * @param MongoBundle\Document\Dependencies $taskDepended
      */
-    public function addTaskDepended(\MongoBundle\Document\Dependencies $taskDepended)
+    public function addTaskDepended( $taskDepended)
     {
         $this->task_depended[] = $taskDepended;
     }
@@ -462,9 +462,9 @@ class Task
     /**
      * Remove task_depended
      *
-     * @param \MongoBundle\Document\Dependencies $taskDepended
+     * @param MongoBundle\Document\Dependencies $taskDepended
      */
-    public function removeTaskDepended(\MongoBundle\Document\Dependencies $taskDepended)
+    public function removeTaskDepended( $taskDepended)
     {
         $this->task_depended->removeElement($taskDepended);
     }
@@ -482,9 +482,9 @@ class Task
     /**
      * Add tasks_container
      *
-     * @param \MongoBundle\Document\Task $tasksContainer
+     * @param MongoBundle\Document\Task $tasksContainer
      */
-    public function addTasksContainer(\MongoBundle\Document\Task $tasksContainer)
+    public function addTasksContainer( $tasksContainer)
     {
         $this->tasks_container[] = $tasksContainer;
     }
@@ -492,9 +492,9 @@ class Task
     /**
      * Remove tasks_container
      *
-     * @param \MongoBundle\Document\Task $tasksContainer
+     * @param MongoBundle\Document\Task $tasksContainer
      */
-    public function removeTasksContainer(\MongoBundle\Document\Task $tasksContainer)
+    public function removeTasksContainer( $tasksContainer)
     {
         $this->tasks_container->removeElement($tasksContainer);
     }
@@ -515,7 +515,7 @@ class Task
      * @param MongoBundle\Document\Project $projects
      * @return self
      */
-    public function setProjects(\MongoBundle\Document\Project $projects)
+    public function setProjects( $projects)
     {
         $this->projects = $projects;
         return $this;
@@ -537,7 +537,7 @@ class Task
      * @param MongoBundle\Document\User $creatorUser
      * @return self
      */
-    public function setCreatorUser(\MongoBundle\Document\User $creatorUser)
+    public function setCreatorUser( $creatorUser)
     {
         $this->creator_user = $creatorUser;
         return $this;
@@ -558,7 +558,7 @@ class Task
      *
      * @param MongoBundle\Document\Tag $tag
      */
-    public function addTag(\MongoBundle\Document\Tag $tag)
+    public function addTag( $tag)
     {
         $this->tags[] = $tag;
     }
@@ -568,7 +568,7 @@ class Task
      *
      * @param MongoBundle\Document\Tag $tag
      */
-    public function removeTag(\MongoBundle\Document\Tag $tag)
+    public function removeTag( $tag)
     {
         $this->tags->removeElement($tag);
     }
@@ -586,10 +586,10 @@ class Task
     /**
      * Set container
      *
-     * @param \MongoBundle\Document\Task $container
+     * @param MongoBundle\Document\Task $container
      * @return self
      */
-    public function setContainer(\MongoBundle\Document\Task $container = null)
+    public function setContainer( $container = null)
     {
         $this->container = $container;
 

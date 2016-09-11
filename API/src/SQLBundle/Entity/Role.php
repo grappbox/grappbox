@@ -368,4 +368,22 @@ class Role
           break;
       }
     }
+
+    public function objectToArray()
+    {
+      return array(
+        'projectId'=> $this->getProjects()->getId(),
+        'roleId' => $this->getId(),
+        'name'=> $this->getName(),
+        'teamTimeline'=> $this->getTeamTimeline(),
+      	'customerTimeline'=> $this->getCustomerTimeline(),
+      	'gantt'=> $this->getGantt(),
+      	'whiteboard'=> $this->getWhiteboard(),
+      	'bugtracker'=> $this->getBugtracker(),
+      	'event'=> $this->getEvent(),
+      	'task'=> $this->getTask(),
+      	'projectSettings'=> $this->getProjectSettings(),
+      	'cloud'=> $this->getCloud()
+      );
+    }
 }

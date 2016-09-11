@@ -92,7 +92,7 @@ class StatBugAssignationTracker
      * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject(\MongoBundle\Document\Project $project = null)
+    public function setProject( $project = null)
     {
         $this->project = $project;
 
