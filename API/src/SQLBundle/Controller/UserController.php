@@ -57,6 +57,58 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {get} /V0.3/user/basicinformations/:token Request the basic informations of the connected user
+	* @apiName getBasicInformations
+	* @apiGroup Users
+	* @apiDescription Request the basic informations of the connected user
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token token of the person connected
+	*
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
+	* @apiSuccess {Date} birthday Birthday of the person
+	* @apiSuccess {date} avatar Avatar last modif date
+	* @apiSuccess {String} email Email of the person
+	* @apiSuccess {String} phone Phone number of the person
+	* @apiSuccess {String} country Country the person in living in
+	* @apiSuccess {String} linkedin Linkedin of the person
+	* @apiSuccess {String} viadeo Viadeo of the person
+	* @apiSuccess {String} twitter Twitter of the person
+	* @apiSuccess {Boolean} is_client if the user is a client
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getbasicinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18",
+	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"email": "john.doe@gmail.com"
+	*			"phone": "+33984231475",
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe",
+	*			"is_client": false
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.1.3",
+	*			"return_message": "User - getbasicinformations - Bad ID"
+	*		}
+	*	}
+	*/
+	/**
 	* @api {get} /V0.2/user/basicinformations/:token Request the basic informations of the connected user
 	* @apiName getBasicInformations
 	* @apiGroup Users
@@ -120,11 +172,73 @@ class UserController extends RolesAndTokenVerificationController
 		$linkedin = $user->getLinkedin();
 		$viadeo = $user->getViadeo();
 		$twitter = $user->getTwitter();
+		$isClient = $user->getIsClient();
 
 		return $this->setSuccess("1.7.1", "User", "getbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
-			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
+			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter, "is_client" => $isClient));
 	}
 
+	/**
+	* @api {get} /V0.3/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
+	* @apiName getUserBasicInformations
+	* @apiGroup Users
+	* @apiDescription Request the basic informations for the given user
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token token of the person connected
+	* @apiParam {Number} userId id of the user you want some informations
+	*
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
+	* @apiSuccess {Date} birthday Birthday of the person
+	* @apiSuccess {date} avatar Avatr last date of modif
+	* @apiSuccess {String} email Email of the person
+	* @apiSuccess {String} phone Phone number of the person
+	* @apiSuccess {String} country Country the person in living in
+	* @apiSuccess {String} linkedin Linkedin of the person
+	* @apiSuccess {String} viadeo Viadeo of the person
+	* @apiSuccess {String} twitter Twitter of the person
+	* @apiSuccess {Boolean} is_client if the user is a client
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getuserbasicinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18"
+	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"email": "john.doe@gmail.com"
+	*			"phone": "+33984231475",
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe",
+	*			"is_client": false
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.2.3",
+	*			"return_message": "User - getuserbasicinformations - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.2.4",
+	*			"return_message": "User - getuserbasicinformations - Bad Parameter: userId"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
 	* @apiName getUserBasicInformations
@@ -206,9 +320,10 @@ class UserController extends RolesAndTokenVerificationController
 		$linkedin = $userInfos->getLinkedin();
 		$viadeo = $userInfos->getViadeo();
 		$twitter = $userInfos->getTwitter();
+		$isClient = $user->getIsClient();
 
 		return $this->setSuccess("1.7.1", "User", "getuserbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
-			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
+			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter, "is_client" => $isClient));
 	}
 
 	/**

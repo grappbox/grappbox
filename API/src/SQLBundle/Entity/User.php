@@ -145,6 +145,11 @@ class User implements UserInterface
      * @var \Doctrine\Common\Collections\Collection
      */
     private $colors;
+    
+    /**
+     * @var boolean
+     */
+    private $isClient;
 
     /**
      * Constructor
@@ -188,7 +193,8 @@ class User implements UserInterface
           'lastname' => $this->lastname,
           'email' => $this->email,
           'token' => $this->token,
-          'avatar' => $this->avatarDate
+          'avatar' => $this->avatarDate,
+          'is_client' => $this->isClient
       );
     }
 
@@ -1034,14 +1040,33 @@ class User implements UserInterface
     /**
      * Get whiteboard_updator
      *
-<<<<<<< HEAD
-     * @return \Doctrine\Common\Collections\Collection 
-=======
      * @return \Doctrine\Common\Collections\Collection
->>>>>>> API-Work
      */
     public function getWhiteboardUpdator()
     {
         return $this->whiteboard_updator;
+    }
+
+    /**
+     * Set isClient
+     *
+     * @param boolean $isClient
+     * @return User
+     */
+    public function setIsClient($isClient)
+    {
+        $this->isClient = $isClient;
+
+        return $this;
+    }
+
+    /**
+     * Get isClient
+     *
+     * @return boolean 
+     */
+    public function getIsClient()
+    {
+        return $this->isClient;
     }
 }

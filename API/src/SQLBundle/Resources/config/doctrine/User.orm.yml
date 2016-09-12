@@ -47,6 +47,9 @@ SQLBundle\Entity\User:
             type: string
             length: 255
             nullable: TRUE
+        isClient:
+            type: boolean
+            column: is_client
         twitter:
             type: string
             length: 255
