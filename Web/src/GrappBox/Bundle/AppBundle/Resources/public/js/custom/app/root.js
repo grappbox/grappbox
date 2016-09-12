@@ -25,7 +25,7 @@ app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies"
   $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "" };
 
   $rootScope.api.version = "V0.2"
-  $rootScope.api.url = "http://api.grappbox.com/app_dev.php/" + $rootScope.api.version;
+  $rootScope.api.url = "http://api.grappbox.com/" + $rootScope.api.version;
 
   $rootScope.user.id = $base64.decode($cookies.get("ID"));
   $rootScope.user.token = $base64.decode($cookies.get("TOKEN"));

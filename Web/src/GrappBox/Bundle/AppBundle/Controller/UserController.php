@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UserController extends Controller
 {
-  private $api_baseURL = "http://api.grappbox.com/app_dev.php/";
+  private $api_baseURL = "http://api.grappbox.com/";
   private $api_version = "V0.2";
   private $cookies;
 
