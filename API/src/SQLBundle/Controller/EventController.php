@@ -332,17 +332,15 @@ class EventController extends RolesAndTokenVerificationController
 	*			"return_message": "Calendar - setParticipants - Already in Database"
   *		}
 	* 	}
-	*
+	* @apiErrorExample Bad Parameter: Can't remove event creator
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.3.4",
+	*			"return_message": "Calendar - setParticipants - Bad Parameter: Can't remove event creator"
+  *		}
+	* 	}
 	*/
-
-	// * apiErrorExample Bad Parameter: toRemove-id
-	// * 	HTTP/1.1 400 Bad Request
-	// * 	{
-	// *		"info": {
-	// *			"return_code": "5.3.4",
-	// *			"return_message": "Calendar - setParticipants - Bad Parameter: toRemove-id"
-  // *		}
-	// * 	}
 	public function setParticipantsAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -412,8 +410,8 @@ class EventController extends RolesAndTokenVerificationController
 			$toRemoveUser = $em->getRepository("SQLBundle:User")->find($value);
 			if ($toRemoveUser instanceof User)
 			{
-				// if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
-				// 	return $this->setBadRequest("5.3.7", "Calendar", "setParticipants", "Bad Parameter: toRemove-id");
+				if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
+					return $this->setBadRequest("5.3.7", "Calendar", "setParticipants", "Bad Parameter: Can't remove event creator");
 
 				$event->removeUser($toRemoveUser);
 
@@ -555,6 +553,124 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {post} /V0.3/event/postevent Post event
+	* @apiName postEvent
+	* @apiGroup Event
+	* @apiDescription Post an event/meeting
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {string} token user authentication token
+	* @apiParam {int}	[projectId] project's id (if related to a project)
+	*	@apiParam {string} title event title
+	*	@apiParam {string} description event description
+	*	@apiParam {Text} icon Icon of the event
+	*	@apiParam {int} typeId event type id
+	*	@apiParam {DateTime} begin beginning date & hour of the event
+	*	@apiParam {DateTime} end ending date & hour of the event
+	* @apiParam {int[]} users array of users id invited to the event
+	*
+	* @apiParamExample {json} Request-Exemple No project:
+	* 	{
+	*		"data":
+	*		{
+	*			"token": "ThisIsMyToken",
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
+	*			"typeId":  1,
+	*			"begin": "1945-06-18 06:00:00",
+	*			"end": "1945-06-18 08:00:00",
+	*			"users": [1,26,...]
+	*		}
+	* 	}
+	* @apiParamExample {json} Request-Exemple With project:
+	* 	{
+	*		"data":
+	*		{
+	*			"token": "ThisIsMyToken",
+	*			"projectId": 21,
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
+	*			"typeId":  1,
+	*			"begin":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"end":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"users": []
+	*		}
+	* 	}
+	*
+	* @apiSuccess {int} id Event id
+	* @apiSuccess {Object} creator creator object
+	* @apiSuccess {int} creator.id creator's id
+	* @apiSuccess {String} creator.fullname creator's fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {Object} type Event type object
+	* @apiSuccess {int} type.id Event type id
+	* @apiSuccess {string} type.name Event type name
+	*	@apiSuccess {string} title event title
+	*	@apiSuccess {string} description event description
+	*	@apiSuccess {Text} icon Icon of the event
+	*	@apiSuccess {DateTime} beginDate beginning date of the event
+	*	@apiSuccess {DateTime} endDate ending date of the event
+	*	@apiSuccess {DateTime} createAt event creation date
+	*	@apiSuccess {DateTime} editedAt event edition date
+	*	@apiSuccess {DateTime} deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar
+	*
+	* @apiSuccessExample Complete Success:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - postEvent - Complete success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 12, "projectId": 21,
+	*			"creator": {"id": 15, "fullname": "John Doe"},
+	*			"type": {"id": 1, "name": "Event"},
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
+	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null,
+	*			"deletedAt": null,
+	*			"users": []
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.4.6",
+	*			"return_message": "Calendar - postEvent - Missing Parameter"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.4.3",
+	*			"return_message": "Calendar - postEvent - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.4.9",
+	*			"return_message": "Calendar - postEvent - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
 	public function postEventAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -562,7 +678,7 @@ class EventController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content) || !array_key_exists("icon", $content)
-			|| !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
+			|| !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content) || !array_key_exists("users", $content))
 			return $this->setBadRequest("5.4.6", "Calendar", "postEvent", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -595,6 +711,22 @@ class EventController extends RolesAndTokenVerificationController
 
 		$event->addUser($user);
 		$em->flush();
+		foreach ($content->users as $key => $guest) {
+			if ($guest != $user->getId()) {
+				$newGuest = $em->getRepository('SQLBundle:User')->find($guest);
+				if ($newGuest instanceof User) {
+					$alreadyAdded = false;
+					foreach ($event->getUsers() as $key => $event_value) {
+						if ($guest == $event_value->getId())
+							$alreadyAdded = true;
+					}
+					if (!$alreadyAdded) {
+						$event->addUser($newGuest);
+						$em->flush();
+					}
+				}
+			}
+		}
 
 		$participants = array();
 		foreach ($event->getUsers() as $key => $value) {
@@ -737,6 +869,138 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {put} /V0.3/event/editevent Edit event
+	* @apiName editEvent
+	* @apiGroup Event
+	* @apiDescription Edit an event/meeting
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} eventId event id
+	* @apiParam {string} token user authentication token
+	* @apiParam {int}	[projectId] project's id (if related to a project)
+	*	@apiParam {string} title event title
+	*	@apiParam {string} description event description
+	*	@apiParam {Text} icon Icon of the event
+	*	@apiParam {int} typeId event type id
+	*	@apiParam {DateTime} begin beginning date & hour of the event
+	*	@apiParam {DateTime} end ending date & hour of the event
+	*	@apiParam {int[]} toAddUsers array of users id to add to the event
+	*	@apiParam {int[]} toRemoveUsers array of users id to remove of the event
+	*
+	* @apiParamExample {json} Request-Exemple No project:
+	* 	{
+	*		"data":
+	*		{
+	*			"token": "ThisIsMyToken",
+	*			"eventId": 15,
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
+	*			"typeId":  1,
+	*			"begin": "1945-06-18 06:00:00",
+	*			"end": "1945-06-18 08:00:00",
+	*			"toAddUsers": [1,25,...],
+	*			"toRemoveUsers": [12,...]
+	*		}
+	* 	}
+	* @apiParamExample {json} Request-Exemple With project:
+	* 	{
+	*		"data":
+	*		{
+	*			"token": "ThisIsMyToken",
+	*			"projectId": 21,
+	*			"eventId": 15,
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
+	*			"typeId":  1,
+	*			"begin": "1945-06-18 06:00:00",
+	*			"end": "1945-06-18 08:00:00",
+	*			"toAddUsers": [],
+	*			"toRemoveUsers": [12,...]
+	*		}
+	* 	}
+	*
+	* @apiSuccess {int} id Event id
+	* @apiSuccess {Object} creator creator object
+	* @apiSuccess {int} creator.id creator's id
+	* @apiSuccess {String} creator.fullname creator's fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {Object} type Event type object
+	* @apiSuccess {int} type.id Event type id
+	* @apiSuccess {string} type.name Event type name
+	*	@apiSuccess {string} title event title
+	*	@apiSuccess {string} description event description
+	*	@apiSuccess {Text} icon Icon of the event
+	*	@apiSuccess {DateTime} beginDate beginning date of the event
+	*	@apiSuccess {DateTime} endDate ending date of the event
+	*	@apiSuccess {DateTime} createAt event creation date
+	*	@apiSuccess {DateTime} editedAt event edition date
+	*	@apiSuccess {DateTime} deletedAt event delete date
+	*	@apiSuccess {Object[]} users list of participants
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample Complete Success:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - editEvent - Complete success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 12, "projectId": 21,
+	*			"creator": {"id": 15, "fullname": "John Doe"},
+	*			"type": {"id": 1, "name": "Event"},
+	*			"title": "Brainstorming",
+	*			"description": "blablabla",
+	*			"icon": "DATA",
+	*			"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"createdAt":{"date": "1945-02-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"editedAt": null,
+	*			"deletedAt": null,
+	*			"users": []
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.5.6",
+	*			"return_message": "Calendar - editEvent - Missing Parameter"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.5.3",
+	*			"return_message": "Calendar - editEvent - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.5.9",
+	*			"return_message": "Calendar - editEvent - Insufficient Rights"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: eventId
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "5.5.4",
+	*			"return_message": "Calendar - editEvent - Bad Parameter: eventId"
+	*		}
+	* 	}
+	*
+	*/
 	public function editEventAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -744,7 +1008,8 @@ class EventController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if (!array_key_exists("token", $content) || !array_key_exists("eventId", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("icon", $content) || !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
+			|| !array_key_exists("icon", $content) || !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content)
+			|| !array_key_exists("toAddUsers", $content) || !array_key_exists("toRemoveUsers", $content))
 			return $this->setBadRequest("5.5.6", "Calendar", "editEvent", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -790,6 +1055,34 @@ class EventController extends RolesAndTokenVerificationController
 
 		$em->persist($event);
 		$em->flush();
+
+		foreach ($content->toRemoveUsers as $key => $guest) {
+				$oldGuest = $em->getRepository('SQLBundle:User')->find($guest);
+				if ($oldGuest instanceof User) {
+					$creator = false;
+					if ($guest == $event->getCreatorUser()->getId())
+						$creator = true;
+					if (!$creator) {
+						$event->removeUser($oldGuest);
+						$em->flush();
+					}
+				}
+		}
+
+		foreach ($content->toAddUsers as $key => $guest) {
+				$newGuest = $em->getRepository('SQLBundle:User')->find($guest);
+				if ($newGuest instanceof User) {
+					$alreadyAdded = false;
+					foreach ($event->getUsers() as $key => $event_value) {
+						if ($guest == $event_value->getId())
+							$alreadyAdded = true;
+					}
+					if (!$alreadyAdded) {
+						$event->addUser($newGuest);
+						$em->flush();
+					}
+				}
+		}
 
 		$participants = array();
 		foreach ($event->getUsers() as $key => $value) {
