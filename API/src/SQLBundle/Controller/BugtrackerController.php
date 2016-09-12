@@ -2571,7 +2571,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 		$tag = $em->getRepository('SQLBundle:BugtrackerTag')->find($content->tagId);
-		if (!($tag instanceof Tag))
+		if (!($tag instanceof BugtrackerTag))
 			return $this->setBadRequest("4.16.4", "Bugtracker", "tagUpdate", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
@@ -2645,7 +2645,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 		$tag = $em->getRepository('SQLBundle:BugtrackerTag')->find($tagId);
-		if (!($tag instanceof Tag))
+		if (!($tag instanceof BugtrackerTag))
 			return $this->setBadRequest("4.17.4", "Bugtracker", "tagInformations", "Bad Parameter: tagId");
 
 		$projectId = $tag->getProject()->getId();
@@ -2707,7 +2707,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 		$tag = $em->getRepository('SQLBundle:BugtrackerTag')->find($tagId);
-		if (!($tag instanceof Tag))
+		if (!($tag instanceof BugtrackerTag))
 			return $this->setBadRequest("4.18.4", "Bugtracker", "deleteTag", "Bad Parameter: tagId");
 
 		if ($this->checkRoles($user, $tag->getProject()->getId(), "bugtracker") < 2)

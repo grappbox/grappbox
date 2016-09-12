@@ -790,14 +790,14 @@ v2_task_taskUpdate:
 
 v2_task_getTaskInfos:
     path:       tasks/taskinformations/{token}/{taskId}
-    defaults:   { _controller: 'SQLBundle:Task:getTaskInfos', _format: json }
+    defaults:   { _controller: SQLBundle:Task:getTaskInfos, _format: json }
     requirements:
         taskId: \d+
     methods: [GET]
 
 v2_task_archiveTask:
     path:       tasks/archivetask
-    defaults:   { _controller: 'SQLBundle:Task:archiveTask', _format: json }
+    defaults:   { _controller: SQLBundle:Task:archiveTask, _format: json }
     methods: [PUT]
 
 v2_task_taskDelete:
@@ -814,7 +814,7 @@ v2_task_assignUserToTask:
 
 v2_task_removeUserToTask:
     path:       tasks/removeusertotask/{token}/{taskId}/{userId}
-    defaults:   { _controller: 'SQLBundle:Task:removeUserToTask', _format: json }
+    defaults:   { _controller: SQLBundle:Task:removeUserToTask, _format: json }
     requirements:
         taskId: \d+
         userId: \d+
@@ -822,24 +822,24 @@ v2_task_removeUserToTask:
 
 v2_task_tagCreation:
     path:       tasks/tagcreation
-    defaults:   { _controller: 'SQLBundle:Task:tagCreation', _format: json }
+    defaults:   { _controller: SQLBundle:Task:tagCreation, _format: json }
     methods: [POST]
 
 v2_task_tagUpdate:
     path:       tasks/tagupdate
-    defaults:   { _controller: 'SQLBundle:Task:tagUpdate', _format: json }
+    defaults:   { _controller: SQLBundle:Task:tagUpdate, _format: json }
     methods: [PUT]
 
 v2_task_getTagInfos:
     path:       tasks/taginformations/{token}/{tagId}
-    defaults:   { _controller: 'SQLBundle:Task:getTagInfos', _format: json }
+    defaults:   { _controller: SQLBundle:Task:getTagInfos, _format: json }
     requirements:
         tagId: \d+
     methods: [GET]
 
 v2_task_deleteTag:
     path:       tasks/deletetag/{token}/{tagId}
-    defaults:   { _controller: 'SQLBundle:Task:deleteTag', _format: json }
+    defaults:   { _controller: SQLBundle:Task:deleteTag, _format: json }
     requirements:
         tagId: \d+
     methods: [DELETE]
@@ -851,7 +851,7 @@ v2_task_assignTagToTask:
 
 v2_task_removeTagToTask:
     path:       tasks/removetagtotask/{token}/{taskId}/{tagId}
-    defaults:   { _controller: 'SQLBundle:Task:removeTagToTask', _format: json }
+    defaults:   { _controller: SQLBundle:Task:removeTagToTask, _format: json }
     requirements:
         taskId: \d+
         tagId: \d+
@@ -866,7 +866,7 @@ v2_task_getProjectTasks:
 
 v2_task_getProjectTags:
     path:       tasks/getprojecttags/{token}/{projectId}
-    defaults:   { _controller: 'SQLBundle:Task:getProjectTags', _format: json }
+    defaults:   { _controller: SQLBundle:Task:getProjectTags, _format: json }
     requirements:
         projectId: \d+
     methods: [GET]
