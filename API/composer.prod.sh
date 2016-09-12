@@ -12,5 +12,5 @@ php app/console cache:clear --env=prod --no-debug &&
 sudo git checkout vendor/ &&
 chown www-data.www-data * -R &&
 chown www-data.www-data .* -R &&
-sudo apidoc -i /var/www/api/Grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/ &&
+sudo apidoc -f .php -i /var/www/api/Grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/ --silent &&
 sudo service apache2 start
