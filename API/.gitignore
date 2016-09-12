@@ -58,8 +58,8 @@ $RECYCLE.BIN/
 !app/logs/.gitkeep
 /app/phpunit.xml
 /build/
-/vendor/
-!vendor/.gitkeep
-!vendor/sabre/
-!vendor/league/
+/vendor/*
+!/vendor/.gitkeep
+!/vendor/sabre/
+!/vendor/league/
 /bin/
