@@ -59,4 +59,7 @@ $RECYCLE.BIN/
 /app/phpunit.xml
 /build/
 /vendor/
+!vendor/.gitkeep
+!vendor/sabre/
+!vendor/league/
 /bin/
