@@ -11,7 +11,7 @@ use SQLBundle\Controller\RolesAndTokenVerificationController;
 use SQLBundle\Entity\User;
 use SQLBundle\Entity\Bug;
 use SQLBundle\Entity\BugState;
-use SQLBundle\Entity\Tag;
+use SQLBundle\Entity\BugtrackerTag;
 use SQLBundle\Entity\Project;
 use DateTime;
 
@@ -2475,7 +2475,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.15.4", "Bugtracker", "tagCreation", "Bad Parameter: projectId");
 
-		$tag = new Tag();
+		$tag = new BugtrackerTag();
 		$tag->setName($content->name);
 		$tag->setProject($project);
 
@@ -2570,7 +2570,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.16.3", "Bugtracker", "tagUpdate"));
 
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('SQLBundle:Tag')->find($content->tagId);
+		$tag = $em->getRepository('SQLBundle:BugtrackerTag')->find($content->tagId);
 		if (!($tag instanceof Tag))
 			return $this->setBadRequest("4.16.4", "Bugtracker", "tagUpdate", "Bad Parameter: tagId");
 
@@ -2644,7 +2644,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.17.3", "Bugtracker", "tagInformations"));
 
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('SQLBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('SQLBundle:BugtrackerTag')->find($tagId);
 		if (!($tag instanceof Tag))
 			return $this->setBadRequest("4.17.4", "Bugtracker", "tagInformations", "Bad Parameter: tagId");
 
@@ -2706,7 +2706,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("4.18.3", "Bugtracker", "deleteTag"));
 
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('SQLBundle:Tag')->find($tagId);
+		$tag = $em->getRepository('SQLBundle:BugtrackerTag')->find($tagId);
 		if (!($tag instanceof Tag))
 			return $this->setBadRequest("4.18.4", "Bugtracker", "deleteTag", "Bad Parameter: tagId");
 
@@ -2836,8 +2836,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $projectId, "bugtracker") < 2)
 			return ($this->setNoRightsError("4.19.9", "Bugtracker", "assignTagToBug"));
 
-		$tagToAdd = $em->getRepository('SQLBundle:Tag')->find($content->tagId);
-		if (!($tagToAdd instanceof Tag))
+		$tagToAdd = $em->getRepository('SQLBundle:BugtrackerTag')->find($content->tagId);
+		if (!($tagToAdd instanceof BugtrackerTag))
 			return $this->setBadRequest("4.19.4", "Bugtracker", "assignTagToBug", "Bad Parameter: tagId");
 
 		$tags = $bug->getTags();
@@ -2924,8 +2924,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $projectId, "bugtracker") < 2)
 			return ($this->setNoRightsError("4.20.9", "Bugtracker", "removeTagToBug"));
 
-		$tagToRemove = $em->getRepository('SQLBundle:Tag')->find($tagId);
-		if (!($tagToRemove instanceof Tag))
+		$tagToRemove = $em->getRepository('SQLBundle:BugtrackerTag')->find($tagId);
+		if (!($tagToRemove instanceof BugtrackerTag))
 			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: tagId");
 
 		$tags = $bug->getTags();
@@ -3020,7 +3020,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("4.21.9", "Bugtracker", "getProjectTags"));
 
 		$em = $this->getDoctrine()->getManager();
-		$repository = $em->getRepository('SQLBundle:Tag');
+		$repository = $em->getRepository('SQLBundle:BugtrackerTag');
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();
 

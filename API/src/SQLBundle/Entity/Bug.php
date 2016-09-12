@@ -72,7 +72,7 @@ class Bug
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $tags;
+    private $bugtracker_tags;
 
     /**
      * Constructor
@@ -380,12 +380,12 @@ class Bug
     /**
      * Add tags
      *
-     * @param \SQLBundle\Entity\Tag $tags
+     * @param \SQLBundle\Entity\BugtrackerTag $tags
      * @return Bug
      */
-    public function addTag(\SQLBundle\Entity\Tag $tags)
+    public function addTag(\SQLBundle\Entity\BugtrackerTag $tags)
     {
-        $this->tags[] = $tags;
+        $this->bugtracker_tags[] = $tags;
 
         return $this;
     }
@@ -393,11 +393,11 @@ class Bug
     /**
      * Remove tags
      *
-     * @param \SQLBundle\Entity\Tag $tags
+     * @param \SQLBundle\Entity\BugtrackerTag $tags
      */
-    public function removeTag(\SQLBundle\Entity\Tag $tags)
+    public function removeTag(\SQLBundle\Entity\BugtrackerTag $tags)
     {
-        $this->tags->removeElement($tags);
+        $this->bugtracker_tags->removeElement($tags);
     }
 
     /**
@@ -407,6 +407,6 @@ class Bug
      */
     public function getTags()
     {
-        return $this->tags;
+        return $this->bugtracker_tags;
     }
 }

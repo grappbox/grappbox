@@ -106,6 +106,10 @@ SQLBundle\Entity\Project:
           targetEntity: CustomerAccess
           mappedBy: projects
           cascade: [remove]
+        bugtracker_tags:
+          targetEntity: BugtrackerTag
+          mappedBy: project
+          cascade: [remove]
         tags:
           targetEntity: Tag
           mappedBy: project

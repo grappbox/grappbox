@@ -61,8 +61,8 @@ SQLBundle\Entity\Bug:
             inverseJoinColumns:
               user_id:
                 referencedColumnName: id
-        tags:
-          targetEntity: Tag
+        bugtracker_tags:
+          targetEntity: BugtrackerTag
           inversedBy: bugs
           joinTable:
             name: bug_tags

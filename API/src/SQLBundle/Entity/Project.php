@@ -137,6 +137,11 @@ class Project
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $bugtracker_tags;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $tags;
 
     /**
@@ -203,6 +208,7 @@ class Project
         $this->gantts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugtracker_tags = new \Doctrine\Common\Collections\ArrayCollection();
         $this->colors = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statProjectAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
@@ -820,6 +826,39 @@ class Project
     public function getCustomersAccess()
     {
         return $this->customers_access;
+    }
+
+    /**
+     * Add tags
+     *
+     * @param \SQLBundle\Entity\BugtrackerTag $tags
+     * @return Project
+     */
+    public function addBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $tags)
+    {
+        $this->bugtracker_tags[] = $tags;
+
+        return $this;
+    }
+
+    /**
+     * Remove tags
+     *
+     * @param \SQLBundle\Entity\BugtrackerTag $tags
+     */
+    public function removeBugtracckerTag(\SQLBundle\Entity\BugtrackerTag $tags)
+    {
+        $this->bugtracker_tags->removeElement($tags);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugtrackerTags()
+    {
+        return $this->bugtracker_tags;
     }
 
     /**

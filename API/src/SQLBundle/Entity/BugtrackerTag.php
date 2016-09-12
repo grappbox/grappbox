@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Tag
  */
-class Tag
+class BugtrackerTag
 {
     /**
      * @var integer
@@ -24,17 +24,18 @@ class Tag
      */
     private $project;
 
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $tasks;
+    private $bugs;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -71,39 +72,6 @@ class Tag
     }
 
     /**
-     * Add tasks
-     *
-     * @param \SQLBundle\Entity\Task $tasks
-     * @return Tag
-     */
-    public function addTask(\SQLBundle\Entity\Task $tasks)
-    {
-        $this->tasks[] = $tasks;
-
-        return $this;
-    }
-
-    /**
-     * Remove tasks
-     *
-     * @param \SQLBundle\Entity\Task $tasks
-     */
-    public function removeTask(\SQLBundle\Entity\Task $tasks)
-    {
-        $this->tasks->removeElement($tasks);
-    }
-
-    /**
-     * Get tasks
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTasks()
-    {
-        return $this->tasks;
-    }
-
-    /**
      * Set project
      *
      * @param \SQLBundle\Entity\Project $project
@@ -124,6 +92,39 @@ class Tag
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Add bugs
+     *
+     * @param \SQLBundle\Entity\Bug $bugs
+     * @return Tag
+     */
+    public function addBug(\SQLBundle\Entity\Bug $bugs)
+    {
+        $this->bugs[] = $bugs;
+
+        return $this;
+    }
+
+    /**
+     * Remove bugs
+     *
+     * @param \SQLBundle\Entity\Bug $bugs
+     */
+    public function removeBug(\SQLBundle\Entity\Bug $bugs)
+    {
+        $this->bugs->removeElement($bugs);
+    }
+
+    /**
+     * Get bugs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugs()
+    {
+        return $this->bugs;
     }
 
     public function objectToArray()

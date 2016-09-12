@@ -1,6 +1,6 @@
-SQLBundle\Entity\Tag:
+SQLBundle\Entity\BugtrackerTag:
     type: entity
-    table: tags
+    table: bugtracker_tags
     id:
         id:
             type: integer
@@ -12,13 +12,13 @@ SQLBundle\Entity\Tag:
             type: string
             length: 255
     manyToMany:
-        tasks:
-          targetEntity: Task
-          mappedBy: tags
+        bugs:
+          targetEntity: Bug
+          mappedBy: bugtracker_tags
     manyToOne:
         project:
           targetEntity: Project
-          inversedBy: tags
+          inversedBy: bugtracker_tags
           joinColumn:
             name: project_id
             referencedColumnName: id

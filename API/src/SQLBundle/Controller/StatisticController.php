@@ -726,7 +726,7 @@ class StatisticController extends RolesAndTokenVerificationController
   {
     $em = $this->getDoctrine()->getManager();
 
-    $tags = $em->getRepository('SQLBundle:Tag')->findBy(array('project' => $project));
+    $tags = $em->getRepository('SQLBundle:BugtrackerTag')->findBy(array('project' => $project));
 
     $totalBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('t')
                    ->select('count(t)')
@@ -738,7 +738,7 @@ class StatisticController extends RolesAndTokenVerificationController
       $number = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('t')
                      ->select('count(t)')
                      ->where("t.projects = :project")
-                     ->andWhere(":tag MEMBER OF t.tags")
+                     ->andWhere(":tag MEMBER OF t.bugtracker_tags")
                      ->setParameters(array('project' => $project, 'tag' => $tag))
                      ->getQuery()->getSingleScalarResult();
 
