@@ -31,129 +31,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 {
 
 	/**
-	* @api {get} /V0.2/bugtracker/getticket/:token/:id Get ticket
-	* @apiName getTicket
-	* @apiGroup Bugtracker
-	* @apiDescription Get ticket informations, tags and assigned users
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {int} id ticket's id
-	* @apiParam {String} token client authentification token
-	*
-	* @apiSuccess {int} id Ticket id
-	* @apiSuccess {Object} creator author
-	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {String} creator.fullname author fullname
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {String} title Ticket title
-	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
-	* @apiSuccess {DateTime} createdAt Ticket creation date
-	* @apiSuccess {DateTime} editedAt Ticket edition date
-	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	* @apiSuccess {bool} clientOrigin true if bug created by/from client
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
-	* @apiSuccess {Object[]} tags Ticket tags list
-	* @apiSuccess {int} tags.id Ticket tags id
-	* @apiSuccess {String} tags.name Ticket tags name
-	* @apiSuccess {Object[]} users assigned user list
-	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
-	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {date} users.avatar user avatar last modif date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* {
-	*  "info": {
-	*    "return_code": "1.4.1",
-	*    "return_message": "Bugtracker - getTicket - Complete Success"
-	*  },
-	*  "data": {
-	*    "id": 1,
-	*    "creator": { "id": 13, "fullname": "John Doe" },
-	*    "projectId": 1,
-	*    "title": "Ticket de Test",
-	*    "description": "Ceci est un ticket de test",
-	*    "parentId": null,
-	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    "editedAt": { "date": "2015-12-29 11:54:57", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    "deletedAt": null,
-	*    "clientOrigin": false,
-	*    "state": { "id": 1, "name": "Waiting" },
-	*    "tags": [
-	*      { "id": 1, "name": "To Do", "projectId": 1 },
-	*      { "id": 4, "name": "ASAP", "projectId": 1 }
-	*    ],
-	*    "users": [
-	*      { "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"} },
-	*      { "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null }
-	*    ]
-	*  }
-	* }
-	*
-	* @apiErrorExample Bad Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.1.3",
-	*			"return_message": "Bugtracker - getTicket - Bad id"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.1.4",
-	*			"return_message": "Bugtracker - getTicket - Bad Parameter: id"
-  *		}
-	* 	}
-	* @apiErrorExample Insufficient Rights
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.1.9",
-	*			"return_message": "Bugtracker - getTicket - Insufficient Rights"
-  *		}
-	* 	}
-	*
-	*/
-	public function getTicketAction(Request $request, $token, $id)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("4.1.3", "Bugtracker", "getTicket"));
-
-		$em = $this->getDoctrine()->getManager();
-		$ticket = $em->getRepository("SQLBundle:Bug")->find($id);
-		if (!($ticket instanceof Bug))
-			return $this->setBadRequest("4.1.4", "Bugtracker", "getTicket", "Bad Parameter: id");
-
-		if (($this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker")) < 1)
-			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
-
-		$object = $ticket->objectToArray();
-		$object['state'] = $em->getRepository("SQLBundle:BugState")->find($ticket->getStateId())->objectToArray();
-		$object['tags'] = array();
-		foreach ($ticket->getTags() as $key => $tag_value) {
-			$object['tags'][] = $tag_value->objectToArray();
-		}
-		$participants = array();
-		foreach ($ticket->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"name" => $value->getFirstname()." ".$value->getLastName(),
-				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatarDate()
-			);
-		}
-		$object["users"] = $participants;
-
-		return $this->setSuccess("1.4.1", "Bugtracker", "getTicket", "Complete Success", $object);
-	}
-
-	/**
 	* @api {post} /V0.2/bugtracker/postticket Post ticket
 	* @apiName postTicket
 	* @apiGroup Bugtracker
@@ -167,6 +44,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
 	* @apiParam {bool} clientOrigin true if bug created by/from client
+	* @apiParam {int[]} tags array of tags id
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
@@ -177,7 +55,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
   * 		"stateId": 1,
   * 		"stateName": "To Do",
-	* 		"clientOrigin": false
+	* 		"clientOrigin": false,
+	*			"tags": [15, 2, ...]
   * 	}
 	*   }
 	*
@@ -273,7 +152,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
 			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
-			|| !array_key_exists("clientOrigin", $content))
+			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("tags", $content))
 				return $this->setBadRequest("4.2.6", "Bugtracker", "postTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -314,6 +193,26 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$project->addBug($bug);
 		$em->flush();
 
+		foreach ($content->tags as $key => $tag) {
+			$tagToAdd = $em->getRepository('SQLBundle:BugtrackerTag')->find($tag);
+			if ($tagToAdd instanceof BugtrackerTag) {
+				$assigned = false;
+
+				$bugTags = $bug->getTags();
+				if ($bugTags) {
+					foreach ($bugTags as $key => $value) {
+						if ($value->getId() == $tag)
+							$assigned = true;
+					}
+				}
+
+				if (!$assigned) {
+					$bug->addTag($tagToAdd);
+					$em->flush();
+				}
+			}
+		}
+
 		$ticket = $bug->objectToArray();
 		$ticket['state'] = $state->objectToArray();
 		foreach ($bug->getTags() as $key => $tag_value) {
@@ -352,6 +251,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
 	* @apiParam {bool} clientOrigin true if bug created by/from client
+	* @apiParam {int[]} addTags array of id of tags to add
+	* @apiParam {int[]} removeTags array of id of tags to remove
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
@@ -362,7 +263,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
   * 		"stateId": 1,
   * 		"stateName": "To Do",
-	* 		"clientOrigin": false
+	* 		"clientOrigin": false,
+	* 		"addTags": [12, 5, ...],
+	* 		"removeTags": []
   * 	}
 	*   }
 	*
@@ -457,7 +360,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!array_key_exists("token", $content) || !array_key_exists("bugId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
 			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
-			|| !array_key_exists("clientOrigin", $content))
+			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("addTags", $content)
+			|| !array_key_exists("removeTags", $content))
 				return $this->setBadRequest("4.3.6", "Bugtracker", "editTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -494,6 +398,45 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$em->persist($bug);
 		$em->flush();
+
+		$assigned = false;
+		foreach ($content->removeTags as $tag) {
+			$bugTags = $bug->getTags();
+			if($bugTags) {
+				foreach ($bugTags as $key => $value) {
+					if ($value->getId() == $tag) {
+						$assigned = true;
+						break;
+					}
+				}
+			}
+
+			if ($assigned) {
+				$tagToRemove = $em->getRepository('SQLBundle:BugtrackerTag')->find($tag);
+				$bug->removeTag($tagToRemove);
+				$em->flush();
+			}
+		}
+
+		foreach ($content->addTags as $tag) {
+			$tagToAdd = $em->getRepository('SQLBundle:BugtrackerTag')->find($tag);
+			if ($tagToAdd instanceof BugtrackerTag) {
+				$assigned = false;
+				$bugTags = $bug->getTags();
+				if ($bugTags) {
+					foreach ($bug->getTags() as $key => $value) {
+						if ($value->getId() == $tag) {
+							$assigned = true;
+							break;
+						}
+					}
+				}
+				if (!$assigned) {
+					$bug->addTag($tagToAdd);
+					$em->flush();
+				}
+			}
+		}
 
 		$ticket = $bug->objectToArray();
 		$ticket['state'] = $state->getName();
@@ -535,599 +478,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "editTicket", "Complete Success", $ticket);
-	}
-
-	/**
-	* @api {get} /V0.2/bugtracker/getcomments/:token/:id/:ticketId Get comments
-	* @apiName getComments
-	* @apiGroup Bugtracker
-	* @apiDescription Get all comments of a bug ticket
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {int} id project id
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} ticketId commented ticket id
-	*
-	* @apiSuccess {int} id comment id
-	* @apiSuccess {Object} creator author
-	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {String} creator.fullname author fullname
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {String} title Ticket title
-	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
-	* @apiSuccess {DateTime} createdAt Ticket creation date
-	* @apiSuccess {DateTime} editedAt Ticket edition date
-	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* {
-	*  "info": {
-	*    "return_code": "1.4.1",
-	*    "return_message": "Bugtracker - getComments - Complete Success"
-	*  },
-	*  "data": {
-	*    "array": [
-	*    	{ "id": 11,
-	*    	"creator": { "id": 13, "fullname": "John Doe" },
-	*    	"projectId": 1,
-	*    	"title": "Ticket de Test",
-	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": 1,
-	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"editedAt": null,
-	*    	"deletedAt": null },
-	*    	{ "id": 12,
-	*    	"creator": { "id": 13, "fullname": "John Doe" },
-	*    	"projectId": 1,
-	*    	"title": "Ticket de Test",
-	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": 1,
-	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"editedAt": null,
-	*    	"deletedAt": null },
-	*    	...
-	*    ]
-	*  }
-	* }
-	* @apiSuccessExample {json} Success-No Data:
-	* {
-	*  "info": {
-	*    "return_code": "1.4.3",
-	*    "return_message": "Bugtracker - getComments - No Data Success"
-	*  },
-	*  "data": {
-	*    "array": []
-	*  }
-	* }
-	*
-	* @apiErrorExample Bad Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.4.3",
-	*			"return_message": "Bugtracker - getComments - Bad id"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.4.4",
-	*			"return_message": "Bugtracker - getComments - Bad Parameter: id"
-  *		}
-	* 	}
-	* @apiErrorExample Insufficient Rights
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.4.9",
-	*			"return_message": "Bugtracker - getComments - Insufficient Rights"
-  *		}
-	* 	}
-	*
-	*/
-	public function getCommentsAction(Request $request, $token, $id, $ticketId)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("4.4.3", "Bugtracker", "getComments"));
-		if ($this->checkRoles($user, $id, "bugtracker") < 1)
-			return ($this->setNoRightsError("4.4.9", "Bugtracker", "getComments"));
-
-		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("SQLBundle:Project")->find($id);
-		if (!($project instanceof Project))
-			return $this->setBadRequest("4.4.4", "Bugtracker", "getComments", "Bad Parameter: id");
-
-		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => $ticketId));
-		$ticketsArray = array();
-		foreach ($tickets as $key => $value) {
-			$ticketsArray[] = $value->objectToArray();
-		}
-
-		if (count($ticketsArray) <= 0)
-			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getComments");
-		return $this->setSuccess("1.4.1", "Bugtracker", "getComments", "Complete Success", array("array" => $ticketsArray));
-	}
-
-	/**
-	* @api {post} /V0.2/bugtracker/postcomment Post comment
-	* @apiName postComment
-	* @apiGroup Bugtracker
-	* @apiDescription Post comment on a bug ticket
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {int} projectId id of the project
-	* @apiParam {String} token client authentification token
-	* @apiParam {String} title Comment title
-	* @apiParam {String} description Comment content
-	* @apiParam {int} parentId commented ticket id
-	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	* 	"data": {
-  * 		"token": "ThisIsMyToken",
-  * 		"projectId": 1,
-  * 		"title": "J'ai un petit problème",
-  * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
-  * 		"parentId": 1
-  * 	}
-	*   }
-	*
-	* @apiSuccess {int} id Ticket id
-	* @apiSuccess {Object} creator author
-	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {String} creator.fullname author fullname
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {String} title Ticket title
-	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
-	* @apiSuccess {DateTime} createdAt Ticket creation date
-	* @apiSuccess {DateTime} editedAt Ticket edition date
-	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* HTTP/1.1 201 Created
-	* {
-	*  "info": {
-	*    "return_code": "1.4.1",
-	*    "return_message": "Bugtracker - postComments - Complete Success"
-	*  },
-	*  "data": {
-	*    "id": 11,
-	*    "creator": { "id": 13, "fullname": "John Doe" },
-	*    "projectId": 1,
-	*    "title": "Ticket de Test",
-	*    "description": "Ceci est un ticket de test",
-	*    "parentId": 1,
-	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    "editedAt": null,
-	*    "deletedAt": null
-	*  }
-	* }
-	*
-	* @apiErrorExample Bad Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.5.3",
-	*			"return_message": "Bugtracker - postComments - Bad id"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: projectId
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.5.4",
-	*			"return_message": "Bugtracker - postComments - Bad Parameter: projectId"
-  *		}
-	* 	}
-	* @apiErrorExample Insufficient Rights
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.5.9",
-	*			"return_message": "Bugtracker - postComments - Insufficient Rights"
-  *		}
-	* 	}
-	* @apiErrorExample Missing Parameter
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.5.6",
-	*			"return_message": "Bugtracker - postComments - Missing Parameter"
-  *		}
-	* 	}
-	*
-	*/
-	public function postCommentAction(Request $request)
-	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-		$em = $this->getDoctrine()->getManager();
-
-		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content) || !array_key_exists("parentId", $content)
-				|| !array_key_exists("title", $content) || !array_key_exists("description", $content))
-				return $this->setBadRequest("4.5.6", "Bugtracker", "postComment", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
-		if (!$user)
-			return ($this->setBadTokenError("4.5.3", "Bugtracker", "postComments"));
-
-		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
-			return ($this->setNoRightsError("4.5.9", "Bugtracker", "postComments"));
-
-		$project = $em->getRepository("SQLBundle:Project")->find($content->projectId);
-		if (!($project instanceof Project))
-			return $this->setBadRequest("4.5.4", "Bugtracker", "postComments", "Bad Parameter: projectId");
-
-		$bug = new Bug();
-		$bug->setProjects($project);
-		$bug->setCreator($user);
-		$bug->setParentId($content->parentId);
-		$bug->setTitle($content->title);
-		$bug->setDescription($content->description);
-		$bug->setCreatedAt(new DateTime('now'));
-    $bug->setClientOrigin(false);
-
-		$em->persist($bug);
-		$em->flush();
-
-		$ticket = $bug->objectToArray();
-
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket Commented";
-		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been commented";
-
-		$wdata['type'] = "Bugtracker";
-		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "The ticket ".$bug->getTitle()." has been commented";
-
-		$userNotif = array();
-		foreach ($bug->getUsers() as $key => $value) {
-			$userNotif[] = $value->getId();
-		}
-
-		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
-
-		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $ticket);
-	}
-
-	/**
-	* @api {put} /V0.2/bugtracker/editcomment Edit comment
-	* @apiName EditComment
-	* @apiGroup Bugtracker
-	* @apiDescription Edit a comment
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token client authentification token
-	* @apiParam {int} projectId id of the project
-	*	@apiParam {int} commentId comment id to edit
-	* @apiParam {String} title Comment title
-	* @apiParam {String} description Comment content
-	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	* 	"data": {
-  * 		"token": "ThisIsMyToken",
-	* 		"projectId": 1,
-  * 		"commentId": 1,
-  * 		"title": "J'ai un petit problème",
-  * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?"
-  * 	}
-	*   }
-	*
-	* @apiSuccess {int} id Ticket id
-	* @apiSuccess {Object} creator author
-	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {String} creator.fullname author fullname
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {String} title Ticket title
-	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
-	* @apiSuccess {DateTime} createdAt Ticket creation date
-	* @apiSuccess {DateTime} editedAt Ticket edition date
-	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* HTTP/1.1 201 Created
-	* {
-	*  "info": {
-	*    "return_code": "1.4.1",
-	*    "return_message": "Bugtracker - editComments - Complete Success"
-	*  },
-	*  "data": {
-	*    "id": 11,
-	*    "creator": { "id": 13, "fullname": "John Doe" },
-	*    "projectId": 1,
-	*    "title": "Ticket de Test",
-	*    "description": "Ceci est un ticket de test",
-	*    "parentId": 1,
-	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    "editedAt": null,
-	*    "deletedAt": null
-	*  }
-	* }
-	*
-	* @apiErrorExample Bad Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.6.3",
-	*			"return_message": "Bugtracker - editComments - Bad id"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: projectId
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.6.4",
-	*			"return_message": "Bugtracker - editComments - Bad Parameter: commentId"
-  *		}
-	* 	}
-	* @apiErrorExample Insufficient Rights
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.6.9",
-	*			"return_message": "Bugtracker - editComments - Insufficient Rights"
-  *		}
-	* 	}
-	* @apiErrorExample Missing Parameter
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.6.6",
-	*			"return_message": "Bugtracker - editComments - Missing Parameter"
-  *		}
-	* 	}
-	*
-	*/
-	public function editCommentAction(Request $request)
-	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-		$em = $this->getDoctrine()->getManager();
-
-		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content) || !array_key_exists("commentId", $content)
-				|| !array_key_exists("title", $content) || !array_key_exists("description", $content))
-				return $this->setBadRequest("4.6.6", "Bugtracker", "editComments", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
-		if (!$user)
-			return ($this->setBadTokenError("4.6.3", "Bugtracker", "editComments"));
-
-		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
-			return ($this->setNoRightsError("4.6.9", "Bugtracker", "editComments"));
-
-		$bug = $em->getRepository("SQLBundle:Bug")->find($content->commentId);
-		if (!($bug instanceof Bug))
-			return $this->setBadRequest("4.6.4", "Bugtracker", "editComments", "Bad Parameter: commentId");
-
-		$bug->setTitle($content->title);
-		$bug->setDescription($content->description);
-		$bug->setEditedAt(new DateTime('now'));
-
-		$em->persist($bug);
-		$em->flush();
-
-		$ticket = $bug->objectToArray();
-
-		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $ticket);
-	}
-
-	/**
-	* @api {put} /V0.2/bugtracker/setparticipants Set participants
-	* @apiName setParticipants
-	* @apiGroup Bugtracker
-	* @apiDescription Assign/unassign users to a ticket
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {int} bugId bug id
-	* @apiParam {string} token user authentication token
-	* @apiParam {int[]} toAdd list of users' id to assign
-	* @apiParam {int[]} toRemove list of users' id to unassign
-	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	* 	"data": {
-	* 		"token": "ThisIsMyToken",
-	* 		"bugId": 1,
-	* 		"toAdd": [1, 15, 6],
-	* 		"toRemove": []
-	* 	}
-	*   }
-	*
-	* @apiSuccess {int} id Ticket id
-	* @apiSuccess {Object} creator author
-	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {String} creator.fullname author fullname
-	* @apiSuccess {int} projectId project id
-	* @apiSuccess {String} title Ticket title
-	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
-	* @apiSuccess {DateTime} createdAt Ticket creation date
-	* @apiSuccess {DateTime} editedAt Ticket edition date
-	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
-	* @apiSuccess {Object[]} tags Ticket tags list
-	* @apiSuccess {int} tags.id Ticket tags id
-	* @apiSuccess {String} tags.name Ticket tags name
-	* @apiSuccess {Object[]} users assigned user list
-	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
-	*	@apiSuccess {string} users.email user email
-	*	@apiSuccess {date} users.avatar user avatar last modif date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* HTTP/1.1 201 Created
-	* {
-	*  "info": {
-	*    "return_code": "1.4.1",
-	*    "return_message": "Bugtracker - editTicket - Complete Success"
-	*  },
-	*  "data": {
-	*    "id": 1,
-	*    "creator": { "id": 13, "fullname": "John Doe" },
-	*    "projectId": 1,
-	*    "title": "Ticket de Test",
-	*    "description": "Ceci est un ticket de test",
-	*    "parentId": null,
-	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    "editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    "deletedAt": null,
-	*    "state": { "id": 1, "name": "Waiting" },
-	*    "tags": [
-	*    	{ "id": 1, "name": "To Do", "projectId": 1 },
-	*    	{ "id": 4, "name": "ASAP", "projectId": 1 }
-	*    ],
-	*    "users": [
-	*    	{ "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": null},
-	*    	{ "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null}
-	*    ]
-	*  }
-	* }
-	*
-	* @apiErrorExample Missing Parameter
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.7.6",
-	*			"return_message": "Bugtracker - setParticipants - Missing Parameter"
-  *		}
-	* 	}
-	* @apiErrorExample Bad Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.7.3",
-	*			"return_message": "Bugtracker - setParticipants - Bad id"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: bugId
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.7.4",
-	*			"return_message": "Bugtracker - setParticipants - Bad Parameter: bugId"
-  *		}
-	* 	}
-	* @apiErrorExample Insufficient Rights
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.7.9",
-	*			"return_message": "Bugtracker - setParticipants - Insufficient Rights"
-  *		}
-	* 	}
-	* @apiErrorExample Already in Database
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.7.7",
-	*			"return_message": "Bugtracker - setParticipants - Already in Database"
-  *		}
-	* 	}
-	*
-	*/
-	public function setParticipantsAction(Request $request)
-	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-		$em = $this->getDoctrine()->getManager();
-
-		if (!array_key_exists("token", $content) || !array_key_exists("bugId", $content) || !array_key_exists("toAdd", $content) || !array_key_exists("toRemove", $content))
-			return $this->setBadRequest("4.7.6", "Bugtracker", "setParticipants", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
-		if (!$user)
-			return ($this->setBadTokenError("4.7.3", "Bugtracker", "setParticipants"));
-
-		$bug = $em->getRepository("SQLBundle:Bug")->find($content->bugId);
-		if (!($bug instanceof Bug))
-			return $this->setBadRequest("4.7.4", "Bugtracker", "setParticipants", "Bad Parameter: bugId");
-
-		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
-			return ($this->setNoRightsError("4.7.9", "Bugtracker", "setParticipants"));
-
-
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket Assigned";
-		$mdata['mdesc'] = "You have been assigned to ticket ".$bug->getTitle();
-
-		$wdata['type'] = "Bugtracker";
-		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "You have been assigned to ticket ".$bug->getTitle();
-
-		foreach ($content->toAdd as $key => $value) {
-			$toAddUser = $em->getRepository("SQLBundle:User")->find($value);
-			if ($toAddUser instanceof User)
-			{
-				foreach ($bug->getUsers() as $key => $bug_value) {
-					if (($bug_value->getId()) == $toAddUser->getId())
-						return $this->setBadRequest("4.7.7", "Bugtracker", "setParticipants", "Already in Database");
-					}
-
-				$bug->addUser($toAddUser);
-
-				$userNotif = array($value);
-				$class->pushNotification($userNotif, $mdata, $wdata, $em);
-			}
-		}
-
-		$mdata['mtitle'] = "Bugtracker - Ticket Remove";
-		$mdata['mdesc'] = "You have been removed of ticket ".$bug->getTitle();
-
-		$wdata['type'] = "Bugtracker";
-		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "You have been removed of ticket ".$bug->getTitle();
-
-		foreach ($content->toRemove as $key => $value) {
-			$toRemoveuser = $em->getRepository("SQLBundle:User")->find($value);
-
-			if ($toRemoveuser instanceof User)
-			{
-				$bug->removeUser($toRemoveuser);
-
-				$userNotif = array($value);
-				$class->pushNotification($userNotif, $mdata, $wdata, $em);
-			}
-		}
-
-		$em->persist($bug);
-		$em->flush();
-
-		$object = $bug->objectToArray();
-		$object['state'] = $em->getRepository("SQLBundle:BugState")->find($bug->getStateId())->objectToArray();
-		$object['tags'] = array();
-		foreach ($bug->getTags() as $key => $tag_value) {
-			$object['tags'][] = $tag_value->objectToArray();
-		}
-
-		$participants = array();
-		foreach ($bug->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"name" => $value->getFirstname()." ".$value->getLastName(),
-				"email" => $value->getEmail(),
-				"avatar" => $value->getAvatarDate()
-			);
-		}
-		$object["users"] = $participants;
-
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
-
-		return $this->setSuccess("1.4.1", "Bugtracker", "setParticipants", "Complete Success", $object);
 	}
 
 	/**
@@ -1218,6 +568,225 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - closeTicket - Complete Success";
 		return new JsonResponse($response);
+	}
+
+	/**
+	* @api {put} /V0.2/bugtracker/reopenticket/:token/:id Reopen closed ticket
+	* @apiName reopenTicket
+	* @apiGroup Bugtracker
+	* @apiDescription Reopen a closed ticket
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {int} id id of the ticket
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - reopenTicket - Complete Success"
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.23.3",
+	*			"return_message": "Bugtracker - reopenTicket - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.23.4",
+	*			"return_message": "Bugtracker - reopenTicket - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.23.9",
+	*			"return_message": "Bugtracker - reopenTicket - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
+	public function reopenTicketAction(Request $request, $token, $id)
+	{
+		$em = $this->getDoctrine()->getManager();
+
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("4.23.3", "Bugtracker", "reopenTicket"));
+
+		$bug = $em->getRepository("SQLBundle:Bug")->find($id);
+		if (!($bug instanceof Bug))
+			return $this->setBadRequest("4.23.4", "Bugtracker", "reopenTicket", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
+			return ($this->setNoRightsError("4.23.9", "Bugtracker", "reopenTicket"));
+
+		$bug->setDeletedAt(null);
+
+		$em->persist($bug);
+		$em->flush();
+
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Bugtracker - Ticket reopen";
+		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been reopen";
+
+		$wdata['type'] = "Bugtracker";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = "The ticket ".$bug->getTitle()." has been reopen";
+
+		$userNotif = array();
+		foreach ($bug->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+
+		if (count($userNotif) > 0)
+			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
+
+		$response["info"]["return_code"] = "1.4.1";
+		$response["info"]["return_message"] = "Bugtracker - reopenTicket - Complete Success";
+		return new JsonResponse($response);
+	}
+
+	/*
+	 * --------------------------------------------------------------------
+	 *													TICKET GETTERS
+	 * --------------------------------------------------------------------
+	*/
+
+	/**
+	* @api {get} /V0.2/bugtracker/getticket/:token/:id Get ticket
+	* @apiName getTicket
+	* @apiGroup Bugtracker
+	* @apiDescription Get ticket informations, tags and assigned users
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {int} id ticket's id
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {date} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": { "date": "2015-12-29 11:54:57", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "deletedAt": null,
+	*    "clientOrigin": false,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [
+	*      { "id": 1, "name": "To Do", "projectId": 1 },
+	*      { "id": 4, "name": "ASAP", "projectId": 1 }
+	*    ],
+	*    "users": [
+	*      { "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"} },
+	*      { "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null }
+	*    ]
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.1.3",
+	*			"return_message": "Bugtracker - getTicket - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.1.4",
+	*			"return_message": "Bugtracker - getTicket - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.1.9",
+	*			"return_message": "Bugtracker - getTicket - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
+	public function getTicketAction(Request $request, $token, $id)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("4.1.3", "Bugtracker", "getTicket"));
+
+		$em = $this->getDoctrine()->getManager();
+		$ticket = $em->getRepository("SQLBundle:Bug")->find($id);
+		if (!($ticket instanceof Bug))
+			return $this->setBadRequest("4.1.4", "Bugtracker", "getTicket", "Bad Parameter: id");
+
+		if (($this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker")) < 1)
+			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
+
+		$object = $ticket->objectToArray();
+		$object['state'] = $em->getRepository("SQLBundle:BugState")->find($ticket->getStateId())->objectToArray();
+		$object['tags'] = array();
+		foreach ($ticket->getTags() as $key => $tag_value) {
+			$object['tags'][] = $tag_value->objectToArray();
+		}
+		$participants = array();
+		foreach ($ticket->getUsers() as $key => $value) {
+			$participants[] = array(
+				"id" => $value->getId(),
+				"name" => $value->getFirstname()." ".$value->getLastName(),
+				"email" => $value->getEmail(),
+				"avatar" => $value->getAvatarDate()
+			);
+		}
+		$object["users"] = $participants;
+
+		return $this->setSuccess("1.4.1", "Bugtracker", "getTicket", "Complete Success", $object);
 	}
 
 	/**
@@ -2291,78 +1860,475 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.4.1", "Bugtracker", "getStates", "Commplete Success", array("array" => $states_array));
 	}
 
+	/*
+	 * --------------------------------------------------------------------
+	 *														USERS
+	 * --------------------------------------------------------------------
+	*/
+
 	/**
-	* @api {put} /V0.2/bugtracker/reopenticket/:token/:id Reopen closed ticket
-	* @apiName reopenTicket
+	* @api {put} /V0.2/bugtracker/setparticipants Set participants
+	* @apiName setParticipants
 	* @apiGroup Bugtracker
-	* @apiDescription Reopen a closed ticket
+	* @apiDescription Assign/unassign users to a ticket
 	* @apiVersion 0.2.0
 	*
-	* @apiParam {int} id id of the ticket
-	* @apiParam {String} token client authentification token
+	* @apiParam {int} bugId bug id
+	* @apiParam {string} token user authentication token
+	* @apiParam {int[]} toAdd list of users' id to assign
+	* @apiParam {int[]} toRemove list of users' id to unassign
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+	* 		"token": "ThisIsMyToken",
+	* 		"bugId": 1,
+	* 		"toAdd": [1, 15, 6],
+	* 		"toRemove": []
+	* 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {date} users.avatar user avatar last modif date
 	*
 	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - editTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "deletedAt": null,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [
+	*    	{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    	{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    ],
+	*    "users": [
+	*    	{ "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    	{ "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    ]
+	*  }
+	* }
+	*
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
-	*			"return_code": "1.4.1",
-	*			"return_message": "Bugtracker - reopenTicket - Complete Success"
-	*		}
+	*			"return_code": "4.7.6",
+	*			"return_message": "Bugtracker - setParticipants - Missing Parameter"
+  *		}
 	* 	}
-	*
 	* @apiErrorExample Bad Id
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
-	*			"return_code": "4.23.3",
-	*			"return_message": "Bugtracker - reopenTicket - Bad id"
+	*			"return_code": "4.7.3",
+	*			"return_message": "Bugtracker - setParticipants - Bad id"
 	*		}
 	* 	}
-	* @apiErrorExample Bad Parameter: id
+	* @apiErrorExample Bad Parameter: bugId
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
-	*			"return_code": "4.23.4",
-	*			"return_message": "Bugtracker - reopenTicket - Bad Parameter: id"
+	*			"return_code": "4.7.4",
+	*			"return_message": "Bugtracker - setParticipants - Bad Parameter: bugId"
   *		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
-	*			"return_code": "4.23.9",
-	*			"return_message": "Bugtracker - reopenTicket - Insufficient Rights"
+	*			"return_code": "4.7.9",
+	*			"return_message": "Bugtracker - setParticipants - Insufficient Rights"
+  *		}
+	* 	}
+	* @apiErrorExample Already in Database
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.7.7",
+	*			"return_message": "Bugtracker - setParticipants - Already in Database"
   *		}
 	* 	}
 	*
 	*/
-	public function reopenTicketAction(Request $request, $token, $id)
+	public function setParticipantsAction(Request $request)
 	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
 		$em = $this->getDoctrine()->getManager();
 
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("4.23.3", "Bugtracker", "reopenTicket"));
+		if (!array_key_exists("token", $content) || !array_key_exists("bugId", $content) || !array_key_exists("toAdd", $content) || !array_key_exists("toRemove", $content))
+			return $this->setBadRequest("4.7.6", "Bugtracker", "setParticipants", "Missing Parameter");
 
-		$bug = $em->getRepository("SQLBundle:Bug")->find($id);
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("4.7.3", "Bugtracker", "setParticipants"));
+
+		$bug = $em->getRepository("SQLBundle:Bug")->find($content->bugId);
 		if (!($bug instanceof Bug))
-			return $this->setBadRequest("4.23.4", "Bugtracker", "reopenTicket", "Bad Parameter: id");
+			return $this->setBadRequest("4.7.4", "Bugtracker", "setParticipants", "Bad Parameter: bugId");
 
 		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
-			return ($this->setNoRightsError("4.23.9", "Bugtracker", "reopenTicket"));
+			return ($this->setNoRightsError("4.7.9", "Bugtracker", "setParticipants"));
 
-		$bug->setDeletedAt(null);
+
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Bugtracker - Ticket Assigned";
+		$mdata['mdesc'] = "You have been assigned to ticket ".$bug->getTitle();
+
+		$wdata['type'] = "Bugtracker";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = "You have been assigned to ticket ".$bug->getTitle();
+
+		foreach ($content->toAdd as $key => $value) {
+			$toAddUser = $em->getRepository("SQLBundle:User")->find($value);
+			if ($toAddUser instanceof User)
+			{
+				foreach ($bug->getUsers() as $key => $bug_value) {
+					if (($bug_value->getId()) == $toAddUser->getId())
+						return $this->setBadRequest("4.7.7", "Bugtracker", "setParticipants", "Already in Database");
+					}
+
+				$bug->addUser($toAddUser);
+
+				$userNotif = array($value);
+				$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			}
+		}
+
+		$mdata['mtitle'] = "Bugtracker - Ticket Remove";
+		$mdata['mdesc'] = "You have been removed of ticket ".$bug->getTitle();
+
+		$wdata['type'] = "Bugtracker";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = "You have been removed of ticket ".$bug->getTitle();
+
+		foreach ($content->toRemove as $key => $value) {
+			$toRemoveuser = $em->getRepository("SQLBundle:User")->find($value);
+
+			if ($toRemoveuser instanceof User)
+			{
+				$bug->removeUser($toRemoveuser);
+
+				$userNotif = array($value);
+				$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			}
+		}
 
 		$em->persist($bug);
 		$em->flush();
 
+		$object = $bug->objectToArray();
+		$object['state'] = $em->getRepository("SQLBundle:BugState")->find($bug->getStateId())->objectToArray();
+		$object['tags'] = array();
+		foreach ($bug->getTags() as $key => $tag_value) {
+			$object['tags'][] = $tag_value->objectToArray();
+		}
+
+		$participants = array();
+		foreach ($bug->getUsers() as $key => $value) {
+			$participants[] = array(
+				"id" => $value->getId(),
+				"name" => $value->getFirstname()." ".$value->getLastName(),
+				"email" => $value->getEmail(),
+				"avatar" => $value->getAvatarDate()
+			);
+		}
+		$object["users"] = $participants;
+
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+
+		return $this->setSuccess("1.4.1", "Bugtracker", "setParticipants", "Complete Success", $object);
+	}
+
+	/*
+	 * --------------------------------------------------------------------
+	 *														COMMENTS
+	 * --------------------------------------------------------------------
+	*/
+
+	/**
+	* @api {get} /V0.2/bugtracker/getcomments/:token/:id/:ticketId Get comments
+	* @apiName getComments
+	* @apiGroup Bugtracker
+	* @apiDescription Get all comments of a bug ticket
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {int} id project id
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} ticketId commented ticket id
+	*
+	* @apiSuccess {int} id comment id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getComments - Complete Success"
+	*  },
+	*  "data": {
+	*    "array": [
+	*    	{ "id": 11,
+	*    	"creator": { "id": 13, "fullname": "John Doe" },
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": 1,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": null,
+	*    	"deletedAt": null },
+	*    	{ "id": 12,
+	*    	"creator": { "id": 13, "fullname": "John Doe" },
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": 1,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": null,
+	*    	"deletedAt": null },
+	*    	...
+	*    ]
+	*  }
+	* }
+	* @apiSuccessExample {json} Success-No Data:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getComments - No Data Success"
+	*  },
+	*  "data": {
+	*    "array": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.4.3",
+	*			"return_message": "Bugtracker - getComments - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.4.4",
+	*			"return_message": "Bugtracker - getComments - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.4.9",
+	*			"return_message": "Bugtracker - getComments - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
+	public function getCommentsAction(Request $request, $token, $id, $ticketId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("4.4.3", "Bugtracker", "getComments"));
+		if ($this->checkRoles($user, $id, "bugtracker") < 1)
+			return ($this->setNoRightsError("4.4.9", "Bugtracker", "getComments"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository("SQLBundle:Project")->find($id);
+		if (!($project instanceof Project))
+			return $this->setBadRequest("4.4.4", "Bugtracker", "getComments", "Bad Parameter: id");
+
+		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => $ticketId));
+		$ticketsArray = array();
+		foreach ($tickets as $key => $value) {
+			$ticketsArray[] = $value->objectToArray();
+		}
+
+		if (count($ticketsArray) <= 0)
+			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getComments");
+		return $this->setSuccess("1.4.1", "Bugtracker", "getComments", "Complete Success", array("array" => $ticketsArray));
+	}
+
+	/**
+	* @api {post} /V0.2/bugtracker/postcomment Post comment
+	* @apiName postComment
+	* @apiGroup Bugtracker
+	* @apiDescription Post comment on a bug ticket
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {int} projectId id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {String} title Comment title
+	* @apiParam {String} description Comment content
+	* @apiParam {int} parentId commented ticket id
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+	* 		"token": "ThisIsMyToken",
+	* 		"projectId": 1,
+	* 		"title": "J'ai un petit problème",
+	* 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
+	* 		"parentId": 1
+	* 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - postComments - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 11,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": 1,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": null,
+	*    "deletedAt": null
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.5.3",
+	*			"return_message": "Bugtracker - postComments - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: projectId
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.5.4",
+	*			"return_message": "Bugtracker - postComments - Bad Parameter: projectId"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.5.9",
+	*			"return_message": "Bugtracker - postComments - Insufficient Rights"
+	*		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.5.6",
+	*			"return_message": "Bugtracker - postComments - Missing Parameter"
+	*		}
+	* 	}
+	*
+	*/
+	public function postCommentAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+		$em = $this->getDoctrine()->getManager();
+
+		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content) || !array_key_exists("parentId", $content)
+				|| !array_key_exists("title", $content) || !array_key_exists("description", $content))
+				return $this->setBadRequest("4.5.6", "Bugtracker", "postComment", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("4.5.3", "Bugtracker", "postComments"));
+
+		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
+			return ($this->setNoRightsError("4.5.9", "Bugtracker", "postComments"));
+
+		$project = $em->getRepository("SQLBundle:Project")->find($content->projectId);
+		if (!($project instanceof Project))
+			return $this->setBadRequest("4.5.4", "Bugtracker", "postComments", "Bad Parameter: projectId");
+
+		$bug = new Bug();
+		$bug->setProjects($project);
+		$bug->setCreator($user);
+		$bug->setParentId($content->parentId);
+		$bug->setTitle($content->title);
+		$bug->setDescription($content->description);
+		$bug->setCreatedAt(new DateTime('now'));
+		$bug->setClientOrigin(false);
+
+		$em->persist($bug);
+		$em->flush();
+
+		$ticket = $bug->objectToArray();
+
 		$class = new NotificationController();
 
-		$mdata['mtitle'] = "Bugtracker - Ticket reopen";
-		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been reopen";
+		$mdata['mtitle'] = "Bugtracker - Ticket Commented";
+		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been commented";
 
 		$wdata['type'] = "Bugtracker";
 		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "The ticket ".$bug->getTitle()." has been reopen";
+		$wdata['message'] = "The ticket ".$bug->getTitle()." has been commented";
 
 		$userNotif = array();
 		foreach ($bug->getUsers() as $key => $value) {
@@ -2372,13 +2338,131 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
+		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $ticket);
+	}
 
-		$response["info"]["return_code"] = "1.4.1";
-		$response["info"]["return_message"] = "Bugtracker - reopenTicket - Complete Success";
-		return new JsonResponse($response);
+	/**
+	* @api {put} /V0.2/bugtracker/editcomment Edit comment
+	* @apiName EditComment
+	* @apiGroup Bugtracker
+	* @apiDescription Edit a comment
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} projectId id of the project
+	*	@apiParam {int} commentId comment id to edit
+	* @apiParam {String} title Comment title
+	* @apiParam {String} description Comment content
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+	* 		"token": "ThisIsMyToken",
+	* 		"projectId": 1,
+	* 		"commentId": 1,
+	* 		"title": "J'ai un petit problème",
+	* 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?"
+	* 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - editComments - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 11,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": 1,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": null,
+	*    "deletedAt": null
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.6.3",
+	*			"return_message": "Bugtracker - editComments - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: projectId
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.6.4",
+	*			"return_message": "Bugtracker - editComments - Bad Parameter: commentId"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.6.9",
+	*			"return_message": "Bugtracker - editComments - Insufficient Rights"
+	*		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.6.6",
+	*			"return_message": "Bugtracker - editComments - Missing Parameter"
+	*		}
+	* 	}
+	*
+	*/
+	public function editCommentAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+		$em = $this->getDoctrine()->getManager();
+
+		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content) || !array_key_exists("commentId", $content)
+				|| !array_key_exists("title", $content) || !array_key_exists("description", $content))
+				return $this->setBadRequest("4.6.6", "Bugtracker", "editComments", "Missing Parameter");
+
+		$user = $this->checkToken($content->token);
+		if (!$user)
+			return ($this->setBadTokenError("4.6.3", "Bugtracker", "editComments"));
+
+		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
+			return ($this->setNoRightsError("4.6.9", "Bugtracker", "editComments"));
+
+		$bug = $em->getRepository("SQLBundle:Bug")->find($content->commentId);
+		if (!($bug instanceof Bug))
+			return $this->setBadRequest("4.6.4", "Bugtracker", "editComments", "Bad Parameter: commentId");
+
+		$bug->setTitle($content->title);
+		$bug->setDescription($content->description);
+		$bug->setEditedAt(new DateTime('now'));
+
+		$em->persist($bug);
+		$em->flush();
+
+		$ticket = $bug->objectToArray();
+
+		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $ticket);
 	}
 
 	/*
