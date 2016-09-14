@@ -1207,6 +1207,111 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {delete} /V0.3/projects/removeuserconnected/:token/:projectId Remove the user connected from the project
+	* @apiName removeUserConnected
+	* @apiGroup Project
+	* @apiDescription Remove the user connected from the project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - removeuserconnected - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.11.3",
+	*			"return_message": "Project - removeuserconnected - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.11.4",
+	*			"return_message": "Project - removeuserconnected - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You are not on the project
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.11.4",
+	*			"return_message": "Project - removeuserconnected - Bad Parameter: You are not on the project"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You are the project creator, you can't be removed
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.11.4",
+	*			"return_message": "Project - removeuserconnected - Bad Parameter: You are the project creator, you can't be removed"
+	*		}
+	*	}
+	*/
+	public function removeUserConnectedAction(Request $request, $token, $projectId)
+	{
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("6.11.3", "Project", "removeuserconnected"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+
+		if ($project === null)
+			return $this->setBadRequest("6.11.4", "Project", "removeuserconnected", "Bad Parameter: projectId");
+
+		if ($user === $project->getCreatorUser())
+			return $this->setBadRequest("6.11.4", "Project", "removeuserconnected", "Bad Parameter: You are the project creator, you can't be removed");
+
+		$users = $project->getUsers();
+		$isOnProject = false;
+		foreach ($users as $u) {
+			if ($u == $user)
+				$isOnProject = true;
+		}
+		if ($isOnProject == false)
+			return $this->setBadRequest("6.11.4", "Project", "removeuserconnected", "Bad Parameter: You are not on the project");
+
+		$userRoleLink = $em->getRepository('SQLBundle:ProjectUserRole')->findBy(array('projectId'=> $project->getId(), 'userId' => $userId));
+		foreach ($userRoleLink as $key => $userRole) {
+			$em->remove($userRole);
+			$em->flush();
+		}
+
+		$project->removeUser($user);
+		$em->flush();
+
+		// Notifications
+		$class = new NotificationController();
+
+		$mdata['mtitle'] = "Project - Remove";
+		$mdata['mdesc'] = "You have been removed from the project ".$project->getName();
+
+		$wdata['type'] = "Project";
+		$wdata['targetId'] = $project->getId();
+		$wdata['message'] = "You have been removed from the project ".$project->getName();
+
+		$userNotif[] = $user->getId();
+
+		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - removeuserconnected - Complete Success";
+		return new JsonResponse($response);
+	}
+
+
+	/**
 	* @api {delete} /V0.2/projects/removeusertoproject/:token/:projectId/:userId Remove a user from the project
 	* @apiName removeUserToProject
 	* @apiGroup Project
@@ -1230,7 +1335,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "6.11.3",
+	*			"return_code": "6.12.3",
 	*			"return_message": "Project - removeusertoproject - Bad ID"
 	*		}
 	*	}
@@ -1238,7 +1343,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 403 Forbidden
 	*	{
 	*		"info": {
-	*			"return_code": "6.11.9",
+	*			"return_code": "6.12.9",
 	*			"return_message": "Project - removeusertoproject - Insufficient Rights"
 	*		}
 	*	}
@@ -1246,7 +1351,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.11.4",
+	*			"return_code": "6.12.4",
 	*			"return_message": "Project - removeusertoproject - Bad Parameter: projectId"
 	*		}
 	*	}
@@ -1254,7 +1359,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.11.4",
+	*			"return_code": "6.12.4",
 	*			"return_message": "Project - removeusertoproject - Bad Parameter: userId"
 	*		}
 	*	}
@@ -1262,7 +1367,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.11.4",
+	*			"return_code": "6.12.4",
 	*			"return_message": "Project - removeusertoproject - Bad Parameter: You can't remove the project creator"
 	*		}
 	*	}
@@ -1271,23 +1376,23 @@ class ProjectController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError("6.11.3", "Project", "removeusertoproject"));
+			return ($this->setBadTokenError("6.12.3", "Project", "removeusertoproject"));
 
 		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
-			return ($this->setNoRightsError("6.11.9", "Project", "removeusertoproject"));
+			return ($this->setNoRightsError("6.12.9", "Project", "removeusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 
 		if ($project === null)
-			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.12.4", "Project", "removeusertoproject", "Bad Parameter: projectId");
 
 		$userToRemove = $em->getRepository('SQLBundle:User')->find($userId);
 		if ($userToRemove === null)
-			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: userId");
+			return $this->setBadRequest("6.12.4", "Project", "removeusertoproject", "Bad Parameter: userId");
 
 		if ($userToRemove === $project->getCreatorUser())
-			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: You can't remove the project creator");
+			return $this->setBadRequest("6.12.4", "Project", "removeusertoproject", "Bad Parameter: You can't remove the project creator");
 
 		$users = $project->getUsers();
 		$isOnProject = false;
@@ -1296,7 +1401,7 @@ class ProjectController extends RolesAndTokenVerificationController
 				$isOnProject = true;
 		}
 		if ($isOnProject == false)
-			return $this->setBadRequest("6.11.4", "Project", "removeusertoproject", "Bad Parameter: userId");
+			return $this->setBadRequest("6.12.4", "Project", "removeusertoproject", "Bad Parameter: userId");
 
 		$userRoleLink = $em->getRepository('SQLBundle:ProjectUserRole')->findBy(array('projectId'=> $project->getId(), 'userId' => $userId));
 		foreach ($userRoleLink as $key => $userRole) {
@@ -1374,7 +1479,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "6.12.3",
+	*			"return_code": "6.13.3",
 	*			"return_message": "Project - getusertoproject - Bad ID"
 	*		}
 	*	}
@@ -1382,16 +1487,8 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.12.4",
+	*			"return_code": "6.13.4",
 	*			"return_message": "Project - getusertoproject - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.12.9",
-	*			"return_message": "Project - getusertoproject - Insufficient Rights"
 	*		}
 	*	}
 	*/
@@ -1399,13 +1496,13 @@ class ProjectController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError("6.12.3", "Project", "getusertoproject"));
+			return ($this->setBadTokenError("6.13.3", "Project", "getusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 
 		if ($project === null)
-			return $this->setBadRequest("6.12.4", "Project", "getusertoproject", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.13.4", "Project", "getusertoproject", "Bad Parameter: projectId");
 
 		$arr = array();
 
@@ -1458,7 +1555,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "6.13.3",
+	*			"return_code": "6.14.3",
 	*			"return_message": "Project - changeprojectcolor - Bad ID"
 	*		}
 	*	}
@@ -1466,7 +1563,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.13.6",
+	*			"return_code": "6.14.6",
 	*			"return_message": "Project - changeprojectcolor - Missing Parameter"
 	*		}
 	*	}
@@ -1474,7 +1571,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.13.4",
+	*			"return_code": "6.14.4",
 	*			"return_message": "Project - changeprojectcolor - Bad Parameter: projectId"
 	*		}
 	*	}
@@ -1486,17 +1583,17 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('color', $content))
-			return $this->setBadRequest("6.13.6", "Project", "changeprojectcolor", "Missing Parameter");
+			return $this->setBadRequest("6.14.6", "Project", "changeprojectcolor", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
-			return ($this->setBadTokenError("6.13.3", "Project", "changeprojectcolor"));
+			return ($this->setBadTokenError("6.14.3", "Project", "changeprojectcolor"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
 
 		if ($project === null)
-			return $this->setBadRequest("6.13.4", "Project", "changeprojectcolor", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.14.4", "Project", "changeprojectcolor", "Bad Parameter: projectId");
 
 		$color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
 		if ($color === null)
@@ -1538,7 +1635,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "6.10.3",
+	*			"return_code": "6.15.3",
 	*			"return_message": "Project - resetprojectcolor - Bad ID"
 	*		}
 	*	}
@@ -1546,7 +1643,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.10.4",
+	*			"return_code": "6.15.4",
 	*			"return_message": "Project - resetprojectcolor - Bad Parameter: projectId"
 	*		}
 	*	}
@@ -1554,7 +1651,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.10.4",
+	*			"return_code": "6.15.4",
 	*			"return_message": "Project - resetprojectcolor - Bad Parameter: No color for the user"
 	*		}
 	*	}
@@ -1563,17 +1660,17 @@ class ProjectController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError("6.10.3", "Project", "resetprojectcolor"));
+			return ($this->setBadTokenError("6.15.3", "Project", "resetprojectcolor"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 
 		if ($project === null)
-			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.15.4", "Project", "resetprojectcolor", "Bad Parameter: projectId");
 
 		$color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
 		if ($color === null)
-			return $this->setBadRequest("6.10.4", "Project", "resetprojectcolor", "Bad Parameter: No color for the user");
+			return $this->setBadRequest("6.15.4", "Project", "resetprojectcolor", "Bad Parameter: No color for the user");
 
 		$em->remove($color);
 		$em->flush();
@@ -1611,7 +1708,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "6.15.3",
+	*			"return_code": "6.16.3",
 	*			"return_message": "Project - getProjectLogo - Bad ID"
 	*		}
 	*	}
@@ -1619,7 +1716,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
-	*			"return_code": "6.15.4",
+	*			"return_code": "6.16.4",
 	*			"return_message": "Project - getProjectLogo - Bad Parameter: projectId"
 	*		}
 	*	}
@@ -1628,13 +1725,13 @@ class ProjectController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
-			return ($this->setBadTokenError("6.15.3", "Project", "getProjectLogo"));
+			return ($this->setBadTokenError("6.16.3", "Project", "getProjectLogo"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 
 		if ($project === null)
-			return $this->setBadRequest("6.15.4", "Project", "getProjectLogo", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.16.4", "Project", "getProjectLogo", "Bad Parameter: projectId");
 
 		return $this->setSuccess("1.6.1", "Project", "getProjectLogo", "Complete Success", array("logo" => $project->getLogo()));
 	}

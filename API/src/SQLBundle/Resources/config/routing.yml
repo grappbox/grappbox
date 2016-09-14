@@ -476,6 +476,13 @@ v2_project_addUserToProject:
     defaults:   { _controller: SQLBundle:Project:addUserToProject, _format: json }
     methods: [POST]
 
+project_removeUserConnected:
+    path:       projects/removeuserconnected/{token}/{projectId}
+    defaults:   { _controller: SQLBundle:Project:removeUserConnected, _format: json }
+    requirements:
+        projectId: \d+
+    methods: [DELETE]
+
 v2_project_removeUserToProject:
     path:       projects/removeusertoproject/{token}/{projectId}/{userId}
     defaults:   { _controller: SQLBundle:Project:removeUserToProject, _format: json }
