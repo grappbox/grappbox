@@ -72,4 +72,9 @@ SQLBundle\Entity\Bug:
             inverseJoinColumns:
               tag_id:
                 referencedColumnName: id
+    oneToMany:
+        comments:
+          targetEntity: BugComment
+          mappedBy: bugs
+          cascade: [remove]
     lifecycleCallbacks: {  }

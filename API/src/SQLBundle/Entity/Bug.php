@@ -75,12 +75,19 @@ class Bug
     private $bugtracker_tags;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $comments;
+
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -436,10 +443,43 @@ class Bug
     /**
      * Get bugtracker_tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBugtrackerTags()
     {
         return $this->bugtracker_tags;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param \SQLBundle\Entity\BugComment $comment
+     * @return Bug
+     */
+    public function addComment(\SQLBundle\Entity\BugComment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param \SQLBundle\Entity\BugComment $comment
+     */
+    public function removeComment(\SQLBundle\Entity\BugComment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

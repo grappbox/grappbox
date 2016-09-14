@@ -207,6 +207,13 @@ v2_bugtracker_reopenTicket:
         id:     \d+
     methods:  [PUT]
 
+v2_bugtracker_deleteComment:
+    path:     /bugtracker/deletecomment/{token}/{id}
+    defaults:   { _controller: SQLBundle:Bugtracker:deleteComment, _format: json }
+    requirements:
+        token:  "[a-zA-Z0-9]+"
+        id:     \d+
+    methods:  [DELETE]
 
 # -----------------------------------------------------------------------
 #                           CLOUD CONTROLLER

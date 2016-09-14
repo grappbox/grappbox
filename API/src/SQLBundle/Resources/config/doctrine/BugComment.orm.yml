@@ -1,0 +1,43 @@
+SQLBundle\Entity\BugComment:
+    type: entity
+    table: bug_comments
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        comment:
+            type: text
+        createdAt:
+            type: datetime
+            column: created_at
+        editedAt:
+            type: datetime
+            column: edited_at
+            nullable: TRUE
+        deletedAt:
+            type: datetime
+            column: deleted_at
+            nullable: TRUE
+    manyToOne:
+        projects:
+          targetEntity: Project
+          inversedBy: bugs
+          joinColumn:
+            name: project_id
+            referencedColumnName: id
+        bugs:
+          targetEntity: Bug
+          inversedBy: comments
+          joinColumn:
+            name: bug_id
+            referencedColumnName: id
+        creator:
+          targetEntity: User
+          inverserdBy: bug_creator
+          joinColumn:
+            name: creator_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }
