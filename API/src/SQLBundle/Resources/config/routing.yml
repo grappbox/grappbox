@@ -295,87 +295,6 @@ v2_dashboard_getProjectsGlobalProgress:
         token:  "[a-zA-Z0-9]+"
     methods: [GET]
 
-v2_dashboard_getProjectCreator:
-    path:       dashboard/getprojectcreator/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectCreator, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [GET]
-
-v2_dashboard_getProjectBasicInformations:
-    path:       dashboard/getprojectbasicinformations/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectBasicInformations, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [GET]
-
-v2_dashboard_getProjectTasks:
-    path:       dashboard/getprojecttasks/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectTasks, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [GET]
-
-v2_dashboard_getUserBasicInformations:
-    path:       dashboard/getuserbasicinformations/{token}
-    defaults:   { _controller: SQLBundle:Dashboard:getUserBasicInformations, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getProjectPersons:
-    path:       dashboard/getprojectpersons/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectPersons, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id: \d+
-    methods: [GET]
-
-v2_dashboard_getMeetingBasicInformations:
-    path:       dashboard/getmeetingbasicinformations/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getMeetingBasicInformations, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id: \d+
-    methods: [GET]
-
-v2_dashboard_getProjectList:
-    path:       dashboard/getprojectlist/{token}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectList, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getProjectTasksStatus:
-    path:       dashboard/getprojecttasksstatus/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectTasksStatus, _format: json }
-    requirements:
-        id: \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getNumberTimelineMessages:
-    path:       dashboard/getnumbertimelinemessages/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getNumberTimelineMessages, _format: json }
-    requirements:
-        id: \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getNumberBugs:
-    path:       dashboard/getnumberbugs/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getNumberBugs, _format: json }
-    requirements:
-        id: \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-
-
-
 
 # -----------------------------------------------------------------------
 #                           EVENT CONTROLLER
@@ -417,50 +336,6 @@ v2_event_delEvent:
         id:     \d+
         token:  "[a-zA-Z0-9]+"
     methods: [DELETE]
-
-# meeting_addAlert:
-#     path:       /Meeting/addAlert/{id}
-#     defaults:   { _controller: SQLBundle:Meeting:addAlert }
-#     requirements:
-#         id: \d+
-
-
-
-
-# -----------------------------------------------------------------------
-#                           GANTT CONTROLLER
-# -----------------------------------------------------------------------
-# v2_gantt_addTask:
-#     path:       /Gantt/addTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:addTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_assignTask:
-#     path:       /Gantt/assignTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:assignTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_editTask:
-#     path:       /Gantt/editTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:editTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_delTask:
-#     path:       /Gantt/delTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:delTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_setTaskProperties:
-#     path:       /Gantt/setTaskProperties/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:setTaskProperties }
-#     requirements:
-#         id: \d+
-
-
 
 
 # -----------------------------------------------------------------------
@@ -531,42 +406,6 @@ v2_planning_getMonthPlanning:
         token:  "[a-zA-Z0-9]+"
         date:   \d+-\d+-\d+
     methods: [GET]
-
-
-
-
-# -----------------------------------------------------------------------
-#                       PERSONAL SETTINGS CONTROLLER
-# -----------------------------------------------------------------------
-# personnalSettings_editPhoto:
-#     path:       /PersonnalSettings/editPhoto/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:editPhoto }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_editPersonalInfos:
-#     path:       /PersonnalSettings/editPersonalInfos/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:editPersonalInfos }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_changePassword:
-#     path:       /PersonnalSettings/changePassword/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:changePassword }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_editPreferences:
-#     path:       /PersonnalSettings/editPreferences/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:editPreferences }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_getRole:
-#     path:       /PersonnalSettings/getRole/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:getRole }
-#     requirements:
-#         id: \d+
 
 
 
@@ -807,19 +646,6 @@ v2_task_taskDelete:
         taskId: \d+
     methods: [DELETE]
 
-v2_task_assignUserToTask:
-    path:       tasks/assignusertotask
-    defaults: { _controller: SQLBundle:Task:assignUserToTask, _format: json }
-    methods: [PUT]
-
-v2_task_removeUserToTask:
-    path:       tasks/removeusertotask/{token}/{taskId}/{userId}
-    defaults:   { _controller: SQLBundle:Task:removeUserToTask, _format: json }
-    requirements:
-        taskId: \d+
-        userId: \d+
-    methods: [DELETE]
-
 v2_task_tagCreation:
     path:       tasks/tagcreation
     defaults:   { _controller: SQLBundle:Task:tagCreation, _format: json }
@@ -841,19 +667,6 @@ v2_task_deleteTag:
     path:       tasks/deletetag/{token}/{tagId}
     defaults:   { _controller: SQLBundle:Task:deleteTag, _format: json }
     requirements:
-        tagId: \d+
-    methods: [DELETE]
-
-v2_task_assignTagToTask:
-    path:       tasks/assigntagtotask
-    defaults: { _controller: SQLBundle:Task:assignTagToTask, _format: json }
-    methods: [PUT]
-
-v2_task_removeTagToTask:
-    path:       tasks/removetagtotask/{token}/{taskId}/{tagId}
-    defaults:   { _controller: SQLBundle:Task:removeTagToTask, _format: json }
-    requirements:
-        taskId: \d+
         tagId: \d+
     methods: [DELETE]
 

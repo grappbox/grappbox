@@ -1302,4 +1302,14 @@ class Project
     {
         $this->statLateTasks->removeElement($statLateTasks);
     }
+
+    /**
+     * Remove bugtracker_tags
+     *
+     * @param \SQLBundle\Entity\BugtrackerTag $bugtrackerTags
+     */
+    public function removeBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $bugtrackerTags)
+    {
+        $this->bugtracker_tags->removeElement($bugtrackerTags);
+    }
 }

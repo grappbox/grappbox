@@ -409,4 +409,37 @@ class Bug
     {
         return $this->bugtracker_tags;
     }
+
+    /**
+     * Add bugtracker_tags
+     *
+     * @param \SQLBundle\Entity\BugtrackerTag $bugtrackerTags
+     * @return Bug
+     */
+    public function addBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $bugtrackerTags)
+    {
+        $this->bugtracker_tags[] = $bugtrackerTags;
+
+        return $this;
+    }
+
+    /**
+     * Remove bugtracker_tags
+     *
+     * @param \SQLBundle\Entity\BugtrackerTag $bugtrackerTags
+     */
+    public function removeBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $bugtrackerTags)
+    {
+        $this->bugtracker_tags->removeElement($bugtrackerTags);
+    }
+
+    /**
+     * Get bugtracker_tags
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBugtrackerTags()
+    {
+        return $this->bugtracker_tags;
+    }
 }

@@ -16,14 +16,12 @@ class Task
         'creator' => $this->creator_user->getId() ,
         'title' => $this->title ,
         'description' => $this->description ,
-        'color' => $this->color ,
         'dueDate' => $this->dueDate ,
         'startedAt' => $this->startedAt ,
         'finishedAt' => $this->finishedAt ,
         'projectId' => $this->projects->getId()
       );
     }
-
     /**
      * @var integer
      */
@@ -38,11 +36,6 @@ class Task
      * @var string
      */
     private $description;
-
-    /**
-     * @var string
-     */
-    private $color;
 
     /**
      * @var \DateTime
@@ -103,11 +96,6 @@ class Task
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tasks_container;
-    
-    /**
-     * @var \SQLBundle\Entity\Task
-     */
-    private $container;
 
     /**
      * @var \SQLBundle\Entity\Project
@@ -118,6 +106,11 @@ class Task
      * @var \SQLBundle\Entity\User
      */
     private $creator_user;
+
+    /**
+     * @var \SQLBundle\Entity\Task
+     */
+    private $container;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -190,29 +183,6 @@ class Task
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Set color
-     *
-     * @param string $color
-     * @return Task
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
-
-        return $this;
-    }
-
-    /**
-     * Get color
-     *
-     * @return string 
-     */
-    public function getColor()
-    {
-        return $this->color;
     }
 
     /**
@@ -578,6 +548,29 @@ class Task
     }
 
     /**
+     * Set container
+     *
+     * @param \SQLBundle\Entity\Task $container
+     * @return Task
+     */
+    public function setContainer(\SQLBundle\Entity\Task $container = null)
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * Get container
+     *
+     * @return \SQLBundle\Entity\Task 
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
      * Add tags
      *
      * @param \SQLBundle\Entity\Tag $tags
@@ -608,29 +601,5 @@ class Task
     public function getTags()
     {
         return $this->tags;
-    }
-
-
-    /**
-     * Set container
-     *
-     * @param \SQLBundle\Entity\Task $container
-     * @return Task
-     */
-    public function setContainer(\SQLBundle\Entity\Task $container = null)
-    {
-        $this->container = $container;
-
-        return $this;
-    }
-
-    /**
-     * Get container
-     *
-     * @return \SQLBundle\Entity\Task 
-     */
-    public function getContainer()
-    {
-        return $this->container;
     }
 }
