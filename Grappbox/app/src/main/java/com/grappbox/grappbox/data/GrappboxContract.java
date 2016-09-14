@@ -411,11 +411,13 @@ public class GrappboxContract {
         public static final String TABLE_NAME = "cloud";
 
         public static final String COLUMN_FILENAME = "filename";
+        public static final String COLUMN_TYPE = "type";
         public static final String COLUMN_SIZE = "size";
         public static final String COLUMN_MIMETYPE = "mimetype";
         public static final String COLUMN_PATH = "path";
         public static final String COLUMN_IS_SECURED = "is_secured";
         public static final String COLUMN_DATE_LAST_EDITED_UTC = "date_last_edited";
+        public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_CLOUD).build();
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CLOUD;
@@ -423,6 +425,10 @@ public class GrappboxContract {
 
         public static Uri buildCloudWithLocalIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildWithProjectJoin(){
+            return CONTENT_URI.buildUpon().appendPath("withproject").build();
         }
     }
 }

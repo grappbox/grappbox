@@ -24,6 +24,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.WindowDecorActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -46,14 +47,14 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
     public static final String EXTRA_PROJECT_ID = "com.grappbox.grappbox.ProjectActivity.EXTRA_PROJECT_ID";
     public static final String EXTRA_PROJECT_NAME = "com.grappbox.grappbox.ProjectActivity.EXTRA_PROJECT_NAME";
 
-    private static final String FRAGMENT_TAG_DASHBOARD = "FTAG_DASHBOARD";
-    private static final String FRAGMENT_TAG_CALENDAR = "FTAG_CALENDAR";
-    private static final String FRAGMENT_TAG_CLOUD = "FTAG_CLOUD";
-    private static final String FRAGMENT_TAG_TIMELINE = "FTAG_TIMELINE";
-    private static final String FRAGMENT_TAG_BUGTRACKER = "FTAG_BUGTRACKER";
-    private static final String FRAGMENT_TAG_TASK = "FTAG_TASK";
-    private static final String FRAGMENT_TAG_GANTT = "FTAG_GANTT";
-    private static final String FRAGMENT_TAG_WHITEBOARD = "FTAG_WHITEBOARD";
+    public static final String FRAGMENT_TAG_DASHBOARD = "FTAG_DASHBOARD";
+    public static final String FRAGMENT_TAG_CALENDAR = "FTAG_CALENDAR";
+    public static final String FRAGMENT_TAG_CLOUD = "FTAG_CLOUD";
+    public static final String FRAGMENT_TAG_TIMELINE = "FTAG_TIMELINE";
+    public static final String FRAGMENT_TAG_BUGTRACKER = "FTAG_BUGTRACKER";
+    public static final String FRAGMENT_TAG_TASK = "FTAG_TASK";
+    public static final String FRAGMENT_TAG_GANTT = "FTAG_GANTT";
+    public static final String FRAGMENT_TAG_WHITEBOARD = "FTAG_WHITEBOARD";
 
     private static final int COLUMN_PROJECT_ID = 0;
 
@@ -107,7 +108,32 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
         getLoaderManager().initLoader(LOADER_ADDED_USER_INFOS, null, this);
     }
 
-
+    private void syncNavDrawer(String currentTag){
+        switch (currentTag){
+            case FRAGMENT_TAG_DASHBOARD:
+                mCurrentNavSelected = R.id.nav_dashboard;
+                break;
+            case FRAGMENT_TAG_CALENDAR:
+                mCurrentNavSelected = R.id.nav_calendar;
+                break;
+            case FRAGMENT_TAG_CLOUD:
+                mCurrentNavSelected = R.id.nav_cloud;
+                break;
+            case FRAGMENT_TAG_TIMELINE:
+                mCurrentNavSelected = R.id.nav_timeline;
+                break;
+            case FRAGMENT_TAG_TASK:
+                mCurrentNavSelected = R.id.nav_tasks;
+                break;
+            case FRAGMENT_TAG_GANTT:
+                mCurrentNavSelected = R.id.nav_gantt;
+                break;
+            case FRAGMENT_TAG_WHITEBOARD:
+                mCurrentNavSelected = R.id.nav_whiteboard;
+                break;
+        }
+        mNavView.setCheckedItem(mCurrentNavSelected);
+    }
 
     @Override
     public void onBackPressed() {
@@ -150,28 +176,28 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
             return false;
         switch (id){
             case R.id.nav_dashboard:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new DashboardFragment(), FRAGMENT_TAG_DASHBOARD).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment(), FRAGMENT_TAG_DASHBOARD).addToBackStack(null).commit();
                 break;
             case R.id.nav_calendar:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new CalendarFragment(), FRAGMENT_TAG_CALENDAR).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CalendarFragment(), FRAGMENT_TAG_CALENDAR).addToBackStack(null).commit();
                 break;
             case R.id.nav_cloud:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new CloudFragment(), FRAGMENT_TAG_CLOUD).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CloudFragment(), FRAGMENT_TAG_CLOUD).addToBackStack(null).commit();
                 break;
             case R.id.nav_timeline:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new TimelineFragment(), FRAGMENT_TAG_TIMELINE).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TimelineFragment(), FRAGMENT_TAG_TIMELINE).addToBackStack(null).commit();
                 break;
             case R.id.nav_bugtracker:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new BugtrackerFragment(), FRAGMENT_TAG_BUGTRACKER).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BugtrackerFragment(), FRAGMENT_TAG_BUGTRACKER).addToBackStack(null).commit();
                 break;
             case R.id.nav_tasks:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new TaskFragment(), FRAGMENT_TAG_TASK).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TaskFragment(), FRAGMENT_TAG_TASK).addToBackStack(null).commit();
                 break;
             case R.id.nav_gantt:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new GanttFragment(), FRAGMENT_TAG_GANTT).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GanttFragment(), FRAGMENT_TAG_GANTT).addToBackStack(null).commit();
                 break;
             case R.id.nav_whiteboard:
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new WhiteboardFragment(), FRAGMENT_TAG_WHITEBOARD).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new WhiteboardFragment(), FRAGMENT_TAG_WHITEBOARD).addToBackStack(null).commit();
                 break;
             case R.id.nav_project_settings:
                 break;
@@ -187,6 +213,8 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -225,6 +253,7 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onBackStackChanged() {
         String tag = getSupportFragmentManager().findFragmentById(R.id.fragment_container).getTag();
+        syncNavDrawer(tag);
         int newTheme = -1;
         switch (tag){
             case FRAGMENT_TAG_DASHBOARD:

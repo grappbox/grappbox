@@ -92,6 +92,7 @@ public class GrappboxProvider extends ContentProvider {
 
     public static final int CLOUD = 240;
     public static final int CLOUD_BY_ID = 241;
+    public static final int CLOUD_WITH_PROJECT = 242;
 
 
 
@@ -188,7 +189,7 @@ public class GrappboxProvider extends ContentProvider {
         //Cloud related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD, CLOUD);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD + "/#", CLOUD_BY_ID);
-
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD + "/withproject", CLOUD_WITH_PROJECT);
         return matcher;
     }
 
@@ -301,6 +302,7 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.BugAssignationEntry.CONTENT_TYPE;
 
             case CLOUD:
+            case CLOUD_WITH_PROJECT:
                 return GrappboxContract.CloudEntry.CONTENT_TYPE;
             case CLOUD_BY_ID:
                 return GrappboxContract.CloudEntry.CONTENT_ITEM_TYPE;
@@ -482,6 +484,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case CLOUD_BY_ID:
                 retCursor = CloudCursors.query_CloudById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case CLOUD_WITH_PROJECT:
+                retCursor = CloudCursors.query_CloudWithProject(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));

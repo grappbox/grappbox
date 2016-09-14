@@ -50,7 +50,6 @@ import java.util.Calendar;
  * Created by marcw on 30/08/2016.
  */
 
-//TODO : Support multiple account synchronisation
 public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String LOG_TAG = GrappboxSyncAdapter.class.getSimpleName();
     private static final String[] accountsProjection = {

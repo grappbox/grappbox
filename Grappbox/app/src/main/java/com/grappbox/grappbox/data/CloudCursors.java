@@ -4,15 +4,25 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.grappbox.grappbox.data.GrappboxContract.CloudEntry;
+import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
 
 /**
  * Created by marcw on 30/08/2016.
  */
 public class CloudCursors {
+    private static final SQLiteQueryBuilder sProjectJoinQueryBuilder;
+
+    static {
+        sProjectJoinQueryBuilder = new SQLiteQueryBuilder();
+        sProjectJoinQueryBuilder.setTables(CloudEntry.TABLE_NAME + " INNER JOIN " + ProjectEntry.TABLE_NAME +
+        " ON " + CloudEntry.TABLE_NAME + "." + CloudEntry.COLUMN_LOCAL_PROJECT_ID + " = " + ProjectEntry.TABLE_NAME + "." + ProjectEntry._ID);
+    }
+
     public static Cursor query_Cloud(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
         return openHelper.getReadableDatabase().query(CloudEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
     }
@@ -44,5 +54,9 @@ public class CloudCursors {
             db.endTransaction();
         }
         return returnCount;
+    }
+
+    public static Cursor query_CloudWithProject(Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper mOpenHelper) {
+        return sProjectJoinQueryBuilder.query(mOpenHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 }

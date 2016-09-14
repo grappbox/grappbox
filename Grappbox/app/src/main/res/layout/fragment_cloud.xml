@@ -1,13 +1,56 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.grappbox.grappbox.project_fragments.CloudFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    >
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context="com.grappbox.grappbox.project_fragments.CloudFragment"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/horizontalScrollView2"
+            android:layout_weight="10"
+            android:background="@color/GrappYellow">
+
+            <android.support.design.widget.TabLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:tabTextColor="@color/GrappWhiteLight"
+                app:tabSelectedTextColor="@color/GrappWhiteLight"
+                app:tabBackground="@color/GrappYellow"
+                app:tabIndicatorColor="@color/GrappWhiteDark"
+                android:id="@+id/breadcrumb"
+                >
+                <android.support.design.widget.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="/" />
+            </android.support.design.widget.TabLayout>
+        </HorizontalScrollView>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/cloud_entries"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="@color/GrappWhiteLight"
+        app:backgroundTint="@color/GrappYellow" />
+
+</android.support.design.widget.CoordinatorLayout>

@@ -20,8 +20,10 @@ import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.BugAssignationEntry;
 import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
 import com.grappbox.grappbox.data.GrappboxContract.BugTagEntry;
+import com.grappbox.grappbox.data.GrappboxContract.CloudEntry;
 import com.grappbox.grappbox.data.GrappboxContract.EventEntry;
 import com.grappbox.grappbox.data.GrappboxContract.EventTypeEntry;
+import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
@@ -37,6 +39,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -54,6 +57,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_SYNC_NEXT_MEETINGS = "com.grappbox.grappbox.sync.ACTION_SYNC_NEXT_MEETINGS";
     public static final String ACTION_LOGIN = "com.grappbox.grappbox.sync.ACTION_LOGIN";
     public static final String ACTION_SYNC_PROJECT_LIST = "com.grappbox.grappbox.sync.ACTION_SYNC_PROJECT_LIST";
+    public static final String ACTION_SYNC_CLOUD_PATH = "com.grappbox.grappbox.sync.ACTION_SYNC_CLOUD_PATH";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -65,10 +69,12 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_MAIL = "mail";
     public static final String EXTRA_CRYPTED_PASSWORD = "password";
     public static final String EXTRA_ACCOUNT_NAME = "account_name";
+    public static final String EXTRA_CLOUD_PATH = "cloud_path";
+    public static final String EXTRA_CLOUD_PASSWORD = "com.grappbox.grappbox.sync.EXTRA_CLOUD_PASSWORD";
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
-    public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
 
+    public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
     public static final String BUNDLE_KEY_JSON = "com.grappbox.grappbox.sync.BUNDLE_KEY_JSON";
 
     public GrappboxJustInTimeService() {
@@ -102,6 +108,91 @@ public class GrappboxJustInTimeService extends IntentService {
                 ResultReceiver responseObserver = intent.hasExtra(EXTRA_RESPONSE_RECEIVER) ? (ResultReceiver) intent.getParcelableExtra(EXTRA_RESPONSE_RECEIVER) : null;
                 handleProjectListSync(intent.getStringExtra(EXTRA_API_TOKEN), intent.getStringExtra(EXTRA_ACCOUNT_NAME), responseObserver);
             }
+            else if (ACTION_SYNC_CLOUD_PATH.equals(action)){
+                handleCloudPathSync(intent.getStringExtra(EXTRA_API_TOKEN), intent.getStringExtra(EXTRA_CLOUD_PATH), intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_CLOUD_PASSWORD));
+            }
+        }
+    }
+
+    private void handleCloudPathSync(String apiToken, String cloudPath, long projectId, String passwordSafe) {
+        if (projectId == -1)
+            return;
+        Cursor project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+        if (project == null || !project.moveToFirst())
+            return;
+        cloudPath = cloudPath.replace('/', ',');
+        cloudPath = cloudPath.replace(' ', '|');
+        Log.d(LOG_TAG, "Cloud Sync started");
+        cloudPath = cloudPath.replace('/', ',');
+        HttpURLConnection connection = null;
+        String returnedJson;
+
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/cloud/list/"+apiToken+"/"+project.getString(0)+"/"+cloudPath+(passwordSafe == null || passwordSafe.isEmpty() ? "" : "/"+passwordSafe));
+            //Ask login
+            Log.d(LOG_TAG, "Start connection : " + url);
+            JSONObject json;
+            JSONObject data;
+
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                return;
+            }
+
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                return;
+            }
+            data = json.getJSONObject("data");
+            JSONArray array = data.getJSONArray("array");
+            if (array.length() == 0)
+                return;
+            ArrayList<ContentValues> directory = new ArrayList<>();
+            for (int i = 0; i < array.length(); ++i){
+                JSONObject current = array.getJSONObject(i);
+                ContentValues value = new ContentValues();
+                String type = current.getString("type");
+                String filename = current.getString("filename");
+
+                if (type.equals("file")){
+                    value.put(CloudEntry.COLUMN_TYPE, 0);
+                    value.put(CloudEntry.COLUMN_SIZE, current.getLong("size"));
+                    value.put(CloudEntry.COLUMN_MIMETYPE, current.getLong("mimetype"));
+                    value.put(CloudEntry.COLUMN_DATE_LAST_EDITED_UTC, current.getLong("last_modified"));
+                } else if (filename.equals("Safe")){
+                    value.put(CloudEntry.COLUMN_TYPE, 2);
+                } else {
+                    value.put(CloudEntry.COLUMN_TYPE, 1);
+                }
+                filename = filename.replace('|', ' ');
+                cloudPath = cloudPath.replace(',', '/').replace('|', ' ');
+                value.put(CloudEntry.COLUMN_PATH, cloudPath);
+                value.put(CloudEntry.COLUMN_FILENAME, filename);
+                value.put(CloudEntry.COLUMN_IS_SECURED, current.getBoolean("is_secured"));
+                value.put(CloudEntry.COLUMN_LOCAL_PROJECT_ID, projectId);
+                Log.d(LOG_TAG, current.toString());
+                String checkSelection = CloudEntry.COLUMN_FILENAME + "=? AND " + CloudEntry.COLUMN_PATH + "=? AND " + CloudEntry.COLUMN_LOCAL_PROJECT_ID + "=?";
+                String[] checkArgs = new String[]{
+                        filename,
+                        cloudPath,
+                        String.valueOf(projectId)
+                };
+                Cursor check = getContentResolver().query(CloudEntry.CONTENT_URI, null, checkSelection, checkArgs, null);
+                if (check == null || !check.moveToFirst())
+                    directory.add(value);
+                else
+                    check.close();
+            }
+            getContentResolver().bulkInsert(CloudEntry.CONTENT_URI, directory.toArray(new ContentValues[directory.size()]));
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
         }
     }
 
@@ -159,7 +250,7 @@ public class GrappboxJustInTimeService extends IntentService {
         HttpURLConnection connection = null;
         String returnedJson;
         Cursor projectRole = getContentResolver().query(GrappboxContract.RolesAssignationEntry.buildRoleAssignationWithUIDAndPID(localUID, localPID), null, null, null, null);
-        Cursor grappboxProjectId = getContentResolver().query(GrappboxContract.ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
+        Cursor grappboxProjectId = getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
 
         if (projectRole == null || !projectRole.moveToFirst() || grappboxProjectId == null || !grappboxProjectId.moveToFirst())
             return;
@@ -424,7 +515,7 @@ public class GrappboxJustInTimeService extends IntentService {
             return;
         HttpURLConnection connection = null;
         String returnedJson;
-        Cursor grappboxProjectId = getContentResolver().query(GrappboxContract.ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
+        Cursor grappboxProjectId = getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         if (grappboxProjectId == null || !grappboxProjectId.moveToFirst())
             return;
         try {
@@ -560,9 +651,9 @@ public class GrappboxJustInTimeService extends IntentService {
                 ContentValues projectValue = new ContentValues();
                 ContentValues userValue = new ContentValues();
 
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID, project.getString("id"));
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_NAME, project.getString("name"));
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_DESCRIPTION, project.getString("description"));
+                projectValue.put(ProjectEntry.COLUMN_GRAPPBOX_ID, project.getString("id"));
+                projectValue.put(ProjectEntry.COLUMN_NAME, project.getString("name"));
+                projectValue.put(ProjectEntry.COLUMN_DESCRIPTION, project.getString("description"));
 
                 JSONObject creator = project.getJSONObject("creator");
                 userValue.put(UserEntry.COLUMN_GRAPPBOX_ID, creator.getString("id"));
@@ -575,33 +666,33 @@ public class GrappboxJustInTimeService extends IntentService {
                     long id = Long.valueOf(insertedUri.getLastPathSegment());
                     if (id <= 0)
                         continue;
-                    projectValue.put(GrappboxContract.ProjectEntry.COLUMN_LOCAL_CREATOR_ID, id);
+                    projectValue.put(ProjectEntry.COLUMN_LOCAL_CREATOR_ID, id);
                 }
 
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_CONTACT_PHONE, project.getString("phone"));
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_COMPANY_NAME, project.getString("company"));
+                projectValue.put(ProjectEntry.COLUMN_CONTACT_PHONE, project.getString("phone"));
+                projectValue.put(ProjectEntry.COLUMN_COMPANY_NAME, project.getString("company"));
 
-                projectValue.putNull(GrappboxContract.ProjectEntry.COLUMN_URI_LOGO);
+                projectValue.putNull(ProjectEntry.COLUMN_URI_LOGO);
                 JSONObject logoExpiration = project.isNull("logo") ? null : project.getJSONObject("logo");
                 if (logoExpiration != null)
-                    projectValue.put(GrappboxContract.ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")).getTime());
+                    projectValue.put(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")).getTime());
                 else
-                    projectValue.putNull(GrappboxContract.ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC);
+                    projectValue.putNull(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC);
 
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_CONTACT_EMAIL, project.getString("contact_mail"));
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_SOCIAL_FACEBOOK, project.getString("facebook"));
-                projectValue.put(GrappboxContract.ProjectEntry.COLUMN_SOCIAL_TWITTER, project.getString("twitter"));
+                projectValue.put(ProjectEntry.COLUMN_CONTACT_EMAIL, project.getString("contact_mail"));
+                projectValue.put(ProjectEntry.COLUMN_SOCIAL_FACEBOOK, project.getString("facebook"));
+                projectValue.put(ProjectEntry.COLUMN_SOCIAL_TWITTER, project.getString("twitter"));
                 JSONObject dateDeletion = project.isNull("deleted_at") ? null : project.getJSONObject("deleted_at");
                 if (dateDeletion == null)
-                    projectValue.putNull(GrappboxContract.ProjectEntry.COLUMN_DATE_DELETED_UTC);
+                    projectValue.putNull(ProjectEntry.COLUMN_DATE_DELETED_UTC);
                 else
-                    projectValue.put(GrappboxContract.ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(dateDeletion.getString("date")).getTime());
+                    projectValue.put(ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(dateDeletion.getString("date")).getTime());
                 Pair<Integer, Integer> infosCount = syncProjectInfos(apiToken, project.getString("id"));
                 if (infosCount != null) {
-                    projectValue.put(GrappboxContract.ProjectEntry.COLUMN_COUNT_BUG, infosCount.first);
-                    projectValue.put(GrappboxContract.ProjectEntry.COLUMN_COUNT_TASK, infosCount.second);
+                    projectValue.put(ProjectEntry.COLUMN_COUNT_BUG, infosCount.first);
+                    projectValue.put(ProjectEntry.COLUMN_COUNT_TASK, infosCount.second);
                 }
-                long projectId = Long.parseLong(getContentResolver().insert(GrappboxContract.ProjectEntry.CONTENT_URI, projectValue).getLastPathSegment());
+                long projectId = Long.parseLong(getContentResolver().insert(ProjectEntry.CONTENT_URI, projectValue).getLastPathSegment());
                 if (projectId == -1)
                     return;
                 syncAccountProject(apiToken, projectId, accountName);
