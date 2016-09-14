@@ -44,7 +44,118 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
 	* @apiParam {bool} clientOrigin true if bug created by/from client
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+  * 		"token": "ThisIsMyToken",
+  * 		"projectId": 1,
+  * 		"title": "J'ai un petit problème",
+  * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
+  * 		"stateId": 1,
+  * 		"stateName": "To Do",
+	* 		"clientOrigin": false
+  * 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {date} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - postTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": null,
+	*    "deletedAt": null,
+	*    "clientOrigin": false,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [],
+	*    "users": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.2.3",
+	*			"return_message": "Bugtracker - postTicket - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: projectId
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.2.4",
+	*			"return_message": "Bugtracker - postTicket - Bad Parameter: projectId"
+  *		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.2.6",
+	*			"return_message": "Bugtracker - postTicket - Missing Parameter"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.2.9",
+	*			"return_message": "Bugtracker - postTicket - Insufficient Rights"
+  *		}
+	* 	}
+	*
+	*/
+	/**
+	* @api {post} /V0.3/bugtracker/postticket Post ticket
+	* @apiName postTicket
+	* @apiGroup Bugtracker
+	* @apiDescription Post a ticket
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} projectId id of the project
+	* @apiParam {String} title Ticket title
+	* @apiParam {String} description Ticket content
+	* @apiParam {int} stateId Ticket state (0 if new)
+	* @apiParam {String} stateName Ticket state
+	* @apiParam {bool} clientOrigin true if bug created by/from client
 	* @apiParam {int[]} tags array of tags id
+	* @apiParam {int[]} users array of users id
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
@@ -56,7 +167,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"stateId": 1,
   * 		"stateName": "To Do",
 	* 		"clientOrigin": false,
-	*			"tags": [15, 2, ...]
+	*			"tags": [15, 2, ...],
+	*			"users": [125, 20, ...]
   * 	}
 	*   }
 	*
@@ -152,7 +264,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
 			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
-			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("tags", $content))
+			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("tags", $content)
+			|| !array_key_exists("users", $content))
 				return $this->setBadRequest("4.2.6", "Bugtracker", "postTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -213,6 +326,22 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			}
 		}
 
+		foreach ($content->users as $key => $guest) {
+				$newGuest = $em->getRepository('SQLBundle:User')->find($guest);
+				if ($newGuest instanceof User) {
+					$alreadyAdded = false;
+					foreach ($bug->getUsers() as $key => $bug_value) {
+						if ($guest == $bug_value->getId())
+							$alreadyAdded = true;
+					}
+					if (!$alreadyAdded) {
+						$bug->addUser($newGuest);
+						$em->flush();
+					}
+				}
+		}
+
+
 		$ticket = $bug->objectToArray();
 		$ticket['state'] = $state->objectToArray();
 		foreach ($bug->getTags() as $key => $tag_value) {
@@ -251,8 +380,120 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} stateId Ticket state (0 if new)
 	* @apiParam {String} stateName Ticket state
 	* @apiParam {bool} clientOrigin true if bug created by/from client
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+  * 		"token": "ThisIsMyToken",
+  * 		"bugId": 1,
+  * 		"title": "J'ai un petit problème",
+  * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
+  * 		"stateId": 1,
+  * 		"stateName": "To Do",
+	* 		"clientOrigin": false
+  * 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	* @apiSuccess {String} creator.fullname author fullname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - editTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "deletedAt": null,
+	*    "clientOrigin": false,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [],
+	*    "users": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.3.3",
+	*			"return_message": "Bugtracker - editTicket - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: bugId
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.3.4",
+	*			"return_message": "Bugtracker - editTicket - Bad Parameter: bugId"
+  *		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.3.6",
+	*			"return_message": "Bugtracker - editTicket - Missing Parameter"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.3.9",
+	*			"return_message": "Bugtracker - editTicket - Insufficient Rights"
+  *		}
+	* 	}
+	*
+	*/
+	/**
+	* @api {put} /V0.3/bugtracker/editticket Edit ticket
+	* @apiName editTicket
+	* @apiGroup Bugtracker
+	*	@apiDescription Edit ticket
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} bugId id of the bug ticket
+	* @apiParam {String} title Ticket title
+	* @apiParam {String} description Ticket content
+	* @apiParam {int} stateId Ticket state (0 if new)
+	* @apiParam {String} stateName Ticket state
+	* @apiParam {bool} clientOrigin true if bug created by/from client
 	* @apiParam {int[]} addTags array of id of tags to add
 	* @apiParam {int[]} removeTags array of id of tags to remove
+	* @apiParam {int[]} addUsers array of id of users to add
+	* @apiParam {int[]} removeUsers array of id of users to remove
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
@@ -265,7 +506,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"stateName": "To Do",
 	* 		"clientOrigin": false,
 	* 		"addTags": [12, 5, ...],
-	* 		"removeTags": []
+	* 		"removeTags": [],
+	* 		"addUsers": [152, 50, ...],
+	* 		"removeUsers": []
   * 	}
 	*   }
 	*
@@ -361,7 +604,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
 			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
 			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("addTags", $content)
-			|| !array_key_exists("removeTags", $content))
+			|| !array_key_exists("removeTags", $content) || !array_key_exists("addUsers", $content)
+			|| !array_key_exists("removeUsers", $content))
 				return $this->setBadRequest("4.3.6", "Bugtracker", "editTicket", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -436,6 +680,29 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					$em->flush();
 				}
 			}
+		}
+
+		foreach ($content->removeUsers as $key => $guest) {
+				$oldGuest = $em->getRepository('SQLBundle:User')->find($guest);
+				if ($oldGuest instanceof User) {
+						$bug->removeUser($oldGuest);
+						$em->flush();
+				}
+		}
+
+		foreach ($content->addUsers as $key => $guest) {
+				$newGuest = $em->getRepository('SQLBundle:User')->find($guest);
+				if ($newGuest instanceof User) {
+					$alreadyAdded = false;
+					foreach ($bug->getUsers() as $key => $bug_value) {
+						if ($guest == $bug_value->getId())
+							$alreadyAdded = true;
+					}
+					if (!$alreadyAdded) {
+						$bug->addUser($newGuest);
+						$em->flush();
+					}
+				}
 		}
 
 		$ticket = $bug->objectToArray();
