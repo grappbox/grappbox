@@ -623,7 +623,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
               <div data-ng-if="!data.onLoad && !data.customersLoad">
-                <div data-ng-if="data.customers_message == '_valid'">
+                <div data-ng-if="data.customers_message == '_valid' || data.customers_message == '_empty'">
                   <div data-ng-if="data.userRights && !data.project.deleted_at">
                     <div class="col-md-12" data-ng-if="data.userRights >= 2">
                       <h4>Add a customer access</h4>
@@ -646,7 +646,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="col-md-12">
                       <h4>Registered customer accesses</h4>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12" data-ng-if="data.customers_message == '_valid'">
                       <div class="table-responsive">
                         <table class="table table-striped table-hover table-bordered">
                           <thead>
@@ -668,11 +668,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         </table>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div data-ng-if="data.customers_message == '_empty'">
-                  <div class="data-wrapper error">
-                    <p><i class="fa fa-frown-o"></i>Impossible to get project customers access.</p>
+                    <div class="col-md-12" data-ng-ig="data.customers_message == '_empty'">
+                      <div class="data-wrapper error">
+                        <p>No customers access</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div data-ng-if="data.customers_message == '_invalid'">
