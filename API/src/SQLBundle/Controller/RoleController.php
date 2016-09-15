@@ -1432,7 +1432,7 @@ class RoleController extends RolesAndTokenVerificationController
 	*	}
 	*/
 	/**
-	* @api {get} /V0.3/roles/getuserroles/:token Get roles by user
+	* @api {get} /V0.3/roles/getuserroles/:token Get connected user roles
 	* @apiName getuserroles
 	* @apiGroup Roles
 	* @apiDescription Get the all roles linked to the connected user
@@ -1771,7 +1771,7 @@ class RoleController extends RolesAndTokenVerificationController
 	*	}
 	*/
 	/**
-	* @api {get} /V0.3/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get user role for a project
+	* @api {get} /V0.3/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get user role by project
 	* @apiName getRoleByProjectAndUser
 	* @apiGroup Roles
 	* @apiDescription Get user role for a given project, if userId not specified assumed reference user is the connected user
@@ -2295,10 +2295,10 @@ class RoleController extends RolesAndTokenVerificationController
 	*	}
 	*/
 	/**
-	* @api {get} none Get roles info of connected user
+	* @api {get} - Get roles info of connected user
 	* @apiName getUserConnectedRolesInformations
 	* @apiGroup Roles
-	* @apiDescription This request no longer exists. See getUserRoles request instead.
+	* @apiDescription This request no longer exists. See [getUserRoles](/#api-Roles-getuserroles) or [getUserRoleByProject](/#api-Roles-getRoleByProjectAndUser)
 	* @apiVersion 0.3.0
 	*
 	*/
@@ -2402,10 +2402,10 @@ class RoleController extends RolesAndTokenVerificationController
 	*	}
 	*/
 	/**
-	* @api {get} none Get roles info of given user
+	* @api {get} - Get roles info of given user
 	* @apiName getUserRolesInformations
 	* @apiGroup Roles
-	* @apiDescription This request no longer exists. See getUserRoles request instead.
+	* @apiDescription This request no longer exists. See [getUserRoleByProject](/#api-Roles-getRoleByProjectAndUser)
 	* @apiVersion 0.3.0
 	*/
 
