@@ -152,8 +152,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} projectId id of the project
 	* @apiParam {String} title Ticket title
 	* @apiParam {String} description Ticket content
-	* @apiParam {int} stateId Ticket state (0 if new)
-	* @apiParam {String} stateName Ticket state
 	* @apiParam {bool} clientOrigin true if bug created by/from client
 	* @apiParam {int[]} tags array of tags id
 	* @apiParam {int[]} users array of users id
@@ -165,8 +163,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"projectId": 1,
   * 		"title": "J'ai un petit problème",
   * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
-  * 		"stateId": 1,
-  * 		"stateName": "To Do",
 	* 		"clientOrigin": false,
 	*			"tags": [15, 2, ...],
 	*			"users": [125, 20, ...]
@@ -181,14 +177,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
 	* @apiSuccess {bool} clientOrigin true if bug created by/from client
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -212,11 +205,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    "projectId": 1,
 	*    "title": "Ticket de Test",
 	*    "description": "Ceci est un ticket de test",
-	*    "parentId": null,
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "editedAt": null,
 	*    "deletedAt": null,
 	*    "clientOrigin": false,
+	*    "state": true,
 	*    "state": { "id": 1, "name": "Waiting" },
 	*    "tags": [],
 	*    "users": []
@@ -266,7 +259,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
 			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("tags", $content)
 			|| !array_key_exists("users", $content))
 				return $this->setBadRequest("4.2.6", "Bugtracker", "postTicket", "Missing Parameter");
@@ -289,21 +281,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setDescription($content->description);
 		$bug->setClientOrigin($content->clientOrigin);
 		$bug->setCreatedAt(new DateTime('now'));
-
-		$state = null;
-		if (array_key_exists("stateId", $content) && $content->stateId != 0)
-			$state = $em->getRepository("SQLBundle:BugState")->find($content->stateId);
-		if ($state instanceof BugState)
-			$bug->setStateId($content->stateId);
-		else {
-			$state = new BugState();
-			$state->setName($content->stateName);
-
-			$em->persist($state);
-			$em->flush();
-
-			$bug->setStateId($state->getId());
-		}
 
 		$em->persist($bug);
 		$project->addBug($bug);
@@ -344,9 +321,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				}
 		}
 
-
 		$ticket = $bug->objectToArray();
-		$ticket['state'] = $state->objectToArray();
 		foreach ($bug->getTags() as $key => $tag_value) {
 			$ticket['tags'][] = $tag_value->objectToArray();
 		}
@@ -491,8 +466,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParam {int} bugId id of the bug ticket
 	* @apiParam {String} title Ticket title
 	* @apiParam {String} description Ticket content
-	* @apiParam {int} stateId Ticket state (0 if new)
-	* @apiParam {String} stateName Ticket state
 	* @apiParam {bool} clientOrigin true if bug created by/from client
 	* @apiParam {int[]} addTags array of id of tags to add
 	* @apiParam {int[]} removeTags array of id of tags to remove
@@ -506,8 +479,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
   * 		"bugId": 1,
   * 		"title": "J'ai un petit problème",
   * 		"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
-  * 		"stateId": 1,
-  * 		"stateName": "To Do",
 	* 		"clientOrigin": false,
 	* 		"addTags": [12, 5, ...],
 	* 		"removeTags": [],
@@ -524,14 +495,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
 	* @apiSuccess {bool} clientOrigin true if bug created by/from client
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -555,12 +523,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    "projectId": 1,
 	*    "title": "Ticket de Test",
 	*    "description": "Ceci est un ticket de test",
-	*    "parentId": null,
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "deletedAt": null,
 	*    "clientOrigin": false,
-	*    "state": { "id": 1, "name": "Waiting" },
+	*    "state": true,
 	*    "tags": [],
 	*    "users": []
 	*  }
@@ -608,7 +575,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if (!array_key_exists("token", $content) || !array_key_exists("bugId", $content)
 			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("stateId", $content) || !array_key_exists("stateName", $content)
 			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("addTags", $content)
 			|| !array_key_exists("removeTags", $content) || !array_key_exists("addUsers", $content)
 			|| !array_key_exists("removeUsers", $content))
@@ -631,28 +597,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->setClientOrigin($content->clientOrigin);
 		$bug->setEditedAt(new DateTime('now'));
 
-		$state = null;
-		if ($content->stateId != 0)
-			$state = $em->getRepository("SQLBundle:BugState")->find($content->stateId);
-		if ($state instanceof BugState)
-			$bug->setStateId($content->stateId);
-		else {
-			$state = new BugState();
-			$state->setName($content->stateName);
-
-			$em->persist($state);
-			$em->flush();
-
-			$bug->setStateId($state->getId());
-		}
-
 		$em->persist($bug);
 		$em->flush();
 
-		$assigned = false;
+
 		foreach ($content->removeTags as $tag) {
 			$bugTags = $bug->getTags();
 			if($bugTags) {
+				$assigned = false;
 				foreach ($bugTags as $key => $value) {
 					if ($value->getId() == $tag) {
 						$assigned = true;
@@ -712,7 +664,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 
 		$ticket = $bug->objectToArray();
-		$ticket['state'] = $state->getName();
+
 		foreach ($bug->getTags() as $key => $tag_value) {
 			$ticket['tags'][] = $tag_value->objectToArray();
 		}
@@ -802,7 +754,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @api {delete} /V0.3/bugtracker/closeticket/:token/:id Close ticket
 	* @apiName closeTicket
 	* @apiGroup Bugtracker
-	* @apiDescription Close a ticket, to delete a comment see deleteComment request
+	* @apiDescription Close a ticket, to delete a comment see [deleteComment](/#api-Bugtracker-deleteComment) request
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {int} id id of the ticket
@@ -857,7 +809,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.8.9", "Bugtracker", "closeTicket"));
 
-		$bug->setDeletedAt(new DateTime('now'));
+		$bug->setState(false);
 
 		$em->persist($bug);
 		$em->flush();
@@ -885,6 +837,79 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - closeTicket - Complete Success";
+		return new JsonResponse($response);
+	}
+
+	/**
+	* @api {delete} /V0.3/bugtracker/deleteticket/:token/:id Delete ticket
+	* @apiName deleteTicket
+	* @apiGroup Bugtracker
+	* @apiDescription Delete a ticket
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} id id of the ticket
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.4.1",
+	*			"return_message": "Bugtracker - deleteTicket - Complete Success"
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.25.3",
+	*			"return_message": "Bugtracker - deleteTicket - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.25.4",
+	*			"return_message": "Bugtracker - deleteTicket - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.25.9",
+	*			"return_message": "Bugtracker - deleteTicket - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
+	public function deleteTicketAction(Request $request, $token, $id)
+	{
+		$em = $this->getDoctrine()->getManager();
+
+		$user = $this->checkToken($token);
+		if (!$user)
+			return ($this->setBadTokenError("4.25.3", "Bugtracker", "deleteTicket"));
+
+		$bug = $em->getRepository("SQLBundle:Bug")->find($id);
+		if (!($bug instanceof Bug))
+			return $this->setBadRequest("4.25.4", "Bugtracker", "deleteTicket", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
+			return ($this->setNoRightsError("4.25.9", "Bugtracker", "deleteTicket"));
+
+		$bug->setDeletedAt(new DateTime('now'));
+
+		$em->persist($bug);
+		$em->flush();
+
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
+
+		$response["info"]["return_code"] = "1.4.1";
+		$response["info"]["return_message"] = "Bugtracker - deleteTicket - Complete Success";
 		return new JsonResponse($response);
 	}
 
@@ -947,7 +972,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.23.9", "Bugtracker", "reopenTicket"));
 
-		$bug->setDeletedAt(null);
+		$bug->setState(true);
 
 		$em->persist($bug);
 		$em->flush();
@@ -1091,14 +1116,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
 	* @apiSuccess {bool} clientOrigin true if bug created by/from client
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -1121,12 +1143,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    "projectId": 1,
 	*    "title": "Ticket de Test",
 	*    "description": "Ceci est un ticket de test",
-	*    "parentId": null,
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "editedAt": { "date": "2015-12-29 11:54:57", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    "deletedAt": null,
 	*    "clientOrigin": false,
-	*    "state": { "id": 1, "name": "Waiting" },
+	*    "state": true,
 	*    "tags": [
 	*      { "id": 1, "name": "To Do", "projectId": 1 },
 	*      { "id": 4, "name": "ASAP", "projectId": 1 }
@@ -1179,7 +1200,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
 
 		$object = $ticket->objectToArray();
-		$object['state'] = $em->getRepository("SQLBundle:BugState")->find($ticket->getStateId())->objectToArray();
 		$object['tags'] = array();
 		foreach ($ticket->getTags() as $key => $tag_value) {
 			$object['tags'][] = $tag_value->objectToArray();
@@ -1338,13 +1358,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -1369,11 +1387,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": null,
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -1388,11 +1406,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": null,
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -1457,11 +1475,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.9.9", "Bugtracker", "getTickets"));
 
-		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null));
+		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "state" => true, "deletedAt" => null));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("SQLBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -1626,13 +1643,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -1657,11 +1672,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": false,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -1676,11 +1691,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": false,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -1744,13 +1759,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.22.9", "Bugtracker", "getClosedTickets"));
 
-		$tickets = $em->getRepository("SQLBundle:Bug")->createQueryBuilder('b')
-						->where("b.projects = :bug_project")->andWhere("b.deletedAt IS NOT NULL")
-						->setParameter("bug_project", $project)->getQuery()->getResult();
+		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array('projects' => $project, 'state' => false, "deletedAt" => null));
+
+		// createQueryBuilder('b')
+		// 				->where("b.projects = :bug_project")->andWhere("b.state = false")
+		// 				->setParameter("bug_project", $project)->getQuery()->getResult();
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("SQLBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -1919,13 +1935,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -1950,11 +1964,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": null,
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -1969,11 +1983,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": null,
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -2038,11 +2052,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.10.9", "Bugtracker", "getLastTickets"));
 
-		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null), array(), $limit, $offset);
+		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "state" => true, "deletedAt" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("SQLBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -2210,13 +2223,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -2245,7 +2256,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -2264,7 +2276,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -2329,13 +2342,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.11.9", "Bugtracker", "getLastClosedTickets"));
 
-		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "parentId" => null), array(), $limit, $offset);
+		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "state" => false, "deletedAt" => null), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
-			if ($value->getDeletedAt() != null)
-			{
+
 				$object = $value->objectToArray();
-				$object['state'] = $em->getRepository("SQLBundle:BugState")->find($value->getStateId())->objectToArray();
 				$object['tags'] = array();
 				foreach ($value->getTags() as $key => $tag_value) {
 					$object['tags'][] = $tag_value->objectToArray();
@@ -2354,7 +2365,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				$object["users"] = $participants;
 
 				$ticketsArray[] = $object;
-			}
 		}
 
 		if (count($ticketsArray) <= 0)
@@ -2503,13 +2513,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
-	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {DateTime} createdAt Ticket creation date
 	* @apiSuccess {DateTime} editedAt Ticket edition date
 	* @apiSuccess {DateTime} deletedAt Ticket deletion date
-	* @apiSuccess {Object} state Ticket state
-	* @apiSuccess {int} state.id state id
-	* @apiSuccess {String} state.name state name
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {bool} state true if bug is open
 	* @apiSuccess {Object[]} tags Ticket tags list
 	* @apiSuccess {int} tags.id Ticket tags id
 	* @apiSuccess {String} tags.name Ticket tags name
@@ -2534,11 +2542,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -2550,11 +2558,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"projectId": 1,
 	*    	"title": "Ticket de Test",
 	*    	"description": "Ceci est un ticket de test",
-	*    	"parentId": null,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
 	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
-	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"clientOrigin": false,
+	*    	"state": true,
 	*    	"tags": [
 	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
 	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
@@ -2616,10 +2624,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.12.9", "Bugtracker", "getTicketsByUser"));
 
-		//$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "user" => $user));
-
 		$tickets = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
-									 ->where("b.projects = :project")
+									 ->where("b.projects = :project AND b.state = true AND deletedAt IS NULL")
 									 ->andWhere(':user MEMBER OF b.users')
 									 ->setParameters(array('project' => $project, 'user' => $userId))
 									 ->getQuery()->getResult();
@@ -2627,7 +2633,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
-			$object['state'] = $em->getRepository("SQLBundle:BugState")->find($value->getStateId())->objectToArray();
 			$object['tags'] = array();
 			foreach ($value->getTags() as $key => $tag_value) {
 				$object['tags'][] = $tag_value->objectToArray();
@@ -2653,7 +2658,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.4.1", "Bugtracker", "getTicketsByUser", "Commplete Success", array("array" => $ticketsArray));
 	}
 
+	// --------------------------------------------------------------------------------------------------
 	// TODO remove the two following request if no-one uses them, update creaotr/user fullname if they do
+	// --------------------------------------------------------------------------------------------------
 
 	/**
 	* @api {get} /V0.2/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit Get tickets by status

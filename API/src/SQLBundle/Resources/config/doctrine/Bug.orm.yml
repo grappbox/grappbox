@@ -8,20 +8,15 @@ SQLBundle\Entity\Bug:
             generator:
                 strategy: AUTO
     fields:
-        parentId:
-            type: integer
-            column: parent_id
-            nullable: TRUE
         title:
             type: string
             length: 255
         description:
             type: text
             nullable: TRUE
-        stateId:
-            type: integer
-            column: state_id
-            nullable: TRUE
+        state:
+            type: boolean
+            column: state
         createdAt:
             type: datetime
             column: created_at

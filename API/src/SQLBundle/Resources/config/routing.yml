@@ -39,7 +39,7 @@ v2_accountAdministration_register:
 #                           BUGTRACKER CONTROLLER
 # -----------------------------------------------------------------------
 v2_bugtracker_getTicket:
-    path:       /bugtracker/getticket/{token}/{id}
+    path:       bugtracker/getticket/{token}/{id}
     defaults:   { _controller: SQLBundle:Bugtracker:getTicket, _format: json }
     requirements:
         id:     \d+
@@ -47,17 +47,17 @@ v2_bugtracker_getTicket:
     methods:  [GET]
 
 v2_bugtracker_postTicket:
-    path:       /bugtracker/postticket
+    path:       bugtracker/postticket
     defaults:   { _controller: SQLBundle:Bugtracker:postTicket, _format: json }
     methods:  [POST]
 
 v2_bugtracker_editTicket:
-    path:       /bugtracker/editticket
+    path:       bugtracker/editticket
     defaults:   { _controller: SQLBundle:Bugtracker:editTicket, _format: json }
     methods:  [PUT]
 
 v2_bugtracker_getComments:
-    path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
+    path:       bugtracker/getcomments/{token}/{id}/{ticketId}
     defaults:   { _controller: SQLBundle:Bugtracker:getComments, _format: json }
     requirements:
         token:    "[a-zA-Z0-9]+"
@@ -66,22 +66,22 @@ v2_bugtracker_getComments:
     methods:  [GET]
 
 v2_bugtracker_postComment:
-    path:       /bugtracker/postcomment
+    path:       bugtracker/postcomment
     defaults:   { _controller: SQLBundle:Bugtracker:postComment, _format: json }
     methods:  [POST]
 
 v2_bugtracker_editComment:
-    path:       /bugtracker/editcomment
+    path:       bugtracker/editcomment
     defaults:   { _controller: SQLBundle:Bugtracker:editComment, _format: json }
     methods:  [PUT]
 
 v2_bugtracker_setParticipants:
-    path:       /bugtracker/setparticipants
+    path:       bugtracker/setparticipants
     defaults:   { _controller: SQLBundle:Bugtracker:setParticipants, _format: json }
     methods: [PUT]
 
 v2_bugtracker_closeTicket:
-    path:       /bugtracker/closeticket/{token}/{id}
+    path:       bugtracker/closeticket/{token}/{id}
     defaults:   { _controller: SQLBundle:Bugtracker:closeTicket, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -97,7 +97,7 @@ v2_bugtracker_getTickets:
     methods:  [GET]
 
 v2_bugtracker_getLastTickets:
-    path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
+    path:       bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: SQLBundle:Bugtracker:getLastTickets, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -107,7 +107,7 @@ v2_bugtracker_getLastTickets:
     methods:  [GET]
 
 v2_bugtracker_getLastClosedTickets:
-    path:       /bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
+    path:       bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
     defaults:   { _controller: SQLBundle:Bugtracker:getLastClosedTickets, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -117,7 +117,7 @@ v2_bugtracker_getLastClosedTickets:
     methods:  [GET]
 
 v2_bugtracker_getTicketsByUser:
-    path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
+    path:       bugtracker/getticketsbyuser/{token}/{id}/{userId}
     defaults:   { _controller: SQLBundle:Bugtracker:getTicketsByUser, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -126,7 +126,7 @@ v2_bugtracker_getTicketsByUser:
     methods:  [GET]
 
 v2_bugtracker_getTicketsByState:
-    path:       /bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
+    path:       bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
     defaults:   { _controller: SQLBundle:Bugtracker:getTicketsByState, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -137,24 +137,24 @@ v2_bugtracker_getTicketsByState:
     methods:  [GET]
 
 v2_bugtracker_getStates:
-    path:       /bugtracker/getstates/{token}
+    path:       bugtracker/getstates/{token}
     defaults:   { _controller: SQLBundle:Bugtracker:getStates, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
     methods:  [GET]
 
 v2_bugtracker_tagCreation:
-    path:       /bugtracker/tagcreation
+    path:       bugtracker/tagcreation
     defaults:   { _controller: 'SQLBundle:Bugtracker:tagCreation', _format: json }
     methods: [POST]
 
 v2_bugtracker_tagUpdate:
-    path:       /bugtracker/tagupdate
+    path:       bugtracker/tagupdate
     defaults:   { _controller: 'SQLBundle:Bugtracker:tagUpdate', _format: json }
     methods: [PUT]
 
 v2_bugtracker_getTagInfos:
-    path:       /bugtracker/taginformations/{token}/{tagId}
+    path:       bugtracker/taginformations/{token}/{tagId}
     defaults:   { _controller: 'SQLBundle:Bugtracker:getTagInfos', _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -162,7 +162,7 @@ v2_bugtracker_getTagInfos:
     methods: [GET]
 
 v2_bugtracker_deleteTag:
-    path:       /bugtracker/deletetag/{token}/{tagId}
+    path:       bugtracker/deletetag/{token}/{tagId}
     defaults:   { _controller: 'SQLBundle:Bugtracker:deleteTag', _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -170,12 +170,12 @@ v2_bugtracker_deleteTag:
     methods: [DELETE]
 
 v2_bugtracker_assignTag:
-    path:       /bugtracker/assigntag
+    path:       bugtracker/assigntag
     defaults: { _controller: SQLBundle:Bugtracker:assignTag, _format: json }
     methods: [PUT]
 
 v2_bugtracker_removeTag:
-    path:       /bugtracker/removetag/{token}/{bugId}/{tagId}
+    path:       bugtracker/removetag/{token}/{bugId}/{tagId}
     defaults:   { _controller: 'SQLBundle:Bugtracker:removeTag', _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -184,7 +184,7 @@ v2_bugtracker_removeTag:
     methods: [DELETE]
 
 v2_bugtracker_getProjectTags:
-    path:       /bugtracker/getprojecttags/{token}/{projectId}
+    path:       bugtracker/getprojecttags/{token}/{projectId}
     defaults:   { _controller: 'SQLBundle:Bugtracker:getProjectTags', _format: json }
     requirements:
         token:      "[a-zA-Z0-9]+"
@@ -192,7 +192,7 @@ v2_bugtracker_getProjectTags:
     methods: [GET]
 
 v2_bugtracker_getClosedTickets:
-    path:       /bugtracker/getclosedtickets/{token}/{id}
+    path:       bugtracker/getclosedtickets/{token}/{id}
     defaults:   { _controller: SQLBundle:Bugtracker:getClosedTickets, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -200,7 +200,7 @@ v2_bugtracker_getClosedTickets:
     methods:  [GET]
 
 v2_bugtracker_reopenTicket:
-    path:       /bugtracker/reopenticket/{token}/{id}
+    path:       bugtracker/reopenticket/{token}/{id}
     defaults:   { _controller: SQLBundle:Bugtracker:reopenTicket, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
@@ -208,8 +208,16 @@ v2_bugtracker_reopenTicket:
     methods:  [PUT]
 
 v2_bugtracker_deleteComment:
-    path:     /bugtracker/deletecomment/{token}/{id}
+    path:     bugtracker/deletecomment/{token}/{id}
     defaults:   { _controller: SQLBundle:Bugtracker:deleteComment, _format: json }
+    requirements:
+        token:  "[a-zA-Z0-9]+"
+        id:     \d+
+    methods:  [DELETE]
+
+v2_bugtracker_deleteTicket:
+    path:     bugtracker/deleteticket/{token}/{id}
+    defaults:   { _controller: SQLBundle:Bugtracker:deleteTicket, _format: json }
     requirements:
         token:  "[a-zA-Z0-9]+"
         id:     \d+
