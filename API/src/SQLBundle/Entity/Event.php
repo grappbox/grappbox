@@ -23,7 +23,7 @@ class Event
      * @var string
      */
     private $description;
-    
+
     /**
      * @var string
      */
@@ -92,7 +92,8 @@ class Event
             'projectId' => $projectId,
             'creator' => array(
                 'id' => $this->creator_user->getId(),
-                'fullname' => $this->creator_user->getFirstName()." ".$this->creator_user->getLastName()
+                'firstname' => $this->creator_user->getFirstName(),
+                'lastname' => $this->creator_user->getLastName()
             ),
             'type' => array(
                 'id' => $this->eventtypes->getId(),
@@ -398,7 +399,7 @@ class Event
     /**
      * Get icon
      *
-     * @return string 
+     * @return string
      */
     public function getIcon()
     {
