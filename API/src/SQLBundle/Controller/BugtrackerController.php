@@ -176,7 +176,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} id Ticket id
 	* @apiSuccess {Object} creator author
 	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {String} creator.fullname author fullname
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
@@ -193,7 +194,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} tags.name Ticket tags name
 	* @apiSuccess {Object[]} users assigned user list
 	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {date} users.name user full name
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
 	*	@apiSuccess {string} users.email user email
 	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
@@ -206,7 +208,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*  },
 	*  "data": {
 	*    "id": 1,
-	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
 	*    "projectId": 1,
 	*    "title": "Ticket de Test",
 	*    "description": "Ceci est un ticket de test",
@@ -353,7 +355,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		foreach ($bug->getUsers() as $key => $value) {
 			$participants[] = array(
 				"id" => $value->getId(),
-				"name" => $value->getFirstname()." ".$value->getLastName(),
+				"firstname" => $value->getFirstname(),
+				"lastname" => $value->getLastname(),
 				"email" => $value->getEmail(),
 				"avatar" => $value->getAvatarDate()
 			);
@@ -516,7 +519,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} id Ticket id
 	* @apiSuccess {Object} creator author
 	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {String} creator.fullname author fullname
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
 	* @apiSuccess {int} projectId project id
 	* @apiSuccess {String} title Ticket title
 	* @apiSuccess {String} description Ticket content
@@ -533,7 +537,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {String} tags.name Ticket tags name
 	* @apiSuccess {Object[]} users assigned user list
 	*	@apiSuccess {int} users.id user id
-	*	@apiSuccess {string} users.name user full name
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
 	*	@apiSuccess {string} users.email user email
 	*	@apiSuccess {string} users.avatar user avatar last modif date
 	*
@@ -546,7 +551,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*  },
 	*  "data": {
 	*    "id": 1,
-	*    "creator": { "id": 13, "fullname": "John Doe" },
+	*    "creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
 	*    "projectId": 1,
 	*    "title": "Ticket de Test",
 	*    "description": "Ceci est un ticket de test",
@@ -716,7 +721,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		foreach ($bug->getUsers() as $key => $value) {
 			$participants[] = array(
 				"id" => $value->getId(),
-				"name" => $value->getFirstname()." ".$value->getLastName(),
+				"firstname" => $value->getFirstname(),
+				"lastname" => $value->getLastname(),
 				"email" => $value->getEmail(),
 				"avatar" => $value->getAvatarDate()
 			);
@@ -1067,6 +1073,97 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/bugtracker/getticket/:token/:id Get ticket
+	* @apiName getTicket
+	* @apiGroup Bugtracker
+	* @apiDescription Get ticket informations, tags and assigned users
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} id ticket's id
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {bool} clientOrigin true if bug created by/from client
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {date} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": { "date": "2015-12-29 11:54:57", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "deletedAt": null,
+	*    "clientOrigin": false,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [
+	*      { "id": 1, "name": "To Do", "projectId": 1 },
+	*      { "id": 4, "name": "ASAP", "projectId": 1 }
+	*    ],
+	*    "users": [
+	*      { "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"} },
+	*      { "id": 16, "firstname": "Jane", "lastname": "Doe", "email": "jane.doe@gmail.com", "avatar": null }
+	*    ]
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.1.3",
+	*			"return_message": "Bugtracker - getTicket - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.1.4",
+	*			"return_message": "Bugtracker - getTicket - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.1.9",
+	*			"return_message": "Bugtracker - getTicket - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
 	public function getTicketAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
@@ -1091,7 +1188,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		foreach ($ticket->getUsers() as $key => $value) {
 			$participants[] = array(
 				"id" => $value->getId(),
-				"name" => $value->getFirstname()." ".$value->getLastName(),
+				"firstname" => $value->getFirstname(),
+				"lastname" => $value->getLastname(),
 				"email" => $value->getEmail(),
 				"avatar" => $value->getAvatarDate()
 			);
@@ -1222,6 +1320,129 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/bugtracker/gettickets/:token/:id Get open tickets
+	* @apiName getTickets
+	* @apiGroup Bugtracker
+	* @apiDescription Get all open tickets of a project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {date} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getTickets - Complete Success"
+	*  },
+	*  "data": {
+	*    "array": [
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": null,
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		{ "id": 16, "firstname": "Jane", "lastname": "Doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "fullname": "John Doe" },
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": null,
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "name": "John Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		{ "id": 16, "name": "jane doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	...
+	*    ]
+	*  }
+	* }
+	* @apiSuccessExample {json} Success-No Data:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getTickets - No Data Success"
+	*  },
+	*  "data": {
+	*    "array": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.9.3",
+	*			"return_message": "Bugtracker - getTickets - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.9.4",
+	*			"return_message": "Bugtracker - getTickets - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.9.9",
+	*			"return_message": "Bugtracker - getTickets - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
 	public function getTicketsAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
@@ -1250,7 +1471,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			foreach ($value->getUsers() as $key => $user_value) {
 				$participants[] = array(
 					"id" => $user_value->getId(),
-					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"firstname" => $user_value->getFirstname(),
+					"lastname" => $user_value->getLastname(),
 					"email" => $user_value->getEmail(),
 					"avatar" => $user_value->getAvatarDate()
 				);
@@ -1386,6 +1608,128 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/bugtracker/getclosedtickets/:token/:id Get closed tickets
+	* @apiName getClosedTickets
+	* @apiGroup Bugtracker
+	* @apiDescription Get all closed tickets of a project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {date} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getClosedTickets - Complete Success"
+	*  },
+	*  "data": {
+	*    "array": [
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		{ "id": 16, "firstname": "Jane", "lastname": "Doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	...
+	*    ]
+	*  }
+	* }
+	* @apiSuccessExample {json} Success-No Data:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getClosedTickets - No Data Success"
+	*  },
+	*  "data": {
+	*    "array": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.22.3",
+	*			"return_message": "Bugtracker - getClosedTickets - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.22.4",
+	*			"return_message": "Bugtracker - getClosedTickets - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.22.9",
+	*			"return_message": "Bugtracker - getClosedTickets - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
 	public function getClosedTicketsAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
@@ -1416,7 +1760,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			foreach ($value->getUsers() as $key => $user_value) {
 				$participants[] = array(
 					"id" => $user_value->getId(),
-					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"firstname" => $user_value->getFirstname(),
+					"lastname" => $user_value->getLastname(),
 					"email" => $user_value->getEmail(),
 					"avatar" => $user_value->getAvatarDate()
 				);
@@ -1554,6 +1899,131 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/bugtracker/getlasttickets/:token/:id/:offset/:limit Get last tickets
+	* @apiName getLastTickets
+	* @apiGroup Bugtracker
+	* @apiDescription Get X last tickets from offset Y
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
+	* @apiParam {int} limit number max of tickets to get
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {date} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getLastTickets - Complete Success"
+	*  },
+	*  "data": {
+	*    "array": [
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": null,
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		...
+	*    	]
+	*    	},
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": null,
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		...
+	*    	]
+	*    	},
+	*    	...
+	*    ]
+	*  }
+	* }
+	* @apiSuccessExample {json} Success-No Data:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getLastTickets - No Data Success"
+	*  },
+	*  "data": {
+	*    "array": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.10.3",
+	*			"return_message": "Bugtracker - getLastTickets - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.10.4",
+	*			"return_message": "Bugtracker - getLastTickets - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.10.9",
+	*			"return_message": "Bugtracker - getLastTickets - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
 	public function getLastTicketsAction(Request $request, $token, $id, $offset, $limit)
 	{
 		$user = $this->checkToken($token);
@@ -1582,7 +2052,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			foreach ($value->getUsers() as $key => $user_value) {
 				$participants[] = array(
 					"id" => $user_value->getId(),
-					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"firstname" => $user_value->getFirstname(),
+					"lastname" => $user_value->getLastname(),
 					"email" => $user_value->getEmail(),
 					"avatar" => $user_value->getAvatarDate()
 				);
@@ -1720,6 +2191,130 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/bugtracker/getlastclosedtickets/:token/:id/:offset/:limit Get last closed tickets
+	* @apiName getLastClosedTickets
+	* @apiGroup Bugtracker
+	* @apiDescription Get X last closed tickets from offset Y
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {String} token client authentification token
+	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
+	* @apiParam {int} limit number max of tickets to get
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getLastClosedTickets - Complete Success"
+	*  },
+	*  "data": {
+	*    "array": [
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		{ "id": 16, "firstname": "Jane", "lastname": "Doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": [
+	*    		{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    		{ "id": 16, "firstname": "Jane", "lastname": "Doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    	]
+	*    	},
+	*    	...
+	*    ]
+	*  }
+	* }
+	* @apiSuccessExample {json} Success-No Data:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getLastClosedTickets - No Data Success"
+	*  },
+	*  "data": {
+	*    "array": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.11.3",
+	*			"return_message": "Bugtracker - getLastClosedTickets - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.11.4",
+	*			"return_message": "Bugtracker - getLastClosedTickets - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.11.9",
+	*			"return_message": "Bugtracker - getLastClosedTickets - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
 	public function getLastClosedTicketsAction(Request $request, $token, $id, $offset, $limit)
 	{
 		$user = $this->checkToken($token);
@@ -1750,7 +2345,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				foreach ($value->getUsers() as $key => $user_value) {
 					$participants[] = array(
 						"id" => $user_value->getId(),
-						"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+						"firstname" => $user_value->getFirstname(),
+						"lastname" => $user_value->getLastname(),
 						"email" => $user_value->getEmail(),
 						"avatar" => $user_value->getAvatarDate()
 					);
@@ -1888,6 +2484,124 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/bugtracker/getticketsbyuser/:token/:id/:user Get tickets by user
+	* @apiName getTicketsByUser
+	* @apiGroup Bugtracker
+	*	@apiDescription Get Tickets asssigned to a user for a project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} id id of the project
+	* @apiParam {int} user id of the user
+	* @apiParam {String} token client authentification token
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {string} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - getTicketsByUser - Complete Success"
+	*  },
+	*  "data": {
+	*    "array": [
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": []
+	*    	},
+	*    	{ "id": 1,
+	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    	"projectId": 1,
+	*    	"title": "Ticket de Test",
+	*    	"description": "Ceci est un ticket de test",
+	*    	"parentId": null,
+	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"deletedAt": { "date": "2015-11-30 21:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    	"state": { "id": 1, "name": "Waiting" },
+	*    	"tags": [
+	*    		{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    		{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    	],
+	*    	"users": []
+	*    	},
+	*    	...
+	*    ]
+	*  }
+	* }
+	* @apiSuccessExample {json} Success-No Data:
+	* {
+	*  "info": {
+	*    "return_code": "1.4.3",
+	*    "return_message": "Bugtracker - getTicketsByUser - No Data Success"
+	*  },
+	*  "data": {
+	*    "array": []
+	*  }
+	* }
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.12.3",
+	*			"return_message": "Bugtracker - getTicketsByUser - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.12.4",
+	*			"return_message": "Bugtracker - getTicketsByUser - Bad Parameter: id"
+	*		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.12.9",
+	*			"return_message": "Bugtracker - getTicketsByUser - Insufficient Rights"
+	*		}
+	* 	}
+	*
+	*/
 	public function getTicketsByUserAction(Request $request, $token, $id, $userId)
 	{
 		$user = $this->checkToken($token);
@@ -1923,7 +2637,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			foreach ($value->getUsers() as $key => $user_value) {
 				$participants[] = array(
 					"id" => $user_value->getId(),
-					"name" => $user_value->getFirstname()." ".$user_value->getLastName(),
+					"firstname" => $value->getFirstname(),
+					"lastname" => $value->getLastname(),
 					"email" => $user_value->getEmail(),
 					"avatar" => $user_value->getAvatarDate()
 				);
@@ -1937,6 +2652,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getTicketsByUser");
 		return $this->setSuccess("1.4.1", "Bugtracker", "getTicketsByUser", "Commplete Success", array("array" => $ticketsArray));
 	}
+
+	// TODO remove the two following request if no-one uses them, update creaotr/user fullname if they do
 
 	/**
 	* @api {get} /V0.2/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit Get tickets by status
@@ -2062,6 +2779,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+
 	public function getTicketsByStateAction(Request $request, $token, $id, $state, $offset, $limit)
 	{
 		$user = $this->checkToken($token);
@@ -2293,6 +3011,124 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
+	/**
+	* @api {put} /V0.3/bugtracker/setparticipants Set participants
+	* @apiName setParticipants
+	* @apiGroup Bugtracker
+	* @apiDescription Assign/unassign users to a ticket
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {int} bugId bug id
+	* @apiParam {string} token user authentication token
+	* @apiParam {int[]} toAdd list of users' id to assign
+	* @apiParam {int[]} toRemove list of users' id to unassign
+	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	* 	"data": {
+	* 		"token": "ThisIsMyToken",
+	* 		"bugId": 1,
+	* 		"toAdd": [1, 15, 6],
+	* 		"toRemove": []
+	* 	}
+	*   }
+	*
+	* @apiSuccess {int} id Ticket id
+	* @apiSuccess {Object} creator author
+	* @apiSuccess {int} creator.id author id
+	*	@apiSuccess {string} creator.firstname author firstname
+	*	@apiSuccess {string} creator.lastname author lastname
+	* @apiSuccess {int} projectId project id
+	* @apiSuccess {String} title Ticket title
+	* @apiSuccess {String} description Ticket content
+	* @apiSuccess {int} parentId parent Ticket id
+	* @apiSuccess {DateTime} createdAt Ticket creation date
+	* @apiSuccess {DateTime} editedAt Ticket edition date
+	* @apiSuccess {DateTime} deletedAt Ticket deletion date
+	* @apiSuccess {Object} state Ticket state
+	* @apiSuccess {int} state.id state id
+	* @apiSuccess {String} state.name state name
+	* @apiSuccess {Object[]} tags Ticket tags list
+	* @apiSuccess {int} tags.id Ticket tags id
+	* @apiSuccess {String} tags.name Ticket tags name
+	* @apiSuccess {Object[]} users assigned user list
+	*	@apiSuccess {int} users.id user id
+	*	@apiSuccess {string} users.firstname user firstname
+	*	@apiSuccess {string} users.lastname user lastname
+	*	@apiSuccess {string} users.email user email
+	*	@apiSuccess {date} users.avatar user avatar last modif date
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* HTTP/1.1 201 Created
+	* {
+	*  "info": {
+	*    "return_code": "1.4.1",
+	*    "return_message": "Bugtracker - editTicket - Complete Success"
+	*  },
+	*  "data": {
+	*    "id": 1,
+	*    "creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*    "projectId": 1,
+	*    "title": "Ticket de Test",
+	*    "description": "Ceci est un ticket de test",
+	*    "parentId": null,
+	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "editedAt": { "date": "2015-11-30 10:26:58", "timezone_type": 3, "timezone": "Europe/Paris" },
+	*    "deletedAt": null,
+	*    "state": { "id": 1, "name": "Waiting" },
+	*    "tags": [
+	*    	{ "id": 1, "name": "To Do", "projectId": 1 },
+	*    	{ "id": 4, "name": "ASAP", "projectId": 1 }
+	*    ],
+	*    "users": [
+	*    	{ "id": 13, "firstname": "John", "lastname": "Doe", "email": "john.doe@gmail.com", "avatar": null},
+	*    	{ "id": 16, "firstname": "Jane", "lastname": "Doe", "email": "jane.doe@gmail.com", "avatar": null}
+	*    ]
+	*  }
+	* }
+	*
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.7.6",
+	*			"return_message": "Bugtracker - setParticipants - Missing Parameter"
+  *		}
+	* 	}
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.7.3",
+	*			"return_message": "Bugtracker - setParticipants - Bad id"
+	*		}
+	* 	}
+	* @apiErrorExample Bad Parameter: bugId
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.7.4",
+	*			"return_message": "Bugtracker - setParticipants - Bad Parameter: bugId"
+  *		}
+	* 	}
+	* @apiErrorExample Insufficient Rights
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.7.9",
+	*			"return_message": "Bugtracker - setParticipants - Insufficient Rights"
+  *		}
+	* 	}
+	* @apiErrorExample Already in Database
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "4.7.7",
+	*			"return_message": "Bugtracker - setParticipants - Already in Database"
+  *		}
+	* 	}
+	*
+	*/
 	public function setParticipantsAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -2373,7 +3209,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		foreach ($bug->getUsers() as $key => $value) {
 			$participants[] = array(
 				"id" => $value->getId(),
-				"name" => $value->getFirstname()." ".$value->getLastName(),
+				"firstname" => $value->getFirstname(),
+				"lastname" => $value->getLastname(),
 				"email" => $value->getEmail(),
 				"avatar" => $value->getAvatarDate()
 			);
