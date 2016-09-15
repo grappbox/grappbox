@@ -128,6 +128,85 @@ class PlanningController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/planning/getday/:token/:date Get day planning
+	* @apiName getDayPlanning
+	* @apiGroup Planning
+	* @apiDescription Get a one day planning
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {string} token user authentication token
+	* @apiParam {string} date date of event to list (into YYYY-MM-DD format)
+	*
+	* @apiSuccess {Object[]} events list of events
+	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {int} events.projectId project id of the event (could be null)
+	* @apiSuccess {Object} events.creator Event type object
+	* @apiSuccess {int} events.creator.id creator id
+	* @apiSuccess {string} events.creator.firstname creator firstname
+	* @apiSuccess {string} events.creator.lastname creator lastname
+	* @apiSuccess {Object} events.type Event type object
+	* @apiSuccess {int} events.type.id Event type id
+	* @apiSuccess {string} events.type.name Event type name
+	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {string} events.description event description
+	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	*	@apiSuccess {DateTime} events.createdAt date of creation of the event
+	*	@apiSuccess {DateTime} events.editedAt date of edition of the event
+	*	@apiSuccess {DateTime} events.deletedAt date of deletion of the event
+	*
+	* @apiSuccessExample Complete Success:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - getDayPlanning - Complete success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": {
+	*				"events": [
+	*					{
+	*					"id": 12,
+	*					"projectId": 1,
+	*					"creator": {"id": 1, "firstname": "John", "lastname": "Doe"},
+	*					"type": {"id": 1, "name": "Event"},
+	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
+	*					"icon": "100011001010...",
+	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"createdAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"editedAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"deletedAt": null
+	*					},
+	*					...
+	*				]
+	*			}
+	*		}
+	* 	}
+	* @apiSuccessExample Success But No Data:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.3",
+	*			"return_message": "Calendar - getDayPlanning - No Data Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": []
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "5.1.3",
+	*	    "return_message": "Calendar - getDayPlanning - Bad ID"
+	*	  }
+	*	}
+	*
+	*/
 	public function getDayPlanningAction(Request $request, $token, $date)
 	{
 		$user = $this->checkToken($token);
@@ -153,38 +232,10 @@ class PlanningController extends RolesAndTokenVerificationController
 			$events[] = $value->objectToArray();
 		}
 
-		$repository = $em->getRepository('SQLBundle:Task');
-		$query = $repository->createQueryBuilder('t')
-					->join('t.ressources', 'r')
-					->where('r.user = :user_id')
-					->andWhere('t.deletedAt IS NULL')
-					->andWhere('t.finishedAt IS NULL')
-					->andWhere('t.startedAt IS NOT NULL')
-					->setParameters(array('user_id' => $user->getId()))
-					->getQuery()->getResult();
-
-		$tasks = array();
-		foreach ($query as $key => $value) {
-			$tasks[] = $value->objectToArray();
-		}
-
-		$query = $repository->createQueryBuilder('t')
-					->where('t.creator_user = :user_id ')
-					->andWhere('t.deletedAt IS NULL')
-					->andWhere('t.finishedAt IS NULL')
-					->andWhere('t.startedAt IS NOT NULL')
-					->setParameters(array('user_id' => $user->getId()))
-					->getQuery()->getResult();
-
-		foreach ($query as $key => $value) {
-			$tasks[] = $value->objectToArray();
-		}
-
-
 		 if (count($events) <= 0 && count($tasks) <= 0)
 		 	return $this->setNoDataSuccess("1.5.3", "Calendar", "getDayPlanning");
 
-		return $this->setSuccess("1.5.1", "Calendar", "getDayPlanning", "Complete Success", array("array" => array("events" => $events, "tasks" => $tasks)));
+		return $this->setSuccess("1.5.1", "Calendar", "getDayPlanning", "Complete Success", array("array" => array("events" => $events)));
 	}
 
 	/**
@@ -287,6 +338,85 @@ class PlanningController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/planning/getweek/:token/:date Get week planning
+	* @apiName getWeekPlanning
+	* @apiGroup Planning
+	* @apiDescription Get planning of a week
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {string} token user authentication token
+	* @apiParam {string} date date of the first day of the week (into YYYY-MM-DD format)
+	*
+	* @apiSuccess {Object[]} events list of events
+	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {int} events.projectId project id of the event (could be null)
+	* @apiSuccess {Object} events.creator Event type object
+	* @apiSuccess {int} events.creator.id creator id
+	* @apiSuccess {string} events.creator.firstname creator firstname
+	* @apiSuccess {string} events.creator.lastname creator lastname
+	* @apiSuccess {Object} events.type Event type object
+	* @apiSuccess {int} events.type.id Event type id
+	* @apiSuccess {string} events.type.name Event type name
+	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {string} events.description event description
+	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	*	@apiSuccess {DateTime} events.createdAt date of creation of the event
+	*	@apiSuccess {DateTime} events.editedAt date of edition of the event
+	*	@apiSuccess {DateTime} events.deletedAt date of deletion of the event
+	*
+	* @apiSuccessExample Complete Success:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - getWeekPlanning - Complete success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": {
+	*				"events": [
+	*					{
+	*					"id": 12,
+	*					"projectId": 1,
+	*					"creator": {"id": 1, "firstname": "John", "lastname": "Doe"},
+	*					"type": {"id": 1, "name": "Event"},
+	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
+	*					"icon": "100011001010...",
+	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"createdAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"editedAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"deletedAt": null
+	*					},
+	*					...
+	*				]
+	*			}
+	*		}
+	* 	}
+	* @apiSuccessExample Success But No Data:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.3",
+	*			"return_message": "Calendar - getWeekPlanning - No Data Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": []
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "5.2.3",
+	*	    "return_message": "Calendar - getWeekPlanning - Bad ID"
+	*	  }
+	*	}
+	*
+	*/
 	public function getWeekPlanningAction(Request $request, $token, $date)
 	{
 		$user = $this->checkToken($token);
@@ -312,37 +442,10 @@ class PlanningController extends RolesAndTokenVerificationController
 			$events[] = $value->objectToArray();
 		}
 
-		$repository = $em->getRepository('SQLBundle:Task');
-		$query = $repository->createQueryBuilder('t')
-					->join('t.ressources', 'r')
-					->where('r.user = :user_id')
-					->andWhere('t.deletedAt IS NULL')
-					->andWhere('t.finishedAt IS NULL')
-					->andWhere('t.startedAt IS NOT NULL')
-					->setParameters(array('user_id' => $user->getId()))
-					->getQuery()->getResult();
-
-		$tasks = array();
-		foreach ($query as $key => $value) {
-			$tasks[] = $value->objectToArray();
-		}
-
-		$query = $repository->createQueryBuilder('t')
-					->where('t.creator_user = :user_id ')
-					->andWhere('t.deletedAt IS NULL')
-					->andWhere('t.finishedAt IS NULL')
-					->andWhere('t.startedAt IS NOT NULL')
-					->setParameters(array('user_id' => $user->getId()))
-					->getQuery()->getResult();
-
-		foreach ($query as $key => $value) {
-			$tasks[] = $value->objectToArray();
-		}
-
 		if (count($events) <= 0 && count($tasks) <= 0)
 			return $this->setNoDataSuccess("1.5.3", "Calendar", "getWeekPlanning");
 
-		return $this->setSuccess("1.5.1", "Calendar", "getWeekPlanning", "Complete Success", array("array" => array("events" => $events, "tasks" => $tasks)));
+		return $this->setSuccess("1.5.1", "Calendar", "getWeekPlanning", "Complete Success", array("array" => array("events" => $events)));
 	}
 
 	/**
@@ -445,6 +548,85 @@ class PlanningController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
+	/**
+	* @api {get} /V0.3/planning/getmonth/:token/:date Get month planning
+	* @apiName getMonthPlanning
+	* @apiGroup Planning
+	* @apiDescription Get planning of a month
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {string} token user authentication token
+	* @apiParam {string} date date of the first day of the month (into YYYY-MM-DD format)
+	*
+	* @apiSuccess {Object[]} events list of events
+	* @apiSuccess {int} events.id Event id
+	* @apiSuccess {int} events.projectId project id of the event (could be null)
+	* @apiSuccess {Object} events.creator Event type object
+	* @apiSuccess {int} events.creator.id creator id
+	* @apiSuccess {string} events.creator.firstname creator firstname
+	* @apiSuccess {string} events.creator.lastname creator lastname
+	* @apiSuccess {Object} events.type Event type object
+	* @apiSuccess {int} events.type.id Event type id
+	* @apiSuccess {string} events.type.name Event type name
+	*	@apiSuccess {string} events.title event title
+	*	@apiSuccess {string} events.description event description
+	*	@apiSuccess {DateTime} events.beginDate beginning date of the event
+	*	@apiSuccess {DateTime} events.endDate ending date of the event
+	*	@apiSuccess {DateTime} events.createdAt date of creation of the event
+	*	@apiSuccess {DateTime} events.editedAt date of edition of the event
+	*	@apiSuccess {DateTime} events.deletedAt date of deletion of the event
+	*
+	* @apiSuccessExample Complete Success:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.1",
+	*			"return_message": "Calendar - getMonthPlanning - Complete success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": {
+	*				"events": [
+	*					{
+	*					"id": 12,
+	*					"projectId": 1,
+	*					"creator": {"id": 1, "firstname": "John", "lastname": "Doe"},
+	*					"type": {"id": 1, "name": "Event"},
+	*					"title": "Brainstorming",
+	*					"description": "blablabla blablabla ...",
+	*					"icon": "100011001010...",
+	*					"beginDate":{"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"endDate":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"createdAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"editedAt":{"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*					"deletedAt": null
+	*					},
+	*					...
+	*				]
+	*			}
+	*		}
+	* 	}
+	* @apiSuccessExample Success But No Data:
+	* 	{
+	*		"info": {
+	*			"return_code": "1.5.3",
+	*			"return_message": "Calendar - getMonthPlanning - No Data Success"
+	*		},
+	*		"data":
+	*		{
+	*			"array": []
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Authentication Token:
+	* 	HTTP/1.1 401 Unauthorized
+	*	{
+	*	  "info": {
+	*	    "return_code": "5.3.3",
+	*	    "return_message": "Calendar - getMonthPlanning - Bad ID"
+	*	  }
+	*	}
+	*
+	*/
 	public function getMonthPlanningAction(Request $request, $token, $date)
 	{
 		$user = $this->checkToken($token);
@@ -470,36 +652,9 @@ class PlanningController extends RolesAndTokenVerificationController
 			$events[] = $value->objectToArray();
 		}
 
-		$repository = $em->getRepository('SQLBundle:Task');
-		$query = $repository->createQueryBuilder('t')
-					->join('t.ressources', 'r')
-					->where('r.user = :user_id')
-					->andWhere('t.deletedAt IS NULL')
-					->andWhere('t.finishedAt IS NULL')
-					->andWhere('t.startedAt IS NOT NULL')
-					->setParameters(array('user_id' => $user->getId()))
-					->getQuery()->getResult();
-
-		$tasks = array();
-		foreach ($query as $key => $value) {
-			$tasks[] = $value->objectToArray();
-		}
-
-		$query = $repository->createQueryBuilder('t')
-					->where('t.creator_user = :user_id ')
-					->andWhere('t.deletedAt IS NULL')
-					->andWhere('t.finishedAt IS NULL')
-					->andWhere('t.startedAt IS NOT NULL')
-					->setParameters(array('user_id' => $user->getId()))
-					->getQuery()->getResult();
-
-		foreach ($query as $key => $value) {
-			$tasks[] = $value->objectToArray();
-		}
-
 		if (count($events) <= 0 && count($tasks) <= 0)
 			return $this->setNoDataSuccess("1.5.3", "Calendar", "getMonthPlanning");
 
-		return $this->setSuccess("1.5.1", "Calendar", "getMonthPlanning", "Complete Success", array("array" => array("events" => $events, "tasks" => $tasks)));
+		return $this->setSuccess("1.5.1", "Calendar", "getMonthPlanning", "Complete Success", array("array" => array("events" => $events)));
 	}
 }
