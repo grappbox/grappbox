@@ -30,7 +30,7 @@ use DateInterval;
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 	/**
-	* @-api {get} V0.3/accountadministration/login/:token Client login
+	* @-api {get} /V0.3/accountadministration/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -51,7 +51,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - clientlogin - Complete Success"
-  *			},
+  	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
@@ -74,7 +74,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*
 	*/
 	/**
-	* @-api {get} V0.2/accountadministration/login/:token Client login
+	* @-api {get} /V0.2/accountadministration/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -125,7 +125,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $this->setSuccess("1.14.1", "AccountAdministration", "clientLogin", "Complete Success", $user->objectToArray());
 	}
  	/**
- 	* @api {post} V0.3/accountadministration/login Login
+ 	* @api {post} /V0.3/accountadministration/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
@@ -186,7 +186,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	*
  	*/
  	/**
- 	* @api {post} V0.2/accountadministration/login Login
+ 	* @api {post} /V0.2/accountadministration/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
@@ -391,7 +391,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
  	}
 	/**
-	* @api {post} V0.3/accountadministration/register Register
+	* @api {post} /V0.3/accountadministration/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him
@@ -496,7 +496,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*
 	*/
 	/**
-	* @api {post} V0.2/accountadministration/register Register
+	* @api {post} /V0.2/accountadministration/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him
