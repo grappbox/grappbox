@@ -49,17 +49,22 @@ $RECYCLE.BIN/
 # Symfony
 # =========================
 
-/web/bundles/
 /app/bootstrap.php.cache
 /app/cache/*
+!app/cache/.gitkeep
 /app/config/parameters.yml
 /app/logs/*
-!app/cache/.gitkeep
 !app/logs/.gitkeep
 /app/phpunit.xml
+
+/bin/
 /build/
 /vendor/
-/bin/
+/web/bundles/
+
+# =========================
+# Custom
+# =========================
 
 /web/resources/css/*
 /web/resources/js/*
