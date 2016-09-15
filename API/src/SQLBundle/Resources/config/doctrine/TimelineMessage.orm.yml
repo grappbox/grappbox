@@ -16,10 +16,6 @@ SQLBundle\Entity\TimelineMessage:
             length: 255
         message:
             type: text
-        parentId:
-            type: integer
-            column: parent_id
-            nullable: TRUE
         createdAt:
             type: datetime
             column: created_at
@@ -44,4 +40,9 @@ SQLBundle\Entity\TimelineMessage:
           joinColumn:
             name: user_id
             referencedColumnName: id
+    oneToMany:
+        comments:
+          targetEntity: TimelineComment
+          mappedBy: messages
+          cascade: [remove]
     lifecycleCallbacks: {  }

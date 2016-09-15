@@ -1,6 +1,6 @@
-SQLBundle\Entity\BugComment:
+SQLBundle\Entity\TimelineComment:
     type: entity
-    table: bug_comments
+    table: timeline_comments
     id:
         id:
             type: integer
@@ -13,24 +13,24 @@ SQLBundle\Entity\BugComment:
         createdAt:
             type: datetime
             column: created_at
-        editedAt:
-            type: datetime
-            column: edited_at
-            nullable: TRUE
         deletedAt:
             type: datetime
             column: deleted_at
             nullable: TRUE
+        editedAt:
+            type: datetime
+            column: edited_at
+            nullable: TRUE
     manyToOne:
-        bugs:
-          targetEntity: Bug
-          inversedBy: comments
+        messages:
+          targetEntity: TimelineMessage
+          inversedBy: comment
           joinColumn:
-            name: bug_id
+            name: message_id
             referencedColumnName: id
         creator:
           targetEntity: User
-          inverserdBy: bug_comment_creator
+          inverserdBy: timeline_comment_creator
           joinColumn:
             name: creator_id
             referencedColumnName: id

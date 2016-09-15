@@ -752,9 +752,26 @@ v2_timeline_archiveMessage:
         id: \d+
     methods: [DELETE]
 
+v2_timeline_postComment:
+    path:       /timeline/postcomment/{id}
+    defaults:   { _controller: SQLBundle:Timeline:postComment, _format: json }
+    requirements:
+        id: \d+
+    methods: [POST]
 
+v2_timeline_editComment:
+    path:       /timeline/editcomment/{id}
+    defaults:   { _controller: SQLBundle:Timeline:editComment, _format: json }
+    requirements:
+        id: \d+
+    methods: [PUT]
 
-
+v2_timeline_deleteComment:
+    path:       /timeline/deletecomment/{token}/{id}
+    defaults:   { _controller: SQLBundle:Timeline:deleteComment, _format: json }
+    requirements:
+        id: \d+
+    methods: [DELETE]
 
 # -----------------------------------------------------------------------
 #                           USER CONTROLLER

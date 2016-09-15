@@ -380,7 +380,7 @@ class StatisticController extends RolesAndTokenVerificationController
     foreach ($project->getTimelines() as $key => $timeline) {
       $result[$timeline->getName()] = $em->getRepository('SQLBundle:TimelineMessage')->createQueryBuilder('t')
                  ->select('count(t)')
-                 ->where('t.parentId IS NULL AND t = :timeline AND t.deletedAt IS NULL')
+                 ->where(' t = :timeline AND t.deletedAt IS NULL')
                  ->setParameters(array('timeline' => $timeline))
                  ->getQuery()->getSingleScalarResult();
     }

@@ -35,12 +35,6 @@ class TimelineMessage
     private $message;
 
     /**
-     * @var integer
-     */
-    private $parentId;
-
-
-    /**
      * @var \SQLBundle\Entity\Timeline
      */
     private $timelines;
@@ -61,10 +55,22 @@ class TimelineMessage
     private $deletedAt;
 
     /**
-     * @var \Doctrine\Common\Collections\User
+     * @var \SQLBundle\Entity\User
      */
     private $creator;
 
+    /**
+     * @var \Doctrine\Common\Collections\User
+     */
+    private $comments;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -166,29 +172,6 @@ class TimelineMessage
     public function getMessage()
     {
         return $this->message;
-    }
-
-    /**
-     * Set parentId
-     *
-     * @param integer $parenteId
-     * @return TimelineMessage
-     */
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-
-        return $this;
-    }
-
-    /**
-     * Get parentId
-     *
-     * @return integer
-     */
-    public function getParentId()
-    {
-        return $this->parentId;
     }
 
     /**
@@ -315,16 +298,47 @@ class TimelineMessage
     {
       return array(
         "id" => $this->id,
-        //"userId" => $this->userId,
-        "creator"=> array("id" => $this->creator->getId(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastname()),
+        "creator"=> array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
         "timelineId" => $this->timelineId,
         "title" => $this->title,
         "message" => $this->message,
-        "parentId" => $this->parentId,
         "createdAt" => $this->createdAt,
         "editedAt" => $this->editedAt,
         "deletedAt" => $this->deletedAt
       );
+    }
+
+    /**
+     * Add comments
+     *
+     * @param \SQLBundle\Entity\TimelineComment $comment
+     * @return Bug
+     */
+    public function addComment(\SQLBundle\Entity\TimelineComment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param \SQLBundle\Entity\TimelineComment $comment
+     */
+    public function removeComment(\SQLBundle\Entity\TimelineComment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 
 }
