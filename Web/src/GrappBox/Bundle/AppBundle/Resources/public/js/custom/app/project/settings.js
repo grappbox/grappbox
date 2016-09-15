@@ -94,7 +94,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   $scope.data = { onLoad: true, project: { }, customers: { }, message: "_invalid", users_message: "_invalid", roles_message: "_invalid", customers_message:"_invalid", userRights: false, editMode: false };
   $scope.projectID = $routeParams.project_id;
   $scope.action = { deleteProject: "" };
-
+  $scope.new_role = { };
 
   // ------------------------------------------------------
   //                DATA FORMATING
@@ -461,9 +461,8 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   // ------------------------------------------------------
 
   var getUsersRoles = function() {
-
     for (var i = 0; i < ($scope.data.roles).length; i++) {
-      $http.get($rootScope.api.url + "/roles/getusersforrole/" + $rootScope.user.token + "/" + $scope.data.roles[i].id)
+      $http.get($rootScope.api.url + "/roles/getusersforrole/" + $rootScope.user.token + "/" + $scope.data.roles[i].roleId)
         .then(function successCallback(response) {
           $scope.data.usersroles = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : {});
           $scope.data.users_message = (response.data.info && response.data.info.return_code == "1.13.1" ? "_valid" : "_empty");
@@ -667,9 +666,11 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         1: "Read only",
         2: "Read & write"
     };
+
   $scope.rightsOptions = Object.keys(rightsOptionsList).map(function (key) {
         return { id: key, name: rightsOptionsList[key] };
     });
+
   $scope.convertToInt = function(nb){
       return parseInt(nb, 10);
   };
@@ -711,7 +712,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     Notification.info({ message: "Editing role...", delay: 5000 });
     var elem = {
       "token": $rootScope.user.token,
-		  "roleId": role.id,
+		  "roleId": role.roleId,
 		  "name": role.name,
 		  "teamTimeline": role.team_timeline,
 	    "customerTimeline": role.customer_timeline,
@@ -753,6 +754,8 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   $scope.createRole = function(new_role) {
+    console.log($scope.new_role);
+    console.log(new_role);
     Notification.info({ message: "Creating role...", delay: 5000 });
 
     var elem = {"token": $rootScope.user.token,
@@ -797,7 +800,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   $scope.deleteRole = function(role) {
     Notification.info({ message: "Deleting role...", delay: 5000 });
-    $http.delete($rootScope.api.url + "/roles/delprojectroles/" + $rootScope.user.token + "/" + role.id)
+    $http.delete($rootScope.api.url + "/roles/delprojectroles/" + $rootScope.user.token + "/" + role.roleId)
       .then(function successCallback(response) {
         Notification.success({ message: "Role deleted", delay: 5000 });
         // TODO remove users assign to role

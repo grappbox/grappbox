@@ -280,7 +280,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   <form class="form-horizontal" novalidate>
                                     <fieldset>
                                       <div class="form-group">
-                                        <select class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="user.role" data-ng-options="role.id as role.name for role in data.roles"></select>
+                                        <select class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="user.role" data-ng-options="role.roleId as role.name for role in data.roles"></select>
                                       </div>
                                     </fieldset>
                                   </form>
@@ -481,7 +481,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   <div class="form-group no-margin">
                                     <label for="team-timeline" class="control-label">Team timeline</label>
                                     <div class="">
-                                      <select name="team-timeline" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.team_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      <select name="team-timeline" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.teamTimeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
                                   </div>
                                 </fieldset>
@@ -493,7 +493,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   <div class="form-group no-margin">
                                     <label for="customer-timeline" class="control-label">Customer timeline</label>
                                     <div class="">
-                                      <select name="customer-timeline" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.customer_timeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      <select name="customer-timeline" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.customerTimeline" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
                                   </div>
                                 </fieldset>
@@ -569,7 +569,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   <div class="form-group no-margin">
                                     <label for="project-settings" class="control-label">Project settings</label>
                                     <div class="">
-                                      <select name="project-settings" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.project_settings" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
+                                      <select name="project-settings" class="form-control" data-ng-disabled="data.userRights < 2" data-ng-model="role.projectSettings" data-ng-options="convertToInt(right.id) as right.name for right in rightsOptions"></select>
                                     </div>
                                   </div>
                                 </fieldset>
