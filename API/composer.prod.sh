@@ -1,6 +1,5 @@
 #!/bin/sh
 
-sudo service apache2 stop &&
 export SYMFONY_ENV=prod &&
 sudo rm -rf app/cache/prod &&
 sudo rm -rf app/cache/dev &&
@@ -12,5 +11,4 @@ php app/console cache:clear --env=prod --no-debug &&
 sudo git checkout vendor/ &&
 chown www-data.www-data * -R &&
 chown www-data.www-data .* -R &&
-sudo apidoc -f .php -i /var/www/api/Grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/ --silent &&
-sudo service apache2 start
+sudo apidoc -f .php -i /var/www/api/Grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/0.2/ --silent

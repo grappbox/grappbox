@@ -4,4 +4,4 @@ mongo:
 
 grappbox:
     resource: "@SQLBundle/Resources/config/routing.yml"
-    prefix:   /V0.2/
+    prefix:   /
