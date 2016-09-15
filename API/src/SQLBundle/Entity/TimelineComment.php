@@ -5,9 +5,9 @@ namespace SQLBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Bug
+ * TimelineComment
  */
-class BugComment
+class TimelineComment
 {
     /**
      * @var integer
@@ -20,24 +20,24 @@ class BugComment
     private $comment;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $createdAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $editedAt;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $deletedAt;
 
     /**
-     * @var \SQLBundle\Entity\Bug
+     * @var \SQLBundle\Entity\TimelineMessage
      */
-    private $bugs;
+    private $messages;
 
     /**
      * @var \SQLBundle\Entity\User
@@ -54,7 +54,7 @@ class BugComment
       return array(
         "id" => $this->id,
         "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastName()),
-        "parentId" => $this->bugs->getId(),
+        "parentId" => $this->messages->getId(),
         "comment" => $this->comment,
         "createdAt" => $this->createdAt,
         "editedAt" => $this->editedAt,
@@ -76,7 +76,7 @@ class BugComment
      * Set comment
      *
      * @param string $comment
-     * @return Bug
+     * @return TimelineMessage
      */
     public function setComment($comment)
     {
@@ -98,8 +98,8 @@ class BugComment
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
-     * @return Bug
+     * @param DateTime $createdAt
+     * @return TimelineMessage
      */
     public function setCreatedAt($createdAt)
     {
@@ -111,7 +111,7 @@ class BugComment
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -121,8 +121,8 @@ class BugComment
     /**
      * Set editedAt
      *
-     * @param \DateTime $editedAt
-     * @return Bug
+     * @param DateTime $editedAt
+     * @return TimelineMessage
      */
     public function setEditedAt($editedAt)
     {
@@ -134,7 +134,7 @@ class BugComment
     /**
      * Get editedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getEditedAt()
     {
@@ -144,8 +144,8 @@ class BugComment
     /**
      * Set deletedAt
      *
-     * @param \DateTime $deletedAt
-     * @return Bug
+     * @param DateTime $deletedAt
+     * @return TimelineMessage
      */
     public function setDeletedAt($deletedAt)
     {
@@ -157,7 +157,7 @@ class BugComment
     /**
      * Get deletedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDeletedAt()
     {
@@ -165,26 +165,26 @@ class BugComment
     }
 
     /**
-     * Set bugs
+     * Set messages
      *
-     * @param \SQLBundle\Entity\Bug $bug
-     * @return Bug
+     * @param \SQLBundle\Entity\Timeline $messages
+     * @return TimelineMessage
      */
-    public function setBugs(\SQLBundle\Entity\Bug $bug = null)
+    public function setMessages(\SQLBundle\Entity\TimelineMessage $messages = null)
     {
-        $this->bugs = $bug;
+        $this->messages = $messages;
 
         return $this;
     }
 
     /**
-     * Get bugs
+     * Get messages
      *
-     * @return \SQLBundle\Entity\Bug
+     * @return \SQLBundle\Entity\TimelineMessage
      */
-    public function getBugs()
+    public function getMessages()
     {
-        return $this->bugs;
+        return $this->messages;
     }
 
     /**

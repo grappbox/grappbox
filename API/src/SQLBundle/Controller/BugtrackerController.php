@@ -1236,7 +1236,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $id, "bugtracker") < 1)
 			return ($this->setNoRightsError("4.9.9", "Bugtracker", "getTickets"));
 
-		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
+		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "deletedAt" => null));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -1401,9 +1401,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("4.22.9", "Bugtracker", "getClosedTickets"));
 
 		$tickets = $em->getRepository("SQLBundle:Bug")->createQueryBuilder('b')
-						->where("b.projects = :bug_project")->andWhere("b.deletedAt IS NOT NULL")->andWhere("b.parentId IS NULL")
+						->where("b.projects = :bug_project")->andWhere("b.deletedAt IS NOT NULL")
 						->setParameter("bug_project", $project)->getQuery()->getResult();
-						//->findBy(array("projects" => $project, "deletedAt" => null, "parentId" => null));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
 			$object = $value->objectToArray();
@@ -2499,7 +2498,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} creator.id author id
 	* @apiSuccess {String} creator.fisrtname author firstname
 	* @apiSuccess {String} creator.lastname author lastname
-	* @apiSuccess {int} projectId project id
 	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {String} comment comment content
 	* @apiSuccess {DateTime} createdAt Ticket creation date
@@ -2516,7 +2514,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    "array": [
 	*    	{ "id": 11,
 	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
-	*    	"projectId": 1,
 	*    	"comment": "Ceci est un commentaire de test",
 	*    	"parentId": 1,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
@@ -2524,7 +2521,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*    	"deletedAt": null },
 	*    	{ "id": 12,
 	*    	"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
-	*    	"projectId": 1,
 	*    	"comment": "Ceci est un commentaire de test",
 	*    	"parentId": 1,
 	*    	"createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
@@ -2706,7 +2702,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token client authentification token
-	* @apiParam {int} projectId id of the project
 	* @apiParam {int} parentId commented ticket id
 	* @apiParam {String} comment Comment content
 	*
@@ -2714,7 +2709,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*   {
 	* 	"data": {
 	* 		"token": "ThisIsMyToken",
-	* 		"projectId": 1,
 	* 		"parentId": 1,
 	* 		"comment": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?"
 	* 	}
@@ -2725,7 +2719,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} creator.id author id
 	* @apiSuccess {String} creator.firstname author firsname
 	* @apiSuccess {String} creator.lastname author lastname
-	* @apiSuccess {int} projectId project id
 	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {String} comment Comment content
 	* @apiSuccess {DateTime} createdAt Ticket creation date
@@ -2742,7 +2735,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*  "data": {
 	*    "id": 11,
 	*    "creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
-	*    "projectId": 1,
 	*    "parentId": 1,
 	*    "comment": "Ceci est un comment de test",
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
@@ -2757,14 +2749,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "4.5.3",
 	*			"return_message": "Bugtracker - postComments - Bad id"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: projectId
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.5.4",
-	*			"return_message": "Bugtracker - postComments - Bad Parameter: projectId"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: parentId
@@ -2808,19 +2792,15 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.5.3", "Bugtracker", "postComments"));
 
-		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
-			return ($this->setNoRightsError("4.5.9", "Bugtracker", "postComments"));
-
-		$project = $em->getRepository("SQLBundle:Project")->find($content->projectId);
-		if (!($project instanceof Project))
-			return $this->setBadRequest("4.5.4", "Bugtracker", "postComments", "Bad Parameter: projectId");
-
 		$parent = $em->getRepository("SQLBundle:Bug")->find($content->parentId);
 		if (!($parent instanceof Bug))
 			return $this->setBadRequest("4.5.4", "Bugtracker", "postComments", "Bad Parameter: parentId");
 
+		if ($this->checkRoles($user, $parent->getProjects()->getId(), "bugtracker") < 1)
+			return ($this->setNoRightsError("4.5.9", "Bugtracker", "postComments"));
+
+
 		$comment = new BugComment();
-		$comment->setProjects($project);
 		$comment->setCreator($user);
 		$comment->setBugs($parent);
 		$comment->setComment($content->comment);
@@ -2949,7 +2929,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token client authentification token
-	*	@apiParam {int} projectId project id
 	*	@apiParam {int} commentId comment id to edit
 	* @apiParam {String} comment Comment content
 	*
@@ -2957,7 +2936,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*   {
 	* 	"data": {
 	* 		"token": "ThisIsMyToken",
-	* 		"projectId": 1,
 	* 		"commentId": 1,
 	* 		"comment": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?"
 	* 	}
@@ -2968,7 +2946,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} creator.id author id
 	* @apiSuccess {String} creator.firstname author firsname
 	* @apiSuccess {String} creator.lastname author lastname
-	* @apiSuccess {int} projectId project id
 	* @apiSuccess {int} parentId parent Ticket id
 	* @apiSuccess {String} comment Comment content
 	* @apiSuccess {DateTime} createdAt Ticket creation date
@@ -2985,7 +2962,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*  "data": {
 	*    "id": 11,
 	*    "creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
-	*    "projectId": 1,
 	*    "parentId": 1,
 	*    "comment": "Ceci est un comment de test",
 	*    "createdAt": { "date": "2015-11-30 00:00:00", "timezone_type": 3, "timezone": "Europe/Paris" },
@@ -3042,12 +3018,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("4.6.3", "Bugtracker", "editComments"));
 
-		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 1)
-			return ($this->setNoRightsError("4.6.9", "Bugtracker", "editComments"));
-
 		$comment = $em->getRepository("SQLBundle:BugComment")->find($content->commentId);
 		if (!($comment instanceof BugComment))
 			return $this->setBadRequest("4.6.4", "Bugtracker", "editComments", "Bad Parameter: commentId");
+
+		if ($user->getId() != $comment->getCreator()->getId())
+			return ($this->setNoRightsError("4.6.9", "Bugtracker", "editComments"));
 
 		$comment->setComment($content->comment);
 		$comment->setEditedAt(new DateTime('now'));
