@@ -370,7 +370,7 @@ class Client extends HTTP\Client {
 
         $url = $this->getAbsoluteUrl($url);
         if ($method == "PUT"){
-          $headers[] = "OC-Chunked: 1";
+          $headers["OC-Chunked"] = 1;
         }
         $response = $this->send(new HTTP\Request($method, $url, $headers, $body));
         return [
