@@ -51,4 +51,7 @@ public class BugCursors {
         return returnCount;
     }
 
+    public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
+        return mOpenHelper.getWritableDatabase().update(BugEntry.TABLE_NAME, contentValues, selection, args);
+    }
 }

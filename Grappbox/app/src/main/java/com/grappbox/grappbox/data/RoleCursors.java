@@ -74,4 +74,8 @@ public class RoleCursors {
         }
         return returnCount;
     }
+
+    public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
+        return mOpenHelper.getWritableDatabase().update(RolesEntry.TABLE_NAME, contentValues, selection, args);
+    }
 }

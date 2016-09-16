@@ -1,5 +1,10 @@
 package com.grappbox.grappbox;
 
+import android.accounts.AccountManager;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
+import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
@@ -7,7 +12,11 @@ import android.net.NetworkInfo;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.net.ConnectivityManagerCompat;
 import android.util.Base64;
+import android.util.Log;
 import android.util.TypedValue;
+
+import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.GrappboxAuthenticator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,12 +65,12 @@ public class Utils {
             return grappboxFormatter.parse(temp);
         }
 
-        public static java.util.Date convertUTCToGrappbox (Date date) throws ParseException {
+        public static java.util.Date convertUTCToGrappbox (java.util.Date date) throws ParseException {
             grappboxFormatter.setTimeZone(grappboxTZ);
             return grappboxFormatter.parse(grappboxFormatter.format(date));
         }
 
-        public static java.util.Date convertUTCToPhone(Date date) throws ParseException {
+        public static java.util.Date convertUTCToPhone(java.util.Date date) throws ParseException {
             grappboxFormatter.setTimeZone(phoneTZ);
             return grappboxFormatter.parse(grappboxFormatter.format(date));
         }
@@ -79,6 +88,23 @@ public class Utils {
                 return false;
             //TODO : Display error
             return true;
+        }
+
+        public static String getClientMessageFromErrorCode(Context context, String errorCode){
+            int errorType = Integer.parseInt(errorCode.split("\\.")[2]);
+
+            switch (errorType){
+                case 7:
+                    return context.getString(R.string.error_already_in_database);
+                case 8:
+                    return context.getString(R.string.error_network);
+                case 9:
+                    return context.getString(R.string.error_access_rights);
+                case 10:
+                    return context.getString(R.string.error_resource_not_found);
+                default:
+                    return context.getString(R.string.error_unkown);
+            }
         }
     }
 
@@ -101,7 +127,7 @@ public class Utils {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                buffer.append(line).append("\n");
+                buffer.append(line);
             }
 
             if (buffer.length() == 0) {
@@ -146,6 +172,32 @@ public class Utils {
             a.recycle();
 
             return color;
+        }
+    }
+
+    public static class Account{
+        public static String getAuthToken(Activity activity){
+            String token = null;
+            AccountManager am = AccountManager.get(activity);
+            try {
+                token = am.getAuthToken(Session.getInstance(activity).getCurrentAccount(), GrappboxAuthenticator.ACCOUNT_TOKEN_TYPE, null, activity, null, null).getResult().getString(AccountManager.KEY_AUTHTOKEN);
+            } catch (OperationCanceledException | IOException | AuthenticatorException e) {
+                e.printStackTrace();
+            }
+            return token;
+        }
+
+        public static String getAuthTokenService(Context context, android.accounts.Account account){
+            String token = null;
+            AccountManager am = AccountManager.get(context);
+            if (account == null)
+                account = Session.getInstance(context).getCurrentAccount();
+            try {
+                token = am.getAuthToken(account, GrappboxAuthenticator.ACCOUNT_TOKEN_TYPE, null, true, null, null).getResult().getString(AccountManager.KEY_AUTHTOKEN);
+            } catch (OperationCanceledException | IOException | AuthenticatorException e) {
+                e.printStackTrace();
+            }
+            return token;
         }
     }
 }

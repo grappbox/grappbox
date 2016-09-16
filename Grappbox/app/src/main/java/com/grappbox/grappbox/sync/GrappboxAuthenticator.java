@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.grappbox.grappbox.AddAccountActivity;
 import com.grappbox.grappbox.BuildConfig;
@@ -29,6 +30,8 @@ import java.util.Calendar;
  * Created by marcw on 03/09/2016.
  */
 public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
+    public static final String ACCOUNT_TOKEN_TYPE = "GRAPPBOX::APP::API";
+    private static final String LOG_TAG = GrappboxAuthenticator.class.getSimpleName();
     private Context mContext;
 
     public GrappboxAuthenticator(Context context) {
@@ -70,12 +73,13 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
             JSONObject data = new JSONObject();
 
             data.put("login",account.name);
-            data.put("password", am.getPassword(account));
+            data.put("password", Utils.Security.decryptString(am.getPassword(account)));
             json.put("data", data);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.connect();
             Utils.JSON.sendJsonOverConnection(connection, json);
+            Log.d(LOG_TAG, json.toString());
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson == null || returnedJson.isEmpty()){
                 return constructLoginIntent(response);
@@ -89,6 +93,8 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, 1);
             cal.add(Calendar.HOUR, -2);
+            answer.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+            answer.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
             answer.putString(AccountManager.KEY_AUTHTOKEN, data.getString("token"));
             am.setUserData(account, GrappboxJustInTimeService.EXTRA_API_TOKEN, data.getString("token"));
             am.setUserData(account, Session.ACCOUNT_EXPIRATION_TOKEN, String.valueOf(cal.getTimeInMillis()));

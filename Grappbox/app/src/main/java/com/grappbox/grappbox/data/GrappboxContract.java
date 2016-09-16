@@ -31,10 +31,12 @@ public class GrappboxContract {
     public static final String PATH_BUG_ASSIGNATION = "bug_assignations";
     public static final String PATH_CLOUD = "cloud";
 
+    public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
+
     public static final class ProjectEntry implements BaseColumns {
         public static final String TABLE_NAME = "projects";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
@@ -88,7 +90,7 @@ public class GrappboxContract {
     public static final class UserEntry implements BaseColumns {
         public static final String TABLE_NAME = "users";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_FIRSTNAME = "firstname";
         public static final String COLUMN_LASTNAME = "lastname";
         public static final String COLUMN_CONTACT_EMAIL = "contact_email";
@@ -159,7 +161,7 @@ public class GrappboxContract {
     public static final class EventTypeEntry implements BaseColumns {
         public static final String TABLE_NAME = "event_types";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_NAME = "name";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_EVENT_TYPE).build();
@@ -183,7 +185,7 @@ public class GrappboxContract {
     public static final class EventEntry implements BaseColumns {
         public static final String TABLE_NAME = "events";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
 
         public static final String COLUMN_EVENT_TITLE = "title";
         public static final String COLUMN_EVENT_DESCRIPTION = "description";
@@ -229,7 +231,7 @@ public class GrappboxContract {
     public static final class TimelineEntry implements BaseColumns {
         public static final String TABLE_NAME = "timeline";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_TYPE_ID = "type_id";
@@ -256,7 +258,7 @@ public class GrappboxContract {
     public static final class TimelineMessageEntry implements BaseColumns {
         public static final String TABLE_NAME = "timeline_messages";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_TIMELINE_ID = "timeline_id";
         public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
         public static final String COLUMN_PARENT_ID = "parent_id"; //This is set only when message is an answer to another message
@@ -286,7 +288,7 @@ public class GrappboxContract {
     public static final class RolesEntry implements BaseColumns {
         public static final String TABLE_NAME = "roles";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_ACCESS_TEAM_TIMELINE = "team_timeline";
         public static final String COLUMN_ACCESS_CUSTOMER_TIMELINE = "customer_timeline";
@@ -343,7 +345,7 @@ public class GrappboxContract {
     public static final class TagEntry implements BaseColumns {
         public static final String TABLE_NAME = "tags";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
         public static final String COLUMN_NAME = "name";
 
@@ -359,7 +361,7 @@ public class GrappboxContract {
     public static final class BugEntry implements BaseColumns {
         public static final String TABLE_NAME = "bug";
 
-        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
         public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
         public static final String COLUMN_DATE_LAST_EDITED_UTC = "date_last_edited";

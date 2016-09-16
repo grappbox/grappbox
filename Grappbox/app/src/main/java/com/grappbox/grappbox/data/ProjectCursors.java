@@ -96,4 +96,8 @@ public class ProjectCursors {
     public static int update_account(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
         return mOpenHelper.getWritableDatabase().update(ProjectAccountEntry.TABLE_NAME, contentValues, selection, args);
     }
+
+    public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
+        return mOpenHelper.getWritableDatabase().update(ProjectEntry.TABLE_NAME, contentValues, selection, args);
+    }
 }

@@ -51,4 +51,22 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_project">Project</string>
     <string name="cloud_root_symbol">/</string>
+    <string name="error_unknown_last_modified">Unknown last modifed date</string>
+    <string name="title_new">New</string>
+    <string name="directory">Directory</string>
+    <string name="word_import">Import</string>
+    <string name="directory_name">Directory name</string>
+    <string name="new_directory">New directory</string>
+    <string name="positive_response">OK</string>
+    <string name="negative_response">Cancel</string>
+    <string name="hint_safe_password">Safe password</string>
+    <string name="error_already_in_database">The content you try to insert is already there, try to refresh application</string>
+    <string name="error_network">It seems you have a network problem, please retry in few minutes</string>
+    <string name="error_access_rights">You don\'t have the permission to access to this resource</string>
+    <string name="error_resource_not_found">You try to access to an inexisting resource</string>
+    <string name="error_unkown">It seems we have a little problem right now, retry in few minutes please</string>
+    <string name="title_dialog_safe_password">Enter safe\'s password</string>
+    <string name="hint_file_password">File password</string>
+    <string name="error_no_app">You have no <xliff:g>%s</xliff:g> installed on your device, please install one</string>
+    <string name="file_explorer_app">File Explorer</string>
 </resources>

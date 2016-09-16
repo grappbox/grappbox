@@ -1,6 +1,9 @@
 package com.grappbox.grappbox;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -41,6 +44,9 @@ import com.grappbox.grappbox.project_fragments.TaskFragment;
 import com.grappbox.grappbox.project_fragments.TimelineFragment;
 import com.grappbox.grappbox.project_fragments.WhiteboardFragment;
 import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.GrappboxSyncAdapter;
+
+import java.io.IOException;
 
 public class ProjectActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
     private static final String LOG_TAG = ProjectActivity.class.getSimpleName();
@@ -70,6 +76,7 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
     private NavigationView mNavView;
     private int mCurrentNavSelected = -1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +95,8 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
             mNavView.getMenu().getItem(0).setChecked(true);
             mNavView.setItemTextColor(ResourcesCompat.getColorStateList(getResources(), R.color.main_menu_colors, getTheme()));
             mNavView.setItemIconTintList(ResourcesCompat.getColorStateList(getResources(), R.color.main_menu_colors, getTheme()));
+        } else {
+            onBackStackChanged();
         }
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         if (getIntent() == null){
@@ -103,7 +112,9 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
         toggle.syncState();
 
         Bundle projectId = new Bundle();
-        projectId.putLong(EXTRA_PROJECT_ID, getIntent().getLongExtra(EXTRA_PROJECT_ID, -1));
+        long projectLocalId = getIntent().getLongExtra(EXTRA_PROJECT_ID, -1);
+        Log.e("THIS IS SPARTA", String.valueOf(projectLocalId));
+        projectId.putLong(EXTRA_PROJECT_ID, projectLocalId);
         getLoaderManager().initLoader(LOADER_PROJECT_INFOS, projectId, this);
         getLoaderManager().initLoader(LOADER_ADDED_USER_INFOS, null, this);
     }
@@ -148,7 +159,7 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.dashboard, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
@@ -160,7 +171,8 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_sync) {
+            GrappboxSyncAdapter.syncNow(Session.getInstance(this).getCurrentAccount(), this);
             return true;
         }
 

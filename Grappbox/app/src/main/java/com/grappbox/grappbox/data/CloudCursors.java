@@ -59,4 +59,8 @@ public class CloudCursors {
     public static Cursor query_CloudWithProject(Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper mOpenHelper) {
         return sProjectJoinQueryBuilder.query(mOpenHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
+
+    public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
+        return mOpenHelper.getWritableDatabase().update(CloudEntry.TABLE_NAME, contentValues, selection, args);
+    }
 }

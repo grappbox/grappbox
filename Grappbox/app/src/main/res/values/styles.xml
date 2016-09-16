@@ -44,6 +44,18 @@
         <item name="android:fontFamily">sans-serif-regular</item>
     </style>
 
+    <style name="BottomSheetTextView">
+        <item name="android:textColor">@color/GrappBlackLight</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="BottomSheetImageView">
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:tint">@color/GrappBlackLight</item>
+    </style>
+
     <style name="EmphasisTextView">
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>

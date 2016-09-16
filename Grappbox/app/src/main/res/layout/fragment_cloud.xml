@@ -11,35 +11,18 @@
         tools:context="com.grappbox.grappbox.project_fragments.CloudFragment"
         android:orientation="vertical">
 
-        <HorizontalScrollView
+        <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/horizontalScrollView2"
-            android:layout_weight="10"
-            android:background="@color/GrappYellow">
-
-            <android.support.design.widget.TabLayout
-                android:layout_width="wrap_content"
+            android:id="@+id/refresh">
+            <ListView
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:tabTextColor="@color/GrappWhiteLight"
-                app:tabSelectedTextColor="@color/GrappWhiteLight"
-                app:tabBackground="@color/GrappYellow"
-                app:tabIndicatorColor="@color/GrappWhiteDark"
-                android:id="@+id/breadcrumb"
-                >
-                <android.support.design.widget.TabItem
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="/" />
-            </android.support.design.widget.TabLayout>
-        </HorizontalScrollView>
+                android:id="@+id/cloud_entries"
+                android:layout_weight="1"
+                />
+        </android.support.v4.widget.SwipeRefreshLayout>
 
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/cloud_entries"
-            android:layout_weight="1"
-            android:layout_marginTop="5dp" />
 
     </LinearLayout>
 

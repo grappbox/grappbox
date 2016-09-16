@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -500,6 +501,18 @@ public class GrappboxProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
         Uri returnedUri;
+
+        //Pre-detect conflict and handle with update method
+        if (contentValues.containsKey(GrappboxContract.GENERAL_GRAPPBOX_ID)){
+            Cursor value = query(uri, new String[]{BaseColumns._ID}, GrappboxContract.GENERAL_GRAPPBOX_ID + "=?", new String[]{contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID)}, null);
+            if (value != null && value.moveToFirst()){
+                Uri newUri = uri.buildUpon().appendPath(String.valueOf(value.getLong(0))).build();
+                update(uri, contentValues, BaseColumns._ID + "=?", new String[]{String.valueOf(value.getLong(0))});
+                value.close();
+                return newUri;
+            }
+        }
+
         switch (sUriMatcher.match(uri)) {
             case USER:
                 returnedUri = UserCursors.insert(uri, contentValues, mOpenHelper);
@@ -529,7 +542,7 @@ public class GrappboxProvider extends ContentProvider {
                 returnedUri = TimelineCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case TIMELINE_MESSAGES:
-                returnedUri = TimelineCursors.insert(uri, contentValues, mOpenHelper);
+                returnedUri = TimelineMessageCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case CLOUD:
                 returnedUri = CloudCursors.insert(uri, contentValues, mOpenHelper);
@@ -557,8 +570,32 @@ public class GrappboxProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] args) {
         switch (sUriMatcher.match(uri)) {
+            case USER:
+                return UserCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case PROJECT:
+                return ProjectCursors.update(uri, contentValues, selection, args, mOpenHelper);
             case PROJECT_ACCOUNT:
                 return ProjectCursors.update_account(uri, contentValues, selection, args, mOpenHelper);
+            case ROLE:
+                return RoleCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case ROLE_ASSIGNATION:
+                return RoleAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case BUG:
+                return BugCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case BUG_TAG:
+                return BugTagCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case BUG_ASSIGNATION:
+                return BugAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case TIMELINE:
+                return TimelineCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case TIMELINE_MESSAGES:
+               return TimelineMessageCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case CLOUD:
+                return CloudCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case EVENT:
+                return EventCursors.update(uri, contentValues, selection, args, mOpenHelper);
+            case EVENT_TYPE:
+                return EventTypeCursors.update(uri, contentValues, selection, args, mOpenHelper);
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
