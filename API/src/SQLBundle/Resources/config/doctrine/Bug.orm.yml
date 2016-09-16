@@ -24,10 +24,6 @@ SQLBundle\Entity\Bug:
             type: datetime
             column: edited_at
             nullable: TRUE
-        deletedAt:
-            type: datetime
-            column: deleted_at
-            nullable: TRUE
         clientOrigin:
             type: boolean
             column: client_origin

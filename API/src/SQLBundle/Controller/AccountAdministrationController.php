@@ -30,7 +30,7 @@ use DateInterval;
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 	/**
-	* @-api {get} /V0.3/accountadministration/login/:token Client login
+	* @api {get} /V0.3/accountadministration/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -43,7 +43,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiSuccess {string} lastname user's lastname
 	* @apiSuccess {string} email user's email
 	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {Date} avatar user's avatar last modification date
+	* @apiSuccess {String} avatar user's avatar last modification date
 	* @apiSuccess {Boolean} is_client if the user is a client
 	*
 	* @apiSuccessExample {json} Success-Response:
@@ -58,7 +58,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"avatar": "1945-06-18 06:00:00",
 	*				"is_client": false
 	*			}
  	* 	}
@@ -74,7 +74,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*
 	*/
 	/**
-	* @-api {get} /V0.2/accountadministration/login/:token Client login
+	* @api {get} /V0.2/accountadministration/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -94,7 +94,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - clientlogin - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
@@ -147,7 +147,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
 	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {date} avatar user's avatar last modif date
+	* @apiSuccess {string} avatar user's avatar last modif date
 	* @apiSuccess {Boolean} is_client if the user is a client
  	*
  	* @apiSuccessExample {json} Success-Response:
@@ -155,14 +155,14 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - login - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"avatar": "1945-06-18 06:00:00",
 	*				"is_client": false
 	*			}
  	* 	}
@@ -173,7 +173,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: login"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: password
 	* 	HTTP/1.1 400 Bad Request
@@ -181,7 +181,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
-  *		}
+	*		}
 	* 	}
  	*
  	*/
@@ -215,7 +215,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - login - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
@@ -232,7 +232,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: login"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: password
 	* 	HTTP/1.1 400 Bad Request
@@ -240,7 +240,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
-  *		}
+	*		}
 	* 	}
  	*
  	*/
@@ -345,37 +345,69 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	/**
- * @api {get} V0.2/accountadministration/logout/:token Logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiDescription unvalid user's token
- * @apiVersion 0.2.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} message	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	{
- *			"info": {
- *				"return_code": "1.14.1",
- *				"return_message": "AccountAdministration - login - Complete Success"
- *			},
- *			"data": {
- *				"message": "Successfully logout"
- *			}
- * 	}
- *
- * @apiErrorExample Bad Id
- * 	HTTP/1.1 400 Bad Request
- * 	{
- *		"info": {
- *			"return_code": "14.2.3",
- *			"return_message": "AccountAdministration - logout - Bad id"
- *		}
- * 	}
- *
- */
+	* @api {get} /V0.3/accountadministration/logout/:token Logout
+	* @apiName logout
+	* @apiGroup AccountAdministration
+	* @apiDescription unvalid user's token
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {string} token user's authentication token
+	*
+	* @apiSuccess {string} message	success message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"info": {
+	*				"return_code": "1.14.1",
+	*				"return_message": "AccountAdministration - login - Complete Success"
+	*			},
+	*			"data": {
+	*				"message": "Successfully logout"
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.2.3",
+	*			"return_message": "AccountAdministration - logout - Bad id"
+	*		}
+	* 	}
+	*
+	*/
+	/**
+	* @api {get} /V0.2/accountadministration/logout/:token Logout
+	* @apiName logout
+	* @apiGroup AccountAdministration
+	* @apiDescription unvalid user's token
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {string} token user's authentication token
+	*
+	* @apiSuccess {string} message	success message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"info": {
+	*				"return_code": "1.14.1",
+	*				"return_message": "AccountAdministration - login - Complete Success"
+	*			},
+	*			"data": {
+	*				"message": "Successfully logout"
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.2.3",
+	*			"return_message": "AccountAdministration - logout - Bad id"
+	*		}
+	* 	}
+	*
+	*/
  	public function logoutAction(Request $request, $token)
  	{
 		$user = $this->checkToken($token);
@@ -456,7 +488,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
 	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {Date} avatar user's avatar last modification date
+	* @apiSuccess {string} avatar user's avatar last modification date
 	* @apiSuccess {Boolean} is_client if the user is a client
 	*
 	* @apiSuccessExample {json} Success-Response:
@@ -465,14 +497,14 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - register - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "Janne",
 	*				"lastname": "Doe",
 	*				"email": "janne.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"avatar": "1945-06-18 06:00:00",
 	*				"is_client": false
 	*			}
 	* 	}
@@ -483,7 +515,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.3.6",
 	*			"return_message": "AccountAdministration - register - Missing Parameter"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Already in DB
 	* 	HTTP/1.1 400 Bad Request
@@ -491,7 +523,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.3.7",
 	*			"return_message": "AccountAdministration - register - Already in Database"
-  *		}
+	*		}
 	* 	}
 	*
 	*/
@@ -565,7 +597,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - register - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "Janne",
@@ -582,7 +614,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.3.6",
 	*			"return_message": "AccountAdministration - register - Missing Parameter"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Already in DB
 	* 	HTTP/1.1 400 Bad Request
@@ -590,7 +622,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.3.7",
 	*			"return_message": "AccountAdministration - register - Already in Database"
-  *		}
+	*		}
 	* 	}
 	*
 	*/

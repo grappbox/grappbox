@@ -193,7 +193,7 @@ class User implements UserInterface
           'lastname' => $this->lastname,
           'email' => $this->email,
           'token' => $this->token,
-          'avatar' => $this->avatarDate,
+          'avatar' => $this->avatarDate->format('Y-m-d H:i:s'),
           'is_client' => $this->isClient
       );
     }

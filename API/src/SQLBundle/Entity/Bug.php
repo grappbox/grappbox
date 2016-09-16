@@ -40,11 +40,6 @@ class Bug
     private $editedAt;
 
     /**
-     * @var \DateTime
-     */
-    private $deletedAt;
-
-    /**
      * @var \Boolean
      */
     private $clientOrigin;
@@ -92,18 +87,23 @@ class Bug
      */
     public function objectToArray()
     {
-      return array(
-        "id" => $this->id,
-        "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
-        "projectId" => $this->projects->getId(),
-        "title" => $this->title,
-        "description" => $this->description,
-        "createdAt" => $this->createdAt,
-        "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt,
-        "clientOrigin" => $this->clientOrigin,
-        "state" => $this->state
-      );
+        $create = null;
+        $edit = null;
+        if ($this->createdAt != null)
+            $create = $this->createdAt->format('Y-m-d H:i:s');
+        if ($this->editedAt != null)
+            $edit = $this->editedAt->format('Y-m-d H:i:s');
+        return array(
+            "id" => $this->id,
+            "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
+            "projectId" => $this->projects->getId(),
+            "title" => $this->title,
+            "description" => $this->description,
+            "createdAt" => $create,
+            "editedAt" => $edit,
+            "clientOrigin" => $this->clientOrigin,
+            "state" => $this->state
+        );
     }
 
     /**
@@ -170,7 +170,7 @@ class Bug
      */
     public function setState($state)
     {
-        $this->stateId = $state;
+        $this->state = $state;
 
         return $this;
     }
@@ -230,30 +230,7 @@ class Bug
     {
         return $this->editedAt;
     }
-
-    /**
-     * Set deletedAt
-     *
-     * @param \DateTime $deletedAt
-     * @return Bug
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
+    
     /**
      * Set clientOrigin
      *
