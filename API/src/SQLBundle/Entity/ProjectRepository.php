@@ -147,8 +147,7 @@ class ProjectRepository extends EntityRepository
 			}
 
 			foreach ($timelines as $timeline) {
-				$messages = $timeline->getTimelineMessages();
-				foreach ($messages as $message) {
+				foreach ($timeline->getTimelineMessages() as $message) {
 					$nbMessages++;
 				}
 			}
