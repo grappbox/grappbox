@@ -38,13 +38,17 @@ public class CloudListAdapter extends CursorAdapter {
         CloudEntry.COLUMN_TYPE,
         CloudEntry.COLUMN_FILENAME,
         CloudEntry.COLUMN_PATH,
-        CloudEntry.COLUMN_DATE_LAST_EDITED_UTC
+        CloudEntry.COLUMN_DATE_LAST_EDITED_UTC,
+        CloudEntry.COLUMN_SIZE,
+        CloudEntry.COLUMN_MIMETYPE
     };
     public static final int COLUMN_ID = 0;
     public static final int COLUMN_TYPE = 1;
     public static final int COLUMN_FILENAME = 2;
     public static final int COLUMN_PATH = 3;
     public static final int COLUMN_LAST_EDITED_UTC = 4;
+    public static final int COLUMN_SIZE = 5;
+    public static final int COLUMN_MIMETYPE = 6;
 
     public interface CloudAdapterListener{
         void onMoreClicked(int position);
@@ -180,13 +184,13 @@ public class CloudListAdapter extends CursorAdapter {
         return v;
     }
 
-    private void setClickListeners(CloudEntryViewHolder viewHolder, final Cursor cursor){
+    private void setClickListeners(CloudEntryViewHolder viewHolder, final int position){
 
         viewHolder.mMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mListener != null)
-                    mListener.onMoreClicked(cursor.getPosition());
+                    mListener.onMoreClicked(position);
             }
         });
     }
@@ -218,7 +222,7 @@ public class CloudListAdapter extends CursorAdapter {
             if (cursor.getInt(COLUMN_TYPE) == 2){
                 ((CloudEntryViewHolder) viewHolder).mMore.setVisibility(View.INVISIBLE);
             }
-            setClickListeners((CloudEntryViewHolder) viewHolder, cursor);
+            setClickListeners((CloudEntryViewHolder) viewHolder, cursor.getPosition());
         }
     }
 }

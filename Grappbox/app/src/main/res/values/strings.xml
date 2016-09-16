@@ -69,4 +69,10 @@
     <string name="hint_file_password">File password</string>
     <string name="error_no_app">You have no <xliff:g>%s</xliff:g> installed on your device, please install one</string>
     <string name="file_explorer_app">File Explorer</string>
+    <string name="error_file_not_supported">The document you try to open is not supported</string>
+    <string name="notif_text_cloud_send_file">Uploading file <xliff:g>%s</xliff:g> in progess</string>
+    <string name="file_size">File Size</string>
+    <string name="file_type">File type</string>
+    <string name="download">Download</string>
+    <string name="delete">Delete</string>
 </resources>

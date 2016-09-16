@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +35,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -47,6 +49,9 @@ import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
+import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 
 /**
@@ -54,7 +59,7 @@ import java.io.IOException;
  */
 public class CloudFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CloudListAdapter.CloudAdapterListener, AdapterView.OnItemClickListener {
     private static final int LOADER_LOAD_FILELIST = 0;
-    private static final String BUNDLE_KEY_CLOUD_PATH = "com.grappbox.grappbox.project_fragments.CloudFragment.BUNDLE_KEY_CLOUD_PATH";
+    public static final String BUNDLE_KEY_CLOUD_PATH = "com.grappbox.grappbox.project_fragments.CloudFragment.BUNDLE_KEY_CLOUD_PATH";
     private static final String LOG_TAG = CloudFragment.class.getSimpleName();
     public static final String CLOUD_SHARED_PREF = "com.grappbox.grappbox.shared_pref.cloud";
     public static final String CLOUD_PREF_SAFE_BASE_KEY = "Safe-";
@@ -340,8 +345,24 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onMoreClicked(int position) {
-        Log.d(LOG_TAG, "More clicked");
+        Cursor item = (Cursor) mAdapter.getItem(position);
+        View moreDialogView = LayoutInflater.from(getActivity()).inflate(R.layout.cloud_list_more_bottom_sheet, null);
+        BottomSheetDialog moreDialog = new BottomSheetDialog(getActivity());
 
+        ((TextView)moreDialogView.findViewById(R.id.title)).setText(item.getString(CloudListAdapter.COLUMN_FILENAME));
+        ((TextView)moreDialogView.findViewById(R.id.filesize)).setText(FileUtils.byteCountToDisplaySize(item.getLong(CloudListAdapter.COLUMN_SIZE)));
+        ((TextView)moreDialogView.findViewById(R.id.filetype)).setText(item.getString(CloudListAdapter.COLUMN_MIMETYPE));
+        ((TextView)moreDialogView.findViewById(R.id.last_modified)).setText(item.getString(CloudListAdapter.COLUMN_LAST_EDITED_UTC));
+
+        moreDialogView.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(LOG_TAG, "TODO : delete");
+            }
+        });
+
+        moreDialog.setContentView(moreDialogView);
+        moreDialog.show();
     }
 
 
@@ -352,7 +373,6 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
             return;
         if (item.getString(CloudListAdapter.COLUMN_FILENAME).equals("Safe")){
             final String safePass = getSafePassword();
-
             if (safePass == null){
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -397,11 +417,16 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
             }
         }
         else{
-            Fragment newFragment = new CloudFragment();
-            Bundle arg = new Bundle();
-            arg.putString(BUNDLE_KEY_CLOUD_PATH, mPath + item.getString(item.getColumnIndex(CloudEntry.COLUMN_FILENAME)) + "/");
-            newFragment.setArguments(arg);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFragment, ProjectActivity.FRAGMENT_TAG_CLOUD).addToBackStack(null).commit();
+            if (item.getInt(CloudListAdapter.COLUMN_TYPE) == 0){
+                onMoreClicked(item.getPosition());
+            } else {
+                Fragment newFragment = new CloudFragment();
+                Bundle arg = new Bundle();
+                arg.putString(BUNDLE_KEY_CLOUD_PATH, mPath + item.getString(item.getColumnIndex(CloudEntry.COLUMN_FILENAME)) + "/");
+                newFragment.setArguments(arg);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, newFragment, ProjectActivity.FRAGMENT_TAG_CLOUD).addToBackStack(null).commit();
+            }
+
         }
     }
 }

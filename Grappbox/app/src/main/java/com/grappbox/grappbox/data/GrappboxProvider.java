@@ -312,6 +312,39 @@ public class GrappboxProvider extends ContentProvider {
         }
     }
 
+    private String getTableName(@NonNull Uri uri){
+        switch (sUriMatcher.match(uri)){
+            case USER:
+                return GrappboxContract.UserEntry.TABLE_NAME;
+            case PROJECT:
+                return GrappboxContract.ProjectEntry.TABLE_NAME;
+            case PROJECT_ACCOUNT:
+                return GrappboxContract.ProjectAccountEntry.TABLE_NAME;
+            case ROLE:
+                return GrappboxContract.RolesEntry.TABLE_NAME;
+            case ROLE_ASSIGNATION:
+                return GrappboxContract.RolesAssignationEntry.TABLE_NAME;
+            case BUG:
+                return GrappboxContract.BugEntry.TABLE_NAME;
+            case BUG_TAG:
+                return GrappboxContract.BugTagEntry.TABLE_NAME;
+            case BUG_ASSIGNATION:
+                return GrappboxContract.BugAssignationEntry.TABLE_NAME;
+            case TIMELINE:
+                return GrappboxContract.TimelineEntry.TABLE_NAME;
+            case TIMELINE_MESSAGES:
+                return GrappboxContract.TimelineMessageEntry.TABLE_NAME;
+            case CLOUD:
+                return GrappboxContract.CloudEntry.TABLE_NAME;
+            case EVENT:
+                return GrappboxContract.EventEntry.TABLE_NAME;
+            case EVENT_TYPE:
+                return GrappboxContract.EventTypeEntry.TABLE_NAME;
+            default:
+                return "";
+        }
+    }
+
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder) {
@@ -504,7 +537,8 @@ public class GrappboxProvider extends ContentProvider {
 
         //Pre-detect conflict and handle with update method
         if (contentValues.containsKey(GrappboxContract.GENERAL_GRAPPBOX_ID)){
-            Cursor value = query(uri, new String[]{BaseColumns._ID}, GrappboxContract.GENERAL_GRAPPBOX_ID + "=?", new String[]{contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID)}, null);
+
+            Cursor value = query(uri, new String[]{ getTableName(uri) + "." + BaseColumns._ID}, getTableName(uri) + "." + GrappboxContract.GENERAL_GRAPPBOX_ID + "=?", new String[]{contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID)}, null);
             if (value != null && value.moveToFirst()){
                 Uri newUri = uri.buildUpon().appendPath(String.valueOf(value.getLong(0))).build();
                 update(uri, contentValues, BaseColumns._ID + "=?", new String[]{String.valueOf(value.getLong(0))});

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -33,6 +34,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
 import com.grappbox.grappbox.project_fragments.BugtrackerFragment;
@@ -72,6 +74,9 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
     public static final int LOADER_PROJECT_INFOS = 0;
     public static final int LOADER_ADDED_USER_INFOS = 1;
 
+    public static final String ACTION_CLOUD_IMPORT = "com.grappbox.grappbox.ProjectActivity.ACTION_CLOUD_IMPORT";
+    public static final String EXTRA_CLOUD_PATH = "com.grappbox.grappbox.EXTRA_CLOUD_PATH";
+
     private Toolbar mToolbar;
     private NavigationView mNavView;
     private int mCurrentNavSelected = -1;
@@ -88,7 +93,13 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
         }
         mNavView = (NavigationView) findViewById(R.id.nav_view);
         mNavView.setNavigationItemSelectedListener(this);
-        if (savedInstanceState == null){
+        if (getIntent().getAction() != null && getIntent().getAction().equals(ACTION_CLOUD_IMPORT)){
+            Fragment cloud = new CloudFragment();
+            Bundle args = new Bundle();
+            args.putString(CloudFragment.BUNDLE_KEY_CLOUD_PATH, getIntent().getStringExtra(EXTRA_CLOUD_PATH));
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CloudFragment(), FRAGMENT_TAG_CLOUD).commit();
+        }
+        else if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardFragment(), FRAGMENT_TAG_DASHBOARD).commit();
             mCurrentNavSelected = R.id.nav_dashboard;
             setTheme(R.style.DashboardTheme);
@@ -113,7 +124,7 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
 
         Bundle projectId = new Bundle();
         long projectLocalId = getIntent().getLongExtra(EXTRA_PROJECT_ID, -1);
-        Log.e("THIS IS SPARTA", String.valueOf(projectLocalId));
+
         projectId.putLong(EXTRA_PROJECT_ID, projectLocalId);
         getLoaderManager().initLoader(LOADER_PROJECT_INFOS, projectId, this);
         getLoaderManager().initLoader(LOADER_ADDED_USER_INFOS, null, this);

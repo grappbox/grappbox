@@ -1,21 +1,33 @@
 package com.grappbox.grappbox.sync;
 
 import android.accounts.AccountManager;
+import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.annotation.Nullable;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.os.ResultReceiver;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 
 import com.grappbox.grappbox.BuildConfig;
+import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.data.GrappboxContract;
@@ -36,7 +48,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.FileNameMap;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -49,41 +64,45 @@ import java.util.Set;
      * An {@link IntentService} subclass for handling asynchronous task requests in
      * a service on a separate handler thread.
      */
-    public class GrappboxJustInTimeService extends IntentService {
-        private static final String LOG_TAG = GrappboxJustInTimeService.class.getSimpleName();
+public class GrappboxJustInTimeService extends IntentService {
+    private static final String LOG_TAG = GrappboxJustInTimeService.class.getSimpleName();
 
-        public static final String ACTION_SYNC_USER_DETAIL = "com.grappbox.grappbox.sync.ACTION_SYNC_USER_DETAIL";
-        public static final String ACTION_SYNC_BUGS = "com.grappbox.grappbox.sync.ACTION_SYNC_BUGS";
-        public static final String ACTION_SYNC_TIMELINE_MESSAGES = "com.grappbox.grappbox.sync.ACTION_SYNC_TIMELINE_MESSAGES";
-        public static final String ACTION_SYNC_NEXT_MEETINGS = "com.grappbox.grappbox.sync.ACTION_SYNC_NEXT_MEETINGS";
-        public static final String ACTION_LOGIN = "com.grappbox.grappbox.sync.ACTION_LOGIN";
-        public static final String ACTION_SYNC_PROJECT_LIST = "com.grappbox.grappbox.sync.ACTION_SYNC_PROJECT_LIST";
-        public static final String ACTION_SYNC_CLOUD_PATH = "com.grappbox.grappbox.sync.ACTION_SYNC_CLOUD_PATH";
-        public static final String ACTION_CLOUD_ADD_DIRECTORY = "com.grappbox.grappbox.sync.ACTION_CLOUD_ADD_DIRECTORY";
-        public static final String ACTION_CLOUD_IMPORT_FILE = "com.grappbox.grappbox.sync.ACTION_CLOUD_IMPORT_FILE";
+    public static final String ACTION_SYNC_USER_DETAIL = "com.grappbox.grappbox.sync.ACTION_SYNC_USER_DETAIL";
+    public static final String ACTION_SYNC_BUGS = "com.grappbox.grappbox.sync.ACTION_SYNC_BUGS";
+    public static final String ACTION_SYNC_TIMELINE_MESSAGES = "com.grappbox.grappbox.sync.ACTION_SYNC_TIMELINE_MESSAGES";
+    public static final String ACTION_SYNC_NEXT_MEETINGS = "com.grappbox.grappbox.sync.ACTION_SYNC_NEXT_MEETINGS";
+    public static final String ACTION_LOGIN = "com.grappbox.grappbox.sync.ACTION_LOGIN";
+    public static final String ACTION_SYNC_PROJECT_LIST = "com.grappbox.grappbox.sync.ACTION_SYNC_PROJECT_LIST";
+    public static final String ACTION_SYNC_CLOUD_PATH = "com.grappbox.grappbox.sync.ACTION_SYNC_CLOUD_PATH";
+    public static final String ACTION_CLOUD_ADD_DIRECTORY = "com.grappbox.grappbox.sync.ACTION_CLOUD_ADD_DIRECTORY";
+    public static final String ACTION_CLOUD_IMPORT_FILE = "com.grappbox.grappbox.sync.ACTION_CLOUD_IMPORT_FILE";
 
-        public static final String EXTRA_API_TOKEN = "api_token";
-        public static final String EXTRA_USER_ID = "uid";
-        public static final String EXTRA_PROJECT_ID = "pid";
-        public static final String EXTRA_OFFSET = "offset";
-        public static final String EXTRA_LIMIT = "limit";
-        public static final String EXTRA_TIMELINE_ID = "tid";
-        public static final String EXTRA_RESPONSE_RECEIVER = "response_receiver";
-        public static final String EXTRA_MAIL = "mail";
-        public static final String EXTRA_CRYPTED_PASSWORD = "password";
-        public static final String EXTRA_ACCOUNT_NAME = "account_name";
-        public static final String EXTRA_CLOUD_PATH = "cloud_path";
-        public static final String EXTRA_CLOUD_PASSWORD = "cloud_password";
-        public static final String EXTRA_CLOUD_FILE_PASSWORD = "cloud_file_password";
-        public static final String EXTRA_DIRECTORY_NAME = "dir_name";
-        public static final String EXTRA_FILENAME = "filename";
+    public static final String EXTRA_API_TOKEN = "api_token";
+    public static final String EXTRA_USER_ID = "uid";
+    public static final String EXTRA_PROJECT_ID = "pid";
+    public static final String EXTRA_OFFSET = "offset";
+    public static final String EXTRA_LIMIT = "limit";
+    public static final String EXTRA_TIMELINE_ID = "tid";
+    public static final String EXTRA_RESPONSE_RECEIVER = "response_receiver";
+    public static final String EXTRA_MAIL = "mail";
+    public static final String EXTRA_CRYPTED_PASSWORD = "password";
+    public static final String EXTRA_ACCOUNT_NAME = "account_name";
+    public static final String EXTRA_CLOUD_PATH = "cloud_path";
+    public static final String EXTRA_CLOUD_PASSWORD = "cloud_password";
+    public static final String EXTRA_CLOUD_FILE_PASSWORD = "cloud_file_password";
+    public static final String EXTRA_DIRECTORY_NAME = "dir_name";
+    public static final String EXTRA_FILENAME = "filename";
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
-
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
+
     public static final String BUNDLE_KEY_JSON = "com.grappbox.grappbox.sync.BUNDLE_KEY_JSON";
     public static final String BUNDLE_KEY_ERROR_MSG = "com.grappbox.grappbox.sync.BUNDLE_KEY_ERROR_MSG";
     public static final String BUNDLE_KEY_ERROR_TYPE = "com.grappbox.grappbox.sync.BUNDLE_KEY_ERROR_TYPE";
+
+    public static final int NOTIF_CLOUD_FILE_UPLOAD = 2000;
+
+    public static final int CLOUD_DATA_BYTE_READ = 5242880; //5 megabytes are upload in a chunk
 
     public GrappboxJustInTimeService() {
         super("GrappboxJustInTimeService");
@@ -131,13 +150,198 @@ import java.util.Set;
         }
     }
 
-    private void handleCloudImportFile(long projectId, String passwordSafe, String cloudPath, Uri filename, String passwordFile){
+    private String handleCloudOpenStream(long projectId, String filename, String path, String passwordSafe, String password) throws NetworkErrorException {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
 
         if (projectId == -1 || apiToken == null)
-            return;
+            throw new NetworkErrorException("Invalid local project ID");
 
-        Log.d(LOG_TAG, "File URI = " + filename);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+        try {
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new NetworkErrorException("Invalid local project ID");
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/cloud/stream/"+apiToken+"/"+project.getString(0)+(passwordSafe == null ? "" : "/" + passwordSafe));
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            data.put("filename", filename);
+            data.put("path", path);
+            if (password != null)
+                data.put("password", password);
+            json.put("data", data);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                throw new NetworkErrorException("Returned JSON is empty");
+            } else {
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)){
+                    throw new NetworkErrorException("Api returned an error : " + json.getJSONObject("info").getString("return_code"));
+                } else {
+                    return json.getJSONObject("data").getString("stream_id");
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            throw new NetworkErrorException("Code error see stacktrace");
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    private void handleCloudCloseStream(long projectId, String streamId) throws NetworkErrorException {
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+
+        if (projectId == -1 || apiToken == null)
+            throw new NetworkErrorException("Invalid local project ID");
+
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+        try {
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new NetworkErrorException("Invalid local project ID");
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/cloud/stream/"+apiToken+"/"+project.getString(0)+"/"+streamId);
+            JSONObject json = new JSONObject();
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                throw new NetworkErrorException("Returned JSON is empty");
+            } else {
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)){
+                    throw new NetworkErrorException("Api returned an error : " + json.getJSONObject("info").getString("return_code"));
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            throw new NetworkErrorException("Code error see stacktrace");
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    private void handleCloudChundSending(long projectId, String streamId, int chunkNumbers, int currentChunk, byte[] chunk) throws NetworkErrorException {
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+
+        if (projectId == -1 || apiToken == null)
+            throw new NetworkErrorException("Invalid local project ID");
+
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+        try {
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new NetworkErrorException("Invalid local project ID");
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/cloud/file");
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            data.put("token", apiToken);
+            data.put("stream_id", streamId);
+            data.put("projectId", project.getString(0));
+            data.put("chunk_numbers", chunkNumbers);
+            data.put("current_chunk", currentChunk);
+            data.put("file_chunk", Base64.encode(chunk, Base64.DEFAULT));
+            json.put("data", data);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                throw new NetworkErrorException("Returned JSON is empty");
+            } else {
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)){
+                    throw new NetworkErrorException("Api returned an error : " + json.getJSONObject("info").getString("return_code"));
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            throw new NetworkErrorException("Code error see stacktrace");
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    private void handleCloudImportFile(long projectId, String passwordSafe, String cloudPath, Uri filenameURI, String passwordFile){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        String filepath = Utils.File.getPath(this, filenameURI);
+        NotificationManager mNotifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        InputStream file;
+        Cursor fileData = getContentResolver().query(filenameURI, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null);
+        Cursor project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_NAME}, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+        if (fileData == null || !fileData.moveToFirst() || project == null || !project.moveToFirst())
+            return;
+        try {
+            file = getContentResolver().openInputStream(filenameURI);
+            if (file != null){
+                int bytesNumber = file.available();
+                if (bytesNumber > 0){
+                    byte[] reader = new byte[CLOUD_DATA_BYTE_READ];
+                    int chunkNumbers = (bytesNumber / CLOUD_DATA_BYTE_READ) + 1;
+                    int i = 0;
+                    String streamId = handleCloudOpenStream(projectId, fileData.getString(fileData.getColumnIndex(OpenableColumns.DISPLAY_NAME)), cloudPath, passwordSafe, passwordFile);
+                    Notification.Builder notifbuilder = new Notification.Builder(this)
+                                        .setContentTitle(getString(R.string.notif_text_cloud_send_file, fileData.getString(fileData.getColumnIndex(OpenableColumns.DISPLAY_NAME))))
+                                        .setProgress(100, 0, true)
+                                        .setSmallIcon(R.drawable.ic_upload)
+                                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_upload))
+                                        .setContentText("Upload in progress");
+                    mNotifManager.notify(NOTIF_CLOUD_FILE_UPLOAD, notifbuilder.build());
+                    while (file.read(reader) > -1){
+                        handleCloudChundSending(projectId, streamId, chunkNumbers, i, reader);
+                        ++i;
+                        notifbuilder.setProgress(100, chunkNumbers/i, false);
+                        mNotifManager.notify(NOTIF_CLOUD_FILE_UPLOAD, notifbuilder.build());
+                    }
+                    handleCloudCloseStream(projectId, streamId);
+                    Intent seeFile = new Intent(this, ProjectActivity.class);
+                    seeFile.setAction(ProjectActivity.ACTION_CLOUD_IMPORT);
+                    seeFile.putExtra(ProjectActivity.EXTRA_PROJECT_ID, projectId);
+                    seeFile.putExtra(ProjectActivity.EXTRA_CLOUD_PATH, cloudPath);
+                    seeFile.putExtra(ProjectActivity.EXTRA_PROJECT_NAME, project.getString(0));
+
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                    stackBuilder.addParentStack(ProjectActivity.class);
+                    stackBuilder.addNextIntent(seeFile);
+
+                    notifbuilder.setProgress(100, 100, false)
+                                .setContentText("Upload ended")
+                                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT));
+
+                    mNotifManager.notify(NOTIF_CLOUD_FILE_UPLOAD, notifbuilder.build());
+                }
+                file.close();
+            }
+        } catch (IOException | NetworkErrorException e) {
+            e.printStackTrace();
+        } finally {
+            fileData.close();
+        }
     }
 
     private void handleCloudAddDirectory(long projectId, String path, String dirName, String passwordSafe, ResultReceiver responseObserver){
@@ -254,8 +458,8 @@ import java.util.Set;
                             if (type.equals("file")){
                                 value.put(CloudEntry.COLUMN_TYPE, 0);
                                 value.put(CloudEntry.COLUMN_SIZE, current.getLong("size"));
-                                value.put(CloudEntry.COLUMN_MIMETYPE, current.getLong("mimetype"));
-                                value.put(CloudEntry.COLUMN_DATE_LAST_EDITED_UTC, current.getLong("last_modified"));
+                                value.put(CloudEntry.COLUMN_MIMETYPE, current.getString("mimetype"));
+                                value.put(CloudEntry.COLUMN_DATE_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("last_modified").getString("date")).getTime());
                             } else if (filename.equals("Safe")){
                                 value.put(CloudEntry.COLUMN_TYPE, 2);
                             } else {
@@ -286,7 +490,7 @@ import java.util.Set;
                     }
                 }
             }
-        } catch (IOException | JSONException e) {
+        } catch (IOException | JSONException | ParseException e) {
             e.printStackTrace();
         } finally {
             if (connection != null)
