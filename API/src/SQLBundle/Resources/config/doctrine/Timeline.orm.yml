@@ -27,6 +27,6 @@ SQLBundle\Entity\Timeline:
     oneToMany:
         timelineMessages:
           targetEntity: TimelineMessage
-          mappedBy: messages
+          mappedBy: timelines
           cascade: [remove]
     lifecycleCallbacks: {  }
