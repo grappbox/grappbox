@@ -377,6 +377,10 @@ public class GrappboxContract {
         public static Uri buildBugWithLocalIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static Uri buildBugWithAllJoin(){
+            return CONTENT_URI.buildUpon().appendPath("tag_user").build();
+        }
     }
 
     public static final class BugTagEntry implements BaseColumns {
@@ -406,6 +410,10 @@ public class GrappboxContract {
 
         public static Uri buildBugAssignationWithLocalIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildBugWithUserId(long uid){
+            return CONTENT_URI.buildUpon().appendPath("user").appendPath(String.valueOf(uid)).build();
         }
     }
 

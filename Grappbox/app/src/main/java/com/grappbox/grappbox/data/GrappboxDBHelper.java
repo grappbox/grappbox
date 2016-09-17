@@ -16,7 +16,7 @@ import java.util.List;
  * Created by marcw on 29/08/2016.
  */
 public class GrappboxDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION  = 1;
+    private static final int DATABASE_VERSION  = 2;
     public static final String DATABASE_NAME = "grappbox-dev.db";
     private Context mContext;
 

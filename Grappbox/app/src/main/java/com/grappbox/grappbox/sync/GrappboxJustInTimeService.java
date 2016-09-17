@@ -129,7 +129,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     handleUserDetailSync(intent.getStringExtra(EXTRA_USER_ID));
             }
             else if (ACTION_SYNC_BUGS.equals(action))
-                handleBugsSync(intent.getLongExtra(EXTRA_USER_ID, -1), intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), intent.getIntExtra(EXTRA_LIMIT, 50));
+                handleBugsSync(intent.getLongExtra(EXTRA_USER_ID, -1), intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), intent.getIntExtra(EXTRA_LIMIT, 50), responseObserver);
             else if (ACTION_SYNC_TIMELINE_MESSAGES.equals(action)) {
                 handleTimelineMessagesSync(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), intent.getIntExtra(EXTRA_LIMIT, 50));
             }
@@ -685,117 +685,128 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
-    private void handleBugsSync(long localUID, long localPID, int offset, int limit) {
+    private void handleBugsSync(long localUID, long localPID, int offset, int limit, ResultReceiver responseObserver) {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
-
+        Log.d(LOG_TAG, "handleBugSync : " + localUID + " :: " + localPID + " :: " + apiToken);
         if (apiToken.isEmpty() || localUID == -1 || localPID == -1)
             return;
         HttpURLConnection connection = null;
         String returnedJson;
-        Cursor projectRole = getContentResolver().query(GrappboxContract.RolesAssignationEntry.buildRoleAssignationWithUIDAndPID(localUID, localPID), null, null, null, null);
         Cursor grappboxProjectId = getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
 
-        if (projectRole == null || !projectRole.moveToFirst() || grappboxProjectId == null || !grappboxProjectId.moveToFirst())
+        if (grappboxProjectId == null || !grappboxProjectId.moveToFirst())
             return;
         try {
-            if (projectRole.getInt(projectRole.getColumnIndex(GrappboxContract.RolesEntry.COLUMN_ACCESS_BUGTRACKER)) < 1)
-                return;
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/bugtracker/getlasttickets/"+apiToken+"/"+grappboxProjectId.getString(0)+"/"+String.valueOf(offset)+"/" + String.valueOf(limit));
-
+            Log.d(LOG_TAG, "Connect bug API : " + url.toString());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
-            if (returnedJson == null || returnedJson.isEmpty())
-                return;
-
-            JSONObject json = new JSONObject(returnedJson);
-            if (Utils.Errors.checkAPIError(json))
-                return;
-            JSONArray bugsData = json.getJSONObject("data").getJSONArray("array");
-            if (bugsData.length() == 0)
-                return;
-            for (int i = 0; i < bugsData.length(); ++i) {
-                ContentValues currentValue = new ContentValues();
-                JSONObject bug = bugsData.getJSONObject(i);
-                JSONArray bugTag = bug.getJSONArray("tags");
-                JSONArray bugUser = bug.getJSONArray("users");
-
-                ContentValues[] tagAssignationValue = new ContentValues[bugTag.length()];
-                ContentValues[] userAssignationValue = new ContentValues[bugUser.length()];
-
-                String grappboxCID = bug.getJSONObject("creator").getString("id");
-                Cursor creatorId = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(grappboxCID), new String[] {UserEntry._ID}, null, null, null);
-
-                if (creatorId == null || !creatorId.moveToFirst())
-                {
-                    handleUserDetailSync(grappboxCID);
-                    creatorId = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(grappboxCID), new String[] {UserEntry._ID}, null, null, null);
-                    if (creatorId == null || !creatorId.moveToFirst())
-                        continue;
-                }
-
-                currentValue.put(BugEntry.COLUMN_GRAPPBOX_ID, bug.getString("id"));
-                currentValue.put(BugEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
-                creatorId.close();
-                currentValue.put(BugEntry.COLUMN_LOCAL_PROJECT_ID, localPID);
-                currentValue.put(BugEntry.COLUMN_TITLE, bug.getString("title"));
-                currentValue.put(BugEntry.COLUMN_DESCRIPTION, bug.getString("description"));
-                currentValue.putNull(BugEntry.COLUMN_LOCAL_PARENT_ID);
-                String last_edited = Utils.Date.getDateFromGrappboxAPIToUTC(bug.getJSONObject(bug.isNull("editedAt") ? "createdAt" : "editedAt").getString("date"));
-                currentValue.put(BugEntry.COLUMN_DATE_LAST_EDITED_UTC, last_edited);
-                Uri bugUri = getContentResolver().insert(BugEntry.CONTENT_URI, currentValue);
-                if (bugUri == null)
-                    continue;
-                long bugId = Long.parseLong(bugUri.getLastPathSegment());
-
-                //Insert tags
-                for (int j = 0; j < bugTag.length(); ++j) {
-                    JSONObject currentTag = bugTag.getJSONObject(j);
-                    ContentValues tagValue = new ContentValues();
-                    ContentValues tagAssignValue = new ContentValues();
-
-                    tagValue.put(TagEntry.COLUMN_GRAPPBOX_ID, currentTag.getString("id"));
-                    tagValue.put(TagEntry.COLUMN_LOCAL_PROJECT_ID, localPID);
-                    tagValue.put(TagEntry.COLUMN_NAME, currentTag.getString("name"));
-                    Uri tagURI = getContentResolver().insert(TagEntry.CONTENT_URI, tagValue);
-                    if (tagURI == null)
-                        continue;
-                    tagAssignValue.put(BugTagEntry.COLUMN_LOCAL_BUG_ID, bugId);
-                    tagAssignValue.put(BugTagEntry.COLUMN_LOCAL_TAG_ID, Long.parseLong(tagURI.getLastPathSegment()));
-                    tagAssignationValue[j] = tagAssignValue;
-                }
-                getContentResolver().bulkInsert(BugTagEntry.CONTENT_URI, tagAssignationValue);
-
-                //insert users
-                for (int j = 0; j < bugTag.length(); ++j) {
-                    JSONObject currentUser = bugUser.getJSONObject(j);
-                    Cursor userCursor = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(currentUser.getString("id")), new String[]{UserEntry._ID}, null, null, null);
-                    ContentValues currentUserAssignation = new ContentValues();
-
-                    if (userCursor == null || !userCursor.moveToFirst())
+            if (returnedJson != null && !returnedJson.isEmpty()){
+                JSONObject json = new JSONObject(returnedJson);
+                Log.d(LOG_TAG, json.toString());
+                if (Utils.Errors.checkAPIError(json)){
+                    Log.d(LOG_TAG, "error detected : " + Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    if (responseObserver != null)
                     {
-                        handleUserDetailSync(currentUser.getString("id"));
-                        userCursor = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(currentUser.getString("id")), new String[]{UserEntry._ID}, null, null, null);
-                        if (userCursor == null || !userCursor.moveToFirst())
-                            continue;
+                        Bundle answer = new Bundle();
+                        answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                        responseObserver.send(Activity.RESULT_CANCELED, answer);
                     }
-                    currentUserAssignation.put(BugAssignationEntry.COLUMN_LOCAL_BUG_ID, bugId);
-                    currentUserAssignation.put(BugAssignationEntry.COLUMN_LOCAL_USER_ID, userCursor.getLong(0));
-                    userAssignationValue[j] = currentUserAssignation;
-                    userCursor.close();
                 }
-                getContentResolver().bulkInsert(BugAssignationEntry.CONTENT_URI, userAssignationValue);
+                else {
+                    JSONArray bugsData = json.getJSONObject("data").getJSONArray("array");
+                    Log.d(LOG_TAG, "BugData length : " + bugsData.length());
+                    if (bugsData.length() != 0){
+                        for (int i = 0; i < bugsData.length(); ++i) {
+                            ContentValues currentValue = new ContentValues();
+                            JSONObject bug = bugsData.getJSONObject(i);
+                            JSONArray bugTag = bug.getJSONArray("tags");
+                            JSONArray bugUser = bug.getJSONArray("users");
+
+                            ArrayList<ContentValues> tagAssignationValue = new ArrayList<>();
+                            ArrayList<ContentValues> userAssignationValue = new ArrayList<>();
+
+                            String grappboxCID = bug.getJSONObject("creator").getString("id");
+                            Cursor creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+
+                            if (creatorId == null || !creatorId.moveToFirst())
+                            {
+                                handleUserDetailSync(grappboxCID);
+                                creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                                if (creatorId == null || !creatorId.moveToFirst()){
+                                    Log.e(LOG_TAG, "creator id not exist");
+                                    continue;
+                                }
+
+                            }
+                            currentValue.put(BugEntry.COLUMN_GRAPPBOX_ID, bug.getString("id"));
+                            currentValue.put(BugEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
+                            creatorId.close();
+                            currentValue.put(BugEntry.COLUMN_LOCAL_PROJECT_ID, localPID);
+                            currentValue.put(BugEntry.COLUMN_TITLE, bug.getString("title"));
+                            currentValue.put(BugEntry.COLUMN_DESCRIPTION, bug.getString("description"));
+                            currentValue.putNull(BugEntry.COLUMN_LOCAL_PARENT_ID);
+                            String last_edited = Utils.Date.getDateFromGrappboxAPIToUTC(bug.getJSONObject(bug.isNull("editedAt") ? "createdAt" : "editedAt").getString("date"));
+                            currentValue.put(BugEntry.COLUMN_DATE_LAST_EDITED_UTC, last_edited);
+                            Uri bugUri = getContentResolver().insert(BugEntry.CONTENT_URI, currentValue);
+                            if (bugUri == null)
+                                continue;
+                            long bugId = Long.parseLong(bugUri.getLastPathSegment());
+
+                            //Insert tags
+                            for (int j = 0; j < bugTag.length(); ++j) {
+                                JSONObject currentTag = bugTag.getJSONObject(j);
+                                ContentValues tagValue = new ContentValues();
+                                ContentValues tagAssignValue = new ContentValues();
+
+                                tagValue.put(TagEntry.COLUMN_GRAPPBOX_ID, currentTag.getString("id"));
+                                tagValue.put(TagEntry.COLUMN_LOCAL_PROJECT_ID, localPID);
+                                tagValue.put(TagEntry.COLUMN_NAME, currentTag.getString("name"));
+                                Uri tagURI = getContentResolver().insert(TagEntry.CONTENT_URI, tagValue);
+                                if (tagURI == null)
+                                    continue;
+                                tagAssignValue.put(BugTagEntry.COLUMN_LOCAL_BUG_ID, bugId);
+                                tagAssignValue.put(BugTagEntry.COLUMN_LOCAL_TAG_ID, Long.parseLong(tagURI.getLastPathSegment()));
+                                tagAssignationValue.add(tagAssignValue);
+                            }
+                            getContentResolver().bulkInsert(BugTagEntry.CONTENT_URI, tagAssignationValue.toArray(new ContentValues[tagAssignationValue.size()]));
+
+                            //insert users
+                            for (int j = 0; j < bugTag.length(); ++j) {
+                                JSONObject currentUser = bugUser.getJSONObject(j);
+                                Cursor userCursor = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(currentUser.getString("id")), new String[]{UserEntry._ID}, null, null, null);
+                                ContentValues currentUserAssignation = new ContentValues();
+
+                                if (userCursor == null || !userCursor.moveToFirst())
+                                {
+                                    handleUserDetailSync(currentUser.getString("id"));
+                                    userCursor = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(currentUser.getString("id")), new String[]{UserEntry._ID}, null, null, null);
+                                    if (userCursor == null || !userCursor.moveToFirst())
+                                        continue;
+                                }
+                                currentUserAssignation.put(BugAssignationEntry.COLUMN_LOCAL_BUG_ID, bugId);
+                                currentUserAssignation.put(BugAssignationEntry.COLUMN_LOCAL_USER_ID, userCursor.getLong(0));
+                                userAssignationValue.add(currentUserAssignation);
+                                userCursor.close();
+                            }
+                            getContentResolver().bulkInsert(BugAssignationEntry.CONTENT_URI, userAssignationValue.toArray(new ContentValues[userAssignationValue.size()]));
+                        }
+                    }
+                }
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "IOException : ", e);
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         } finally {
-            projectRole.close();
             grappboxProjectId.close();
             if (connection != null)
                 connection.disconnect();
+            if (responseObserver != null){
+                responseObserver.send(Activity.RESULT_OK, null);
+            }
         }
     }
 

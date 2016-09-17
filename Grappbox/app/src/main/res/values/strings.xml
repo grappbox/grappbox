@@ -77,4 +77,10 @@
     <string name="delete">Delete</string>
     <string name="congrats_download_granted">Awesome ! You can now download files on your device!</string>
     <string name="permission_grant_error">We are sorry you\'re not trusting us, please let us know why at contact@grappbox.com</string>
+    <string name="tab_title_open">Open</string>
+    <string name="tab_title_close">Close</string>
+    <string name="tab_title_yours">Yours</string>
+    <string name="bug_status_opened">Opened</string>
+    <string name="bug_status_closed">Closed</string>
+    <string name="bug_status_date"><xliff:g>%s</xliff:g> the <xliff:g>%s</xliff:g></string>
 </resources>

@@ -101,6 +101,7 @@ public class CloudListAdapter extends CursorAdapter {
 
     @Override
     public Cursor swapCursor(Cursor newCursor) {
+        DatabaseUtils.dumpCursor(newCursor);
         if (newCursor == null || !newCursor.moveToFirst())
             return super.swapCursor(newCursor);
 

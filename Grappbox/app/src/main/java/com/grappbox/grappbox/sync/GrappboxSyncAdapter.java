@@ -44,6 +44,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -228,7 +229,10 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         Uri uri = getContext().getContentResolver().insert(UserEntry.CONTENT_URI, user);
         if (uri == null || uri.getLastPathSegment().isEmpty() || Long.parseLong(uri.getLastPathSegment()) == -1)
             throw new SQLiteAbortException("Insert account user failed");
-        return (Long.parseLong(uri.getLastPathSegment()));
+        long localUID = Long.parseLong(uri.getLastPathSegment());
+        AccountManager am = AccountManager.get(getContext());
+        am.setUserData(account, GrappboxJustInTimeService.EXTRA_USER_ID, String.valueOf(localUID));
+        return (localUID);
     }
 
     public void syncUserList(String apiToken, String apiProjectId) {
@@ -310,7 +314,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         String returnedJson = null;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/roles/getuserrolesinformations/" + apiToken);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/roles/getuserroles/" + apiToken);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
@@ -325,28 +329,26 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
             if (roles.length() == 0)
                 return;
-            ContentValues[] rolesAssignationsValues = new ContentValues[roles.length()];
+            ArrayList<ContentValues> rolesAssignationsValues = new ArrayList<>();
             for (int i = 0; i < roles.length(); ++i) {
                 ContentValues roleValue = new ContentValues();
                 ContentValues roleAssignationValue = new ContentValues();
-                JSONObject currentRole = roles.getJSONObject(i).getJSONObject("role");
-                JSONObject currentProject = roles.getJSONObject(i).getJSONObject("project");
-                JSONObject currentValues = currentRole.getJSONObject("values");
-                Cursor projectCursor = getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, ProjectEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentProject.getString("id")}, null);
+                JSONObject currentRole = roles.getJSONObject(i);
+                Cursor projectCursor = getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, ProjectEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentRole.getString("projectId")}, null);
                 if (projectCursor == null || !projectCursor.moveToFirst())
                     continue;
-                roleValue.put(RolesEntry.COLUMN_GRAPPBOX_ID, currentRole.getString("id"));
+                roleValue.put(RolesEntry.COLUMN_GRAPPBOX_ID, currentRole.getString("roleId"));
                 roleValue.put(RolesEntry.COLUMN_LOCAL_PROJECT_ID, projectCursor.getLong(0));
                 roleValue.put(RolesEntry.COLUMN_NAME, currentRole.getString("name"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_BUGTRACKER, currentValues.getString("bugtracker"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_CLOUD, currentValues.getString("cloud"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_CUSTOMER_TIMELINE, currentValues.getString("customerTimeline"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_TEAM_TIMELINE, currentValues.getString("teamTimeline"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_EVENT, currentValues.getString("event"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_GANTT, currentValues.getString("gantt"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_WHITEBOARD, currentValues.getString("whiteboard"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_TASK, currentValues.getString("task"));
-                roleValue.put(RolesEntry.COLUMN_ACCESS_PROJECT_SETTINGS, currentValues.getString("projectSettings"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_BUGTRACKER, currentRole.getString("bugtracker"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_CLOUD, currentRole.getString("cloud"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_CUSTOMER_TIMELINE, currentRole.getString("customerTimeline"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_TEAM_TIMELINE, currentRole.getString("teamTimeline"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_EVENT, currentRole.getString("event"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_GANTT, currentRole.getString("gantt"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_WHITEBOARD, currentRole.getString("whiteboard"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_TASK, currentRole.getString("task"));
+                roleValue.put(RolesEntry.COLUMN_ACCESS_PROJECT_SETTINGS, currentRole.getString("projectSettings"));
                 Uri returnedUri = getContext().getContentResolver().insert(RolesEntry.CONTENT_URI, roleValue);
                 if (returnedUri == null)
                     continue;
@@ -355,10 +357,10 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                     continue;
                 roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID, id);
                 roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_USER_ID, uid);
-                rolesAssignationsValues[i] = roleAssignationValue;
+                rolesAssignationsValues.add(roleAssignationValue);
                 projectCursor.close();
             }
-            getContext().getContentResolver().bulkInsert(RolesAssignationEntry.CONTENT_URI, rolesAssignationsValues);
+            getContext().getContentResolver().bulkInsert(RolesAssignationEntry.CONTENT_URI, rolesAssignationsValues.toArray(new ContentValues[rolesAssignationsValues.size()]));
         } catch (IOException e) {
             Log.e(LOG_TAG, "IOException : ", e);
         } catch (JSONException e) {
