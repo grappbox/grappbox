@@ -543,7 +543,7 @@ function isArrayLike( obj ) {
 		typeof length === "number" && length > 0 && ( length - 1 ) in obj;
 }
 var Sizzle =
-/*!
+/*
  * Sizzle CSS Selector Engine v2.2.1
  * http://sizzlejs.com/
  *

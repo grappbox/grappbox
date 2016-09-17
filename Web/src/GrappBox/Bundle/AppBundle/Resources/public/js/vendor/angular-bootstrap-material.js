@@ -80,7 +80,7 @@ angular.module('angularBootstrapMaterial')
     replace: true,*/
       require: '^abmFormGroup',
       scope: {
-        type: '='
+        type: '@'
       },
       link: function (scope, element, attrs, formGroupCtrl) {
         if (!formGroupCtrl) // if used outside a form group for some reason, do nothing
@@ -96,8 +96,6 @@ angular.module('angularBootstrapMaterial')
 angular.module('angularBootstrapMaterial')
   .directive('abmFormControl', ['isChar', function (isChar) {
     return {
-      /*templateUrl: 'templates/input.html',
-    replace: true,*/
       scope: {},
       require: ['ngModel', '^abmFormGroup'],
       compile: function () {
@@ -105,7 +103,7 @@ angular.module('angularBootstrapMaterial')
           var input = ctrls[0];
           var formGroup = ctrls[1];
           if (!$element.hasClass('form-control')) // TBD checkif the condition is unnecessary
-            $element.addClass('form-control')
+            $element.addClass('form-control');
           if (!$element.attr('id')) // TBD checkif the condition is unnecessary
             $element.attr('id', 'form-control-' + $scope.$id);
           formGroup.registerControl($scope);
@@ -118,17 +116,20 @@ angular.module('angularBootstrapMaterial')
             })
             .on('blur', function () {
               formGroup.toggleFocus(false);
-              if ($element.val())
-                formGroup.toggleEmpty(false);
+              formGroup.toggleEmpty(!$element.val());
             });
 
           $scope.$watch(function () {
             return input.$invalid;
           }, formGroup.toggleError);
-          $scope.$watch(attrs.ngModel, formGroup.toggleEmpty);
+          $scope.$watch(function () {
+            return input.$modelValue;
+          }, function (newValue, oldValue) {
+            formGroup.toggleEmpty(!newValue);
+          });
         }
       }
-    }
+    };
     }]);
 
 angular.module('angularBootstrapMaterial')
@@ -146,14 +147,20 @@ angular.module('angularBootstrapMaterial')
       templateUrl: 'templates/form-group.html',
       controller: ['$scope', '$element', function ($scope, $element) {
         $scope.errorMessageMap = {};
-        $scope.showErrors = abmConfig.getErrorState() && $scope.errorMessages !== false;
-        if ($scope.showErrors) {
-          var globalErrors = abmConfig.getErrors() || {};
-          if ($scope.errorMessages instanceof Object)
-            angular.extend($scope.errorMessageMap, globalErrors, $scope.errorMessages);
-          else
-            angular.extend($scope.errorMessageMap, globalErrors);
+
+        function updateErrorMessages() {
+          $scope.showErrors = abmConfig.getErrorState() && $scope.errorMessages !== false;
+          if ($scope.showErrors) {
+            var globalErrors = abmConfig.getErrors() || {};
+            if ($scope.errorMessages instanceof Object)
+              angular.extend($scope.errorMessageMap, globalErrors, $scope.errorMessages);
+            else
+              angular.extend($scope.errorMessageMap, globalErrors);
+          }
         }
+
+        $scope.$watch('errorMessages', updateErrorMessages);
+
         this.toggleFocus = function (state) {
           $element.toggleClass("is-focused", state);
         };
@@ -347,7 +354,7 @@ angular.module('angularBootstrapMaterial').factory('ripple', function () {
        * Make sure the user is using only one finger and then get the touch
        * position relative to the ripple wrapper
        */
-      if (event.originalEvent) // Do this only ifjQuery is present for some reason
+      if (event.originalEvent) // Do this only if jQuery is present for some reason
         event = event.originalEvent
       if (event.touches.length === 1) {
         return event.touches[0].pageX - wrapperOffset.left;
@@ -374,7 +381,7 @@ angular.module('angularBootstrapMaterial').factory('ripple', function () {
        * Make sure the user is using only one finger and then get the touch
        * position relative to the ripple wrapper
        */
-      if (event.originalEvent) // Do this only ifjQuery is present for some reason
+      if (event.originalEvent) // Do this only if jQuery is present for some reason
         event = event.originalEvent
 
       if (event.touches.length === 1) {

@@ -14,14 +14,12 @@ var app = angular.module("grappbox", [
   "ngCookies",
   "ngAnimate",
   "ngTagsInput",
-  "panhandler",
   "base64",
   "naif.base64",
   "mwl.calendar",
   "ui.bootstrap",
   "ui-notification",
   "LocalStorageModule",
-  "angularBootstrapMaterial",
   "gantt",
   "gantt.tooltips",
   "ui.tree",
@@ -159,4 +157,14 @@ app.directive("sidebarDirective", function() {
       });
     }
   };
+});
+
+
+
+/* ======================================================= */
+/* ==================== MATERIAL DESIGN ================== */
+/* ======================================================= */
+
+$(document).ready(function() {
+  $.material.init();
 });

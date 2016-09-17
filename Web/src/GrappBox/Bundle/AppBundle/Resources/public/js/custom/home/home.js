@@ -4,13 +4,12 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* GRAPPBOX
-* HOME scripts definition
-*
-*/
-$(document).ready(function() {
+/* =============================================== */
+/* ==================== ANCHORS ================== */
+/* =============================================== */
 
+$(document).ready(function() {
+  
   // Smooth scroll to anchor
   $('a[href^="#"]').on('click', function(clickEvent) {
     clickEvent.preventDefault();
@@ -70,5 +69,13 @@ $(document).ready(function() {
     else
       $('nav').removeClass('fixed');
   });
+
+
+
+/* ======================================================= */
+/* ==================== MATERIAL DESIGN ================== */
+/* ======================================================= */
+
+$.material.init();
 
 });
