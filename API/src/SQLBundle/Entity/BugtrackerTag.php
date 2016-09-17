@@ -131,8 +131,7 @@ class BugtrackerTag
     {
       return array(
         "id" => $this->id,
-        "name" => $this->name,
-        "projectId" => $this->project->getId()
+        "name" => $this->name
       );
     }
 }

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+VERSION=0.3
+
 export SYMFONY_ENV=dev &&
 sudo rm -rf app/cache/prod &&
 sudo rm -rf app/cache/dev &&
@@ -11,4 +13,4 @@ sudo php app/console cache:clear &&
 sudo git checkout vendor/ &&
 sudo chown www-data.www-data * -R &&
 sudo chown www-data.www-data .* -R &&
-sudo apidoc -f .php -i /var/www/api/Grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/0.3/
+sudo apidoc -f .php -i /var/www/api/versions/$VERSION/Grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/$VERSION/

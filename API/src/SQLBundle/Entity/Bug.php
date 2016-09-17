@@ -15,11 +15,6 @@ class Bug
     private $id;
 
     /**
-     * @var integer
-     */
-    private $parentId;
-
-    /**
      * @var string
      */
     private $title;
@@ -30,9 +25,9 @@ class Bug
     private $description;
 
     /**
-     * @var integer
+     * @var boolean
      */
-    private $stateId;
+    private $state;
 
     /**
      * @var \DateTime
@@ -43,11 +38,6 @@ class Bug
      * @var \DateTime
      */
     private $editedAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $deletedAt;
 
     /**
      * @var \Boolean
@@ -97,18 +87,23 @@ class Bug
      */
     public function objectToArray()
     {
-      return array(
-        "id" => $this->id,
-        "creator" => array("id" => $this->creator->getID(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastName()),
-        "projectId" => $this->projects->getId(),
-        "title" => $this->title,
-        "description" => $this->description,
-        "parentId" => $this->parentId,
-        "createdAt" => $this->createdAt,
-        "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt,
-        "clientOrigin" => $this->clientOrigin
-      );
+        $create = null;
+        $edit = null;
+        if ($this->createdAt != null)
+            $create = $this->createdAt->format('Y-m-d H:i:s');
+        if ($this->editedAt != null)
+            $edit = $this->editedAt->format('Y-m-d H:i:s');
+        return array(
+            "id" => $this->id,
+            "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
+            "projectId" => $this->projects->getId(),
+            "title" => $this->title,
+            "description" => $this->description,
+            "createdAt" => $create,
+            "editedAt" => $edit,
+            "clientOrigin" => $this->clientOrigin,
+            "state" => $this->state
+        );
     }
 
     /**
@@ -119,29 +114,6 @@ class Bug
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set parentId
-     *
-     * @param integer $parentId
-     * @return Bug
-     */
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-
-        return $this;
-    }
-
-    /**
-     * Get parentId
-     *
-     * @return integer
-     */
-    public function getParentId()
-    {
-        return $this->parentId;
     }
 
     /**
@@ -191,26 +163,26 @@ class Bug
     }
 
     /**
-     * Set stateId
+     * Set state
      *
-     * @param integer $stateId
+     * @param boolean $state
      * @return Bug
      */
-    public function setStateId($stateId)
+    public function setState($state)
     {
-        $this->stateId = $stateId;
+        $this->state = $state;
 
         return $this;
     }
 
     /**
-     * Get stateId
+     * Get state
      *
-     * @return integer
+     * @return boolean
      */
-    public function getStateId()
+    public function getState()
     {
-        return $this->stateId;
+        return $this->state;
     }
 
     /**
@@ -258,30 +230,7 @@ class Bug
     {
         return $this->editedAt;
     }
-
-    /**
-     * Set deletedAt
-     *
-     * @param \DateTime $deletedAt
-     * @return Bug
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
+    
     /**
      * Set clientOrigin
      *

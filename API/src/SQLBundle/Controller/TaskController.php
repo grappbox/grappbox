@@ -2175,11 +2175,11 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/tasks/taskinformations/:token/:taskId Get a task informations
+	* @api {get} /V0.3/tasks/taskinformations/:token/:taskId Get a task informations
 	* @apiName taskInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given task
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task

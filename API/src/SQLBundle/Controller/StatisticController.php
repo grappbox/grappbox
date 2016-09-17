@@ -405,13 +405,13 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result['open'] = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
                         ->select('count(b)')
-                        ->where('b.deletedAt IS NULL AND b.projects = :project')
+                        ->where('b.state = true AND b.projects = :project')
                         ->setParameters(array('project' => $project))
                         ->getQuery()->getSingleScalarResult();
 
     $result['closed'] = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
                         ->select('count(b)')
-                        ->where('b.deletedAt IS NOT NULL AND b.projects = :project')
+                        ->where('b.state = false AND b.projects = :project')
                         ->setParameters(array('project' => $project))
                         ->getQuery()->getSingleScalarResult();
 
@@ -470,7 +470,7 @@ class StatisticController extends RolesAndTokenVerificationController
       $result = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
                           ->select('count(b)')
                           ->where('b.projects = :project AND b.clientOrigin = TRUE')
-                          ->andWhere('b.deletedAt IS NULL')
+                          ->andWhere('b.state = true')
                           ->setParameters(array('project' => $project))
                           ->getQuery()->getSingleScalarResult();
 
@@ -696,7 +696,7 @@ class StatisticController extends RolesAndTokenVerificationController
   {
     $em = $this->getDoctrine()->getManager();
 
-    $bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projects' => $project, 'deletedAt' => NULL));
+    $bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projects' => $project, 'state' => true));
 
     $assigned = 0;
     $unassigned = 0;
@@ -911,33 +911,33 @@ class StatisticController extends RolesAndTokenVerificationController
 
   private function updateBugsEvolution($project)
   {
-    $em = $this->getDoctrine()->getManager();
+    // $em = $this->getDoctrine()->getManager();
 
-    $date = new DateTime('now');
-    //TODO remove one day
+    // $date = new DateTime('now');
+    // //TODO remove one day
 
-    $createdBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
-                   ->select('count(b)')
-                   ->where("b.projects = :project")
-                   ->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
-                   ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-                   ->getQuery()->getSingleScalarResult();
+    // $createdBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
+    //                ->select('count(b)')
+    //                ->where("b.projects = :project")
+    //                ->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
+    //                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+    //                ->getQuery()->getSingleScalarResult();
 
-    $closedBugs =  $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
-                   ->select('count(b)')
-                   ->where("b.projects = :project")
-                   ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
-                   ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-                   ->getQuery()->getSingleScalarResult();
+    // $closedBugs =  $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
+    //                ->select('count(b)')
+    //                ->where("b.projects = :project")
+    //                ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
+    //                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+    //                ->getQuery()->getSingleScalarResult();
 
-    $statBugsEvolution = new statBugsEvolution();
-    $statBugsEvolution->setProject($project);
-    $statBugsEvolution->setCreatedBugs($createdBugs);
-    $statBugsEvolution->setClosedbugs($closedBugs);
-    $statBugsEvolution->setDate($date);
+    // $statBugsEvolution = new statBugsEvolution();
+    // $statBugsEvolution->setProject($project);
+    // $statBugsEvolution->setCreatedBugs($createdBugs);
+    // $statBugsEvolution->setClosedbugs($closedBugs);
+    // $statBugsEvolution->setDate($date);
 
-    $em->persist($statBugsEvolution);
-    $em->flush();
+    // $em->persist($statBugsEvolution);
+    // $em->flush();
 
     return "Data updated";
   }
