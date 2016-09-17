@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.project_fragments;
 
 
+import android.Manifest;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
@@ -9,11 +10,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -22,8 +25,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -53,6 +58,7 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.security.acl.Permission;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,6 +73,8 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final int REQUEST_IMPORT_FILE = 1000;
     private static final int REQUEST_IMPORT_FILE_SECURED = 1001;
+
+    private static final int PERMISSION_REQUEST_CLOUD_DOWNLOAD = 9000;
 
     private String mPath = "/";
     private ListView mCloudEntries;
@@ -238,6 +246,22 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(LOG_TAG, "Request result");
+        switch (requestCode){
+            case PERMISSION_REQUEST_CLOUD_DOWNLOAD:
+                Log.d(LOG_TAG, "Request result");
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.d(LOG_TAG, "Request result");
+                    Snackbar.make(getActivity().findViewById(R.id.fragment_container), R.string.congrats_download_granted, Snackbar.LENGTH_LONG).show();
+                } else {
+                    Snackbar.make(getActivity().findViewById(R.id.fragment_container), R.string.permission_grant_error, Snackbar.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -247,6 +271,8 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
         if (mPath.contains("/Safe") && getSafePassword() == null){
             getActivity().getSupportFragmentManager().popBackStack();
         }
+        if (savedInstanceState != null)
+            getLoaderManager().initLoader(LOADER_LOAD_FILELIST, null, this);
         View v =  inflater.inflate(R.layout.fragment_cloud, container, false);
         View listHeaderView = inflater.inflate(R.layout.cloud_list_header, null, false);
 
@@ -347,17 +373,134 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onMoreClicked(int position) {
         Cursor item = (Cursor) mAdapter.getItem(position);
         View moreDialogView = LayoutInflater.from(getActivity()).inflate(R.layout.cloud_list_more_bottom_sheet, null);
-        BottomSheetDialog moreDialog = new BottomSheetDialog(getActivity());
+        final BottomSheetDialog moreDialog = new BottomSheetDialog(getActivity());
+        final String filename = item.getString(CloudListAdapter.COLUMN_FILENAME);
+        final boolean isSecured = item.getInt(CloudListAdapter.COLUMN_IS_SECURED) > 0;
+        TextView title, filesize, filetype, lastModified;
+        LinearLayout download, delete;
 
-        ((TextView)moreDialogView.findViewById(R.id.title)).setText(item.getString(CloudListAdapter.COLUMN_FILENAME));
-        ((TextView)moreDialogView.findViewById(R.id.filesize)).setText(FileUtils.byteCountToDisplaySize(item.getLong(CloudListAdapter.COLUMN_SIZE)));
-        ((TextView)moreDialogView.findViewById(R.id.filetype)).setText(item.getString(CloudListAdapter.COLUMN_MIMETYPE));
-        ((TextView)moreDialogView.findViewById(R.id.last_modified)).setText(item.getString(CloudListAdapter.COLUMN_LAST_EDITED_UTC));
+        title = ((TextView)moreDialogView.findViewById(R.id.title));
+        filesize = ((TextView)moreDialogView.findViewById(R.id.filesize));
+        filetype = ((TextView)moreDialogView.findViewById(R.id.filetype));
+        lastModified = ((TextView)moreDialogView.findViewById(R.id.last_modified));
+        download = (LinearLayout) moreDialogView.findViewById(R.id.download);
+        delete = (LinearLayout) moreDialogView.findViewById(R.id.delete);
 
-        moreDialogView.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
+        title.setText(filename);
+        filesize.setText(FileUtils.byteCountToDisplaySize(item.getLong(CloudListAdapter.COLUMN_SIZE)));
+        filetype.setText(item.getString(CloudListAdapter.COLUMN_MIMETYPE));
+        lastModified.setText(item.getString(CloudListAdapter.COLUMN_LAST_EDITED_UTC).split("\\.")[0]);
+
+        if (item.getInt(CloudListAdapter.COLUMN_TYPE) > 1)
+        {
+            filesize.setVisibility(View.GONE);
+            filetype.setVisibility(View.GONE);
+            lastModified.setVisibility(View.GONE);
+            download.setVisibility(View.GONE);
+        }
+
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(LOG_TAG, "TODO : delete");
+                if (isSecured){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    builder.setView(R.layout.dialog_secured_file);
+                    builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            AlertDialog dialog = (AlertDialog) dialogInterface;
+
+                            Intent delete = new Intent(getActivity(), GrappboxJustInTimeService.class);
+                            delete.setAction(GrappboxJustInTimeService.ACTION_CLOUD_DELETE);
+                            delete.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
+                            delete.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PATH, mPath);
+                            delete.putExtra(GrappboxJustInTimeService.EXTRA_FILENAME, filename);
+                            if (mPath.contains("/Safe")){
+                                delete.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PASSWORD, getSafePassword());
+                            }
+                            delete.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mErrorReceiver);
+                            delete.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_FILE_PASSWORD, ((EditText) dialog.findViewById(R.id.input_password)).getText().toString());
+                            getActivity().startService(delete);
+                            moreDialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else{
+                    Intent delete = new Intent(getActivity(), GrappboxJustInTimeService.class);
+                    delete.setAction(GrappboxJustInTimeService.ACTION_CLOUD_DELETE);
+                    delete.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
+                    delete.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PATH, mPath);
+                    delete.putExtra(GrappboxJustInTimeService.EXTRA_FILENAME, filename);
+                    if (mPath.contains("/Safe")){
+                        delete.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PASSWORD, getSafePassword());
+                    }
+                    delete.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mErrorReceiver);
+                    getActivity().startService(delete);
+                    moreDialog.dismiss();
+                }
+            }
+        });
+
+        download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if (permissionCheck == PackageManager.PERMISSION_DENIED){
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CLOUD_DOWNLOAD);
+                    moreDialog.dismiss();
+                }else{
+                    if (isSecured){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                        builder.setView(R.layout.dialog_secured_file);
+                        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                AlertDialog dialog = (AlertDialog) dialogInterface;
+
+                                Intent download = new Intent(getActivity(), GrappboxJustInTimeService.class);
+                                download.setAction(GrappboxJustInTimeService.ACTION_CLOUD_DOWNLOAD);
+                                download.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
+                                download.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PATH, mPath);
+                                download.putExtra(GrappboxJustInTimeService.EXTRA_FILENAME, filename);
+                                if (mPath.contains("/Safe")){
+                                    download.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PASSWORD, getSafePassword());
+                                }
+                                download.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mErrorReceiver);
+                                download.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_FILE_PASSWORD, ((EditText) dialog.findViewById(R.id.input_password)).getText().toString());
+                                getActivity().startService(download);
+                                moreDialog.dismiss();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
+                    } else{
+                        Intent download = new Intent(getActivity(), GrappboxJustInTimeService.class);
+                        download.setAction(GrappboxJustInTimeService.ACTION_CLOUD_DOWNLOAD);
+                        download.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
+                        download.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PATH, mPath);
+                        download.putExtra(GrappboxJustInTimeService.EXTRA_FILENAME, filename);
+                        if (mPath.contains("/Safe")){
+                            download.putExtra(GrappboxJustInTimeService.EXTRA_CLOUD_PASSWORD, getSafePassword());
+                        }
+                        download.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mErrorReceiver);
+                        getActivity().startService(download);
+                        moreDialog.dismiss();
+                    }
+                }
             }
         });
 

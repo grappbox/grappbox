@@ -168,7 +168,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                             projectValue.putNull(ProjectEntry.COLUMN_URI_LOGO);
                             JSONObject logoExpiration = project.isNull("logo") ? null : project.getJSONObject("logo");
                             if (logoExpiration != null)
-                                projectValue.put(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")).getTime());
+                                projectValue.put(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")));
                             else
                                 projectValue.putNull(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC);
 
@@ -179,7 +179,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                             if (dateDeletion == null)
                                 projectValue.putNull(ProjectEntry.COLUMN_DATE_DELETED_UTC);
                             else
-                                projectValue.put(ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(dateDeletion.getString("date")).getTime());
+                                projectValue.put(ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(dateDeletion.getString("date")));
                             Pair<Integer, Integer> infosCount = syncProjectInfos(apiToken, project.getString("id"));
                             if (infosCount != null) {
                                 projectValue.put(ProjectEntry.COLUMN_COUNT_BUG, infosCount.first);

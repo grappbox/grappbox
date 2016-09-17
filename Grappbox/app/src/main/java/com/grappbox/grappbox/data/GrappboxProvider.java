@@ -598,7 +598,10 @@ public class GrappboxProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] args)
     {
-        throw new UnsupportedOperationException("Delete not implemented yet, think to implement it"); //TODO : Implement it
+        String tableName = getTableName(uri);
+        if (tableName == null || tableName.isEmpty())
+            throw new UnsupportedOperationException("Delete not implemented yet, think to implement it");
+        return mOpenHelper.getWritableDatabase().delete(tableName, selection, args);
     }
 
     @Override

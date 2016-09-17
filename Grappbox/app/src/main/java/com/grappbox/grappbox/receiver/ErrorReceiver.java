@@ -25,7 +25,7 @@ public class ErrorReceiver extends ResultReceiver {
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
         super.onReceiveResult(resultCode, resultData);
-        String error = resultData.getString(GrappboxJustInTimeService.BUNDLE_KEY_ERROR_MSG);
+        String error = resultData != null && resultData.containsKey(GrappboxJustInTimeService.BUNDLE_KEY_ERROR_MSG) ? resultData.getString(GrappboxJustInTimeService.BUNDLE_KEY_ERROR_MSG) : null;
         if (resultCode == Activity.RESULT_CANCELED && error != null){
             Snackbar.make(mContext.findViewById(R.id.fragment_container), error, Snackbar.LENGTH_LONG).show();
         }

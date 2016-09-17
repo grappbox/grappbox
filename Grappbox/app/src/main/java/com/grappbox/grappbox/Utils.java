@@ -5,19 +5,15 @@ import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.net.ConnectivityManagerCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
@@ -33,12 +29,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.annotation.Documented;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -47,25 +40,24 @@ import java.util.TimeZone;
 public class Utils {
 
     public static class Date {
-        public final static SimpleDateFormat grappboxFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        private final static String LOG_TAG = Date.class.getSimpleName();
+        public final static SimpleDateFormat grappboxFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         public final static TimeZone grappboxTZ = TimeZone.getTimeZone("UTC");
         public final static TimeZone phoneTZ = TimeZone.getDefault();
         public final static TimeZone utcTZ = TimeZone.getTimeZone("UTC");
 
-        public static java.util.Date getDateFromGrappboxAPIToUTC(String formattedDate) throws ParseException {
+        public static String getDateFromGrappboxAPIToUTC(String formattedDate) throws ParseException {
             java.util.Date grappboxDate;
-
             grappboxFormatter.setTimeZone(grappboxTZ);
             grappboxDate = grappboxFormatter.parse(formattedDate);
             grappboxFormatter.setTimeZone(utcTZ);
-            String temp = grappboxFormatter.format(grappboxDate);
-            return grappboxFormatter.parse(temp);
+            return grappboxFormatter.format(grappboxDate);
         }
 
-        public static java.util.Date getDateFromGrappboxAPIToPhone(String formattedDate) throws ParseException {
+        public static java.util.Date getDateFromUTCAPIToPhone(String formattedDate) throws ParseException {
             java.util.Date grappboxDate;
 
-            grappboxFormatter.setTimeZone(grappboxTZ);
+            grappboxFormatter.setTimeZone(utcTZ);
             grappboxDate = grappboxFormatter.parse(formattedDate);
             grappboxFormatter.setTimeZone(phoneTZ);
             String temp = grappboxFormatter.format(grappboxDate);
@@ -77,9 +69,12 @@ public class Utils {
             return grappboxFormatter.parse(grappboxFormatter.format(date));
         }
 
-        public static java.util.Date convertUTCToPhone(java.util.Date date) throws ParseException {
+        public static java.util.Date convertUTCToPhone(String date) throws ParseException {
+            grappboxFormatter.setTimeZone(utcTZ);
+            java.util.Date temp = grappboxFormatter.parse(date);
             grappboxFormatter.setTimeZone(phoneTZ);
-            return grappboxFormatter.parse(grappboxFormatter.format(date));
+            String tempDate = grappboxFormatter.format(temp);
+            return grappboxFormatter.parse(tempDate);
         }
     }
 
@@ -87,14 +82,6 @@ public class Utils {
 
         public static boolean checkAPIError(JSONObject json) throws JSONException {
             return !(json.getJSONObject("info").getString("return_code").startsWith("1."));
-        }
-
-        public static boolean checkAPIErrorToDisplay(Context context, JSONObject json) throws JSONException {
-            String error = "";
-            if (!checkAPIError(json))
-                return false;
-            //TODO : Display error
-            return true;
         }
 
         public static String getClientMessageFromErrorCode(Context context, String errorCode){

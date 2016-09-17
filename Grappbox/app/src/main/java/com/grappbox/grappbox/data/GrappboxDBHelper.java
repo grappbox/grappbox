@@ -37,10 +37,10 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 UserEntry.COLUMN_CONTACT_PHONE + " TEXT, " +
                 UserEntry.COLUMN_SOCIAL_LINKEDIN + " TEXT, " +
                 UserEntry.COLUMN_SOCIAL_TWITTER + " TEXT, " +
-                UserEntry.COLUMN_DATE_BIRTHDAY_UTC + " INTEGER, " +
+                UserEntry.COLUMN_DATE_BIRTHDAY_UTC + " TEXT, " +
                 UserEntry.COLUMN_COUNTRY + " TEXT, " +
                 UserEntry.COLUMN_URI_AVATAR + " TEXT, " +
-                UserEntry.COLUMN_DATE_AVATAR_LAST_EDITED_UTC + " INTEGER, " +
+                UserEntry.COLUMN_DATE_AVATAR_LAST_EDITED_UTC + " TEXT, " +
                 UserEntry.COLUMN_PASSWORD + " TEXT, " +
                 UserEntry.COLUMN_TOKEN + " TEXT, " +
                 UserEntry.COLUMN_TOKEN_EXPIRATION + " TEXT, " +
@@ -57,11 +57,11 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 ProjectEntry.COLUMN_COMPANY_NAME + " TEXT, " +
                 ProjectEntry.COLUMN_SOCIAL_FACEBOOK + " TEXT, " +
                 ProjectEntry.COLUMN_SOCIAL_TWITTER + " TEXT, " +
-                ProjectEntry.COLUMN_DATE_DELETED_UTC + " INTEGER, " +
+                ProjectEntry.COLUMN_DATE_DELETED_UTC + " TEXT, " +
                 ProjectEntry.COLUMN_COUNT_BUG + " INTEGER, " +
                 ProjectEntry.COLUMN_COUNT_TASK + " INTEGER, " +
                 ProjectEntry.COLUMN_URI_LOGO + " TEXT, " +
-                ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC + " INTEGER, " +
+                ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC + " TEXT, " +
                 ProjectEntry.COLUMN_COLOR + " TEXT, " +
                 " FOREIGN KEY (" + ProjectEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " UNIQUE (" + ProjectEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
@@ -93,8 +93,8 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 EventEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
                 EventEntry.COLUMN_EVENT_TITLE + " TEXT NOT NULL, " +
                 EventEntry.COLUMN_EVENT_DESCRIPTION + " TEXT, " +
-                EventEntry.COLUMN_DATE_BEGIN_UTC + " INTEGER NOT NULL, " +
-                EventEntry.COLUMN_DATE_END_UTC + " INTEGER NOT NULL, " +
+                EventEntry.COLUMN_DATE_BEGIN_UTC + " TEXT NOT NULL, " +
+                EventEntry.COLUMN_DATE_END_UTC + " TEXT NOT NULL, " +
                 EventEntry.COLUMN_LOCAL_EVENT_TYPE_ID + " INTEGER NOT NULL, " +
                 EventEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
                 EventEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
@@ -128,7 +128,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 TimelineMessageEntry.COLUMN_PARENT_ID + " TEXT NOT NULL, " +
                 TimelineMessageEntry.COLUMN_TITLE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_MESSAGE + " TEXT, " +
-                TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " INTEGER NOT NULL, " +
+                TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " TEXT NOT NULL, " +
                 TimelineMessageEntry.COLUMN_COUNT_ANSWER + " INTEGER NOT NULL, " +
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + ") REFERENCES " + TimelineEntry.TABLE_NAME + " (" + TimelineEntry._ID + "), " +
@@ -171,8 +171,8 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 BugEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
                 BugEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
                 BugEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
-                BugEntry.COLUMN_DATE_LAST_EDITED_UTC + " INTEGER NOT NULL, " +
-                BugEntry.COLUMN_DATE_DELETED_UTC + " INTEGER, " +
+                BugEntry.COLUMN_DATE_LAST_EDITED_UTC + " TEXT NOT NULL, " +
+                BugEntry.COLUMN_DATE_DELETED_UTC + " TEXT, " +
                 BugEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 BugEntry.COLUMN_DESCRIPTION + " TEXT, " +
                 BugEntry.COLUMN_LOCAL_PARENT_ID + " INTEGER, " +
@@ -202,7 +202,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 CloudEntry.COLUMN_SIZE + " INTEGER, " +
                 CloudEntry.COLUMN_MIMETYPE + " TEXT, " +
                 CloudEntry.COLUMN_IS_SECURED + " INTEGER, " +
-                CloudEntry.COLUMN_DATE_LAST_EDITED_UTC + " INTEGER, "+
+                CloudEntry.COLUMN_DATE_LAST_EDITED_UTC + " TEXT, "+
                 CloudEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY ("+CloudEntry.COLUMN_LOCAL_PROJECT_ID+") REFERENCES "+ProjectEntry.TABLE_NAME+" ("+ProjectEntry._ID+")); ";
 

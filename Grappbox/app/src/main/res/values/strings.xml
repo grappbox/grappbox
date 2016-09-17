@@ -75,4 +75,6 @@
     <string name="file_type">File type</string>
     <string name="download">Download</string>
     <string name="delete">Delete</string>
+    <string name="congrats_download_granted">Awesome ! You can now download files on your device!</string>
+    <string name="permission_grant_error">We are sorry you\'re not trusting us, please let us know why at contact@grappbox.com</string>
 </resources>

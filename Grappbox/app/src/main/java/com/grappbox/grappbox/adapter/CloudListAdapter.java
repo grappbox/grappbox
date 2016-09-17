@@ -23,6 +23,7 @@ import com.grappbox.grappbox.data.GrappboxContract.CloudEntry;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -40,7 +41,8 @@ public class CloudListAdapter extends CursorAdapter {
         CloudEntry.COLUMN_PATH,
         CloudEntry.COLUMN_DATE_LAST_EDITED_UTC,
         CloudEntry.COLUMN_SIZE,
-        CloudEntry.COLUMN_MIMETYPE
+        CloudEntry.COLUMN_MIMETYPE,
+        CloudEntry.COLUMN_IS_SECURED
     };
     public static final int COLUMN_ID = 0;
     public static final int COLUMN_TYPE = 1;
@@ -49,6 +51,7 @@ public class CloudListAdapter extends CursorAdapter {
     public static final int COLUMN_LAST_EDITED_UTC = 4;
     public static final int COLUMN_SIZE = 5;
     public static final int COLUMN_MIMETYPE = 6;
+    public static final int COLUMN_IS_SECURED = 7;
 
     public interface CloudAdapterListener{
         void onMoreClicked(int position);
@@ -102,7 +105,7 @@ public class CloudListAdapter extends CursorAdapter {
             return super.swapCursor(newCursor);
 
         MatrixCursor subSafe = new MatrixCursor(new String[]{"_id", "subheader"});
-        subSafe.addRow(new Object[]{0, "Secured directory"});
+        subSafe.addRow(new Object[]{0, "Secured"});
         MatrixCursor subDir = new MatrixCursor(new String[]{"_id", "subheader"});
         subDir.addRow(new Object[]{0, "Directories"});
         MatrixCursor subFile = new MatrixCursor(new String[]{"_id", "subheader"});
@@ -125,7 +128,7 @@ public class CloudListAdapter extends CursorAdapter {
                     builder = dirs.newRow();
                     break;
                 default:
-                    builder = files.newRow();
+                    builder = newCursor.getInt(COLUMN_IS_SECURED) > 0 ? safe.newRow() : files.newRow();
                     break;
             }
             for (String colName : cloudProjection) {
@@ -211,7 +214,7 @@ public class CloudListAdapter extends CursorAdapter {
             } else {
                 try {
                     Date phoneLastModified;
-                    phoneLastModified = Utils.Date.convertUTCToPhone(new Date(cursor.getLong(COLUMN_LAST_EDITED_UTC)));
+                    phoneLastModified = Utils.Date.convertUTCToPhone(cursor.getString(COLUMN_LAST_EDITED_UTC));
                     ((CloudEntryViewHolder) viewHolder).mLastEdited.setText(DateFormat.getDateInstance().format(phoneLastModified));
                 } catch (ParseException e) {
                     e.printStackTrace();

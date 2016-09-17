@@ -3,6 +3,7 @@ package com.grappbox.grappbox.sync;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -17,6 +18,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
@@ -25,6 +27,7 @@ import android.support.v4.os.ResultReceiver;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.ProjectActivity;
@@ -53,10 +56,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Set;
 
 
@@ -76,6 +82,8 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_SYNC_CLOUD_PATH = "com.grappbox.grappbox.sync.ACTION_SYNC_CLOUD_PATH";
     public static final String ACTION_CLOUD_ADD_DIRECTORY = "com.grappbox.grappbox.sync.ACTION_CLOUD_ADD_DIRECTORY";
     public static final String ACTION_CLOUD_IMPORT_FILE = "com.grappbox.grappbox.sync.ACTION_CLOUD_IMPORT_FILE";
+    public static final String ACTION_CLOUD_DELETE = "com.grappbox.grappbox.sync.ACTION_CLOUD_DELETE";
+    public static final String ACTION_CLOUD_DOWNLOAD = "com.grappbox.grappbox.sync.ACTION_CLOUD_DOWNLOAD";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -145,8 +153,121 @@ public class GrappboxJustInTimeService extends IntentService {
                 String password = intent.hasExtra(EXTRA_CLOUD_FILE_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_FILE_PASSWORD) : null;
                 String passwordSafe = intent.hasExtra(EXTRA_CLOUD_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_PASSWORD) : null;
 
-                handleCloudImportFile(intent.getLongExtra(EXTRA_PROJECT_ID, 1), passwordSafe, intent.getStringExtra(EXTRA_CLOUD_PATH), intent.getData(), password);
+                handleCloudImportFile(intent.getLongExtra(EXTRA_PROJECT_ID, -1), passwordSafe, intent.getStringExtra(EXTRA_CLOUD_PATH), intent.getData(), password);
             }
+            else if (ACTION_CLOUD_DELETE.equals(action)){
+                String password = intent.hasExtra(EXTRA_CLOUD_FILE_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_FILE_PASSWORD) : null;
+                String passwordSafe = intent.hasExtra(EXTRA_CLOUD_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_PASSWORD) : null;
+                handleCloudDelete(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_CLOUD_PATH), intent.getStringExtra(EXTRA_FILENAME), passwordSafe, password, responseObserver);
+            }
+            else if (ACTION_CLOUD_DOWNLOAD.equals(action)){
+                String password = intent.hasExtra(EXTRA_CLOUD_FILE_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_FILE_PASSWORD) : null;
+                String passwordSafe = intent.hasExtra(EXTRA_CLOUD_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_PASSWORD) : null;
+                handleCloudDownload(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_CLOUD_PATH), intent.getStringExtra(EXTRA_FILENAME), passwordSafe, password, responseObserver);
+            }
+        }
+    }
+
+    private void handleCloudDownload(long projectId, String cloudPath, String filename, String passwordSafe, String passwordFile, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        boolean isSecured = passwordFile != null;
+        HttpURLConnection connection = null;
+        if (projectId == -1 || apiToken == null)
+            return;
+        Cursor project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+        cloudPath = cloudPath.replace('/', ',');
+        cloudPath = cloudPath.replace(' ', '|');
+        filename = filename.replace(' ', '|');
+        String path = (cloudPath.endsWith(",") ? cloudPath + filename : cloudPath + "," + filename);
+        if (project == null || !project.moveToFirst())
+            return;
+        try {
+            String urlBuilder = "/cloud/" + (isSecured ? "filesecured" : "file") + "/" + path + "/" + apiToken + "/" + project.getString(0);
+            urlBuilder += (isSecured ? "/" + passwordFile : "");
+            urlBuilder += (cloudPath.contains(",Safe") ? "/" + passwordSafe : "");
+            URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + urlBuilder);
+            Log.d(LOG_TAG, url.toString());
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setInstanceFollowRedirects(false);
+            String resultString = Utils.JSON.readDataFromConnection(connection);
+            if (resultString == null || resultString.startsWith("{")){
+                if (responseObserver != null)
+                {
+                    Bundle error = new Bundle();
+                    error.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, error);
+                }
+            }
+            else{
+                url = connection.getURL();
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url.toURI().toString()));
+                request.allowScanningByMediaScanner();
+                request.setTitle(filename);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+                DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                manager.enqueue(request);
+            }
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            project.close();
+        }
+    }
+
+    private void handleCloudDelete(long projectId, String cloudPath, String filename, String passwordSafe, String passwordFile, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        boolean isSecured = passwordFile != null;
+
+        if (projectId == -1 || apiToken == null)
+            return;
+        Cursor project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+        if (project == null || !project.moveToFirst())
+            return;
+        cloudPath = cloudPath.replace('/', ',');
+        cloudPath = cloudPath.replace(' ', '|');
+        filename = filename.replace(' ', '|');
+        String path = (cloudPath.endsWith(",") ? cloudPath + filename : cloudPath + "," + filename);
+        HttpURLConnection connection = null;
+        String returnedJson;
+
+        try {
+            String urlBuilder = "/cloud/"+(isSecured ? "filesecured" : "file")+"/"+apiToken+"/"+project.getString(0)+"/"+path;
+            urlBuilder += (isSecured ? "/" + passwordFile : "");
+            urlBuilder += (passwordSafe == null ? "" : "/" + passwordSafe);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + urlBuilder);
+
+            Log.d(LOG_TAG, "Start connection : " + url);
+            JSONObject json;
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson != null && !returnedJson.isEmpty()){
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)){
+                    if (responseObserver != null){
+                        Bundle ans = new Bundle();
+                        String errorCode =  json.getJSONObject("info").getString("return_code");
+                        ans.putInt(BUNDLE_KEY_ERROR_TYPE, Integer.valueOf(errorCode.split("\\.")[2]));
+                        ans.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, errorCode));
+                        responseObserver.send(Activity.RESULT_CANCELED, ans);
+                    }
+                } else {
+                    handleCloudPathSync(cloudPath, projectId, passwordSafe, responseObserver);
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (responseObserver != null)
+                responseObserver.send(Activity.RESULT_OK, null);
         }
     }
 
@@ -238,7 +359,7 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
-    private void handleCloudChundSending(long projectId, String streamId, int chunkNumbers, int currentChunk, byte[] chunk) throws NetworkErrorException {
+    private void handleCloudChunkSending(long projectId, String streamId, int chunkNumbers, int currentChunk, byte[] chunk) throws NetworkErrorException {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
 
         if (projectId == -1 || apiToken == null)
@@ -254,13 +375,15 @@ public class GrappboxJustInTimeService extends IntentService {
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/cloud/file");
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
+            String chunkData = Base64.encodeToString(chunk, Base64.DEFAULT);
+            Log.d(LOG_TAG, chunkData);
 
             data.put("token", apiToken);
             data.put("stream_id", streamId);
             data.put("projectId", project.getString(0));
             data.put("chunk_numbers", chunkNumbers);
             data.put("current_chunk", currentChunk);
-            data.put("file_chunk", Base64.encode(chunk, Base64.DEFAULT));
+            data.put("file_chunk", chunkData);
             json.put("data", data);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
@@ -287,8 +410,6 @@ public class GrappboxJustInTimeService extends IntentService {
     }
 
     private void handleCloudImportFile(long projectId, String passwordSafe, String cloudPath, Uri filenameURI, String passwordFile){
-        String apiToken = Utils.Account.getAuthTokenService(this, null);
-        String filepath = Utils.File.getPath(this, filenameURI);
         NotificationManager mNotifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         InputStream file;
@@ -300,6 +421,7 @@ public class GrappboxJustInTimeService extends IntentService {
             file = getContentResolver().openInputStream(filenameURI);
             if (file != null){
                 int bytesNumber = file.available();
+
                 if (bytesNumber > 0){
                     byte[] reader = new byte[CLOUD_DATA_BYTE_READ];
                     int chunkNumbers = (bytesNumber / CLOUD_DATA_BYTE_READ) + 1;
@@ -313,9 +435,9 @@ public class GrappboxJustInTimeService extends IntentService {
                                         .setContentText("Upload in progress");
                     mNotifManager.notify(NOTIF_CLOUD_FILE_UPLOAD, notifbuilder.build());
                     while (file.read(reader) > -1){
-                        handleCloudChundSending(projectId, streamId, chunkNumbers, i, reader);
+                        handleCloudChunkSending(projectId, streamId, chunkNumbers, i, reader);
                         ++i;
-                        notifbuilder.setProgress(100, chunkNumbers/i, false);
+                        notifbuilder.setProgress(100, 100 * (i+1) / chunkNumbers, false);
                         mNotifManager.notify(NOTIF_CLOUD_FILE_UPLOAD, notifbuilder.build());
                     }
                     handleCloudCloseStream(projectId, streamId);
@@ -336,6 +458,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     mNotifManager.notify(NOTIF_CLOUD_FILE_UPLOAD, notifbuilder.build());
                 }
                 file.close();
+                handleCloudPathSync(cloudPath, projectId, passwordSafe, null);
             }
         } catch (IOException | NetworkErrorException e) {
             e.printStackTrace();
@@ -447,6 +570,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 } else {
                     data = json.getJSONObject("data");
                     JSONArray array = data.getJSONArray("array");
+                    ArrayList<Long> existingFiles = new ArrayList<>();
                     if (array.length() != 0){
                         ArrayList<ContentValues> directory = new ArrayList<>();
                         for (int i = 0; i < array.length(); ++i){
@@ -459,7 +583,7 @@ public class GrappboxJustInTimeService extends IntentService {
                                 value.put(CloudEntry.COLUMN_TYPE, 0);
                                 value.put(CloudEntry.COLUMN_SIZE, current.getLong("size"));
                                 value.put(CloudEntry.COLUMN_MIMETYPE, current.getString("mimetype"));
-                                value.put(CloudEntry.COLUMN_DATE_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("last_modified").getString("date")).getTime());
+                                value.put(CloudEntry.COLUMN_DATE_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("last_modified").getString("date")));
                             } else if (filename.equals("Safe")){
                                 value.put(CloudEntry.COLUMN_TYPE, 2);
                             } else {
@@ -479,11 +603,24 @@ public class GrappboxJustInTimeService extends IntentService {
                                     String.valueOf(projectId)
                             };
                             Cursor check = getContentResolver().query(CloudEntry.CONTENT_URI, null, checkSelection, checkArgs, null);
-                            if (check == null || !check.moveToFirst())
-                                directory.add(value);
-                            else
+                            if (check != null && check.moveToFirst()){
+                                existingFiles.add(check.getLong(check.getColumnIndex(CloudEntry._ID)));
                                 check.close();
+                            } else
+                                directory.add(value);
+
                         }
+                        if (existingFiles.size() == 0){
+                            getContentResolver().delete(CloudEntry.CONTENT_URI, CloudEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + CloudEntry.COLUMN_PATH + "=?", new String[]{String.valueOf(projectId), cloudPath});
+                        } else {
+                            String deleteIds = "";
+                            for (Long id : existingFiles){
+                                deleteIds += deleteIds.isEmpty() ? id.toString() : "," + id.toString();
+                            }
+                            String deleteSelecion = CloudEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "+ CloudEntry.COLUMN_PATH+" =? AND " + CloudEntry._ID + " NOT IN ("+deleteIds+")";
+                            getContentResolver().delete(CloudEntry.CONTENT_URI, deleteSelecion, new String[]{String.valueOf(projectId), cloudPath});
+                        }
+
                         getContentResolver().bulkInsert(CloudEntry.CONTENT_URI, directory.toArray(new ContentValues[directory.size()]));
                         if (responseObserver != null)
                             responseObserver.send(Activity.RESULT_OK, null);
@@ -605,8 +742,8 @@ public class GrappboxJustInTimeService extends IntentService {
                 currentValue.put(BugEntry.COLUMN_TITLE, bug.getString("title"));
                 currentValue.put(BugEntry.COLUMN_DESCRIPTION, bug.getString("description"));
                 currentValue.putNull(BugEntry.COLUMN_LOCAL_PARENT_ID);
-                Date last_edited = Utils.Date.getDateFromGrappboxAPIToUTC(bug.getJSONObject(bug.isNull("editedAt") ? "createdAt" : "editedAt").getString("date"));
-                currentValue.put(BugEntry.COLUMN_DATE_LAST_EDITED_UTC, last_edited.getTime());
+                String last_edited = Utils.Date.getDateFromGrappboxAPIToUTC(bug.getJSONObject(bug.isNull("editedAt") ? "createdAt" : "editedAt").getString("date"));
+                currentValue.put(BugEntry.COLUMN_DATE_LAST_EDITED_UTC, last_edited);
                 Uri bugUri = getContentResolver().insert(BugEntry.CONTENT_URI, currentValue);
                 if (bugUri == null)
                     continue;
@@ -709,9 +846,9 @@ public class GrappboxJustInTimeService extends IntentService {
                     message.put(TimelineMessageEntry.COLUMN_PARENT_ID, current.getString("parentId"));
                 else
                     message.putNull(TimelineMessageEntry.COLUMN_PARENT_ID);
-                Date lastEditedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.isNull("editedAt") ? current.getJSONObject("createdAt").getString("date") : current.getJSONObject("editedAt").getString("date"));
+                String lastEditedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.isNull("editedAt") ? current.getJSONObject("createdAt").getString("date") : current.getJSONObject("editedAt").getString("date"));
 
-                message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg.getTime());
+                message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                 message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
                 messagesValues[i] = message;
                 creator.close();
@@ -860,8 +997,8 @@ public class GrappboxJustInTimeService extends IntentService {
                 nextMeeting.put(EventEntry.COLUMN_LOCAL_EVENT_TYPE_ID, typeCursor.getLong(0));
                 nextMeeting.put(EventEntry.COLUMN_EVENT_DESCRIPTION, current.getString("description"));
                 nextMeeting.put(EventEntry.COLUMN_EVENT_TITLE, current.getString("title"));
-                nextMeeting.put(EventEntry.COLUMN_DATE_BEGIN_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("begin_date").getString("date")).getTime());
-                nextMeeting.put(EventEntry.COLUMN_DATE_END_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("end_date").getString("date")).getTime());
+                nextMeeting.put(EventEntry.COLUMN_DATE_BEGIN_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("begin_date").getString("date")));
+                nextMeeting.put(EventEntry.COLUMN_DATE_END_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("end_date").getString("date")));
                 typeCursor.close();
                 nextMeetingsValues[i] = nextMeeting;
             }
@@ -990,7 +1127,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 projectValue.putNull(ProjectEntry.COLUMN_URI_LOGO);
                 JSONObject logoExpiration = project.isNull("logo") ? null : project.getJSONObject("logo");
                 if (logoExpiration != null)
-                    projectValue.put(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")).getTime());
+                    projectValue.put(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(logoExpiration.getString("date")));
                 else
                     projectValue.putNull(ProjectEntry.COLUMN_DATE_LOGO_LAST_EDITED_UTC);
 
@@ -1001,7 +1138,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 if (dateDeletion == null)
                     projectValue.putNull(ProjectEntry.COLUMN_DATE_DELETED_UTC);
                 else
-                    projectValue.put(ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(dateDeletion.getString("date")).getTime());
+                    projectValue.put(ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(dateDeletion.getString("date")));
                 Pair<Integer, Integer> infosCount = syncProjectInfos(project.getString("id"));
                 if (infosCount != null) {
                     projectValue.put(ProjectEntry.COLUMN_COUNT_BUG, infosCount.first);
