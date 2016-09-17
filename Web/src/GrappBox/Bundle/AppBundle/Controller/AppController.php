@@ -39,7 +39,7 @@ class AppController extends Controller
       "httponly" => false
       );
 
-    $request = $this->get("request");
+    $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
 
     if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))

@@ -140,7 +140,7 @@ class UserController extends Controller
   // Load APP login page (public)  
   public function loginAction(Request $request)
   {
-    $request = $this->get("request");
+    $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
 
     if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))
