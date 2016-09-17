@@ -1517,7 +1517,8 @@ class RoleController extends RolesAndTokenVerificationController
 
 		$arr = array();
 
-		foreach ($userRoles as $role) {
+		foreach ($userRoles as $pur) {
+			$role = $em->getRepository('SQLBundle:Role')->find($pur->getRoleId());
 			$arr[] = $role->objectToArray();
 		}
 
