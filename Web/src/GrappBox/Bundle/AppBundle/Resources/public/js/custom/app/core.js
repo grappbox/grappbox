@@ -20,12 +20,22 @@ var app = angular.module("grappbox", [
   "ui.bootstrap",
   "ui-notification",
   "LocalStorageModule",
-  "gantt",
-  "gantt.tooltips",
   "ui.tree",
-  "gantt.tree",
-  "gantt.groups",
-  "gantt.progress"
+  "ang-drag-drop",
+  'gantt',
+  //'gantt.sortable',
+  'gantt.movable',
+  'gantt.drawtask',
+  'gantt.tooltips',
+  'gantt.bounds',
+  'gantt.progress',
+  'gantt.table',
+  'gantt.tree',
+  'gantt.groups',
+  'gantt.dependencies',
+  'gantt.overlap',
+  'gantt.resizeSensor'//,
+  //'mgcrea.ngStrap'
 ]);
 
 

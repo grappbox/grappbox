@@ -11,29 +11,114 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
   <div data-ng-if="!data.onLoad">
     <div data-ng-if="data.message == '_valid'">
-      <textarea name="name" rows="8" cols="40">{[{data.tasks}]}</textarea>
-      <form novalidate>
-        <div class="col-md-12">
-          <h4>Date Scale</h4>
-          <div class="form-group">
-            <label for="fromDate" class="col-md-1">From</label>
-            <div class="col-md-4">
-              <input class="form-control" type="date" name="fromDate" data-ng-model="data.options.fromDate">
-            </div>
-            <label for="toDate" class="col-md-1">To</label>
-            <div class="col-md-4">
-              <input class="form-control" type="date" name="toDate" data-ng-model="data.options.toDate">
-            </div>
-          </div>
-        </div>
-      </form>
 
-      <div gantt data="data.gantt" from-date="data.options.fromDate" to-date="data.options.toDate">
-        <gantt-tooltips></gantt-tooltips>
-        <gantt-tree></gantt-tree>
-        <gantt-groups></gantt-groups>
-        <gantt-progress></gantt-progress>
+      <div class="panel-group" bs-collapse>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                  <h4 class="panel-title">
+                      <a href="" bs-collapse-toggle>Options</a>
+                  </h4>
+              </div>
+              <div class="panel-collapse" bs-collapse-target>
+                  <div class="panel-body">
+                      <div class="container-fluid">
+                          <div class="row">
+                              <div class="form-inline">
+
+                                  <div class="form-group">
+                                    <h4>Date range</h4>
+                                    <label class="control-label">From</label>
+                                    <input type="date" class="form-control" ng-model="options.fromDate" max-date="{{options.toDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
+
+                                    <label class="control-label">To</label>
+                                    <input type="date" class="form-control"ng-model="options.toDate" min-date="{{options.fromDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
+                                  </div>
+
+                                  <div class="form-group">
+                                    <h4>Tasks list</h4>
+                                      <div class="col-md-">
+                                          <button class="btn btn-default btn-primary" ng-click="expandAll()">Expand all</button>
+                                          <button class="btn btn-default btn-primary" ng-click="collapseAll()">Collapse all</button>
+                                      </div>
+                                  </div>
+
+                                  <div class="form-group">
+                                    <h4>View scale</h4>
+                                    <div class="col-md-">
+                                      <div class="radio-primary">
+                                        <label>
+                                          <input type="radio" name="viewOptions" id="optionsRadios1" ng-model="options.width" value="false">
+                                          Project overview
+                                        </label>
+                                      </div>
+                                      <div class="radio-primary">
+                                        <label>
+                                          <input type="radio" name="viewOptions" id="optionsRadios2" ng-model="options.width" value="true">
+                                          Precise view
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
+
+      <!-- <textarea name="name" rows="8" cols="40">{[{data.gantt}]}</textarea> -->
+
+      <div gantt
+           data="options.data"
+           timespans="timespans"
+           show-side="options.labelsEnabled"
+           daily="options.daily"
+           filter-task="{'name': options.filterTask}"
+           filter-row="{'name': options.filterRow}"
+           sort-mode="options.sortMode"
+           view-scale="options.scale"
+           column-width="getColumnWidth(options.width, options.scale, options.zoom)"
+           auto-expand="options.autoExpand"
+           task-out-of-range="options.taskOutOfRange"
+           from-date = "options.fromDate"
+           to-date = "options.toDate"
+           allow-side-resizing = "options.allowSideResizing"
+           task-content = "options.taskContentEnabled ? options.taskContent : undefined"
+           row-content = "options.rowContentEnabled ? options.rowContent : undefined"
+           current-date="options.currentDate"
+           current-date-value="options.currentDateValue"
+           headers="options.width && options.shortHeaders || options.longHeaders"
+           max-height="options.maxHeight && 300 || 0"
+           api="options.api"
+           column-magnet="options.columnMagnet">
+          <gantt-tree enabled="options.sideMode === 'Tree' || options.sideMode === 'TreeTable'"
+                      header-content="options.treeHeaderContent"
+                      keep-ancestor-on-filter-row="true">
+          </gantt-tree>
+          <gantt-table enabled="options.sideMode === 'Table' || options.sideMode === 'TreeTable'"
+                       columns="options.sideMode === 'TreeTable' ? options.treeTableColumns : options.columns"
+                       headers="options.columnsHeaders"
+                       classes="options.columnsClasses"
+                       formatters="options.columnsFormatters"
+                       contents="options.columnsContents"
+                       header-contents="options.columnsHeaderContents">
+          </gantt-table>
+          <gantt-groups enabled="true" display="options.groupDisplayMode"></gantt-groups>
+          <gantt-tooltips></gantt-tooltips>
+          <gantt-bounds></gantt-bounds>
+          <gantt-progress></gantt-progress>
+          <gantt-movable enabled="!options.readOnly"></gantt-movable>
+          <gantt-draw-task
+              enabled="options.canDraw"
+              move-threshold="2"
+              task-factory="options.drawTaskFactory">
+          </gantt-draw-task>
+          <gantt-overlap global="true"></gantt-overlap>
+          <gantt-resize-sensor></gantt-resize-sensor>
+          <gantt-dependencies enabled="options.dependencies" read-only="options.readOnly"></gantt-dependencies>
+      </div><!-- !gantt -->
     </div>
     <div data-ng-if="data.message == '_empty'">
       <div class="data-wrapper error">
