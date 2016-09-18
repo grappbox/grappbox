@@ -509,12 +509,12 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 "taskId": $scope.taskID,
                 "title": $scope.data.toUpdate.title,
                 "description": $scope.data.toUpdate.description,
-                "due_date": new Date($scope.data.toUpdate.due_date),
+                //"due_date": new Date($scope.data.toUpdate.due_date),
                 "is_milestone": false,
                 "is_container": false,
                 "advance": $scope.data.toUpdate.advance
                 };
-    if ($scope.data.toUpdate.started_at)
+    if ($scope.data.toUpdate.started_at.getTime() != (new Date($scope.data.task.started_at.date).getTime()))
       elem['started_at'] = new Date($scope.data.toUpdate.started_at);
 
     if ($scope.data.toUpdate.type == "container") {
@@ -530,9 +530,11 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       //elem['dependencies'] = [];
     }
     if ($scope.data.toUpdate.advance == 100)
-      elem['finished_at'] = new Date('now');
+      elem['finished_at'] = new Date();
     else if ($scope.data.toUpdate.advance < 100 && $scope.data.task.finished_at)
       elem['finished_at'] = null;
+    else if ($scope.data.toUpdate.due_date.getTime() != (new Date($scope.data.task.due_date.date).getTime()))
+      elem['due_date'] = new Date($scope.data.toUpdate.due_date);
 
     var data = {"data": elem};
 
@@ -549,7 +551,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   };
 
   $scope.finishTask = function() {
-    var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "advance": 100, "finished_at": new Date('now')}};
+    var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "advance": 100, "finished_at": new Date()}};
 
     $http.put($rootScope.api.url + "/tasks/taskupdate", data)
       .then(function successCallback(response) {

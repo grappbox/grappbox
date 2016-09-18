@@ -539,7 +539,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div class="col-md-1 col-md-offset-8 col-xs-6" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">
                 <button type="submit" class="btn btn-default" data-ng-if="data.task.started_at" data-ng-click="finishTask()">Finished</button>
               </div>
-              <div class="col-md-1 col-md-offset-9 col-xs-6" data-ng-if="data.task.finished_at || !data.task.is_milestone || !data.task.is_container">
+              <div class="col-md-1 col-md-offset-9 col-xs-6" data-ng-if="data.task.finished_at || data.task.is_milestone || data.task.is_container">
                 <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
               </div>
               <div class="col-md-1 col-xs-6" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">

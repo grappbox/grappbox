@@ -64,27 +64,28 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
     var elem = {};
     var dep = {};
     angular.forEach($scope.data.tasks, function(value, key) {
+      console.log('-----------------------------------');
+      console.log(value.id+': '+value.title);
       if (!value.is_milestone && !value.is_container) {
+        console.log("regular");
         elem = {id: value.id,
                 name: value.title,
-                from: value.started_at.date,
-                to: (value.finished_at ? value.finished_at.date : value.due_date.date),
+                from: new Date(value.started_at.date),
+                to: new Date(value.finished_at ? value.finished_at.date : value.due_date.date),
                 tasks: [
                   {id:  value.id,
                   name: value.title,
-                  from: value.started_at.date,
-                  to: (value.finished_at ? value.finished_at.date : value.due_date.date),
+                  from: new Date(value.started_at.date),
+                  to: new Date(value.finished_at ? value.finished_at.date : value.due_date.date),
                   progress: value.advance
                   }
                 ]
               };
           if (value.dependencies.length)
             elem.tasks[0].dependencies = [];
-            
-          console.log('-----------------------------------');
-          console.log(value.id+': '+value.title);
+
+
         angular.forEach(value.dependencies, function(value2, key2) {
-          console.log(value2);
           switch (value2.name) {
             case 'fs':
               dep = {to: value2.id,
@@ -112,28 +113,30 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
 
       }
       else if (value.is_milestone) {
+        console.log("milestone");
         elem = {id: value.id,
                 name: value.title,
-                from: value.due_date.date,
-                to: value.due_date.date,
+                from: new Date(value.due_date.date),
+                to: new Date(value.due_date.date),
                 tasks: [
                   {id: value.id,
                   name: value.title,
-                  from: value.due_date.date,
-                  to: value.due_date.date,
+                  from: new Date(value.due_date.date),
+                  to: new Date(value.due_date.date),
                   progress: value.advance}
                   ]
                 };
       }
       else if (value.is_container) {
+        console.log("container");
         elem = {id: value.id,
                 name: value.title,
-                from: value.started_at.date,
-                to: value.finished_at.date,
+                from: new Date(value.started_at.date),
+                to: new Date(value.due_date.date),
                 children: []
                 };
-        angular.forEach(value.tasks, function (value, key) {
-          this.push(value.id);
+        angular.forEach(value.tasks, function (value2, key2) {
+          this.push(value2.id);
         }, elem.children);
       }
       this.push(elem);
@@ -249,9 +252,9 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
         };
 
   $scope.options = {
-      //allowSideResizing: true,
+      allowSideResizing: true,
       autoExpand: 'none',
-      //columnMagnet: '15 minutes',
+      columnMagnet: '1 day',
       columns: ['model.name', 'from', 'to'],
       columnsClasses: {'model.name' : 'gantt-column-name', 'from': 'gantt-column-from', 'to': 'gantt-column-to'},
       columnsFormatters: {
@@ -268,7 +271,7 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
           'from': '<i class="material-icons" style="font-size:14px">date_range</i> {[{getHeader()}]}',
           'to': '<i class="material-icons" style="font-size:14px">date_range</i> {[{getHeader()}]}'
       },
-      currentDate: 'line',
+      currentDate: 'column', // ['none', 'line', 'column']
       currentDateValue: new Date(2016, 8, 2, 11, 20, 0),
       daily: true,
       data: $scope.data.gantt,
@@ -341,12 +344,12 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
               // api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
               // api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
               //
-              // api.side.on.resizeBegin($scope, addEventName('labels.on.resizeBegin', logLabelsEvent));
-              // api.side.on.resize($scope, addEventName('labels.on.resize', logLabelsEvent));
-              // api.side.on.resizeEnd($scope, addEventName('labels.on.resizeEnd', logLabelsEvent));
+              api.side.on.resizeBegin($scope, addEventName('labels.on.resizeBegin', logLabelsEvent));
+              api.side.on.resize($scope, addEventName('labels.on.resize', logLabelsEvent));
+              api.side.on.resizeEnd($scope, addEventName('labels.on.resizeEnd', logLabelsEvent));
               //
               // api.timespans.on.add($scope, addEventName('timespans.on.add', logTimespanEvent));
-              // api.columns.on.generate($scope, logColumnsGenerateEvent);
+              api.columns.on.generate($scope, logColumnsGenerateEvent);
 
               // api.rows.on.filter($scope, logRowsFilterEvent);
               // api.tasks.on.filter($scope, logTasksFilterEvent);
@@ -376,42 +379,42 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
               // $scope.load();
 
               // Add some DOM events
-              // api.directives.on.new($scope, function(directiveName, directiveScope, element) {
-              //     if (directiveName === 'ganttTask') {
-              //         element.bind('click', function(event) {
-              //             event.stopPropagation();
-              //             logTaskEvent('task-click', directiveScope.task);
-              //         });
-              //         element.bind('mousedown touchstart', function(event) {
-              //             event.stopPropagation();
-              //             $scope.live.row = directiveScope.task.row.model;
-              //             if (directiveScope.task.originalModel !== undefined) {
-              //                 $scope.live.task = directiveScope.task.originalModel;
-              //             } else {
-              //                 $scope.live.task = directiveScope.task.model;
-              //             }
-              //             $scope.$digest();
-              //         });
-              //     } else if (directiveName === 'ganttRow') {
-              //         element.bind('click', function(event) {
-              //             event.stopPropagation();
-              //             logRowEvent('row-click', directiveScope.row);
-              //         });
-              //         element.bind('mousedown touchstart', function(event) {
-              //             event.stopPropagation();
-              //             $scope.live.row = directiveScope.row.model;
-              //             $scope.$digest();
-              //         });
-              //     } else if (directiveName === 'ganttRowLabel') {
-              //         element.bind('click', function() {
-              //             logRowEvent('row-label-click', directiveScope.row);
-              //         });
-              //         element.bind('mousedown touchstart', function() {
-              //             $scope.live.row = directiveScope.row.model;
-              //             $scope.$digest();
-              //         });
-              //     }
-              // });
+              api.directives.on.new($scope, function(directiveName, directiveScope, element) {
+                  if (directiveName === 'ganttTask') {
+                      element.bind('click', function(event) {
+                          event.stopPropagation();
+                          logTaskEvent('task-click', directiveScope.task);
+                      });
+                      element.bind('mousedown touchstart', function(event) {
+                          event.stopPropagation();
+                          $scope.live.row = directiveScope.task.row.model;
+                          if (directiveScope.task.originalModel !== undefined) {
+                              $scope.live.task = directiveScope.task.originalModel;
+                          } else {
+                              $scope.live.task = directiveScope.task.model;
+                          }
+                          $scope.$digest();
+                      });
+                  } else if (directiveName === 'ganttRow') {
+                      element.bind('click', function(event) {
+                          event.stopPropagation();
+                          logRowEvent('row-click', directiveScope.row);
+                      });
+                      element.bind('mousedown touchstart', function(event) {
+                          event.stopPropagation();
+                          $scope.live.row = directiveScope.row.model;
+                          $scope.$digest();
+                      });
+                  } else if (directiveName === 'ganttRowLabel') {
+                      element.bind('click', function() {
+                          logRowEvent('row-label-click', directiveScope.row);
+                      });
+                      element.bind('mousedown touchstart', function() {
+                          $scope.live.row = directiveScope.row.model;
+                          $scope.$digest();
+                      });
+                  }
+              });
               //
               // api.tasks.on.rowChange($scope, function(task) {
               //     $scope.live.row = task.row.model;
@@ -422,13 +425,13 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
       }
   };
 
-  // $scope.handleTaskIconClick = function(taskModel) {
-  //     alert('Icon from ' + taskModel.name + ' task has been clicked.');
-  // };
-  //
-  // $scope.handleRowIconClick = function(rowModel) {
-  //     alert('Icon from ' + rowModel.name + ' row has been clicked.');
-  // };
+  $scope.handleTaskIconClick = function(taskModel) {
+      alert('Icon from ' + taskModel.name + ' task has been clicked.');
+  };
+
+  $scope.handleRowIconClick = function(rowModel) {
+      alert('Icon from ' + rowModel.name + ' row has been clicked.');
+  };
 
   $scope.expandAll = function() {
       $scope.api.tree.expandAll();
@@ -454,29 +457,29 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
       return true;
   };
 
-  // $scope.getColumnWidth = function(widthEnabled, scale, zoom) {
-  //     if (!widthEnabled && $scope.canAutoWidth(scale)) {
-  //         return undefined;
-  //     }
-  //
-  //     if (scale.match(/.*?week.*?/)) {
-  //         return 150 * zoom;
-  //     }
-  //
-  //     if (scale.match(/.*?month.*?/)) {
-  //         return 300 * zoom;
-  //     }
-  //
-  //     if (scale.match(/.*?quarter.*?/)) {
-  //         return 500 * zoom;
-  //     }
-  //
-  //     if (scale.match(/.*?year.*?/)) {
-  //         return 800 * zoom;
-  //     }
-  //
-  //     return 40 * zoom;
-  // };
+  $scope.getColumnWidth = function(widthEnabled, scale, zoom) {
+      if (!widthEnabled && $scope.canAutoWidth(scale)) {
+          return undefined;
+      }
+
+      if (scale.match(/.*?week.*?/)) {
+          return 150 * zoom;
+      }
+
+      if (scale.match(/.*?month.*?/)) {
+          return 300 * zoom;
+      }
+
+      if (scale.match(/.*?quarter.*?/)) {
+          return 500 * zoom;
+      }
+
+      if (scale.match(/.*?year.*?/)) {
+          return 800 * zoom;
+      }
+
+      return 40 * zoom;
+  };
 
   // // Reload data action
   // $scope.load = function() {
