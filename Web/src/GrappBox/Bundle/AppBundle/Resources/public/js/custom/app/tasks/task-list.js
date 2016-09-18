@@ -14,11 +14,11 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
   var content = "";
 
   // Scope variables initialization
-  $scope.projectID = $routeParams.project_id;
+  $scope.projectId = $routeParams.project_id;
   $scope.data = { onLoad: true, tasks: { }, message: "_invalid" };
 
   // Get all tasks of the project
-  $http.get($rootScope.api.url + "/tasks/getprojecttasks/" + $rootScope.user.token + "/" + $scope.projectID)
+  $http.get($rootScope.api.url + "/tasks/getprojecttasks/" + $rootScope.user.token + "/" + $scope.projectId)
     .then(function projectsReceived(response) {
       $scope.data.tasks = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
       $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
@@ -76,7 +76,7 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
 
   // Open task detail page
   $scope.openTask = function(project, task){
-    $location.path("/tasks/" + project + "/" + task);
+    $location.path("/task/" + project + "/" + task);
   };
 
   /*-------------------------TAB FILTERS AND SWITCH ----------------------*/

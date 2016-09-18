@@ -11,6 +11,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
   <div data-ng-if="!data.onLoad">
     <div data-ng-if="data.message == '_valid'">
+      <textarea name="name" rows="8" cols="40">{[{data.gantt}]}</textarea>
 
       <div class="panel-group" bs-collapse>
           <div class="panel panel-default">
@@ -28,17 +29,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                   <div class="form-group">
                                     <h4>Date range</h4>
                                     <label class="control-label">From</label>
-                                    <input type="date" class="form-control" ng-model="options.fromDate" max-date="{{options.toDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
+                                    <input type="date" class="form-control" data-ng-model="options.fromDate" max-date="{{options.toDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
 
                                     <label class="control-label">To</label>
-                                    <input type="date" class="form-control"ng-model="options.toDate" min-date="{{options.fromDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
+                                    <input type="date" class="form-control" data-ng-model="options.toDate" min-date="{{options.fromDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
                                   </div>
 
                                   <div class="form-group">
                                     <h4>Tasks list</h4>
                                       <div class="col-md-">
-                                          <button class="btn btn-default btn-primary" ng-click="expandAll()">Expand all</button>
-                                          <button class="btn btn-default btn-primary" ng-click="collapseAll()">Collapse all</button>
+                                          <button class="btn btn-default btn-primary" data-ng-click="expandAll()">Expand all</button>
+                                          <button class="btn btn-default btn-primary" data-ng-click="collapseAll()">Collapse all</button>
                                       </div>
                                   </div>
 
@@ -47,13 +48,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                     <div class="col-md-">
                                       <div class="radio-primary">
                                         <label>
-                                          <input type="radio" name="viewOptions" id="optionsRadios1" ng-model="options.width" value="false">
+                                          <input type="radio" name="viewOptions" id="optionsRadios1" data-ng-model="options.width" data-ng-value="false">
                                           Project overview
                                         </label>
                                       </div>
                                       <div class="radio-primary">
                                         <label>
-                                          <input type="radio" name="viewOptions" id="optionsRadios2" ng-model="options.width" value="true">
+                                          <input type="radio" name="viewOptions" id="optionsRadios2" data-ng-model="options.width" data-ng-value="true">
                                           Precise view
                                         </label>
                                       </div>

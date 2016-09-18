@@ -44,6 +44,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div data-ng-if="!data.onLoad">
                 <div data-ng-if="data.message == '_valid'">
                   <div class="row">
+                    <div class="centered">
+                      <a href="{[{'task/' + projectId + '/0'}]}" class="btn btn-raised btn-danger" title="Go to the task creation page">Create a new task</a>
+                    </div>
+                  </div>
+                  <div class="row">
                     <table class="table table-hover">
                       <thead>
                         <tr>
@@ -54,7 +59,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         </tr>
                       </thead>
                       <tbody>
-                        <tr ng-repeat="task in data.tasks | filter: filterTodo" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                        <tr ng-repeat="task in data.tasks | filter: filterTodo" ng-click="openTask(projectId, task.id)" title="Go the task page">
                           <td>{[{ task.title }]}</td>
                           <td>{[{ formatTagsinString(task.tags) }]}</td>
                           <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
@@ -107,7 +112,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         </tr>
                       </thead>
                       <tbody>
-                        <tr ng-repeat="task in data.tasks | filter: filterDoing" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                        <tr ng-repeat="task in data.tasks | filter: filterDoing" ng-click="openTask(projectId, task.id)" title="Go the task page">
                           <td>{[{ task.title }]}</td>
                           <td>{[{ formatTagsinString(task.tags) }]}</td>
                           <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
@@ -160,7 +165,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         </tr>
                       </thead>
                       <tbody>
-                        <tr ng-repeat="task in data.tasks | filter: filterDone" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                        <tr ng-repeat="task in data.tasks | filter: filterDone" ng-click="openTask(projectId, task.id)" title="Go the task page">
                           <td>{[{ task.title }]}</td>
                           <td>{[{ formatTagsinString(task.tags) }]}</td>
                           <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
@@ -213,7 +218,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         </tr>
                       </thead>
                       <tbody>
-                        <tr ng-repeat="task in data.tasks | filter: filterUser" ng-click="openTask(projectID, task.id)" title="Go the task page">
+                        <tr ng-repeat="task in data.tasks | filter: filterUser" ng-click="openTask(projectId, task.id)" title="Go the task page">
                           <td>{[{ task.title }]}</td>
                           <td>{[{ formatTagsinString(task.tags) }]}</td>
                           <td>{[{ formatUsersinString(task.users_assigned) }]}</td>

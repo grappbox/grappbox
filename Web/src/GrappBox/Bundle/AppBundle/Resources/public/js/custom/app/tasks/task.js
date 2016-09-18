@@ -157,7 +157,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     $scope.data.toUpdate.title = $scope.data.task.title;
     $scope.data.toUpdate.description = $scope.data.task.description;
     $scope.data.toUpdate.color = $scope.data.task.color;
-    $scope.data.toUpdate.type = ($scope.data.task.type && $scope.data.task.type != "" ? $scope.data.task.type : "regular");
+    $scope.data.toUpdate.type = ($scope.data.task.is_milestone ? 'milestone' : ($scope.data.task.is_container ? 'container': 'regular'));
     $scope.data.toUpdate.started_at = ($scope.data.task.started_at ? new Date($scope.data.task.started_at.date) : null);
     $scope.data.toUpdate.due_date = ($scope.data.task.due_date ? new Date($scope.data.task.due_date.date) : null);
     $scope.data.toUpdate.advance = $scope.data.task.advance;
@@ -252,6 +252,56 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         });
     });
   };
+
+  //----------------TASKS ASSIGNATION----------------------//
+  $scope.data.taskToAdd = [];
+  $scope.data.taskToRemove = [];
+
+  $scope.taskAdded = function(task) {
+    var index = -1;
+    for (var i = 0; i < $scope.data.taskToRemove.length && index < 0; i++) {
+      if ($scope.data.taskToRemove[i] == task.id || $scope.data.taskToRemove[i] == task.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.data.taskToRemove.splice(index, 1);
+    else
+      $scope.data.taskToAdd.push(task.id);
+  };
+
+  $scope.taskRemoved = function(task) {
+    var index = -1;
+    for (var i = 0; i < $scope.data.taskToAdd.length && index < 0; i++) {
+      if ($scope.data.taskToAdd[i] == task.id || $scope.data.taskToAdd[i] == task.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.data.taskToAdd.splice(index, 1);
+    else
+      $scope.data.taskToRemove.push(task.id);
+  };
+
+  // var memorizeTasks = function() {
+  //   var toAdd = [];
+  //   angular.forEach($scope.taskToRemove, function(user) {
+  //     toAdd.push(task.id);
+  //   }, toAdd);
+  //   var toRemove = [];
+  //   angular.forEach($scope.taskToRemove, function(user) {
+  //     toRemove.push(task.id);
+  //   }, toRemove);
+  //
+  //   var data = {"data": {"token": $rootScope.user.token, "bugId": $scope.ticketID, "tasksAdd": toAdd, "tasksRemove": toRemove}};
+  //
+  //   $http.put($rootScope.api.url + '/bugtracker/setparticipants', data)
+  //     .then(function successCallback(response) {
+  //
+  //     },
+  //     function errorCallback(resposne) {
+  //         Notification.warning({ message: 'Unable to save users. Please try again.', delay: 5000 });
+  //     });
+  //
+  // };
 
   //-----------------USERS ASSIGNATION--------------------//
   $scope.addUser = function(assign_user, workcharge) {
@@ -418,14 +468,14 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 "projectId": $scope.projectID,
                 "title": task.title,
                 "description": task.description,
-                "color": task.color,
                 "due_date": new Date(task.due_date),
                 "is_milestone": false,
                 "is_container": false
                 };
     if (task.type == "container") {
       elem['is_container'] = true;
-      //elem['tasksAdd'] = [];
+      elem["tasksAdd"] = $scope.data.taskToAdd;
+      elem["tasksRemove"] = $scope.data.taskToRemove;
     }
     if (task.type == "milestone") {
       elem['is_milestone'] = true;
@@ -445,7 +495,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         memorizeTags();
         assignUsers(task);
         Notification.success({ message: "Task posted", delay: 5000 });
-        $location.path("/tasks/" + $scope.projectID + "/" + $scope.taskID);
+        $location.path("/task/" + $scope.projectID + "/" + $scope.taskID);
       },
       function errorCallback(response) {
         Notification.warning({ message: "Unable to post task. Please try again.", delay: 5000 });
@@ -459,7 +509,6 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 "taskId": $scope.taskID,
                 "title": $scope.data.toUpdate.title,
                 "description": $scope.data.toUpdate.description,
-                "color": $scope.data.toUpdate.color,
                 "due_date": new Date($scope.data.toUpdate.due_date),
                 "is_milestone": false,
                 "is_container": false,
@@ -468,15 +517,16 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     if ($scope.data.toUpdate.started_at)
       elem['started_at'] = new Date($scope.data.toUpdate.started_at);
 
-    if (task.type == "container") {
+    if ($scope.data.toUpdate.type == "container") {
       elem['is_container'] = true;
-      //elem['tasksAdd'] = [];
+      elem["tasksAdd"] = $scope.data.taskToAdd;
+      elem["tasksRemove"] = $scope.data.taskToRemove;
     }
-    if (task.type == "milestone") {
+    if ($scope.data.toUpdate.type == "milestone") {
       elem['is_milestone'] = true;
       //elem['dependencies'] = [];
     }
-    if (task.type == "regular") {
+    if ($scope.data.toUpdate.type == "regular") {
       //elem['dependencies'] = [];
     }
     if ($scope.data.toUpdate.advance == 100)

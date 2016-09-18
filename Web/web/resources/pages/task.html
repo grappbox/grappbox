@@ -64,12 +64,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="color" class="col-md-1 control-label">Color</label>
                 <div class="col-md-11">
                   <input type="color" class="form-control" data-ng-model="data.task.color" id="color">
                 </div>
-              </div>
+              </div> -->
 
               <!-- OBJECT TYPE SELECTION -->
               <div class="form-group">
@@ -164,7 +164,20 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
 
               <!-- CONTAINER CREATION -->
-              <!-- TODO add tasks inside the container -->
+              <div class="form-group" data-ng-if="data.task.type == 'container'">
+                <label for="tags" class="col-md-1 control-label">Task(s)</label>
+                <div class="col-md-11">
+                  <tags-input ng-model="tasks"
+                              display-property="name"
+                              placeholder="Add a task"
+                              replace-spaces-with-dashes="false"
+                              add-from-autocomplete-only="true"
+                              on-tag-added="taskAdded($tag)"
+                              on-tag-removed="taskRemoved($tag)">
+                    <auto-complete source="tasksList"></auto-complete>
+                  </tags-input>
+                </div>
+              </div>
 
               <!-- MILESTONE CREATION-->
               <div class="form-group" data-ng-if="data.task.type == 'milestone'">
@@ -251,12 +264,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </div>
                 </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label for="color" class="col-md-1 control-label">Color</label>
                   <div class="col-md-11">
                     <input type="color" class="form-control" data-ng-model="data.toUpdate.color" id="color">
                   </div>
-                </div>
+                </div> -->
 
                 <!-- OBJECT TYPE SELECTION -->
                 <div class="form-group">
@@ -273,6 +286,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                   </div>
                 </div>
+
 
                 <!-- TASK EDITION -->
                 <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'">
@@ -352,7 +366,20 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 
                 <!-- CONTAINER EDITION -->
-                <!-- TODO add tasks inside the container -->
+                <div class="form-group" data-ng-if="data.toUpdate.type == 'container'">
+                  <label for="tags" class="col-md-1 control-label">Task(s)</label>
+                  <div class="col-md-11">
+                    <tags-input ng-model="data.task.tasks"
+                                display-property="name"
+                                placeholder="Add a task"
+                                replace-spaces-with-dashes="false"
+                                add-from-autocomplete-only="true"
+                                on-tag-added="taskAdded($tag)"
+                                on-tag-removed="taskRemoved($tag)">
+                      <auto-complete source="tasksList"></auto-complete>
+                    </tags-input>
+                  </div>
+                </div>
 
                 <!-- MILESTONE EDITION-->
                 <div class="form-group" data-ng-if="data.toUpdate.type == 'milestone'">
@@ -444,10 +471,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div data-ng-if="data.message == '_valid'">
             <fieldset>
               <div id="task-header">
-                <div class="col-md-1">
+                <!-- <div class="col-md-1">
                   <div class="color-marker" style="background-color: {[{data.task.color}]}"></div>
-                </div>
-                <div class="col-md-11">
+                </div> -->
+                <div class="col-md-12">
                   <h1>{[{data.task.title}]}</h1>
                   <h4 data-ng-if="!data.task.is_milestone && !data.task.is_container">from {[{ data.task.started_at ? formatObjectDate(data.task.started_at.date) : "N/A" }]} to {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
                   <h4 data-ng-if="data.task.is_milestone">at {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
@@ -455,14 +482,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div class="col-md-12">
-                <h4>Progress {[{data.task.advance + ' %'}]}<span data-ng-if="data.task.finished_at"> (finished at {[{ formatObjectDate(data.task.finished_at.date) }]})</span></h4>
+              <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
+                <h4>Task progress {[{data.task.advance + ' %'}]}<span data-ng-if="data.task.finished_at"> (finished at {[{ formatObjectDate(data.task.finished_at.date) }]})</span></h4>
                 <div class="progress">
                   <div class="progress-bar progress-bar-info" style="width: {[{data.task.advance}]}%"></div>
                 </div>
               </div>
+              <div class="col-md-12" data-ng-if="data.task.is_milestone">
+                <h4>Milestone at {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
+              </div>
+              <div class="col-md-12" data-ng-if="data.task.is_container">
+                <h4>Container</h4>
+              </div>
 
-              <div class="col-md-12">
+
+              <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
                 <h4>Tag(s)</h4>
                 <div class="panel panel-default col-md-3" ng-repeat="tag in data.task.tags">
                   <div class="panel-body">{[{tag.name}]}</div>
@@ -472,7 +506,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div class="col-md-12">
+              <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
                 <h4>Assigned user(s)</h4>
                 <div class="panel panel-default col-md-3" ng-repeat="user in data.task.users_assigned">
                   <div class="panel-body">{[{user.firstname + " " + user.lastname + " (" + user.percent + "%)"}]}</div>
@@ -482,7 +516,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div class="col-md-12">
+              <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
                 <h4>Dependencies</h4>
                 <div class="panel panel-default col-md-6" ng-repeat="dependency in data.task.dependencies">
                   <div class="panel-body">{[{dependency.title + " (" + dependencyToString(dependency.name) + ")" }]}</div>
@@ -492,13 +526,23 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div class="col-md-1 col-md-offset-8 col-xs-6" data-ng-if="!data.task.finished_at">
+              <div class="col-md-12" data-ng-if="data.task.is_container">
+                <h4>Tasks</h4>
+                <div class="panel panel-default col-md-6" ng-repeat="task in data.task.tasks">
+                  <div class="panel-body">{[{task.title}]}</div>
+                </div>
+                <div class="col-md-12" data-ng-if="!((data.task.tasks).length)">
+                  <div class="">No task</div>
+                </div>
+              </div>
+
+              <div class="col-md-1 col-md-offset-8 col-xs-6" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">
                 <button type="submit" class="btn btn-default" data-ng-if="data.task.started_at" data-ng-click="finishTask()">Finished</button>
               </div>
-              <div class="col-md-1 col-md-offset-9 col-xs-6" data-ng-if="data.task.finished_at">
+              <div class="col-md-1 col-md-offset-9 col-xs-6" data-ng-if="data.task.finished_at || !data.task.is_milestone || !data.task.is_container">
                 <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
               </div>
-              <div class="col-md-1 col-xs-6" data-ng-if="!data.task.finished_at">
+              <div class="col-md-1 col-xs-6" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">
                 <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
               </div>
 
